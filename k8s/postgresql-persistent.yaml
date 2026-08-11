@@ -31,7 +31,10 @@ spec:
                   key: POSTGRES_PASSWORD
 
             - name: POSTGRES_DB
-              value: registry
+              valueFrom:
+                configMapKeyRef:
+                  name: postgresql-config
+                  key: POSTGRES_DB
 
           volumeMounts:
             - name: postgresql-data

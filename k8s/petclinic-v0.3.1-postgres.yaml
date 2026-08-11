@@ -41,11 +41,17 @@ spec:
 
           env:
             - name: SPRING_PROFILES_ACTIVE
-              value: postgres
+              valueFrom:
+                configMapKeyRef:
+                  name: petclinic-config
+                  key: SPRING_PROFILES_ACTIVE
 
             - name: POSTGRES_URL
-              value: jdbc:postgresql://postgresql.ns-data.svc.cluster.local:5432/petclinic
-
+              valueFrom:
+                configMapKeyRef:
+                  name: petclinic-config
+                  key: POSTGRES_URL 
+                    
             - name: POSTGRES_USER
               valueFrom:
                 secretKeyRef:
