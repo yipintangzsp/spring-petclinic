@@ -1,33 +1,14 @@
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  annotations:
-    kubectl.kubernetes.io/last-applied-configuration: |
-      {"apiVersion":"v1","kind":"PersistentVolumeClaim","metadata":{"annotations":{},"name":"postgresql-data","namespace":"ns-data"},"spec":{"accessModes":["ReadWriteOnce"],"resources":{"requests":{"storage":"2Gi"}},"storageClassName":"local-path"}}
-    pv.kubernetes.io/bind-completed: "yes"
-    pv.kubernetes.io/bound-by-controller: "yes"
-    volume.beta.kubernetes.io/storage-provisioner: rancher.io/local-path
-    volume.kubernetes.io/selected-node: devops
-    volume.kubernetes.io/storage-provisioner: rancher.io/local-path
-  creationTimestamp: "2026-08-11T03:23:39Z"
-  finalizers:
-  - kubernetes.io/pvc-protection
   name: postgresql-data
   namespace: ns-data
-  resourceVersion: "6052430"
-  uid: 4da56878-b3e9-4588-b6a4-21c90821002f
 spec:
   accessModes:
-  - ReadWriteOnce
+    - ReadWriteOnce
+
+  storageClassName: local-path
+
   resources:
     requests:
       storage: 2Gi
-  storageClassName: local-path
-  volumeMode: Filesystem
-  volumeName: pvc-4da56878-b3e9-4588-b6a4-21c90821002f
-status:
-  accessModes:
-  - ReadWriteOnce
-  capacity:
-    storage: 2Gi
-  phase: Bound
