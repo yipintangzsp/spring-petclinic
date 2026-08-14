@@ -85,10 +85,10 @@ pipeline {
                     echo
                     echo "===== PLATFORM VERIFY ====="
 
-                    echo "$MANIFEST" | grep -q '"architecture":"amd64"'
+                    echo "$MANIFEST" | grep -Eq '"architecture"[[:space:]]*:[[:space:]]*"amd64"'
                     echo "linux/amd64: OK"
 
-                    echo "$MANIFEST" | grep -q '"architecture":"arm64"'
+                    echo "$MANIFEST" | grep -Eq '"architecture"[[:space:]]*:[[:space:]]*"arm64"'
                     echo "linux/arm64: OK"
                 '''
             }
