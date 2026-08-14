@@ -48,21 +48,17 @@ pipeline {
             }
         }
 
-        stage('Docker Build') {
+        stage('Multi-Arch Build & Push') {
             steps {
                 sh '''
-                    echo "===== DOCKER BUILD ====="
+                    echo "===== MULTI-ARCH BUILD & PUSH ====="
                     echo "IMAGE=${FULL_IMAGE}"
-                    docker build -t "${FULL_IMAGE}" .
-                '''
-            }
-        }
 
-        stage('Docker Push') {
-            steps {
-                sh '''
-                    echo "===== DOCKER PUSH ====="
-                    docker push "${FULL_IMAGE}"
+                    docker buildx build \
+                      --platform linux/amd64,linux/arm64 \
+                      -t "${FULL_IMAGE}" \
+                      --push \
+                      .
                 '''
             }
         }
@@ -70,11 +66,30 @@ pipeline {
         stage('Registry Verify') {
             steps {
                 sh '''
-                    echo "===== REGISTRY VERIFY ====="
+                    echo "===== REGISTRY TAG VERIFY ====="
+
                     curl -fsS \
                       "http://${REGISTRY_API}/v2/${IMAGE_REPO}/tags/list"
 
                     echo
+                    echo
+
+                    echo "===== OCI INDEX VERIFY ====="
+
+                    MANIFEST=$(curl -fsS \
+                      -H 'Accept: application/vnd.oci.image.index.v1+json' \
+                      "http://${REGISTRY_API}/v2/${IMAGE_REPO}/manifests/${IMAGE_TAG}")
+
+                    echo "$MANIFEST"
+
+                    echo
+                    echo "===== PLATFORM VERIFY ====="
+
+                    echo "$MANIFEST" | grep -q '"architecture":"amd64"'
+                    echo "linux/amd64: OK"
+
+                    echo "$MANIFEST" | grep -q '"architecture":"arm64"'
+                    echo "linux/arm64: OK"
                 '''
             }
         }
@@ -82,11 +97,11 @@ pipeline {
 
     post {
         success {
-            echo "CI SUCCESS: ${FULL_IMAGE}"
+            echo "MULTI-ARCH CI SUCCESS: ${FULL_IMAGE}"
         }
 
         failure {
-            echo 'CI FAILED'
+            echo 'MULTI-ARCH CI FAILED'
         }
     }
 }
