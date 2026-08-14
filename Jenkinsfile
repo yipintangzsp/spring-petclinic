@@ -4,11 +4,13 @@ pipeline {
     environment {
         DOCKER_REGISTRY = '127.0.0.1:30050'
         REGISTRY_API = '10.0.0.3:30050'
+        K8S_REGISTRY = '10.0.0.3:30050'
 
         IMAGE_REPO = 'petclinic/petclinic'
         IMAGE_TAG = "0.4.0-ci-${BUILD_NUMBER}"
 
         FULL_IMAGE = "${DOCKER_REGISTRY}/${IMAGE_REPO}:${IMAGE_TAG}"
+        K8S_IMAGE = "${K8S_REGISTRY}/${IMAGE_REPO}:${IMAGE_TAG}"
     }
 
     stages {
@@ -93,15 +95,65 @@ pipeline {
                 '''
             }
         }
+
+        stage('Deploy to Kubernetes') {
+            steps {
+                sh '''
+                    echo "===== DEPLOY ====="
+                    echo "K8S_IMAGE=${K8S_IMAGE}"
+
+                    kubectl -n petclinic set image deployment/petclinic \
+                      petclinic="${K8S_IMAGE}"
+                '''
+            }
+        }
+
+        stage('Rollout Verify') {
+            steps {
+                sh '''
+                    echo "===== ROLLOUT STATUS ====="
+
+                    kubectl -n petclinic rollout status deployment/petclinic \
+                      --timeout=600s
+
+                    echo
+                    echo "===== DEPLOYMENT IMAGE ====="
+
+                    kubectl -n petclinic get deploy petclinic \
+                      -o jsonpath='IMAGE={.spec.template.spec.containers[0].image}{"\\n"}'
+
+                    echo
+                    echo "===== PODS ====="
+
+                    kubectl -n petclinic get pods \
+                      -l app=petclinic \
+                      -o wide
+                '''
+            }
+        }
+
+        stage('Health Verify') {
+            steps {
+                sh '''
+                    echo "===== HEALTH VERIFY ====="
+
+                    curl -fsS \
+                      -H 'Host: petclinic.devops.local' \
+                      http://192.168.1.58/actuator/health
+
+                    echo
+                '''
+            }
+        }
     }
 
     post {
         success {
-            echo "MULTI-ARCH CI SUCCESS: ${FULL_IMAGE}"
+            echo "CI/CD SUCCESS: ${K8S_IMAGE}"
         }
 
         failure {
-            echo 'MULTI-ARCH CI FAILED'
+            echo 'CI/CD FAILED'
         }
     }
 }
