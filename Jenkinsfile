@@ -10,9 +10,6 @@ pipeline {
     }
 
     environment {
-        DEPLOY_STARTED = 'false'
-        PREVIOUS_IMAGE = ''
-        HEALTH_PATH = '/actuator/health'
         DOCKER_REGISTRY = '127.0.0.1:30050'
         REGISTRY_API = '10.0.0.3:30050'
         K8S_REGISTRY = '10.0.0.3:30050'
@@ -35,6 +32,10 @@ pipeline {
                     echo "===== GIT ====="
                     git status
                     git rev-parse --short HEAD
+
+                    echo
+                    echo "===== PARAMETERS ====="
+                    echo "FORCE_HEALTH_FAILURE=${FORCE_HEALTH_FAILURE}"
                 '''
             }
         }
@@ -86,7 +87,6 @@ pipeline {
 
                     echo
                     echo
-
                     echo "===== OCI INDEX VERIFY ====="
 
                     MANIFEST=$(curl -fsS \
@@ -98,10 +98,12 @@ pipeline {
                     echo
                     echo "===== PLATFORM VERIFY ====="
 
-                    echo "$MANIFEST" | grep -Eq '"architecture"[[:space:]]*:[[:space:]]*"amd64"'
+                    echo "$MANIFEST" |
+                      grep -Eq '"architecture"[[:space:]]*:[[:space:]]*"amd64"'
                     echo "linux/amd64: OK"
 
-                    echo "$MANIFEST" | grep -Eq '"architecture"[[:space:]]*:[[:space:]]*"arm64"'
+                    echo "$MANIFEST" |
+                      grep -Eq '"architecture"[[:space:]]*:[[:space:]]*"arm64"'
                     echo "linux/arm64: OK"
                 '''
             }
@@ -109,23 +111,30 @@ pipeline {
 
         stage('Deploy to Kubernetes') {
             steps {
-                script {
-                    env.PREVIOUS_IMAGE = sh(
-                        script: '''kubectl -n petclinic get deployment petclinic \
-                          -o jsonpath='{.spec.template.spec.containers[0].image}' ''',
-                        returnStdout: true
-                    ).trim()
-
-                    env.DEPLOY_STARTED = 'true'
-                }
-
                 sh '''
-                    echo "===== DEPLOY ====="
+                    echo "===== SAVE PREVIOUS IMAGE ====="
+
+                    kubectl -n petclinic get deployment petclinic \
+                      -o jsonpath='{.spec.template.spec.containers[0].image}' \
+                      > .previous-image
+
+                    PREVIOUS_IMAGE=$(cat .previous-image)
+
                     echo "PREVIOUS_IMAGE=${PREVIOUS_IMAGE}"
+
+                    if [ -z "${PREVIOUS_IMAGE}" ]; then
+                        echo "ERROR: PREVIOUS_IMAGE is empty"
+                        exit 1
+                    fi
+
+                    echo
+                    echo "===== DEPLOY ====="
                     echo "NEW_IMAGE=${K8S_IMAGE}"
 
                     kubectl -n petclinic set image deployment/petclinic \
                       petclinic="${K8S_IMAGE}"
+
+                    touch .deploy-started
                 '''
             }
         }
@@ -141,7 +150,7 @@ pipeline {
                     echo
                     echo "===== DEPLOYMENT IMAGE ====="
 
-                    kubectl -n petclinic get deploy petclinic \
+                    kubectl -n petclinic get deployment petclinic \
                       -o jsonpath='IMAGE={.spec.template.spec.containers[0].image}{"\\n"}'
 
                     echo
@@ -157,15 +166,21 @@ pipeline {
         stage('Health Verify') {
             steps {
                 script {
-                    env.HEALTH_PATH = params.FORCE_HEALTH_FAILURE                         ? '/actuator/health-does-not-exist'                         : '/actuator/health'
+                    if (params.FORCE_HEALTH_FAILURE) {
+                        echo 'FORCE_HEALTH_FAILURE=true'
+                        env.RUNTIME_HEALTH_PATH = '/actuator/health-does-not-exist'
+                    } else {
+                        echo 'FORCE_HEALTH_FAILURE=false'
+                        env.RUNTIME_HEALTH_PATH = '/actuator/health'
+                    }
                 }
 
                 sh '''
                     echo "===== HEALTH VERIFY ====="
-                    echo "HEALTH_PATH=${HEALTH_PATH}"
+                    echo "HEALTH_PATH=${RUNTIME_HEALTH_PATH}"
 
                     HEALTH_SCHEME='http'
-                    HEALTH_URL="${HEALTH_SCHEME}://192.168.1.58${HEALTH_PATH}"
+                    HEALTH_URL="${HEALTH_SCHEME}://192.168.1.58${RUNTIME_HEALTH_PATH}"
 
                     echo "HEALTH_URL=${HEALTH_URL}"
 
@@ -188,40 +203,50 @@ pipeline {
             script {
                 echo 'CI/CD FAILED'
 
-                if (env.DEPLOY_STARTED == 'true' && env.PREVIOUS_IMAGE?.trim()) {
-                    echo "AUTOMATIC ROLLBACK STARTED: ${env.PREVIOUS_IMAGE}"
+                if (fileExists('.deploy-started') &&
+                    fileExists('.previous-image')) {
 
-                    sh '''
-                        echo "===== AUTOMATIC ROLLBACK ====="
-                        echo "FAILED_IMAGE=${K8S_IMAGE}"
-                        echo "ROLLBACK_IMAGE=${PREVIOUS_IMAGE}"
+                    def previousImage = readFile('.previous-image').trim()
 
-                        kubectl -n petclinic set image deployment/petclinic \
-                          petclinic="${PREVIOUS_IMAGE}"
+                    if (previousImage) {
+                        echo "AUTOMATIC ROLLBACK STARTED: ${previousImage}"
 
-                        kubectl -n petclinic rollout status deployment/petclinic \
-                          --timeout=600s
+                        withEnv(["ROLLBACK_IMAGE=${previousImage}"]) {
+                            sh '''
+                                echo "===== AUTOMATIC ROLLBACK ====="
+                                echo "FAILED_IMAGE=${K8S_IMAGE}"
+                                echo "ROLLBACK_IMAGE=${ROLLBACK_IMAGE}"
 
-                        echo
-                        echo "===== ROLLBACK IMAGE ====="
+                                kubectl -n petclinic set image deployment/petclinic \
+                                  petclinic="${ROLLBACK_IMAGE}"
 
-                        kubectl -n petclinic get deployment petclinic \
-                          -o jsonpath='IMAGE={.spec.template.spec.containers[0].image}{"\\n"}'
+                                kubectl -n petclinic rollout status deployment/petclinic \
+                                  --timeout=600s
 
-                        echo
-                        echo "===== ROLLBACK HEALTH ====="
+                                echo
+                                echo "===== ROLLBACK IMAGE ====="
 
-                        HEALTH_SCHEME='http'
-                        HEALTH_URL="${HEALTH_SCHEME}://192.168.1.58/actuator/health"
+                                kubectl -n petclinic get deployment petclinic \
+                                  -o jsonpath='IMAGE={.spec.template.spec.containers[0].image}{"\\n"}'
 
-                        curl -fsS \
-                          -H 'Host: petclinic.devops.local' \
-                          "${HEALTH_URL}"
+                                echo
+                                echo "===== ROLLBACK HEALTH ====="
 
-                        echo
-                    '''
+                                HEALTH_SCHEME='http'
+                                HEALTH_URL="${HEALTH_SCHEME}://192.168.1.58/actuator/health"
 
-                    echo "AUTOMATIC ROLLBACK SUCCESS: ${env.PREVIOUS_IMAGE}"
+                                curl -fsS \
+                                  -H 'Host: petclinic.devops.local' \
+                                  "${HEALTH_URL}"
+
+                                echo
+                            '''
+                        }
+
+                        echo "AUTOMATIC ROLLBACK SUCCESS: ${previousImage}"
+                    } else {
+                        echo 'Rollback skipped: previous image is empty.'
+                    }
                 } else {
                     echo 'Rollback skipped: deployment was not started.'
                 }
