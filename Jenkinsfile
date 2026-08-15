@@ -137,9 +137,14 @@ pipeline {
                 sh '''
                     echo "===== HEALTH VERIFY ====="
 
+                    HEALTH_SCHEME='http'
+                    HEALTH_URL="${HEALTH_SCHEME}://192.168.1.58/actuator/health"
+
+                    echo "HEALTH_URL=${HEALTH_URL}"
+
                     curl -fsS \
                       -H 'Host: petclinic.devops.local' \
-                      http://192.168.1.58/actuator/health
+                      "${HEALTH_URL}"
 
                     echo
                 '''
