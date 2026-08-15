@@ -1,6 +1,10 @@
 pipeline {
     agent any
 
+    options {
+        disableConcurrentBuilds()
+    }
+
     parameters {
         booleanParam(
             name: 'FORCE_HEALTH_FAILURE',
