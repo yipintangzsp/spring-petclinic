@@ -179,21 +179,25 @@ pipeline {
                     }
                 }
 
-                sh '''
-                    echo "===== HEALTH VERIFY ====="
-                    echo "HEALTH_PATH=${RUNTIME_HEALTH_PATH}"
+                timeout(time: 90, unit: 'SECONDS') {
+                    retry(5) {
+                        sh '''
+                            echo "===== HEALTH VERIFY ====="
+                            echo "HEALTH_PATH=${RUNTIME_HEALTH_PATH}"
 
-                    HEALTH_SCHEME='http'
-                    HEALTH_URL="${HEALTH_SCHEME}://192.168.1.58${RUNTIME_HEALTH_PATH}"
+                            HEALTH_SCHEME='http'
+                            HEALTH_URL="${HEALTH_SCHEME}://192.168.1.58${RUNTIME_HEALTH_PATH}"
 
-                    echo "HEALTH_URL=${HEALTH_URL}"
+                            echo "HEALTH_URL=${HEALTH_URL}"
 
-                    curl -fsS \
-                      -H 'Host: petclinic.devops.local' \
-                      "${HEALTH_URL}"
+                            curl                               --fail                               --silent                               --show-error                               --connect-timeout 5                               --max-time 10                               -H 'Host: petclinic.devops.local'                               "${HEALTH_URL}"
 
-                    echo
-                '''
+                            echo
+                        '''
+
+                        sleep time: 10, unit: 'SECONDS'
+                    }
+                }
             }
         }
     }
