@@ -211,7 +211,7 @@ pipeline {
                     echo "===== ROLLOUT STATUS ====="
 
                     kubectl -n petclinic rollout status deployment/petclinic \
-                      --timeout=600s
+                      --timeout=1200s
 
                     echo
                     echo "===== DEPLOYMENT IMAGE ====="
