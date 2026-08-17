@@ -27,7 +27,15 @@ pipeline {
                     echo
                     echo "===== GIT ====="
                     git status
-                    git rev-parse --short HEAD
+
+                    GIT_SHA=$(git rev-parse HEAD)
+                    GIT_SHA_SHORT=$(git rev-parse --short HEAD)
+
+                    echo "GIT_SHA=${GIT_SHA}"
+                    echo "GIT_SHA_SHORT=${GIT_SHA_SHORT}"
+
+                    printf '%s' "${GIT_SHA}" > .git-sha
+                    printf '%s' "${GIT_SHA_SHORT}" > .git-sha-short
                 '''
             }
         }
@@ -118,6 +126,26 @@ pipeline {
                         echo "ERROR: PREVIOUS_IMAGE is empty"
                         exit 1
                     fi
+
+                    echo
+                    echo "===== RELEASE METADATA ====="
+
+                    GIT_SHA=$(cat .git-sha)
+                    GIT_SHA_SHORT=$(cat .git-sha-short)
+
+                    CHANGE_CAUSE="jenkins-build=${BUILD_NUMBER} git=${GIT_SHA_SHORT} image=${IMAGE_TAG}"
+
+                    echo "BUILD_NUMBER=${BUILD_NUMBER}"
+                    echo "GIT_SHA=${GIT_SHA}"
+                    echo "IMAGE_TAG=${IMAGE_TAG}"
+                    echo "CHANGE_CAUSE=${CHANGE_CAUSE}"
+
+                    kubectl -n petclinic annotate deployment/petclinic \
+                      kubernetes.io/change-cause="${CHANGE_CAUSE}" \
+                      devops.zhanglab.io/git-commit="${GIT_SHA}" \
+                      devops.zhanglab.io/jenkins-build="${BUILD_NUMBER}" \
+                      devops.zhanglab.io/image-tag="${IMAGE_TAG}" \
+                      --overwrite
 
                     echo
                     echo "===== DEPLOY ====="
