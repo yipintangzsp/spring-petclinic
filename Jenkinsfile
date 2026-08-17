@@ -25,6 +25,13 @@ pipeline {
                     pwd
 
                     echo
+                    echo "===== CLEAN PIPELINE STATE ====="
+
+                    rm -f                       .deploy-started                                              .previous-revision                                                                     .git-sha                       .git-sha-short
+
+                    echo "Pipeline state cleaned."
+
+                    echo
                     echo "===== GIT ====="
                     git status
 
@@ -114,11 +121,8 @@ pipeline {
                 sh '''
                     echo "===== SAVE PREVIOUS IMAGE ====="
 
-                    kubectl -n petclinic get deployment petclinic \
-                      -o jsonpath='{.spec.template.spec.containers[0].image}' \
-                      > .previous-image
-
-                    PREVIOUS_IMAGE=$(cat .previous-image)
+                    PREVIOUS_IMAGE=$(kubectl -n petclinic get deployment petclinic \
+                      -o jsonpath='{.spec.template.spec.containers[0].image}')
 
                     echo "PREVIOUS_IMAGE=${PREVIOUS_IMAGE}"
 
@@ -131,8 +135,6 @@ pipeline {
                     GIT_SHA_SHORT=$(cat .git-sha-short)
 
                     CHANGE_CAUSE="jenkins-build=${BUILD_NUMBER} git=${GIT_SHA_SHORT} image=${IMAGE_TAG}"
-
-                    printf '%s' "${CHANGE_CAUSE}" > .change-cause
 
                     echo
                     echo "===== RELEASE CANDIDATE ====="
@@ -150,8 +152,46 @@ pipeline {
 
                     echo "OLD_REVISION=${OLD_REVISION}"
 
-                    kubectl -n petclinic set image deployment/petclinic \
-                      petclinic="${K8S_IMAGE}"
+                    if [ -z "${OLD_REVISION}" ]; then
+                        echo "ERROR: OLD_REVISION is empty"
+                        exit 1
+                    fi
+
+                    printf '%s' "${OLD_REVISION}" > .previous-revision
+
+                    echo
+                    echo "===== PATCH RELEASE TEMPLATE ====="
+
+                    PATCH=$(cat <<EOF
+{
+  "spec": {
+    "template": {
+      "metadata": {
+        "annotations": {
+          "devops.zhanglab.io/git-commit": "${GIT_SHA}",
+          "devops.zhanglab.io/jenkins-build": "${BUILD_NUMBER}",
+          "devops.zhanglab.io/image-tag": "${IMAGE_TAG}"
+        }
+      },
+      "spec": {
+        "containers": [
+          {
+            "name": "petclinic",
+            "image": "${K8S_IMAGE}"
+          }
+        ]
+      }
+    }
+  }
+}
+EOF
+)
+
+                    echo "${PATCH}"
+
+                    kubectl -n petclinic patch deployment petclinic \
+                      --type='strategic' \
+                      -p "${PATCH}"
 
                     touch .deploy-started
 
@@ -179,8 +219,6 @@ pipeline {
                         echo "ERROR: new Deployment revision was not created"
                         exit 1
                     fi
-
-                    printf '%s' "${NEW_REVISION}" > .new-revision
 
                     echo
                     echo "===== ANNOTATE NEW REVISION ====="
@@ -259,30 +297,6 @@ pipeline {
             }
         }
 
-        stage('Publish Release Metadata') {
-            steps {
-                sh '''
-                    echo "===== PUBLISH RELEASE METADATA ====="
-
-                    GIT_SHA=$(cat .git-sha)
-                    CHANGE_CAUSE=$(cat .change-cause)
-
-                    echo "GIT_SHA=${GIT_SHA}"
-                    echo "BUILD_NUMBER=${BUILD_NUMBER}"
-                    echo "IMAGE_TAG=${IMAGE_TAG}"
-                    echo "CHANGE_CAUSE=${CHANGE_CAUSE}"
-
-                    kubectl -n petclinic annotate deployment/petclinic \
-                      devops.zhanglab.io/git-commit="${GIT_SHA}" \
-                      devops.zhanglab.io/jenkins-build="${BUILD_NUMBER}" \
-                      devops.zhanglab.io/image-tag="${IMAGE_TAG}" \
-                      --overwrite
-
-                    echo
-                    echo "===== RELEASE METADATA PUBLISHED ====="
-                '''
-            }
-        }
     }
 
     post {
@@ -360,21 +374,21 @@ pipeline {
                 }
 
                 if (fileExists('.deploy-started') &&
-                    fileExists('.previous-image')) {
+                    fileExists('.previous-revision')) {
 
-                    def previousImage = readFile('.previous-image').trim()
+                    def previousRevision = readFile('.previous-revision').trim()
 
-                    if (previousImage) {
-                        echo "AUTOMATIC ROLLBACK STARTED: ${previousImage}"
+                    if (previousRevision) {
+                        echo "AUTOMATIC ROLLBACK STARTED: revision ${previousRevision}"
 
-                        withEnv(["ROLLBACK_IMAGE=${previousImage}"]) {
+                        withEnv(["ROLLBACK_REVISION=${previousRevision}"]) {
                             sh '''
                                 echo "===== AUTOMATIC ROLLBACK ====="
                                 echo "FAILED_IMAGE=${K8S_IMAGE}"
-                                echo "ROLLBACK_IMAGE=${ROLLBACK_IMAGE}"
+                                echo "ROLLBACK_REVISION=${ROLLBACK_REVISION}"
 
-                                kubectl -n petclinic set image deployment/petclinic \
-                                  petclinic="${ROLLBACK_IMAGE}"
+                                kubectl -n petclinic rollout undo deployment/petclinic \
+                                  --to-revision="${ROLLBACK_REVISION}"
 
                                 kubectl -n petclinic rollout status deployment/petclinic \
                                   --timeout=600s
@@ -384,6 +398,12 @@ pipeline {
 
                                 kubectl -n petclinic get deployment petclinic \
                                   -o jsonpath='IMAGE={.spec.template.spec.containers[0].image}{"\\n"}'
+
+                                echo
+                                echo "===== ROLLBACK TEMPLATE METADATA ====="
+
+                                kubectl -n petclinic get deployment petclinic \
+                                  -o jsonpath='GIT_COMMIT={.spec.template.metadata.annotations.devops\\.zhanglab\\.io/git-commit}{"\\n"}JENKINS_BUILD={.spec.template.metadata.annotations.devops\\.zhanglab\\.io/jenkins-build}{"\\n"}IMAGE_TAG={.spec.template.metadata.annotations.devops\\.zhanglab\\.io/image-tag}{"\\n"}'
 
                                 echo
                                 echo "===== ROLLBACK HEALTH ====="
@@ -427,9 +447,9 @@ pipeline {
                             '''
                         }
 
-                        echo "AUTOMATIC ROLLBACK SUCCESS: ${previousImage}"
+                        echo "AUTOMATIC ROLLBACK SUCCESS: revision ${previousRevision}"
                     } else {
-                        echo 'Rollback skipped: previous image is empty.'
+                        echo 'Rollback skipped: previous revision is empty.'
                     }
                 } else {
                     echo 'Rollback skipped: deployment was not started.'
