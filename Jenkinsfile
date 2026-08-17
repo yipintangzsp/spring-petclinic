@@ -5,14 +5,6 @@ pipeline {
         disableConcurrentBuilds()
     }
 
-    parameters {
-        booleanParam(
-            name: 'FORCE_HEALTH_FAILURE',
-            defaultValue: false,
-            description: 'DCP v1.19 lab: intentionally fail health verification to test automatic rollback'
-        )
-    }
-
     environment {
         DOCKER_REGISTRY = '127.0.0.1:30050'
         REGISTRY_API = '10.0.0.3:30050'
@@ -36,10 +28,6 @@ pipeline {
                     echo "===== GIT ====="
                     git status
                     git rev-parse --short HEAD
-
-                    echo
-                    echo "===== PARAMETERS ====="
-                    echo "FORCE_HEALTH_FAILURE=${FORCE_HEALTH_FAILURE}"
                 '''
             }
         }
@@ -169,33 +157,29 @@ pipeline {
 
         stage('Health Verify') {
             steps {
-                script {
-                    if (params.FORCE_HEALTH_FAILURE) {
-                        echo 'FORCE_HEALTH_FAILURE=true'
-                        env.RUNTIME_HEALTH_PATH = '/actuator/health-does-not-exist'
-                    } else {
-                        echo 'FORCE_HEALTH_FAILURE=false'
-                        env.RUNTIME_HEALTH_PATH = '/actuator/health'
-                    }
-                }
-
                 timeout(time: 90, unit: 'SECONDS') {
                     retry(5) {
                         sh '''
                             echo "===== HEALTH VERIFY ====="
-                            echo "HEALTH_PATH=${RUNTIME_HEALTH_PATH}"
 
                             HEALTH_SCHEME='http'
-                            HEALTH_URL="${HEALTH_SCHEME}://192.168.1.58${RUNTIME_HEALTH_PATH}"
+                            HEALTH_PATH='/actuator/health'
+                            HEALTH_URL="${HEALTH_SCHEME}://192.168.1.58${HEALTH_PATH}"
 
+                            echo "HEALTH_PATH=${HEALTH_PATH}"
                             echo "HEALTH_URL=${HEALTH_URL}"
 
-                            curl                               --fail                               --silent                               --show-error                               --connect-timeout 5                               --max-time 10                               -H 'Host: petclinic.devops.local'                               "${HEALTH_URL}"
+                            curl \
+                              --fail \
+                              --silent \
+                              --show-error \
+                              --connect-timeout 5 \
+                              --max-time 10 \
+                              -H 'Host: petclinic.devops.local' \
+                              "${HEALTH_URL}"
 
                             echo
                         '''
-
-                        sleep time: 10, unit: 'SECONDS'
                     }
                 }
             }
