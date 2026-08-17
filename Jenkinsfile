@@ -308,9 +308,37 @@ pipeline {
                                 HEALTH_SCHEME='http'
                                 HEALTH_URL="${HEALTH_SCHEME}://192.168.1.58/actuator/health"
 
-                                curl -fsS \
-                                  -H 'Host: petclinic.devops.local' \
-                                  "${HEALTH_URL}"
+                                rollback_health_ok=0
+
+                                for attempt in 1 2 3 4 5 6; do
+                                    echo
+                                    echo "ROLLBACK HEALTH ATTEMPT ${attempt}/6"
+
+                                    if curl \
+                                      --fail \
+                                      --silent \
+                                      --show-error \
+                                      --connect-timeout 5 \
+                                      --max-time 10 \
+                                      -H 'Host: petclinic.devops.local' \
+                                      "${HEALTH_URL}"; then
+
+                                        echo
+                                        echo "ROLLBACK HEALTH: OK"
+                                        rollback_health_ok=1
+                                        break
+                                    fi
+
+                                    if [ "${attempt}" -lt 6 ]; then
+                                        echo "Rollback endpoint not ready yet; retrying in 10 seconds..."
+                                        sleep 10
+                                    fi
+                                done
+
+                                if [ "${rollback_health_ok}" -ne 1 ]; then
+                                    echo "ERROR: rollback health verification failed after 6 attempts"
+                                    exit 1
+                                fi
 
                                 echo
                             '''
