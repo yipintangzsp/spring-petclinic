@@ -127,34 +127,80 @@ pipeline {
                         exit 1
                     fi
 
-                    echo
-                    echo "===== RELEASE METADATA ====="
-
                     GIT_SHA=$(cat .git-sha)
                     GIT_SHA_SHORT=$(cat .git-sha-short)
 
                     CHANGE_CAUSE="jenkins-build=${BUILD_NUMBER} git=${GIT_SHA_SHORT} image=${IMAGE_TAG}"
 
+                    printf '%s' "${CHANGE_CAUSE}" > .change-cause
+
+                    echo
+                    echo "===== RELEASE CANDIDATE ====="
                     echo "BUILD_NUMBER=${BUILD_NUMBER}"
                     echo "GIT_SHA=${GIT_SHA}"
                     echo "IMAGE_TAG=${IMAGE_TAG}"
                     echo "CHANGE_CAUSE=${CHANGE_CAUSE}"
 
-                    kubectl -n petclinic annotate deployment/petclinic \
-                      kubernetes.io/change-cause="${CHANGE_CAUSE}" \
-                      devops.zhanglab.io/git-commit="${GIT_SHA}" \
-                      devops.zhanglab.io/jenkins-build="${BUILD_NUMBER}" \
-                      devops.zhanglab.io/image-tag="${IMAGE_TAG}" \
-                      --overwrite
-
                     echo
                     echo "===== DEPLOY ====="
                     echo "NEW_IMAGE=${K8S_IMAGE}"
+
+                    OLD_REVISION=$(kubectl -n petclinic get deployment petclinic \
+                      -o jsonpath='{.metadata.annotations.deployment\.kubernetes\.io/revision}')
+
+                    echo "OLD_REVISION=${OLD_REVISION}"
 
                     kubectl -n petclinic set image deployment/petclinic \
                       petclinic="${K8S_IMAGE}"
 
                     touch .deploy-started
+
+                    echo
+                    echo "===== WAIT FOR NEW REVISION ====="
+
+                    NEW_REVISION=""
+
+                    for attempt in $(seq 1 30); do
+                        NEW_REVISION=$(kubectl -n petclinic get deployment petclinic \
+                          -o jsonpath='{.metadata.annotations.deployment\.kubernetes\.io/revision}')
+
+                        echo "REVISION_CHECK=${attempt} OLD=${OLD_REVISION} NEW=${NEW_REVISION}"
+
+                        if [ -n "${NEW_REVISION}" ] &&
+                           [ "${NEW_REVISION}" != "${OLD_REVISION}" ]; then
+                            break
+                        fi
+
+                        sleep 2
+                    done
+
+                    if [ -z "${NEW_REVISION}" ] ||
+                       [ "${NEW_REVISION}" = "${OLD_REVISION}" ]; then
+                        echo "ERROR: new Deployment revision was not created"
+                        exit 1
+                    fi
+
+                    printf '%s' "${NEW_REVISION}" > .new-revision
+
+                    echo
+                    echo "===== ANNOTATE NEW REVISION ====="
+
+                    NEW_RS=$(kubectl -n petclinic get rs \
+                      -l app=petclinic \
+                      -o jsonpath="{range .items[?(@.metadata.annotations.deployment\\.kubernetes\\.io/revision=='${NEW_REVISION}')]}{.metadata.name}{'\\n'}{end}" \
+                      | head -1)
+
+                    echo "NEW_REVISION=${NEW_REVISION}"
+                    echo "NEW_RS=${NEW_RS}"
+
+                    if [ -z "${NEW_RS}" ]; then
+                        echo "ERROR: ReplicaSet for revision ${NEW_REVISION} not found"
+                        exit 1
+                    fi
+
+                    kubectl -n petclinic annotate replicaset "${NEW_RS}" \
+                      kubernetes.io/change-cause="${CHANGE_CAUSE}" \
+                      --overwrite
                 '''
             }
         }
@@ -210,6 +256,31 @@ pipeline {
                         '''
                     }
                 }
+            }
+        }
+
+        stage('Publish Release Metadata') {
+            steps {
+                sh '''
+                    echo "===== PUBLISH RELEASE METADATA ====="
+
+                    GIT_SHA=$(cat .git-sha)
+                    CHANGE_CAUSE=$(cat .change-cause)
+
+                    echo "GIT_SHA=${GIT_SHA}"
+                    echo "BUILD_NUMBER=${BUILD_NUMBER}"
+                    echo "IMAGE_TAG=${IMAGE_TAG}"
+                    echo "CHANGE_CAUSE=${CHANGE_CAUSE}"
+
+                    kubectl -n petclinic annotate deployment/petclinic \
+                      devops.zhanglab.io/git-commit="${GIT_SHA}" \
+                      devops.zhanglab.io/jenkins-build="${BUILD_NUMBER}" \
+                      devops.zhanglab.io/image-tag="${IMAGE_TAG}" \
+                      --overwrite
+
+                    echo
+                    echo "===== RELEASE METADATA PUBLISHED ====="
+                '''
             }
         }
     }
