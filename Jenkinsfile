@@ -211,6 +211,71 @@ pipeline {
             script {
                 echo 'CI/CD FAILED'
 
+                if (fileExists('.deploy-started')) {
+                    echo 'Collecting failure diagnostics before rollback...'
+
+                    sh '''
+                        echo
+                        echo "========================================"
+                        echo "===== FAILURE DIAGNOSTICS ==============="
+                        echo "========================================"
+
+                        echo
+                        echo "===== DEPLOYMENT ====="
+                        kubectl -n petclinic get deployment petclinic -o wide || true
+
+                        echo
+                        echo "===== REPLICASETS ====="
+                        kubectl -n petclinic get replicasets                           -l app=petclinic                           -o wide || true
+
+                        echo
+                        echo "===== PODS ====="
+                        kubectl -n petclinic get pods                           -l app=petclinic                           -o wide || true
+
+                        echo
+                        echo "===== DEPLOYMENT DESCRIPTION ====="
+                        kubectl -n petclinic describe deployment petclinic || true
+
+                        echo
+                        echo "===== POD DESCRIPTIONS ====="
+                        for pod in $(kubectl -n petclinic get pods                           -l app=petclinic                           -o name 2>/dev/null); do
+
+                            echo
+                            echo "----- ${pod} -----"
+                            kubectl -n petclinic describe "${pod}" || true
+                        done
+
+                        echo
+                        echo "===== CURRENT CONTAINER LOGS ====="
+                        for pod in $(kubectl -n petclinic get pods                           -l app=petclinic                           -o name 2>/dev/null); do
+
+                            echo
+                            echo "----- ${pod} -----"
+                            kubectl -n petclinic logs "${pod}"                               --tail=100 || true
+                        done
+
+                        echo
+                        echo "===== PREVIOUS CONTAINER LOGS ====="
+                        for pod in $(kubectl -n petclinic get pods                           -l app=petclinic                           -o name 2>/dev/null); do
+
+                            echo
+                            echo "----- ${pod} -----"
+                            kubectl -n petclinic logs "${pod}"                               --previous                               --tail=100 || true
+                        done
+
+                        echo
+                        echo "===== RECENT EVENTS ====="
+                        kubectl -n petclinic get events                           --sort-by=.metadata.creationTimestamp                           | tail -80 || true
+
+                        echo
+                        echo "========================================"
+                        echo "===== END FAILURE DIAGNOSTICS ==========="
+                        echo "========================================"
+                    '''
+                } else {
+                    echo 'Failure diagnostics skipped: deployment was not started.'
+                }
+
                 if (fileExists('.deploy-started') &&
                     fileExists('.previous-image')) {
 
