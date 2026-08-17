@@ -146,7 +146,7 @@ pipeline {
                     echo "NEW_IMAGE=${K8S_IMAGE}"
 
                     OLD_REVISION=$(kubectl -n petclinic get deployment petclinic \
-                      -o jsonpath='{.metadata.annotations.deployment\.kubernetes\.io/revision}')
+                      -o jsonpath='{.metadata.annotations.deployment\\.kubernetes\\.io/revision}')
 
                     echo "OLD_REVISION=${OLD_REVISION}"
 
@@ -162,7 +162,7 @@ pipeline {
 
                     for attempt in $(seq 1 30); do
                         NEW_REVISION=$(kubectl -n petclinic get deployment petclinic \
-                          -o jsonpath='{.metadata.annotations.deployment\.kubernetes\.io/revision}')
+                          -o jsonpath='{.metadata.annotations.deployment\\.kubernetes\\.io/revision}')
 
                         echo "REVISION_CHECK=${attempt} OLD=${OLD_REVISION} NEW=${NEW_REVISION}"
 
