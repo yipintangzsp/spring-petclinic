@@ -1,0 +1,270 @@
+{
+  "apiVersion": "apps/v1",
+  "kind": "Deployment",
+  "metadata": {
+    "name": "jenkins",
+    "namespace": "ns-devops"
+  },
+  "spec": {
+    "progressDeadlineSeconds": 600,
+    "replicas": 1,
+    "revisionHistoryLimit": 2,
+    "selector": {
+      "matchLabels": {
+        "app": "jenkins"
+      }
+    },
+    "strategy": {
+      "type": "Recreate"
+    },
+    "template": {
+      "metadata": {
+        "annotations": {
+          "platform.optimization/dns-and-cpu-boundary": "2026-07-26"
+        },
+        "labels": {
+          "app": "jenkins"
+        }
+      },
+      "spec": {
+        "containers": [
+          {
+            "env": [
+              {
+                "name": "TESTCONTAINERS_HOST_OVERRIDE",
+                "value": "192.168.1.58"
+              },
+              {
+                "name": "JAVA_OPTS",
+                "value": "-Duser.timezone=Asia/Shanghai -Dfile.encoding=UTF-8 -Xms256m -Xmx768m -XX:+UseG1GC -XX:MaxGCPauseMillis=200 -XX:+ParallelRefProcEnabled -XX:+UseStringDeduplication -XX:+ExitOnOutOfMemoryError -Dhudson.plugins.git.GitSCM.ALLOW_LOCAL_CHECKOUT=true"
+              },
+              {
+                "name": "TZ",
+                "value": "Asia/Shanghai"
+              },
+              {
+                "name": "SPRING_DOCKER_COMPOSE_HOST",
+                "value": "192.168.1.58"
+              }
+            ],
+            "image": "127.0.0.1:30050/jenkins-custom:2.568.1-lts-atomic-node20-v1",
+            "imagePullPolicy": "IfNotPresent",
+            "livenessProbe": {
+              "failureThreshold": 3,
+              "httpGet": {
+                "path": "/login",
+                "port": 8080,
+                "scheme": "HTTP"
+              },
+              "periodSeconds": 20,
+              "successThreshold": 1,
+              "timeoutSeconds": 3
+            },
+            "name": "jenkins",
+            "ports": [
+              {
+                "containerPort": 8080,
+                "protocol": "TCP"
+              },
+              {
+                "containerPort": 50000,
+                "protocol": "TCP"
+              }
+            ],
+            "readinessProbe": {
+              "failureThreshold": 3,
+              "httpGet": {
+                "path": "/login",
+                "port": 8080,
+                "scheme": "HTTP"
+              },
+              "periodSeconds": 10,
+              "successThreshold": 1,
+              "timeoutSeconds": 3
+            },
+            "resources": {
+              "limits": {
+                "cpu": "2",
+                "memory": "2Gi"
+              },
+              "requests": {
+                "cpu": "500m",
+                "memory": "1Gi"
+              }
+            },
+            "startupProbe": {
+              "failureThreshold": 60,
+              "httpGet": {
+                "path": "/login",
+                "port": 8080,
+                "scheme": "HTTP"
+              },
+              "periodSeconds": 5,
+              "successThreshold": 1,
+              "timeoutSeconds": 3
+            },
+            "terminationMessagePath": "/dev/termination-log",
+            "terminationMessagePolicy": "File",
+            "volumeMounts": [
+              {
+                "mountPath": "/usr/libexec/docker/cli-plugins/docker-compose",
+                "name": "docker-compose",
+                "readOnly": true
+              },
+              {
+                "mountPath": "/etc/localtime",
+                "name": "tz-config",
+                "readOnly": true
+              },
+              {
+                "mountPath": "/var/jenkins_home",
+                "name": "jenkins-data"
+              },
+              {
+                "mountPath": "/var/run/docker.sock",
+                "name": "docker-sock"
+              },
+              {
+                "mountPath": "/usr/bin/docker",
+                "name": "docker-bin"
+              },
+              {
+                "mountPath": "/usr/bin/kubectl",
+                "name": "kubectl-bin"
+              },
+              {
+                "mountPath": "/usr/local/bin/docker-safe",
+                "name": "docker-safe",
+                "readOnly": true
+              },
+              {
+                "mountPath": "/usr/bin/docker.original",
+                "name": "docker-original",
+                "readOnly": true
+              },
+              {
+                "mountPath": "/usr/libexec/docker/cli-plugins/docker-buildx",
+                "name": "docker-buildx",
+                "readOnly": true
+              }
+            ]
+          }
+        ],
+        "dnsConfig": {
+          "options": [
+            {
+              "name": "ndots",
+              "value": "1"
+            },
+            {
+              "name": "timeout",
+              "value": "2"
+            },
+            {
+              "name": "attempts",
+              "value": "2"
+            }
+          ]
+        },
+        "dnsPolicy": "ClusterFirst",
+        "initContainers": [
+          {
+            "command": [
+              "sh",
+              "-c",
+              "chown -R 1000:1000 /var/jenkins_home"
+            ],
+            "env": [
+              {
+                "name": "JAVA_OPTS",
+                "value": "-Duser.timezone=Asia/Shanghai -Dfile.encoding=UTF-8 -Xms256m -Xmx768m -XX:+UseG1GC -XX:MaxGCPauseMillis=200 -XX:+ParallelRefProcEnabled -XX:+UseStringDeduplication -XX:+ExitOnOutOfMemoryError -Dhudson.plugins.git.GitSCM.ALLOW_LOCAL_CHECKOUT=true"
+              }
+            ],
+            "image": "127.0.0.1:30050/platform-upgrade/busybox:1.38.0-arm64",
+            "imagePullPolicy": "IfNotPresent",
+            "name": "fix-permissions",
+            "resources": {},
+            "terminationMessagePath": "/dev/termination-log",
+            "terminationMessagePolicy": "File",
+            "volumeMounts": [
+              {
+                "mountPath": "/var/jenkins_home",
+                "name": "jenkins-data"
+              }
+            ]
+          }
+        ],
+        "restartPolicy": "Always",
+        "schedulerName": "default-scheduler",
+        "securityContext": {},
+        "serviceAccount": "jenkins-admin",
+        "serviceAccountName": "jenkins-admin",
+        "terminationGracePeriodSeconds": 60,
+        "volumes": [
+          {
+            "hostPath": {
+              "path": "/usr/libexec/docker/cli-plugins/docker-compose",
+              "type": "File"
+            },
+            "name": "docker-compose"
+          },
+          {
+            "hostPath": {
+              "path": "/usr/share/zoneinfo/Asia/Shanghai",
+              "type": ""
+            },
+            "name": "tz-config"
+          },
+          {
+            "name": "jenkins-data",
+            "persistentVolumeClaim": {
+              "claimName": "jenkins-pvc"
+            }
+          },
+          {
+            "hostPath": {
+              "path": "/var/run/docker.sock",
+              "type": ""
+            },
+            "name": "docker-sock"
+          },
+          {
+            "hostPath": {
+              "path": "/usr/bin/docker",
+              "type": ""
+            },
+            "name": "docker-bin"
+          },
+          {
+            "hostPath": {
+              "path": "/home/zhang/devops-tools/kubectl",
+              "type": ""
+            },
+            "name": "kubectl-bin"
+          },
+          {
+            "hostPath": {
+              "path": "/usr/local/bin/docker-safe",
+              "type": "File"
+            },
+            "name": "docker-safe"
+          },
+          {
+            "hostPath": {
+              "path": "/usr/bin/docker.original",
+              "type": "File"
+            },
+            "name": "docker-original"
+          },
+          {
+            "hostPath": {
+              "path": "/usr/libexec/docker/cli-plugins/docker-buildx",
+              "type": "File"
+            },
+            "name": "docker-buildx"
+          }
+        ]
+      }
+    }
+  }
+}
