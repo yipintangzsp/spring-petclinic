@@ -165,6 +165,13 @@ pipeline {
                     PATCH=$(cat <<EOF
 {
   "spec": {
+    "strategy": {
+      "type": "RollingUpdate",
+      "rollingUpdate": {
+        "maxSurge": 3,
+        "maxUnavailable": 0
+      }
+    },
     "template": {
       "metadata": {
         "annotations": {
