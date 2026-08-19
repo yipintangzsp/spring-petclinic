@@ -53,3 +53,40 @@ Future GitOps stages will move release promotion toward:
 CI builds image -> Git image reference update -> ArgoCD sync -> Kubernetes
 
 instead of Jenkins directly mutating the live Deployment.
+
+## Jenkins to ArgoCD handoff
+
+Current transitional deployment flow:
+
+`Jenkins CI -> build image -> update Git image reference -> push main -> Jenkins direct kubectl deploy`
+
+This transitional mode remains in place until ArgoCD is installed, configured, and verified.
+
+Target GitOps deployment flow:
+
+`Jenkins CI -> build image -> update Git image reference -> push main -> ArgoCD sync -> Kubernetes`
+
+After ArgoCD takes ownership of `k8s/production/`, Jenkins must stop directly mutating the Petclinic Deployment.
+
+The Jenkins `Deploy to Kubernetes` stage and its direct `kubectl patch` release logic must be removed or disabled at cutover. Jenkins and ArgoCD must not act as concurrent deployment controllers for the same Deployment.
+
+## ArgoCD cutover conditions
+
+ArgoCD may become the production deployment controller only after all of the following conditions are met:
+
+1. The ArgoCD Application is configured to track the intended repository, branch, and `k8s/production/` path.
+2. The ArgoCD Application reports the expected production resources and reaches a healthy synchronized state.
+3. Git desired state matches the currently validated live production state before control is transferred.
+4. Jenkins Git image promotion is verified to update the production manifest successfully.
+5. Jenkins direct Deployment mutation is disabled or removed as part of the cutover.
+6. A Git-based rollback procedure is validated before the Jenkins revision-based rollback path is retired.
+
+## Rollback ownership after cutover
+
+Before ArgoCD cutover, Jenkins retains the existing Kubernetes revision-based rollback behavior.
+
+After ArgoCD cutover, the intended rollback control path is:
+
+`Git revert or previous known-good manifest -> push -> ArgoCD sync -> Kubernetes`
+
+Kubernetes Deployment revisions may still provide diagnostic history, but Git becomes the authoritative production release history.
