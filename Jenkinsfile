@@ -116,6 +116,36 @@ pipeline {
             }
         }
 
+        stage('Git Write Dry-Run') {
+            steps {
+                withCredentials([
+                    sshUserPrivateKey(
+                        credentialsId: 'github-petclinic-ssh',
+                        keyFileVariable: 'GITHUB_SSH_KEY',
+                        usernameVariable: 'GITHUB_SSH_USER'
+                    )
+                ]) {
+                    sh '''
+                        echo "===== GITHUB WRITE DRY-RUN ====="
+
+                        export GIT_SSH_COMMAND="ssh -i ${GITHUB_SSH_KEY} -o IdentitiesOnly=yes -o StrictHostKeyChecking=yes -o UserKnownHostsFile=/var/jenkins_home/.ssh/known_hosts"
+
+                        echo
+                        echo "===== FETCH REMOTE MAIN ====="
+                        git fetch origin main
+
+                        echo
+                        echo "===== PUSH PERMISSION PROBE ====="
+                        git push --dry-run origin \
+                          refs/remotes/origin/main:refs/heads/dcp-v1.26-write-probe
+
+                        echo
+                        echo "GITHUB_WRITE_DRY_RUN=OK"
+                    '''
+                }
+            }
+        }
+
         stage('Deploy to Kubernetes') {
             steps {
                 sh '''
