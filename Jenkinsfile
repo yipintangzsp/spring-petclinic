@@ -116,7 +116,7 @@ pipeline {
             }
         }
 
-        stage('Git Write Dry-Run') {
+        stage('Git Promotion') {
             steps {
                 withCredentials([
                     sshUserPrivateKey(
@@ -126,20 +126,82 @@ pipeline {
                     )
                 ]) {
                     sh '''
-                        echo "===== GITHUB WRITE DRY-RUN ====="
+                        set -eu
+
+                        echo "===== GIT IMAGE PROMOTION ====="
 
                         export GIT_SSH_COMMAND="ssh -i ${GITHUB_SSH_KEY} -o IdentitiesOnly=yes -o StrictHostKeyChecking=yes -o UserKnownHostsFile=/var/jenkins_home/.ssh/known_hosts"
+
+                        MANIFEST="k8s/production/petclinic.yaml"
+                        SOURCE_GIT_SHA=$(cat .git-sha)
 
                         echo
                         echo "===== FETCH REMOTE MAIN ====="
                         git fetch origin main
 
-                        echo
-                        echo "===== PUSH PERMISSION PROBE ====="
-                        git push --dry-run origin                           refs/remotes/origin/main:refs/heads/dcp-v1.26-write-probe
+                        REMOTE_MAIN_SHA=$(git rev-parse refs/remotes/origin/main)
+
+                        echo "SOURCE_GIT_SHA=${SOURCE_GIT_SHA}"
+                        echo "REMOTE_MAIN_SHA=${REMOTE_MAIN_SHA}"
+
+                        if [ "${SOURCE_GIT_SHA}" != "${REMOTE_MAIN_SHA}" ]; then
+                            echo "ERROR: origin/main changed after this build started."
+                            echo "Refusing to promote an image built from stale source."
+                            exit 1
+                        fi
 
                         echo
-                        echo "GITHUB_WRITE_DRY_RUN=OK"
+                        echo "===== CHECKOUT PROMOTION BRANCH ====="
+                        git checkout -B main refs/remotes/origin/main
+
+                        echo
+                        echo "===== CURRENT MANIFEST IMAGE ====="
+                        grep -E '^[[:space:]]*image:[[:space:]]+10\\.0\\.0\\.3:30050/petclinic/petclinic:' "${MANIFEST}"
+
+                        IMAGE_LINE_COUNT=$(grep -Ec '^[[:space:]]*image:[[:space:]]+10\\.0\\.0\\.3:30050/petclinic/petclinic:' "${MANIFEST}")
+
+                        echo "IMAGE_LINE_COUNT=${IMAGE_LINE_COUNT}"
+
+                        if [ "${IMAGE_LINE_COUNT}" -ne 1 ]; then
+                            echo "ERROR: expected exactly one Petclinic image line."
+                            exit 1
+                        fi
+
+                        echo
+                        echo "===== PROMOTE IMAGE ====="
+
+                        sed -i -E \
+                          "s#^([[:space:]]*)image:[[:space:]]+10\\.0\\.0\\.3:30050/petclinic/petclinic:.*#\\1image: ${K8S_IMAGE}#" \
+                          "${MANIFEST}"
+
+                        echo
+                        echo "===== PROMOTED MANIFEST IMAGE ====="
+                        grep -E '^[[:space:]]*image:' "${MANIFEST}"
+
+                        echo
+                        echo "===== PROMOTION DIFF ====="
+                        git diff -- "${MANIFEST}"
+
+                        if git diff --quiet -- "${MANIFEST}"; then
+                            echo "GIT_PROMOTION=NO_CHANGE"
+                            exit 0
+                        fi
+
+                        git config user.name "jenkins-petclinic-ci"
+                        git config user.email "jenkins-petclinic-ci@users.noreply.github.com"
+
+                        git add "${MANIFEST}"
+
+                        git commit \
+                          -m "cd: promote petclinic image to ${IMAGE_TAG}"
+
+                        echo
+                        echo "===== PUSH PROMOTION ====="
+                        git push origin main:main
+
+                        echo
+                        echo "GIT_PROMOTION=OK"
+                        git log -1 --oneline
                     '''
                 }
             }
