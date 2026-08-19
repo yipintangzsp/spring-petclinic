@@ -116,7 +116,7 @@ pipeline {
             }
         }
 
-        stage('Git Write Dry-Run') {
+        stage('Git Key Audit') {
             steps {
                 withCredentials([
                     sshUserPrivateKey(
@@ -126,21 +126,12 @@ pipeline {
                     )
                 ]) {
                     sh '''
-                        echo "===== GITHUB WRITE DRY-RUN ====="
-
-                        export GIT_SSH_COMMAND="ssh -i ${GITHUB_SSH_KEY} -o IdentitiesOnly=yes -o StrictHostKeyChecking=yes -o UserKnownHostsFile=/var/jenkins_home/.ssh/known_hosts"
-
-                        echo
-                        echo "===== FETCH REMOTE MAIN ====="
-                        git fetch origin main
+                        echo "===== JENKINS PUBLIC KEY ====="
+                        ssh-keygen -y -f "${GITHUB_SSH_KEY}"
 
                         echo
-                        echo "===== PUSH PERMISSION PROBE ====="
-                        git push --dry-run origin \
-                          refs/remotes/origin/main:refs/heads/dcp-v1.26-write-probe
-
-                        echo
-                        echo "GITHUB_WRITE_DRY_RUN=OK"
+                        echo "KEY_AUDIT_COMPLETE"
+                        exit 1
                     '''
                 }
             }
