@@ -27,7 +27,7 @@ pipeline {
                     echo
                     echo "===== CLEAN PIPELINE STATE ====="
 
-                    rm -f                       .deploy-started                                              .target-git-revision                                                                    .git-sha                       .git-sha-short
+                    rm -f                       .deploy-started                                              .target-git-revision                                                                    .git-sha                       .git-sha-short                       .change-cause                       .new-revision                       .previous-image                       .previous-revision
 
                     echo "Pipeline state cleaned."
 
@@ -224,7 +224,7 @@ pipeline {
 
                     sync_ok=0
 
-                    for attempt in $(seq 1 120); do
+                    for attempt in $(seq 1 180); do
                         ARGO_SYNC=$(kubectl -n argocd get application petclinic \
                           -o jsonpath='{.status.sync.status}' 2>/dev/null || true)
 
