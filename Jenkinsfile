@@ -27,7 +27,7 @@ pipeline {
                     echo
                     echo "===== CLEAN PIPELINE STATE ====="
 
-                    rm -f                       .deploy-started                                              .previous-revision                                                                     .git-sha                       .git-sha-short
+                    rm -f                       .deploy-started                                              .target-git-revision                                                                    .git-sha                       .git-sha-short
 
                     echo "Pipeline state cleaned."
 
@@ -207,136 +207,66 @@ pipeline {
             }
         }
 
-        stage('Deploy to Kubernetes') {
+        stage('Wait for ArgoCD Sync') {
             steps {
                 sh '''
-                    echo "===== SAVE PREVIOUS IMAGE ====="
+                    set -eu
 
-                    PREVIOUS_IMAGE=$(kubectl -n petclinic get deployment petclinic \
-                      -o jsonpath='{.spec.template.spec.containers[0].image}')
+                    echo "===== WAIT FOR ARGOCD SYNC ====="
 
-                    echo "PREVIOUS_IMAGE=${PREVIOUS_IMAGE}"
+                    TARGET_GIT_SHA=$(git rev-parse HEAD)
 
-                    if [ -z "${PREVIOUS_IMAGE}" ]; then
-                        echo "ERROR: PREVIOUS_IMAGE is empty"
-                        exit 1
-                    fi
+                    echo "TARGET_GIT_SHA=${TARGET_GIT_SHA}"
+                    echo "TARGET_IMAGE=${K8S_IMAGE}"
 
-                    GIT_SHA=$(cat .git-sha)
-                    GIT_SHA_SHORT=$(cat .git-sha-short)
-
-                    CHANGE_CAUSE="jenkins-build=${BUILD_NUMBER} git=${GIT_SHA_SHORT} image=${IMAGE_TAG}"
-
-                    echo
-                    echo "===== RELEASE CANDIDATE ====="
-                    echo "BUILD_NUMBER=${BUILD_NUMBER}"
-                    echo "GIT_SHA=${GIT_SHA}"
-                    echo "IMAGE_TAG=${IMAGE_TAG}"
-                    echo "CHANGE_CAUSE=${CHANGE_CAUSE}"
-
-                    echo
-                    echo "===== DEPLOY ====="
-                    echo "NEW_IMAGE=${K8S_IMAGE}"
-
-                    OLD_REVISION=$(kubectl -n petclinic get deployment petclinic \
-                      -o jsonpath='{.metadata.annotations.deployment\\.kubernetes\\.io/revision}')
-
-                    echo "OLD_REVISION=${OLD_REVISION}"
-
-                    if [ -z "${OLD_REVISION}" ]; then
-                        echo "ERROR: OLD_REVISION is empty"
-                        exit 1
-                    fi
-
-                    printf '%s' "${OLD_REVISION}" > .previous-revision
-
-                    echo
-                    echo "===== PATCH RELEASE TEMPLATE ====="
-
-                    PATCH=$(cat <<EOF
-{
-  "spec": {
-    "strategy": {
-      "type": "RollingUpdate",
-      "rollingUpdate": {
-        "maxSurge": 3,
-        "maxUnavailable": 0
-      }
-    },
-    "template": {
-      "metadata": {
-        "annotations": {
-          "devops.zhanglab.io/git-commit": "${GIT_SHA}",
-          "devops.zhanglab.io/jenkins-build": "${BUILD_NUMBER}",
-          "devops.zhanglab.io/image-tag": "${IMAGE_TAG}"
-        }
-      },
-      "spec": {
-        "containers": [
-          {
-            "name": "petclinic",
-            "image": "${K8S_IMAGE}"
-          }
-        ]
-      }
-    }
-  }
-}
-EOF
-)
-
-                    echo "${PATCH}"
-
-                    kubectl -n petclinic patch deployment petclinic \
-                      --type='strategic' \
-                      -p "${PATCH}"
-
+                    printf '%s' "${TARGET_GIT_SHA}" > .target-git-revision
                     touch .deploy-started
 
-                    echo
-                    echo "===== WAIT FOR NEW REVISION ====="
+                    sync_ok=0
 
-                    NEW_REVISION=""
+                    for attempt in $(seq 1 120); do
+                        ARGO_SYNC=$(kubectl -n argocd get application petclinic \
+                          -o jsonpath='{.status.sync.status}' 2>/dev/null || true)
 
-                    for attempt in $(seq 1 30); do
-                        NEW_REVISION=$(kubectl -n petclinic get deployment petclinic \
-                          -o jsonpath='{.metadata.annotations.deployment\\.kubernetes\\.io/revision}')
+                        ARGO_HEALTH=$(kubectl -n argocd get application petclinic \
+                          -o jsonpath='{.status.health.status}' 2>/dev/null || true)
 
-                        echo "REVISION_CHECK=${attempt} OLD=${OLD_REVISION} NEW=${NEW_REVISION}"
+                        ARGO_REVISION=$(kubectl -n argocd get application petclinic \
+                          -o jsonpath='{.status.sync.revision}' 2>/dev/null || true)
 
-                        if [ -n "${NEW_REVISION}" ] &&
-                           [ "${NEW_REVISION}" != "${OLD_REVISION}" ]; then
+                        echo "ARGO_CHECK=${attempt} SYNC=${ARGO_SYNC} HEALTH=${ARGO_HEALTH} REVISION=${ARGO_REVISION}"
+
+                        if [ "${ARGO_SYNC}" = "Synced" ] && \
+                           [ "${ARGO_HEALTH}" = "Healthy" ] && \
+                           [ "${ARGO_REVISION}" = "${TARGET_GIT_SHA}" ]; then
+                            sync_ok=1
                             break
                         fi
 
-                        sleep 2
+                        sleep 5
                     done
 
-                    if [ -z "${NEW_REVISION}" ] ||
-                       [ "${NEW_REVISION}" = "${OLD_REVISION}" ]; then
-                        echo "ERROR: new Deployment revision was not created"
+                    if [ "${sync_ok}" -ne 1 ]; then
+                        echo "ERROR: ArgoCD did not converge to ${TARGET_GIT_SHA}"
                         exit 1
                     fi
 
                     echo
-                    echo "===== ANNOTATE NEW REVISION ====="
+                    echo "===== LIVE IMAGE VERIFY ====="
 
-                    NEW_RS=$(kubectl -n petclinic get rs \
-                      -l app=petclinic \
-                      -o jsonpath="{range .items[?(@.metadata.annotations.deployment\\.kubernetes\\.io/revision=='${NEW_REVISION}')]}{.metadata.name}{'\\n'}{end}" \
-                      | head -1)
+                    LIVE_IMAGE=$(kubectl -n petclinic get deployment petclinic \
+                      -o jsonpath='{.spec.template.spec.containers[0].image}')
 
-                    echo "NEW_REVISION=${NEW_REVISION}"
-                    echo "NEW_RS=${NEW_RS}"
+                    echo "EXPECTED_IMAGE=${K8S_IMAGE}"
+                    echo "LIVE_IMAGE=${LIVE_IMAGE}"
 
-                    if [ -z "${NEW_RS}" ]; then
-                        echo "ERROR: ReplicaSet for revision ${NEW_REVISION} not found"
+                    if [ "${LIVE_IMAGE}" != "${K8S_IMAGE}" ]; then
+                        echo "ERROR: live image does not match promoted image"
                         exit 1
                     fi
 
-                    kubectl -n petclinic annotate replicaset "${NEW_RS}" \
-                      kubernetes.io/change-cause="${CHANGE_CAUSE}" \
-                      --overwrite
+                    echo
+                    echo "ARGOCD_DEPLOYMENT=OK"
                 '''
             }
         }
@@ -407,7 +337,7 @@ EOF
                 echo 'CI/CD FAILED'
 
                 if (fileExists('.deploy-started')) {
-                    echo 'Collecting failure diagnostics before rollback...'
+                    echo 'Collecting GitOps deployment failure diagnostics...'
 
                     sh '''
                         echo
@@ -471,86 +401,12 @@ EOF
                     echo 'Failure diagnostics skipped: deployment was not started.'
                 }
 
-                if (fileExists('.deploy-started') &&
-                    fileExists('.previous-revision')) {
-
-                    def previousRevision = readFile('.previous-revision').trim()
-
-                    if (previousRevision) {
-                        echo "AUTOMATIC ROLLBACK STARTED: revision ${previousRevision}"
-
-                        withEnv(["ROLLBACK_REVISION=${previousRevision}"]) {
-                            sh '''
-                                echo "===== AUTOMATIC ROLLBACK ====="
-                                echo "FAILED_IMAGE=${K8S_IMAGE}"
-                                echo "ROLLBACK_REVISION=${ROLLBACK_REVISION}"
-
-                                kubectl -n petclinic rollout undo deployment/petclinic \
-                                  --to-revision="${ROLLBACK_REVISION}"
-
-                                kubectl -n petclinic rollout status deployment/petclinic \
-                                  --timeout=600s
-
-                                echo
-                                echo "===== ROLLBACK IMAGE ====="
-
-                                kubectl -n petclinic get deployment petclinic \
-                                  -o jsonpath='IMAGE={.spec.template.spec.containers[0].image}{"\\n"}'
-
-                                echo
-                                echo "===== ROLLBACK TEMPLATE METADATA ====="
-
-                                kubectl -n petclinic get deployment petclinic \
-                                  -o jsonpath='GIT_COMMIT={.spec.template.metadata.annotations.devops\\.zhanglab\\.io/git-commit}{"\\n"}JENKINS_BUILD={.spec.template.metadata.annotations.devops\\.zhanglab\\.io/jenkins-build}{"\\n"}IMAGE_TAG={.spec.template.metadata.annotations.devops\\.zhanglab\\.io/image-tag}{"\\n"}'
-
-                                echo
-                                echo "===== ROLLBACK HEALTH ====="
-
-                                HEALTH_SCHEME='http'
-                                HEALTH_URL="${HEALTH_SCHEME}://192.168.1.58/actuator/health"
-
-                                rollback_health_ok=0
-
-                                for attempt in 1 2 3 4 5 6; do
-                                    echo
-                                    echo "ROLLBACK HEALTH ATTEMPT ${attempt}/6"
-
-                                    if curl \
-                                      --fail \
-                                      --silent \
-                                      --show-error \
-                                      --connect-timeout 5 \
-                                      --max-time 10 \
-                                      -H 'Host: petclinic.devops.local' \
-                                      "${HEALTH_URL}"; then
-
-                                        echo
-                                        echo "ROLLBACK HEALTH: OK"
-                                        rollback_health_ok=1
-                                        break
-                                    fi
-
-                                    if [ "${attempt}" -lt 6 ]; then
-                                        echo "Rollback endpoint not ready yet; retrying in 10 seconds..."
-                                        sleep 10
-                                    fi
-                                done
-
-                                if [ "${rollback_health_ok}" -ne 1 ]; then
-                                    echo "ERROR: rollback health verification failed after 6 attempts"
-                                    exit 1
-                                fi
-
-                                echo
-                            '''
-                        }
-
-                        echo "AUTOMATIC ROLLBACK SUCCESS: revision ${previousRevision}"
-                    } else {
-                        echo 'Rollback skipped: previous revision is empty.'
-                    }
+                if (fileExists('.deploy-started')) {
+                    echo 'Automatic Kubernetes revision rollback is disabled after ArgoCD cutover.'
+                    echo 'Git is now the deployment authority.'
+                    echo 'Rollback must be performed through Git and ArgoCD.'
                 } else {
-                    echo 'Rollback skipped: deployment was not started.'
+                    echo 'Rollback skipped: GitOps deployment was not started.'
                 }
             }
         }
