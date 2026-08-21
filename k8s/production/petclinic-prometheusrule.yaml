@@ -1,0 +1,53 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+
+metadata:
+  name: petclinic
+  namespace: petclinic
+  labels:
+    release: kube-stack
+
+spec:
+  groups:
+    - name: petclinic.rules
+      rules:
+        - alert: PetclinicTargetDown
+          expr: |
+            up{namespace="petclinic",job="petclinic"} == 0
+          for: 2m
+          labels:
+            severity: warning
+            service: petclinic
+          annotations:
+            summary: "Petclinic target is down"
+            description: "Prometheus cannot scrape Petclinic target {{ $labels.pod }} for more than 2 minutes."
+
+        - alert: PetclinicHigh5xxRate
+          expr: |
+            (
+              sum(rate(http_server_requests_seconds_count{
+                namespace="petclinic",
+                job="petclinic",
+                status=~"5..",
+                uri!~"/actuator.*"
+              }[5m]))
+              /
+              sum(rate(http_server_requests_seconds_count{
+                namespace="petclinic",
+                job="petclinic",
+                uri!~"/actuator.*"
+              }[5m]))
+            ) > 0.05
+            and
+            sum(rate(http_server_requests_seconds_count{
+              namespace="petclinic",
+              job="petclinic",
+              uri!~"/actuator.*"
+            }[5m])) > 0.1
+          for: 5m
+          labels:
+            severity: warning
+            service: petclinic
+          annotations:
+            summary: "Petclinic 5xx error rate is high"
+            description: "Petclinic 5xx ratio has exceeded 5% for more than 5 minutes."
