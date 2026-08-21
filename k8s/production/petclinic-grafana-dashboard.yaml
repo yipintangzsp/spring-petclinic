@@ -1,0 +1,178 @@
+apiVersion: v1
+kind: ConfigMap
+
+metadata:
+  name: petclinic-grafana-dashboard
+  namespace: petclinic
+  labels:
+    grafana_dashboard: "1"
+
+data:
+  petclinic-overview.json: |
+    {
+      "annotations": {
+        "list": []
+      },
+      "editable": true,
+      "graphTooltip": 1,
+      "panels": [
+        {
+          "type": "stat",
+          "title": "Petclinic Targets Up",
+          "id": 1,
+          "gridPos": {
+            "h": 6,
+            "w": 6,
+            "x": 0,
+            "y": 0
+          },
+          "targets": [
+            {
+              "expr": "sum(up{namespace=\"petclinic\",job=\"petclinic\"})",
+              "refId": "A"
+            }
+          ]
+        },
+        {
+          "type": "timeseries",
+          "title": "Business Request Rate",
+          "id": 2,
+          "gridPos": {
+            "h": 8,
+            "w": 9,
+            "x": 6,
+            "y": 0
+          },
+          "targets": [
+            {
+              "expr": "sum(rate(http_server_requests_seconds_count{namespace=\"petclinic\",job=\"petclinic\",uri!~\"/actuator.*\"}[5m]))",
+              "legendFormat": "req/s",
+              "refId": "A"
+            }
+          ]
+        },
+        {
+          "type": "timeseries",
+          "title": "5xx Error Rate",
+          "id": 3,
+          "gridPos": {
+            "h": 8,
+            "w": 9,
+            "x": 15,
+            "y": 0
+          },
+          "targets": [
+            {
+              "expr": "sum(rate(http_server_requests_seconds_count{namespace=\"petclinic\",job=\"petclinic\",status=~\"5..\",uri!~\"/actuator.*\"}[5m])) or vector(0)",
+              "legendFormat": "5xx req/s",
+              "refId": "A"
+            }
+          ]
+        },
+        {
+          "type": "timeseries",
+          "title": "P95 Business Latency",
+          "id": 4,
+          "gridPos": {
+            "h": 8,
+            "w": 12,
+            "x": 0,
+            "y": 8
+          },
+          "targets": [
+            {
+              "expr": "histogram_quantile(0.95, sum by (le) (rate(http_server_requests_seconds_bucket{namespace=\"petclinic\",job=\"petclinic\",uri!~\"/actuator.*\"}[5m])))",
+              "legendFormat": "P95",
+              "refId": "A"
+            }
+          ],
+          "fieldConfig": {
+            "defaults": {
+              "unit": "s"
+            }
+          }
+        },
+        {
+          "type": "timeseries",
+          "title": "P99 Business Latency",
+          "id": 5,
+          "gridPos": {
+            "h": 8,
+            "w": 12,
+            "x": 12,
+            "y": 8
+          },
+          "targets": [
+            {
+              "expr": "histogram_quantile(0.99, sum by (le) (rate(http_server_requests_seconds_bucket{namespace=\"petclinic\",job=\"petclinic\",uri!~\"/actuator.*\"}[5m])))",
+              "legendFormat": "P99",
+              "refId": "A"
+            }
+          ],
+          "fieldConfig": {
+            "defaults": {
+              "unit": "s"
+            }
+          }
+        },
+        {
+          "type": "timeseries",
+          "title": "JVM Heap Used",
+          "id": 6,
+          "gridPos": {
+            "h": 8,
+            "w": 12,
+            "x": 0,
+            "y": 16
+          },
+          "targets": [
+            {
+              "expr": "sum(jvm_memory_used_bytes{namespace=\"petclinic\",job=\"petclinic\",area=\"heap\"})",
+              "legendFormat": "heap",
+              "refId": "A"
+            }
+          ],
+          "fieldConfig": {
+            "defaults": {
+              "unit": "bytes"
+            }
+          }
+        },
+        {
+          "type": "timeseries",
+          "title": "Hikari Active Connections",
+          "id": 7,
+          "gridPos": {
+            "h": 8,
+            "w": 12,
+            "x": 12,
+            "y": 16
+          },
+          "targets": [
+            {
+              "expr": "sum(hikaricp_connections_active{namespace=\"petclinic\",job=\"petclinic\"})",
+              "legendFormat": "active",
+              "refId": "A"
+            }
+          ]
+        }
+      ],
+      "refresh": "30s",
+      "schemaVersion": 41,
+      "tags": [
+        "petclinic",
+        "observability",
+        "dcp-v1.28"
+      ],
+      "templating": {
+        "list": []
+      },
+      "time": {
+        "from": "now-1h",
+        "to": "now"
+      },
+      "timezone": "browser",
+      "title": "Petclinic Overview",
+      "uid": "petclinic-overview",
+      "version": 1
+    }
