@@ -1,4 +1,4 @@
-FROM eclipse-temurin:21-jre
+FROM 127.0.0.1:30050/petclinic/petclinic:0.4.0-ci-61
 
 WORKDIR /app
 
