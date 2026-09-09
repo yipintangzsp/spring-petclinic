@@ -17,9 +17,9 @@
 
 <body>
 
-  <nav class="navbar navbar-expand-lg navbar-dark" role="navigation">
+  <nav class="navbar navbar-expand-lg navbar-dark product-nav" role="navigation">
     <div class="container-fluid">
-      <a class="navbar-brand" th:href="@{/}"><span></span></a>
+      <a class="navbar-brand product-brand" th:href="@{/}"><i class="fa fa-paw"></i><span th:text="'Petclinic'">Petclinic</span><small th:text="'cloud native'">cloud native</small></a>
       <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#main-navbar">
         <span class="navbar-toggler-icon"></span>
       </button>
@@ -43,43 +43,34 @@
             <span th:text="#{home}">Home</span>
           </li>
 
-          <li th:replace="~{::menuItem ('/owners/find','owners','find owners','search',#{findOwners})}">
+          <li th:replace="~{::menuItem ('/owners/find','owners','owners','users','Owners')}">
             <span class="fa fa-search" aria-hidden="true"></span>
             <span th:text="#{findOwners}">Find owners</span>
           </li>
+
+          <li th:replace="~{::menuItem ('/#business','pets','pets','paw','Pets')}"><span th:text="'Pets'">Pets</span></li>
 
           <li th:replace="~{::menuItem ('/vets.html','vets','veterinarians','th-list',#{vets})}">
             <span class="fa fa-th-list" aria-hidden="true"></span>
             <span th:text="#{vets}">Veterinarians</span>
           </li>
 
-          <li
-            th:replace="~{::menuItem ('/oups','error','trigger a RuntimeException to see how it is handled','exclamation-triangle',#{error})}">
-            <span class="fa exclamation-triangle" aria-hidden="true"></span>
-            <span th:text="#{error}">Error</span>
-          </li>
+          <li th:replace="~{::menuItem ('/system-status','status','system status','heartbeat','System Status')}"><span th:text="'System Status'">System Status</span></li>
+          <li th:replace="~{::menuItem ('/#observability','observability','observability','line-chart','Observability')}"><span th:text="'Observability'">Observability</span></li>
 
         </ul>
       </div>
     </div>
   </nav>
-  <div class="container-fluid">
+  <div class="page-shell">
     <div class="container xd-container">
 
       <th:block th:insert="${template}" />
 
-      <br />
-      <br />
-      <div class="container">
-        <div class="row">
-          <div class="col-12 text-center">
-            <img src="../static/images/spring-logo.svg" th:src="@{/resources/images/spring-logo.svg}"
-              alt="VMware Tanzu Logo" class="logo">
-          </div>
-        </div>
-      </div>
     </div>
   </div>
+
+  <footer class="product-footer"><div class="container"><span th:text="'Petclinic'"><i class="fa fa-paw"></i> Petclinic</span><p th:text="'Spring Boot · Kubernetes · GitOps'">Spring Boot · Kubernetes · GitOps</p><img th:src="@{/resources/images/spring-logo.svg}" alt="Spring" class="logo"></div></footer>
 
   <script th:src="@{/webjars/bootstrap/dist/js/bootstrap.bundle.min.js}"></script>
 

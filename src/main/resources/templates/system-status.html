@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html xmlns:th="https://www.thymeleaf.org" th:replace="~{fragments/layout :: layout (~{::body},'status')}">
+<body>
+  <main class="status-page">
+    <header class="status-hero"><p class="eyebrow"><span class="live-dot"></span> SYSTEM STATUS</p><h1>Petclinic is <span th:text="${dashboard.applicationStatus}">UP</span></h1><p>A concise, read-only view of this running application and its release identity.</p></header>
+    <section class="status-grid">
+      <article><div><span class="status-icon"><i class="fa fa-heartbeat"></i></span><span class="status-pill"><i></i> Operational</span></div><h2>Application</h2><p>Spring MVC is serving requests.</p><strong th:text="${dashboard.applicationStatus}">UP</strong></article>
+      <article><div><span class="status-icon"><i class="fa fa-leaf"></i></span><span class="status-pill"><i></i> Available</span></div><h2>Spring Boot</h2><p>Runtime framework version.</p><strong th:text="${dashboard.springBootVersion}">N/A</strong></article>
+      <article><div><span class="status-icon"><i class="fa fa-database"></i></span><span class="status-pill" th:classappend="${dashboard.databaseStatus != 'Connected'} ? ' warning'"><i></i> <span th:text="${dashboard.databaseStatus}">Connected</span></span></div><h2>Database</h2><p>Verified by the homepage read query.</p><strong th:text="${dashboard.databaseStatus}">Connected</strong></article>
+      <article><div><span class="status-icon"><i class="fa fa-cubes"></i></span><span class="status-pill"><i></i> Runtime</span></div><h2>Kubernetes</h2><p>Detected from the pod environment.</p><strong th:text="${dashboard.kubernetesStatus}">Local runtime</strong></article>
+    </section>
+    <section class="fingerprint-card"><div><p class="eyebrow">CURRENT DEPLOYMENT</p><h2>Release fingerprint</h2></div><dl><div><dt>Application version</dt><dd th:text="${dashboard.applicationVersion}">N/A</dd></div><div><dt>Build number</dt><dd th:text="${dashboard.buildNumber}">N/A</dd></div><div><dt>Git commit</dt><dd class="mono" th:text="${dashboard.gitCommit}">N/A</dd></div><div><dt>Build time</dt><dd class="mono" th:text="${dashboard.buildTime}">N/A</dd></div><div><dt>Environment</dt><dd th:text="${dashboard.environment}">Local</dd></div></dl></section>
+    <a class="back-link" th:href="@{/}" th:text="'← Back to product overview'">← Back to product overview</a>
+  </main>
+</body>
+</html>

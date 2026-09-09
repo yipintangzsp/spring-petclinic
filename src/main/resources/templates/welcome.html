@@ -1,17 +1,43 @@
 <!DOCTYPE html>
-
 <html xmlns:th="https://www.thymeleaf.org" th:replace="~{fragments/layout :: layout (~{::body},'home')}">
-
 <body>
-
-  <h2 th:text="#{welcome}">Welcome</h2>
-  <p><strong th:text="#{dcpRelease}">DCP Release</strong></p>
-  <div class="row">
-    <div class="col-md-12">
-      <img class="img-responsive" src="../static/resources/images/pets.png" th:src="@{/resources/images/pets.png}" />
-    </div>
-  </div>
-
+  <main class="product-home">
+    <section class="hero-grid">
+      <div class="hero-copy">
+        <p class="eyebrow" th:text="'Production-ready reference application'"><span class="live-dot"></span> Production-ready reference application</p>
+        <h1 th:utext="'Care software,&lt;br&gt;&lt;span&gt;engineered to ship.&lt;/span&gt;'">Care software,<br><span>engineered to ship.</span></h1>
+        <p class="hero-lead" th:text="'Petclinic pairs a familiar veterinary workflow with a cloud-native delivery path—from commit to Kubernetes, with health and release context built in.'">Petclinic pairs a familiar veterinary workflow with a cloud-native delivery path—from commit to Kubernetes, with health and release context built in.</p>
+        <div class="hero-actions"><a class="btn btn-primary btn-lg" th:href="@{/owners/find}" th:text="'Explore owners →'">Explore owners →</a><a class="btn btn-outline-light btn-lg" th:href="@{/vets.html}" th:text="'Meet the vets'">Meet the vets</a></div>
+      </div>
+      <aside class="release-console" aria-label="Current release">
+        <div class="console-top"><span>LIVE RELEASE</span><span class="status-pill"><i></i> <span th:text="${dashboard.applicationStatus}">UP</span></span></div>
+        <div class="release-version" th:text="${dashboard.applicationVersion}">N/A</div>
+        <dl><div><dt>Build</dt><dd th:text="${dashboard.buildNumber}">N/A</dd></div><div><dt>Commit</dt><dd class="mono" th:text="${dashboard.gitCommit}">N/A</dd></div><div><dt>Runtime</dt><dd th:text="${dashboard.environment}">Local</dd></div></dl>
+        <a th:href="@{/system-status}" th:text="'View system status ↗'">View system status ↗</a>
+      </aside>
+    </section>
+    <section id="business" class="business-section">
+      <div class="section-heading"><div><p class="eyebrow" th:text="'REAL WORKLOAD'">REAL WORKLOAD</p><h2>Clinic at a glance</h2></div><p>Live totals read from the same relational model that powers daily clinic workflows.</p></div>
+      <div class="metric-grid">
+        <article class="metric-card"><span class="metric-icon"><i class="fa fa-user"></i></span><strong th:text="${dashboard.metrics.available ? dashboard.metrics.owners : 'N/A'}">0</strong><p>Registered owners</p><a th:href="@{/owners}">Browse owners →</a></article>
+        <article class="metric-card"><span class="metric-icon coral"><i class="fa fa-paw"></i></span><strong th:text="${dashboard.metrics.available ? dashboard.metrics.pets : 'N/A'}">0</strong><p>Pets under care</p><a th:href="@{/owners/find}">Find a pet →</a></article>
+        <article class="metric-card"><span class="metric-icon blue"><i class="fa fa-user-md"></i></span><strong th:text="${dashboard.metrics.available ? dashboard.metrics.vets : 'N/A'}">0</strong><p>Veterinary professionals</p><a th:href="@{/vets.html}">View specialists →</a></article>
+      </div>
+    </section>
+    <section class="health-band">
+      <div><span class="live-dot"></span><div><strong>Application <span th:text="${dashboard.applicationStatus}">UP</span></strong><small>Database: <span th:text="${dashboard.databaseStatus}">Connected</span></small></div></div>
+      <div><small>Spring Boot</small><strong th:text="${dashboard.springBootVersion}">N/A</strong></div><div><small>Kubernetes</small><strong th:text="${dashboard.kubernetesStatus}">Local runtime</strong></div><a th:href="@{/system-status}">Full status</a>
+    </section>
+    <section id="observability" class="observability-section">
+      <div class="section-heading dark-heading"><div><p class="eyebrow" th:text="'OPERATE WITH CONTEXT'">OPERATE WITH CONTEXT</p><h2>Observable by design</h2></div><p>The application exposes the signals an operations team needs, while the platform keeps delivery repeatable.</p></div>
+      <div class="capability-grid">
+        <article><span>01</span><i class="fa fa-heartbeat"></i><h3 th:text="'Health'">Health</h3><p>Liveness and readiness endpoints make application state explicit to Kubernetes.</p></article>
+        <article><span>02</span><i class="fa fa-align-left"></i><h3 th:text="'Logs'">Logs</h3><p>Container logs flow through the existing Filebeat, Elasticsearch and Kibana path.</p></article>
+        <article><span>03</span><i class="fa fa-line-chart"></i><h3 th:text="'Metrics'">Metrics</h3><p>Runtime and workload signals remain available through the established monitoring stack.</p></article>
+        <article><span>04</span><i class="fa fa-code-fork"></i><h3 th:text="'GitOps delivery'">GitOps delivery</h3><p>Jenkins publishes immutable images; Argo CD reconciles the production manifest.</p></article>
+      </div>
+    </section>
+    <section class="release-strip"><p class="eyebrow">RELEASE FINGERPRINT</p><div><span><small>Version</small><strong th:text="${dashboard.applicationVersion}">N/A</strong></span><span><small>Build</small><strong th:text="${dashboard.buildNumber}">N/A</strong></span><span><small>Git commit</small><strong class="mono" th:text="${dashboard.gitCommit}">N/A</strong></span><span><small>Built at</small><strong class="mono" th:text="${dashboard.buildTime}">N/A</strong></span></div></section>
+  </main>
 </body>
-
 </html>

@@ -17,14 +17,28 @@
 package org.springframework.samples.petclinic.system;
 
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
 @Controller
 class WelcomeController {
 
+	private final PetclinicDashboardService dashboardService;
+
+	WelcomeController(PetclinicDashboardService dashboardService) {
+		this.dashboardService = dashboardService;
+	}
+
 	@GetMapping("/")
-	public String welcome() {
+	public String welcome(Model model) {
+		model.addAttribute("dashboard", dashboardService.snapshot());
 		return "welcome";
+	}
+
+	@GetMapping("/system-status")
+	public String systemStatus(Model model) {
+		model.addAttribute("dashboard", dashboardService.snapshot());
+		return "system-status";
 	}
 
 }

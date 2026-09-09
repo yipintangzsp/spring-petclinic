@@ -174,9 +174,17 @@ pipeline {
                           "s#^([[:space:]]*)image:[[:space:]]+10\\.0\\.0\\.3:30050/petclinic/petclinic:.*#\\1image: ${K8S_IMAGE}#" \
                           "${MANIFEST}"
 
+                        BUILD_TIME_UTC=$(date -u +'%Y-%m-%dT%H:%M:%SZ')
+
+                        sed -i -E "/name: APPLICATION_VERSION/{n;s#^([[:space:]]*)value:.*#\\1value: \"${IMAGE_TAG}\"#;}" "${MANIFEST}"
+                        sed -i -E "/name: BUILD_NUMBER/{n;s#^([[:space:]]*)value:.*#\\1value: \"${BUILD_NUMBER}\"#;}" "${MANIFEST}"
+                        sed -i -E "/name: BUILD_GIT_COMMIT/{n;s#^([[:space:]]*)value:.*#\\1value: \"${SOURCE_GIT_SHA}\"#;}" "${MANIFEST}"
+                        sed -i -E "/name: BUILD_TIME/{n;s#^([[:space:]]*)value:.*#\\1value: \"${BUILD_TIME_UTC}\"#;}" "${MANIFEST}"
+
                         echo
                         echo "===== PROMOTED MANIFEST IMAGE ====="
                         grep -E '^[[:space:]]*image:' "${MANIFEST}"
+                        grep -A1 -E 'name: (APPLICATION_VERSION|BUILD_NUMBER|BUILD_GIT_COMMIT|BUILD_TIME)' "${MANIFEST}"
 
                         echo
                         echo "===== PROMOTION DIFF ====="

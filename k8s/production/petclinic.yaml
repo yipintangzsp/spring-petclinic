@@ -51,6 +51,16 @@ spec:
               containerPort: 8080
 
           env:
+            # Updated together with the immutable image tag by Jenkins Git promotion.
+            - name: APPLICATION_VERSION
+              value: "0.4.0-ci-66"
+            - name: BUILD_NUMBER
+              value: "66"
+            - name: BUILD_GIT_COMMIT
+              value: "b1a41e2"
+            - name: BUILD_TIME
+              value: "N/A"
+
             - name: SPRING_PROFILES_ACTIVE
               valueFrom:
                 configMapKeyRef:
