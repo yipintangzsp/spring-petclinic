@@ -176,10 +176,13 @@ pipeline {
 
                         BUILD_TIME_UTC=$(date -u +'%Y-%m-%dT%H:%M:%SZ')
 
-                        sed -i -E "/name: APPLICATION_VERSION/{n;s#^([[:space:]]*)value:.*#\\1value: \"${IMAGE_TAG}\"#;}" "${MANIFEST}"
-                        sed -i -E "/name: BUILD_NUMBER/{n;s#^([[:space:]]*)value:.*#\\1value: \"${BUILD_NUMBER}\"#;}" "${MANIFEST}"
-                        sed -i -E "/name: BUILD_GIT_COMMIT/{n;s#^([[:space:]]*)value:.*#\\1value: \"${SOURCE_GIT_SHA}\"#;}" "${MANIFEST}"
-                        sed -i -E "/name: BUILD_TIME/{n;s#^([[:space:]]*)value:.*#\\1value: \"${BUILD_TIME_UTC}\"#;}" "${MANIFEST}"
+                        # YAML single quotes remain literal after Groovy and shell parsing.
+                        # This is especially important for BUILD_NUMBER, which Kubernetes
+                        # requires to be a string in an environment variable value.
+                        sed -i -E "/name: APPLICATION_VERSION/{n;s#^([[:space:]]*)value:.*#\\1value: '${IMAGE_TAG}'#;}" "${MANIFEST}"
+                        sed -i -E "/name: BUILD_NUMBER/{n;s#^([[:space:]]*)value:.*#\\1value: '${BUILD_NUMBER}'#;}" "${MANIFEST}"
+                        sed -i -E "/name: BUILD_GIT_COMMIT/{n;s#^([[:space:]]*)value:.*#\\1value: '${SOURCE_GIT_SHA}'#;}" "${MANIFEST}"
+                        sed -i -E "/name: BUILD_TIME/{n;s#^([[:space:]]*)value:.*#\\1value: '${BUILD_TIME_UTC}'#;}" "${MANIFEST}"
 
                         echo
                         echo "===== PROMOTED MANIFEST IMAGE ====="
