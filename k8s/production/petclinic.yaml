@@ -34,7 +34,9 @@ spec:
       topologySpreadConstraints:
         - maxSkew: 1
           topologyKey: kubernetes.io/hostname
-          whenUnsatisfiable: DoNotSchedule
+          # Keep spreading as a preference so a NotReady worker cannot block
+          # a safe 3-replica rollout on the remaining healthy nodes.
+          whenUnsatisfiable: ScheduleAnyway
           labelSelector:
             matchLabels:
               app: petclinic
