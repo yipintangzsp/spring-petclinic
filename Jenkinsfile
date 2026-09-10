@@ -137,7 +137,19 @@ pipeline {
 
                         echo
                         echo "===== FETCH REMOTE MAIN ====="
-                        git fetch origin main
+                        FETCH_OK=false
+                        for attempt in 1 2 3 4 5; do
+                            if git fetch origin main; then
+                                FETCH_OK=true
+                                break
+                            fi
+                            echo "git fetch failed (attempt ${attempt}/5); retrying after 5s"
+                            sleep 5
+                        done
+                        if [ "${FETCH_OK}" != "true" ]; then
+                            echo "ERROR: unable to fetch origin/main after 5 attempts."
+                            exit 1
+                        fi
 
                         REMOTE_MAIN_SHA=$(git rev-parse refs/remotes/origin/main)
 
