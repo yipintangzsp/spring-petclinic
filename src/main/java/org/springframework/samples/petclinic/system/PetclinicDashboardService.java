@@ -102,6 +102,11 @@ class PetclinicDashboardService {
 	record DashboardSnapshot(BusinessMetrics metrics, String applicationStatus, String springBootVersion,
 			String databaseStatus, String kubernetesStatus, String applicationVersion, String buildNumber,
 			String gitCommit, String buildTime, String environment) {
+
+		public String shortGitCommit() {
+			return gitCommit == null || gitCommit.length() <= 8 ? gitCommit : gitCommit.substring(0, 8);
+		}
+
 	}
 
 }

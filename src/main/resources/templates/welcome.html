@@ -12,7 +12,7 @@
       <aside class="release-console" aria-label="Current release">
         <div class="console-top"><span>LIVE RELEASE</span><span class="status-pill"><i></i> <span th:text="${dashboard.applicationStatus}">UP</span></span></div>
         <div class="release-version" th:text="${dashboard.applicationVersion}">N/A</div>
-        <dl><div><dt>Build</dt><dd th:text="${dashboard.buildNumber}">N/A</dd></div><div><dt>Commit</dt><dd class="mono" th:text="${dashboard.gitCommit}">N/A</dd></div><div><dt>Runtime</dt><dd th:text="${dashboard.environment}">Local</dd></div></dl>
+        <dl><div><dt>Build</dt><dd th:text="${dashboard.buildNumber}">N/A</dd></div><div><dt>Commit</dt><dd class="mono" th:text="${dashboard.shortGitCommit()}">N/A</dd></div><div><dt>Runtime</dt><dd th:text="${dashboard.environment}">Local</dd></div></dl>
         <a th:href="@{/system-status}" th:text="'View system status ↗'">View system status ↗</a>
       </aside>
     </section>
@@ -37,7 +37,7 @@
         <article><span>04</span><i class="fa fa-code-fork"></i><h3 th:text="'GitOps delivery'">GitOps delivery</h3><p>Jenkins publishes immutable images; Argo CD reconciles the production manifest.</p></article>
       </div>
     </section>
-    <section class="release-strip"><p class="eyebrow">RELEASE FINGERPRINT</p><div><span><small>Version</small><strong th:text="${dashboard.applicationVersion}">N/A</strong></span><span><small>Build</small><strong th:text="${dashboard.buildNumber}">N/A</strong></span><span><small>Git commit</small><strong class="mono" th:text="${dashboard.gitCommit}">N/A</strong></span><span><small>Built at</small><strong class="mono" th:text="${dashboard.buildTime}">N/A</strong></span></div></section>
+    <section class="release-strip"><p class="eyebrow">RELEASE FINGERPRINT</p><div><span><small>Version</small><strong th:text="${dashboard.applicationVersion}">N/A</strong></span><span><small>Build</small><strong th:text="${dashboard.buildNumber}">N/A</strong></span><span><small>Git commit</small><strong class="mono" th:text="${dashboard.shortGitCommit()}">N/A</strong></span><span><small>Built at</small><strong class="mono" th:text="${dashboard.buildTime}">N/A</strong></span></div></section>
     <section class="evolution-section">
       <div><p class="eyebrow" th:text="'VISUAL RELEASE EVOLUTION'">VISUAL RELEASE EVOLUTION</p><h2 th:text="'Built to show every iteration'">Built to show every iteration</h2><p th:text="'Each release adds a visible, verifiable capability to the same production application.'">Each release adds a visible, verifiable capability to the same production application.</p></div>
       <article><header><span th:text="'CURRENT RELEASE'">CURRENT RELEASE</span><strong th:text="${dashboard.applicationVersion}">N/A</strong></header><p th:text="'Recent improvements'">Recent improvements</p><ul><li>Modern responsive product UI</li><li>Live clinic workload totals</li><li>Kubernetes health and release identity</li><li>Jenkins-to-Argo CD GitOps delivery</li><li>Metrics and centralized log foundations</li></ul></article>

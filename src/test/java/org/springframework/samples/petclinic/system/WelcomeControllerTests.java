@@ -26,14 +26,19 @@ import org.springframework.test.context.aot.DisabledInAotMode;
 import org.springframework.test.web.servlet.MockMvc;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
 import static org.mockito.Mockito.when;
+import static org.hamcrest.Matchers.containsString;
+import static org.hamcrest.Matchers.not;
 
 @WebMvcTest(WelcomeController.class)
 @DisabledInNativeImage
 @DisabledInAotMode
 class WelcomeControllerTests {
+
+	private static final String FULL_GIT_COMMIT = "e5cbddef4c53a1caa5bcfe3616d59f1c7f1218df";
 
 	@Autowired
 	private MockMvc mockMvc;
@@ -45,18 +50,25 @@ class WelcomeControllerTests {
 	void setUp() {
 		var metrics = new PetclinicDashboardService.BusinessMetrics(10, 13, 6, true);
 		var snapshot = new PetclinicDashboardService.DashboardSnapshot(metrics, "UP", "4.1.0", "Connected",
-				"Local runtime", "test", "1", "abcdef0", "2026-09-10T00:00:00Z", "Local");
+				"Local runtime", "test", "1", FULL_GIT_COMMIT, "2026-09-10T00:00:00Z", "Local");
 		when(this.dashboardService.snapshot()).thenReturn(snapshot);
 	}
 
 	@Test
 	void welcome() throws Exception {
-		mockMvc.perform(get("/")).andExpect(status().isOk()).andExpect(view().name("welcome"));
+		mockMvc.perform(get("/"))
+			.andExpect(status().isOk())
+			.andExpect(view().name("welcome"))
+			.andExpect(content().string(containsString("e5cbddef")))
+			.andExpect(content().string(not(containsString(FULL_GIT_COMMIT))));
 	}
 
 	@Test
 	void systemStatus() throws Exception {
-		mockMvc.perform(get("/system-status")).andExpect(status().isOk()).andExpect(view().name("system-status"));
+		mockMvc.perform(get("/system-status"))
+			.andExpect(status().isOk())
+			.andExpect(view().name("system-status"))
+			.andExpect(content().string(containsString(FULL_GIT_COMMIT)));
 	}
 
 }
