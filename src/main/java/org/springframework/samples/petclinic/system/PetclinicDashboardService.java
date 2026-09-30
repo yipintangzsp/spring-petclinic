@@ -60,7 +60,7 @@ class PetclinicDashboardService {
 				buildProperties == null ? null : format(buildProperties.getTime()), "N/A");
 		boolean kubernetes = environment.getProperty("KUBERNETES_SERVICE_HOST") != null;
 
-		return new DashboardSnapshot(metrics, "UP", SpringBootVersion.getVersion(),
+		return new DashboardSnapshot(metrics, "Serving requests", SpringBootVersion.getVersion(),
 				metrics.available() ? "Connected" : "Unavailable", kubernetes ? "Detected" : "Local runtime",
 				applicationVersion, buildNumber, gitCommit, buildTime, kubernetes ? "Kubernetes" : "Local");
 	}

@@ -37,6 +37,17 @@ import java.util.Collection;
  */
 public interface VetRepository extends Repository<Vet, Integer> {
 
+	@org.springframework.data.jpa.repository.Query("""
+			select v from Vet v where
+			(:q = '' or lower(concat(v.firstName, ' ', v.lastName)) like lower(concat('%', :q, '%')))
+			and (:specialty = '' or (:specialty = 'general' and v.specialties is empty)
+			or exists (select s from v.specialties s where s.name = :specialty))
+			""")
+	Page<Vet> search(String q, String specialty, Pageable pageable);
+
+	@org.springframework.data.jpa.repository.Query("select s.name from Specialty s order by s.name")
+	java.util.List<String> findSpecialtyNames();
+
 	/**
 	 * Retrieve all <code>Vet</code>s from the data store.
 	 * @return a <code>Collection</code> of <code>Vet</code>s

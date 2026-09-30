@@ -67,7 +67,8 @@ class PetController {
 	@ModelAttribute("owner")
 	public Owner findOwner(@PathVariable("ownerId") int ownerId) {
 		Optional<Owner> optionalOwner = this.owners.findById(ownerId);
-		Owner owner = optionalOwner.orElseThrow(() -> new IllegalArgumentException(
+		Owner owner = optionalOwner.orElseThrow(() -> new org.springframework.web.server.ResponseStatusException(
+				org.springframework.http.HttpStatus.NOT_FOUND,
 				"Owner not found with id: " + ownerId + ". Please ensure the ID is correct "));
 		return owner;
 	}
@@ -81,9 +82,15 @@ class PetController {
 		}
 
 		Optional<Owner> optionalOwner = this.owners.findById(ownerId);
-		Owner owner = optionalOwner.orElseThrow(() -> new IllegalArgumentException(
+		Owner owner = optionalOwner.orElseThrow(() -> new org.springframework.web.server.ResponseStatusException(
+				org.springframework.http.HttpStatus.NOT_FOUND,
 				"Owner not found with id: " + ownerId + ". Please ensure the ID is correct "));
-		return owner.getPet(petId);
+		Pet pet = owner.getPet(petId);
+		if (pet == null) {
+			throw new org.springframework.web.server.ResponseStatusException(
+					org.springframework.http.HttpStatus.NOT_FOUND, "Pet not found for this owner");
+		}
+		return pet;
 	}
 
 	@InitBinder("owner")
@@ -134,6 +141,15 @@ class PetController {
 		}
 		redirectAttributes.addFlashAttribute("message", "New Pet has been Added");
 		return "redirect:/owners/{ownerId}";
+	}
+
+	@GetMapping("/pets/{petId}")
+	public String showPet(@ModelAttribute("pet") Pet pet) {
+		if (pet == null) {
+			throw new org.springframework.web.server.ResponseStatusException(
+					org.springframework.http.HttpStatus.NOT_FOUND);
+		}
+		return "pets/petDetails";
 	}
 
 	@GetMapping("/pets/{petId}/edit")

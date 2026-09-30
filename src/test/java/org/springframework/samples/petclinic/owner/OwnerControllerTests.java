@@ -96,6 +96,9 @@ class OwnerControllerTests {
 		given(this.owners.findByLastNameStartingWith(eq("Franklin"), any(Pageable.class)))
 			.willReturn(new PageImpl<>(List.of(george)));
 
+		given(this.owners.search(anyString(), anyString(), any(Pageable.class)))
+			.willReturn(new PageImpl<>(List.of(george)));
+
 		given(this.owners.findById(TEST_OWNER_ID)).willReturn(Optional.of(george));
 		Visit visit = new Visit();
 		visit.setDate(LocalDate.now());

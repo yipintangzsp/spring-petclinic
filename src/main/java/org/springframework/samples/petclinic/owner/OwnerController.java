@@ -22,6 +22,7 @@ import java.util.Optional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -65,8 +66,9 @@ class OwnerController {
 	public Owner findOwner(@PathVariable(name = "ownerId", required = false) Integer ownerId) {
 		return ownerId == null ? new Owner()
 				: this.owners.findById(ownerId)
-					.orElseThrow(() -> new IllegalArgumentException("Owner not found with id: " + ownerId
-							+ ". Please ensure the ID is correct " + "and the owner exists in the database."));
+					.orElseThrow(() -> new org.springframework.web.server.ResponseStatusException(
+							org.springframework.http.HttpStatus.NOT_FOUND, "Owner not found with id: " + ownerId
+									+ ". Please ensure the ID is correct " + "and the owner exists in the database."));
 	}
 
 	@GetMapping("/owners/new")
@@ -92,8 +94,25 @@ class OwnerController {
 	}
 
 	@GetMapping("/owners")
-	public String processFindForm(@RequestParam(defaultValue = "1") int page, Owner owner, BindingResult result,
-			Model model) {
+	public String processFindForm(@RequestParam(defaultValue = "1") int page, @RequestParam(defaultValue = "") String q,
+			@RequestParam(defaultValue = "") String city, @RequestParam(defaultValue = "lastName") String sort,
+			Owner owner, BindingResult result, Model model) {
+		page = Math.max(1, page);
+		sort = List.of("lastName", "firstName", "city").contains(sort) ? sort : "lastName";
+		model.addAttribute("q", q.strip());
+		model.addAttribute("city", city);
+		model.addAttribute("sort", sort);
+		model.addAttribute("cities", owners.findCities());
+		// Keep the existing last-name search route compatible.
+		if (owner.getLastName() == null) {
+			Pageable pageable = PageRequest.of(page - 1, 5, Sort.by(sort).ascending().and(Sort.by("id")));
+			Page<Owner> results = owners.search(q.strip(), city, pageable);
+			if (page > Math.max(1, results.getTotalPages())) {
+				page = Math.max(1, results.getTotalPages());
+				results = owners.search(q.strip(), city, PageRequest.of(page - 1, 5, pageable.getSort()));
+			}
+			return addPaginationModel(page, model, results);
+		}
 		// allow parameterless GET request for /owners to return all records
 		String lastName = owner.getLastName();
 		if (lastName == null) {
@@ -103,6 +122,7 @@ class OwnerController {
 			lastName = lastName.strip();
 		}
 
+		model.addAttribute("legacyLastName", lastName);
 		// find owners by last name
 		Page<Owner> ownersResults = findPaginatedForOwnersLastName(page, lastName);
 		if (ownersResults.isEmpty()) {
@@ -170,7 +190,8 @@ class OwnerController {
 	public ModelAndView showOwner(@PathVariable("ownerId") int ownerId) {
 		ModelAndView mav = new ModelAndView("owners/ownerDetails");
 		Optional<Owner> optionalOwner = this.owners.findById(ownerId);
-		Owner owner = optionalOwner.orElseThrow(() -> new IllegalArgumentException(
+		Owner owner = optionalOwner.orElseThrow(() -> new org.springframework.web.server.ResponseStatusException(
+				org.springframework.http.HttpStatus.NOT_FOUND,
 				"Owner not found with id: " + ownerId + ". Please ensure the ID is correct "));
 		mav.addObject(owner);
 		return mav;

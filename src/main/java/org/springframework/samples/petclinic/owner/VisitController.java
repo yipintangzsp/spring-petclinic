@@ -64,19 +64,21 @@ class VisitController {
 	public Visit loadPetWithVisit(@PathVariable("ownerId") int ownerId, @PathVariable("petId") int petId,
 			Map<String, Object> model) {
 		Optional<Owner> optionalOwner = owners.findById(ownerId);
-		Owner owner = optionalOwner.orElseThrow(() -> new IllegalArgumentException(
+		Owner owner = optionalOwner.orElseThrow(() -> new org.springframework.web.server.ResponseStatusException(
+				org.springframework.http.HttpStatus.NOT_FOUND,
 				"Owner not found with id: " + ownerId + ". Please ensure the ID is correct "));
 
 		Pet pet = owner.getPet(petId);
 		if (pet == null) {
-			throw new IllegalArgumentException(
+			throw new org.springframework.web.server.ResponseStatusException(
+					org.springframework.http.HttpStatus.NOT_FOUND,
 					"Pet with id " + petId + " not found for owner with id " + ownerId + ".");
 		}
 		model.put("pet", pet);
 		model.put("owner", owner);
 
 		Visit visit = new Visit();
-		pet.addVisit(visit);
+
 		return visit;
 	}
 
@@ -96,7 +98,7 @@ class VisitController {
 	// called
 	@PostMapping("/owners/{ownerId}/pets/{petId}/visits/new")
 	public String processNewVisitForm(@ModelAttribute Owner owner, @PathVariable int petId, @Valid Visit visit,
-			BindingResult result, RedirectAttributes redirectAttributes) {
+			BindingResult result, RedirectAttributes redirectAttributes, org.springframework.ui.Model model) {
 		if (visit.getDate() != null && !visit.getDate().isAfter(LocalDate.now())) {
 			result.rejectValue("date", "typeMismatch.visitDate");
 		}
@@ -105,10 +107,19 @@ class VisitController {
 			return "pets/createOrUpdateVisitForm";
 		}
 
-		owner.addVisit(petId, visit);
-		this.owners.save(owner);
+		try {
+			owner.addVisit(petId, visit);
+			this.owners.saveAndFlush(owner);
+		}
+		catch (org.springframework.dao.DataAccessException ex) {
+			owner.getPet(petId).getVisits().remove(visit);
+			visit.setId(null);
+			model.addAttribute("saveError",
+					"The database could not save this visit. Your entries are retained; please retry.");
+			return "pets/createOrUpdateVisitForm";
+		}
 		redirectAttributes.addFlashAttribute("message", "Your visit has been booked");
-		return "redirect:/owners/{ownerId}";
+		return "redirect:/owners/{ownerId}/pets/{petId}";
 	}
 
 }

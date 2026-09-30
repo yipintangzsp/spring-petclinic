@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html xmlns:th="https://www.thymeleaf.org" th:replace="~{fragments/layout :: layout (~{::body},'pets')}">
+<body><main class="clinic-workspace">
+<header class="workspace-heading">
+<div>
+<p class="eyebrow"><span th:text="#{clinic.patient.directory.database.records}">PATIENT DIRECTORY · DATABASE RECORDS</span></p>
+<h1><span th:text="#{clinic.pets.under.care}">Pets under care</span></h1>
+<p><span th:text="#{clinic.search.by.pet.or.owner.then.open.the.complete.care.record}">Search by pet or owner, then open the complete care record.</span></p></div><a class="btn btn-outline-primary" th:href="@{/owners}"><span th:text="#{clinic.register.a.pet.via.its.owner}">Register a pet via its owner</span></a></header>
+<form class="filter-bar" method="get" th:action="@{/pets}">
+<label><span th:text="#{clinic.pet.or.owner.name}">Pet or owner name</span><input class="form-control" name="q" th:value="${q}" maxlength="100" placeholder="e.g. Leo or Franklin"></label>
+<label><span th:text="#{clinic.pet.type}">Pet type</span><select class="form-control" name="type"><option value="" th:text="#{clinic.all.types}">All types</option><option th:each="item : ${types}" th:value="${item.name}" th:text="${item.name}" th:selected="${item.name == type}"></option></select></label>
+<label><span th:text="#{clinic.sort.by}">Sort by</span><select class="form-control" name="sort"><option value="name" th:selected="${sort == 'name'}" th:text="#{clinic.name}">Name</option><option value="birthDate" th:selected="${sort == 'birthDate'}" th:text="#{clinic.birth.date.oldest.first}">Birth date (oldest first)</option></select></label><button class="btn btn-primary"><span th:text="#{clinic.apply.filters}">Apply filters</span></button><a th:href="@{/pets}"><span th:text="#{clinic.clear}">Clear</span></a></form>
+<p class="result-count" th:text="${totalItems} + ' matching pets · 6 per page'"></p>
+<section class="empty-state" th:if="${#lists.isEmpty(listPets)}">
+<h2><span th:text="#{clinic.no.pets.found}">No pets found</span></h2>
+<p><span th:text="#{clinic.try.another.name.or.type}">Try another name or type.</span></p><a th:href="@{/pets}"><span th:text="#{clinic.show.all.pets}">Show all pets</span></a></section>
+<div class="care-grid">
+<article class="record-panel" th:each="pet : ${listPets}">
+<div class="card-heading">
+<h2><a th:href="@{/owners/{o}/pets/{p}(o=${pet.owner.id},p=${pet.id})}" th:text="${pet.name}"></a></h2><span class="tag" th:text="${pet.type}"></span></div>
+<p th:text="'Born ' + ${pet.birthDate}"></p>
+<p><span th:text="#{clinic.owner.caption}">Owner: </span><a th:href="@{/owners/{id}(id=${pet.owner.id})}" th:text="${pet.owner.firstName + ' ' + pet.owner.lastName}"></a></p><a class="record-link" th:href="@{/owners/{o}/pets/{p}(o=${pet.owner.id},p=${pet.id})}"><span th:text="#{clinic.open.care.record}">Open care record →</span></a></article></div>
+<nav class="pager" aria-label="Pagination" th:if="${totalPages > 1}"><a class="btn btn-outline-primary" th:if="${currentPage > 1}" th:href="@{/pets(page=${currentPage - 1},q=${q},type=${type},sort=${sort})}">← Previous</a><span th:text="'Page ' + ${currentPage} + ' of ' + ${totalPages}"></span><a class="btn btn-outline-primary" th:if="${currentPage < totalPages}" th:href="@{/pets(page=${currentPage + 1},q=${q},type=${type},sort=${sort})}"><span th:text="#{clinic.next}">Next →</span></a></nav></main></body></html>

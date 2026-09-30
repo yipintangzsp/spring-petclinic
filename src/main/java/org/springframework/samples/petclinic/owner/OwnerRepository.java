@@ -16,6 +16,8 @@
 package org.springframework.samples.petclinic.owner;
 
 import java.util.Optional;
+import java.util.List;
+import org.springframework.data.jpa.repository.Query;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -34,6 +36,17 @@ import org.springframework.data.jpa.repository.JpaRepository;
  * @author Wick Dynex
  */
 public interface OwnerRepository extends JpaRepository<Owner, Integer> {
+
+	@Query("""
+			select o from Owner o where
+			(:q = '' or lower(concat(o.firstName, ' ', o.lastName)) like lower(concat('%', :q, '%'))
+			or o.telephone like concat('%', :q, '%'))
+			and (:city = '' or lower(o.city) = lower(:city))
+			""")
+	Page<Owner> search(String q, String city, Pageable pageable);
+
+	@Query("select distinct o.city from Owner o order by o.city")
+	List<String> findCities();
 
 	/**
 	 * Retrieve {@link Owner}s from the data store by last name, returning all owners

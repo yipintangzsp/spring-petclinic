@@ -42,8 +42,21 @@ class VetController {
 	}
 
 	@GetMapping("/vets.html")
-	public String showVetList(@RequestParam(defaultValue = "1") int page, Model model) {
-		Page<Vet> paginated = findPaginated(page);
+	public String showVetList(@RequestParam(defaultValue = "1") int page, @RequestParam(defaultValue = "") String q,
+			@RequestParam(defaultValue = "") String specialty, Model model) {
+		page = Math.max(1, page);
+		model.addAttribute("q", q.strip());
+		model.addAttribute("specialty", specialty);
+		model.addAttribute("specialties", vetRepository.findSpecialtyNames());
+		var pageable = PageRequest.of(page - 1, 5, org.springframework.data.domain.Sort.by("lastName", "id"));
+		Page<Vet> paginated = q.isBlank() && specialty.isBlank() ? vetRepository.findAll(pageable)
+				: vetRepository.search(q.strip(), specialty, pageable);
+		if (page > Math.max(1, paginated.getTotalPages())) {
+			page = Math.max(1, paginated.getTotalPages());
+			pageable = PageRequest.of(page - 1, 5, pageable.getSort());
+			paginated = q.isBlank() && specialty.isBlank() ? vetRepository.findAll(pageable)
+					: vetRepository.search(q.strip(), specialty, pageable);
+		}
 		return addPaginationModel(page, paginated, model);
 	}
 
@@ -54,12 +67,6 @@ class VetController {
 		model.addAttribute("totalItems", paginated.getTotalElements());
 		model.addAttribute("listVets", listVets);
 		return "vets/vetList";
-	}
-
-	private Page<Vet> findPaginated(int page) {
-		int pageSize = 5;
-		Pageable pageable = PageRequest.of(page - 1, pageSize);
-		return vetRepository.findAll(pageable);
 	}
 
 	@GetMapping({ "/vets" })

@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html xmlns:th="https://www.thymeleaf.org" th:replace="~{fragments/layout :: layout (~{::body},'pets')}">
+<body><main class="clinic-workspace">
+<nav class="breadcrumbs"><a th:href="@{/pets}"><span th:text="#{clinic.pets}">Pets</span></a><span><span th:text="#{clinic.breadcrumb.separator}"> / </span></span><a th:href="@{/owners/{id}(id=${owner.id})}" th:text="${owner.firstName + ' ' + owner.lastName}"></a><span><span th:text="#{clinic.breadcrumb.separator}"> / </span></span><span th:text="${pet.name}"></span></nav>
+<header class="workspace-heading">
+<div>
+<p class="eyebrow"><span th:text="#{clinic.patient.care.record.database.records}">PATIENT CARE RECORD · DATABASE RECORDS</span></p>
+<h1 th:text="${pet.name}"></h1>
+<p th:text="'Pet #' + ${pet.id} + ' · ' + ${pet.type}"></p></div>
+<div class="action-row"><a class="btn btn-outline-primary" th:href="@{/owners/{o}/pets/{p}/edit(o=${owner.id},p=${pet.id})}"><span th:text="#{clinic.edit.pet}">Edit pet</span></a><a class="btn btn-primary" th:href="@{/owners/{o}/pets/{p}/visits/new(o=${owner.id},p=${pet.id})}"><span th:text="#{clinic.add.visit}">Add visit</span></a></div></header>
+<div th:if="${message}" class="alert alert-success" role="status" th:text="${message}"></div>
+<section class="record-panel">
+<h2><span th:text="#{clinic.patient.owner}">Patient &amp; owner</span></h2><dl class="record-facts">
+<div><dt><span th:text="#{clinic.birth.date}">Birth date</span></dt><dd th:text="${pet.birthDate}"></dd></div>
+<div><dt><span th:text="#{clinic.type}">Type</span></dt><dd th:text="${pet.type}"></dd></div>
+<div><dt><span th:text="#{clinic.owner}">Owner</span></dt><dd><a th:href="@{/owners/{id}(id=${owner.id})}" th:text="${owner.firstName + ' ' + owner.lastName}"></a></dd></div>
+<div><dt><span th:text="#{clinic.telephone}">Telephone</span></dt><dd><a th:href="'tel:' + ${owner.telephone}" th:text="${owner.telephone}"></a></dd></div></dl></section>
+<section class="record-panel" id="visit-history">
+<div class="card-heading">
+<h2><span th:text="#{clinic.visit.history}">Visit history</span></h2><span class="tag" th:text="${#lists.size(pet.visitHistory)} + ' saved records'"></span></div>
+<p class="cell-note"><span th:text="#{clinic.newest.date.first.future.dates.are.booked.visits.past.dates.are.historical.records.source.clinic.database}">Newest date first. Future dates are booked visits; past dates are historical records. Source: clinic database.</span></p>
+<div class="empty-state" th:if="${#lists.isEmpty(pet.visitHistory)}">
+<p><span th:text="#{clinic.no.visits.recorded.yet}">No visits recorded yet.</span></p><a th:href="@{/owners/{o}/pets/{p}/visits/new(o=${owner.id},p=${pet.id})}"><span th:text="#{clinic.book.the.first.visit}">Book the first visit →</span></a></div>
+<ol class="visit-timeline">
+<li th:each="visit : ${pet.visitHistory}"><time th:text="${visit.date}"></time><small class="tag" th:text="'Record #' + ${visit.id}"></small>
+<p th:text="${visit.description}"></p></li></ol></section>
+</main></body></html>

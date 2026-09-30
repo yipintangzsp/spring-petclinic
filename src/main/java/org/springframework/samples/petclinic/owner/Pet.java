@@ -45,6 +45,23 @@ import jakarta.persistence.Table;
 @Table(name = "pets")
 public class Pet extends NamedEntity {
 
+	@jakarta.persistence.ManyToOne(fetch = jakarta.persistence.FetchType.LAZY)
+	@jakarta.persistence.JoinColumn(name = "owner_id", insertable = false, updatable = false)
+	private Owner owner;
+
+	public Owner getOwner() {
+		return this.owner;
+	}
+
+	public java.util.List<Visit> getVisitHistory() {
+		return getVisits().stream()
+			.filter(v -> !v.isNew())
+			.sorted(java.util.Comparator
+				.comparing(Visit::getDate, java.util.Comparator.nullsLast(java.util.Comparator.reverseOrder()))
+				.thenComparing(Visit::getId, java.util.Comparator.reverseOrder()))
+			.toList();
+	}
+
 	@Column
 	@DateTimeFormat(pattern = "yyyy-MM-dd")
 	private LocalDate birthDate;

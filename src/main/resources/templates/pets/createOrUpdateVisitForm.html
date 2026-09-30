@@ -1,59 +1,25 @@
 <!DOCTYPE html>
-
-<html xmlns:th="https://www.thymeleaf.org" th:replace="~{fragments/layout :: layout (~{::body},'owners')}">
-
-<body>
-
-  <h2>
-    <th:block th:if="${visit['new']}" th:text="#{new}">New </th:block>
-    Visit
-  </h2>
-
-  <b th:text="#{pet}">Pet</b>
-  <table class="table table-striped">
-    <thead>
-      <tr>
-        <th th:text="#{name}">Name</th>
-        <th th:text="#{birthDate}">Birth Date</th>
-        <th th:text="#{type}">Type</th>
-        <th th:text="#{owner}">Owner</th>
-      </tr>
-    </thead>
-    <tr>
-      <td th:text="${pet.name}"></td>
-      <td th:text="${#temporals.format(pet.birthDate, 'yyyy-MM-dd')}"></td>
-      <td th:text="${pet.type}"></td>
-      <td th:text="${owner?.firstName + ' ' + owner?.lastName}"></td>
-    </tr>
-  </table>
-
-  <form th:object="${visit}" class="form-horizontal" method="post">
-    <div class="form-group has-feedback">
-      <input th:replace="~{fragments/inputField :: input ('Date', 'date', 'date')}" />
-      <input th:replace="~{fragments/inputField :: input ('Description', 'description', 'text')}" />
-    </div>
-
-    <div class="form-group">
-      <div class="col-sm-offset-2 col-sm-10">
-        <input type="hidden" name="petId" th:value="${pet.id}" />
-        <button class="btn btn-primary" type="submit" th:text="#{addVisit}">Add Visit</button>
-      </div>
-    </div>
-  </form>
-
-  <br />
-  <b th:text="#{previousVisits}">Previous Visits</b>
-  <table class="table table-striped">
-    <tr>
-      <th th:text="#{date}">Date</th>
-      <th th:text="#{description}">Description</th>
-    </tr>
-    <tr th:if="${!visit['new']}" th:each="visit : ${pet.visits}">
-      <td th:text="${#temporals.format(visit.date, 'yyyy-MM-dd')}"></td>
-      <td th:text=" ${visit.description}"></td>
-    </tr>
-  </table>
-
-</body>
-
-</html>
+<html xmlns:th="https://www.thymeleaf.org" th:replace="~{fragments/layout :: layout (~{::body},'pets')}">
+<body><main class="clinic-workspace">
+<nav class="breadcrumbs"><a th:href="@{/owners/{o}/pets/{p}(o=${owner.id},p=${pet.id})}" th:text="${pet.name} + ' · care record'"></a><span><span th:text="#{clinic.breadcrumb.add.visit}"> / Add visit</span></span></nav>
+<header class="workspace-heading">
+<div>
+<p class="eyebrow"><span th:text="#{clinic.book.a.visit}">BOOK A VISIT</span></p>
+<h1 th:text="'New visit for ' + ${pet.name}"></h1>
+<p><span th:text="#{clinic.choose.a.future.date.and.describe.the.reason.for.care.saved.visits.appear.in.the.patient.history}">Choose a future date and describe the reason for care. Saved visits appear in the patient history.</span></p></div></header>
+<p><span th:text="#{clinic.owner.caption}">Owner: </span><a th:href="@{/owners/{id}(id=${owner.id})}" th:text="${owner.firstName + ' ' + owner.lastName}"></a><span th:text="#{clinic.separator}"> · </span><span th:text="${pet.type}"></span></p>
+<form th:object="${visit}" class="record-panel visit-form" method="post">
+<div th:if="${saveError}" class="alert alert-danger" role="alert" th:text="${saveError}"></div>
+<div th:if="${#fields.hasErrors('*')}" class="alert alert-danger" role="alert"><span th:text="#{clinic.please.correct.the.highlighted.fields.nothing.has.been.saved}">Please correct the highlighted fields. Nothing has been saved.</span></div>
+<label for="date"><span th:text="#{clinic.visit.date}">Visit date</span></label><input class="form-control" id="date" type="date" th:field="*{date}" th:min="${minVisitDate}" required aria-describedby="date-help date-error"><small id="date-help"><span th:text="#{clinic.appointments.must.be.after.today}">Appointments must be after today.</span></small>
+<p id="date-error" class="field-error" th:if="${#fields.hasErrors('date')}" th:errors="*{date}"></p>
+<label for="description"><span th:text="#{clinic.reason.for.visit}">Reason for visit</span></label><textarea class="form-control" id="description" th:field="*{description}" rows="4" maxlength="255" required aria-describedby="description-help description-error"></textarea><small id="description-help"><span th:text="#{clinic.required.up.to.255.characters}">Required · up to 255 characters.</span></small>
+<p id="description-error" class="field-error" th:if="${#fields.hasErrors('description')}" th:errors="*{description}"></p>
+<div class="action-row"><button class="btn btn-primary" type="submit"><span th:text="#{clinic.save.visit}">Save visit</span></button><a th:href="@{/owners/{o}/pets/{p}(o=${owner.id},p=${pet.id})}"><span th:text="#{clinic.cancel}">Cancel</span></a></div></form>
+<section class="record-panel">
+<h2><span th:text="#{clinic.previous.saved.visits}">Previous saved visits</span></h2>
+<p th:if="${#lists.isEmpty(pet.visitHistory)}"><span th:text="#{clinic.no.visits.recorded.yet}">No visits recorded yet.</span></p>
+<ol class="visit-timeline">
+<li th:each="previous : ${pet.visitHistory}"><time th:text="${previous.date}"></time>
+<p th:text="${previous.description}"></p></li></ol></section>
+</main></body></html>

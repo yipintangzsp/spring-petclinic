@@ -37,8 +37,10 @@ public class Visit extends BaseEntity {
 
 	@Column(name = "visit_date")
 	@DateTimeFormat(pattern = "yyyy-MM-dd")
+	@jakarta.validation.constraints.NotNull
 	private LocalDate date;
 
+	@jakarta.validation.constraints.Size(max = 255)
 	@NotBlank
 	private String description;
 

@@ -80,7 +80,7 @@ class VisitControllerTests {
 				.param("date", LocalDate.now().plusDays(1).toString())
 				.param("description", "Visit Description"))
 			.andExpect(status().is3xxRedirection())
-			.andExpect(view().name("redirect:/owners/{ownerId}"));
+			.andExpect(view().name("redirect:/owners/{ownerId}/pets/{petId}"));
 	}
 
 	@Test
@@ -103,6 +103,26 @@ class VisitControllerTests {
 			.andExpect(model().attributeHasFieldErrors("visit", "date"))
 			.andExpect(model().attributeHasFieldErrorCode("visit", "date", "typeMismatch.visitDate"))
 			.andExpect(status().isOk())
+			.andExpect(view().name("pets/createOrUpdateVisitForm"));
+	}
+
+	@Test
+	void missingDateAndOversizedDescriptionAreRejected() throws Exception {
+		mockMvc.perform(post("/owners/1/pets/1/visits/new").param("date", "").param("description", "x".repeat(256)))
+			.andExpect(status().isOk())
+			.andExpect(model().attributeHasFieldErrors("visit", "date", "description"));
+	}
+
+	@Test
+	void databaseFailureRetainsEntriesWithoutSuccess() throws Exception {
+		org.mockito.Mockito.doThrow(new org.springframework.dao.DataAccessResourceFailureException("offline"))
+			.when(owners)
+			.saveAndFlush(org.mockito.ArgumentMatchers.any(Owner.class));
+		mockMvc
+			.perform(post("/owners/1/pets/1/visits/new").param("date", LocalDate.now().plusDays(1).toString())
+				.param("description", "Needs care"))
+			.andExpect(status().isOk())
+			.andExpect(model().attributeExists("saveError"))
 			.andExpect(view().name("pets/createOrUpdateVisitForm"));
 	}
 
