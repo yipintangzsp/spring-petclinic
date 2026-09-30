@@ -8,7 +8,7 @@
         <h1 th:utext="'Big love for&lt;br&gt;&lt;span&gt;little companions.&lt;/span&gt;'">Care software,<br><span>engineered to ship.</span></h1>
         <p class="hero-lead" th:text="'Every pet has a story. Find their family, follow their care, and make the next visit feel a little more personal.'">Every pet has a story. Find their family, follow their care, and make the next visit feel a little more personal.</p>
         <div class="hero-actions"><a class="btn btn-primary btn-lg" th:href="@{/owners}" th:text="'Find a family →'">Explore owners →</a><a class="btn btn-outline-light btn-lg" th:href="@{/vets.html}" th:text="'Meet the vets'">Meet the vets</a></div>
-        <p class="hero-note"><i class="fa fa-heart" aria-hidden="true"></i> Families, companions &amp; the people who care.</p>
+        <p class="hero-note"><i class="fa fa-heart" aria-hidden="true"></i> <span th:text="#{clinic.visual.families}">Families, companions &amp; the people who care.</span></p>
       </div>
       <div class="hero-visual">
         <div class="pet-portrait" aria-hidden="true">
@@ -32,9 +32,9 @@
             <path d="M81 64c-10-15-26-2-18 10l18 17 18-17c8-12-8-25-18-10z" fill="#ed7658"/>
             <path d="M389 344c22-6 29-36 15-46" stroke="#f6eed8" stroke-width="19" fill="none" stroke-linecap="round"/>
           </svg>
-          <span class="portrait-label">SMALL PAWS · BIG PERSONALITIES</span>
+          <span class="portrait-label" th:text="#{clinic.visual.small.paws}">SMALL PAWS · BIG PERSONALITIES</span>
         </div>
-        <span class="care-stamp" aria-hidden="true"><i class="fa fa-paw"></i> MADE FOR CARE</span>
+        <span class="care-stamp" aria-hidden="true"><i class="fa fa-paw"></i><span th:text="#{clinic.visual.made.for.care}">MADE FOR CARE</span></span>
       <aside class="release-console" aria-label="Current release">
         <div class="console-top"><span>LIVE RELEASE</span><span class="status-pill"><i></i> <span th:text="${dashboard.applicationStatus}">UP</span></span></div>
         <div class="release-version" th:text="${dashboard.applicationVersion}">N/A</div>
