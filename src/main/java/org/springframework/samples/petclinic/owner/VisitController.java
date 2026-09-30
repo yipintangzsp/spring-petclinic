@@ -107,9 +107,17 @@ class VisitController {
 			return "pets/createOrUpdateVisitForm";
 		}
 
+		var previousIds = owner.getPet(petId).getVisits().stream().map(Visit::getId).toList();
 		try {
 			owner.addVisit(petId, visit);
-			this.owners.saveAndFlush(owner);
+			Owner savedOwner = this.owners.saveAndFlush(owner);
+			savedOwner.getPet(petId)
+				.getVisits()
+				.stream()
+				.map(Visit::getId)
+				.filter(id -> id != null && !previousIds.contains(id))
+				.findFirst()
+				.ifPresent(id -> redirectAttributes.addAttribute("savedVisit", id));
 		}
 		catch (org.springframework.dao.DataAccessException ex) {
 			owner.getPet(petId).getVisits().remove(visit);
@@ -118,7 +126,6 @@ class VisitController {
 					"The database could not save this visit. Your entries are retained; please retry.");
 			return "pets/createOrUpdateVisitForm";
 		}
-		redirectAttributes.addAttribute("savedVisit", visit.getId());
 		return "redirect:/owners/{ownerId}/pets/{petId}";
 	}
 

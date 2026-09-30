@@ -61,18 +61,22 @@ class ClinicWorkflowIntegrationTests {
 	@Test
 	void visitSubmissionIsReadBackFromDatabase() throws Exception {
 		int before = owners.findById(1).orElseThrow().getPet(1).getVisits().size();
-		mvc.perform(post("/owners/1/pets/1/visits/new").param("date", LocalDate.now().plusDays(2).toString())
-			.param("description", "Integration follow-up"))
+		var submission = mvc
+			.perform(post("/owners/1/pets/1/visits/new").param("date", LocalDate.now().plusDays(2).toString())
+				.param("description", "Integration follow-up"))
 			.andExpect(status().is3xxRedirection())
-			.andExpect(redirectedUrl("/owners/1/pets/1"));
+			.andReturn();
 		entityManager.flush();
 		entityManager.clear();
 		var history = owners.findById(1).orElseThrow().getPet(1).getVisitHistory();
 		assertThat(history).hasSize(before + 1);
 		assertThat(history.get(0).getDescription()).isEqualTo("Integration follow-up");
-		mvc.perform(get("/owners/1/pets/1"))
+		assertThat(submission.getResponse().getRedirectedUrl())
+			.isEqualTo("/owners/1/pets/1?savedVisit=" + history.get(0).getId());
+		mvc.perform(get(submission.getResponse().getRedirectedUrl()))
 			.andExpect(status().isOk())
-			.andExpect(content().string(containsString("Integration follow-up")));
+			.andExpect(content().string(containsString("Integration follow-up")))
+			.andExpect(content().string(containsString("Your visit has been booked")));
 	}
 
 	@Test
