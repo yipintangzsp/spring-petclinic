@@ -1,74 +1,42 @@
 <!DOCTYPE html>
 <html xmlns:th="https://www.thymeleaf.org" th:replace="~{fragments/layout :: layout (~{::body},'home')}">
 <body>
-  <main class="product-home">
-    <section class="hero-grid">
-      <div class="hero-copy">
-        <p class="eyebrow" th:text="'A little care. A brighter life.'"><span class="live-dot"></span> A little care. A brighter life.</p>
-        <h1 th:utext="'Big love for&lt;br&gt;&lt;span&gt;little companions.&lt;/span&gt;'">Care software,<br><span>engineered to ship.</span></h1>
-        <p class="hero-lead" th:text="'Every pet has a story. Find their family, follow their care, and make the next visit feel a little more personal.'">Every pet has a story. Find their family, follow their care, and make the next visit feel a little more personal.</p>
-        <div class="hero-actions"><a class="btn btn-primary btn-lg" th:href="@{/owners}" th:text="'Find a family →'">Explore owners →</a><a class="btn btn-outline-light btn-lg" th:href="@{/vets.html}" th:text="'Meet the vets'">Meet the vets</a></div>
-        <p class="hero-note"><i class="fa fa-heart" aria-hidden="true"></i> <span th:text="#{clinic.visual.families}">Families, companions &amp; the people who care.</span></p>
+<main class="product-home modern-home">
+  <section class="landing-hero">
+    <div class="landing-width landing-hero-inner">
+      <div class="landing-copy">
+        <p class="editorial-kicker" th:text="#{clinic.modern.hero.kicker}">EVERYDAY CARE, BEAUTIFULLY CONNECTED</p>
+        <h1><span th:text="#{clinic.modern.hero.title.one}">Care for the ones</span><br><span class="accent-word" th:text="#{clinic.modern.hero.title.two}">who make your day.</span></h1>
+        <p class="landing-lead" th:text="#{clinic.modern.hero.lead}">Their people. Their stories. Their next visit. A simpler way to keep every little companion at the heart of care.</p>
+        <div class="landing-actions"><a class="btn btn-primary" th:href="@{/pets}"><span th:text="#{clinic.modern.find.pet}">Find your pet</span><i class="fa fa-arrow-right" aria-hidden="true"></i></a><a class="text-action" th:href="@{/owners}"><span th:text="#{clinic.modern.explore.families}">Explore families</span><i class="fa fa-arrow-right" aria-hidden="true"></i></a></div>
+        <p class="landing-reassurance"><i class="fa fa-heart-o" aria-hidden="true"></i><span th:text="#{clinic.modern.connected.care}">One connected place for everyday care.</span></p>
       </div>
-      <div class="hero-visual">
-        <div class="pet-portrait" aria-hidden="true">
-          <svg viewBox="0 0 460 420">
-            <circle cx="235" cy="208" r="157" fill="#fff1c9" opacity=".55"/>
-            <path d="M70 345c20-72 59-100 106-100s91 31 101 100" fill="#16574d"/>
-            <path d="M258 350c8-68 38-112 87-112s81 39 87 112" fill="#f6eed8"/>
-            <path d="M105 179c-27-21-50 6-40 52 8 35 32 56 54 28l17-73" fill="#795337"/>
-            <path d="M216 179c27-21 50 6 40 52-8 35-32 56-54 28l-17-73" fill="#795337"/>
-            <path d="M104 197c0-54 33-88 68-88s68 34 68 88v46c0 51-30 78-68 78s-68-27-68-78z" fill="#bf8654"/>
-            <path d="M165 116c-17 42-17 77-7 103l-17 20c-26 32-15 64 31 68 47-4 58-36 32-68l-17-20c10-26 10-61-7-103" fill="#f7dfb8"/>
-            <ellipse cx="143" cy="213" rx="7" ry="9" fill="#173d35"/><ellipse cx="201" cy="213" rx="7" ry="9" fill="#173d35"/>
-            <path d="M156 248q16-13 32 0l-16 16z" fill="#173d35"/><path d="M172 264v12m-18-1q18 17 36 0" fill="none" stroke="#173d35" stroke-width="4" stroke-linecap="round"/>
-            <path d="M135 302q36 19 72 0l-3 19q-33 16-65 0z" fill="#ed7658"/><circle cx="171" cy="324" r="10" fill="#f6d67a"/>
-            <path d="M286 198l-8-67 48 35m35 0 43-35-5 73" fill="#f6eed8"/><path d="M288 154l4 38 23-16m73-22-4 38-22-16" fill="#dc967f"/>
-            <path d="M283 208c0-40 26-57 58-57s62 20 62 60v37c0 35-24 63-60 63-39 0-60-30-60-65z" fill="#f6eed8"/>
-            <path d="M298 218q10-12 21 0m49 0q10-12 21 0" fill="none" stroke="#173d35" stroke-width="4" stroke-linecap="round"/>
-            <path d="M332 241h22l-11 10z" fill="#d67c65"/><path d="M343 252v10m-14 0q14 11 28 0m-55-18-27-5m27 17-29 5m111-17 27-5m-27 17 29 5" fill="none" stroke="#173d35" stroke-width="3" stroke-linecap="round"/>
-            <path d="M313 300q30 17 61-2l-3 16q-28 14-54 0z" fill="#54898c"/><circle cx="344" cy="318" r="8" fill="#ed7658"/>
-            <path d="M52 110l9-15m-1 27 16-3m328-27 6-16m-20 13-12-8" stroke="#fff8dc" stroke-width="5" stroke-linecap="round"/>
-            <path d="M81 64c-10-15-26-2-18 10l18 17 18-17c8-12-8-25-18-10z" fill="#ed7658"/>
-            <path d="M389 344c22-6 29-36 15-46" stroke="#f6eed8" stroke-width="19" fill="none" stroke-linecap="round"/>
-          </svg>
-          <span class="portrait-label" th:text="#{clinic.visual.small.paws}">SMALL PAWS · BIG PERSONALITIES</span>
-        </div>
-        <span class="care-stamp" aria-hidden="true"><i class="fa fa-paw"></i><span th:text="#{clinic.visual.made.for.care}">MADE FOR CARE</span></span>
-      <aside class="release-console" aria-label="Current release">
-        <div class="console-top"><span>LIVE RELEASE</span><span class="status-pill"><i></i> <span th:text="${dashboard.applicationStatus}">UP</span></span></div>
-        <div class="release-version" th:text="${dashboard.applicationVersion}">N/A</div>
-        <dl><div><dt>Build</dt><dd th:text="${dashboard.buildNumber}">N/A</dd></div><div><dt>Commit</dt><dd class="mono" th:text="${dashboard.shortGitCommit()}">N/A</dd></div><div><dt>Runtime</dt><dd th:text="${dashboard.environment}">Local</dd></div></dl>
-        <a th:href="@{/system-status}" th:text="'View system status ↗'">View system status ↗</a>
-      </aside>
-      </div>
-    </section>
-    <section id="business" class="business-section">
-      <div class="section-heading"><div><p class="eyebrow" th:text="'OUR LITTLE WORLD'">OUR LITTLE WORLD</p><h2>A community worth caring for</h2></div><p>Real families. Real companions. Counts from our clinic database, ready for the next chapter of care.</p></div>
-      <div class="metric-grid">
-        <article class="metric-card"><span class="metric-icon"><i class="fa fa-user"></i></span><strong th:text="${dashboard.metrics.available ? dashboard.metrics.owners : 'N/A'}">0</strong><p>Registered owners</p><a th:href="@{/owners}">Browse owners →</a></article>
-        <article class="metric-card"><span class="metric-icon coral"><i class="fa fa-paw"></i></span><strong th:text="${dashboard.metrics.available ? dashboard.metrics.pets : 'N/A'}">0</strong><p>Pets under care</p><a th:href="@{/pets}">Find a pet →</a></article>
-        <article class="metric-card"><span class="metric-icon blue"><i class="fa fa-user-md"></i></span><strong th:text="${dashboard.metrics.available ? dashboard.metrics.vets : 'N/A'}">0</strong><p>Veterinary professionals</p><a th:href="@{/vets.html}">View specialists →</a></article>
-      </div>
-    </section>
-    <section class="workflow-section"><p class="eyebrow"><span th:text="#{clinic.daily.care.workflows}">DAILY CARE WORKFLOWS</span></p><h2><span th:text="#{clinic.from.household.to.care.record}">From household to care record</span></h2><div class="care-grid"><article class="record-panel"><span class="tag"><span th:text="#{clinic.01.owners}">01 · Owners</span></span><h3><span th:text="#{clinic.find.the.right.household}">Find the right household</span></h3><p><span th:text="#{clinic.search.names.or.phone.numbers.filter.by.city.then.review.contact.details.and.pets}">Search names or phone numbers, filter by city, then review contact details and pets.</span></p><a th:href="@{/owners}"><span th:text="#{clinic.open.owner.directory}">Open owner directory →</span></a></article><article class="record-panel"><span class="tag"><span th:text="#{clinic.02.pets}">02 · Pets</span></span><h3><span th:text="#{clinic.continue.patient.care}">Continue patient care</span></h3><p><span th:text="#{clinic.filter.pets.by.type.open.their.history.and.book.the.next.visit}">Filter pets by type, open their history, and book the next visit.</span></p><a th:href="@{/pets}"><span th:text="#{clinic.open.pet.directory}">Open pet directory →</span></a></article><article class="record-panel"><span class="tag"><span th:text="#{clinic.03.team}">03 · Team</span></span><h3><span th:text="#{clinic.explore.clinical.expertise}">Explore clinical expertise</span></h3><p><span th:text="#{clinic.find.veterinarians.by.name.or.a.specialty.actually.recorded.in.the.database}">Find veterinarians by name or a specialty actually recorded in the database.</span></p><a th:href="@{/vets.html}"><span th:text="#{clinic.explore.specialties}">Explore specialties →</span></a></article></div></section><section class="health-band">
-      <div><span class="live-dot"></span><div><strong>Request serving: <span th:text="${dashboard.applicationStatus}">UP</span></strong><small>Database: <span th:text="${dashboard.databaseStatus}">Connected</span></small></div></div>
-      <div><small>Spring Boot</small><strong th:text="${dashboard.springBootVersion}">N/A</strong></div><div><small>Kubernetes</small><strong th:text="${dashboard.kubernetesStatus}">Local runtime</strong></div><a th:href="@{/system-status}">Full status</a>
-    </section>
-    <section id="observability" class="observability-section">
-      <div class="section-heading dark-heading"><div><p class="eyebrow" th:text="'OPERATE WITH CONTEXT'">OPERATE WITH CONTEXT</p><h2>Observable by design</h2></div><p>The application exposes the signals an operations team needs, while the platform keeps delivery repeatable.</p></div>
-      <div class="capability-grid">
-        <article><span>01</span><i class="fa fa-heartbeat"></i><h3 th:text="'Health'">Health</h3><p>Liveness and readiness endpoints make application state explicit to Kubernetes.</p></article>
-        <article><span>02</span><i class="fa fa-align-left"></i><h3 th:text="'Logs'">Logs</h3><p>Container logs flow through the existing Filebeat, Elasticsearch and Kibana path.</p></article>
-        <article><span>03</span><i class="fa fa-line-chart"></i><h3 th:text="'Metrics'">Metrics</h3><p>Runtime and workload signals remain available through the established monitoring stack.</p></article>
-        <article><span>04</span><i class="fa fa-code-fork"></i><h3 th:text="'GitOps delivery'">GitOps delivery</h3><p>Jenkins publishes immutable images; Argo CD reconciles the production manifest.</p></article>
-      </div>
-    </section>
-    <section class="release-strip"><p class="eyebrow">RELEASE FINGERPRINT</p><div><span><small>Version</small><strong th:text="${dashboard.applicationVersion}">N/A</strong></span><span><small>Build</small><strong th:text="${dashboard.buildNumber}">N/A</strong></span><span><small>Git commit</small><strong class="mono" th:text="${dashboard.shortGitCommit()}">N/A</strong></span><span><small>Promoted at (UTC)</small><strong class="mono" th:text="${dashboard.buildTime}">N/A</strong></span></div></section>
-    <section class="evolution-section">
-      <div><p class="eyebrow" th:text="'VISUAL RELEASE EVOLUTION'">VISUAL RELEASE EVOLUTION</p><h2 th:text="'Built to show every iteration'">Built to show every iteration</h2><p th:text="'Each release adds a visible, verifiable capability to the same production application.'">Each release adds a visible, verifiable capability to the same production application.</p></div>
-      <article><header><span th:text="'CURRENT RELEASE'">CURRENT RELEASE</span><strong th:text="${dashboard.applicationVersion}">N/A</strong></header><p th:text="'Recent improvements'">Recent improvements</p><ul><li>Searchable owner and pet directories</li><li>Patient details and persisted visit history</li><li>Validated visit booking and specialty filters</li><li>Live clinic workload totals</li><li>Runtime context and release identity</li><li>Jenkins-to-Argo CD GitOps delivery</li><li>Metrics and centralized log foundations</li></ul></article>
-    </section>
-  </main>
+      <figure class="landing-photo"><img th:src="@{/resources/images/clinic-care-07.png}" alt="" width="1536" height="1024" fetchpriority="high"><figcaption><span class="photo-mark"><i class="fa fa-paw" aria-hidden="true"></i></span><span th:text="#{clinic.modern.photo.caption}">Little companions.<br>Big part of your world.</span></figcaption></figure>
+    </div>
+  </section>
+  <section class="landing-width clinic-community" aria-labelledby="community-title">
+    <div class="community-intro"><p class="editorial-kicker" th:text="#{clinic.modern.community.kicker}">OUR CLINIC COMMUNITY</p><h2 id="community-title" th:text="#{clinic.modern.community.title}">Real lives. Connected care.</h2><p th:text="#{clinic.modern.database.source}">Live counts from the clinic database.</p></div>
+    <div class="community-metrics">
+      <a th:href="@{/owners}"><strong th:text="${dashboard.metrics.available ? dashboard.metrics.owners : 'N/A'}">0</strong><span th:text="#{clinic.modern.registered.families}">Registered families</span><i class="fa fa-arrow-right" aria-hidden="true"></i></a>
+      <a th:href="@{/pets}"><strong th:text="${dashboard.metrics.available ? dashboard.metrics.pets : 'N/A'}">0</strong><span th:text="#{clinic.modern.pets.cared}">Pets under care</span><i class="fa fa-arrow-right" aria-hidden="true"></i></a>
+      <a th:href="@{/vets.html}"><strong th:text="${dashboard.metrics.available ? dashboard.metrics.vets : 'N/A'}">0</strong><span th:text="#{clinic.modern.care.team}">Veterinary professionals</span><i class="fa fa-arrow-right" aria-hidden="true"></i></a>
+    </div>
+  </section>
+  <section class="landing-width care-directory" aria-labelledby="directory-title">
+    <div class="directory-heading"><p class="editorial-kicker" th:text="#{clinic.modern.directory.kicker}">A MORE PERSONAL WAY TO CARE</p><h2 id="directory-title"><span th:text="#{clinic.modern.directory.title.one}">Behind every pet,</span><br><em th:text="#{clinic.modern.directory.title.two}">a whole world of people.</em></h2><p th:text="#{clinic.modern.directory.lead}">Start with a familiar name. Everything you need to continue their care is just a little closer.</p></div>
+    <div class="directory-links">
+      <a class="directory-link" th:href="@{/owners}"><span class="directory-icon families-icon"><i class="fa fa-users" aria-hidden="true"></i></span><span><small th:text="#{clinic.modern.step.one}">01 / THEIR PEOPLE</small><h3 th:text="#{clinic.modern.families.title}">The families behind the paws</h3><p th:text="#{clinic.modern.families.description}">Search names or phone numbers. Find their household, contact details and companions.</p></span><i class="fa fa-arrow-right directory-arrow" aria-hidden="true"></i></a>
+      <a class="directory-link" th:href="@{/pets}"><span class="directory-icon pets-icon"><i class="fa fa-paw" aria-hidden="true"></i></span><span><small th:text="#{clinic.modern.step.two}">02 / THEIR STORY</small><h3 th:text="#{clinic.modern.pets.title}">A care record for every companion</h3><p th:text="#{clinic.modern.pets.description}">Find a pet, explore their saved visit history and book the next chapter of care.</p></span><i class="fa fa-arrow-right directory-arrow" aria-hidden="true"></i></a>
+      <a class="directory-link" th:href="@{/vets.html}"><span class="directory-icon vets-icon"><i class="fa fa-stethoscope" aria-hidden="true"></i></span><span><small th:text="#{clinic.modern.step.three}">03 / THEIR TEAM</small><h3 th:text="#{clinic.modern.vets.title}">Meet the people who care</h3><p th:text="#{clinic.modern.vets.description}">Explore our veterinarian directory and the specialties recorded for each professional.</p></span><i class="fa fa-arrow-right directory-arrow" aria-hidden="true"></i></a>
+    </div>
+  </section>
+  <section class="care-invitation">
+    <div class="landing-width invitation-inner"><div><p class="editorial-kicker" th:text="#{clinic.modern.invitation.kicker}">FOR THEIR NEXT CHAPTER</p><h2 th:text="#{clinic.modern.invitation.title}">Small steps. A little more care.</h2><p th:text="#{clinic.modern.invitation.lead}">Choose a companion, review their history, and plan their next visit.</p></div><a class="btn btn-primary" th:href="@{/pets}"><span th:text="#{clinic.modern.invitation.action}">Start with your pet</span><i class="fa fa-arrow-right" aria-hidden="true"></i></a></div>
+  </section>
+  <section id="observability" class="landing-width release-caption">
+    <span><i class="fa fa-circle" aria-hidden="true"></i><span th:text="#{clinic.modern.clinic.workspace}">Clinic workspace</span></span>
+    <a th:href="@{/system-status}"><span th:text="#{clinic.modern.release}">Release</span> <strong th:text="${dashboard.applicationVersion}">N/A</strong><small class="mono" th:text="${dashboard.shortGitCommit()}">N/A</small><i class="fa fa-arrow-right" aria-hidden="true"></i></a>
+  </section>
+</main>
 </body>
 </html>
