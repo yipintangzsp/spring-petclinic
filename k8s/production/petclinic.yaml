@@ -52,7 +52,7 @@ spec:
 
       containers:
         - name: petclinic
-          image: 10.0.0.3:30050/petclinic/petclinic:0.6.0-ci-80
+          image: 10.0.0.3:30050/petclinic/petclinic:0.7.0-ci-82
           imagePullPolicy: IfNotPresent
 
           securityContext:
@@ -68,13 +68,13 @@ spec:
           env:
             # Updated together with the immutable image tag by Jenkins Git promotion.
             - name: APPLICATION_VERSION
-              value: '0.6.0-ci-80'
+              value: '0.7.0-ci-82'
             - name: BUILD_NUMBER
-              value: '80'
+              value: '82'
             - name: BUILD_GIT_COMMIT
-              value: '5c7622bb7af6423e010a0032381e08247ae8d266'
+              value: 'ffecd50cabe50a214463efc6db7d9e6a92f7d9bf'
             - name: BUILD_TIME
-              value: '2026-09-30T10:28:20Z'
+              value: '2026-09-30T12:23:42Z'
 
             - name: SPRING_PROFILES_ACTIVE
               valueFrom:
