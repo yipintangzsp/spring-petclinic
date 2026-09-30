@@ -33,6 +33,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import jakarta.validation.Valid;
 
@@ -144,10 +145,14 @@ class PetController {
 	}
 
 	@GetMapping("/pets/{petId}")
-	public String showPet(@ModelAttribute("pet") Pet pet) {
+	public String showPet(@ModelAttribute("pet") Pet pet, @RequestParam(required = false) Integer savedVisit,
+			ModelMap model) {
 		if (pet == null) {
 			throw new org.springframework.web.server.ResponseStatusException(
 					org.springframework.http.HttpStatus.NOT_FOUND);
+		}
+		if (savedVisit != null && pet.getVisits().stream().anyMatch(visit -> savedVisit.equals(visit.getId()))) {
+			model.addAttribute("message", "Your visit has been booked");
 		}
 		return "pets/petDetails";
 	}

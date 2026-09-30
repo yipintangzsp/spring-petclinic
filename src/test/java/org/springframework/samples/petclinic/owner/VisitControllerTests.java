@@ -74,13 +74,20 @@ class VisitControllerTests {
 
 	@Test
 	void processNewVisitFormSuccess() throws Exception {
+		org.mockito.Mockito.doAnswer(invocation -> {
+			Owner saved = invocation.getArgument(0);
+			saved.getPet(TEST_PET_ID).getVisits().iterator().next().setId(42);
+			return saved;
+		}).when(owners).saveAndFlush(org.mockito.ArgumentMatchers.any(Owner.class));
 		mockMvc
 			.perform(post("/owners/{ownerId}/pets/{petId}/visits/new", TEST_OWNER_ID, TEST_PET_ID)
 				.param("name", "George")
 				.param("date", LocalDate.now().plusDays(1).toString())
 				.param("description", "Visit Description"))
 			.andExpect(status().is3xxRedirection())
-			.andExpect(view().name("redirect:/owners/{ownerId}/pets/{petId}"));
+			.andExpect(view().name("redirect:/owners/{ownerId}/pets/{petId}"))
+			.andExpect(org.springframework.test.web.servlet.result.MockMvcResultMatchers
+				.redirectedUrl("/owners/1/pets/1?savedVisit=42"));
 	}
 
 	@Test

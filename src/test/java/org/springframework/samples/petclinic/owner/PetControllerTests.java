@@ -87,6 +87,25 @@ class PetControllerTests {
 	}
 
 	@Test
+	void savedVisitConfirmationWorksWithoutAnHttpSession() throws Exception {
+		Owner owner = owners.findById(TEST_OWNER_ID).orElseThrow();
+		Visit visit = new Visit();
+		visit.setId(42);
+		visit.setDate(LocalDate.now().plusDays(1));
+		visit.setDescription("Persisted record");
+		owner.getPet(TEST_PET_ID).addVisit(visit);
+		mockMvc.perform(get("/owners/1/pets/1").param("savedVisit", "42"))
+			.andExpect(status().isOk())
+			.andExpect(model().attribute("message", "Your visit has been booked"));
+		mockMvc.perform(get("/owners/1/pets/2").param("savedVisit", "42"))
+			.andExpect(status().isOk())
+			.andExpect(model().attributeDoesNotExist("message"));
+		mockMvc.perform(get("/owners/1/pets/1").param("savedVisit", "9999"))
+			.andExpect(status().isOk())
+			.andExpect(model().attributeDoesNotExist("message"));
+	}
+
+	@Test
 	void initCreationForm() throws Exception {
 		mockMvc.perform(get("/owners/{ownerId}/pets/new", TEST_OWNER_ID))
 			.andExpect(status().isOk())

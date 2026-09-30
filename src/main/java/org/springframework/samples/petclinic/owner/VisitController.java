@@ -118,7 +118,7 @@ class VisitController {
 					"The database could not save this visit. Your entries are retained; please retry.");
 			return "pets/createOrUpdateVisitForm";
 		}
-		redirectAttributes.addFlashAttribute("message", "Your visit has been booked");
+		redirectAttributes.addAttribute("savedVisit", visit.getId());
 		return "redirect:/owners/{ownerId}/pets/{petId}";
 	}
 
