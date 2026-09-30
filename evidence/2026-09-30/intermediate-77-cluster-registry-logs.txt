@@ -1,0 +1,1492 @@
+{
+    "apiVersion": "argoproj.io/v1alpha1",
+    "kind": "Application",
+    "metadata": {
+        "annotations": {
+            "kubectl.kubernetes.io/last-applied-configuration": "{\"apiVersion\":\"argoproj.io/v1alpha1\",\"kind\":\"Application\",\"metadata\":{\"annotations\":{},\"name\":\"petclinic\",\"namespace\":\"argocd\"},\"spec\":{\"destination\":{\"namespace\":\"petclinic\",\"server\":\"https://kubernetes.default.svc\"},\"project\":\"default\",\"source\":{\"path\":\"k8s/production\",\"repoURL\":\"https://github.com/yipintangzsp/spring-petclinic.git\",\"targetRevision\":\"main\"},\"syncPolicy\":{\"automated\":{\"prune\":false,\"selfHeal\":true},\"syncOptions\":[\"CreateNamespace=false\"]}}}\n"
+        },
+        "creationTimestamp": "2026-08-20T03:57:48Z",
+        "generation": 11921,
+        "name": "petclinic",
+        "namespace": "argocd",
+        "resourceVersion": "11168482",
+        "uid": "75c49abb-7bfa-4793-8096-0f1ac4a6b467"
+    },
+    "spec": {
+        "destination": {
+            "namespace": "petclinic",
+            "server": "https://kubernetes.default.svc"
+        },
+        "project": "default",
+        "source": {
+            "path": "k8s/production",
+            "repoURL": "https://github.com/yipintangzsp/spring-petclinic.git",
+            "targetRevision": "main"
+        },
+        "syncPolicy": {
+            "automated": {
+                "prune": false,
+                "selfHeal": true
+            },
+            "syncOptions": [
+                "CreateNamespace=false"
+            ]
+        }
+    },
+    "status": {
+        "conditions": [
+            {
+                "lastTransitionTime": "2026-09-30T06:31:51Z",
+                "message": "Failed to load target state: failed to generate manifest for source 1 of 1: rpc error: code = Unknown desc = failed to list refs: Get \"https://github.com/yipintangzsp/spring-petclinic.git/info/refs?service=git-upload-pack\": context deadline exceeded (Client.Timeout exceeded while awaiting headers)",
+                "type": "ComparisonError"
+            }
+        ],
+        "controllerNamespace": "argocd",
+        "health": {
+            "lastTransitionTime": "2026-09-30T06:12:41Z",
+            "status": "Healthy"
+        },
+        "history": [
+            {
+                "deployStartedAt": "2026-09-10T05:30:19Z",
+                "deployedAt": "2026-09-10T05:31:06Z",
+                "id": 17,
+                "initiatedBy": {
+                    "automated": true
+                },
+                "revision": "b30d406c314d2e43156ca2f3f30a8fb991dd8b67",
+                "source": {
+                    "path": "k8s/production",
+                    "repoURL": "https://github.com/yipintangzsp/spring-petclinic.git",
+                    "targetRevision": "main"
+                }
+            },
+            {
+                "deployStartedAt": "2026-09-10T05:37:07Z",
+                "deployedAt": "2026-09-10T05:37:15Z",
+                "id": 18,
+                "initiatedBy": {
+                    "automated": true
+                },
+                "revision": "2db8301ecdb4d7f3167898353d32cf49a5beb0f9",
+                "source": {
+                    "path": "k8s/production",
+                    "repoURL": "https://github.com/yipintangzsp/spring-petclinic.git",
+                    "targetRevision": "main"
+                }
+            },
+            {
+                "deployStartedAt": "2026-09-10T09:38:59Z",
+                "deployedAt": "2026-09-10T09:39:02Z",
+                "id": 19,
+                "initiatedBy": {
+                    "automated": true
+                },
+                "revision": "54b9ad425e0d4c20715156f3ff0689f609fe2960",
+                "source": {
+                    "path": "k8s/production",
+                    "repoURL": "https://github.com/yipintangzsp/spring-petclinic.git",
+                    "targetRevision": "main"
+                }
+            },
+            {
+                "deployStartedAt": "2026-09-14T03:55:42Z",
+                "deployedAt": "2026-09-14T03:55:46Z",
+                "id": 20,
+                "initiatedBy": {
+                    "automated": true
+                },
+                "revision": "106feb8fc4fd44ed6f9c4fb24a472813a5051696",
+                "source": {
+                    "path": "k8s/production",
+                    "repoURL": "https://github.com/yipintangzsp/spring-petclinic.git",
+                    "targetRevision": "main"
+                }
+            },
+            {
+                "deployStartedAt": "2026-09-14T04:03:47Z",
+                "deployedAt": "2026-09-14T04:03:51Z",
+                "id": 21,
+                "initiatedBy": {
+                    "automated": true
+                },
+                "revision": "a6019708baf5ed7b4a51294076f86edae5c7cb79",
+                "source": {
+                    "path": "k8s/production",
+                    "repoURL": "https://github.com/yipintangzsp/spring-petclinic.git",
+                    "targetRevision": "main"
+                }
+            },
+            {
+                "deployStartedAt": "2026-09-14T06:05:55Z",
+                "deployedAt": "2026-09-14T06:05:59Z",
+                "id": 22,
+                "initiatedBy": {
+                    "automated": true
+                },
+                "revision": "8e239ff3182e63c68f101353dd6f9617ea8078a8",
+                "source": {
+                    "path": "k8s/production",
+                    "repoURL": "https://github.com/yipintangzsp/spring-petclinic.git",
+                    "targetRevision": "main"
+                }
+            },
+            {
+                "deployStartedAt": "2026-09-14T08:27:47Z",
+                "deployedAt": "2026-09-14T08:27:50Z",
+                "id": 23,
+                "initiatedBy": {
+                    "automated": true
+                },
+                "revision": "488ca67d55dee8b96019abcdac3c3a5b2a9f810d",
+                "source": {
+                    "path": "k8s/production",
+                    "repoURL": "https://github.com/yipintangzsp/spring-petclinic.git",
+                    "targetRevision": "main"
+                }
+            },
+            {
+                "deployStartedAt": "2026-09-15T11:29:55Z",
+                "deployedAt": "2026-09-15T11:29:58Z",
+                "id": 24,
+                "initiatedBy": {
+                    "automated": true
+                },
+                "revision": "087345d22038a90f423be39d29fb411f147d9ea3",
+                "source": {
+                    "path": "k8s/production",
+                    "repoURL": "https://github.com/yipintangzsp/spring-petclinic.git",
+                    "targetRevision": "main"
+                }
+            },
+            {
+                "deployStartedAt": "2026-09-15T14:57:13Z",
+                "deployedAt": "2026-09-15T14:57:17Z",
+                "id": 25,
+                "initiatedBy": {
+                    "automated": true
+                },
+                "revision": "82d4b75d630f46d8de8099d2a6e234e2d3b5deb2",
+                "source": {
+                    "path": "k8s/production",
+                    "repoURL": "https://github.com/yipintangzsp/spring-petclinic.git",
+                    "targetRevision": "main"
+                }
+            },
+            {
+                "deployStartedAt": "2026-09-30T06:07:59Z",
+                "deployedAt": "2026-09-30T06:08:03Z",
+                "id": 26,
+                "initiatedBy": {
+                    "automated": true
+                },
+                "revision": "91d34528360248d2bcefa37a88627e74a7a7f4db",
+                "source": {
+                    "path": "k8s/production",
+                    "repoURL": "https://github.com/yipintangzsp/spring-petclinic.git",
+                    "targetRevision": "main"
+                }
+            }
+        ],
+        "operationState": {
+            "finishedAt": "2026-09-30T06:08:03Z",
+            "message": "successfully synced (all tasks run)",
+            "operation": {
+                "initiatedBy": {
+                    "automated": true
+                },
+                "retry": {
+                    "limit": 5
+                },
+                "sync": {
+                    "revision": "91d34528360248d2bcefa37a88627e74a7a7f4db",
+                    "source": {
+                        "path": "k8s/production",
+                        "repoURL": "https://github.com/yipintangzsp/spring-petclinic.git",
+                        "targetRevision": "main"
+                    },
+                    "syncOptions": [
+                        "CreateNamespace=false"
+                    ]
+                }
+            },
+            "phase": "Succeeded",
+            "startedAt": "2026-09-30T06:07:59Z",
+            "syncResult": {
+                "resources": [
+                    {
+                        "group": "",
+                        "hookPhase": "Running",
+                        "kind": "ConfigMap",
+                        "message": "configmap/petclinic-config unchanged",
+                        "name": "petclinic-config",
+                        "namespace": "petclinic",
+                        "status": "Synced",
+                        "syncPhase": "Sync",
+                        "version": "v1"
+                    },
+                    {
+                        "group": "",
+                        "hookPhase": "Running",
+                        "kind": "ConfigMap",
+                        "message": "configmap/petclinic-metrics-dashboard unchanged",
+                        "name": "petclinic-metrics-dashboard",
+                        "namespace": "petclinic",
+                        "status": "Synced",
+                        "syncPhase": "Sync",
+                        "version": "v1"
+                    },
+                    {
+                        "group": "",
+                        "hookPhase": "Running",
+                        "kind": "ConfigMap",
+                        "message": "configmap/petclinic-grafana-dashboard unchanged",
+                        "name": "petclinic-grafana-dashboard",
+                        "namespace": "petclinic",
+                        "status": "Synced",
+                        "syncPhase": "Sync",
+                        "version": "v1"
+                    },
+                    {
+                        "group": "",
+                        "hookPhase": "Running",
+                        "kind": "Service",
+                        "message": "service/petclinic unchanged",
+                        "name": "petclinic",
+                        "namespace": "petclinic",
+                        "status": "Synced",
+                        "syncPhase": "Sync",
+                        "version": "v1"
+                    },
+                    {
+                        "group": "apps",
+                        "hookPhase": "Running",
+                        "images": [
+                            "10.0.0.3:30050/petclinic/petclinic:0.5.0-ci-77"
+                        ],
+                        "kind": "Deployment",
+                        "message": "deployment.apps/petclinic configured",
+                        "name": "petclinic",
+                        "namespace": "petclinic",
+                        "status": "Synced",
+                        "syncPhase": "Sync",
+                        "version": "v1"
+                    },
+                    {
+                        "group": "networking.k8s.io",
+                        "hookPhase": "Running",
+                        "kind": "Ingress",
+                        "message": "ingress.networking.k8s.io/petclinic unchanged",
+                        "name": "petclinic",
+                        "namespace": "petclinic",
+                        "status": "Synced",
+                        "syncPhase": "Sync",
+                        "version": "v1"
+                    },
+                    {
+                        "group": "monitoring.coreos.com",
+                        "hookPhase": "Running",
+                        "kind": "PrometheusRule",
+                        "message": "prometheusrule.monitoring.coreos.com/petclinic unchanged",
+                        "name": "petclinic",
+                        "namespace": "petclinic",
+                        "status": "Synced",
+                        "syncPhase": "Sync",
+                        "version": "v1"
+                    },
+                    {
+                        "group": "monitoring.coreos.com",
+                        "hookPhase": "Running",
+                        "kind": "ServiceMonitor",
+                        "message": "servicemonitor.monitoring.coreos.com/petclinic unchanged",
+                        "name": "petclinic",
+                        "namespace": "petclinic",
+                        "status": "Synced",
+                        "syncPhase": "Sync",
+                        "version": "v1"
+                    }
+                ],
+                "revision": "91d34528360248d2bcefa37a88627e74a7a7f4db",
+                "source": {
+                    "path": "k8s/production",
+                    "repoURL": "https://github.com/yipintangzsp/spring-petclinic.git",
+                    "targetRevision": "main"
+                }
+            }
+        },
+        "reconciledAt": "2026-09-30T06:31:51Z",
+        "resourceHealthSource": "appTree",
+        "resources": [
+            {
+                "kind": "ConfigMap",
+                "name": "petclinic-config",
+                "namespace": "petclinic",
+                "requiresPruning": true,
+                "status": "Unknown",
+                "version": "v1"
+            },
+            {
+                "kind": "ConfigMap",
+                "name": "petclinic-grafana-dashboard",
+                "namespace": "petclinic",
+                "requiresPruning": true,
+                "status": "Unknown",
+                "version": "v1"
+            },
+            {
+                "kind": "ConfigMap",
+                "name": "petclinic-metrics-dashboard",
+                "namespace": "petclinic",
+                "requiresPruning": true,
+                "status": "Unknown",
+                "version": "v1"
+            },
+            {
+                "kind": "Service",
+                "name": "petclinic",
+                "namespace": "petclinic",
+                "requiresPruning": true,
+                "status": "Unknown",
+                "version": "v1"
+            },
+            {
+                "group": "apps",
+                "kind": "Deployment",
+                "name": "petclinic",
+                "namespace": "petclinic",
+                "requiresPruning": true,
+                "status": "Unknown",
+                "version": "v1"
+            },
+            {
+                "group": "monitoring.coreos.com",
+                "kind": "PrometheusRule",
+                "name": "petclinic",
+                "namespace": "petclinic",
+                "requiresPruning": true,
+                "status": "Unknown",
+                "version": "v1"
+            },
+            {
+                "group": "monitoring.coreos.com",
+                "kind": "ServiceMonitor",
+                "name": "petclinic",
+                "namespace": "petclinic",
+                "requiresPruning": true,
+                "status": "Unknown",
+                "version": "v1"
+            },
+            {
+                "group": "networking.k8s.io",
+                "kind": "Ingress",
+                "name": "petclinic",
+                "namespace": "petclinic",
+                "requiresPruning": true,
+                "status": "Unknown",
+                "version": "v1"
+            }
+        ],
+        "sourceHydrator": {},
+        "summary": {
+            "externalURLs": [
+                "http://petclinic.devops.local/"
+            ],
+            "images": [
+                "10.0.0.3:30050/petclinic/petclinic:0.5.0-ci-77"
+            ]
+        },
+        "sync": {
+            "comparedTo": {
+                "destination": {
+                    "namespace": "petclinic",
+                    "server": "https://kubernetes.default.svc"
+                },
+                "source": {
+                    "path": "k8s/production",
+                    "repoURL": "https://github.com/yipintangzsp/spring-petclinic.git",
+                    "targetRevision": "main"
+                }
+            },
+            "revision": "main",
+            "status": "Unknown"
+        }
+    }
+}
+{
+    "apiVersion": "v1",
+    "items": [
+        {
+            "apiVersion": "v1",
+            "kind": "Pod",
+            "metadata": {
+                "annotations": {
+                    "devops.zhanglab.io/git-commit": "620ecc51de378c2d7581167aaa2eae585260a438",
+                    "devops.zhanglab.io/image-tag": "0.4.0-ci-57",
+                    "devops.zhanglab.io/jenkins-build": "57",
+                    "kubectl.kubernetes.io/restartedAt": "2026-08-18T12:35:18+08:00"
+                },
+                "creationTimestamp": "2026-09-30T06:08:03Z",
+                "generateName": "petclinic-5fbcdd4b88-",
+                "generation": 1,
+                "labels": {
+                    "app": "petclinic",
+                    "pod-template-hash": "5fbcdd4b88"
+                },
+                "name": "petclinic-5fbcdd4b88-kgflk",
+                "namespace": "petclinic",
+                "ownerReferences": [
+                    {
+                        "apiVersion": "apps/v1",
+                        "blockOwnerDeletion": true,
+                        "controller": true,
+                        "kind": "ReplicaSet",
+                        "name": "petclinic-5fbcdd4b88",
+                        "uid": "8b664356-e2f5-4443-83fb-e9d5b799320f"
+                    }
+                ],
+                "resourceVersion": "11166799",
+                "uid": "02081256-4737-4adc-b1e5-ac7e195c72fc"
+            },
+            "spec": {
+                "automountServiceAccountToken": false,
+                "containers": [
+                    {
+                        "env": [
+                            {
+                                "name": "APPLICATION_VERSION",
+                                "value": "0.5.0-ci-77"
+                            },
+                            {
+                                "name": "BUILD_NUMBER",
+                                "value": "77"
+                            },
+                            {
+                                "name": "BUILD_GIT_COMMIT",
+                                "value": "3f311a8c16cfe0d9d9a260fc0700ce91c7671d2a"
+                            },
+                            {
+                                "name": "BUILD_TIME",
+                                "value": "2026-09-30T06:06:54Z"
+                            },
+                            {
+                                "name": "SPRING_PROFILES_ACTIVE",
+                                "valueFrom": {
+                                    "configMapKeyRef": {
+                                        "key": "SPRING_PROFILES_ACTIVE",
+                                        "name": "petclinic-config"
+                                    }
+                                }
+                            },
+                            {
+                                "name": "POSTGRES_URL",
+                                "valueFrom": {
+                                    "configMapKeyRef": {
+                                        "key": "POSTGRES_URL",
+                                        "name": "petclinic-config"
+                                    }
+                                }
+                            },
+                            {
+                                "name": "POSTGRES_USER",
+                                "valueFrom": {
+                                    "secretKeyRef": {
+                                        "key": "POSTGRES_USER",
+                                        "name": "petclinic-db"
+                                    }
+                                }
+                            },
+                            {
+                                "name": "POSTGRES_PASS",
+                                "valueFrom": {
+                                    "secretKeyRef": {
+                                        "key": "POSTGRES_PASS",
+                                        "name": "petclinic-db"
+                                    }
+                                }
+                            }
+                        ],
+                        "image": "10.0.0.3:30050/petclinic/petclinic:0.5.0-ci-77",
+                        "imagePullPolicy": "IfNotPresent",
+                        "livenessProbe": {
+                            "failureThreshold": 3,
+                            "httpGet": {
+                                "path": "/actuator/health/liveness",
+                                "port": "http",
+                                "scheme": "HTTP"
+                            },
+                            "periodSeconds": 15,
+                            "successThreshold": 1,
+                            "timeoutSeconds": 3
+                        },
+                        "name": "petclinic",
+                        "ports": [
+                            {
+                                "containerPort": 8080,
+                                "name": "http",
+                                "protocol": "TCP"
+                            }
+                        ],
+                        "readinessProbe": {
+                            "failureThreshold": 6,
+                            "httpGet": {
+                                "path": "/actuator/health/readiness",
+                                "port": "http",
+                                "scheme": "HTTP"
+                            },
+                            "periodSeconds": 10,
+                            "successThreshold": 1,
+                            "timeoutSeconds": 3
+                        },
+                        "resources": {
+                            "limits": {
+                                "cpu": "500m",
+                                "memory": "768Mi"
+                            },
+                            "requests": {
+                                "cpu": "100m",
+                                "memory": "256Mi"
+                            }
+                        },
+                        "securityContext": {
+                            "allowPrivilegeEscalation": false,
+                            "capabilities": {
+                                "drop": [
+                                    "ALL"
+                                ]
+                            }
+                        },
+                        "startupProbe": {
+                            "failureThreshold": 36,
+                            "httpGet": {
+                                "path": "/actuator/health/liveness",
+                                "port": "http",
+                                "scheme": "HTTP"
+                            },
+                            "periodSeconds": 5,
+                            "successThreshold": 1,
+                            "timeoutSeconds": 3
+                        },
+                        "terminationMessagePath": "/dev/termination-log",
+                        "terminationMessagePolicy": "File"
+                    }
+                ],
+                "dnsPolicy": "ClusterFirst",
+                "enableServiceLinks": true,
+                "nodeName": "devops",
+                "preemptionPolicy": "PreemptLowerPriority",
+                "priority": 0,
+                "restartPolicy": "Always",
+                "schedulerName": "default-scheduler",
+                "securityContext": {
+                    "runAsGroup": 10001,
+                    "runAsNonRoot": true,
+                    "runAsUser": 10001
+                },
+                "serviceAccount": "default",
+                "serviceAccountName": "default",
+                "terminationGracePeriodSeconds": 30,
+                "tolerations": [
+                    {
+                        "effect": "NoSchedule",
+                        "key": "cloud",
+                        "operator": "Equal",
+                        "value": "true"
+                    },
+                    {
+                        "effect": "NoExecute",
+                        "key": "node.kubernetes.io/not-ready",
+                        "operator": "Exists",
+                        "tolerationSeconds": 300
+                    },
+                    {
+                        "effect": "NoExecute",
+                        "key": "node.kubernetes.io/unreachable",
+                        "operator": "Exists",
+                        "tolerationSeconds": 300
+                    }
+                ],
+                "topologySpreadConstraints": [
+                    {
+                        "labelSelector": {
+                            "matchExpressions": [
+                                {
+                                    "key": "pod-template-hash",
+                                    "operator": "In",
+                                    "values": [
+                                        "5fbcdd4b88"
+                                    ]
+                                }
+                            ],
+                            "matchLabels": {
+                                "app": "petclinic"
+                            }
+                        },
+                        "matchLabelKeys": [
+                            "pod-template-hash"
+                        ],
+                        "maxSkew": 1,
+                        "topologyKey": "kubernetes.io/hostname",
+                        "whenUnsatisfiable": "ScheduleAnyway"
+                    }
+                ]
+            },
+            "status": {
+                "allocatedResources": {
+                    "cpu": "100m",
+                    "memory": "256Mi"
+                },
+                "conditions": [
+                    {
+                        "lastProbeTime": null,
+                        "lastTransitionTime": "2026-09-30T06:08:03Z",
+                        "observedGeneration": 1,
+                        "status": "True",
+                        "type": "PodReadyToStartContainers"
+                    },
+                    {
+                        "lastProbeTime": null,
+                        "lastTransitionTime": "2026-09-30T06:08:03Z",
+                        "observedGeneration": 1,
+                        "status": "True",
+                        "type": "Initialized"
+                    },
+                    {
+                        "lastProbeTime": null,
+                        "lastTransitionTime": "2026-09-30T06:08:43Z",
+                        "observedGeneration": 1,
+                        "status": "True",
+                        "type": "Ready"
+                    },
+                    {
+                        "lastProbeTime": null,
+                        "lastTransitionTime": "2026-09-30T06:08:43Z",
+                        "observedGeneration": 1,
+                        "status": "True",
+                        "type": "ContainersReady"
+                    },
+                    {
+                        "lastProbeTime": null,
+                        "lastTransitionTime": "2026-09-30T06:08:03Z",
+                        "observedGeneration": 1,
+                        "status": "True",
+                        "type": "PodScheduled"
+                    }
+                ],
+                "containerStatuses": [
+                    {
+                        "allocatedResources": {
+                            "cpu": "100m",
+                            "memory": "256Mi"
+                        },
+                        "containerID": "containerd://ca947221b9e1c135d2c0dfc221fb7eaa186125255e1da942258a5910564aa4d9",
+                        "image": "10.0.0.3:30050/petclinic/petclinic:0.5.0-ci-77",
+                        "imageID": "10.0.0.3:30050/petclinic/petclinic@sha256:1f6c7a12f2e67db2f400a782f20c097ab3ce805c34d689c221d37d3115a4a2c7",
+                        "lastState": {},
+                        "name": "petclinic",
+                        "ready": true,
+                        "resources": {
+                            "limits": {
+                                "cpu": "500m",
+                                "memory": "768Mi"
+                            },
+                            "requests": {
+                                "cpu": "100m",
+                                "memory": "256Mi"
+                            }
+                        },
+                        "restartCount": 0,
+                        "started": true,
+                        "state": {
+                            "running": {
+                                "startedAt": "2026-09-30T06:08:05Z"
+                            }
+                        },
+                        "user": {
+                            "linux": {
+                                "gid": 10001,
+                                "supplementalGroups": [
+                                    10001
+                                ],
+                                "uid": 10001
+                            }
+                        }
+                    }
+                ],
+                "hostIP": "10.0.0.3",
+                "hostIPs": [
+                    {
+                        "ip": "10.0.0.3"
+                    }
+                ],
+                "observedGeneration": 1,
+                "phase": "Running",
+                "podIP": "10.42.0.80",
+                "podIPs": [
+                    {
+                        "ip": "10.42.0.80"
+                    }
+                ],
+                "qosClass": "Burstable",
+                "resources": {
+                    "limits": {
+                        "cpu": "500m",
+                        "memory": "768Mi"
+                    },
+                    "requests": {
+                        "cpu": "79m",
+                        "memory": "256Mi"
+                    }
+                },
+                "startTime": "2026-09-30T06:08:03Z"
+            }
+        },
+        {
+            "apiVersion": "v1",
+            "kind": "Pod",
+            "metadata": {
+                "annotations": {
+                    "devops.zhanglab.io/git-commit": "620ecc51de378c2d7581167aaa2eae585260a438",
+                    "devops.zhanglab.io/image-tag": "0.4.0-ci-57",
+                    "devops.zhanglab.io/jenkins-build": "57",
+                    "kubectl.kubernetes.io/restartedAt": "2026-08-18T12:35:18+08:00"
+                },
+                "creationTimestamp": "2026-09-30T06:08:02Z",
+                "generateName": "petclinic-5fbcdd4b88-",
+                "generation": 1,
+                "labels": {
+                    "app": "petclinic",
+                    "pod-template-hash": "5fbcdd4b88"
+                },
+                "name": "petclinic-5fbcdd4b88-ndt2f",
+                "namespace": "petclinic",
+                "ownerReferences": [
+                    {
+                        "apiVersion": "apps/v1",
+                        "blockOwnerDeletion": true,
+                        "controller": true,
+                        "kind": "ReplicaSet",
+                        "name": "petclinic-5fbcdd4b88",
+                        "uid": "8b664356-e2f5-4443-83fb-e9d5b799320f"
+                    }
+                ],
+                "resourceVersion": "11167140",
+                "uid": "ef51f7cc-2020-4bc8-bcaa-b79c9101a78d"
+            },
+            "spec": {
+                "automountServiceAccountToken": false,
+                "containers": [
+                    {
+                        "env": [
+                            {
+                                "name": "APPLICATION_VERSION",
+                                "value": "0.5.0-ci-77"
+                            },
+                            {
+                                "name": "BUILD_NUMBER",
+                                "value": "77"
+                            },
+                            {
+                                "name": "BUILD_GIT_COMMIT",
+                                "value": "3f311a8c16cfe0d9d9a260fc0700ce91c7671d2a"
+                            },
+                            {
+                                "name": "BUILD_TIME",
+                                "value": "2026-09-30T06:06:54Z"
+                            },
+                            {
+                                "name": "SPRING_PROFILES_ACTIVE",
+                                "valueFrom": {
+                                    "configMapKeyRef": {
+                                        "key": "SPRING_PROFILES_ACTIVE",
+                                        "name": "petclinic-config"
+                                    }
+                                }
+                            },
+                            {
+                                "name": "POSTGRES_URL",
+                                "valueFrom": {
+                                    "configMapKeyRef": {
+                                        "key": "POSTGRES_URL",
+                                        "name": "petclinic-config"
+                                    }
+                                }
+                            },
+                            {
+                                "name": "POSTGRES_USER",
+                                "valueFrom": {
+                                    "secretKeyRef": {
+                                        "key": "POSTGRES_USER",
+                                        "name": "petclinic-db"
+                                    }
+                                }
+                            },
+                            {
+                                "name": "POSTGRES_PASS",
+                                "valueFrom": {
+                                    "secretKeyRef": {
+                                        "key": "POSTGRES_PASS",
+                                        "name": "petclinic-db"
+                                    }
+                                }
+                            }
+                        ],
+                        "image": "10.0.0.3:30050/petclinic/petclinic:0.5.0-ci-77",
+                        "imagePullPolicy": "IfNotPresent",
+                        "livenessProbe": {
+                            "failureThreshold": 3,
+                            "httpGet": {
+                                "path": "/actuator/health/liveness",
+                                "port": "http",
+                                "scheme": "HTTP"
+                            },
+                            "periodSeconds": 15,
+                            "successThreshold": 1,
+                            "timeoutSeconds": 3
+                        },
+                        "name": "petclinic",
+                        "ports": [
+                            {
+                                "containerPort": 8080,
+                                "name": "http",
+                                "protocol": "TCP"
+                            }
+                        ],
+                        "readinessProbe": {
+                            "failureThreshold": 6,
+                            "httpGet": {
+                                "path": "/actuator/health/readiness",
+                                "port": "http",
+                                "scheme": "HTTP"
+                            },
+                            "periodSeconds": 10,
+                            "successThreshold": 1,
+                            "timeoutSeconds": 3
+                        },
+                        "resources": {
+                            "limits": {
+                                "cpu": "500m",
+                                "memory": "768Mi"
+                            },
+                            "requests": {
+                                "cpu": "100m",
+                                "memory": "256Mi"
+                            }
+                        },
+                        "securityContext": {
+                            "allowPrivilegeEscalation": false,
+                            "capabilities": {
+                                "drop": [
+                                    "ALL"
+                                ]
+                            }
+                        },
+                        "startupProbe": {
+                            "failureThreshold": 36,
+                            "httpGet": {
+                                "path": "/actuator/health/liveness",
+                                "port": "http",
+                                "scheme": "HTTP"
+                            },
+                            "periodSeconds": 5,
+                            "successThreshold": 1,
+                            "timeoutSeconds": 3
+                        },
+                        "terminationMessagePath": "/dev/termination-log",
+                        "terminationMessagePolicy": "File"
+                    }
+                ],
+                "dnsPolicy": "ClusterFirst",
+                "enableServiceLinks": true,
+                "nodeName": "ucloud-worker",
+                "preemptionPolicy": "PreemptLowerPriority",
+                "priority": 0,
+                "restartPolicy": "Always",
+                "schedulerName": "default-scheduler",
+                "securityContext": {
+                    "runAsGroup": 10001,
+                    "runAsNonRoot": true,
+                    "runAsUser": 10001
+                },
+                "serviceAccount": "default",
+                "serviceAccountName": "default",
+                "terminationGracePeriodSeconds": 30,
+                "tolerations": [
+                    {
+                        "effect": "NoSchedule",
+                        "key": "cloud",
+                        "operator": "Equal",
+                        "value": "true"
+                    },
+                    {
+                        "effect": "NoExecute",
+                        "key": "node.kubernetes.io/not-ready",
+                        "operator": "Exists",
+                        "tolerationSeconds": 300
+                    },
+                    {
+                        "effect": "NoExecute",
+                        "key": "node.kubernetes.io/unreachable",
+                        "operator": "Exists",
+                        "tolerationSeconds": 300
+                    }
+                ],
+                "topologySpreadConstraints": [
+                    {
+                        "labelSelector": {
+                            "matchExpressions": [
+                                {
+                                    "key": "pod-template-hash",
+                                    "operator": "In",
+                                    "values": [
+                                        "5fbcdd4b88"
+                                    ]
+                                }
+                            ],
+                            "matchLabels": {
+                                "app": "petclinic"
+                            }
+                        },
+                        "matchLabelKeys": [
+                            "pod-template-hash"
+                        ],
+                        "maxSkew": 1,
+                        "topologyKey": "kubernetes.io/hostname",
+                        "whenUnsatisfiable": "ScheduleAnyway"
+                    }
+                ]
+            },
+            "status": {
+                "allocatedResources": {
+                    "cpu": "100m",
+                    "memory": "256Mi"
+                },
+                "conditions": [
+                    {
+                        "lastProbeTime": null,
+                        "lastTransitionTime": "2026-09-30T06:08:03Z",
+                        "observedGeneration": 1,
+                        "status": "True",
+                        "type": "PodReadyToStartContainers"
+                    },
+                    {
+                        "lastProbeTime": null,
+                        "lastTransitionTime": "2026-09-30T06:08:03Z",
+                        "observedGeneration": 1,
+                        "status": "True",
+                        "type": "Initialized"
+                    },
+                    {
+                        "lastProbeTime": null,
+                        "lastTransitionTime": "2026-09-30T06:12:39Z",
+                        "observedGeneration": 1,
+                        "status": "True",
+                        "type": "Ready"
+                    },
+                    {
+                        "lastProbeTime": null,
+                        "lastTransitionTime": "2026-09-30T06:12:39Z",
+                        "observedGeneration": 1,
+                        "status": "True",
+                        "type": "ContainersReady"
+                    },
+                    {
+                        "lastProbeTime": null,
+                        "lastTransitionTime": "2026-09-30T06:08:03Z",
+                        "observedGeneration": 1,
+                        "status": "True",
+                        "type": "PodScheduled"
+                    }
+                ],
+                "containerStatuses": [
+                    {
+                        "allocatedResources": {
+                            "cpu": "100m",
+                            "memory": "256Mi"
+                        },
+                        "containerID": "containerd://c76e76296197853258783b244fdbf3efbe72a953fd4ea906162c6f55067bc169",
+                        "image": "10.0.0.3:30050/petclinic/petclinic:0.5.0-ci-77",
+                        "imageID": "10.0.0.3:30050/petclinic/petclinic@sha256:1f6c7a12f2e67db2f400a782f20c097ab3ce805c34d689c221d37d3115a4a2c7",
+                        "lastState": {},
+                        "name": "petclinic",
+                        "ready": true,
+                        "resources": {
+                            "limits": {
+                                "cpu": "500m",
+                                "memory": "768Mi"
+                            },
+                            "requests": {
+                                "cpu": "100m",
+                                "memory": "256Mi"
+                            }
+                        },
+                        "restartCount": 0,
+                        "started": true,
+                        "state": {
+                            "running": {
+                                "startedAt": "2026-09-30T06:11:14Z"
+                            }
+                        },
+                        "user": {
+                            "linux": {
+                                "gid": 10001,
+                                "supplementalGroups": [
+                                    10001
+                                ],
+                                "uid": 10001
+                            }
+                        }
+                    }
+                ],
+                "hostIP": "10.0.0.2",
+                "hostIPs": [
+                    {
+                        "ip": "10.0.0.2"
+                    }
+                ],
+                "observedGeneration": 1,
+                "phase": "Running",
+                "podIP": "10.42.3.176",
+                "podIPs": [
+                    {
+                        "ip": "10.42.3.176"
+                    }
+                ],
+                "qosClass": "Burstable",
+                "resources": {
+                    "limits": {
+                        "cpu": "500m",
+                        "memory": "768Mi"
+                    },
+                    "requests": {
+                        "cpu": "79m",
+                        "memory": "256Mi"
+                    }
+                },
+                "startTime": "2026-09-30T06:08:03Z"
+            }
+        },
+        {
+            "apiVersion": "v1",
+            "kind": "Pod",
+            "metadata": {
+                "annotations": {
+                    "devops.zhanglab.io/git-commit": "620ecc51de378c2d7581167aaa2eae585260a438",
+                    "devops.zhanglab.io/image-tag": "0.4.0-ci-57",
+                    "devops.zhanglab.io/jenkins-build": "57",
+                    "kubectl.kubernetes.io/restartedAt": "2026-08-18T12:35:18+08:00"
+                },
+                "creationTimestamp": "2026-09-30T06:08:03Z",
+                "generateName": "petclinic-5fbcdd4b88-",
+                "generation": 1,
+                "labels": {
+                    "app": "petclinic",
+                    "pod-template-hash": "5fbcdd4b88"
+                },
+                "name": "petclinic-5fbcdd4b88-x57f7",
+                "namespace": "petclinic",
+                "ownerReferences": [
+                    {
+                        "apiVersion": "apps/v1",
+                        "blockOwnerDeletion": true,
+                        "controller": true,
+                        "kind": "ReplicaSet",
+                        "name": "petclinic-5fbcdd4b88",
+                        "uid": "8b664356-e2f5-4443-83fb-e9d5b799320f"
+                    }
+                ],
+                "resourceVersion": "11166849",
+                "uid": "64487af0-749b-407c-a97e-e8db9faf8e21"
+            },
+            "spec": {
+                "automountServiceAccountToken": false,
+                "containers": [
+                    {
+                        "env": [
+                            {
+                                "name": "APPLICATION_VERSION",
+                                "value": "0.5.0-ci-77"
+                            },
+                            {
+                                "name": "BUILD_NUMBER",
+                                "value": "77"
+                            },
+                            {
+                                "name": "BUILD_GIT_COMMIT",
+                                "value": "3f311a8c16cfe0d9d9a260fc0700ce91c7671d2a"
+                            },
+                            {
+                                "name": "BUILD_TIME",
+                                "value": "2026-09-30T06:06:54Z"
+                            },
+                            {
+                                "name": "SPRING_PROFILES_ACTIVE",
+                                "valueFrom": {
+                                    "configMapKeyRef": {
+                                        "key": "SPRING_PROFILES_ACTIVE",
+                                        "name": "petclinic-config"
+                                    }
+                                }
+                            },
+                            {
+                                "name": "POSTGRES_URL",
+                                "valueFrom": {
+                                    "configMapKeyRef": {
+                                        "key": "POSTGRES_URL",
+                                        "name": "petclinic-config"
+                                    }
+                                }
+                            },
+                            {
+                                "name": "POSTGRES_USER",
+                                "valueFrom": {
+                                    "secretKeyRef": {
+                                        "key": "POSTGRES_USER",
+                                        "name": "petclinic-db"
+                                    }
+                                }
+                            },
+                            {
+                                "name": "POSTGRES_PASS",
+                                "valueFrom": {
+                                    "secretKeyRef": {
+                                        "key": "POSTGRES_PASS",
+                                        "name": "petclinic-db"
+                                    }
+                                }
+                            }
+                        ],
+                        "image": "10.0.0.3:30050/petclinic/petclinic:0.5.0-ci-77",
+                        "imagePullPolicy": "IfNotPresent",
+                        "livenessProbe": {
+                            "failureThreshold": 3,
+                            "httpGet": {
+                                "path": "/actuator/health/liveness",
+                                "port": "http",
+                                "scheme": "HTTP"
+                            },
+                            "periodSeconds": 15,
+                            "successThreshold": 1,
+                            "timeoutSeconds": 3
+                        },
+                        "name": "petclinic",
+                        "ports": [
+                            {
+                                "containerPort": 8080,
+                                "name": "http",
+                                "protocol": "TCP"
+                            }
+                        ],
+                        "readinessProbe": {
+                            "failureThreshold": 6,
+                            "httpGet": {
+                                "path": "/actuator/health/readiness",
+                                "port": "http",
+                                "scheme": "HTTP"
+                            },
+                            "periodSeconds": 10,
+                            "successThreshold": 1,
+                            "timeoutSeconds": 3
+                        },
+                        "resources": {
+                            "limits": {
+                                "cpu": "500m",
+                                "memory": "768Mi"
+                            },
+                            "requests": {
+                                "cpu": "100m",
+                                "memory": "256Mi"
+                            }
+                        },
+                        "securityContext": {
+                            "allowPrivilegeEscalation": false,
+                            "capabilities": {
+                                "drop": [
+                                    "ALL"
+                                ]
+                            }
+                        },
+                        "startupProbe": {
+                            "failureThreshold": 36,
+                            "httpGet": {
+                                "path": "/actuator/health/liveness",
+                                "port": "http",
+                                "scheme": "HTTP"
+                            },
+                            "periodSeconds": 5,
+                            "successThreshold": 1,
+                            "timeoutSeconds": 3
+                        },
+                        "terminationMessagePath": "/dev/termination-log",
+                        "terminationMessagePolicy": "File"
+                    }
+                ],
+                "dnsPolicy": "ClusterFirst",
+                "enableServiceLinks": true,
+                "nodeName": "aliyun-worker",
+                "preemptionPolicy": "PreemptLowerPriority",
+                "priority": 0,
+                "restartPolicy": "Always",
+                "schedulerName": "default-scheduler",
+                "securityContext": {
+                    "runAsGroup": 10001,
+                    "runAsNonRoot": true,
+                    "runAsUser": 10001
+                },
+                "serviceAccount": "default",
+                "serviceAccountName": "default",
+                "terminationGracePeriodSeconds": 30,
+                "tolerations": [
+                    {
+                        "effect": "NoSchedule",
+                        "key": "cloud",
+                        "operator": "Equal",
+                        "value": "true"
+                    },
+                    {
+                        "effect": "NoExecute",
+                        "key": "node.kubernetes.io/not-ready",
+                        "operator": "Exists",
+                        "tolerationSeconds": 300
+                    },
+                    {
+                        "effect": "NoExecute",
+                        "key": "node.kubernetes.io/unreachable",
+                        "operator": "Exists",
+                        "tolerationSeconds": 300
+                    }
+                ],
+                "topologySpreadConstraints": [
+                    {
+                        "labelSelector": {
+                            "matchExpressions": [
+                                {
+                                    "key": "pod-template-hash",
+                                    "operator": "In",
+                                    "values": [
+                                        "5fbcdd4b88"
+                                    ]
+                                }
+                            ],
+                            "matchLabels": {
+                                "app": "petclinic"
+                            }
+                        },
+                        "matchLabelKeys": [
+                            "pod-template-hash"
+                        ],
+                        "maxSkew": 1,
+                        "topologyKey": "kubernetes.io/hostname",
+                        "whenUnsatisfiable": "ScheduleAnyway"
+                    }
+                ]
+            },
+            "status": {
+                "allocatedResources": {
+                    "cpu": "100m",
+                    "memory": "256Mi"
+                },
+                "conditions": [
+                    {
+                        "lastProbeTime": null,
+                        "lastTransitionTime": "2026-09-30T06:08:03Z",
+                        "observedGeneration": 1,
+                        "status": "True",
+                        "type": "PodReadyToStartContainers"
+                    },
+                    {
+                        "lastProbeTime": null,
+                        "lastTransitionTime": "2026-09-30T06:08:03Z",
+                        "observedGeneration": 1,
+                        "status": "True",
+                        "type": "Initialized"
+                    },
+                    {
+                        "lastProbeTime": null,
+                        "lastTransitionTime": "2026-09-30T06:09:03Z",
+                        "observedGeneration": 1,
+                        "status": "True",
+                        "type": "Ready"
+                    },
+                    {
+                        "lastProbeTime": null,
+                        "lastTransitionTime": "2026-09-30T06:09:03Z",
+                        "observedGeneration": 1,
+                        "status": "True",
+                        "type": "ContainersReady"
+                    },
+                    {
+                        "lastProbeTime": null,
+                        "lastTransitionTime": "2026-09-30T06:08:03Z",
+                        "observedGeneration": 1,
+                        "status": "True",
+                        "type": "PodScheduled"
+                    }
+                ],
+                "containerStatuses": [
+                    {
+                        "allocatedResources": {
+                            "cpu": "100m",
+                            "memory": "256Mi"
+                        },
+                        "containerID": "containerd://e80cdbedc24325dff08ffa90f04efc8c4d59c61e6d26ddf2658464f6377090ec",
+                        "image": "10.0.0.3:30050/petclinic/petclinic:0.5.0-ci-77",
+                        "imageID": "10.0.0.3:30050/petclinic/petclinic@sha256:1f6c7a12f2e67db2f400a782f20c097ab3ce805c34d689c221d37d3115a4a2c7",
+                        "lastState": {},
+                        "name": "petclinic",
+                        "ready": true,
+                        "resources": {
+                            "limits": {
+                                "cpu": "500m",
+                                "memory": "768Mi"
+                            },
+                            "requests": {
+                                "cpu": "100m",
+                                "memory": "256Mi"
+                            }
+                        },
+                        "restartCount": 0,
+                        "started": true,
+                        "state": {
+                            "running": {
+                                "startedAt": "2026-09-30T06:08:16Z"
+                            }
+                        },
+                        "user": {
+                            "linux": {
+                                "gid": 10001,
+                                "supplementalGroups": [
+                                    10001
+                                ],
+                                "uid": 10001
+                            }
+                        }
+                    }
+                ],
+                "hostIP": "10.0.0.1",
+                "hostIPs": [
+                    {
+                        "ip": "10.0.0.1"
+                    }
+                ],
+                "observedGeneration": 1,
+                "phase": "Running",
+                "podIP": "10.42.1.5",
+                "podIPs": [
+                    {
+                        "ip": "10.42.1.5"
+                    }
+                ],
+                "qosClass": "Burstable",
+                "resources": {
+                    "limits": {
+                        "cpu": "500m",
+                        "memory": "768Mi"
+                    },
+                    "requests": {
+                        "cpu": "79m",
+                        "memory": "256Mi"
+                    }
+                },
+                "startTime": "2026-09-30T06:08:03Z"
+            }
+        }
+    ],
+    "kind": "List",
+    "metadata": {
+        "resourceVersion": ""
+    }
+}
+{
+  "schemaVersion": 2,
+  "mediaType": "application/vnd.oci.image.index.v1+json",
+  "manifests": [
+    {
+      "mediaType": "application/vnd.oci.image.manifest.v1+json",
+      "digest": "sha256:27f6ad5d7c7910cf196b55e493eb6c55c18436ac1d4f365811b307247b75c3b4",
+      "size": 863,
+      "platform": {
+        "architecture": "amd64",
+        "os": "linux"
+      }
+    },
+    {
+      "mediaType": "application/vnd.oci.image.manifest.v1+json",
+      "digest": "sha256:f91e12c794021eb6727fe5a8af803ef5199cae34729a5f5a25101b9016047104",
+      "size": 1813,
+      "platform": {
+        "architecture": "arm64",
+        "os": "linux"
+      }
+    },
+    {
+      "mediaType": "application/vnd.oci.image.manifest.v1+json",
+      "digest": "sha256:d790c17df50d1288a2f73f4efc875476f41aa51fee070e1ed23443dc9a3db492",
+      "size": 564,
+      "annotations": {
+        "vnd.docker.reference.digest": "sha256:27f6ad5d7c7910cf196b55e493eb6c55c18436ac1d4f365811b307247b75c3b4",
+        "vnd.docker.reference.type": "attestation-manifest"
+      },
+      "platform": {
+        "architecture": "unknown",
+        "os": "unknown"
+      }
+    },
+    {
+      "mediaType": "application/vnd.oci.image.manifest.v1+json",
+      "digest": "sha256:480c6b013290ccac12a8ec14fbbb738e5d400bd45610d5592d999d5b8a1e17c7",
+      "size": 564,
+      "annotations": {
+        "vnd.docker.reference.digest": "sha256:f91e12c794021eb6727fe5a8af803ef5199cae34729a5f5a25101b9016047104",
+        "vnd.docker.reference.type": "attestation-manifest"
+      },
+      "platform": {
+        "architecture": "unknown",
+        "os": "unknown"
+      }
+    }
+  ]
+}[pod/petclinic-5fbcdd4b88-kgflk/petclinic] 	Autocommit mode: undefined/unknown
+[pod/petclinic-5fbcdd4b88-kgflk/petclinic] 	Isolation level: READ_COMMITTED [default READ_COMMITTED]
+[pod/petclinic-5fbcdd4b88-kgflk/petclinic] 	JDBC fetch size: none
+[pod/petclinic-5fbcdd4b88-kgflk/petclinic] 	Pool: DataSourceConnectionProvider
+[pod/petclinic-5fbcdd4b88-kgflk/petclinic] 	Minimum pool size: undefined/unknown
+[pod/petclinic-5fbcdd4b88-kgflk/petclinic] 	Maximum pool size: undefined/unknown
+[pod/petclinic-5fbcdd4b88-kgflk/petclinic] 2026-09-30T06:08:29.104Z  INFO 1 --- [           main] org.hibernate.orm.core                   : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+[pod/petclinic-5fbcdd4b88-kgflk/petclinic] 2026-09-30T06:08:29.114Z  INFO 1 --- [           main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+[pod/petclinic-5fbcdd4b88-kgflk/petclinic] 2026-09-30T06:08:29.523Z  INFO 1 --- [           main] o.s.d.j.r.query.QueryEnhancerFactories   : Hibernate is in classpath; If applicable, HQL parser will be used.
+[pod/petclinic-5fbcdd4b88-kgflk/petclinic] 2026-09-30T06:08:39.821Z  INFO 1 --- [           main] o.s.b.a.e.web.EndpointLinksResolver      : Exposing 14 endpoints beneath base path '/actuator'
+[pod/petclinic-5fbcdd4b88-kgflk/petclinic] 2026-09-30T06:08:40.415Z  INFO 1 --- [           main] o.s.boot.tomcat.TomcatWebServer          : Tomcat started on port 8080 (http) with context path '/'
+[pod/petclinic-5fbcdd4b88-kgflk/petclinic] 2026-09-30T06:08:40.453Z  INFO 1 --- [           main] o.s.s.petclinic.PetClinicApplication     : Started PetClinicApplication in 32.385 seconds (process running for 35.33)
+[pod/petclinic-5fbcdd4b88-kgflk/petclinic] 2026-09-30T06:08:43.305Z  INFO 1 --- [nio-8080-exec-1] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
+[pod/petclinic-5fbcdd4b88-kgflk/petclinic] 2026-09-30T06:08:43.305Z  INFO 1 --- [nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+[pod/petclinic-5fbcdd4b88-kgflk/petclinic] 2026-09-30T06:08:43.306Z  INFO 1 --- [nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 1 ms
+[pod/petclinic-5fbcdd4b88-ndt2f/petclinic] 	Isolation level: READ_COMMITTED [default READ_COMMITTED]
+[pod/petclinic-5fbcdd4b88-ndt2f/petclinic] 	JDBC fetch size: none
+[pod/petclinic-5fbcdd4b88-ndt2f/petclinic] 	Pool: DataSourceConnectionProvider
+[pod/petclinic-5fbcdd4b88-ndt2f/petclinic] 	Minimum pool size: undefined/unknown
+[pod/petclinic-5fbcdd4b88-ndt2f/petclinic] 	Maximum pool size: undefined/unknown
+[pod/petclinic-5fbcdd4b88-ndt2f/petclinic] 2026-09-30T06:12:21.131Z  INFO 1 --- [           main] org.hibernate.orm.core                   : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+[pod/petclinic-5fbcdd4b88-ndt2f/petclinic] 2026-09-30T06:12:21.141Z  INFO 1 --- [           main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+[pod/petclinic-5fbcdd4b88-ndt2f/petclinic] 2026-09-30T06:12:21.724Z  INFO 1 --- [           main] o.s.d.j.r.query.QueryEnhancerFactories   : Hibernate is in classpath; If applicable, HQL parser will be used.
+[pod/petclinic-5fbcdd4b88-ndt2f/petclinic] 2026-09-30T06:12:36.422Z  INFO 1 --- [           main] o.s.b.a.e.web.EndpointLinksResolver      : Exposing 14 endpoints beneath base path '/actuator'
+[pod/petclinic-5fbcdd4b88-ndt2f/petclinic] 2026-09-30T06:12:37.016Z  INFO 1 --- [           main] o.s.boot.tomcat.TomcatWebServer          : Tomcat started on port 8080 (http) with context path '/'
+[pod/petclinic-5fbcdd4b88-ndt2f/petclinic] 2026-09-30T06:12:37.108Z  INFO 1 --- [           main] o.s.s.petclinic.PetClinicApplication     : Started PetClinicApplication in 79.474 seconds (process running for 82.619)
+[pod/petclinic-5fbcdd4b88-ndt2f/petclinic] 2026-09-30T06:12:38.519Z  INFO 1 --- [nio-8080-exec-1] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
+[pod/petclinic-5fbcdd4b88-ndt2f/petclinic] 2026-09-30T06:12:38.520Z  INFO 1 --- [nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+[pod/petclinic-5fbcdd4b88-ndt2f/petclinic] 2026-09-30T06:12:38.523Z  INFO 1 --- [nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 2 ms
+[pod/petclinic-5fbcdd4b88-ndt2f/petclinic] 2026-09-30T06:31:34.170Z  WARN 1 --- [l-1:housekeeper] com.zaxxer.hikari.pool.PoolBase          : HikariPool-1 - Failed to validate connection org.postgresql.jdbc.PgConnection@47bb3ad9 (This connection has been closed.). Possibly consider using a shorter maxLifetime value.
+[pod/petclinic-5fbcdd4b88-x57f7/petclinic] 	Autocommit mode: undefined/unknown
+[pod/petclinic-5fbcdd4b88-x57f7/petclinic] 	Isolation level: READ_COMMITTED [default READ_COMMITTED]
+[pod/petclinic-5fbcdd4b88-x57f7/petclinic] 	JDBC fetch size: none
+[pod/petclinic-5fbcdd4b88-x57f7/petclinic] 	Pool: DataSourceConnectionProvider
+[pod/petclinic-5fbcdd4b88-x57f7/petclinic] 	Minimum pool size: undefined/unknown
+[pod/petclinic-5fbcdd4b88-x57f7/petclinic] 	Maximum pool size: undefined/unknown
+[pod/petclinic-5fbcdd4b88-x57f7/petclinic] 2026-09-30T06:08:47.550Z  INFO 1 --- [           main] org.hibernate.orm.core                   : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+[pod/petclinic-5fbcdd4b88-x57f7/petclinic] 2026-09-30T06:08:47.559Z  INFO 1 --- [           main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+[pod/petclinic-5fbcdd4b88-x57f7/petclinic] 2026-09-30T06:08:48.047Z  INFO 1 --- [           main] o.s.d.j.r.query.QueryEnhancerFactories   : Hibernate is in classpath; If applicable, HQL parser will be used.
+[pod/petclinic-5fbcdd4b88-x57f7/petclinic] 2026-09-30T06:09:00.733Z  INFO 1 --- [           main] o.s.b.a.e.web.EndpointLinksResolver      : Exposing 14 endpoints beneath base path '/actuator'
+[pod/petclinic-5fbcdd4b88-x57f7/petclinic] 2026-09-30T06:09:01.251Z  INFO 1 --- [           main] o.s.boot.tomcat.TomcatWebServer          : Tomcat started on port 8080 (http) with context path '/'
+[pod/petclinic-5fbcdd4b88-x57f7/petclinic] 2026-09-30T06:09:01.336Z  INFO 1 --- [           main] o.s.s.petclinic.PetClinicApplication     : Started PetClinicApplication in 41.404 seconds (process running for 44.519)
+[pod/petclinic-5fbcdd4b88-x57f7/petclinic] 2026-09-30T06:09:03.232Z  INFO 1 --- [nio-8080-exec-1] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
+[pod/petclinic-5fbcdd4b88-x57f7/petclinic] 2026-09-30T06:09:03.234Z  INFO 1 --- [nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+[pod/petclinic-5fbcdd4b88-x57f7/petclinic] 2026-09-30T06:09:03.237Z  INFO 1 --- [nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 3 ms

@@ -1,0 +1,2382 @@
+Started by user admin
+Obtained Jenkinsfile from git git@github.com:yipintangzsp/spring-petclinic.git
+[Pipeline] Start of Pipeline
+[Pipeline] node
+Running on Jenkins in /var/jenkins_home/workspace/petclinic-ci
+[Pipeline] {
+[Pipeline] stage
+[Pipeline] { (Declarative: Checkout SCM)
+[Pipeline] checkout
+The recommended git tool is: git
+using credential github-petclinic-ssh
+ > git rev-parse --resolve-git-dir /var/jenkins_home/workspace/petclinic-ci/.git # timeout=10
+Fetching changes from the remote Git repository
+ > git config remote.origin.url git@github.com:yipintangzsp/spring-petclinic.git # timeout=10
+Fetching upstream changes from git@github.com:yipintangzsp/spring-petclinic.git
+ > git --version # timeout=10
+ > git --version # 'git version 2.47.3'
+using GIT_SSH to set credentials GitHub SSH Deploy Key for Petclinic CI
+Verifying host key using known hosts file
+ > git fetch --tags --force --progress -- git@github.com:yipintangzsp/spring-petclinic.git +refs/heads/*:refs/remotes/origin/* # timeout=10
+ > git rev-parse refs/remotes/origin/main^{commit} # timeout=10
+Checking out Revision 3f311a8c16cfe0d9d9a260fc0700ce91c7671d2a (refs/remotes/origin/main)
+ > git config core.sparsecheckout # timeout=10
+ > git checkout -f 3f311a8c16cfe0d9d9a260fc0700ce91c7671d2a # timeout=10
+Commit message: "feat: connect clinic directories and persisted care workflows"
+ > git rev-list --no-walk 3f311a8c16cfe0d9d9a260fc0700ce91c7671d2a # timeout=10
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] withEnv
+[Pipeline] {
+[Pipeline] withEnv
+[Pipeline] {
+[Pipeline] stage
+[Pipeline] { (Checkout Info)
+[Pipeline] sh
++ echo ===== WORKSPACE =====
+===== WORKSPACE =====
++ pwd
+/var/jenkins_home/workspace/petclinic-ci
++ echo
+
++ echo ===== CLEAN PIPELINE STATE =====
+===== CLEAN PIPELINE STATE =====
++ rm -f .deploy-started .target-git-revision .git-sha .git-sha-short .change-cause .new-revision .previous-image .previous-revision
++ echo Pipeline state cleaned.
+Pipeline state cleaned.
++ echo
+
++ echo ===== GIT =====
+===== GIT =====
++ git status
+HEAD detached at 3f311a8
+nothing to commit, working tree clean
++ git rev-parse HEAD
++ GIT_SHA=3f311a8c16cfe0d9d9a260fc0700ce91c7671d2a
++ git rev-parse --short HEAD
++ GIT_SHA_SHORT=3f311a8
++ echo GIT_SHA=3f311a8c16cfe0d9d9a260fc0700ce91c7671d2a
+GIT_SHA=3f311a8c16cfe0d9d9a260fc0700ce91c7671d2a
++ echo GIT_SHA_SHORT=3f311a8
+GIT_SHA_SHORT=3f311a8
++ printf %s 3f311a8c16cfe0d9d9a260fc0700ce91c7671d2a
++ printf %s 3f311a8
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] stage
+[Pipeline] { (Test)
+[Pipeline] sh
++ echo ===== MAVEN TEST =====
+===== MAVEN TEST =====
++ ./mvnw clean test
+[INFO] Scanning for projects...
+[INFO] 
+[INFO] ------------< org.springframework.samples:spring-petclinic >------------
+[INFO] Building petclinic 4.0.0-SNAPSHOT
+[INFO]   from pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- clean:3.5.0:clean (default-clean) @ spring-petclinic ---
+[INFO] Deleting /var/jenkins_home/workspace/petclinic-ci/target
+[INFO] 
+[INFO] --- enforcer:3.6.3:enforce (enforce-java) @ spring-petclinic ---
+[INFO] Rule 0: org.apache.maven.enforcer.rules.version.RequireJavaVersion passed
+[INFO] 
+[INFO] --- spring-javaformat:0.0.47:validate (default) @ spring-petclinic ---
+[INFO] 
+[INFO] --- checkstyle:3.6.0:check (nohttp-checkstyle-validation) @ spring-petclinic ---
+[INFO] You have 0 Checkstyle violations.
+[INFO] 
+[INFO] --- jacoco:0.8.15:prepare-agent (default) @ spring-petclinic ---
+[INFO] argLine set to -javaagent:/var/jenkins_home/.m2/repository/org/jacoco/org.jacoco.agent/0.8.15/org.jacoco.agent-0.8.15-runtime.jar=destfile=/var/jenkins_home/workspace/petclinic-ci/target/jacoco.exec
+[INFO] 
+[INFO] --- git-commit-id:9.2.0:revision (default) @ spring-petclinic ---
+[INFO] dotGitDirectory '/var/jenkins_home/workspace/petclinic-ci/.git'
+[INFO] Collected git.build.user.name with value jenkins-petclinic-ci
+[INFO] Collected git.build.user.email with value jenkins-petclinic-ci@users.noreply.github.com
+[INFO] Using environment variable based branch name. GIT_BRANCH = origin/main
+[INFO] Collected git.branch with value origin/main
+[INFO] Collected git.commit.id.describe with value dcp-v1.28.0-monitoring-observability-24-g3f311a8
+[INFO] Collected git.commit.id.describe-short with value dcp-v1.28.0-monitoring-observability-24
+[INFO] Collected git.commit.id with value 3f311a8c16cfe0d9d9a260fc0700ce91c7671d2a
+[INFO] Collected git.commit.id.abbrev with value 3f311a8
+[INFO] Collected git.dirty with value false
+[INFO] Collected git.commit.user.name with value heil16070-hue
+[INFO] Collected git.commit.user.email with value heil16070@gmail.com
+[INFO] Collected git.commit.message.full with value feat: connect clinic directories and persisted care workflows
+
+Signed-off-by: heil16070-hue <heil16070@gmail.com>
+[INFO] Collected git.commit.message.short with value feat: connect clinic directories and persisted care workflows
+[INFO] Collected git.commit.time with value 2026-09-30T12:15:53+08:00
+[INFO] Collected git.commit.author.time with value 2026-09-30T12:15:53+08:00
+[INFO] Collected git.commit.committer.time with value 2026-09-30T12:15:53+08:00
+[INFO] Collected git.remote.origin.url with value git@github.com:yipintangzsp/spring-petclinic.git
+[INFO] Collected git.tags with value 
+[INFO] Collected git.tag with value 
+[INFO] Collected git.closest.tag.name with value dcp-v1.28.0-monitoring-observability
+[INFO] Collected git.closest.tag.commit.count with value 24
+[INFO] Collected git.total.commit.count with value 1115
+[INFO] Collected git.local.branch.ahead with value NO_REMOTE
+[INFO] Collected git.local.branch.behind with value NO_REMOTE
+[INFO] Collected git.build.time with value 2024-11-28T22:37:52+08:00
+[INFO] Collected git.build.version with value 4.0.0-SNAPSHOT
+[INFO] Collected git.build.host with value jenkins-87ccb46-m5bcm
+[INFO] Collected git.build.number with value 77
+[INFO] including property 'git.tags' in results
+[INFO] including property 'git.build.version' in results
+[INFO] including property 'git.branch' in results
+[INFO] including property 'git.build.host' in results
+[INFO] including property 'git.build.number' in results
+[INFO] including property 'git.commit.id' in results
+[INFO] including property 'git.commit.user.email' in results
+[INFO] including property 'git.local.branch.behind' in results
+[INFO] including property 'git.commit.author.time' in results
+[INFO] including property 'git.build.user.name' in results
+[INFO] including property 'git.dirty' in results
+[INFO] including property 'git.closest.tag.commit.count' in results
+[INFO] including property 'git.commit.user.name' in results
+[INFO] including property 'git.commit.id.abbrev' in results
+[INFO] including property 'git.commit.id.describe-short' in results
+[INFO] including property 'git.total.commit.count' in results
+[INFO] including property 'git.commit.id.describe' in results
+[INFO] including property 'git.build.user.email' in results
+[INFO] including property 'git.commit.message.short' in results
+[INFO] including property 'git.commit.committer.time' in results
+[INFO] including property 'git.tag' in results
+[INFO] including property 'git.closest.tag.name' in results
+[INFO] including property 'git.local.branch.ahead' in results
+[INFO] including property 'git.commit.time' in results
+[INFO] including property 'git.build.time' in results
+[INFO] including property 'git.commit.message.full' in results
+[INFO] including property 'git.remote.origin.url' in results
+[INFO] Writing properties file [/var/jenkins_home/workspace/petclinic-ci/target/classes/git.properties] (for project petclinic)...
+[INFO] 
+[INFO] --- spring-boot:4.1.0:build-info (default) @ spring-petclinic ---
+[INFO] 
+[INFO] --- cyclonedx:2.9.1:makeAggregateBom (default) @ spring-petclinic ---
+[INFO] CycloneDX: Resolving Dependencies
+[INFO] CycloneDX: Creating BOM version 1.6 with 113 component(s)
+[INFO] CycloneDX: Writing and validating BOM (JSON): /var/jenkins_home/workspace/petclinic-ci/target/classes/META-INF/sbom/application.cdx.json
+[WARNING] Unknown keyword meta:enum - you should define your own Meta Schema. If the keyword is irrelevant for validation, just use a NonValidationKeyword or if it should generate annotations AnnotationKeyword
+[WARNING] Unknown keyword deprecated - you should define your own Meta Schema. If the keyword is irrelevant for validation, just use a NonValidationKeyword or if it should generate annotations AnnotationKeyword
+[INFO]            attaching as spring-petclinic-4.0.0-SNAPSHOT-cyclonedx.json
+[INFO] 
+[INFO] --- resources:3.5.0:resources (default-resources) @ spring-petclinic ---
+[INFO] Copying 3 resources from src/main/resources to target/classes
+[INFO] Copying 51 resources from src/main/resources to target/classes
+[INFO] 
+[INFO] --- compiler:3.15.0:compile (default-compile) @ spring-petclinic ---
+[INFO] Recompiling the module because of changed source code.
+[INFO] Compiling 34 source files with javac [debug parameters release 17] to target/classes
+[INFO] 
+[INFO] --- resources:3.5.0:testResources (default-testResources) @ spring-petclinic ---
+[INFO] skip non existing resourceDirectory /var/jenkins_home/workspace/petclinic-ci/src/test/resources
+[INFO] 
+[INFO] --- compiler:3.15.0:testCompile (default-testCompile) @ spring-petclinic ---
+[INFO] Recompiling the module because of changed dependency.
+[INFO] Compiling 20 source files with javac [debug parameters release 17] to target/test-classes
+[INFO] 
+[INFO] --- surefire:3.5.6:test (default-test) @ spring-petclinic ---
+[WARNING]  Parameter 'systemProperties' is deprecated: use systemPropertyVariables instead
+[INFO] Using auto detected provider org.apache.maven.surefire.junitplatform.JUnitPlatformProvider
+[INFO] 
+[INFO] -------------------------------------------------------
+[INFO]  T E S T S
+[INFO] -------------------------------------------------------
+[INFO] Running org.springframework.samples.petclinic.system.CrashControllerTests
+[INFO] Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.180 s -- in org.springframework.samples.petclinic.system.CrashControllerTests
+[INFO] Running org.springframework.samples.petclinic.system.I18nPropertiesSyncTest
+[INFO] Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.070 s -- in org.springframework.samples.petclinic.system.I18nPropertiesSyncTest
+[INFO] Running org.springframework.samples.petclinic.system.WelcomeControllerTests
+14:05:25.937 [main] INFO org.springframework.test.context.support.AnnotationConfigContextLoaderUtils -- Could not detect default configuration classes for test class [org.springframework.samples.petclinic.system.WelcomeControllerTests]: WelcomeControllerTests does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+14:05:26.129 [main] INFO org.springframework.boot.test.context.SpringBootTestContextBootstrapper -- Found @SpringBootConfiguration org.springframework.samples.petclinic.system.CrashControllerIntegrationTests$TestConfiguration for test class org.springframework.samples.petclinic.system.WelcomeControllerTests
+14:05:26.132 [main] INFO org.springframework.test.context.support.AnnotationConfigContextLoaderUtils -- Could not detect default configuration classes for test class [org.springframework.samples.petclinic.system.WelcomeControllerTests]: WelcomeControllerTests does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+14:05:26.152 [main] INFO org.springframework.boot.test.context.SpringBootTestContextBootstrapper -- Found @SpringBootConfiguration org.springframework.samples.petclinic.system.CrashControllerIntegrationTests$TestConfiguration for test class org.springframework.samples.petclinic.system.WelcomeControllerTests
+14:05:26.259 [main] INFO org.springframework.boot.devtools.restart.RestartApplicationListener -- Restart disabled due to context in which it is running
+
+
+              |\      _,,,--,,_
+             /,`.-'`'   ._  \-;;,_
+  _______ __|,4-  ) )_   .;.(__`'-'__     ___ __    _ ___ _______
+ |       | '---''(_/._)-'(_\_)   |   |   |   |  |  | |   |       |
+ |    _  |    ___|_     _|       |   |   |   |   |_| |   |       | __ _ _
+ |   |_| |   |___  |   | |       |   |   |   |       |   |       | \ \ \ \
+ |    ___|    ___| |   | |      _|   |___|   |  _    |   |      _|  \ \ \ \
+ |   |   |   |___  |   | |     |_|       |   | | |   |   |     |_    ) ) ) )
+ |___|   |_______| |___| |_______|_______|___|_|  |__|___|_______|  / / / /
+ ==================================================================/_/_/_/
+
+:: Built with Spring Boot :: 4.1.0
+
+
+2026-09-30T14:05:26.870+08:00  INFO 598 --- [           main] o.s.s.p.system.WelcomeControllerTests    : Starting WelcomeControllerTests using Java 21.0.11 with PID 598 (started by jenkins in /var/jenkins_home/workspace/petclinic-ci)
+2026-09-30T14:05:26.883+08:00  INFO 598 --- [           main] o.s.s.p.system.WelcomeControllerTests    : No active profile set, falling back to 1 default profile: "default"
+Mockito is currently self-attaching to enable the inline-mock-maker. This will no longer work in future releases of the JDK. Please add Mockito as an agent to your build as described in Mockito's documentation: https://javadoc.io/doc/org.mockito/mockito-core/latest/org.mockito/org/mockito/Mockito.html#0.3
+WARNING: A Java agent has been loaded dynamically (/var/jenkins_home/.m2/repository/net/bytebuddy/byte-buddy-agent/1.18.10/byte-buddy-agent-1.18.10.jar)
+WARNING: If a serviceability tool is in use, please run with -XX:+EnableDynamicAgentLoading to hide this warning
+WARNING: If a serviceability tool is not in use, please run with -Djdk.instrument.traceUsage for more information
+WARNING: Dynamic loading of agents will be disallowed by default in a future release
+2026-09-30T14:05:30.666+08:00  INFO 598 --- [           main] o.s.b.t.m.w.SpringBootMockServletContext : Initializing Spring TestDispatcherServlet ''
+2026-09-30T14:05:30.667+08:00  INFO 598 --- [           main] o.s.t.web.servlet.TestDispatcherServlet  : Initializing Servlet ''
+2026-09-30T14:05:30.669+08:00  INFO 598 --- [           main] o.s.t.web.servlet.TestDispatcherServlet  : Completed initialization in 2 ms
+2026-09-30T14:05:30.720+08:00  INFO 598 --- [           main] o.s.s.p.system.WelcomeControllerTests    : Started WelcomeControllerTests in 4.485 seconds (process running for 6.743)
+[INFO] Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 6.060 s -- in org.springframework.samples.petclinic.system.WelcomeControllerTests
+[INFO] Running org.springframework.samples.petclinic.system.CrashControllerIntegrationTests
+2026-09-30T14:05:31.780+08:00  INFO 598 --- [           main] o.s.b.d.r.RestartApplicationListener     : Restart disabled due to context in which it is running
+
+
+              |\      _,,,--,,_
+             /,`.-'`'   ._  \-;;,_
+  _______ __|,4-  ) )_   .;.(__`'-'__     ___ __    _ ___ _______
+ |       | '---''(_/._)-'(_\_)   |   |   |   |  |  | |   |       |
+ |    _  |    ___|_     _|       |   |   |   |   |_| |   |       | __ _ _
+ |   |_| |   |___  |   | |       |   |   |   |       |   |       | \ \ \ \
+ |    ___|    ___| |   | |      _|   |___|   |  _    |   |      _|  \ \ \ \
+ |   |   |   |___  |   | |     |_|       |   | | |   |   |     |_    ) ) ) )
+ |___|   |_______| |___| |_______|_______|___|_|  |__|___|_______|  / / / /
+ ==================================================================/_/_/_/
+
+:: Built with Spring Boot :: 4.1.0
+
+
+2026-09-30T14:05:31.862+08:00  INFO 598 --- [           main] .s.s.p.s.CrashControllerIntegrationTests : Starting CrashControllerIntegrationTests using Java 21.0.11 with PID 598 (started by jenkins in /var/jenkins_home/workspace/petclinic-ci)
+2026-09-30T14:05:31.862+08:00  INFO 598 --- [           main] .s.s.p.s.CrashControllerIntegrationTests : No active profile set, falling back to 1 default profile: "default"
+2026-09-30T14:05:33.267+08:00  INFO 598 --- [           main] o.s.boot.tomcat.TomcatWebServer          : Tomcat initialized with port 0 (http)
+2026-09-30T14:05:33.289+08:00  INFO 598 --- [           main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2026-09-30T14:05:33.289+08:00  INFO 598 --- [           main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/11.0.22]
+2026-09-30T14:05:33.361+08:00  INFO 598 --- [           main] b.w.c.s.WebApplicationContextInitializer : Root WebApplicationContext: initialization completed in 1492 ms
+2026-09-30T14:05:34.233+08:00  INFO 598 --- [           main] o.s.b.a.e.web.EndpointLinksResolver      : Exposing 0 endpoints beneath base path '/actuator'
+2026-09-30T14:05:34.322+08:00  INFO 598 --- [           main] o.s.boot.tomcat.TomcatWebServer          : Tomcat started on port 38305 (http) with context path '/'
+2026-09-30T14:05:34.329+08:00  INFO 598 --- [           main] .s.s.p.s.CrashControllerIntegrationTests : Started CrashControllerIntegrationTests in 2.549 seconds (process running for 10.352)
+2026-09-30T14:05:34.637+08:00  INFO 598 --- [o-auto-1-exec-1] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2026-09-30T14:05:34.638+08:00  INFO 598 --- [o-auto-1-exec-1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+2026-09-30T14:05:34.652+08:00  INFO 598 --- [o-auto-1-exec-1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 14 ms
+2026-09-30T14:05:34.673+08:00 ERROR 598 --- [o-auto-1-exec-1] o.a.c.c.C.[.[.[/].[dispatcherServlet]    : Servlet.service() for servlet [dispatcherServlet] in context with path [] threw exception [Request processing failed: java.lang.RuntimeException: Expected: controller used to showcase what happens when an exception is thrown] with root cause
+
+java.lang.RuntimeException: Expected: controller used to showcase what happens when an exception is thrown
+	at org.springframework.samples.petclinic.system.CrashController.triggerException(CrashController.java:33) ~[classes/:na]
+	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(Unknown Source) ~[na:na]
+	at java.base/java.lang.reflect.Method.invoke(Unknown Source) ~[na:na]
+	at org.springframework.web.method.support.InvocableHandlerMethod.doInvoke(InvocableHandlerMethod.java:252) ~[spring-web-7.0.8.jar:7.0.8]
+	at org.springframework.web.method.support.InvocableHandlerMethod.invokeForRequest(InvocableHandlerMethod.java:184) ~[spring-web-7.0.8.jar:7.0.8]
+	at org.springframework.web.servlet.mvc.method.annotation.ServletInvocableHandlerMethod.invokeAndHandle(ServletInvocableHandlerMethod.java:117) ~[spring-webmvc-7.0.8.jar:7.0.8]
+	at org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.invokeHandlerMethod(RequestMappingHandlerAdapter.java:934) ~[spring-webmvc-7.0.8.jar:7.0.8]
+	at org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.handleInternal(RequestMappingHandlerAdapter.java:853) ~[spring-webmvc-7.0.8.jar:7.0.8]
+	at org.springframework.web.servlet.mvc.method.AbstractHandlerMethodAdapter.handle(AbstractHandlerMethodAdapter.java:86) ~[spring-webmvc-7.0.8.jar:7.0.8]
+	at org.springframework.web.servlet.DispatcherServlet.doDispatch(DispatcherServlet.java:963) ~[spring-webmvc-7.0.8.jar:7.0.8]
+	at org.springframework.web.servlet.DispatcherServlet.doService(DispatcherServlet.java:866) ~[spring-webmvc-7.0.8.jar:7.0.8]
+	at org.springframework.web.servlet.FrameworkServlet.processRequest(FrameworkServlet.java:1000) ~[spring-webmvc-7.0.8.jar:7.0.8]
+	at org.springframework.web.servlet.FrameworkServlet.doGet(FrameworkServlet.java:892) ~[spring-webmvc-7.0.8.jar:7.0.8]
+	at jakarta.servlet.http.HttpServlet.service(HttpServlet.java:622) ~[tomcat-embed-core-11.0.22.jar:6.1]
+	at org.springframework.web.servlet.FrameworkServlet.service(FrameworkServlet.java:874) ~[spring-webmvc-7.0.8.jar:7.0.8]
+	at jakarta.servlet.http.HttpServlet.service(HttpServlet.java:710) ~[tomcat-embed-core-11.0.22.jar:6.1]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:128) ~[tomcat-embed-core-11.0.22.jar:11.0.22]
+	at org.apache.tomcat.websocket.server.WsFilter.doFilter(WsFilter.java:53) ~[tomcat-embed-websocket-11.0.22.jar:11.0.22]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:107) ~[tomcat-embed-core-11.0.22.jar:11.0.22]
+	at org.springframework.web.servlet.resource.ResourceUrlEncodingFilter.doFilter(ResourceUrlEncodingFilter.java:66) ~[spring-webmvc-7.0.8.jar:7.0.8]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:107) ~[tomcat-embed-core-11.0.22.jar:11.0.22]
+	at org.springframework.web.filter.RequestContextFilter.doFilterInternal(RequestContextFilter.java:100) ~[spring-web-7.0.8.jar:7.0.8]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-7.0.8.jar:7.0.8]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:107) ~[tomcat-embed-core-11.0.22.jar:11.0.22]
+	at org.springframework.web.filter.FormContentFilter.doFilterInternal(FormContentFilter.java:93) ~[spring-web-7.0.8.jar:7.0.8]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-7.0.8.jar:7.0.8]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:107) ~[tomcat-embed-core-11.0.22.jar:11.0.22]
+	at org.springframework.web.filter.ServerHttpObservationFilter.doFilterInternal(ServerHttpObservationFilter.java:110) ~[spring-web-7.0.8.jar:7.0.8]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-7.0.8.jar:7.0.8]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:107) ~[tomcat-embed-core-11.0.22.jar:11.0.22]
+	at org.springframework.web.filter.CharacterEncodingFilter.doFilterInternal(CharacterEncodingFilter.java:199) ~[spring-web-7.0.8.jar:7.0.8]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-7.0.8.jar:7.0.8]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:107) ~[tomcat-embed-core-11.0.22.jar:11.0.22]
+	at org.apache.catalina.core.StandardWrapperValve.invoke(StandardWrapperValve.java:165) ~[tomcat-embed-core-11.0.22.jar:11.0.22]
+	at org.apache.catalina.core.StandardContextValve.invoke(StandardContextValve.java:77) ~[tomcat-embed-core-11.0.22.jar:11.0.22]
+	at org.apache.catalina.authenticator.AuthenticatorBase.invoke(AuthenticatorBase.java:492) ~[tomcat-embed-core-11.0.22.jar:11.0.22]
+	at org.apache.catalina.core.StandardHostValve.invoke(StandardHostValve.java:113) ~[tomcat-embed-core-11.0.22.jar:11.0.22]
+	at org.apache.catalina.valves.ErrorReportValve.invoke(ErrorReportValve.java:83) ~[tomcat-embed-core-11.0.22.jar:11.0.22]
+	at org.apache.catalina.core.StandardEngineValve.invoke(StandardEngineValve.java:72) ~[tomcat-embed-core-11.0.22.jar:11.0.22]
+	at org.apache.catalina.valves.RemoteIpValve.invoke(RemoteIpValve.java:685) ~[tomcat-embed-core-11.0.22.jar:11.0.22]
+	at org.apache.catalina.connector.CoyoteAdapter.service(CoyoteAdapter.java:341) ~[tomcat-embed-core-11.0.22.jar:11.0.22]
+	at org.apache.coyote.http11.Http11Processor.service(Http11Processor.java:397) ~[tomcat-embed-core-11.0.22.jar:11.0.22]
+	at org.apache.coyote.AbstractProcessorLight.process(AbstractProcessorLight.java:63) ~[tomcat-embed-core-11.0.22.jar:11.0.22]
+	at org.apache.coyote.AbstractProtocol$ConnectionHandler.process(AbstractProtocol.java:1272) ~[tomcat-embed-core-11.0.22.jar:11.0.22]
+	at org.apache.tomcat.util.net.NioEndpoint$SocketProcessor.doRun(NioEndpoint.java:1801) ~[tomcat-embed-core-11.0.22.jar:11.0.22]
+	at org.apache.tomcat.util.net.SocketProcessorBase.run(SocketProcessorBase.java:52) ~[tomcat-embed-core-11.0.22.jar:11.0.22]
+	at org.apache.tomcat.util.threads.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:946) ~[tomcat-embed-core-11.0.22.jar:11.0.22]
+	at org.apache.tomcat.util.threads.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:480) ~[tomcat-embed-core-11.0.22.jar:11.0.22]
+	at org.apache.tomcat.util.threads.TaskThread$WrappingRunnable.run(TaskThread.java:57) ~[tomcat-embed-core-11.0.22.jar:11.0.22]
+	at java.base/java.lang.Thread.run(Unknown Source) ~[na:na]
+
+2026-09-30T14:05:34.811+08:00 ERROR 598 --- [o-auto-1-exec-2] o.a.c.c.C.[.[.[/].[dispatcherServlet]    : Servlet.service() for servlet [dispatcherServlet] in context with path [] threw exception [Request processing failed: java.lang.RuntimeException: Expected: controller used to showcase what happens when an exception is thrown] with root cause
+
+java.lang.RuntimeException: Expected: controller used to showcase what happens when an exception is thrown
+	at org.springframework.samples.petclinic.system.CrashController.triggerException(CrashController.java:33) ~[classes/:na]
+	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(Unknown Source) ~[na:na]
+	at java.base/java.lang.reflect.Method.invoke(Unknown Source) ~[na:na]
+	at org.springframework.web.method.support.InvocableHandlerMethod.doInvoke(InvocableHandlerMethod.java:252) ~[spring-web-7.0.8.jar:7.0.8]
+	at org.springframework.web.method.support.InvocableHandlerMethod.invokeForRequest(InvocableHandlerMethod.java:184) ~[spring-web-7.0.8.jar:7.0.8]
+	at org.springframework.web.servlet.mvc.method.annotation.ServletInvocableHandlerMethod.invokeAndHandle(ServletInvocableHandlerMethod.java:117) ~[spring-webmvc-7.0.8.jar:7.0.8]
+	at org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.invokeHandlerMethod(RequestMappingHandlerAdapter.java:934) ~[spring-webmvc-7.0.8.jar:7.0.8]
+	at org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.handleInternal(RequestMappingHandlerAdapter.java:853) ~[spring-webmvc-7.0.8.jar:7.0.8]
+	at org.springframework.web.servlet.mvc.method.AbstractHandlerMethodAdapter.handle(AbstractHandlerMethodAdapter.java:86) ~[spring-webmvc-7.0.8.jar:7.0.8]
+	at org.springframework.web.servlet.DispatcherServlet.doDispatch(DispatcherServlet.java:963) ~[spring-webmvc-7.0.8.jar:7.0.8]
+	at org.springframework.web.servlet.DispatcherServlet.doService(DispatcherServlet.java:866) ~[spring-webmvc-7.0.8.jar:7.0.8]
+	at org.springframework.web.servlet.FrameworkServlet.processRequest(FrameworkServlet.java:1000) ~[spring-webmvc-7.0.8.jar:7.0.8]
+	at org.springframework.web.servlet.FrameworkServlet.doGet(FrameworkServlet.java:892) ~[spring-webmvc-7.0.8.jar:7.0.8]
+	at jakarta.servlet.http.HttpServlet.service(HttpServlet.java:622) ~[tomcat-embed-core-11.0.22.jar:6.1]
+	at org.springframework.web.servlet.FrameworkServlet.service(FrameworkServlet.java:874) ~[spring-webmvc-7.0.8.jar:7.0.8]
+	at jakarta.servlet.http.HttpServlet.service(HttpServlet.java:710) ~[tomcat-embed-core-11.0.22.jar:6.1]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:128) ~[tomcat-embed-core-11.0.22.jar:11.0.22]
+	at org.apache.tomcat.websocket.server.WsFilter.doFilter(WsFilter.java:53) ~[tomcat-embed-websocket-11.0.22.jar:11.0.22]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:107) ~[tomcat-embed-core-11.0.22.jar:11.0.22]
+	at org.springframework.web.servlet.resource.ResourceUrlEncodingFilter.doFilter(ResourceUrlEncodingFilter.java:66) ~[spring-webmvc-7.0.8.jar:7.0.8]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:107) ~[tomcat-embed-core-11.0.22.jar:11.0.22]
+	at org.springframework.web.filter.RequestContextFilter.doFilterInternal(RequestContextFilter.java:100) ~[spring-web-7.0.8.jar:7.0.8]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-7.0.8.jar:7.0.8]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:107) ~[tomcat-embed-core-11.0.22.jar:11.0.22]
+	at org.springframework.web.filter.FormContentFilter.doFilterInternal(FormContentFilter.java:93) ~[spring-web-7.0.8.jar:7.0.8]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-7.0.8.jar:7.0.8]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:107) ~[tomcat-embed-core-11.0.22.jar:11.0.22]
+	at org.springframework.web.filter.ServerHttpObservationFilter.doFilterInternal(ServerHttpObservationFilter.java:110) ~[spring-web-7.0.8.jar:7.0.8]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-7.0.8.jar:7.0.8]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:107) ~[tomcat-embed-core-11.0.22.jar:11.0.22]
+	at org.springframework.web.filter.CharacterEncodingFilter.doFilterInternal(CharacterEncodingFilter.java:199) ~[spring-web-7.0.8.jar:7.0.8]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-7.0.8.jar:7.0.8]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:107) ~[tomcat-embed-core-11.0.22.jar:11.0.22]
+	at org.apache.catalina.core.StandardWrapperValve.invoke(StandardWrapperValve.java:165) ~[tomcat-embed-core-11.0.22.jar:11.0.22]
+	at org.apache.catalina.core.StandardContextValve.invoke(StandardContextValve.java:77) ~[tomcat-embed-core-11.0.22.jar:11.0.22]
+	at org.apache.catalina.authenticator.AuthenticatorBase.invoke(AuthenticatorBase.java:492) ~[tomcat-embed-core-11.0.22.jar:11.0.22]
+	at org.apache.catalina.core.StandardHostValve.invoke(StandardHostValve.java:113) ~[tomcat-embed-core-11.0.22.jar:11.0.22]
+	at org.apache.catalina.valves.ErrorReportValve.invoke(ErrorReportValve.java:83) ~[tomcat-embed-core-11.0.22.jar:11.0.22]
+	at org.apache.catalina.core.StandardEngineValve.invoke(StandardEngineValve.java:72) ~[tomcat-embed-core-11.0.22.jar:11.0.22]
+	at org.apache.catalina.valves.RemoteIpValve.invoke(RemoteIpValve.java:685) ~[tomcat-embed-core-11.0.22.jar:11.0.22]
+	at org.apache.catalina.connector.CoyoteAdapter.service(CoyoteAdapter.java:341) ~[tomcat-embed-core-11.0.22.jar:11.0.22]
+	at org.apache.coyote.http11.Http11Processor.service(Http11Processor.java:397) ~[tomcat-embed-core-11.0.22.jar:11.0.22]
+	at org.apache.coyote.AbstractProcessorLight.process(AbstractProcessorLight.java:63) ~[tomcat-embed-core-11.0.22.jar:11.0.22]
+	at org.apache.coyote.AbstractProtocol$ConnectionHandler.process(AbstractProtocol.java:1272) ~[tomcat-embed-core-11.0.22.jar:11.0.22]
+	at org.apache.tomcat.util.net.NioEndpoint$SocketProcessor.doRun(NioEndpoint.java:1801) ~[tomcat-embed-core-11.0.22.jar:11.0.22]
+	at org.apache.tomcat.util.net.SocketProcessorBase.run(SocketProcessorBase.java:52) ~[tomcat-embed-core-11.0.22.jar:11.0.22]
+	at org.apache.tomcat.util.threads.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:946) ~[tomcat-embed-core-11.0.22.jar:11.0.22]
+	at org.apache.tomcat.util.threads.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:480) ~[tomcat-embed-core-11.0.22.jar:11.0.22]
+	at org.apache.tomcat.util.threads.TaskThread$WrappingRunnable.run(TaskThread.java:57) ~[tomcat-embed-core-11.0.22.jar:11.0.22]
+	at java.base/java.lang.Thread.run(Unknown Source) ~[na:na]
+
+[INFO] Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 3.150 s -- in org.springframework.samples.petclinic.system.CrashControllerIntegrationTests
+[INFO] Running org.springframework.samples.petclinic.PetClinicIntegrationTests
+2026-09-30T14:05:34.910+08:00  INFO 598 --- [           main] t.c.s.AnnotationConfigContextLoaderUtils : Could not detect default configuration classes for test class [org.springframework.samples.petclinic.PetClinicIntegrationTests]: PetClinicIntegrationTests does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-09-30T14:05:34.923+08:00  INFO 598 --- [           main] .b.t.c.SpringBootTestContextBootstrapper : Found @SpringBootConfiguration org.springframework.samples.petclinic.PetClinicApplication for test class org.springframework.samples.petclinic.PetClinicIntegrationTests
+2026-09-30T14:05:34.924+08:00  INFO 598 --- [           main] t.c.s.AnnotationConfigContextLoaderUtils : Could not detect default configuration classes for test class [org.springframework.samples.petclinic.PetClinicIntegrationTests]: PetClinicIntegrationTests does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-09-30T14:05:34.925+08:00  INFO 598 --- [           main] .b.t.c.SpringBootTestContextBootstrapper : Found @SpringBootConfiguration org.springframework.samples.petclinic.PetClinicApplication for test class org.springframework.samples.petclinic.PetClinicIntegrationTests
+2026-09-30T14:05:34.929+08:00  INFO 598 --- [           main] o.s.b.d.r.RestartApplicationListener     : Restart disabled due to context in which it is running
+
+
+              |\      _,,,--,,_
+             /,`.-'`'   ._  \-;;,_
+  _______ __|,4-  ) )_   .;.(__`'-'__     ___ __    _ ___ _______
+ |       | '---''(_/._)-'(_\_)   |   |   |   |  |  | |   |       |
+ |    _  |    ___|_     _|       |   |   |   |   |_| |   |       | __ _ _
+ |   |_| |   |___  |   | |       |   |   |   |       |   |       | \ \ \ \
+ |    ___|    ___| |   | |      _|   |___|   |  _    |   |      _|  \ \ \ \
+ |   |   |   |___  |   | |     |_|       |   | | |   |   |     |_    ) ) ) )
+ |___|   |_______| |___| |_______|_______|___|_|  |__|___|_______|  / / / /
+ ==================================================================/_/_/_/
+
+:: Built with Spring Boot :: 4.1.0
+
+
+2026-09-30T14:05:34.969+08:00  INFO 598 --- [           main] o.s.s.p.PetClinicIntegrationTests        : Starting PetClinicIntegrationTests using Java 21.0.11 with PID 598 (started by jenkins in /var/jenkins_home/workspace/petclinic-ci)
+2026-09-30T14:05:34.970+08:00  INFO 598 --- [           main] o.s.s.p.PetClinicIntegrationTests        : No active profile set, falling back to 1 default profile: "default"
+2026-09-30T14:05:35.372+08:00  INFO 598 --- [           main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2026-09-30T14:05:35.433+08:00  INFO 598 --- [           main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 47 ms. Found 4 JPA repository interfaces.
+2026-09-30T14:05:35.741+08:00  INFO 598 --- [           main] o.s.boot.tomcat.TomcatWebServer          : Tomcat initialized with port 0 (http)
+2026-09-30T14:05:35.752+08:00  INFO 598 --- [           main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2026-09-30T14:05:35.752+08:00  INFO 598 --- [           main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/11.0.22]
+2026-09-30T14:05:35.767+08:00  INFO 598 --- [           main] b.w.c.s.WebApplicationContextInitializer : Root WebApplicationContext: initialization completed in 793 ms
+2026-09-30T14:05:35.897+08:00  INFO 598 --- [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2026-09-30T14:05:36.304+08:00  INFO 598 --- [           main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection conn0: url=jdbc:h2:mem:9af4cbd4-f5a8-4501-b820-6427fe5af010 user=SA
+2026-09-30T14:05:36.306+08:00  INFO 598 --- [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2026-09-30T14:05:36.554+08:00  INFO 598 --- [           main] org.hibernate.orm.jpa                    : HHH008540: Processing PersistenceUnitInfo [name: default]
+2026-09-30T14:05:36.677+08:00  INFO 598 --- [           main] org.hibernate.orm.core                   : HHH000001: Hibernate ORM core version 7.4.1.Final
+2026-09-30T14:05:37.173+08:00  INFO 598 --- [           main] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2026-09-30T14:05:37.324+08:00  INFO 598 --- [           main] org.hibernate.orm.connections.pooling    : HHH10001005: Database info:
+	Database JDBC URL [jdbc:h2:mem:9af4cbd4-f5a8-4501-b820-6427fe5af010]
+	Database driver: H2 JDBC Driver
+	Database dialect: H2Dialect
+	Database version: 2.4.240
+	Default catalog/schema: 9AF4CBD4-F5A8-4501-B820-6427FE5AF010/PUBLIC
+	Autocommit mode: undefined/unknown
+	Isolation level: READ_COMMITTED [default READ_COMMITTED]
+	JDBC fetch size: 100
+	Pool: DataSourceConnectionProvider
+	Minimum pool size: undefined/unknown
+	Maximum pool size: undefined/unknown
+2026-09-30T14:05:39.095+08:00  INFO 598 --- [           main] org.hibernate.orm.core                   : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2026-09-30T14:05:39.105+08:00  INFO 598 --- [           main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2026-09-30T14:05:39.226+08:00  INFO 598 --- [           main] o.s.d.j.r.query.QueryEnhancerFactories   : Hibernate is in classpath; If applicable, HQL parser will be used.
+2026-09-30T14:05:42.259+08:00  INFO 598 --- [           main] o.s.b.a.e.web.EndpointLinksResolver      : Exposing 13 endpoints beneath base path '/actuator'
+2026-09-30T14:05:42.309+08:00  INFO 598 --- [           main] o.s.boot.tomcat.TomcatWebServer          : Tomcat started on port 38011 (http) with context path '/'
+2026-09-30T14:05:42.313+08:00  INFO 598 --- [           main] o.s.s.p.PetClinicIntegrationTests        : Started PetClinicIntegrationTests in 7.384 seconds (process running for 18.336)
+2026-09-30T14:05:42.467+08:00 DEBUG 598 --- [           main] org.hibernate.SQL                        : select v1_0.id,v1_0.first_name,v1_0.last_name from vets v1_0
+2026-09-30T14:05:42.557+08:00 DEBUG 598 --- [           main] org.hibernate.SQL                        : select s1_0.vet_id,s1_1.id,s1_1.name from vet_specialties s1_0 join specialties s1_1 on s1_1.id=s1_0.specialty_id where s1_0.vet_id in (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)
+2026-09-30T14:05:42.585+08:00  INFO 598 --- [o-auto-2-exec-1] o.a.c.c.C.[Tomcat-1].[localhost].[/]     : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2026-09-30T14:05:42.585+08:00  INFO 598 --- [o-auto-2-exec-1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+2026-09-30T14:05:42.586+08:00  INFO 598 --- [o-auto-2-exec-1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 1 ms
+2026-09-30T14:05:42.633+08:00 DEBUG 598 --- [o-auto-2-exec-1] org.hibernate.SQL                        : select distinct o1_0.city from owners o1_0 order by o1_0.city
+2026-09-30T14:05:42.672+08:00 DEBUG 598 --- [o-auto-2-exec-1] org.hibernate.SQL                        : select o1_0.id,o1_0.address,o1_0.city,o1_0.first_name,o1_0.last_name,o1_0.telephone from owners o1_0 where o1_0.last_name like ? escape '\' fetch first ? rows only
+2026-09-30T14:05:42.679+08:00 DEBUG 598 --- [o-auto-2-exec-1] org.hibernate.SQL                        : select p1_0.owner_id,p1_0.id,p1_0.birth_date,p1_0.name,t1_0.id,t1_0.name from pets p1_0 left join types t1_0 on t1_0.id=p1_0.type_id where p1_0.owner_id in (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?) order by p1_0.name
+2026-09-30T14:05:42.688+08:00 DEBUG 598 --- [o-auto-2-exec-1] org.hibernate.SQL                        : select v1_0.pet_id,v1_0.id,v1_0.visit_date,v1_0.description from visits v1_0 where v1_0.pet_id in (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?) order by v1_0.visit_date
+2026-09-30T14:05:42.698+08:00 DEBUG 598 --- [o-auto-2-exec-1] org.hibernate.SQL                        : select count(o1_0.id) from owners o1_0 where o1_0.last_name like ? escape '\'
+2026-09-30T14:05:42.814+08:00 DEBUG 598 --- [o-auto-2-exec-2] org.hibernate.SQL                        : select o1_0.id,o1_0.address,o1_0.city,o1_0.first_name,o1_0.last_name,o1_0.telephone,p1_0.owner_id,p1_0.id,p1_0.birth_date,p1_0.name,t1_0.id,t1_0.name from owners o1_0 left join pets p1_0 on o1_0.id=p1_0.owner_id left join types t1_0 on t1_0.id=p1_0.type_id where o1_0.id=? order by p1_0.name
+2026-09-30T14:05:42.818+08:00 DEBUG 598 --- [o-auto-2-exec-2] org.hibernate.SQL                        : select v1_0.pet_id,v1_0.id,v1_0.visit_date,v1_0.description from visits v1_0 where v1_0.pet_id=? order by v1_0.visit_date
+2026-09-30T14:05:42.822+08:00 DEBUG 598 --- [o-auto-2-exec-2] org.hibernate.SQL                        : select o1_0.id,o1_0.address,o1_0.city,o1_0.first_name,o1_0.last_name,o1_0.telephone,p1_0.owner_id,p1_0.id,p1_0.birth_date,p1_0.name,t1_0.id,t1_0.name from owners o1_0 left join pets p1_0 on o1_0.id=p1_0.owner_id left join types t1_0 on t1_0.id=p1_0.type_id where o1_0.id=? order by p1_0.name
+2026-09-30T14:05:42.824+08:00 DEBUG 598 --- [o-auto-2-exec-2] org.hibernate.SQL                        : select v1_0.pet_id,v1_0.id,v1_0.visit_date,v1_0.description from visits v1_0 where v1_0.pet_id=? order by v1_0.visit_date
+[INFO] Tests run: 3, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 7.960 s -- in org.springframework.samples.petclinic.PetClinicIntegrationTests
+[INFO] Running org.springframework.samples.petclinic.vet.VetControllerTests
+2026-09-30T14:05:42.874+08:00  INFO 598 --- [           main] t.c.s.AnnotationConfigContextLoaderUtils : Could not detect default configuration classes for test class [org.springframework.samples.petclinic.vet.VetControllerTests]: VetControllerTests does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-09-30T14:05:42.890+08:00  INFO 598 --- [           main] .b.t.c.SpringBootTestContextBootstrapper : Found @SpringBootConfiguration org.springframework.samples.petclinic.PetClinicApplication for test class org.springframework.samples.petclinic.vet.VetControllerTests
+2026-09-30T14:05:42.890+08:00  INFO 598 --- [           main] t.c.s.AnnotationConfigContextLoaderUtils : Could not detect default configuration classes for test class [org.springframework.samples.petclinic.vet.VetControllerTests]: VetControllerTests does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-09-30T14:05:42.895+08:00  INFO 598 --- [           main] .b.t.c.SpringBootTestContextBootstrapper : Found @SpringBootConfiguration org.springframework.samples.petclinic.PetClinicApplication for test class org.springframework.samples.petclinic.vet.VetControllerTests
+2026-09-30T14:05:42.900+08:00  INFO 598 --- [           main] o.s.b.d.r.RestartApplicationListener     : Restart disabled due to context in which it is running
+
+
+              |\      _,,,--,,_
+             /,`.-'`'   ._  \-;;,_
+  _______ __|,4-  ) )_   .;.(__`'-'__     ___ __    _ ___ _______
+ |       | '---''(_/._)-'(_\_)   |   |   |   |  |  | |   |       |
+ |    _  |    ___|_     _|       |   |   |   |   |_| |   |       | __ _ _
+ |   |_| |   |___  |   | |       |   |   |   |       |   |       | \ \ \ \
+ |    ___|    ___| |   | |      _|   |___|   |  _    |   |      _|  \ \ \ \
+ |   |   |   |___  |   | |     |_|       |   | | |   |   |     |_    ) ) ) )
+ |___|   |_______| |___| |_______|_______|___|_|  |__|___|_______|  / / / /
+ ==================================================================/_/_/_/
+
+:: Built with Spring Boot :: 4.1.0
+
+
+2026-09-30T14:05:42.953+08:00  INFO 598 --- [           main] o.s.s.petclinic.vet.VetControllerTests   : Starting VetControllerTests using Java 21.0.11 with PID 598 (started by jenkins in /var/jenkins_home/workspace/petclinic-ci)
+2026-09-30T14:05:42.954+08:00  INFO 598 --- [           main] o.s.s.petclinic.vet.VetControllerTests   : No active profile set, falling back to 1 default profile: "default"
+2026-09-30T14:05:43.279+08:00  INFO 598 --- [           main] o.s.b.t.m.w.SpringBootMockServletContext : Initializing Spring TestDispatcherServlet ''
+2026-09-30T14:05:43.279+08:00  INFO 598 --- [           main] o.s.t.web.servlet.TestDispatcherServlet  : Initializing Servlet ''
+2026-09-30T14:05:43.280+08:00  INFO 598 --- [           main] o.s.t.web.servlet.TestDispatcherServlet  : Completed initialization in 1 ms
+2026-09-30T14:05:43.286+08:00  INFO 598 --- [           main] o.s.s.petclinic.vet.VetControllerTests   : Started VetControllerTests in 0.386 seconds (process running for 19.309)
+[INFO] Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.590 s -- in org.springframework.samples.petclinic.vet.VetControllerTests
+[INFO] Running org.springframework.samples.petclinic.vet.VetTests
+[INFO] Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.023 s -- in org.springframework.samples.petclinic.vet.VetTests
+[INFO] Running org.springframework.samples.petclinic.service.ClinicServiceTests
+2026-09-30T14:05:43.491+08:00  INFO 598 --- [           main] t.c.s.AnnotationConfigContextLoaderUtils : Could not detect default configuration classes for test class [org.springframework.samples.petclinic.service.ClinicServiceTests]: ClinicServiceTests does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-09-30T14:05:43.503+08:00  INFO 598 --- [           main] .b.t.c.SpringBootTestContextBootstrapper : Found @SpringBootConfiguration org.springframework.samples.petclinic.PetClinicApplication for test class org.springframework.samples.petclinic.service.ClinicServiceTests
+2026-09-30T14:05:43.503+08:00  INFO 598 --- [           main] t.c.s.AnnotationConfigContextLoaderUtils : Could not detect default configuration classes for test class [org.springframework.samples.petclinic.service.ClinicServiceTests]: ClinicServiceTests does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-09-30T14:05:43.511+08:00  INFO 598 --- [           main] .b.t.c.SpringBootTestContextBootstrapper : Found @SpringBootConfiguration org.springframework.samples.petclinic.PetClinicApplication for test class org.springframework.samples.petclinic.service.ClinicServiceTests
+2026-09-30T14:05:43.515+08:00  INFO 598 --- [           main] o.s.b.d.r.RestartApplicationListener     : Restart disabled due to context in which it is running
+
+
+              |\      _,,,--,,_
+             /,`.-'`'   ._  \-;;,_
+  _______ __|,4-  ) )_   .;.(__`'-'__     ___ __    _ ___ _______
+ |       | '---''(_/._)-'(_\_)   |   |   |   |  |  | |   |       |
+ |    _  |    ___|_     _|       |   |   |   |   |_| |   |       | __ _ _
+ |   |_| |   |___  |   | |       |   |   |   |       |   |       | \ \ \ \
+ |    ___|    ___| |   | |      _|   |___|   |  _    |   |      _|  \ \ \ \
+ |   |   |   |___  |   | |     |_|       |   | | |   |   |     |_    ) ) ) )
+ |___|   |_______| |___| |_______|_______|___|_|  |__|___|_______|  / / / /
+ ==================================================================/_/_/_/
+
+:: Built with Spring Boot :: 4.1.0
+
+
+2026-09-30T14:05:43.563+08:00  INFO 598 --- [           main] o.s.s.p.service.ClinicServiceTests       : Starting ClinicServiceTests using Java 21.0.11 with PID 598 (started by jenkins in /var/jenkins_home/workspace/petclinic-ci)
+2026-09-30T14:05:43.563+08:00  INFO 598 --- [           main] o.s.s.p.service.ClinicServiceTests       : No active profile set, falling back to 1 default profile: "default"
+2026-09-30T14:05:43.621+08:00  INFO 598 --- [           main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2026-09-30T14:05:43.631+08:00  INFO 598 --- [           main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 7 ms. Found 4 JPA repository interfaces.
+2026-09-30T14:05:43.676+08:00  INFO 598 --- [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-2 - Starting...
+2026-09-30T14:05:43.679+08:00  INFO 598 --- [           main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-2 - Added connection conn10: url=jdbc:h2:mem:3b24dbfb-3ad9-43a9-92ba-05ed6492ea24 user=SA
+2026-09-30T14:05:43.679+08:00  INFO 598 --- [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-2 - Start completed.
+2026-09-30T14:05:43.713+08:00  INFO 598 --- [           main] org.hibernate.orm.jpa                    : HHH008540: Processing PersistenceUnitInfo [name: default]
+2026-09-30T14:05:43.729+08:00  INFO 598 --- [           main] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2026-09-30T14:05:43.730+08:00  INFO 598 --- [           main] org.hibernate.orm.connections.pooling    : HHH10001005: Database info:
+	Database JDBC URL [jdbc:h2:mem:3b24dbfb-3ad9-43a9-92ba-05ed6492ea24]
+	Database driver: H2 JDBC Driver
+	Database dialect: H2Dialect
+	Database version: 2.4.240
+	Default catalog/schema: 3B24DBFB-3AD9-43A9-92BA-05ED6492EA24/PUBLIC
+	Autocommit mode: undefined/unknown
+	Isolation level: READ_COMMITTED [default READ_COMMITTED]
+	JDBC fetch size: 100
+	Pool: DataSourceConnectionProvider
+	Minimum pool size: undefined/unknown
+	Maximum pool size: undefined/unknown
+2026-09-30T14:05:43.804+08:00  INFO 598 --- [           main] org.hibernate.orm.core                   : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2026-09-30T14:05:43.805+08:00  INFO 598 --- [           main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2026-09-30T14:05:43.895+08:00  INFO 598 --- [           main] o.s.s.p.service.ClinicServiceTests       : Started ClinicServiceTests in 0.381 seconds (process running for 19.919)
+Hibernate: select v1_0.id,v1_0.first_name,v1_0.last_name from vets v1_0
+Hibernate: select s1_0.vet_id,s1_1.id,s1_1.name from vet_specialties s1_0 join specialties s1_1 on s1_1.id=s1_0.specialty_id where s1_0.vet_id in (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)
+Hibernate: select o1_0.id,o1_0.address,o1_0.city,o1_0.first_name,o1_0.last_name,o1_0.telephone from owners o1_0 where o1_0.last_name like ? escape '\'
+Hibernate: select p1_0.owner_id,p1_0.id,p1_0.birth_date,p1_0.name,t1_0.id,t1_0.name from pets p1_0 left join types t1_0 on t1_0.id=p1_0.type_id where p1_0.owner_id in (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?) order by p1_0.name
+Hibernate: select v1_0.pet_id,v1_0.id,v1_0.visit_date,v1_0.description from visits v1_0 where v1_0.pet_id in (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?) order by v1_0.visit_date
+Hibernate: select o1_0.id,o1_0.address,o1_0.city,o1_0.first_name,o1_0.last_name,o1_0.telephone from owners o1_0 where o1_0.last_name like ? escape '\'
+Hibernate: select o1_0.id,o1_0.address,o1_0.city,o1_0.first_name,o1_0.last_name,o1_0.telephone,p1_0.owner_id,p1_0.id,p1_0.birth_date,p1_0.name,t1_0.id,t1_0.name from owners o1_0 left join pets p1_0 on o1_0.id=p1_0.owner_id left join types t1_0 on t1_0.id=p1_0.type_id where o1_0.id=? order by p1_0.name
+Hibernate: select v1_0.pet_id,v1_0.id,v1_0.visit_date,v1_0.description from visits v1_0 where v1_0.pet_id=? order by v1_0.visit_date
+Hibernate: select pt1_0.id,pt1_0.name from types pt1_0 order by pt1_0.name
+Hibernate: insert into pets (birth_date,name,type_id,id) values (?,?,?,default)
+Hibernate: update pets set owner_id=? where id=?
+Hibernate: insert into pets (birth_date,name,type_id,id) values (?,?,?,default)
+Hibernate: update pets set owner_id=? where id=?
+2026-09-30T14:05:44.111+08:00  WARN 598 --- [           main] org.hibernate.orm.jdbc.error             : HHH000247: ErrorCode: 23505, SQLState: 23505
+2026-09-30T14:05:44.111+08:00  WARN 598 --- [           main] org.hibernate.orm.jdbc.error             : Unique index or primary key violation: "PUBLIC.UNIQUE_OWNER_PET_NAME INDEX PUBLIC.UNIQUE_OWNER_PET_NAME_INDEX_2 ON PUBLIC.PETS(OWNER_ID NULLS FIRST, NAME NULLS FIRST) VALUES ( /* key:14 */ 1, CAST('DuplicatePetName' AS VARCHAR_IGNORECASE(16)))"; SQL statement:
+update pets set owner_id=? where id=? [23505-240]
+Hibernate: select o1_0.id,o1_0.address,o1_0.city,o1_0.first_name,o1_0.last_name,o1_0.telephone,p1_0.owner_id,p1_0.id,p1_0.birth_date,p1_0.name,t1_0.id,t1_0.name from owners o1_0 left join pets p1_0 on o1_0.id=p1_0.owner_id left join types t1_0 on t1_0.id=p1_0.type_id where o1_0.id=? order by p1_0.name
+Hibernate: select v1_0.pet_id,v1_0.id,v1_0.visit_date,v1_0.description from visits v1_0 where v1_0.pet_id in (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?) order by v1_0.visit_date
+Hibernate: insert into visits (visit_date,description,id) values (?,?,default)
+Hibernate: select o1_0.id,o1_0.address,o1_0.city,o1_0.first_name,o1_0.last_name,o1_0.telephone,p1_0.owner_id,p1_0.id,p1_0.birth_date,p1_0.name,t1_0.id,t1_0.name from owners o1_0 left join pets p1_0 on o1_0.id=p1_0.owner_id left join types t1_0 on t1_0.id=p1_0.type_id where o1_0.id=? order by p1_0.name
+Hibernate: select v1_0.pet_id,v1_0.id,v1_0.visit_date,v1_0.description from visits v1_0 where v1_0.pet_id=? order by v1_0.visit_date
+Hibernate: select o1_0.id,o1_0.address,o1_0.city,o1_0.first_name,o1_0.last_name,o1_0.telephone,p1_0.owner_id,p1_0.id,p1_0.birth_date,p1_0.name,t1_0.id,t1_0.name from owners o1_0 left join pets p1_0 on o1_0.id=p1_0.owner_id left join types t1_0 on t1_0.id=p1_0.type_id where o1_0.id=? order by p1_0.name
+Hibernate: select v1_0.pet_id,v1_0.id,v1_0.visit_date,v1_0.description from visits v1_0 where v1_0.pet_id in (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?) order by v1_0.visit_date
+Hibernate: select o1_0.id,o1_0.address,o1_0.city,o1_0.first_name,o1_0.last_name,o1_0.telephone,p1_0.owner_id,p1_0.id,p1_0.birth_date,p1_0.name,t1_0.id,t1_0.name from owners o1_0 left join pets p1_0 on o1_0.id=p1_0.owner_id left join types t1_0 on t1_0.id=p1_0.type_id where o1_0.id=? order by p1_0.name
+Hibernate: select v1_0.pet_id,v1_0.id,v1_0.visit_date,v1_0.description from visits v1_0 where v1_0.pet_id in (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?) order by v1_0.visit_date
+Hibernate: select pt1_0.id,pt1_0.name from types pt1_0 order by pt1_0.name
+Hibernate: insert into pets (birth_date,name,type_id,id) values (?,?,?,default)
+Hibernate: select o1_0.id,o1_0.address,o1_0.city,o1_0.first_name,o1_0.last_name,o1_0.telephone from owners o1_0 where o1_0.last_name like ? escape '\'
+Hibernate: insert into owners (address,city,first_name,last_name,telephone,id) values (?,?,?,?,?,default)
+Hibernate: select o1_0.id,o1_0.address,o1_0.city,o1_0.first_name,o1_0.last_name,o1_0.telephone from owners o1_0 where o1_0.last_name like ? escape '\'
+Hibernate: select o1_0.id,o1_0.address,o1_0.city,o1_0.first_name,o1_0.last_name,o1_0.telephone,p1_0.owner_id,p1_0.id,p1_0.birth_date,p1_0.name,t1_0.id,t1_0.name from owners o1_0 left join pets p1_0 on o1_0.id=p1_0.owner_id left join types t1_0 on t1_0.id=p1_0.type_id where o1_0.id=? order by p1_0.name
+Hibernate: select v1_0.pet_id,v1_0.id,v1_0.visit_date,v1_0.description from visits v1_0 where v1_0.pet_id=? order by v1_0.visit_date
+Hibernate: select o1_0.id,o1_0.address,o1_0.city,o1_0.first_name,o1_0.last_name,o1_0.telephone,p1_0.owner_id,p1_0.id,p1_0.birth_date,p1_0.name,t1_0.id,t1_0.name from owners o1_0 left join pets p1_0 on o1_0.id=p1_0.owner_id left join types t1_0 on t1_0.id=p1_0.type_id where o1_0.id=? order by p1_0.name
+Hibernate: select v1_0.pet_id,v1_0.id,v1_0.visit_date,v1_0.description from visits v1_0 where v1_0.pet_id in (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?) order by v1_0.visit_date
+Hibernate: select pt1_0.id,pt1_0.name from types pt1_0 order by pt1_0.name
+Hibernate: select pt1_0.id,pt1_0.name from types pt1_0 order by pt1_0.name
+Hibernate: select o1_0.id,o1_0.address,o1_0.city,o1_0.first_name,o1_0.last_name,o1_0.telephone,p1_0.owner_id,p1_0.id,p1_0.birth_date,p1_0.name,t1_0.id,t1_0.name from owners o1_0 left join pets p1_0 on o1_0.id=p1_0.owner_id left join types t1_0 on t1_0.id=p1_0.type_id where o1_0.id=? order by p1_0.name
+Hibernate: select v1_0.pet_id,v1_0.id,v1_0.visit_date,v1_0.description from visits v1_0 where v1_0.pet_id=? order by v1_0.visit_date
+Hibernate: insert into pets (birth_date,name,type_id,id) values (?,?,?,default)
+Hibernate: update pets set owner_id=? where id=?
+Hibernate: select o1_0.id,o1_0.address,o1_0.city,o1_0.first_name,o1_0.last_name,o1_0.telephone,p1_0.owner_id,p1_0.id,p1_0.birth_date,p1_0.name,t1_0.id,t1_0.name from owners o1_0 left join pets p1_0 on o1_0.id=p1_0.owner_id left join types t1_0 on t1_0.id=p1_0.type_id where o1_0.id=? order by p1_0.name
+Hibernate: select v1_0.pet_id,v1_0.id,v1_0.visit_date,v1_0.description from visits v1_0 where v1_0.pet_id=? order by v1_0.visit_date
+Hibernate: insert into pets (birth_date,name,type_id,id) values (?,?,?,default)
+Hibernate: update pets set owner_id=? where id=?
+[INFO] Tests run: 12, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.777 s -- in org.springframework.samples.petclinic.service.ClinicServiceTests
+[INFO] Running org.springframework.samples.petclinic.model.ValidatorTests
+[INFO] Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.031 s -- in org.springframework.samples.petclinic.model.ValidatorTests
+[INFO] Running org.springframework.samples.petclinic.PetClinicConcurrencyTests
+2026-09-30T14:05:44.299+08:00  INFO 598 --- [           main] t.c.s.AnnotationConfigContextLoaderUtils : Could not detect default configuration classes for test class [org.springframework.samples.petclinic.PetClinicConcurrencyTests]: PetClinicConcurrencyTests does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-09-30T14:05:44.301+08:00  INFO 598 --- [           main] .b.t.c.SpringBootTestContextBootstrapper : Found @SpringBootConfiguration org.springframework.samples.petclinic.PetClinicApplication for test class org.springframework.samples.petclinic.PetClinicConcurrencyTests
+2026-09-30T14:05:44.301+08:00  INFO 598 --- [           main] t.c.s.AnnotationConfigContextLoaderUtils : Could not detect default configuration classes for test class [org.springframework.samples.petclinic.PetClinicConcurrencyTests]: PetClinicConcurrencyTests does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-09-30T14:05:44.302+08:00  INFO 598 --- [           main] .b.t.c.SpringBootTestContextBootstrapper : Found @SpringBootConfiguration org.springframework.samples.petclinic.PetClinicApplication for test class org.springframework.samples.petclinic.PetClinicConcurrencyTests
+2026-09-30T14:05:44.305+08:00  INFO 598 --- [           main] o.s.b.d.r.RestartApplicationListener     : Restart disabled due to context in which it is running
+
+
+              |\      _,,,--,,_
+             /,`.-'`'   ._  \-;;,_
+  _______ __|,4-  ) )_   .;.(__`'-'__     ___ __    _ ___ _______
+ |       | '---''(_/._)-'(_\_)   |   |   |   |  |  | |   |       |
+ |    _  |    ___|_     _|       |   |   |   |   |_| |   |       | __ _ _
+ |   |_| |   |___  |   | |       |   |   |   |       |   |       | \ \ \ \
+ |    ___|    ___| |   | |      _|   |___|   |  _    |   |      _|  \ \ \ \
+ |   |   |   |___  |   | |     |_|       |   | | |   |   |     |_    ) ) ) )
+ |___|   |_______| |___| |_______|_______|___|_|  |__|___|_______|  / / / /
+ ==================================================================/_/_/_/
+
+:: Built with Spring Boot :: 4.1.0
+
+
+2026-09-30T14:05:44.356+08:00  INFO 598 --- [           main] o.s.s.p.PetClinicConcurrencyTests        : Starting PetClinicConcurrencyTests using Java 21.0.11 with PID 598 (started by jenkins in /var/jenkins_home/workspace/petclinic-ci)
+2026-09-30T14:05:44.356+08:00  INFO 598 --- [           main] o.s.s.p.PetClinicConcurrencyTests        : No active profile set, falling back to 1 default profile: "default"
+2026-09-30T14:05:44.526+08:00  INFO 598 --- [           main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2026-09-30T14:05:44.537+08:00  INFO 598 --- [           main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 9 ms. Found 4 JPA repository interfaces.
+2026-09-30T14:05:44.665+08:00  INFO 598 --- [           main] o.s.boot.tomcat.TomcatWebServer          : Tomcat initialized with port 0 (http)
+2026-09-30T14:05:44.666+08:00  INFO 598 --- [           main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2026-09-30T14:05:44.666+08:00  INFO 598 --- [           main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/11.0.22]
+2026-09-30T14:05:44.679+08:00  INFO 598 --- [           main] b.w.c.s.WebApplicationContextInitializer : Root WebApplicationContext: initialization completed in 320 ms
+2026-09-30T14:05:44.736+08:00  INFO 598 --- [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-3 - Starting...
+2026-09-30T14:05:44.738+08:00  INFO 598 --- [           main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-3 - Added connection conn20: url=jdbc:h2:mem:97f8e32a-2960-4418-bde2-b2750a8e7594 user=SA
+2026-09-30T14:05:44.738+08:00  INFO 598 --- [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-3 - Start completed.
+2026-09-30T14:05:44.780+08:00  INFO 598 --- [           main] org.hibernate.orm.jpa                    : HHH008540: Processing PersistenceUnitInfo [name: default]
+2026-09-30T14:05:44.810+08:00  INFO 598 --- [           main] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2026-09-30T14:05:44.812+08:00  INFO 598 --- [           main] org.hibernate.orm.connections.pooling    : HHH10001005: Database info:
+	Database JDBC URL [jdbc:h2:mem:97f8e32a-2960-4418-bde2-b2750a8e7594]
+	Database driver: H2 JDBC Driver
+	Database dialect: H2Dialect
+	Database version: 2.4.240
+	Default catalog/schema: 97F8E32A-2960-4418-BDE2-B2750A8E7594/PUBLIC
+	Autocommit mode: undefined/unknown
+	Isolation level: READ_COMMITTED [default READ_COMMITTED]
+	JDBC fetch size: 100
+	Pool: DataSourceConnectionProvider
+	Minimum pool size: undefined/unknown
+	Maximum pool size: undefined/unknown
+2026-09-30T14:05:44.884+08:00  INFO 598 --- [           main] org.hibernate.orm.core                   : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2026-09-30T14:05:44.884+08:00  INFO 598 --- [           main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2026-09-30T14:05:45.157+08:00  INFO 598 --- [           main] o.s.b.a.e.web.EndpointLinksResolver      : Exposing 13 endpoints beneath base path '/actuator'
+2026-09-30T14:05:45.178+08:00  INFO 598 --- [           main] o.s.boot.tomcat.TomcatWebServer          : Tomcat started on port 44379 (http) with context path '/'
+2026-09-30T14:05:45.181+08:00  INFO 598 --- [           main] o.s.s.p.PetClinicConcurrencyTests        : Started PetClinicConcurrencyTests in 0.876 seconds (process running for 21.204)
+2026-09-30T14:05:45.212+08:00  INFO 598 --- [o-auto-3-exec-1] o.a.c.c.C.[Tomcat-2].[localhost].[/]     : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2026-09-30T14:05:45.212+08:00  INFO 598 --- [o-auto-3-exec-1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+2026-09-30T14:05:45.214+08:00  INFO 598 --- [o-auto-3-exec-1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 2 ms
+2026-09-30T14:05:45.265+08:00  WARN 598 --- [o-auto-3-exec-1] org.hibernate.orm.jdbc.error             : HHH000247: ErrorCode: 23505, SQLState: 23505
+2026-09-30T14:05:45.265+08:00  WARN 598 --- [o-auto-3-exec-1] org.hibernate.orm.jdbc.error             : Unique index or primary key violation: "PUBLIC.UNIQUE_OWNER_PET_NAME INDEX PUBLIC.UNIQUE_OWNER_PET_NAME_INDEX_2 ON PUBLIC.PETS(OWNER_ID NULLS FIRST, NAME NULLS FIRST) VALUES ( /* key:15 */ 1, CAST('ConcurrencyTestPet' AS VARCHAR_IGNORECASE(18)))"; SQL statement:
+update pets set owner_id=? where id=? [23505-240]
+--- Concurrency Test Assertions ---
+Successful additions: 1
+Failed additions: 1
+Original Pet Count: 1
+Final Pet Count: 2
+[INFO] Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 1.089 s -- in org.springframework.samples.petclinic.PetClinicConcurrencyTests
+2026-09-30T14:05:45.401+08:00  INFO 598 --- [           main] org.testcontainers.DockerClientFactory   : Testcontainers version: 2.0.5
+2026-09-30T14:05:45.973+08:00  INFO 598 --- [           main] o.t.d.DockerClientProviderStrategy       : Loaded org.testcontainers.dockerclient.UnixSocketClientProviderStrategy from ~/.testcontainers.properties, will try it first
+2026-09-30T14:05:46.577+08:00  INFO 598 --- [           main] o.t.d.DockerClientProviderStrategy       : Found Docker environment with local Unix socket (unix:///var/run/docker.sock)
+2026-09-30T14:05:46.580+08:00  INFO 598 --- [           main] org.testcontainers.DockerClientFactory   : Docker host IP address is 192.168.1.58
+2026-09-30T14:05:46.606+08:00  INFO 598 --- [           main] org.testcontainers.DockerClientFactory   : Connected to docker: 
+  Server Version: 29.6.2
+  API Version: 1.55
+  Operating System: Ubuntu 24.04.4 LTS
+  Total Memory: 19946 MB
+2026-09-30T14:05:46.626+08:00  INFO 598 --- [           main] org.testcontainers.images.PullPolicy     : Image pull policy will be performed by: DefaultPullPolicy()
+2026-09-30T14:05:46.629+08:00  INFO 598 --- [           main] o.t.utility.ImageNameSubstitutor         : Image name substitution will be performed by: DefaultImageNameSubstitutor (composite of 'ConfigurationFileImageNameSubstitutor' and 'PrefixingImageNameSubstitutor')
+2026-09-30T14:05:47.632+08:00  INFO 598 --- [           main] tc.testcontainers/ryuk:0.14.0            : Creating container for image: testcontainers/ryuk:0.14.0
+2026-09-30T14:05:47.974+08:00  INFO 598 --- [           main] tc.testcontainers/ryuk:0.14.0            : Container testcontainers/ryuk:0.14.0 is starting: d64a46e36433d428506cdbc125d81f94e4f21d6bba16aedd1a1b4d2df445c346
+2026-09-30T14:05:48.533+08:00  INFO 598 --- [           main] tc.testcontainers/ryuk:0.14.0            : Container testcontainers/ryuk:0.14.0 started in PT0.900786048S
+2026-09-30T14:05:48.542+08:00  INFO 598 --- [           main] o.t.utility.RyukResourceReaper           : Ryuk started - will monitor and terminate Testcontainers containers on JVM exit
+2026-09-30T14:05:48.542+08:00  INFO 598 --- [           main] org.testcontainers.DockerClientFactory   : Checking the system...
+2026-09-30T14:05:48.543+08:00  INFO 598 --- [           main] org.testcontainers.DockerClientFactory   : ✔︎ Docker server version should be at least 1.6.0
+[INFO] Running org.springframework.samples.petclinic.MySqlIntegrationTests
+2026-09-30T14:05:48.546+08:00  INFO 598 --- [           main] t.c.s.AnnotationConfigContextLoaderUtils : Could not detect default configuration classes for test class [org.springframework.samples.petclinic.MySqlIntegrationTests]: MySqlIntegrationTests does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-09-30T14:05:48.558+08:00  INFO 598 --- [           main] .b.t.c.SpringBootTestContextBootstrapper : Found @SpringBootConfiguration org.springframework.samples.petclinic.PetClinicApplication for test class org.springframework.samples.petclinic.MySqlIntegrationTests
+2026-09-30T14:05:48.560+08:00  INFO 598 --- [           main] t.c.s.AnnotationConfigContextLoaderUtils : Could not detect default configuration classes for test class [org.springframework.samples.petclinic.MySqlIntegrationTests]: MySqlIntegrationTests does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-09-30T14:05:48.561+08:00  INFO 598 --- [           main] .b.t.c.SpringBootTestContextBootstrapper : Found @SpringBootConfiguration org.springframework.samples.petclinic.PetClinicApplication for test class org.springframework.samples.petclinic.MySqlIntegrationTests
+2026-09-30T14:05:48.566+08:00  INFO 598 --- [           main] tc.mysql:9.7                             : Creating container for image: mysql:9.7
+2026-09-30T14:05:48.678+08:00  INFO 598 --- [           main] tc.mysql:9.7                             : Container mysql:9.7 is starting: ae237be5b33117bc1907e8aa1522e17010ca706c539dd2279c450cd3cb3ab213
+2026-09-30T14:05:49.023+08:00  INFO 598 --- [           main] tc.mysql:9.7                             : Waiting for database connection to become available at jdbc:mysql://192.168.1.58:32769/test using query 'SELECT 1'
+2026-09-30T14:06:01.127+08:00  INFO 598 --- [           main] tc.mysql:9.7                             : Container mysql:9.7 started in PT12.561621535S
+2026-09-30T14:06:01.128+08:00  INFO 598 --- [           main] tc.mysql:9.7                             : Container is started (JDBC URL: jdbc:mysql://192.168.1.58:32769/test)
+2026-09-30T14:06:01.136+08:00  INFO 598 --- [           main] o.s.b.d.r.RestartApplicationListener     : Restart disabled due to context in which it is running
+
+
+              |\      _,,,--,,_
+             /,`.-'`'   ._  \-;;,_
+  _______ __|,4-  ) )_   .;.(__`'-'__     ___ __    _ ___ _______
+ |       | '---''(_/._)-'(_\_)   |   |   |   |  |  | |   |       |
+ |    _  |    ___|_     _|       |   |   |   |   |_| |   |       | __ _ _
+ |   |_| |   |___  |   | |       |   |   |   |       |   |       | \ \ \ \
+ |    ___|    ___| |   | |      _|   |___|   |  _    |   |      _|  \ \ \ \
+ |   |   |   |___  |   | |     |_|       |   | | |   |   |     |_    ) ) ) )
+ |___|   |_______| |___| |_______|_______|___|_|  |__|___|_______|  / / / /
+ ==================================================================/_/_/_/
+
+:: Built with Spring Boot :: 4.1.0
+
+
+2026-09-30T14:06:01.168+08:00  INFO 598 --- [           main] o.s.s.petclinic.MySqlIntegrationTests    : Starting MySqlIntegrationTests using Java 21.0.11 with PID 598 (started by jenkins in /var/jenkins_home/workspace/petclinic-ci)
+2026-09-30T14:06:01.168+08:00  INFO 598 --- [           main] o.s.s.petclinic.MySqlIntegrationTests    : The following 1 profile is active: "mysql"
+2026-09-30T14:06:01.375+08:00  INFO 598 --- [           main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2026-09-30T14:06:01.384+08:00  INFO 598 --- [           main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 7 ms. Found 4 JPA repository interfaces.
+2026-09-30T14:06:01.499+08:00  INFO 598 --- [           main] o.s.boot.tomcat.TomcatWebServer          : Tomcat initialized with port 0 (http)
+2026-09-30T14:06:01.500+08:00  INFO 598 --- [           main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2026-09-30T14:06:01.500+08:00  INFO 598 --- [           main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/11.0.22]
+2026-09-30T14:06:01.514+08:00  INFO 598 --- [           main] b.w.c.s.WebApplicationContextInitializer : Root WebApplicationContext: initialization completed in 343 ms
+2026-09-30T14:06:01.647+08:00  INFO 598 --- [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-4 - Starting...
+2026-09-30T14:06:01.786+08:00  INFO 598 --- [           main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-4 - Added connection com.mysql.cj.jdbc.ConnectionImpl@72a0aab
+2026-09-30T14:06:01.787+08:00  INFO 598 --- [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-4 - Start completed.
+2026-09-30T14:06:02.120+08:00  INFO 598 --- [           main] org.hibernate.orm.jpa                    : HHH008540: Processing PersistenceUnitInfo [name: default]
+2026-09-30T14:06:02.139+08:00  INFO 598 --- [           main] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2026-09-30T14:06:02.167+08:00  INFO 598 --- [           main] org.hibernate.orm.connections.pooling    : HHH10001005: Database info:
+	Database JDBC URL [jdbc:mysql://192.168.1.58:32769/test]
+	Database driver: MySQL Connector/J
+	Database dialect: MySQLDialect
+	Database version: 9.7.2
+	Default catalog/schema: test/undefined
+	Autocommit mode: undefined/unknown
+	Isolation level: REPEATABLE_READ [default REPEATABLE_READ]
+	JDBC fetch size: none
+	Pool: DataSourceConnectionProvider
+	Minimum pool size: undefined/unknown
+	Maximum pool size: undefined/unknown
+2026-09-30T14:06:02.299+08:00  INFO 598 --- [           main] org.hibernate.orm.core                   : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2026-09-30T14:06:02.300+08:00  INFO 598 --- [           main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2026-09-30T14:06:02.312+08:00  INFO 598 --- [           main] tc.mysql:9.7                             : Creating container for image: mysql:9.7
+2026-09-30T14:06:02.650+08:00  INFO 598 --- [           main] tc.mysql:9.7                             : Container mysql:9.7 is starting: dc2688042d43dfea13252e4580366cec6b95be325345b17c2fb3196159ef989c
+2026-09-30T14:06:02.914+08:00  INFO 598 --- [           main] tc.mysql:9.7                             : Waiting for database connection to become available at jdbc:mysql://192.168.1.58:32770/test using query 'SELECT 1'
+2026-09-30T14:06:14.832+08:00  INFO 598 --- [           main] tc.mysql:9.7                             : Container mysql:9.7 started in PT12.519522789S
+2026-09-30T14:06:14.833+08:00  INFO 598 --- [           main] tc.mysql:9.7                             : Container is started (JDBC URL: jdbc:mysql://192.168.1.58:32770/test)
+2026-09-30T14:06:15.236+08:00  INFO 598 --- [           main] o.s.b.a.e.web.EndpointLinksResolver      : Exposing 13 endpoints beneath base path '/actuator'
+2026-09-30T14:06:15.314+08:00  INFO 598 --- [           main] o.s.boot.tomcat.TomcatWebServer          : Tomcat started on port 41997 (http) with context path '/'
+2026-09-30T14:06:15.319+08:00  INFO 598 --- [           main] o.s.s.petclinic.MySqlIntegrationTests    : Started MySqlIntegrationTests in 14.184 seconds (process running for 51.342)
+2026-09-30T14:06:15.554+08:00  INFO 598 --- [o-auto-4-exec-1] o.a.c.c.C.[Tomcat-3].[localhost].[/]     : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2026-09-30T14:06:15.554+08:00  INFO 598 --- [o-auto-4-exec-1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+2026-09-30T14:06:15.556+08:00  INFO 598 --- [o-auto-4-exec-1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 1 ms
+[INFO] Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 28.42 s -- in org.springframework.samples.petclinic.MySqlIntegrationTests
+[INFO] Running org.springframework.samples.petclinic.PostgresIntegrationTests
+2026-09-30T14:06:16.968+08:00  INFO 598 --- [           main] t.c.s.AnnotationConfigContextLoaderUtils : Could not detect default configuration classes for test class [org.springframework.samples.petclinic.PostgresIntegrationTests]: PostgresIntegrationTests does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-09-30T14:06:16.971+08:00  INFO 598 --- [           main] .b.t.c.SpringBootTestContextBootstrapper : Found @SpringBootConfiguration org.springframework.samples.petclinic.PetClinicApplication for test class org.springframework.samples.petclinic.PostgresIntegrationTests
+2026-09-30T14:06:16.972+08:00  INFO 598 --- [           main] t.c.s.AnnotationConfigContextLoaderUtils : Could not detect default configuration classes for test class [org.springframework.samples.petclinic.PostgresIntegrationTests]: PostgresIntegrationTests does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-09-30T14:06:16.974+08:00  INFO 598 --- [           main] .b.t.c.SpringBootTestContextBootstrapper : Found @SpringBootConfiguration org.springframework.samples.petclinic.PetClinicApplication for test class org.springframework.samples.petclinic.PostgresIntegrationTests
+2026-09-30T14:06:16.987+08:00  INFO 598 --- [           main] o.s.b.d.r.RestartApplicationListener     : Restart disabled due to context in which it is running
+
+
+              |\      _,,,--,,_
+             /,`.-'`'   ._  \-;;,_
+  _______ __|,4-  ) )_   .;.(__`'-'__     ___ __    _ ___ _______
+ |       | '---''(_/._)-'(_\_)   |   |   |   |  |  | |   |       |
+ |    _  |    ___|_     _|       |   |   |   |   |_| |   |       | __ _ _
+ |   |_| |   |___  |   | |       |   |   |   |       |   |       | \ \ \ \
+ |    ___|    ___| |   | |      _|   |___|   |  _    |   |      _|  \ \ \ \
+ |   |   |   |___  |   | |     |_|       |   | | |   |   |     |_    ) ) ) )
+ |___|   |_______| |___| |_______|_______|___|_|  |__|___|_______|  / / / /
+ ==================================================================/_/_/_/
+
+:: Built with Spring Boot :: 4.1.0
+
+
+2026-09-30T14:06:17.010+08:00  INFO 598 --- [           main] o.s.s.p.PostgresIntegrationTests         : Starting PostgresIntegrationTests using Java 21.0.11 with PID 598 (started by jenkins in /var/jenkins_home/workspace/petclinic-ci)
+2026-09-30T14:06:17.010+08:00  INFO 598 --- [           main] o.s.s.p.PostgresIntegrationTests         : The following 1 profile is active: "postgres"
+2026-09-30T14:06:17.018+08:00  INFO 598 --- [           main] .s.b.d.c.l.DockerComposeLifecycleManager : Using Docker Compose file /var/jenkins_home/workspace/petclinic-ci/docker-compose.yml
+2026-09-30T14:06:17.790+08:00  INFO 598 --- [utReader-stderr] o.s.boot.docker.compose.core.DockerCli   :  Container petclinic-ci-postgres-1 Recreate 
+2026-09-30T14:06:18.029+08:00  INFO 598 --- [utReader-stderr] o.s.boot.docker.compose.core.DockerCli   :  Container petclinic-ci-postgres-1 Recreated 
+2026-09-30T14:06:18.039+08:00  INFO 598 --- [utReader-stderr] o.s.boot.docker.compose.core.DockerCli   :  Container petclinic-ci-postgres-1 Starting 
+2026-09-30T14:06:18.358+08:00  INFO 598 --- [utReader-stderr] o.s.boot.docker.compose.core.DockerCli   :  Container petclinic-ci-postgres-1 Started 
+2026-09-30T14:06:18.359+08:00  INFO 598 --- [utReader-stderr] o.s.boot.docker.compose.core.DockerCli   :  Container petclinic-ci-postgres-1 Waiting 
+2026-09-30T14:06:18.860+08:00  INFO 598 --- [utReader-stderr] o.s.boot.docker.compose.core.DockerCli   :  Container petclinic-ci-postgres-1 Healthy 
+2026-09-30T14:06:21.596+08:00  INFO 598 --- [           main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2026-09-30T14:06:21.613+08:00  INFO 598 --- [           main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 12 ms. Found 4 JPA repository interfaces.
+2026-09-30T14:06:21.719+08:00  INFO 598 --- [           main] o.s.boot.tomcat.TomcatWebServer          : Tomcat initialized with port 0 (http)
+2026-09-30T14:06:21.720+08:00  INFO 598 --- [           main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2026-09-30T14:06:21.720+08:00  INFO 598 --- [           main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/11.0.22]
+2026-09-30T14:06:21.784+08:00  INFO 598 --- [           main] b.w.c.s.WebApplicationContextInitializer : Root WebApplicationContext: initialization completed in 525 ms
+2026-09-30T14:06:21.847+08:00  INFO 598 --- [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-5 - Starting...
+2026-09-30T14:06:22.090+08:00  INFO 598 --- [           main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-5 - Added connection org.postgresql.jdbc.PgConnection@73935bf4
+2026-09-30T14:06:22.091+08:00  INFO 598 --- [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-5 - Start completed.
+2026-09-30T14:06:22.218+08:00  INFO 598 --- [           main] org.hibernate.orm.jpa                    : HHH008540: Processing PersistenceUnitInfo [name: default]
+2026-09-30T14:06:22.246+08:00  INFO 598 --- [           main] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2026-09-30T14:06:22.273+08:00  INFO 598 --- [           main] org.hibernate.orm.connections.pooling    : HHH10001005: Database info:
+	Database JDBC URL [jdbc:postgresql://192.168.1.58:5432/petclinic]
+	Database driver: PostgreSQL JDBC Driver
+	Database dialect: PostgreSQLDialect
+	Database version: 18.4
+	Default catalog/schema: petclinic/public
+	Autocommit mode: undefined/unknown
+	Isolation level: READ_COMMITTED [default READ_COMMITTED]
+	JDBC fetch size: none
+	Pool: DataSourceConnectionProvider
+	Minimum pool size: undefined/unknown
+	Maximum pool size: undefined/unknown
+2026-09-30T14:06:22.492+08:00  INFO 598 --- [           main] org.hibernate.orm.core                   : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2026-09-30T14:06:22.493+08:00  INFO 598 --- [           main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2026-09-30T14:06:22.855+08:00  INFO 598 --- [           main] o.s.b.a.e.web.EndpointLinksResolver      : Exposing 13 endpoints beneath base path '/actuator'
+2026-09-30T14:06:22.895+08:00  INFO 598 --- [           main] o.s.boot.tomcat.TomcatWebServer          : Tomcat started on port 45489 (http) with context path '/'
+2026-09-30T14:06:22.898+08:00  INFO 598 --- [           main] o.s.s.p.PostgresIntegrationTests         : Started PostgresIntegrationTests in 5.912 seconds (process running for 58.921)
+2026-09-30T14:06:22.962+08:00  INFO 598 --- [o-auto-5-exec-1] o.a.c.c.C.[Tomcat-4].[localhost].[/]     : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2026-09-30T14:06:22.962+08:00  INFO 598 --- [o-auto-5-exec-1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+2026-09-30T14:06:22.963+08:00  INFO 598 --- [o-auto-5-exec-1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 1 ms
+[INFO] Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 6.059 s -- in org.springframework.samples.petclinic.PostgresIntegrationTests
+[INFO] Running org.springframework.samples.petclinic.owner.PetTypeFormatterTests
+[INFO] Tests run: 3, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.220 s -- in org.springframework.samples.petclinic.owner.PetTypeFormatterTests
+[INFO] Running org.springframework.samples.petclinic.owner.PetValidatorTests
+[INFO] Running org.springframework.samples.petclinic.owner.PetValidatorTests$ValidateHasErrors
+[INFO] Tests run: 6, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.006 s -- in org.springframework.samples.petclinic.owner.PetValidatorTests$ValidateHasErrors
+[INFO] Tests run: 0, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.015 s -- in org.springframework.samples.petclinic.owner.PetValidatorTests
+[INFO] Running org.springframework.samples.petclinic.owner.VisitControllerTests
+2026-09-30T14:06:23.276+08:00  INFO 598 --- [           main] t.c.s.AnnotationConfigContextLoaderUtils : Could not detect default configuration classes for test class [org.springframework.samples.petclinic.owner.VisitControllerTests]: VisitControllerTests does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-09-30T14:06:23.288+08:00  INFO 598 --- [           main] .b.t.c.SpringBootTestContextBootstrapper : Found @SpringBootConfiguration org.springframework.samples.petclinic.PetClinicApplication for test class org.springframework.samples.petclinic.owner.VisitControllerTests
+2026-09-30T14:06:23.289+08:00  INFO 598 --- [           main] t.c.s.AnnotationConfigContextLoaderUtils : Could not detect default configuration classes for test class [org.springframework.samples.petclinic.owner.VisitControllerTests]: VisitControllerTests does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-09-30T14:06:23.292+08:00  INFO 598 --- [           main] .b.t.c.SpringBootTestContextBootstrapper : Found @SpringBootConfiguration org.springframework.samples.petclinic.PetClinicApplication for test class org.springframework.samples.petclinic.owner.VisitControllerTests
+2026-09-30T14:06:23.297+08:00  INFO 598 --- [           main] o.s.b.d.r.RestartApplicationListener     : Restart disabled due to context in which it is running
+
+
+              |\      _,,,--,,_
+             /,`.-'`'   ._  \-;;,_
+  _______ __|,4-  ) )_   .;.(__`'-'__     ___ __    _ ___ _______
+ |       | '---''(_/._)-'(_\_)   |   |   |   |  |  | |   |       |
+ |    _  |    ___|_     _|       |   |   |   |   |_| |   |       | __ _ _
+ |   |_| |   |___  |   | |       |   |   |   |       |   |       | \ \ \ \
+ |    ___|    ___| |   | |      _|   |___|   |  _    |   |      _|  \ \ \ \
+ |   |   |   |___  |   | |     |_|       |   | | |   |   |     |_    ) ) ) )
+ |___|   |_______| |___| |_______|_______|___|_|  |__|___|_______|  / / / /
+ ==================================================================/_/_/_/
+
+:: Built with Spring Boot :: 4.1.0
+
+
+2026-09-30T14:06:23.310+08:00  INFO 598 --- [           main] o.s.s.p.owner.VisitControllerTests       : Starting VisitControllerTests using Java 21.0.11 with PID 598 (started by jenkins in /var/jenkins_home/workspace/petclinic-ci)
+2026-09-30T14:06:23.310+08:00  INFO 598 --- [           main] o.s.s.p.owner.VisitControllerTests       : No active profile set, falling back to 1 default profile: "default"
+2026-09-30T14:06:23.560+08:00  INFO 598 --- [           main] o.s.b.t.m.w.SpringBootMockServletContext : Initializing Spring TestDispatcherServlet ''
+2026-09-30T14:06:23.560+08:00  INFO 598 --- [           main] o.s.t.web.servlet.TestDispatcherServlet  : Initializing Servlet ''
+2026-09-30T14:06:23.561+08:00  INFO 598 --- [           main] o.s.t.web.servlet.TestDispatcherServlet  : Completed initialization in 1 ms
+2026-09-30T14:06:23.564+08:00  INFO 598 --- [           main] o.s.s.p.owner.VisitControllerTests       : Started VisitControllerTests in 0.267 seconds (process running for 59.587)
+[INFO] Tests run: 6, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.453 s -- in org.springframework.samples.petclinic.owner.VisitControllerTests
+[INFO] Running org.springframework.samples.petclinic.owner.OwnerControllerTests
+2026-09-30T14:06:23.730+08:00  INFO 598 --- [           main] t.c.s.AnnotationConfigContextLoaderUtils : Could not detect default configuration classes for test class [org.springframework.samples.petclinic.owner.OwnerControllerTests]: OwnerControllerTests does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-09-30T14:06:23.751+08:00  INFO 598 --- [           main] .b.t.c.SpringBootTestContextBootstrapper : Found @SpringBootConfiguration org.springframework.samples.petclinic.PetClinicApplication for test class org.springframework.samples.petclinic.owner.OwnerControllerTests
+2026-09-30T14:06:23.752+08:00  INFO 598 --- [           main] t.c.s.AnnotationConfigContextLoaderUtils : Could not detect default configuration classes for test class [org.springframework.samples.petclinic.owner.OwnerControllerTests]: OwnerControllerTests does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-09-30T14:06:23.755+08:00  INFO 598 --- [           main] .b.t.c.SpringBootTestContextBootstrapper : Found @SpringBootConfiguration org.springframework.samples.petclinic.PetClinicApplication for test class org.springframework.samples.petclinic.owner.OwnerControllerTests
+2026-09-30T14:06:23.758+08:00  INFO 598 --- [           main] o.s.b.d.r.RestartApplicationListener     : Restart disabled due to context in which it is running
+
+
+              |\      _,,,--,,_
+             /,`.-'`'   ._  \-;;,_
+  _______ __|,4-  ) )_   .;.(__`'-'__     ___ __    _ ___ _______
+ |       | '---''(_/._)-'(_\_)   |   |   |   |  |  | |   |       |
+ |    _  |    ___|_     _|       |   |   |   |   |_| |   |       | __ _ _
+ |   |_| |   |___  |   | |       |   |   |   |       |   |       | \ \ \ \
+ |    ___|    ___| |   | |      _|   |___|   |  _    |   |      _|  \ \ \ \
+ |   |   |   |___  |   | |     |_|       |   | | |   |   |     |_    ) ) ) )
+ |___|   |_______| |___| |_______|_______|___|_|  |__|___|_______|  / / / /
+ ==================================================================/_/_/_/
+
+:: Built with Spring Boot :: 4.1.0
+
+
+2026-09-30T14:06:23.768+08:00  INFO 598 --- [           main] o.s.s.p.owner.OwnerControllerTests       : Starting OwnerControllerTests using Java 21.0.11 with PID 598 (started by jenkins in /var/jenkins_home/workspace/petclinic-ci)
+2026-09-30T14:06:23.769+08:00  INFO 598 --- [           main] o.s.s.p.owner.OwnerControllerTests       : No active profile set, falling back to 1 default profile: "default"
+2026-09-30T14:06:23.898+08:00  INFO 598 --- [           main] o.s.b.t.m.w.SpringBootMockServletContext : Initializing Spring TestDispatcherServlet ''
+2026-09-30T14:06:23.898+08:00  INFO 598 --- [           main] o.s.t.web.servlet.TestDispatcherServlet  : Initializing Servlet ''
+2026-09-30T14:06:23.898+08:00  INFO 598 --- [           main] o.s.t.web.servlet.TestDispatcherServlet  : Completed initialization in 0 ms
+2026-09-30T14:06:23.902+08:00  INFO 598 --- [           main] o.s.s.p.owner.OwnerControllerTests       : Started OwnerControllerTests in 0.144 seconds (process running for 59.925)
+[INFO] Tests run: 15, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.678 s -- in org.springframework.samples.petclinic.owner.OwnerControllerTests
+[INFO] Running org.springframework.samples.petclinic.owner.PetControllerTests
+2026-09-30T14:06:24.410+08:00  INFO 598 --- [           main] t.c.s.AnnotationConfigContextLoaderUtils : Could not detect default configuration classes for test class [org.springframework.samples.petclinic.owner.PetControllerTests]: PetControllerTests does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-09-30T14:06:24.418+08:00  INFO 598 --- [           main] .b.t.c.SpringBootTestContextBootstrapper : Found @SpringBootConfiguration org.springframework.samples.petclinic.PetClinicApplication for test class org.springframework.samples.petclinic.owner.PetControllerTests
+2026-09-30T14:06:24.418+08:00  INFO 598 --- [           main] t.c.s.AnnotationConfigContextLoaderUtils : Could not detect default configuration classes for test class [org.springframework.samples.petclinic.owner.PetControllerTests]: PetControllerTests does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-09-30T14:06:24.422+08:00  INFO 598 --- [           main] .b.t.c.SpringBootTestContextBootstrapper : Found @SpringBootConfiguration org.springframework.samples.petclinic.PetClinicApplication for test class org.springframework.samples.petclinic.owner.PetControllerTests
+2026-09-30T14:06:24.428+08:00  INFO 598 --- [           main] o.s.b.d.r.RestartApplicationListener     : Restart disabled due to context in which it is running
+
+
+              |\      _,,,--,,_
+             /,`.-'`'   ._  \-;;,_
+  _______ __|,4-  ) )_   .;.(__`'-'__     ___ __    _ ___ _______
+ |       | '---''(_/._)-'(_\_)   |   |   |   |  |  | |   |       |
+ |    _  |    ___|_     _|       |   |   |   |   |_| |   |       | __ _ _
+ |   |_| |   |___  |   | |       |   |   |   |       |   |       | \ \ \ \
+ |    ___|    ___| |   | |      _|   |___|   |  _    |   |      _|  \ \ \ \
+ |   |   |   |___  |   | |     |_|       |   | | |   |   |     |_    ) ) ) )
+ |___|   |_______| |___| |_______|_______|___|_|  |__|___|_______|  / / / /
+ ==================================================================/_/_/_/
+
+:: Built with Spring Boot :: 4.1.0
+
+
+2026-09-30T14:06:24.444+08:00  INFO 598 --- [           main] o.s.s.p.owner.PetControllerTests         : Starting PetControllerTests using Java 21.0.11 with PID 598 (started by jenkins in /var/jenkins_home/workspace/petclinic-ci)
+2026-09-30T14:06:24.445+08:00  INFO 598 --- [           main] o.s.s.p.owner.PetControllerTests         : No active profile set, falling back to 1 default profile: "default"
+2026-09-30T14:06:24.604+08:00  INFO 598 --- [           main] o.s.b.t.m.w.SpringBootMockServletContext : Initializing Spring TestDispatcherServlet ''
+2026-09-30T14:06:24.604+08:00  INFO 598 --- [           main] o.s.t.web.servlet.TestDispatcherServlet  : Initializing Servlet ''
+2026-09-30T14:06:24.605+08:00  INFO 598 --- [           main] o.s.t.web.servlet.TestDispatcherServlet  : Completed initialization in 1 ms
+2026-09-30T14:06:24.610+08:00  INFO 598 --- [           main] o.s.s.p.owner.PetControllerTests         : Started PetControllerTests in 0.182 seconds (process running for 60.633)
+[INFO] Running org.springframework.samples.petclinic.owner.PetControllerTests$ProcessUpdateFormHasErrors
+2026-09-30T14:06:24.709+08:00  INFO 598 --- [           main] t.c.s.AnnotationConfigContextLoaderUtils : Could not detect default configuration classes for test class [org.springframework.samples.petclinic.owner.PetControllerTests$ProcessUpdateFormHasErrors]: ProcessUpdateFormHasErrors does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-09-30T14:06:24.713+08:00  INFO 598 --- [           main] .b.t.c.SpringBootTestContextBootstrapper : Found @SpringBootConfiguration org.springframework.samples.petclinic.PetClinicApplication for test class org.springframework.samples.petclinic.owner.PetControllerTests$ProcessUpdateFormHasErrors
+2026-09-30T14:06:24.713+08:00  INFO 598 --- [           main] t.c.s.AnnotationConfigContextLoaderUtils : Could not detect default configuration classes for test class [org.springframework.samples.petclinic.owner.PetControllerTests$ProcessUpdateFormHasErrors]: ProcessUpdateFormHasErrors does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-09-30T14:06:24.713+08:00  INFO 598 --- [           main] t.c.s.AnnotationConfigContextLoaderUtils : Could not detect default configuration classes for test class [org.springframework.samples.petclinic.owner.PetControllerTests]: PetControllerTests does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-09-30T14:06:24.717+08:00  INFO 598 --- [           main] .b.t.c.SpringBootTestContextBootstrapper : Found @SpringBootConfiguration org.springframework.samples.petclinic.PetClinicApplication for test class org.springframework.samples.petclinic.owner.PetControllerTests$ProcessUpdateFormHasErrors
+[INFO] Tests run: 8, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.176 s -- in org.springframework.samples.petclinic.owner.PetControllerTests$ProcessUpdateFormHasErrors
+[INFO] Running org.springframework.samples.petclinic.owner.PetControllerTests$ProcessCreationFormHasErrors
+2026-09-30T14:06:24.886+08:00  INFO 598 --- [           main] t.c.s.AnnotationConfigContextLoaderUtils : Could not detect default configuration classes for test class [org.springframework.samples.petclinic.owner.PetControllerTests$ProcessCreationFormHasErrors]: ProcessCreationFormHasErrors does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-09-30T14:06:24.894+08:00  INFO 598 --- [           main] .b.t.c.SpringBootTestContextBootstrapper : Found @SpringBootConfiguration org.springframework.samples.petclinic.PetClinicApplication for test class org.springframework.samples.petclinic.owner.PetControllerTests$ProcessCreationFormHasErrors
+2026-09-30T14:06:24.894+08:00  INFO 598 --- [           main] t.c.s.AnnotationConfigContextLoaderUtils : Could not detect default configuration classes for test class [org.springframework.samples.petclinic.owner.PetControllerTests$ProcessCreationFormHasErrors]: ProcessCreationFormHasErrors does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-09-30T14:06:24.895+08:00  INFO 598 --- [           main] t.c.s.AnnotationConfigContextLoaderUtils : Could not detect default configuration classes for test class [org.springframework.samples.petclinic.owner.PetControllerTests]: PetControllerTests does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-09-30T14:06:24.898+08:00  INFO 598 --- [           main] .b.t.c.SpringBootTestContextBootstrapper : Found @SpringBootConfiguration org.springframework.samples.petclinic.PetClinicApplication for test class org.springframework.samples.petclinic.owner.PetControllerTests$ProcessCreationFormHasErrors
+[INFO] Tests run: 6, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.289 s -- in org.springframework.samples.petclinic.owner.PetControllerTests$ProcessCreationFormHasErrors
+[INFO] Tests run: 0, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.772 s -- in org.springframework.samples.petclinic.owner.PetControllerTests
+[INFO] Running org.springframework.samples.petclinic.owner.ClinicWorkflowIntegrationTests
+2026-09-30T14:06:25.194+08:00  INFO 598 --- [           main] t.c.s.AnnotationConfigContextLoaderUtils : Could not detect default configuration classes for test class [org.springframework.samples.petclinic.owner.ClinicWorkflowIntegrationTests]: ClinicWorkflowIntegrationTests does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-09-30T14:06:25.197+08:00  INFO 598 --- [           main] .b.t.c.SpringBootTestContextBootstrapper : Found @SpringBootConfiguration org.springframework.samples.petclinic.PetClinicApplication for test class org.springframework.samples.petclinic.owner.ClinicWorkflowIntegrationTests
+2026-09-30T14:06:25.199+08:00  INFO 598 --- [           main] t.c.s.AnnotationConfigContextLoaderUtils : Could not detect default configuration classes for test class [org.springframework.samples.petclinic.owner.ClinicWorkflowIntegrationTests]: ClinicWorkflowIntegrationTests does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-09-30T14:06:25.201+08:00  INFO 598 --- [           main] .b.t.c.SpringBootTestContextBootstrapper : Found @SpringBootConfiguration org.springframework.samples.petclinic.PetClinicApplication for test class org.springframework.samples.petclinic.owner.ClinicWorkflowIntegrationTests
+2026-09-30T14:06:25.209+08:00  INFO 598 --- [           main] o.s.b.d.r.RestartApplicationListener     : Restart disabled due to context in which it is running
+
+
+              |\      _,,,--,,_
+             /,`.-'`'   ._  \-;;,_
+  _______ __|,4-  ) )_   .;.(__`'-'__     ___ __    _ ___ _______
+ |       | '---''(_/._)-'(_\_)   |   |   |   |  |  | |   |       |
+ |    _  |    ___|_     _|       |   |   |   |   |_| |   |       | __ _ _
+ |   |_| |   |___  |   | |       |   |   |   |       |   |       | \ \ \ \
+ |    ___|    ___| |   | |      _|   |___|   |  _    |   |      _|  \ \ \ \
+ |   |   |   |___  |   | |     |_|       |   | | |   |   |     |_    ) ) ) )
+ |___|   |_______| |___| |_______|_______|___|_|  |__|___|_______|  / / / /
+ ==================================================================/_/_/_/
+
+:: Built with Spring Boot :: 4.1.0
+
+
+2026-09-30T14:06:25.257+08:00  INFO 598 --- [           main] o.s.s.p.o.ClinicWorkflowIntegrationTests : Starting ClinicWorkflowIntegrationTests using Java 21.0.11 with PID 598 (started by jenkins in /var/jenkins_home/workspace/petclinic-ci)
+2026-09-30T14:06:25.258+08:00  INFO 598 --- [           main] o.s.s.p.o.ClinicWorkflowIntegrationTests : No active profile set, falling back to 1 default profile: "default"
+2026-09-30T14:06:25.626+08:00  INFO 598 --- [           main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2026-09-30T14:06:25.651+08:00  INFO 598 --- [           main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 15 ms. Found 4 JPA repository interfaces.
+2026-09-30T14:06:25.802+08:00  INFO 598 --- [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-6 - Starting...
+2026-09-30T14:06:25.806+08:00  INFO 598 --- [           main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-6 - Added connection conn30: url=jdbc:h2:mem:3360e28a-9e4b-46c9-8b4e-578a0706bc97 user=SA
+2026-09-30T14:06:25.807+08:00  INFO 598 --- [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-6 - Start completed.
+2026-09-30T14:06:25.874+08:00  INFO 598 --- [           main] org.hibernate.orm.jpa                    : HHH008540: Processing PersistenceUnitInfo [name: default]
+2026-09-30T14:06:25.910+08:00  INFO 598 --- [           main] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2026-09-30T14:06:25.911+08:00  INFO 598 --- [           main] org.hibernate.orm.connections.pooling    : HHH10001005: Database info:
+	Database JDBC URL [jdbc:h2:mem:3360e28a-9e4b-46c9-8b4e-578a0706bc97]
+	Database driver: H2 JDBC Driver
+	Database dialect: H2Dialect
+	Database version: 2.4.240
+	Default catalog/schema: 3360E28A-9E4B-46C9-8B4E-578A0706BC97/PUBLIC
+	Autocommit mode: undefined/unknown
+	Isolation level: READ_COMMITTED [default READ_COMMITTED]
+	JDBC fetch size: 100
+	Pool: DataSourceConnectionProvider
+	Minimum pool size: undefined/unknown
+	Maximum pool size: undefined/unknown
+2026-09-30T14:06:26.023+08:00  INFO 598 --- [           main] org.hibernate.orm.core                   : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2026-09-30T14:06:26.023+08:00  INFO 598 --- [           main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2026-09-30T14:06:26.367+08:00  INFO 598 --- [           main] o.s.b.t.m.w.SpringBootMockServletContext : Initializing Spring TestDispatcherServlet ''
+2026-09-30T14:06:26.368+08:00  INFO 598 --- [           main] o.s.t.web.servlet.TestDispatcherServlet  : Initializing Servlet ''
+2026-09-30T14:06:26.370+08:00  INFO 598 --- [           main] o.s.b.a.e.web.EndpointLinksResolver      : Exposing 13 endpoints beneath base path '/actuator'
+2026-09-30T14:06:26.378+08:00  INFO 598 --- [           main] o.s.t.web.servlet.TestDispatcherServlet  : Completed initialization in 10 ms
+2026-09-30T14:06:26.389+08:00  INFO 598 --- [           main] o.s.s.p.o.ClinicWorkflowIntegrationTests : Started ClinicWorkflowIntegrationTests in 1.179 seconds (process running for 62.412)
+[INFO] Tests run: 4, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 1.827 s -- in org.springframework.samples.petclinic.owner.ClinicWorkflowIntegrationTests
+[INFO] 
+[INFO] Results:
+[INFO] 
+[INFO] Tests run: 80, Failures: 0, Errors: 0, Skipped: 0
+[INFO] 
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD SUCCESS
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  01:16 min
+[INFO] Finished at: 2026-09-30T14:06:28+08:00
+[INFO] ------------------------------------------------------------------------
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] stage
+[Pipeline] { (Package)
+[Pipeline] sh
++ echo ===== MAVEN PACKAGE =====
+===== MAVEN PACKAGE =====
++ ./mvnw package -DskipTests
+[INFO] Scanning for projects...
+[INFO] 
+[INFO] ------------< org.springframework.samples:spring-petclinic >------------
+[INFO] Building petclinic 4.0.0-SNAPSHOT
+[INFO]   from pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- enforcer:3.6.3:enforce (enforce-java) @ spring-petclinic ---
+[INFO] Rule 0: org.apache.maven.enforcer.rules.version.RequireJavaVersion passed
+[INFO] 
+[INFO] --- spring-javaformat:0.0.47:validate (default) @ spring-petclinic ---
+[INFO] 
+[INFO] --- checkstyle:3.6.0:check (nohttp-checkstyle-validation) @ spring-petclinic ---
+[INFO] You have 0 Checkstyle violations.
+[INFO] 
+[INFO] --- jacoco:0.8.15:prepare-agent (default) @ spring-petclinic ---
+[INFO] argLine set to -javaagent:/var/jenkins_home/.m2/repository/org/jacoco/org.jacoco.agent/0.8.15/org.jacoco.agent-0.8.15-runtime.jar=destfile=/var/jenkins_home/workspace/petclinic-ci/target/jacoco.exec
+[INFO] 
+[INFO] --- git-commit-id:9.2.0:revision (default) @ spring-petclinic ---
+[INFO] dotGitDirectory '/var/jenkins_home/workspace/petclinic-ci/.git'
+[INFO] Collected git.build.user.name with value jenkins-petclinic-ci
+[INFO] Collected git.build.user.email with value jenkins-petclinic-ci@users.noreply.github.com
+[INFO] Using environment variable based branch name. GIT_BRANCH = origin/main
+[INFO] Collected git.branch with value origin/main
+[INFO] Collected git.commit.id.describe with value dcp-v1.28.0-monitoring-observability-24-g3f311a8
+[INFO] Collected git.commit.id.describe-short with value dcp-v1.28.0-monitoring-observability-24
+[INFO] Collected git.commit.id with value 3f311a8c16cfe0d9d9a260fc0700ce91c7671d2a
+[INFO] Collected git.commit.id.abbrev with value 3f311a8
+[INFO] Collected git.dirty with value false
+[INFO] Collected git.commit.user.name with value heil16070-hue
+[INFO] Collected git.commit.user.email with value heil16070@gmail.com
+[INFO] Collected git.commit.message.full with value feat: connect clinic directories and persisted care workflows
+
+Signed-off-by: heil16070-hue <heil16070@gmail.com>
+[INFO] Collected git.commit.message.short with value feat: connect clinic directories and persisted care workflows
+[INFO] Collected git.commit.time with value 2026-09-30T12:15:53+08:00
+[INFO] Collected git.commit.author.time with value 2026-09-30T12:15:53+08:00
+[INFO] Collected git.commit.committer.time with value 2026-09-30T12:15:53+08:00
+[INFO] Collected git.remote.origin.url with value git@github.com:yipintangzsp/spring-petclinic.git
+[INFO] Collected git.tags with value 
+[INFO] Collected git.tag with value 
+[INFO] Collected git.closest.tag.name with value dcp-v1.28.0-monitoring-observability
+[INFO] Collected git.closest.tag.commit.count with value 24
+[INFO] Collected git.total.commit.count with value 1115
+[INFO] Collected git.local.branch.ahead with value NO_REMOTE
+[INFO] Collected git.local.branch.behind with value NO_REMOTE
+[INFO] Collected git.build.time with value 2024-11-28T22:37:52+08:00
+[INFO] Collected git.build.version with value 4.0.0-SNAPSHOT
+[INFO] Collected git.build.host with value jenkins-87ccb46-m5bcm
+[INFO] Collected git.build.number with value 77
+[INFO] including property 'git.tags' in results
+[INFO] including property 'git.build.version' in results
+[INFO] including property 'git.branch' in results
+[INFO] including property 'git.build.host' in results
+[INFO] including property 'git.build.number' in results
+[INFO] including property 'git.commit.id' in results
+[INFO] including property 'git.commit.user.email' in results
+[INFO] including property 'git.local.branch.behind' in results
+[INFO] including property 'git.commit.author.time' in results
+[INFO] including property 'git.build.user.name' in results
+[INFO] including property 'git.dirty' in results
+[INFO] including property 'git.closest.tag.commit.count' in results
+[INFO] including property 'git.commit.user.name' in results
+[INFO] including property 'git.commit.id.abbrev' in results
+[INFO] including property 'git.commit.id.describe-short' in results
+[INFO] including property 'git.total.commit.count' in results
+[INFO] including property 'git.commit.id.describe' in results
+[INFO] including property 'git.build.user.email' in results
+[INFO] including property 'git.commit.message.short' in results
+[INFO] including property 'git.commit.committer.time' in results
+[INFO] including property 'git.tag' in results
+[INFO] including property 'git.closest.tag.name' in results
+[INFO] including property 'git.local.branch.ahead' in results
+[INFO] including property 'git.commit.time' in results
+[INFO] including property 'git.build.time' in results
+[INFO] including property 'git.commit.message.full' in results
+[INFO] including property 'git.remote.origin.url' in results
+[INFO] Reading existing properties file [/var/jenkins_home/workspace/petclinic-ci/target/classes/git.properties] (for project petclinic)...
+[INFO] Properties file [/var/jenkins_home/workspace/petclinic-ci/target/classes/git.properties] is up-to-date (for module petclinic)...
+[INFO] 
+[INFO] --- spring-boot:4.1.0:build-info (default) @ spring-petclinic ---
+[INFO] 
+[INFO] --- cyclonedx:2.9.1:makeAggregateBom (default) @ spring-petclinic ---
+[INFO] CycloneDX: Resolving Dependencies
+[INFO] CycloneDX: Creating BOM version 1.6 with 113 component(s)
+[INFO] CycloneDX: Writing and validating BOM (JSON): /var/jenkins_home/workspace/petclinic-ci/target/classes/META-INF/sbom/application.cdx.json
+[WARNING] Unknown keyword meta:enum - you should define your own Meta Schema. If the keyword is irrelevant for validation, just use a NonValidationKeyword or if it should generate annotations AnnotationKeyword
+[WARNING] Unknown keyword deprecated - you should define your own Meta Schema. If the keyword is irrelevant for validation, just use a NonValidationKeyword or if it should generate annotations AnnotationKeyword
+[INFO]            attaching as spring-petclinic-4.0.0-SNAPSHOT-cyclonedx.json
+[INFO] 
+[INFO] --- resources:3.5.0:resources (default-resources) @ spring-petclinic ---
+[INFO] Copying 3 resources from src/main/resources to target/classes
+[INFO] Copying 51 resources from src/main/resources to target/classes
+[INFO] 
+[INFO] --- compiler:3.15.0:compile (default-compile) @ spring-petclinic ---
+[INFO] Nothing to compile - all classes are up to date.
+[INFO] 
+[INFO] --- resources:3.5.0:testResources (default-testResources) @ spring-petclinic ---
+[INFO] skip non existing resourceDirectory /var/jenkins_home/workspace/petclinic-ci/src/test/resources
+[INFO] 
+[INFO] --- compiler:3.15.0:testCompile (default-testCompile) @ spring-petclinic ---
+[INFO] Nothing to compile - all classes are up to date.
+[INFO] 
+[INFO] --- surefire:3.5.6:test (default-test) @ spring-petclinic ---
+[WARNING]  Parameter 'systemProperties' is deprecated: use systemPropertyVariables instead
+[INFO] Tests are skipped.
+[INFO] 
+[INFO] --- jacoco:0.8.15:report (report) @ spring-petclinic ---
+[INFO] Loading execution data file /var/jenkins_home/workspace/petclinic-ci/target/jacoco.exec
+[INFO] Analyzed bundle 'petclinic' with 27 classes
+[INFO] 
+[INFO] --- jar:3.5.0:jar (default-jar) @ spring-petclinic ---
+[INFO] Building jar: /var/jenkins_home/workspace/petclinic-ci/target/spring-petclinic-4.0.0-SNAPSHOT.jar
+[INFO] 
+[INFO] --- spring-boot:4.1.0:repackage (repackage) @ spring-petclinic ---
+[INFO] Replacing main artifact /var/jenkins_home/workspace/petclinic-ci/target/spring-petclinic-4.0.0-SNAPSHOT.jar with repackaged archive, adding nested dependencies in BOOT-INF/.
+[INFO] The original artifact has been renamed to /var/jenkins_home/workspace/petclinic-ci/target/spring-petclinic-4.0.0-SNAPSHOT.jar.original
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD SUCCESS
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  9.367 s
+[INFO] Finished at: 2026-09-30T14:06:40+08:00
+[INFO] ------------------------------------------------------------------------
++ echo
+
++ echo ===== JAR =====
+===== JAR =====
++ ls -lh target/spring-petclinic-4.0.0-SNAPSHOT.jar
+-rw-r--r-- 1 jenkins jenkins 66M Nov 28  2024 target/spring-petclinic-4.0.0-SNAPSHOT.jar
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] stage
+[Pipeline] { (Multi-Arch Build & Push)
+[Pipeline] sh
++ echo ===== MULTI-ARCH BUILD & PUSH =====
+===== MULTI-ARCH BUILD & PUSH =====
++ echo IMAGE=127.0.0.1:30050/petclinic/petclinic:0.5.0-ci-77
+IMAGE=127.0.0.1:30050/petclinic/petclinic:0.5.0-ci-77
++ docker buildx build --platform linux/amd64,linux/arm64 -t 127.0.0.1:30050/petclinic/petclinic:0.5.0-ci-77 --push .
+#0 building with "default" instance using docker driver
+
+#1 [internal] load build definition from Dockerfile
+#1 transferring dockerfile: 233B done
+#1 DONE 0.0s
+
+#2 [linux/arm64 internal] load metadata for 127.0.0.1:30050/platform-upgrade/eclipse-temurin:21-jre-local
+#2 DONE 0.1s
+
+#3 [linux/amd64 internal] load metadata for 127.0.0.1:30050/platform-upgrade/eclipse-temurin:21-jre-local
+#3 DONE 0.1s
+
+#4 [internal] load .dockerignore
+#4 transferring context: 2B done
+#4 DONE 0.0s
+
+#5 [linux/amd64 1/3] FROM 127.0.0.1:30050/platform-upgrade/eclipse-temurin:21-jre-local@sha256:69bc3d67c3f9f788cbc235723fdaf8a569015125590a2f7d9ed455537a1f4312
+#5 resolve 127.0.0.1:30050/platform-upgrade/eclipse-temurin:21-jre-local@sha256:69bc3d67c3f9f788cbc235723fdaf8a569015125590a2f7d9ed455537a1f4312 0.0s done
+#5 DONE 0.1s
+
+#6 [linux/arm64 1/3] FROM 127.0.0.1:30050/platform-upgrade/eclipse-temurin:21-jre-local@sha256:69bc3d67c3f9f788cbc235723fdaf8a569015125590a2f7d9ed455537a1f4312
+#6 resolve 127.0.0.1:30050/platform-upgrade/eclipse-temurin:21-jre-local@sha256:69bc3d67c3f9f788cbc235723fdaf8a569015125590a2f7d9ed455537a1f4312 0.0s done
+#6 ...
+
+#7 [linux/amd64 2/3] WORKDIR /app
+#7 DONE 0.1s
+
+#6 [linux/arm64 1/3] FROM 127.0.0.1:30050/platform-upgrade/eclipse-temurin:21-jre-local@sha256:69bc3d67c3f9f788cbc235723fdaf8a569015125590a2f7d9ed455537a1f4312
+#6 DONE 0.2s
+
+#8 [internal] load build context
+#8 transferring context: 68.32MB 0.3s done
+#8 DONE 0.3s
+
+#9 [linux/arm64 2/3] WORKDIR /app
+#9 DONE 0.1s
+
+#10 [linux/arm64 3/3] COPY target/spring-petclinic-4.0.0-SNAPSHOT.jar app.jar
+#10 DONE 0.3s
+
+#11 [linux/amd64 3/3] COPY target/spring-petclinic-4.0.0-SNAPSHOT.jar app.jar
+#11 DONE 0.3s
+
+#12 exporting to image
+#12 exporting layers
+#12 exporting layers 2.7s done
+#12 exporting manifest sha256:27f6ad5d7c7910cf196b55e493eb6c55c18436ac1d4f365811b307247b75c3b4 0.0s done
+#12 exporting config sha256:71b81598909388b4a89168e75851d49e2ba9f649be132731c700705dd15c00a5 0.0s done
+#12 exporting attestation manifest sha256:d790c17df50d1288a2f73f4efc875476f41aa51fee070e1ed23443dc9a3db492 0.0s done
+#12 exporting manifest sha256:f91e12c794021eb6727fe5a8af803ef5199cae34729a5f5a25101b9016047104 0.0s done
+#12 exporting config sha256:042b909323991f5173cf3d6edf858d25b92dd173f129f05c2332c23ed4731c27 0.0s done
+#12 exporting attestation manifest sha256:480c6b013290ccac12a8ec14fbbb738e5d400bd45610d5592d999d5b8a1e17c7
+#12 exporting attestation manifest sha256:480c6b013290ccac12a8ec14fbbb738e5d400bd45610d5592d999d5b8a1e17c7 0.0s done
+#12 exporting manifest list sha256:1f6c7a12f2e67db2f400a782f20c097ab3ce805c34d689c221d37d3115a4a2c7 0.0s done
+#12 naming to 127.0.0.1:30050/petclinic/petclinic:0.5.0-ci-77 done
+#12 DONE 2.9s
+
+#12 exporting to image
+#12 pushing layers
+#12 pushing layers 0.4s done
+#12 pushing manifest for 127.0.0.1:30050/petclinic/petclinic:0.5.0-ci-77@sha256:1f6c7a12f2e67db2f400a782f20c097ab3ce805c34d689c221d37d3115a4a2c7
+#12 pushing manifest for 127.0.0.1:30050/petclinic/petclinic:0.5.0-ci-77@sha256:1f6c7a12f2e67db2f400a782f20c097ab3ce805c34d689c221d37d3115a4a2c7 0.1s done
+#12 DONE 3.4s
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] stage
+[Pipeline] { (Registry Verify)
+[Pipeline] sh
++ echo ===== REGISTRY TAG VERIFY =====
+===== REGISTRY TAG VERIFY =====
++ curl -fsS http://10.0.0.3:30050/v2/petclinic/petclinic/tags/list
+{"name":"petclinic/petclinic","tags":["0.4.0-ci-38","0.4.0-ci-43","0.4.0-ci-57","0.4.0-ci-24","0.4.0-ci-16","0.4.0-ci-10","0.4.0-ci-33","0.4.0-ci-66","0.4.0-ci-65","0.4.0-ci-71","0.4.0-ci-54","0.4.0-ci-35","0.4.0-ci-51","0.4.0-ci-64","0.4.0-ci-25","0.4.0-ci-73","0.4.0-ci-28","0.4.0-ci-53","0.2.0","0.4.0-multiarch-lab","0.4.0-ci-11","0.4.0-ci-56","0.4.0-ci-75","0.4.0-ci-72","0.4.0-ci-29","0.4.0-ci-45","0.4.0-ci-41","0.3.0","0.4.0-ci-55","0.4.0-ci-18","0.4.0-ci-17","0.4.0-ci-36","0.4.0-ci-74","0.4.0-ci-7","0.4.0-ci-34","v1.24-multiarch-audit","0.4.0-ci-60","0.4.0-ci-44","0.4.0-ci-20","0.5.0-ci-77","0.4.0-ci-19","0.4.0-ci","0.4.0-ci-40","0.4.0-ci-39","0.4.0-ci-46","0.4.0-ci-50","0.4.0-ci-52","0.4.0-ci-13","0.4.0-ci-5","0.4.0-ci-23","0.4.0-ci-63","0.4.0-ci-32","0.4.0-ci-61","0.4.0-ci-49","0.4.0-ci-70","0.1.0","0.4.0-ci-42","0.4.0-ci-12","0.4.0-ci-67","0.4.0-ci-31","0.4.0-ci-69","0.4.0-ci-58","0.4.0-ci-26","0.4.0-ci-48","0.4.0-ci-22","0.4.0-ci-21","0.4.0-ci-27"]}
++ echo
+
++ echo
+
++ echo ===== OCI INDEX VERIFY =====
+===== OCI INDEX VERIFY =====
++ curl -fsS -H Accept: application/vnd.oci.image.index.v1+json http://10.0.0.3:30050/v2/petclinic/petclinic/manifests/0.5.0-ci-77
++ MANIFEST={
+  "schemaVersion": 2,
+  "mediaType": "application/vnd.oci.image.index.v1+json",
+  "manifests": [
+    {
+      "mediaType": "application/vnd.oci.image.manifest.v1+json",
+      "digest": "sha256:27f6ad5d7c7910cf196b55e493eb6c55c18436ac1d4f365811b307247b75c3b4",
+      "size": 863,
+      "platform": {
+        "architecture": "amd64",
+        "os": "linux"
+      }
+    },
+    {
+      "mediaType": "application/vnd.oci.image.manifest.v1+json",
+      "digest": "sha256:f91e12c794021eb6727fe5a8af803ef5199cae34729a5f5a25101b9016047104",
+      "size": 1813,
+      "platform": {
+        "architecture": "arm64",
+        "os": "linux"
+      }
+    },
+    {
+      "mediaType": "application/vnd.oci.image.manifest.v1+json",
+      "digest": "sha256:d790c17df50d1288a2f73f4efc875476f41aa51fee070e1ed23443dc9a3db492",
+      "size": 564,
+      "annotations": {
+        "vnd.docker.reference.digest": "sha256:27f6ad5d7c7910cf196b55e493eb6c55c18436ac1d4f365811b307247b75c3b4",
+        "vnd.docker.reference.type": "attestation-manifest"
+      },
+      "platform": {
+        "architecture": "unknown",
+        "os": "unknown"
+      }
+    },
+    {
+      "mediaType": "application/vnd.oci.image.manifest.v1+json",
+      "digest": "sha256:480c6b013290ccac12a8ec14fbbb738e5d400bd45610d5592d999d5b8a1e17c7",
+      "size": 564,
+      "annotations": {
+        "vnd.docker.reference.digest": "sha256:f91e12c794021eb6727fe5a8af803ef5199cae34729a5f5a25101b9016047104",
+        "vnd.docker.reference.type": "attestation-manifest"
+      },
+      "platform": {
+        "architecture": "unknown",
+        "os": "unknown"
+      }
+    }
+  ]
+}
++ echo {
+  "schemaVersion": 2,
+  "mediaType": "application/vnd.oci.image.index.v1+json",
+  "manifests": [
+    {
+      "mediaType": "application/vnd.oci.image.manifest.v1+json",
+      "digest": "sha256:27f6ad5d7c7910cf196b55e493eb6c55c18436ac1d4f365811b307247b75c3b4",
+      "size": 863,
+      "platform": {
+        "architecture": "amd64",
+        "os": "linux"
+      }
+    },
+    {
+      "mediaType": "application/vnd.oci.image.manifest.v1+json",
+      "digest": "sha256:f91e12c794021eb6727fe5a8af803ef5199cae34729a5f5a25101b9016047104",
+      "size": 1813,
+      "platform": {
+        "architecture": "arm64",
+        "os": "linux"
+      }
+    },
+    {
+      "mediaType": "application/vnd.oci.image.manifest.v1+json",
+      "digest": "sha256:d790c17df50d1288a2f73f4efc875476f41aa51fee070e1ed23443dc9a3db492",
+      "size": 564,
+      "annotations": {
+        "vnd.docker.reference.digest": "sha256:27f6ad5d7c7910cf196b55e493eb6c55c18436ac1d4f365811b307247b75c3b4",
+        "vnd.docker.reference.type": "attestation-manifest"
+      },
+      "platform": {
+        "architecture": "unknown",
+        "os": "unknown"
+      }
+    },
+    {
+      "mediaType": "application/vnd.oci.image.manifest.v1+json",
+      "digest": "sha256:480c6b013290ccac12a8ec14fbbb738e5d400bd45610d5592d999d5b8a1e17c7",
+      "size": 564,
+      "annotations": {
+        "vnd.docker.reference.digest": "sha256:f91e12c794021eb6727fe5a8af803ef5199cae34729a5f5a25101b9016047104",
+        "vnd.docker.reference.type": "attestation-manifest"
+      },
+      "platform": {
+        "architecture": "unknown",
+        "os": "unknown"
+      }
+    }
+  ]
+}
+{
+  "schemaVersion": 2,
+  "mediaType": "application/vnd.oci.image.index.v1+json",
+  "manifests": [
+    {
+      "mediaType": "application/vnd.oci.image.manifest.v1+json",
+      "digest": "sha256:27f6ad5d7c7910cf196b55e493eb6c55c18436ac1d4f365811b307247b75c3b4",
+      "size": 863,
+      "platform": {
+        "architecture": "amd64",
+        "os": "linux"
+      }
+    },
+    {
+      "mediaType": "application/vnd.oci.image.manifest.v1+json",
+      "digest": "sha256:f91e12c794021eb6727fe5a8af803ef5199cae34729a5f5a25101b9016047104",
+      "size": 1813,
+      "platform": {
+        "architecture": "arm64",
+        "os": "linux"
+      }
+    },
+    {
+      "mediaType": "application/vnd.oci.image.manifest.v1+json",
+      "digest": "sha256:d790c17df50d1288a2f73f4efc875476f41aa51fee070e1ed23443dc9a3db492",
+      "size": 564,
+      "annotations": {
+        "vnd.docker.reference.digest": "sha256:27f6ad5d7c7910cf196b55e493eb6c55c18436ac1d4f365811b307247b75c3b4",
+        "vnd.docker.reference.type": "attestation-manifest"
+      },
+      "platform": {
+        "architecture": "unknown",
+        "os": "unknown"
+      }
+    },
+    {
+      "mediaType": "application/vnd.oci.image.manifest.v1+json",
+      "digest": "sha256:480c6b013290ccac12a8ec14fbbb738e5d400bd45610d5592d999d5b8a1e17c7",
+      "size": 564,
+      "annotations": {
+        "vnd.docker.reference.digest": "sha256:f91e12c794021eb6727fe5a8af803ef5199cae34729a5f5a25101b9016047104",
+        "vnd.docker.reference.type": "attestation-manifest"
+      },
+      "platform": {
+        "architecture": "unknown",
+        "os": "unknown"
+      }
+    }
+  ]
+}
++ echo
+
++ echo ===== PLATFORM VERIFY =====
+===== PLATFORM VERIFY =====
++ echo {
+  "schemaVersion": 2,
+  "mediaType": "application/vnd.oci.image.index.v1+json",
+  "manifests": [
+    {
+      "mediaType": "application/vnd.oci.image.manifest.v1+json",
+      "digest": "sha256:27f6ad5d7c7910cf196b55e493eb6c55c18436ac1d4f365811b307247b75c3b4",
+      "size": 863,
+      "platform": {
+        "architecture": "amd64",
+        "os": "linux"
+      }
+    },
+    {
+      "mediaType": "application/vnd.oci.image.manifest.v1+json",
+      "digest": "sha256:f91e12c794021eb6727fe5a8af803ef5199cae34729a5f5a25101b9016047104",
+      "size": 1813,
+      "platform": {
+        "architecture": "arm64",
+        "os": "linux"
+      }
+    },
+    {
+      "mediaType": "application/vnd.oci.image.manifest.v1+json",
+      "digest": "sha256:d790c17df50d1288a2f73f4efc875476f41aa51fee070e1ed23443dc9a3db492",
+      "size": 564,
+      "annotations": {
+        "vnd.docker.reference.digest": "sha256:27f6ad5d7c7910cf196b55e493eb6c55c18436ac1d4f365811b307247b75c3b4",
+        "vnd.docker.reference.type": "attestation-manifest"
+      },
+      "platform": {
+        "architecture": "unknown",
+        "os": "unknown"
+      }
+    },
+    {
+      "mediaType": "application/vnd.oci.image.manifest.v1+json",
+      "digest": "sha256:480c6b013290ccac12a8ec14fbbb738e5d400bd45610d5592d999d5b8a1e17c7",
+      "size": 564,
+      "annotations": {
+        "vnd.docker.reference.digest": "sha256:f91e12c794021eb6727fe5a8af803ef5199cae34729a5f5a25101b9016047104",
+        "vnd.docker.reference.type": "attestation-manifest"
+      },
+      "platform": {
+        "architecture": "unknown",
+        "os": "unknown"
+      }
+    }
+  ]
+}
++ grep -Eq "architecture"[[:space:]]*:[[:space:]]*"amd64"
++ echo linux/amd64: OK
+linux/amd64: OK
++ echo {
+  "schemaVersion": 2,
+  "mediaType": "application/vnd.oci.image.index.v1+json",
+  "manifests": [
+    {
+      "mediaType": "application/vnd.oci.image.manifest.v1+json",
+      "digest": "sha256:27f6ad5d7c7910cf196b55e493eb6c55c18436ac1d4f365811b307247b75c3b4",
+      "size": 863,
+      "platform": {
+        "architecture": "amd64",
+        "os": "linux"
+      }
+    },
+    {
+      "mediaType": "application/vnd.oci.image.manifest.v1+json",
+      "digest": "sha256:f91e12c794021eb6727fe5a8af803ef5199cae34729a5f5a25101b9016047104",
+      "size": 1813,
+      "platform": {
+        "architecture": "arm64",
+        "os": "linux"
+      }
+    },
+    {
+      "mediaType": "application/vnd.oci.image.manifest.v1+json",
+      "digest": "sha256:d790c17df50d1288a2f73f4efc875476f41aa51fee070e1ed23443dc9a3db492",
+      "size": 564,
+      "annotations": {
+        "vnd.docker.reference.digest": "sha256:27f6ad5d7c7910cf196b55e493eb6c55c18436ac1d4f365811b307247b75c3b4",
+        "vnd.docker.reference.type": "attestation-manifest"
+      },
+      "platform": {
+        "architecture": "unknown",
+        "os": "unknown"
+      }
+    },
+    {
+      "mediaType": "application/vnd.oci.image.manifest.v1+json",
+      "digest": "sha256:480c6b013290ccac12a8ec14fbbb738e5d400bd45610d5592d999d5b8a1e17c7",
+      "size": 564,
+      "annotations": {
+        "vnd.docker.reference.digest": "sha256:f91e12c794021eb6727fe5a8af803ef5199cae34729a5f5a25101b9016047104",
+        "vnd.docker.reference.type": "attestation-manifest"
+      },
+      "platform": {
+        "architecture": "unknown",
+        "os": "unknown"
+      }
+    }
+  ]
+}
++ grep -Eq "architecture"[[:space:]]*:[[:space:]]*"arm64"
++ echo linux/arm64: OK
+linux/arm64: OK
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] stage
+[Pipeline] { (Git Promotion)
+[Pipeline] withCredentials
+Masking supported pattern matches of $GITHUB_SSH_KEY
+[Pipeline] {
+[Pipeline] sh
++ set -eu
++ echo ===== GIT IMAGE PROMOTION =====
+===== GIT IMAGE PROMOTION =====
++ export GIT_SSH_COMMAND=ssh -i **** -o IdentitiesOnly=yes -o StrictHostKeyChecking=yes -o UserKnownHostsFile=/var/jenkins_home/.ssh/known_hosts
++ MANIFEST=k8s/production/petclinic.yaml
++ cat .git-sha
++ SOURCE_GIT_SHA=3f311a8c16cfe0d9d9a260fc0700ce91c7671d2a
++ echo
+
++ echo ===== FETCH REMOTE MAIN =====
+===== FETCH REMOTE MAIN =====
++ FETCH_OK=false
++ git fetch origin main
+From github.com:yipintangzsp/spring-petclinic
+ * branch            main       -> FETCH_HEAD
++ FETCH_OK=true
++ break
++ [ true != true ]
++ git rev-parse refs/remotes/origin/main
++ REMOTE_MAIN_SHA=3f311a8c16cfe0d9d9a260fc0700ce91c7671d2a
++ echo SOURCE_GIT_SHA=3f311a8c16cfe0d9d9a260fc0700ce91c7671d2a
+SOURCE_GIT_SHA=3f311a8c16cfe0d9d9a260fc0700ce91c7671d2a
++ echo REMOTE_MAIN_SHA=3f311a8c16cfe0d9d9a260fc0700ce91c7671d2a
+REMOTE_MAIN_SHA=3f311a8c16cfe0d9d9a260fc0700ce91c7671d2a
++ [ 3f311a8c16cfe0d9d9a260fc0700ce91c7671d2a != 3f311a8c16cfe0d9d9a260fc0700ce91c7671d2a ]
++ echo
+
++ echo ===== CHECKOUT PROMOTION BRANCH =====
+===== CHECKOUT PROMOTION BRANCH =====
++ git checkout -B main refs/remotes/origin/main
+Switched to and reset branch 'main'
+branch 'main' set up to track 'origin/main'.
+Your branch is up to date with 'origin/main'.
++ echo
+
++ echo ===== CURRENT MANIFEST IMAGE =====
+===== CURRENT MANIFEST IMAGE =====
++ grep -E ^[[:space:]]*image:[[:space:]]+10\.0\.0\.3:30050/petclinic/petclinic: k8s/production/petclinic.yaml
+          image: 10.0.0.3:30050/petclinic/petclinic:0.4.0-ci-75
++ grep -Ec ^[[:space:]]*image:[[:space:]]+10\.0\.0\.3:30050/petclinic/petclinic: k8s/production/petclinic.yaml
++ IMAGE_LINE_COUNT=1
++ echo IMAGE_LINE_COUNT=1
+IMAGE_LINE_COUNT=1
++ [ 1 -ne 1 ]
++ echo
+
++ echo ===== PROMOTE IMAGE =====
+===== PROMOTE IMAGE =====
++ sed -i -E s#^([[:space:]]*)image:[[:space:]]+10\.0\.0\.3:30050/petclinic/petclinic:.*#\1image: 10.0.0.3:30050/petclinic/petclinic:0.5.0-ci-77# k8s/production/petclinic.yaml
++ date -u +%Y-%m-%dT%H:%M:%SZ
++ BUILD_TIME_UTC=2026-09-30T06:06:54Z
++ sed -i -E /name: APPLICATION_VERSION/{n;s#^([[:space:]]*)value:.*#\1value: '0.5.0-ci-77'#;} k8s/production/petclinic.yaml
++ sed -i -E /name: BUILD_NUMBER/{n;s#^([[:space:]]*)value:.*#\1value: '77'#;} k8s/production/petclinic.yaml
++ sed -i -E /name: BUILD_GIT_COMMIT/{n;s#^([[:space:]]*)value:.*#\1value: '3f311a8c16cfe0d9d9a260fc0700ce91c7671d2a'#;} k8s/production/petclinic.yaml
++ sed -i -E /name: BUILD_TIME/{n;s#^([[:space:]]*)value:.*#\1value: '2026-09-30T06:06:54Z'#;} k8s/production/petclinic.yaml
++ echo
+
++ echo ===== PROMOTED MANIFEST IMAGE =====
+===== PROMOTED MANIFEST IMAGE =====
++ grep -E ^[[:space:]]*image: k8s/production/petclinic.yaml
+          image: 10.0.0.3:30050/petclinic/petclinic:0.5.0-ci-77
++ grep -A1 -E name: (APPLICATION_VERSION|BUILD_NUMBER|BUILD_GIT_COMMIT|BUILD_TIME) k8s/production/petclinic.yaml
+            - name: APPLICATION_VERSION
+              value: '0.5.0-ci-77'
+            - name: BUILD_NUMBER
+              value: '77'
+            - name: BUILD_GIT_COMMIT
+              value: '3f311a8c16cfe0d9d9a260fc0700ce91c7671d2a'
+            - name: BUILD_TIME
+              value: '2026-09-30T06:06:54Z'
++ echo
+
++ echo ===== PROMOTION DIFF =====
+===== PROMOTION DIFF =====
++ git diff -- k8s/production/petclinic.yaml
+diff --git a/k8s/production/petclinic.yaml b/k8s/production/petclinic.yaml
+index f350b83..661076b 100644
+--- a/k8s/production/petclinic.yaml
++++ b/k8s/production/petclinic.yaml
+@@ -52,7 +52,7 @@ spec:
+ 
+       containers:
+         - name: petclinic
+-          image: 10.0.0.3:30050/petclinic/petclinic:0.4.0-ci-75
++          image: 10.0.0.3:30050/petclinic/petclinic:0.5.0-ci-77
+           imagePullPolicy: IfNotPresent
+ 
+           securityContext:
+@@ -68,13 +68,13 @@ spec:
+           env:
+             # Updated together with the immutable image tag by Jenkins Git promotion.
+             - name: APPLICATION_VERSION
+-              value: '0.4.0-ci-75'
++              value: '0.5.0-ci-77'
+             - name: BUILD_NUMBER
+-              value: '75'
++              value: '77'
+             - name: BUILD_GIT_COMMIT
+-              value: 'a6019708baf5ed7b4a51294076f86edae5c7cb79'
++              value: '3f311a8c16cfe0d9d9a260fc0700ce91c7671d2a'
+             - name: BUILD_TIME
+-              value: '2026-09-14T05:59:37Z'
++              value: '2026-09-30T06:06:54Z'
+ 
+             - name: SPRING_PROFILES_ACTIVE
+               valueFrom:
++ git diff --quiet -- k8s/production/petclinic.yaml
++ git config user.name jenkins-petclinic-ci
++ git config user.email jenkins-petclinic-ci@users.noreply.github.com
++ git add k8s/production/petclinic.yaml
++ git commit -m cd: promote petclinic image to 0.5.0-ci-77
+[main 91d3452] cd: promote petclinic image to 0.5.0-ci-77
+ 1 file changed, 5 insertions(+), 5 deletions(-)
++ echo
+
++ echo ===== PUSH PROMOTION =====
+===== PUSH PROMOTION =====
++ git push origin main:main
+To github.com:yipintangzsp/spring-petclinic.git
+   3f311a8..91d3452  main -> main
++ echo
+
++ echo GIT_PROMOTION=OK
+GIT_PROMOTION=OK
++ git log -1 --oneline
+91d3452 cd: promote petclinic image to 0.5.0-ci-77
+[Pipeline] }
+[Pipeline] // withCredentials
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] stage
+[Pipeline] { (Wait for ArgoCD Sync)
+[Pipeline] sh
++ set -eu
++ echo ===== WAIT FOR ARGOCD SYNC =====
+===== WAIT FOR ARGOCD SYNC =====
++ git rev-parse HEAD
++ TARGET_GIT_SHA=91d34528360248d2bcefa37a88627e74a7a7f4db
++ echo TARGET_GIT_SHA=91d34528360248d2bcefa37a88627e74a7a7f4db
+TARGET_GIT_SHA=91d34528360248d2bcefa37a88627e74a7a7f4db
++ echo TARGET_IMAGE=10.0.0.3:30050/petclinic/petclinic:0.5.0-ci-77
+TARGET_IMAGE=10.0.0.3:30050/petclinic/petclinic:0.5.0-ci-77
++ printf %s 91d34528360248d2bcefa37a88627e74a7a7f4db
++ touch .deploy-started
++ sync_ok=0
++ seq 1 180
++ kubectl -n argocd get application petclinic -o jsonpath={.status.sync.status}
++ ARGO_SYNC=Unknown
++ kubectl -n argocd get application petclinic -o jsonpath={.status.health.status}
++ ARGO_HEALTH=Healthy
++ kubectl -n argocd get application petclinic -o jsonpath={.status.sync.revision}
++ ARGO_REVISION=main
++ echo ARGO_CHECK=1 SYNC=Unknown HEALTH=Healthy REVISION=main
+ARGO_CHECK=1 SYNC=Unknown HEALTH=Healthy REVISION=main
++ [ Unknown = Synced ]
++ sleep 5
++ kubectl -n argocd get application petclinic -o jsonpath={.status.sync.status}
++ ARGO_SYNC=Unknown
++ kubectl -n argocd get application petclinic -o jsonpath={.status.health.status}
++ ARGO_HEALTH=Healthy
++ kubectl -n argocd get application petclinic -o jsonpath={.status.sync.revision}
++ ARGO_REVISION=main
++ echo ARGO_CHECK=2 SYNC=Unknown HEALTH=Healthy REVISION=main
+ARGO_CHECK=2 SYNC=Unknown HEALTH=Healthy REVISION=main
++ [ Unknown = Synced ]
++ sleep 5
++ kubectl -n argocd get application petclinic -o jsonpath={.status.sync.status}
++ ARGO_SYNC=Unknown
++ kubectl -n argocd get application petclinic -o jsonpath={.status.health.status}
++ ARGO_HEALTH=Healthy
++ kubectl -n argocd get application petclinic -o jsonpath={.status.sync.revision}
++ ARGO_REVISION=main
++ echo ARGO_CHECK=3 SYNC=Unknown HEALTH=Healthy REVISION=main
+ARGO_CHECK=3 SYNC=Unknown HEALTH=Healthy REVISION=main
++ [ Unknown = Synced ]
++ sleep 5
++ kubectl -n argocd get application petclinic -o jsonpath={.status.sync.status}
++ ARGO_SYNC=Unknown
++ kubectl -n argocd get application petclinic -o jsonpath={.status.health.status}
++ ARGO_HEALTH=Healthy
++ kubectl -n argocd get application petclinic -o jsonpath={.status.sync.revision}
++ ARGO_REVISION=main
++ echo ARGO_CHECK=4 SYNC=Unknown HEALTH=Healthy REVISION=main
+ARGO_CHECK=4 SYNC=Unknown HEALTH=Healthy REVISION=main
++ [ Unknown = Synced ]
++ sleep 5
++ kubectl -n argocd get application petclinic -o jsonpath={.status.sync.status}
++ ARGO_SYNC=Unknown
++ kubectl -n argocd get application petclinic -o jsonpath={.status.health.status}
++ ARGO_HEALTH=Healthy
++ kubectl -n argocd get application petclinic -o jsonpath={.status.sync.revision}
++ ARGO_REVISION=main
++ echo ARGO_CHECK=5 SYNC=Unknown HEALTH=Healthy REVISION=main
+ARGO_CHECK=5 SYNC=Unknown HEALTH=Healthy REVISION=main
++ [ Unknown = Synced ]
++ sleep 5
++ kubectl -n argocd get application petclinic -o jsonpath={.status.sync.status}
++ ARGO_SYNC=Unknown
++ kubectl -n argocd get application petclinic -o jsonpath={.status.health.status}
++ ARGO_HEALTH=Healthy
++ kubectl -n argocd get application petclinic -o jsonpath={.status.sync.revision}
++ ARGO_REVISION=main
++ echo ARGO_CHECK=6 SYNC=Unknown HEALTH=Healthy REVISION=main
+ARGO_CHECK=6 SYNC=Unknown HEALTH=Healthy REVISION=main
++ [ Unknown = Synced ]
++ sleep 5
++ kubectl -n argocd get application petclinic -o jsonpath={.status.sync.status}
++ ARGO_SYNC=Unknown
++ kubectl -n argocd get application petclinic -o jsonpath={.status.health.status}
++ ARGO_HEALTH=Healthy
++ kubectl -n argocd get application petclinic -o jsonpath={.status.sync.revision}
++ ARGO_REVISION=main
++ echo ARGO_CHECK=7 SYNC=Unknown HEALTH=Healthy REVISION=main
+ARGO_CHECK=7 SYNC=Unknown HEALTH=Healthy REVISION=main
++ [ Unknown = Synced ]
++ sleep 5
++ kubectl -n argocd get application petclinic -o jsonpath={.status.sync.status}
++ ARGO_SYNC=Unknown
++ kubectl -n argocd get application petclinic -o jsonpath={.status.health.status}
++ ARGO_HEALTH=Healthy
++ kubectl -n argocd get application petclinic -o jsonpath={.status.sync.revision}
++ ARGO_REVISION=main
++ echo ARGO_CHECK=8 SYNC=Unknown HEALTH=Healthy REVISION=main
+ARGO_CHECK=8 SYNC=Unknown HEALTH=Healthy REVISION=main
++ [ Unknown = Synced ]
++ sleep 5
++ kubectl -n argocd get application petclinic -o jsonpath={.status.sync.status}
++ ARGO_SYNC=Unknown
++ kubectl -n argocd get application petclinic -o jsonpath={.status.health.status}
++ ARGO_HEALTH=Healthy
++ kubectl -n argocd get application petclinic -o jsonpath={.status.sync.revision}
++ ARGO_REVISION=main
++ echo ARGO_CHECK=9 SYNC=Unknown HEALTH=Healthy REVISION=main
+ARGO_CHECK=9 SYNC=Unknown HEALTH=Healthy REVISION=main
++ [ Unknown = Synced ]
++ sleep 5
++ kubectl -n argocd get application petclinic -o jsonpath={.status.sync.status}
++ ARGO_SYNC=Unknown
++ kubectl -n argocd get application petclinic -o jsonpath={.status.health.status}
++ ARGO_HEALTH=Healthy
++ kubectl -n argocd get application petclinic -o jsonpath={.status.sync.revision}
++ ARGO_REVISION=main
++ echo ARGO_CHECK=10 SYNC=Unknown HEALTH=Healthy REVISION=main
+ARGO_CHECK=10 SYNC=Unknown HEALTH=Healthy REVISION=main
++ [ Unknown = Synced ]
++ sleep 5
++ kubectl -n argocd get application petclinic -o jsonpath={.status.sync.status}
++ ARGO_SYNC=Unknown
++ kubectl -n argocd get application petclinic -o jsonpath={.status.health.status}
++ ARGO_HEALTH=Healthy
++ kubectl -n argocd get application petclinic -o jsonpath={.status.sync.revision}
++ ARGO_REVISION=main
++ echo ARGO_CHECK=11 SYNC=Unknown HEALTH=Healthy REVISION=main
+ARGO_CHECK=11 SYNC=Unknown HEALTH=Healthy REVISION=main
++ [ Unknown = Synced ]
++ sleep 5
++ kubectl -n argocd get application petclinic -o jsonpath={.status.sync.status}
++ ARGO_SYNC=Unknown
++ kubectl -n argocd get application petclinic -o jsonpath={.status.health.status}
++ ARGO_HEALTH=Healthy
++ kubectl -n argocd get application petclinic -o jsonpath={.status.sync.revision}
++ ARGO_REVISION=main
++ echo ARGO_CHECK=12 SYNC=Unknown HEALTH=Healthy REVISION=main
+ARGO_CHECK=12 SYNC=Unknown HEALTH=Healthy REVISION=main
++ [ Unknown = Synced ]
++ sleep 5
++ kubectl -n argocd get application petclinic -o jsonpath={.status.sync.status}
++ ARGO_SYNC=OutOfSync
++ kubectl -n argocd get application petclinic -o jsonpath={.status.health.status}
++ ARGO_HEALTH=Progressing
++ kubectl -n argocd get application petclinic -o jsonpath={.status.sync.revision}
++ ARGO_REVISION=91d34528360248d2bcefa37a88627e74a7a7f4db
++ echo ARGO_CHECK=13 SYNC=OutOfSync HEALTH=Progressing REVISION=91d34528360248d2bcefa37a88627e74a7a7f4db
+ARGO_CHECK=13 SYNC=OutOfSync HEALTH=Progressing REVISION=91d34528360248d2bcefa37a88627e74a7a7f4db
++ [ OutOfSync = Synced ]
++ sleep 5
++ kubectl -n argocd get application petclinic -o jsonpath={.status.sync.status}
++ ARGO_SYNC=Synced
++ kubectl -n argocd get application petclinic -o jsonpath={.status.health.status}
++ ARGO_HEALTH=Progressing
++ kubectl -n argocd get application petclinic -o jsonpath={.status.sync.revision}
++ ARGO_REVISION=91d34528360248d2bcefa37a88627e74a7a7f4db
++ echo ARGO_CHECK=14 SYNC=Synced HEALTH=Progressing REVISION=91d34528360248d2bcefa37a88627e74a7a7f4db
+ARGO_CHECK=14 SYNC=Synced HEALTH=Progressing REVISION=91d34528360248d2bcefa37a88627e74a7a7f4db
++ [ Synced = Synced ]
++ [ Progressing = Healthy ]
++ sleep 5
++ kubectl -n argocd get application petclinic -o jsonpath={.status.sync.status}
++ ARGO_SYNC=Synced
++ kubectl -n argocd get application petclinic -o jsonpath={.status.health.status}
++ ARGO_HEALTH=Progressing
++ kubectl -n argocd get application petclinic -o jsonpath={.status.sync.revision}
++ ARGO_REVISION=91d34528360248d2bcefa37a88627e74a7a7f4db
++ echo ARGO_CHECK=15 SYNC=Synced HEALTH=Progressing REVISION=91d34528360248d2bcefa37a88627e74a7a7f4db
+ARGO_CHECK=15 SYNC=Synced HEALTH=Progressing REVISION=91d34528360248d2bcefa37a88627e74a7a7f4db
++ [ Synced = Synced ]
++ [ Progressing = Healthy ]
++ sleep 5
++ kubectl -n argocd get application petclinic -o jsonpath={.status.sync.status}
++ ARGO_SYNC=Synced
++ kubectl -n argocd get application petclinic -o jsonpath={.status.health.status}
++ ARGO_HEALTH=Progressing
++ kubectl -n argocd get application petclinic -o jsonpath={.status.sync.revision}
++ ARGO_REVISION=91d34528360248d2bcefa37a88627e74a7a7f4db
++ echo ARGO_CHECK=16 SYNC=Synced HEALTH=Progressing REVISION=91d34528360248d2bcefa37a88627e74a7a7f4db
+ARGO_CHECK=16 SYNC=Synced HEALTH=Progressing REVISION=91d34528360248d2bcefa37a88627e74a7a7f4db
++ [ Synced = Synced ]
++ [ Progressing = Healthy ]
++ sleep 5
++ kubectl -n argocd get application petclinic -o jsonpath={.status.sync.status}
++ ARGO_SYNC=Synced
++ kubectl -n argocd get application petclinic -o jsonpath={.status.health.status}
++ ARGO_HEALTH=Progressing
++ kubectl -n argocd get application petclinic -o jsonpath={.status.sync.revision}
++ ARGO_REVISION=91d34528360248d2bcefa37a88627e74a7a7f4db
++ echo ARGO_CHECK=17 SYNC=Synced HEALTH=Progressing REVISION=91d34528360248d2bcefa37a88627e74a7a7f4db
+ARGO_CHECK=17 SYNC=Synced HEALTH=Progressing REVISION=91d34528360248d2bcefa37a88627e74a7a7f4db
++ [ Synced = Synced ]
++ [ Progressing = Healthy ]
++ sleep 5
++ kubectl -n argocd get application petclinic -o jsonpath={.status.sync.status}
++ ARGO_SYNC=Synced
++ kubectl -n argocd get application petclinic -o jsonpath={.status.health.status}
++ ARGO_HEALTH=Progressing
++ kubectl -n argocd get application petclinic -o jsonpath={.status.sync.revision}
++ ARGO_REVISION=91d34528360248d2bcefa37a88627e74a7a7f4db
++ echo ARGO_CHECK=18 SYNC=Synced HEALTH=Progressing REVISION=91d34528360248d2bcefa37a88627e74a7a7f4db
+ARGO_CHECK=18 SYNC=Synced HEALTH=Progressing REVISION=91d34528360248d2bcefa37a88627e74a7a7f4db
++ [ Synced = Synced ]
++ [ Progressing = Healthy ]
++ sleep 5
++ kubectl -n argocd get application petclinic -o jsonpath={.status.sync.status}
++ ARGO_SYNC=Synced
++ kubectl -n argocd get application petclinic -o jsonpath={.status.health.status}
++ ARGO_HEALTH=Progressing
++ kubectl -n argocd get application petclinic -o jsonpath={.status.sync.revision}
++ ARGO_REVISION=91d34528360248d2bcefa37a88627e74a7a7f4db
++ echo ARGO_CHECK=19 SYNC=Synced HEALTH=Progressing REVISION=91d34528360248d2bcefa37a88627e74a7a7f4db
+ARGO_CHECK=19 SYNC=Synced HEALTH=Progressing REVISION=91d34528360248d2bcefa37a88627e74a7a7f4db
++ [ Synced = Synced ]
++ [ Progressing = Healthy ]
++ sleep 5
++ kubectl -n argocd get application petclinic -o jsonpath={.status.sync.status}
++ ARGO_SYNC=Synced
++ kubectl -n argocd get application petclinic -o jsonpath={.status.health.status}
++ ARGO_HEALTH=Progressing
++ kubectl -n argocd get application petclinic -o jsonpath={.status.sync.revision}
++ ARGO_REVISION=91d34528360248d2bcefa37a88627e74a7a7f4db
++ echo ARGO_CHECK=20 SYNC=Synced HEALTH=Progressing REVISION=91d34528360248d2bcefa37a88627e74a7a7f4db
+ARGO_CHECK=20 SYNC=Synced HEALTH=Progressing REVISION=91d34528360248d2bcefa37a88627e74a7a7f4db
++ [ Synced = Synced ]
++ [ Progressing = Healthy ]
++ sleep 5
++ kubectl -n argocd get application petclinic -o jsonpath={.status.sync.status}
++ ARGO_SYNC=Synced
++ kubectl -n argocd get application petclinic -o jsonpath={.status.health.status}
++ ARGO_HEALTH=Progressing
++ kubectl -n argocd get application petclinic -o jsonpath={.status.sync.revision}
++ ARGO_REVISION=91d34528360248d2bcefa37a88627e74a7a7f4db
++ echo ARGO_CHECK=21 SYNC=Synced HEALTH=Progressing REVISION=91d34528360248d2bcefa37a88627e74a7a7f4db
+ARGO_CHECK=21 SYNC=Synced HEALTH=Progressing REVISION=91d34528360248d2bcefa37a88627e74a7a7f4db
++ [ Synced = Synced ]
++ [ Progressing = Healthy ]
++ sleep 5
++ kubectl -n argocd get application petclinic -o jsonpath={.status.sync.status}
++ ARGO_SYNC=Synced
++ kubectl -n argocd get application petclinic -o jsonpath={.status.health.status}
++ ARGO_HEALTH=Progressing
++ kubectl -n argocd get application petclinic -o jsonpath={.status.sync.revision}
++ ARGO_REVISION=91d34528360248d2bcefa37a88627e74a7a7f4db
++ echo ARGO_CHECK=22 SYNC=Synced HEALTH=Progressing REVISION=91d34528360248d2bcefa37a88627e74a7a7f4db
+ARGO_CHECK=22 SYNC=Synced HEALTH=Progressing REVISION=91d34528360248d2bcefa37a88627e74a7a7f4db
++ [ Synced = Synced ]
++ [ Progressing = Healthy ]
++ sleep 5
++ kubectl -n argocd get application petclinic -o jsonpath={.status.sync.status}
++ ARGO_SYNC=Synced
++ kubectl -n argocd get application petclinic -o jsonpath={.status.health.status}
++ ARGO_HEALTH=Progressing
++ kubectl -n argocd get application petclinic -o jsonpath={.status.sync.revision}
++ ARGO_REVISION=91d34528360248d2bcefa37a88627e74a7a7f4db
++ echo ARGO_CHECK=23 SYNC=Synced HEALTH=Progressing REVISION=91d34528360248d2bcefa37a88627e74a7a7f4db
+ARGO_CHECK=23 SYNC=Synced HEALTH=Progressing REVISION=91d34528360248d2bcefa37a88627e74a7a7f4db
++ [ Synced = Synced ]
++ [ Progressing = Healthy ]
++ sleep 5
++ kubectl -n argocd get application petclinic -o jsonpath={.status.sync.status}
++ ARGO_SYNC=Synced
++ kubectl -n argocd get application petclinic -o jsonpath={.status.health.status}
++ ARGO_HEALTH=Progressing
++ kubectl -n argocd get application petclinic -o jsonpath={.status.sync.revision}
++ ARGO_REVISION=91d34528360248d2bcefa37a88627e74a7a7f4db
++ echo ARGO_CHECK=24 SYNC=Synced HEALTH=Progressing REVISION=91d34528360248d2bcefa37a88627e74a7a7f4db
+ARGO_CHECK=24 SYNC=Synced HEALTH=Progressing REVISION=91d34528360248d2bcefa37a88627e74a7a7f4db
++ [ Synced = Synced ]
++ [ Progressing = Healthy ]
++ sleep 5
++ kubectl -n argocd get application petclinic -o jsonpath={.status.sync.status}
++ ARGO_SYNC=Synced
++ kubectl -n argocd get application petclinic -o jsonpath={.status.health.status}
++ ARGO_HEALTH=Progressing
++ kubectl -n argocd get application petclinic -o jsonpath={.status.sync.revision}
++ ARGO_REVISION=91d34528360248d2bcefa37a88627e74a7a7f4db
++ echo ARGO_CHECK=25 SYNC=Synced HEALTH=Progressing REVISION=91d34528360248d2bcefa37a88627e74a7a7f4db
+ARGO_CHECK=25 SYNC=Synced HEALTH=Progressing REVISION=91d34528360248d2bcefa37a88627e74a7a7f4db
++ [ Synced = Synced ]
++ [ Progressing = Healthy ]
++ sleep 5
++ kubectl -n argocd get application petclinic -o jsonpath={.status.sync.status}
++ ARGO_SYNC=Synced
++ kubectl -n argocd get application petclinic -o jsonpath={.status.health.status}
++ ARGO_HEALTH=Progressing
++ kubectl -n argocd get application petclinic -o jsonpath={.status.sync.revision}
++ ARGO_REVISION=91d34528360248d2bcefa37a88627e74a7a7f4db
++ echo ARGO_CHECK=26 SYNC=Synced HEALTH=Progressing REVISION=91d34528360248d2bcefa37a88627e74a7a7f4db
+ARGO_CHECK=26 SYNC=Synced HEALTH=Progressing REVISION=91d34528360248d2bcefa37a88627e74a7a7f4db
++ [ Synced = Synced ]
++ [ Progressing = Healthy ]
++ sleep 5
++ kubectl -n argocd get application petclinic -o jsonpath={.status.sync.status}
++ ARGO_SYNC=Synced
++ kubectl -n argocd get application petclinic -o jsonpath={.status.health.status}
++ ARGO_HEALTH=Progressing
++ kubectl -n argocd get application petclinic -o jsonpath={.status.sync.revision}
++ ARGO_REVISION=91d34528360248d2bcefa37a88627e74a7a7f4db
++ echo ARGO_CHECK=27 SYNC=Synced HEALTH=Progressing REVISION=91d34528360248d2bcefa37a88627e74a7a7f4db
+ARGO_CHECK=27 SYNC=Synced HEALTH=Progressing REVISION=91d34528360248d2bcefa37a88627e74a7a7f4db
++ [ Synced = Synced ]
++ [ Progressing = Healthy ]
++ sleep 5
++ kubectl -n argocd get application petclinic -o jsonpath={.status.sync.status}
++ ARGO_SYNC=Synced
++ kubectl -n argocd get application petclinic -o jsonpath={.status.health.status}
++ ARGO_HEALTH=Progressing
++ kubectl -n argocd get application petclinic -o jsonpath={.status.sync.revision}
++ ARGO_REVISION=91d34528360248d2bcefa37a88627e74a7a7f4db
++ echo ARGO_CHECK=28 SYNC=Synced HEALTH=Progressing REVISION=91d34528360248d2bcefa37a88627e74a7a7f4db
+ARGO_CHECK=28 SYNC=Synced HEALTH=Progressing REVISION=91d34528360248d2bcefa37a88627e74a7a7f4db
++ [ Synced = Synced ]
++ [ Progressing = Healthy ]
++ sleep 5
++ kubectl -n argocd get application petclinic -o jsonpath={.status.sync.status}
++ ARGO_SYNC=Synced
++ kubectl -n argocd get application petclinic -o jsonpath={.status.health.status}
++ ARGO_HEALTH=Progressing
++ kubectl -n argocd get application petclinic -o jsonpath={.status.sync.revision}
++ ARGO_REVISION=91d34528360248d2bcefa37a88627e74a7a7f4db
++ echo ARGO_CHECK=29 SYNC=Synced HEALTH=Progressing REVISION=91d34528360248d2bcefa37a88627e74a7a7f4db
+ARGO_CHECK=29 SYNC=Synced HEALTH=Progressing REVISION=91d34528360248d2bcefa37a88627e74a7a7f4db
++ [ Synced = Synced ]
++ [ Progressing = Healthy ]
++ sleep 5
++ kubectl -n argocd get application petclinic -o jsonpath={.status.sync.status}
++ ARGO_SYNC=Synced
++ kubectl -n argocd get application petclinic -o jsonpath={.status.health.status}
++ ARGO_HEALTH=Progressing
++ kubectl -n argocd get application petclinic -o jsonpath={.status.sync.revision}
++ ARGO_REVISION=91d34528360248d2bcefa37a88627e74a7a7f4db
++ echo ARGO_CHECK=30 SYNC=Synced HEALTH=Progressing REVISION=91d34528360248d2bcefa37a88627e74a7a7f4db
+ARGO_CHECK=30 SYNC=Synced HEALTH=Progressing REVISION=91d34528360248d2bcefa37a88627e74a7a7f4db
++ [ Synced = Synced ]
++ [ Progressing = Healthy ]
++ sleep 5
++ kubectl -n argocd get application petclinic -o jsonpath={.status.sync.status}
++ ARGO_SYNC=Synced
++ kubectl -n argocd get application petclinic -o jsonpath={.status.health.status}
++ ARGO_HEALTH=Progressing
++ kubectl -n argocd get application petclinic -o jsonpath={.status.sync.revision}
++ ARGO_REVISION=91d34528360248d2bcefa37a88627e74a7a7f4db
++ echo ARGO_CHECK=31 SYNC=Synced HEALTH=Progressing REVISION=91d34528360248d2bcefa37a88627e74a7a7f4db
+ARGO_CHECK=31 SYNC=Synced HEALTH=Progressing REVISION=91d34528360248d2bcefa37a88627e74a7a7f4db
++ [ Synced = Synced ]
++ [ Progressing = Healthy ]
++ sleep 5
++ kubectl -n argocd get application petclinic -o jsonpath={.status.sync.status}
++ ARGO_SYNC=Synced
++ kubectl -n argocd get application petclinic -o jsonpath={.status.health.status}
++ ARGO_HEALTH=Progressing
++ kubectl -n argocd get application petclinic -o jsonpath={.status.sync.revision}
++ ARGO_REVISION=91d34528360248d2bcefa37a88627e74a7a7f4db
++ echo ARGO_CHECK=32 SYNC=Synced HEALTH=Progressing REVISION=91d34528360248d2bcefa37a88627e74a7a7f4db
+ARGO_CHECK=32 SYNC=Synced HEALTH=Progressing REVISION=91d34528360248d2bcefa37a88627e74a7a7f4db
++ [ Synced = Synced ]
++ [ Progressing = Healthy ]
++ sleep 5
++ kubectl -n argocd get application petclinic -o jsonpath={.status.sync.status}
++ ARGO_SYNC=Synced
++ kubectl -n argocd get application petclinic -o jsonpath={.status.health.status}
++ ARGO_HEALTH=Progressing
++ kubectl -n argocd get application petclinic -o jsonpath={.status.sync.revision}
++ ARGO_REVISION=91d34528360248d2bcefa37a88627e74a7a7f4db
++ echo ARGO_CHECK=33 SYNC=Synced HEALTH=Progressing REVISION=91d34528360248d2bcefa37a88627e74a7a7f4db
+ARGO_CHECK=33 SYNC=Synced HEALTH=Progressing REVISION=91d34528360248d2bcefa37a88627e74a7a7f4db
++ [ Synced = Synced ]
++ [ Progressing = Healthy ]
++ sleep 5
++ kubectl -n argocd get application petclinic -o jsonpath={.status.sync.status}
++ ARGO_SYNC=Synced
++ kubectl -n argocd get application petclinic -o jsonpath={.status.health.status}
++ ARGO_HEALTH=Progressing
++ kubectl -n argocd get application petclinic -o jsonpath={.status.sync.revision}
++ ARGO_REVISION=91d34528360248d2bcefa37a88627e74a7a7f4db
++ echo ARGO_CHECK=34 SYNC=Synced HEALTH=Progressing REVISION=91d34528360248d2bcefa37a88627e74a7a7f4db
+ARGO_CHECK=34 SYNC=Synced HEALTH=Progressing REVISION=91d34528360248d2bcefa37a88627e74a7a7f4db
++ [ Synced = Synced ]
++ [ Progressing = Healthy ]
++ sleep 5
++ kubectl -n argocd get application petclinic -o jsonpath={.status.sync.status}
++ ARGO_SYNC=Synced
++ kubectl -n argocd get application petclinic -o jsonpath={.status.health.status}
++ ARGO_HEALTH=Progressing
++ kubectl -n argocd get application petclinic -o jsonpath={.status.sync.revision}
++ ARGO_REVISION=91d34528360248d2bcefa37a88627e74a7a7f4db
++ echo ARGO_CHECK=35 SYNC=Synced HEALTH=Progressing REVISION=91d34528360248d2bcefa37a88627e74a7a7f4db
+ARGO_CHECK=35 SYNC=Synced HEALTH=Progressing REVISION=91d34528360248d2bcefa37a88627e74a7a7f4db
++ [ Synced = Synced ]
++ [ Progressing = Healthy ]
++ sleep 5
++ kubectl -n argocd get application petclinic -o jsonpath={.status.sync.status}
++ ARGO_SYNC=Synced
++ kubectl -n argocd get application petclinic -o jsonpath={.status.health.status}
++ ARGO_HEALTH=Progressing
++ kubectl -n argocd get application petclinic -o jsonpath={.status.sync.revision}
++ ARGO_REVISION=91d34528360248d2bcefa37a88627e74a7a7f4db
++ echo ARGO_CHECK=36 SYNC=Synced HEALTH=Progressing REVISION=91d34528360248d2bcefa37a88627e74a7a7f4db
+ARGO_CHECK=36 SYNC=Synced HEALTH=Progressing REVISION=91d34528360248d2bcefa37a88627e74a7a7f4db
++ [ Synced = Synced ]
++ [ Progressing = Healthy ]
++ sleep 5
++ kubectl -n argocd get application petclinic -o jsonpath={.status.sync.status}
++ ARGO_SYNC=Synced
++ kubectl -n argocd get application petclinic -o jsonpath={.status.health.status}
++ ARGO_HEALTH=Progressing
++ kubectl -n argocd get application petclinic -o jsonpath={.status.sync.revision}
++ ARGO_REVISION=91d34528360248d2bcefa37a88627e74a7a7f4db
++ echo ARGO_CHECK=37 SYNC=Synced HEALTH=Progressing REVISION=91d34528360248d2bcefa37a88627e74a7a7f4db
+ARGO_CHECK=37 SYNC=Synced HEALTH=Progressing REVISION=91d34528360248d2bcefa37a88627e74a7a7f4db
++ [ Synced = Synced ]
++ [ Progressing = Healthy ]
++ sleep 5
++ kubectl -n argocd get application petclinic -o jsonpath={.status.sync.status}
++ ARGO_SYNC=Synced
++ kubectl -n argocd get application petclinic -o jsonpath={.status.health.status}
++ ARGO_HEALTH=Progressing
++ kubectl -n argocd get application petclinic -o jsonpath={.status.sync.revision}
++ ARGO_REVISION=91d34528360248d2bcefa37a88627e74a7a7f4db
++ echo ARGO_CHECK=38 SYNC=Synced HEALTH=Progressing REVISION=91d34528360248d2bcefa37a88627e74a7a7f4db
+ARGO_CHECK=38 SYNC=Synced HEALTH=Progressing REVISION=91d34528360248d2bcefa37a88627e74a7a7f4db
++ [ Synced = Synced ]
++ [ Progressing = Healthy ]
++ sleep 5
++ kubectl -n argocd get application petclinic -o jsonpath={.status.sync.status}
++ ARGO_SYNC=Synced
++ kubectl -n argocd get application petclinic -o jsonpath={.status.health.status}
++ ARGO_HEALTH=Progressing
++ kubectl -n argocd get application petclinic -o jsonpath={.status.sync.revision}
++ ARGO_REVISION=91d34528360248d2bcefa37a88627e74a7a7f4db
++ echo ARGO_CHECK=39 SYNC=Synced HEALTH=Progressing REVISION=91d34528360248d2bcefa37a88627e74a7a7f4db
+ARGO_CHECK=39 SYNC=Synced HEALTH=Progressing REVISION=91d34528360248d2bcefa37a88627e74a7a7f4db
++ [ Synced = Synced ]
++ [ Progressing = Healthy ]
++ sleep 5
++ kubectl -n argocd get application petclinic -o jsonpath={.status.sync.status}
++ ARGO_SYNC=Synced
++ kubectl -n argocd get application petclinic -o jsonpath={.status.health.status}
++ ARGO_HEALTH=Progressing
++ kubectl -n argocd get application petclinic -o jsonpath={.status.sync.revision}
++ ARGO_REVISION=91d34528360248d2bcefa37a88627e74a7a7f4db
++ echo ARGO_CHECK=40 SYNC=Synced HEALTH=Progressing REVISION=91d34528360248d2bcefa37a88627e74a7a7f4db
+ARGO_CHECK=40 SYNC=Synced HEALTH=Progressing REVISION=91d34528360248d2bcefa37a88627e74a7a7f4db
++ [ Synced = Synced ]
++ [ Progressing = Healthy ]
++ sleep 5
++ kubectl -n argocd get application petclinic -o jsonpath={.status.sync.status}
++ ARGO_SYNC=Synced
++ kubectl -n argocd get application petclinic -o jsonpath={.status.health.status}
++ ARGO_HEALTH=Progressing
++ kubectl -n argocd get application petclinic -o jsonpath={.status.sync.revision}
++ ARGO_REVISION=91d34528360248d2bcefa37a88627e74a7a7f4db
++ echo ARGO_CHECK=41 SYNC=Synced HEALTH=Progressing REVISION=91d34528360248d2bcefa37a88627e74a7a7f4db
+ARGO_CHECK=41 SYNC=Synced HEALTH=Progressing REVISION=91d34528360248d2bcefa37a88627e74a7a7f4db
++ [ Synced = Synced ]
++ [ Progressing = Healthy ]
++ sleep 5
++ kubectl -n argocd get application petclinic -o jsonpath={.status.sync.status}
++ ARGO_SYNC=Synced
++ kubectl -n argocd get application petclinic -o jsonpath={.status.health.status}
++ ARGO_HEALTH=Progressing
++ kubectl -n argocd get application petclinic -o jsonpath={.status.sync.revision}
++ ARGO_REVISION=91d34528360248d2bcefa37a88627e74a7a7f4db
++ echo ARGO_CHECK=42 SYNC=Synced HEALTH=Progressing REVISION=91d34528360248d2bcefa37a88627e74a7a7f4db
+ARGO_CHECK=42 SYNC=Synced HEALTH=Progressing REVISION=91d34528360248d2bcefa37a88627e74a7a7f4db
++ [ Synced = Synced ]
++ [ Progressing = Healthy ]
++ sleep 5
++ kubectl -n argocd get application petclinic -o jsonpath={.status.sync.status}
++ ARGO_SYNC=Synced
++ kubectl -n argocd get application petclinic -o jsonpath={.status.health.status}
++ ARGO_HEALTH=Progressing
++ kubectl -n argocd get application petclinic -o jsonpath={.status.sync.revision}
++ ARGO_REVISION=91d34528360248d2bcefa37a88627e74a7a7f4db
++ echo ARGO_CHECK=43 SYNC=Synced HEALTH=Progressing REVISION=91d34528360248d2bcefa37a88627e74a7a7f4db
+ARGO_CHECK=43 SYNC=Synced HEALTH=Progressing REVISION=91d34528360248d2bcefa37a88627e74a7a7f4db
++ [ Synced = Synced ]
++ [ Progressing = Healthy ]
++ sleep 5
++ kubectl -n argocd get application petclinic -o jsonpath={.status.sync.status}
++ ARGO_SYNC=Synced
++ kubectl -n argocd get application petclinic -o jsonpath={.status.health.status}
++ ARGO_HEALTH=Progressing
++ kubectl -n argocd get application petclinic -o jsonpath={.status.sync.revision}
++ ARGO_REVISION=91d34528360248d2bcefa37a88627e74a7a7f4db
++ echo ARGO_CHECK=44 SYNC=Synced HEALTH=Progressing REVISION=91d34528360248d2bcefa37a88627e74a7a7f4db
+ARGO_CHECK=44 SYNC=Synced HEALTH=Progressing REVISION=91d34528360248d2bcefa37a88627e74a7a7f4db
++ [ Synced = Synced ]
++ [ Progressing = Healthy ]
++ sleep 5
++ kubectl -n argocd get application petclinic -o jsonpath={.status.sync.status}
++ ARGO_SYNC=Synced
++ kubectl -n argocd get application petclinic -o jsonpath={.status.health.status}
++ ARGO_HEALTH=Progressing
++ kubectl -n argocd get application petclinic -o jsonpath={.status.sync.revision}
++ ARGO_REVISION=91d34528360248d2bcefa37a88627e74a7a7f4db
++ echo ARGO_CHECK=45 SYNC=Synced HEALTH=Progressing REVISION=91d34528360248d2bcefa37a88627e74a7a7f4db
+ARGO_CHECK=45 SYNC=Synced HEALTH=Progressing REVISION=91d34528360248d2bcefa37a88627e74a7a7f4db
++ [ Synced = Synced ]
++ [ Progressing = Healthy ]
++ sleep 5
++ kubectl -n argocd get application petclinic -o jsonpath={.status.sync.status}
++ ARGO_SYNC=Synced
++ kubectl -n argocd get application petclinic -o jsonpath={.status.health.status}
++ ARGO_HEALTH=Progressing
++ kubectl -n argocd get application petclinic -o jsonpath={.status.sync.revision}
++ ARGO_REVISION=91d34528360248d2bcefa37a88627e74a7a7f4db
++ echo ARGO_CHECK=46 SYNC=Synced HEALTH=Progressing REVISION=91d34528360248d2bcefa37a88627e74a7a7f4db
+ARGO_CHECK=46 SYNC=Synced HEALTH=Progressing REVISION=91d34528360248d2bcefa37a88627e74a7a7f4db
++ [ Synced = Synced ]
++ [ Progressing = Healthy ]
++ sleep 5
++ kubectl -n argocd get application petclinic -o jsonpath={.status.sync.status}
++ ARGO_SYNC=Synced
++ kubectl -n argocd get application petclinic -o jsonpath={.status.health.status}
++ ARGO_HEALTH=Progressing
++ kubectl -n argocd get application petclinic -o jsonpath={.status.sync.revision}
++ ARGO_REVISION=91d34528360248d2bcefa37a88627e74a7a7f4db
++ echo ARGO_CHECK=47 SYNC=Synced HEALTH=Progressing REVISION=91d34528360248d2bcefa37a88627e74a7a7f4db
+ARGO_CHECK=47 SYNC=Synced HEALTH=Progressing REVISION=91d34528360248d2bcefa37a88627e74a7a7f4db
++ [ Synced = Synced ]
++ [ Progressing = Healthy ]
++ sleep 5
++ kubectl -n argocd get application petclinic -o jsonpath={.status.sync.status}
++ ARGO_SYNC=Synced
++ kubectl -n argocd get application petclinic -o jsonpath={.status.health.status}
++ ARGO_HEALTH=Progressing
++ kubectl -n argocd get application petclinic -o jsonpath={.status.sync.revision}
++ ARGO_REVISION=91d34528360248d2bcefa37a88627e74a7a7f4db
++ echo ARGO_CHECK=48 SYNC=Synced HEALTH=Progressing REVISION=91d34528360248d2bcefa37a88627e74a7a7f4db
+ARGO_CHECK=48 SYNC=Synced HEALTH=Progressing REVISION=91d34528360248d2bcefa37a88627e74a7a7f4db
++ [ Synced = Synced ]
++ [ Progressing = Healthy ]
++ sleep 5
++ kubectl -n argocd get application petclinic -o jsonpath={.status.sync.status}
++ ARGO_SYNC=Synced
++ kubectl -n argocd get application petclinic -o jsonpath={.status.health.status}
++ ARGO_HEALTH=Progressing
++ kubectl -n argocd get application petclinic -o jsonpath={.status.sync.revision}
++ ARGO_REVISION=91d34528360248d2bcefa37a88627e74a7a7f4db
++ echo ARGO_CHECK=49 SYNC=Synced HEALTH=Progressing REVISION=91d34528360248d2bcefa37a88627e74a7a7f4db
+ARGO_CHECK=49 SYNC=Synced HEALTH=Progressing REVISION=91d34528360248d2bcefa37a88627e74a7a7f4db
++ [ Synced = Synced ]
++ [ Progressing = Healthy ]
++ sleep 5
++ kubectl -n argocd get application petclinic -o jsonpath={.status.sync.status}
++ ARGO_SYNC=Synced
++ kubectl -n argocd get application petclinic -o jsonpath={.status.health.status}
++ ARGO_HEALTH=Progressing
++ kubectl -n argocd get application petclinic -o jsonpath={.status.sync.revision}
++ ARGO_REVISION=91d34528360248d2bcefa37a88627e74a7a7f4db
++ echo ARGO_CHECK=50 SYNC=Synced HEALTH=Progressing REVISION=91d34528360248d2bcefa37a88627e74a7a7f4db
+ARGO_CHECK=50 SYNC=Synced HEALTH=Progressing REVISION=91d34528360248d2bcefa37a88627e74a7a7f4db
++ [ Synced = Synced ]
++ [ Progressing = Healthy ]
++ sleep 5
++ kubectl -n argocd get application petclinic -o jsonpath={.status.sync.status}
++ ARGO_SYNC=Synced
++ kubectl -n argocd get application petclinic -o jsonpath={.status.health.status}
++ ARGO_HEALTH=Progressing
++ kubectl -n argocd get application petclinic -o jsonpath={.status.sync.revision}
++ ARGO_REVISION=91d34528360248d2bcefa37a88627e74a7a7f4db
++ echo ARGO_CHECK=51 SYNC=Synced HEALTH=Progressing REVISION=91d34528360248d2bcefa37a88627e74a7a7f4db
+ARGO_CHECK=51 SYNC=Synced HEALTH=Progressing REVISION=91d34528360248d2bcefa37a88627e74a7a7f4db
++ [ Synced = Synced ]
++ [ Progressing = Healthy ]
++ sleep 5
++ kubectl -n argocd get application petclinic -o jsonpath={.status.sync.status}
++ ARGO_SYNC=Synced
++ kubectl -n argocd get application petclinic -o jsonpath={.status.health.status}
++ ARGO_HEALTH=Progressing
++ kubectl -n argocd get application petclinic -o jsonpath={.status.sync.revision}
++ ARGO_REVISION=91d34528360248d2bcefa37a88627e74a7a7f4db
++ echo ARGO_CHECK=52 SYNC=Synced HEALTH=Progressing REVISION=91d34528360248d2bcefa37a88627e74a7a7f4db
+ARGO_CHECK=52 SYNC=Synced HEALTH=Progressing REVISION=91d34528360248d2bcefa37a88627e74a7a7f4db
++ [ Synced = Synced ]
++ [ Progressing = Healthy ]
++ sleep 5
++ kubectl -n argocd get application petclinic -o jsonpath={.status.sync.status}
++ ARGO_SYNC=Synced
++ kubectl -n argocd get application petclinic -o jsonpath={.status.health.status}
++ ARGO_HEALTH=Progressing
++ kubectl -n argocd get application petclinic -o jsonpath={.status.sync.revision}
++ ARGO_REVISION=91d34528360248d2bcefa37a88627e74a7a7f4db
++ echo ARGO_CHECK=53 SYNC=Synced HEALTH=Progressing REVISION=91d34528360248d2bcefa37a88627e74a7a7f4db
+ARGO_CHECK=53 SYNC=Synced HEALTH=Progressing REVISION=91d34528360248d2bcefa37a88627e74a7a7f4db
++ [ Synced = Synced ]
++ [ Progressing = Healthy ]
++ sleep 5
++ kubectl -n argocd get application petclinic -o jsonpath={.status.sync.status}
++ ARGO_SYNC=Synced
++ kubectl -n argocd get application petclinic -o jsonpath={.status.health.status}
++ ARGO_HEALTH=Progressing
++ kubectl -n argocd get application petclinic -o jsonpath={.status.sync.revision}
++ ARGO_REVISION=91d34528360248d2bcefa37a88627e74a7a7f4db
++ echo ARGO_CHECK=54 SYNC=Synced HEALTH=Progressing REVISION=91d34528360248d2bcefa37a88627e74a7a7f4db
+ARGO_CHECK=54 SYNC=Synced HEALTH=Progressing REVISION=91d34528360248d2bcefa37a88627e74a7a7f4db
++ [ Synced = Synced ]
++ [ Progressing = Healthy ]
++ sleep 5
++ kubectl -n argocd get application petclinic -o jsonpath={.status.sync.status}
++ ARGO_SYNC=Synced
++ kubectl -n argocd get application petclinic -o jsonpath={.status.health.status}
++ ARGO_HEALTH=Progressing
++ kubectl -n argocd get application petclinic -o jsonpath={.status.sync.revision}
++ ARGO_REVISION=91d34528360248d2bcefa37a88627e74a7a7f4db
++ echo ARGO_CHECK=55 SYNC=Synced HEALTH=Progressing REVISION=91d34528360248d2bcefa37a88627e74a7a7f4db
+ARGO_CHECK=55 SYNC=Synced HEALTH=Progressing REVISION=91d34528360248d2bcefa37a88627e74a7a7f4db
++ [ Synced = Synced ]
++ [ Progressing = Healthy ]
++ sleep 5
++ kubectl -n argocd get application petclinic -o jsonpath={.status.sync.status}
++ ARGO_SYNC=Synced
++ kubectl -n argocd get application petclinic -o jsonpath={.status.health.status}
++ ARGO_HEALTH=Progressing
++ kubectl -n argocd get application petclinic -o jsonpath={.status.sync.revision}
++ ARGO_REVISION=91d34528360248d2bcefa37a88627e74a7a7f4db
++ echo ARGO_CHECK=56 SYNC=Synced HEALTH=Progressing REVISION=91d34528360248d2bcefa37a88627e74a7a7f4db
+ARGO_CHECK=56 SYNC=Synced HEALTH=Progressing REVISION=91d34528360248d2bcefa37a88627e74a7a7f4db
++ [ Synced = Synced ]
++ [ Progressing = Healthy ]
++ sleep 5
++ kubectl -n argocd get application petclinic -o jsonpath={.status.sync.status}
++ ARGO_SYNC=Synced
++ kubectl -n argocd get application petclinic -o jsonpath={.status.health.status}
++ ARGO_HEALTH=Progressing
++ kubectl -n argocd get application petclinic -o jsonpath={.status.sync.revision}
++ ARGO_REVISION=91d34528360248d2bcefa37a88627e74a7a7f4db
++ echo ARGO_CHECK=57 SYNC=Synced HEALTH=Progressing REVISION=91d34528360248d2bcefa37a88627e74a7a7f4db
+ARGO_CHECK=57 SYNC=Synced HEALTH=Progressing REVISION=91d34528360248d2bcefa37a88627e74a7a7f4db
++ [ Synced = Synced ]
++ [ Progressing = Healthy ]
++ sleep 5
++ kubectl -n argocd get application petclinic -o jsonpath={.status.sync.status}
++ ARGO_SYNC=Synced
++ kubectl -n argocd get application petclinic -o jsonpath={.status.health.status}
++ ARGO_HEALTH=Progressing
++ kubectl -n argocd get application petclinic -o jsonpath={.status.sync.revision}
++ ARGO_REVISION=91d34528360248d2bcefa37a88627e74a7a7f4db
++ echo ARGO_CHECK=58 SYNC=Synced HEALTH=Progressing REVISION=91d34528360248d2bcefa37a88627e74a7a7f4db
+ARGO_CHECK=58 SYNC=Synced HEALTH=Progressing REVISION=91d34528360248d2bcefa37a88627e74a7a7f4db
++ [ Synced = Synced ]
++ [ Progressing = Healthy ]
++ sleep 5
++ kubectl -n argocd get application petclinic -o jsonpath={.status.sync.status}
++ ARGO_SYNC=Synced
++ kubectl -n argocd get application petclinic -o jsonpath={.status.health.status}
++ ARGO_HEALTH=Progressing
++ kubectl -n argocd get application petclinic -o jsonpath={.status.sync.revision}
++ ARGO_REVISION=91d34528360248d2bcefa37a88627e74a7a7f4db
++ echo ARGO_CHECK=59 SYNC=Synced HEALTH=Progressing REVISION=91d34528360248d2bcefa37a88627e74a7a7f4db
+ARGO_CHECK=59 SYNC=Synced HEALTH=Progressing REVISION=91d34528360248d2bcefa37a88627e74a7a7f4db
++ [ Synced = Synced ]
++ [ Progressing = Healthy ]
++ sleep 5
++ kubectl -n argocd get application petclinic -o jsonpath={.status.sync.status}
++ ARGO_SYNC=Synced
++ kubectl -n argocd get application petclinic -o jsonpath={.status.health.status}
++ ARGO_HEALTH=Progressing
++ kubectl -n argocd get application petclinic -o jsonpath={.status.sync.revision}
++ ARGO_REVISION=91d34528360248d2bcefa37a88627e74a7a7f4db
++ echo ARGO_CHECK=60 SYNC=Synced HEALTH=Progressing REVISION=91d34528360248d2bcefa37a88627e74a7a7f4db
+ARGO_CHECK=60 SYNC=Synced HEALTH=Progressing REVISION=91d34528360248d2bcefa37a88627e74a7a7f4db
++ [ Synced = Synced ]
++ [ Progressing = Healthy ]
++ sleep 5
++ kubectl -n argocd get application petclinic -o jsonpath={.status.sync.status}
++ ARGO_SYNC=Synced
++ kubectl -n argocd get application petclinic -o jsonpath={.status.health.status}
++ ARGO_HEALTH=Progressing
++ kubectl -n argocd get application petclinic -o jsonpath={.status.sync.revision}
++ ARGO_REVISION=91d34528360248d2bcefa37a88627e74a7a7f4db
++ echo ARGO_CHECK=61 SYNC=Synced HEALTH=Progressing REVISION=91d34528360248d2bcefa37a88627e74a7a7f4db
+ARGO_CHECK=61 SYNC=Synced HEALTH=Progressing REVISION=91d34528360248d2bcefa37a88627e74a7a7f4db
++ [ Synced = Synced ]
++ [ Progressing = Healthy ]
++ sleep 5
++ kubectl -n argocd get application petclinic -o jsonpath={.status.sync.status}
++ ARGO_SYNC=Synced
++ kubectl -n argocd get application petclinic -o jsonpath={.status.health.status}
++ ARGO_HEALTH=Progressing
++ kubectl -n argocd get application petclinic -o jsonpath={.status.sync.revision}
++ ARGO_REVISION=91d34528360248d2bcefa37a88627e74a7a7f4db
++ echo ARGO_CHECK=62 SYNC=Synced HEALTH=Progressing REVISION=91d34528360248d2bcefa37a88627e74a7a7f4db
+ARGO_CHECK=62 SYNC=Synced HEALTH=Progressing REVISION=91d34528360248d2bcefa37a88627e74a7a7f4db
++ [ Synced = Synced ]
++ [ Progressing = Healthy ]
++ sleep 5
++ kubectl -n argocd get application petclinic -o jsonpath={.status.sync.status}
++ ARGO_SYNC=Synced
++ kubectl -n argocd get application petclinic -o jsonpath={.status.health.status}
++ ARGO_HEALTH=Progressing
++ kubectl -n argocd get application petclinic -o jsonpath={.status.sync.revision}
++ ARGO_REVISION=91d34528360248d2bcefa37a88627e74a7a7f4db
++ echo ARGO_CHECK=63 SYNC=Synced HEALTH=Progressing REVISION=91d34528360248d2bcefa37a88627e74a7a7f4db
+ARGO_CHECK=63 SYNC=Synced HEALTH=Progressing REVISION=91d34528360248d2bcefa37a88627e74a7a7f4db
++ [ Synced = Synced ]
++ [ Progressing = Healthy ]
++ sleep 5
++ kubectl -n argocd get application petclinic -o jsonpath={.status.sync.status}
++ ARGO_SYNC=Synced
++ kubectl -n argocd get application petclinic -o jsonpath={.status.health.status}
++ ARGO_HEALTH=Progressing
++ kubectl -n argocd get application petclinic -o jsonpath={.status.sync.revision}
++ ARGO_REVISION=91d34528360248d2bcefa37a88627e74a7a7f4db
++ echo ARGO_CHECK=64 SYNC=Synced HEALTH=Progressing REVISION=91d34528360248d2bcefa37a88627e74a7a7f4db
+ARGO_CHECK=64 SYNC=Synced HEALTH=Progressing REVISION=91d34528360248d2bcefa37a88627e74a7a7f4db
++ [ Synced = Synced ]
++ [ Progressing = Healthy ]
++ sleep 5
++ kubectl -n argocd get application petclinic -o jsonpath={.status.sync.status}
++ ARGO_SYNC=Synced
++ kubectl -n argocd get application petclinic -o jsonpath={.status.health.status}
++ ARGO_HEALTH=Progressing
++ kubectl -n argocd get application petclinic -o jsonpath={.status.sync.revision}
++ ARGO_REVISION=91d34528360248d2bcefa37a88627e74a7a7f4db
++ echo ARGO_CHECK=65 SYNC=Synced HEALTH=Progressing REVISION=91d34528360248d2bcefa37a88627e74a7a7f4db
+ARGO_CHECK=65 SYNC=Synced HEALTH=Progressing REVISION=91d34528360248d2bcefa37a88627e74a7a7f4db
++ [ Synced = Synced ]
++ [ Progressing = Healthy ]
++ sleep 5
++ kubectl -n argocd get application petclinic -o jsonpath={.status.sync.status}
++ ARGO_SYNC=Synced
++ kubectl -n argocd get application petclinic -o jsonpath={.status.health.status}
++ ARGO_HEALTH=Progressing
++ kubectl -n argocd get application petclinic -o jsonpath={.status.sync.revision}
++ ARGO_REVISION=91d34528360248d2bcefa37a88627e74a7a7f4db
++ echo ARGO_CHECK=66 SYNC=Synced HEALTH=Progressing REVISION=91d34528360248d2bcefa37a88627e74a7a7f4db
+ARGO_CHECK=66 SYNC=Synced HEALTH=Progressing REVISION=91d34528360248d2bcefa37a88627e74a7a7f4db
++ [ Synced = Synced ]
++ [ Progressing = Healthy ]
++ sleep 5
++ kubectl -n argocd get application petclinic -o jsonpath={.status.sync.status}
++ ARGO_SYNC=Synced
++ kubectl -n argocd get application petclinic -o jsonpath={.status.health.status}
++ ARGO_HEALTH=Healthy
++ kubectl -n argocd get application petclinic -o jsonpath={.status.sync.revision}
++ ARGO_REVISION=91d34528360248d2bcefa37a88627e74a7a7f4db
++ echo ARGO_CHECK=67 SYNC=Synced HEALTH=Healthy REVISION=91d34528360248d2bcefa37a88627e74a7a7f4db
+ARGO_CHECK=67 SYNC=Synced HEALTH=Healthy REVISION=91d34528360248d2bcefa37a88627e74a7a7f4db
++ [ Synced = Synced ]
++ [ Healthy = Healthy ]
++ [ 91d34528360248d2bcefa37a88627e74a7a7f4db = 91d34528360248d2bcefa37a88627e74a7a7f4db ]
++ sync_ok=1
++ break
++ [ 1 -ne 1 ]
++ echo
+
++ echo ===== LIVE IMAGE VERIFY =====
+===== LIVE IMAGE VERIFY =====
++ kubectl -n petclinic get deployment petclinic -o jsonpath={.spec.template.spec.containers[0].image}
++ LIVE_IMAGE=10.0.0.3:30050/petclinic/petclinic:0.5.0-ci-77
++ echo EXPECTED_IMAGE=10.0.0.3:30050/petclinic/petclinic:0.5.0-ci-77
+EXPECTED_IMAGE=10.0.0.3:30050/petclinic/petclinic:0.5.0-ci-77
++ echo LIVE_IMAGE=10.0.0.3:30050/petclinic/petclinic:0.5.0-ci-77
+LIVE_IMAGE=10.0.0.3:30050/petclinic/petclinic:0.5.0-ci-77
++ [ 10.0.0.3:30050/petclinic/petclinic:0.5.0-ci-77 != 10.0.0.3:30050/petclinic/petclinic:0.5.0-ci-77 ]
++ echo
+
++ echo ARGOCD_DEPLOYMENT=OK
+ARGOCD_DEPLOYMENT=OK
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] stage
+[Pipeline] { (Rollout Verify)
+[Pipeline] sh
++ echo ===== ROLLOUT STATUS =====
+===== ROLLOUT STATUS =====
++ kubectl -n petclinic rollout status deployment/petclinic --timeout=1200s
+deployment "petclinic" successfully rolled out
++ echo
+
++ echo ===== DEPLOYMENT IMAGE =====
+===== DEPLOYMENT IMAGE =====
++ kubectl -n petclinic get deployment petclinic -o jsonpath=IMAGE={.spec.template.spec.containers[0].image}{"\n"}
+IMAGE=10.0.0.3:30050/petclinic/petclinic:0.5.0-ci-77
++ echo
+
++ echo ===== PODS =====
+===== PODS =====
++ kubectl -n petclinic get pods -l app=petclinic -o wide
+NAME                         READY   STATUS    RESTARTS   AGE     IP            NODE            NOMINATED NODE   READINESS GATES
+petclinic-5fbcdd4b88-kgflk   1/1     Running   0          4m42s   10.42.0.80    devops          <none>           <none>
+petclinic-5fbcdd4b88-ndt2f   1/1     Running   0          4m43s   10.42.3.176   ucloud-worker   <none>           <none>
+petclinic-5fbcdd4b88-x57f7   1/1     Running   0          4m42s   10.42.1.5     aliyun-worker   <none>           <none>
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] stage
+[Pipeline] { (Health Verify)
+[Pipeline] timeout
+Timeout set to expire in 1 min 30 sec
+[Pipeline] {
+[Pipeline] retry
+[Pipeline] {
+[Pipeline] sh
++ echo ===== HEALTH VERIFY =====
+===== HEALTH VERIFY =====
++ HEALTH_SCHEME=http
++ HEALTH_PATH=/actuator/health
++ HEALTH_URL=http://192.168.1.58/actuator/health
++ echo HEALTH_PATH=/actuator/health
+HEALTH_PATH=/actuator/health
++ echo HEALTH_URL=http://192.168.1.58/actuator/health
+HEALTH_URL=http://192.168.1.58/actuator/health
++ curl --fail --silent --show-error --connect-timeout 5 --max-time 10 -H Host: petclinic.devops.local http://192.168.1.58/actuator/health
+{"groups":["liveness","readiness"],"status":"UP"}+ echo
+
+[Pipeline] }
+[Pipeline] // retry
+[Pipeline] }
+[Pipeline] // timeout
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] stage
+[Pipeline] { (Declarative: Post Actions)
+[Pipeline] echo
+CI/CD SUCCESS: 10.0.0.3:30050/petclinic/petclinic:0.5.0-ci-77
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] }
+[Pipeline] // withEnv
+[Pipeline] }
+[Pipeline] // withEnv
+[Pipeline] }
+[Pipeline] // node
+[Pipeline] End of Pipeline
+Finished: SUCCESS
