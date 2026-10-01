@@ -11,7 +11,7 @@ pipeline {
         K8S_REGISTRY = '10.0.0.3:30050'
 
         IMAGE_REPO = 'petclinic/petclinic'
-        IMAGE_TAG = "0.7.0-ci-${BUILD_NUMBER}"
+        IMAGE_TAG = "0.8.0-ci-${BUILD_NUMBER}"
 
         FULL_IMAGE = "${DOCKER_REGISTRY}/${IMAGE_REPO}:${IMAGE_TAG}"
         K8S_IMAGE = "${K8S_REGISTRY}/${IMAGE_REPO}:${IMAGE_TAG}"
