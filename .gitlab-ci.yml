@@ -1,0 +1,12 @@
+stages: [audit]
+release-source-audit:
+  stage: audit
+  image: 10.0.0.3:30050/platform-upgrade/eclipse-temurin:21-jre-local
+  script:
+    - java -version
+    - test -n "$CI_COMMIT_SHA"
+    - test -f Jenkinsfile
+    - test -f k8s/production/petclinic.yaml
+    - echo "Petclinic mirrored source checked at $CI_COMMIT_SHA"
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "main"'

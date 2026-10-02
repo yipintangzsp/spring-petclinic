@@ -9,7 +9,7 @@ Jenkins #83 在构建、测试、双架构推送、仓库验证和 Git promotion
 - UCloud 的 HTTP-only registry 配置带有 `insecure_skip_verify` TLS 选项，导致 kubelet 的 CRI 路径先尝试 HTTPS。备份 `/etc/rancher/k3s/registries.yaml.bak-petclinic-20261002` 后移除这两个 HTTP registry 的 TLS 选项，保留原 endpoint 和 auth，并重载 k3s-agent。
 - #86 在获取 Jenkinsfile 前因 GitHub SSH 22 端口超时失败。Jenkins 持久卷中的 `.ssh/config` 针对 `github.com` 改用官方 `ssh.github.com:443`，保留严格主机密钥验证。443 端口 ED25519 密钥指纹已与 GitHub 官方文档及既有信任的 GitHub 密钥核对一致；未更换部署密钥。
 - Jenkins Git 同步阶段仍要求 Synced 与精确的 promotion revision，随后检查线上镜像；副本健康在 Rollout Verify 中检查，要求 rollout 成功且 Argo Healthy。并未忽略健康失败。
-- rollout 的 600 秒等待与 Deployment 默认进度期限对齐；Argo 健康缓存额外等待最多 120 秒。保留三副本、滚动更新策略、节点调度和探针。
+- rollout 的 600 秒等待与 Deployment 默认进度期限对齐；Argo 健康缓存额外等待最多 120 秒。当时保留三副本、滚动更新策略和探针；后续生产调度调整见下文。
 - 每段 Jenkins shell 经 `sh -n` 验证。最终还必须重新运行真实流水线，不能用语法检查或已有健康部署替代。
 
 ## 验证结果
@@ -18,7 +18,7 @@ UCloud 实际拉取已成功，约 13.6 秒；服务重启后仓库访问正常�
 
 ## 回退
 
-停止并禁用 UCloud 的 `k3s-registry-forward.service` 会移除该服务的 OUTPUT 重定向；恢复 Alibaba 的 authorized_keys 备份可撤销仓库端口授权。恢复 UCloud 的 registries.yaml 备份并重载 k3s-agent 可回退 HTTP registry TLS 选项修正。Jenkinsfile 可通过普通 Git revert 回退。Jenkins 的 GitHub 连接可通过恢复 `.ssh/config.bak-petclinic-20261002` 回退；此前没有 config 时存在 `config.bak-petclinic-20261002-empty` 标记。数据库无需回退。
+停止并禁用 UCloud 的 `k3s-registry-forward.service` 可停止本机仓库转发；最终配置不包含 OUTPUT 重定向。恢复 Alibaba 的 authorized_keys 备份可撤销仓库端口授权。恢复 UCloud 的 registries.yaml 备份并重载 k3s-agent 可回退 HTTP registry TLS 选项修正。Jenkinsfile 可通过普通 Git revert 回退。Jenkins 的 GitHub 连接可通过恢复 `.ssh/config.bak-petclinic-20261002` 回退；此前没有 config 时存在 `config.bak-petclinic-20261002-empty` 标记。数据库无需回退。
 
 官方连接说明：[GitHub SSH 443](https://docs.github.com/en/authentication/troubleshooting-ssh/using-ssh-over-the-https-port)。
 
@@ -29,3 +29,15 @@ UCloud 实际拉取已成功，约 13.6 秒；服务重启后仓库访问正常�
 生产 Deployment 因此明确固定到 `devops`，保留三个副本、已有镜像和发行指纹；通过普通 Git 提交及 ArgoCD 生效。此举不提供跨节点容灾，恢复多节点前必须先通过节点及 Pod 网络验收。数据库和视觉代码无需修改。
 
 UCloud 的显式本机 CRI mirror 已加载，`k3s crictl pull` 成功。最终需要重新核对生产页面和三副本状态。阿里云旧的两个 Terminating Pod 不强制删除，须在确认实际节点进程状态后处理。
+
+## 最终复查 · 2026-10-02 15:38（北京时间）
+
+- Jenkins #87 全部阶段 SUCCESS，测试汇总为 81 项、0 失败、0 错误、0 跳过。源码为 `b8c81679e8a7c51ca4df827e78bb1f636b9aff83`，生产发行 `0.8.0-ci-87`。
+- 复查时 ArgoCD 为 Synced / Healthy，revision 为 `d51c30c6eaa4782fef54371e1e9dba0e399c8c93`。三个生产副本均在 devops，3 Ready / 3 Available，各 0 重启；均运行同一已验证双架构 OCI index，digest 为 `sha256:46ba83a75ee827419a43fb2d3a4d4d5f2293e0f7b9a765be61bc789c3571f4b5`。
+- 页面健康 UP，PostgreSQL 仍为 11 主人、13 宠物、6 兽医、5 就诊；既有验收就诊记录完整。本轮验收未新增业务数据。
+- 桌面 1440×1000 与手机 390×844 各八页均 HTTP 200，没有横向溢出、JavaScript 错误或国际化占位符；主人搜索、空结果、宠物与兽医筛选、详情导航、日期必填、手机导航通过。
+- 证据：`evidence/2026-10-02/pipeline-repair/after-release.json`、`after-browser-results.json`、`jenkins-87-status.json`。截图保存在同目录的 `after-*.png`，仅保留本地。
+- 阿里云节点仍 Unknown / NotReady，两只旧 Terminating Pod 未强制删除。UCloud Ready 不能替代网络验收。当前三副本提供单节点运行，跨节点容灾仍未恢复。
+- 已删除本轮到期的临时诊断 Pod `pipeline-registry-check-20261002`。
+
+页面入口为 `petclinic.devops.local`。本轮关闭了此前未完成的生产与浏览器验收；节点恢复需要另行获得阿里云主机的合法 SSH 连接信息后继续排查。

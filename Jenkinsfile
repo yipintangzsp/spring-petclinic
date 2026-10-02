@@ -11,7 +11,7 @@ pipeline {
         K8S_REGISTRY = '10.0.0.3:30050'
 
         IMAGE_REPO = 'petclinic/petclinic'
-        IMAGE_TAG = "0.8.0-ci-${BUILD_NUMBER}"
+        IMAGE_TAG = "0.9.0-ci-${BUILD_NUMBER}"
 
         FULL_IMAGE = "${DOCKER_REGISTRY}/${IMAGE_REPO}:${IMAGE_TAG}"
         K8S_IMAGE = "${K8S_REGISTRY}/${IMAGE_REPO}:${IMAGE_TAG}"
@@ -69,6 +69,30 @@ pipeline {
             }
         }
 
+        stage('SonarQube Analysis') {
+            steps {
+                withCredentials([string(credentialsId: 'sonar-token', variable: 'SONAR_TOKEN')]) {
+                    withEnv(['SONAR_HOST_URL=http://sonarqube-sonarqube.sonarqube.svc.cluster.local:9000', 'SONAR_SCANNER_JAVA_OPTS=-Xmx512m']) {
+                        sh '''
+                            set -eu
+                            ./mvnw -B org.sonarsource.scanner.maven:sonar-maven-plugin:5.8.0.7211:sonar \
+                              -Dsonar.projectKey=petclinic \
+                              -Dsonar.qualitygate.wait=true \
+                              -Dsonar.qualitygate.timeout=300
+                        '''
+                    }
+                }
+            }
+        }
+
+        stage('GitLab Source Mirror') {
+            steps {
+                withCredentials([usernamePassword(credentialsId: 'gitlab-creds', usernameVariable: 'GITLAB_USER', passwordVariable: 'GITLAB_TOKEN')]) {
+                    sh 'node infra/observability/publish-artifacts.mjs gitlab'
+                }
+            }
+        }
+
         stage('Multi-Arch Build & Push') {
             steps {
                 sh '''
@@ -113,6 +137,19 @@ pipeline {
                       grep -Eq '"architecture"[[:space:]]*:[[:space:]]*"arm64"'
                     echo "linux/arm64: OK"
                 '''
+            }
+        }
+
+        stage('Harbor Audit Copy') {
+            steps {
+                withCredentials([usernamePassword(credentialsId: 'harbor-creds', usernameVariable: 'HARBOR_USER', passwordVariable: 'HARBOR_PASS')]) {
+                    sh '''
+                        set -eu
+                        node infra/observability/publish-artifacts.mjs harbor-project
+                        node infra/observability/publish-artifacts.mjs harbor-copy
+                        node infra/observability/publish-artifacts.mjs harbor-scan
+                    '''
+                }
             }
         }
 
@@ -357,9 +394,19 @@ pipeline {
             }
         }
 
+        stage('Kafka Release Event') {
+            steps {
+                sh 'node infra/observability/publish-artifacts.mjs kafka'
+            }
+        }
+
     }
 
     post {
+        always {
+            junit testResults: 'target/surefire-reports/*.xml', allowEmptyResults: true
+            archiveArtifacts artifacts: 'target/platform/*.json', allowEmptyArchive: true
+        }
         success {
             echo "CI/CD SUCCESS: ${K8S_IMAGE}"
         }

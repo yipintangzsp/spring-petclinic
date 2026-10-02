@@ -1,0 +1,702 @@
+[
+  {
+    "namespace": "argocd",
+    "name": "argocd-applicationset-controller",
+    "kind": "Deployment",
+    "desired": 1,
+    "ready": 1,
+    "images": [
+      "127.0.0.1:30050/platform-upgrade/argocd:v3.4.5-arm64"
+    ]
+  },
+  {
+    "namespace": "argocd",
+    "name": "argocd-dex-server",
+    "kind": "Deployment",
+    "desired": 1,
+    "ready": 1,
+    "images": [
+      "127.0.0.1:30050/platform-upgrade/dex:v2.45.1-arm64"
+    ]
+  },
+  {
+    "namespace": "argocd",
+    "name": "argocd-notifications-controller",
+    "kind": "Deployment",
+    "desired": 1,
+    "ready": 1,
+    "images": [
+      "127.0.0.1:30050/platform-upgrade/argocd:v3.4.5-arm64"
+    ]
+  },
+  {
+    "namespace": "argocd",
+    "name": "argocd-redis",
+    "kind": "Deployment",
+    "desired": 1,
+    "ready": 1,
+    "images": [
+      "127.0.0.1:30050/platform-upgrade/redis:8.8.1-alpine-arm64"
+    ]
+  },
+  {
+    "namespace": "argocd",
+    "name": "argocd-repo-server",
+    "kind": "Deployment",
+    "desired": 1,
+    "ready": 1,
+    "images": [
+      "127.0.0.1:30050/platform-upgrade/argocd:v3.4.5-arm64"
+    ]
+  },
+  {
+    "namespace": "argocd",
+    "name": "argocd-server",
+    "kind": "Deployment",
+    "desired": 1,
+    "ready": 1,
+    "images": [
+      "127.0.0.1:30050/platform-upgrade/argocd:v3.4.5-arm64"
+    ]
+  },
+  {
+    "namespace": "data-infra",
+    "name": "airflow-api-server",
+    "kind": "Deployment",
+    "desired": 0,
+    "ready": 0,
+    "images": [
+      "apache/airflow:3.3.0"
+    ]
+  },
+  {
+    "namespace": "data-infra",
+    "name": "airflow-dag-processor",
+    "kind": "Deployment",
+    "desired": 0,
+    "ready": 0,
+    "images": [
+      "apache/airflow:3.3.0",
+      "apache/airflow:3.3.0"
+    ]
+  },
+  {
+    "namespace": "data-infra",
+    "name": "airflow-scheduler",
+    "kind": "Deployment",
+    "desired": 0,
+    "ready": 0,
+    "images": [
+      "apache/airflow:3.3.0",
+      "apache/airflow:3.3.0"
+    ]
+  },
+  {
+    "namespace": "data-infra",
+    "name": "airflow-statsd",
+    "kind": "Deployment",
+    "desired": 0,
+    "ready": 0,
+    "images": [
+      "127.0.0.1:30050/platform-upgrade/statsd-exporter:v0.30.0-arm64"
+    ]
+  },
+  {
+    "namespace": "data-infra",
+    "name": "minio",
+    "kind": "Deployment",
+    "desired": 0,
+    "ready": 0,
+    "images": [
+      "quay.io/minio/minio:RELEASE.2025-09-07T16-13-09Z"
+    ]
+  },
+  {
+    "namespace": "data-infra",
+    "name": "superset",
+    "kind": "Deployment",
+    "desired": 1,
+    "ready": 1,
+    "images": [
+      "192.168.1.58:30050/library/superset:6.1.0-mysqlconnector-9.6.0"
+    ]
+  },
+  {
+    "namespace": "data-infra",
+    "name": "superset-worker",
+    "kind": "Deployment",
+    "desired": 1,
+    "ready": 1,
+    "images": [
+      "192.168.1.58:30050/library/superset:6.1.0-mysqlconnector-9.6.0"
+    ]
+  },
+  {
+    "namespace": "data-infra",
+    "name": "trino-coordinator",
+    "kind": "Deployment",
+    "desired": 1,
+    "ready": 1,
+    "images": [
+      "127.0.0.1:30050/platform-upgrade/trinodb-trino:483"
+    ]
+  },
+  {
+    "namespace": "data-infra",
+    "name": "trino-worker",
+    "kind": "Deployment",
+    "desired": 1,
+    "ready": 1,
+    "images": [
+      "127.0.0.1:30050/platform-upgrade/trinodb-trino:483"
+    ]
+  },
+  {
+    "namespace": "default",
+    "name": "elasticsearch",
+    "kind": "Deployment",
+    "desired": 1,
+    "ready": 1,
+    "images": [
+      "127.0.0.1:30050/platform-upgrade/elasticsearch:9.4.4-arm64"
+    ]
+  },
+  {
+    "namespace": "default",
+    "name": "kibana",
+    "kind": "Deployment",
+    "desired": 1,
+    "ready": 1,
+    "images": [
+      "127.0.0.1:30050/platform-upgrade/kibana:9.4.4-arm64"
+    ]
+  },
+  {
+    "namespace": "harbor",
+    "name": "harbor-core",
+    "kind": "Deployment",
+    "desired": 1,
+    "ready": 1,
+    "images": [
+      "127.0.0.1:30050/goharbor/harbor-core:v2.14.3-arm64-native"
+    ]
+  },
+  {
+    "namespace": "harbor",
+    "name": "harbor-jobservice",
+    "kind": "Deployment",
+    "desired": 1,
+    "ready": 1,
+    "images": [
+      "127.0.0.1:30050/goharbor/harbor-jobservice:v2.14.3-arm64-native"
+    ]
+  },
+  {
+    "namespace": "harbor",
+    "name": "harbor-portal",
+    "kind": "Deployment",
+    "desired": 1,
+    "ready": 1,
+    "images": [
+      "goharbor/harbor-portal:v2.14.3"
+    ]
+  },
+  {
+    "namespace": "harbor",
+    "name": "harbor-redis-arm64",
+    "kind": "Deployment",
+    "desired": 1,
+    "ready": 1,
+    "images": [
+      "127.0.0.1:30050/platform-upgrade/redis:8.8.1-alpine-arm64"
+    ]
+  },
+  {
+    "namespace": "harbor",
+    "name": "harbor-registry",
+    "kind": "Deployment",
+    "desired": 1,
+    "ready": 1,
+    "images": [
+      "goharbor/registry-photon:2.14.2",
+      "goharbor/harbor-registryctl:2.14.2"
+    ]
+  },
+  {
+    "namespace": "kube-system",
+    "name": "coredns",
+    "kind": "Deployment",
+    "desired": 1,
+    "ready": 1,
+    "images": [
+      "rancher/mirrored-coredns-coredns:1.14.3"
+    ]
+  },
+  {
+    "namespace": "kube-system",
+    "name": "local-path-provisioner",
+    "kind": "Deployment",
+    "desired": 1,
+    "ready": 1,
+    "images": [
+      "rancher/local-path-provisioner:v0.0.36"
+    ]
+  },
+  {
+    "namespace": "kube-system",
+    "name": "metrics-server",
+    "kind": "Deployment",
+    "desired": 1,
+    "ready": 1,
+    "images": [
+      "rancher/mirrored-metrics-server:v0.8.1"
+    ]
+  },
+  {
+    "namespace": "kube-system",
+    "name": "traefik",
+    "kind": "Deployment",
+    "desired": 1,
+    "ready": 1,
+    "images": [
+      "docker.io/rancher/mirrored-library-traefik:3.6.13"
+    ]
+  },
+  {
+    "namespace": "monitoring",
+    "name": "jaeger",
+    "kind": "Deployment",
+    "desired": 1,
+    "ready": 1,
+    "images": [
+      "127.0.0.1:30050/platform-upgrade/jaeger:2.20.0-arm64"
+    ]
+  },
+  {
+    "namespace": "monitoring",
+    "name": "kube-stack-grafana",
+    "kind": "Deployment",
+    "desired": 1,
+    "ready": 1,
+    "images": [
+      "127.0.0.1:30050/platform-upgrade/k8s-sidecar:2.8.1-arm64",
+      "127.0.0.1:30050/platform-upgrade/k8s-sidecar:2.8.1-arm64",
+      "127.0.0.1:30050/platform-upgrade/grafana-grafana:13.1.1-arm64"
+    ]
+  },
+  {
+    "namespace": "monitoring",
+    "name": "kube-stack-kube-prometheus-operator",
+    "kind": "Deployment",
+    "desired": 1,
+    "ready": 1,
+    "images": [
+      "127.0.0.1:30050/platform-upgrade/prometheus-operator:v0.92.1-arm64"
+    ]
+  },
+  {
+    "namespace": "monitoring",
+    "name": "kube-stack-kube-state-metrics",
+    "kind": "Deployment",
+    "desired": 1,
+    "ready": 1,
+    "images": [
+      "127.0.0.1:30050/platform-upgrade/kube-state-metrics:v2.19.1-arm64"
+    ]
+  },
+  {
+    "namespace": "monitoring",
+    "name": "otel-collector",
+    "kind": "Deployment",
+    "desired": 1,
+    "ready": 1,
+    "images": [
+      "127.0.0.1:30050/platform-upgrade/opentelemetry-collector:0.157.0-arm64"
+    ]
+  },
+  {
+    "namespace": "ns-apps",
+    "name": "hello-app",
+    "kind": "Deployment",
+    "desired": 1,
+    "ready": 1,
+    "images": [
+      "127.0.0.1:30050/hello-app:6973c70"
+    ]
+  },
+  {
+    "namespace": "ns-apps",
+    "name": "jkvideo-web",
+    "kind": "Deployment",
+    "desired": 1,
+    "ready": 1,
+    "images": [
+      "127.0.0.1:30050/jkvideo-web:b5b7c58"
+    ]
+  },
+  {
+    "namespace": "ns-bigdata",
+    "name": "flink-jobmanager",
+    "kind": "Deployment",
+    "desired": 0,
+    "ready": 0,
+    "images": [
+      "127.0.0.1:30050/platform-upgrade/flink:2.3.0-scala_2.12-java17"
+    ]
+  },
+  {
+    "namespace": "ns-bigdata",
+    "name": "flink-taskmanager",
+    "kind": "Deployment",
+    "desired": 0,
+    "ready": 0,
+    "images": [
+      "127.0.0.1:30050/platform-upgrade/flink:2.3.0-scala_2.12-java17"
+    ]
+  },
+  {
+    "namespace": "ns-bigdata",
+    "name": "kafka",
+    "kind": "Deployment",
+    "desired": 1,
+    "ready": 1,
+    "images": [
+      "127.0.0.1:30050/platform-upgrade/apache-kafka:4.3.1"
+    ]
+  },
+  {
+    "namespace": "ns-bigdata",
+    "name": "kafka-ui",
+    "kind": "Deployment",
+    "desired": 0,
+    "ready": 0,
+    "images": [
+      "provectuslabs/kafka-ui:v0.7.2"
+    ]
+  },
+  {
+    "namespace": "ns-bigdata",
+    "name": "spark-operator-controller",
+    "kind": "Deployment",
+    "desired": 0,
+    "ready": 0,
+    "images": [
+      "ghcr.io/kubeflow/spark-operator/controller:2.5.1"
+    ]
+  },
+  {
+    "namespace": "ns-bigdata",
+    "name": "spark-operator-webhook",
+    "kind": "Deployment",
+    "desired": 0,
+    "ready": 0,
+    "images": [
+      "ghcr.io/kubeflow/spark-operator/controller:2.5.1"
+    ]
+  },
+  {
+    "namespace": "ns-data",
+    "name": "mysql",
+    "kind": "Deployment",
+    "desired": 1,
+    "ready": 1,
+    "images": [
+      "127.0.0.1:30050/platform-upgrade/mysql:8.4.10-arm64"
+    ]
+  },
+  {
+    "namespace": "ns-data",
+    "name": "mysql-replica",
+    "kind": "Deployment",
+    "desired": 1,
+    "ready": 1,
+    "images": [
+      "127.0.0.1:30050/platform-upgrade/mysql:8.4.10-arm64"
+    ]
+  },
+  {
+    "namespace": "ns-data",
+    "name": "postgresql",
+    "kind": "Deployment",
+    "desired": 1,
+    "ready": 1,
+    "images": [
+      "127.0.0.1:30050/platform-upgrade/postgres:18.4-alpine3.24-arm64"
+    ]
+  },
+  {
+    "namespace": "ns-devops",
+    "name": "flaresolverr",
+    "kind": "Deployment",
+    "desired": 1,
+    "ready": 1,
+    "images": [
+      "127.0.0.1:30050/platform-upgrade/flaresolverr:v3.5.0-arm64"
+    ]
+  },
+  {
+    "namespace": "ns-devops",
+    "name": "github-webhook-relay",
+    "kind": "Deployment",
+    "desired": 1,
+    "ready": 1,
+    "images": [
+      "127.0.0.1:30050/platform-upgrade/node:24.18.0-alpine3.23-arm64"
+    ]
+  },
+  {
+    "namespace": "ns-devops",
+    "name": "gitlab",
+    "kind": "Deployment",
+    "desired": 1,
+    "ready": 1,
+    "images": [
+      "127.0.0.1:30050/platform-upgrade/gitlab-ce:19.2.0-ce.0-arm64"
+    ]
+  },
+  {
+    "namespace": "ns-devops",
+    "name": "gitlab-runner",
+    "kind": "Deployment",
+    "desired": 1,
+    "ready": 1,
+    "images": [
+      "127.0.0.1:30050/platform-upgrade/gitlab-runner:alpine-v19.2.0-arm64"
+    ]
+  },
+  {
+    "namespace": "ns-devops",
+    "name": "jenkins",
+    "kind": "Deployment",
+    "desired": 1,
+    "ready": 1,
+    "images": [
+      "127.0.0.1:30050/jenkins-custom:2.568.1-lts-atomic-node20-v1"
+    ]
+  },
+  {
+    "namespace": "ns-devops",
+    "name": "jenkins-build-log-filebeat-es",
+    "kind": "Deployment",
+    "desired": 1,
+    "ready": 1,
+    "images": [
+      "docker.elastic.co/beats/filebeat:9.4.4"
+    ]
+  },
+  {
+    "namespace": "ns-devops",
+    "name": "jenkins-build-log-filebeat-kafka",
+    "kind": "Deployment",
+    "desired": 1,
+    "ready": 1,
+    "images": [
+      "docker.elastic.co/beats/filebeat:9.4.4"
+    ]
+  },
+  {
+    "namespace": "ns-devops",
+    "name": "local-registry",
+    "kind": "Deployment",
+    "desired": 1,
+    "ready": 1,
+    "images": [
+      "docker.io/goharbor/registry-photon:2.14.2"
+    ]
+  },
+  {
+    "namespace": "ns-devops",
+    "name": "portainer",
+    "kind": "Deployment",
+    "desired": 1,
+    "ready": 1,
+    "images": [
+      "harbor.devops.local/library/portainer-portainer-ce:2.39.5"
+    ]
+  },
+  {
+    "namespace": "ns-openclaw",
+    "name": "openclaw-controller",
+    "kind": "Deployment",
+    "desired": 0,
+    "ready": 0,
+    "images": [
+      "127.0.0.1:30050/platform-upgrade/open-webui:v0.10.2-arm64"
+    ]
+  },
+  {
+    "namespace": "petclinic",
+    "name": "petclinic",
+    "kind": "Deployment",
+    "desired": 3,
+    "ready": 3,
+    "images": [
+      "10.0.0.3:30050/petclinic/petclinic:0.8.0-ci-87"
+    ]
+  },
+  {
+    "namespace": "system-upgrade",
+    "name": "system-upgrade-controller",
+    "kind": "Deployment",
+    "desired": 1,
+    "ready": 1,
+    "images": [
+      "127.0.0.1:30050/platform-upgrade/system-upgrade-controller:v0.20.1-arm64"
+    ]
+  },
+  {
+    "namespace": "zabbix",
+    "name": "zabbix-server",
+    "kind": "Deployment",
+    "desired": 0,
+    "ready": 0,
+    "images": [
+      "127.0.0.1:30050/platform-upgrade/zabbix-server-mysql:ubuntu-7.4.12"
+    ]
+  },
+  {
+    "namespace": "zabbix",
+    "name": "zabbix-web",
+    "kind": "Deployment",
+    "desired": 0,
+    "ready": 0,
+    "images": [
+      "127.0.0.1:30050/platform-upgrade/zabbix-web-nginx-mysql:ubuntu-7.4.12"
+    ]
+  },
+  {
+    "namespace": "argocd",
+    "name": "argocd-application-controller",
+    "kind": "StatefulSet",
+    "desired": 1,
+    "ready": 1,
+    "images": [
+      "127.0.0.1:30050/platform-upgrade/argocd:v3.4.5-arm64"
+    ]
+  },
+  {
+    "namespace": "data-infra",
+    "name": "airflow-triggerer",
+    "kind": "StatefulSet",
+    "desired": 1,
+    "ready": 1,
+    "images": [
+      "apache/airflow:3.3.0",
+      "apache/airflow:3.3.0"
+    ]
+  },
+  {
+    "namespace": "data-infra",
+    "name": "superset-redis-master",
+    "kind": "StatefulSet",
+    "desired": 1,
+    "ready": 1,
+    "images": [
+      "192.168.1.58:30050/library/redis:7.0"
+    ]
+  },
+  {
+    "namespace": "harbor",
+    "name": "harbor-database",
+    "kind": "StatefulSet",
+    "desired": 1,
+    "ready": 1,
+    "images": [
+      "127.0.0.1:30050/platform-repair/postgres:15-arm64"
+    ]
+  },
+  {
+    "namespace": "harbor",
+    "name": "harbor-trivy",
+    "kind": "StatefulSet",
+    "desired": 1,
+    "ready": 1,
+    "images": [
+      "goharbor/trivy-adapter-photon:v2.14.3"
+    ]
+  },
+  {
+    "namespace": "monitoring",
+    "name": "loki",
+    "kind": "StatefulSet",
+    "desired": 1,
+    "ready": 1,
+    "images": [
+      "127.0.0.1:30050/platform-upgrade/loki:3.7.4-arm64",
+      "127.0.0.1:30050/platform-upgrade/k8s-sidecar:2.8.1-arm64"
+    ]
+  },
+  {
+    "namespace": "monitoring",
+    "name": "prometheus-kube-stack-kube-prometheus-prometheus",
+    "kind": "StatefulSet",
+    "desired": 1,
+    "ready": 1,
+    "images": [
+      "127.0.0.1:30050/platform-upgrade/prometheus:v3.13.1-arm64",
+      "127.0.0.1:30050/platform-upgrade/prometheus-config-reloader:v0.92.1-arm64"
+    ]
+  },
+  {
+    "namespace": "sonarqube",
+    "name": "sonarqube-sonarqube",
+    "kind": "StatefulSet",
+    "desired": 1,
+    "ready": 1,
+    "images": [
+      "sonarqube:26.3.0.120487-community"
+    ]
+  },
+  {
+    "namespace": "default",
+    "name": "filebeat",
+    "kind": "DaemonSet",
+    "desired": 2,
+    "ready": 2,
+    "images": [
+      "docker.elastic.co/beats/filebeat:9.4.4"
+    ]
+  },
+  {
+    "namespace": "kube-system",
+    "name": "svclb-traefik-3eaada12",
+    "kind": "DaemonSet",
+    "desired": 1,
+    "ready": 1,
+    "images": [
+      "rancher/klipper-lb:v0.4.17",
+      "rancher/klipper-lb:v0.4.17"
+    ]
+  },
+  {
+    "namespace": "monitoring",
+    "name": "alloy",
+    "kind": "DaemonSet",
+    "desired": 2,
+    "ready": 2,
+    "images": [
+      "docker.io/grafana/alloy:v1.18.1",
+      "quay.io/prometheus-operator/prometheus-config-reloader:v0.91.0@sha256:7d9e4eea5f1139e602508871f422b0116c60e87c662f3dcd234d5ab60cd0d8c1"
+    ]
+  },
+  {
+    "namespace": "monitoring",
+    "name": "kube-stack-prometheus-node-exporter",
+    "kind": "DaemonSet",
+    "desired": 3,
+    "ready": 2,
+    "images": [
+      "quay.io/prometheus/node-exporter:v1.12.1"
+    ]
+  },
+  {
+    "namespace": "ns-bigdata",
+    "name": "filebeat-kafka",
+    "kind": "DaemonSet",
+    "desired": 2,
+    "ready": 2,
+    "images": [
+      "docker.elastic.co/beats/filebeat:9.4.4"
+    ]
+  }
+]

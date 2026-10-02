@@ -10,6 +10,7 @@
       <article><div><span class="status-icon"><i class="fa fa-cubes"></i></span><span class="status-pill"><i></i> Runtime</span></div><h2>Kubernetes</h2><p>Source: KUBERNETES_SERVICE_HOST. Cluster readiness is not queried.</p><strong th:text="${dashboard.kubernetesStatus}">Local runtime</strong></article>
     </section>
     <section class="fingerprint-card"><div><p class="eyebrow">CURRENT DEPLOYMENT</p><h2>Release fingerprint</h2></div><dl><div><dt>Application version</dt><dd th:text="${dashboard.applicationVersion}">N/A</dd></div><div><dt>Build number</dt><dd th:text="${dashboard.buildNumber}">N/A</dd></div><div><dt>Git commit</dt><dd class="mono" th:text="${dashboard.gitCommit}">N/A</dd></div><div><dt>Promotion time (UTC)</dt><dd class="mono" th:text="${dashboard.buildTime}">N/A</dd></div><div><dt>Environment</dt><dd th:text="${dashboard.environment}">Local</dd></div></dl><p class="cell-note">Release metadata source: deployment environment injected by Jenkins Git promotion; artifact build/Git properties are the local fallback. Source commit can differ from the GitOps promotion commit.</p></section>
+    <a class="btn btn-primary" th:href="@{/platform}" th:text="#{clinic.platform.open}">平台软件与观测工作台 →</a>
     <a class="back-link" th:href="@{/}" th:text="'← Back to product overview'">← Back to product overview</a>
   </main>
 </body>

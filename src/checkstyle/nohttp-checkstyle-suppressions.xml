@@ -3,6 +3,10 @@
 		"-//Checkstyle//DTD SuppressionFilter Configuration 1.2//EN"
 		"https://checkstyle.org/dtds/suppressions_1_2.dtd">
 <suppressions>
+    <!-- SonarQube is the existing cluster-local HTTP service, not a public endpoint. -->
+    <suppress files="Jenkinsfile" checks="NoHttp" message=".*sonarqube-sonarqube\.sonarqube\.svc\.cluster\.local:9000.*"/>
+    <!-- Existing in-cluster OTLP services use HTTP; keep this exception scoped to telemetry manifests. -->
+    <suppress files="k8s[\\/]production[\\/]petclinic(-v09-dashboard)?.yaml|infra[\\/]observability[\\/].*" checks="NoHttp"/>
 	<!-- Captured production HTML and acceptance scripts preserve actual endpoint URLs. -->
 	<suppress files="evidence[\\/].*" checks="NoHttp"/>
 	<suppress files="node_modules[\\/].*" checks=".*"/>
