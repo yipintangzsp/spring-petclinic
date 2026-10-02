@@ -259,8 +259,8 @@ pipeline {
 
                         echo "ARGO_CHECK=${attempt} SYNC=${ARGO_SYNC} HEALTH=${ARGO_HEALTH} REVISION=${ARGO_REVISION}"
 
+                        # Replica health is verified in Rollout Verify.
                         if [ "${ARGO_SYNC}" = "Synced" ] && \
-                           [ "${ARGO_HEALTH}" = "Healthy" ] && \
                            [ "${ARGO_REVISION}" = "${TARGET_GIT_SHA}" ]; then
                             sync_ok=1
                             break
@@ -297,10 +297,19 @@ pipeline {
         stage('Rollout Verify') {
             steps {
                 sh '''
+                    set -eu
                     echo "===== ROLLOUT STATUS ====="
 
                     kubectl -n petclinic rollout status deployment/petclinic \
-                      --timeout=1200s
+                      --timeout=600s
+
+                    # Wait for Argo's resource health cache after rollout completion.
+                    for attempt in $(seq 1 24); do
+                        ARGO_HEALTH=$(kubectl -n argocd get application petclinic -o jsonpath='{.status.health.status}')
+                        [ "${ARGO_HEALTH}" = "Healthy" ] && break
+                        sleep 5
+                    done
+                    [ "${ARGO_HEALTH}" = "Healthy" ] || { echo "ERROR: ArgoCD health is ${ARGO_HEALTH}"; exit 1; }
 
                     echo
                     echo "===== DEPLOYMENT IMAGE ====="

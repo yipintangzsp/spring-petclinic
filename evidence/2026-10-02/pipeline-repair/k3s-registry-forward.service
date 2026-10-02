@@ -1,0 +1,16 @@
+[Unit]
+Description=K3s registry TCP forward through existing Alibaba tunnel identity
+Wants=network-online.target
+After=network-online.target
+StartLimitIntervalSec=0
+
+[Service]
+Type=simple
+ExecStart=/usr/bin/ssh -NT -i /etc/k3s-tunnel/id_ed25519 -o BatchMode=yes -o StrictHostKeyChecking=yes -o UserKnownHostsFile=/etc/k3s-tunnel/known_hosts -o ServerAliveInterval=15 -o ServerAliveCountMax=3 -o ExitOnForwardFailure=yes -L 127.0.0.1:13050:10.0.0.3:30050 root@47.93.213.70
+ExecStartPost=/bin/sh -c '/usr/sbin/iptables -t nat -C OUTPUT -p tcp -d 10.0.0.3 --dport 30050 -j REDIRECT --to-ports 13050 || /usr/sbin/iptables -t nat -I OUTPUT 1 -p tcp -d 10.0.0.3 --dport 30050 -j REDIRECT --to-ports 13050'
+ExecStopPost=/bin/sh -c '/usr/sbin/iptables -t nat -D OUTPUT -p tcp -d 10.0.0.3 --dport 30050 -j REDIRECT --to-ports 13050 || true'
+Restart=always
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target
