@@ -25,6 +25,11 @@ spec:
         app: petclinic
 
     spec:
+      # Cloud links are not production-ready; restore multi-node placement only
+      # after node and Pod-network acceptance passes.
+      nodeSelector:
+        kubernetes.io/hostname: devops
+
       tolerations:
         - key: cloud
           operator: Equal
