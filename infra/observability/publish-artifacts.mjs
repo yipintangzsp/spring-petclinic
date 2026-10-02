@@ -32,7 +32,11 @@ function git(...args) {
   return r.stdout.trim();
 }
 const mode=process.argv[2];
-if(mode==='gitlab') {
+if(mode==='sonar-ready') {
+ const state=await request(process.env.SONAR_HOST_URL,'/api/system/status',{},{});
+ if(state.status!=='UP')throw new Error('SonarQube has not reached UP state');
+ console.log('SonarQube service ready');
+} else if(mode==='gitlab') {
  const base='http://gitlab-service.ns-devops.svc.cluster.local';
  const auth={'PRIVATE-TOKEN':process.env.GITLAB_TOKEN};
  if(!process.env.GITLAB_TOKEN)throw new Error('GitLab credential missing');

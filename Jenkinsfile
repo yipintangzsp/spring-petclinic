@@ -76,10 +76,29 @@ pipeline {
                     withEnv(['SONAR_HOST_URL=http://sonarqube-sonarqube.sonarqube.svc.cluster.local:9000', 'SONAR_SCANNER_JAVA_OPTS=-Xmx384m -XX:ActiveProcessorCount=1']) {
                         sh '''
                             set -eu
-                            nice -n 10 ./mvnw -B org.sonarsource.scanner.maven:sonar-maven-plugin:5.8.0.7211:sonar \
-                              -Dsonar.projectKey=petclinic \
-                              -Dsonar.qualitygate.wait=true \
-                              -Dsonar.qualitygate.timeout=300
+                            node infra/observability/publish-artifacts.mjs sonar-ready
+                            for attempt in 1 2 3; do
+                                if nice -n 10 ./mvnw -B org.sonarsource.scanner.maven:sonar-maven-plugin:5.8.0.7211:sonar \
+                                  -Dsonar.projectKey=petclinic \
+                                  -Dsonar.scanner.connectTimeout=30 \
+                                  -Dsonar.scanner.socketTimeout=120 \
+                                  -Dsonar.scanner.responseTimeout=120 \
+                                  -Dsonar.qualitygate.wait=true \
+                                  -Dsonar.qualitygate.timeout=300 > target/sonar-scanner.log 2>&1; then
+                                    cat target/sonar-scanner.log
+                                    exit 0
+                                fi
+                                cat target/sonar-scanner.log
+                                if grep -Eiq 'Not authorized|Unauthorized|Forbidden|QUALITY GATE STATUS: FAILED|HTTP[^0-9]*(401|403)' target/sonar-scanner.log; then
+                                    exit 1
+                                fi
+                                if ! grep -Eiq 'Failed to query server version|ConnectException|SocketTimeoutException|Connection refused|Read timed out|Connection reset|connect timed out' target/sonar-scanner.log; then
+                                    exit 1
+                                fi
+                                if [ "$attempt" = 3 ]; then exit 1; fi
+                                echo "Sonar service connection failed; bounded retry ${attempt}/2"
+                                sleep 15
+                            done
                         '''
                     }
                 }
