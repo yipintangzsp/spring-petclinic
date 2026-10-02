@@ -1,4 +1,4 @@
-FROM 127.0.0.1:30050/platform-upgrade/eclipse-temurin:21-jre-local
+FROM 127.0.0.1:13050/platform-upgrade/eclipse-temurin:21-jre-local
 
 WORKDIR /app
 

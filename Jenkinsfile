@@ -7,7 +7,7 @@ pipeline {
 
     environment {
         MAVEN_OPTS = '-Xmx384m -XX:ActiveProcessorCount=2'
-        DOCKER_REGISTRY = '127.0.0.1:30050'
+        DOCKER_REGISTRY = '127.0.0.1:13050'
         REGISTRY_API = '10.0.0.3:30050'
         K8S_REGISTRY = '10.0.0.3:30050'
 
@@ -99,6 +99,12 @@ pipeline {
                 sh '''
                     echo "===== MULTI-ARCH BUILD & PUSH ====="
                     echo "IMAGE=${FULL_IMAGE}"
+
+                    # Refuse to build until both Docker's loopback route and the cluster route are ready.
+                    curl -fsS --retry 6 --retry-delay 5 --retry-connrefused \
+                      --connect-timeout 5 --max-time 15 "http://${DOCKER_REGISTRY}/v2/"
+                    curl -fsS --retry 6 --retry-delay 5 --retry-connrefused \
+                      --connect-timeout 5 --max-time 15 "http://${REGISTRY_API}/v2/"
 
                     docker buildx build \
                       --platform linux/amd64,linux/arm64 \
