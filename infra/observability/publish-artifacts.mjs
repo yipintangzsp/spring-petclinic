@@ -52,7 +52,8 @@ if(mode==='gitlab') {
  } else if(mode==='harbor-copy') {
   const tag=process.env.IMAGE_TAG;
   if(!/^0\.9\.0-ci-\d+$/.test(tag))throw new Error('Invalid release tag');
-  const repo='petclinic/petclinic', source='http://10.0.0.3:30050', destination='http://harbor-registry.harbor.svc.cluster.local:5000';
+  const repo='petclinic/petclinic', source='http://10.0.0.3:30050', destination=base;
+  // Core authenticates repository tokens and proxies to the Basic-auth internal registry.
   const token=await request(base,'/service/token?service=harbor-registry&scope='+encodeURIComponent('repository:'+repo+':pull,push')+'&account='+encodeURIComponent(process.env.HARBOR_USER),{},auth);
   const bearer={Authorization:'Bearer '+token.token};
   const accept='application/vnd.oci.image.index.v1+json, application/vnd.oci.image.manifest.v1+json, application/vnd.docker.distribution.manifest.list.v2+json, application/vnd.docker.distribution.manifest.v2+json';
@@ -61,15 +62,15 @@ if(mode==='gitlab') {
    if(copied.has(digest))return;
    const exists=await fetch(destination+'/v2/'+repo+'/blobs/'+digest,{method:'HEAD',headers:bearer,signal:AbortSignal.timeout(30000)});
    if(exists.ok){copied.add(digest);return;}
-   if(exists.status!==404)throw new Error('Harbor blob lookup failed');
+   if(exists.status!==404)throw new Error(`Harbor blob lookup failed: HTTP ${exists.status}`);
    const blob=await fetch(source+'/v2/'+repo+'/blobs/'+digest,{signal:AbortSignal.timeout(120000)});
    if(!blob.ok)throw new Error('Source blob unavailable');
    const start=await fetch(destination+'/v2/'+repo+'/blobs/uploads/',{method:'POST',headers:bearer,signal:AbortSignal.timeout(30000)});
-   if(start.status!==202)throw new Error('Harbor upload initialization failed');
+   if(start.status!==202)throw new Error(`Harbor upload initialization failed: HTTP ${start.status}`);
    const location=new URL(start.headers.get('location'),destination);
    location.searchParams.set('digest',digest);
    const uploaded=await fetch(destination+location.pathname+location.search,{method:'PUT',headers:{...bearer,'Content-Type':'application/octet-stream',...(blob.headers.get('content-length')?{'Content-Length':blob.headers.get('content-length')}: {})},body:blob.body,duplex:'half',signal:AbortSignal.timeout(180000)});
-   if(uploaded.status!==201)throw new Error('Harbor blob copy failed');
+   if(uploaded.status!==201)throw new Error(`Harbor blob copy failed: HTTP ${uploaded.status}`);
    copied.add(digest);
   }
   async function copyManifest(reference) {
@@ -79,7 +80,7 @@ if(mode==='gitlab') {
    if(manifest.manifests) for(const child of manifest.manifests)await copyManifest(child.digest);
    else {if(manifest.config)await copyBlob(manifest.config.digest);for(const layer of manifest.layers??[])await copyBlob(layer.digest);}
    const pushed=await fetch(destination+'/v2/'+repo+'/manifests/'+reference,{method:'PUT',headers:{...bearer,'Content-Type':manifest.mediaType||r.headers.get('content-type')},body:bytes,signal:AbortSignal.timeout(30000)});
-   if(pushed.status!==201)throw new Error('Harbor manifest copy failed');
+   if(pushed.status!==201)throw new Error(`Harbor manifest copy failed: HTTP ${pushed.status}`);
    const sourceDigest=r.headers.get('docker-content-digest'), destDigest=pushed.headers.get('docker-content-digest');
    if(sourceDigest!==destDigest)throw new Error('Harbor copy digest mismatch');
    return {digest:sourceDigest,platforms:(manifest.manifests??[]).map(m=>m.platform?.architecture).filter(x=>x&&x!=='unknown')};
