@@ -24,6 +24,21 @@ processors:
               message: '^[{]'
 '''
  cm['data']['filebeat.yml']=config;apply(cm)
+if 'from: "traceId"' not in config:
+ config+='''
+  - rename:
+      fields:
+        - from: "traceId"
+          to: "trace.id"
+        - from: "spanId"
+          to: "span.id"
+      ignore_missing: true
+      fail_on_error: false
+      when:
+        contains:
+          log.file.path: "/petclinic_"
+'''
+ cm['data']['filebeat.yml']=config;apply(cm)
 cm=kube('get','cm','otel-collector-config','-n','monitoring');p=backup/'otel-collector-config.json'
 if not p.exists():p.write_text(json.dumps(cm))
 config=cm['data']['config.yaml']
