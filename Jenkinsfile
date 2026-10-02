@@ -6,6 +6,7 @@ pipeline {
     }
 
     environment {
+        MAVEN_OPTS = '-Xmx384m -XX:ActiveProcessorCount=2'
         DOCKER_REGISTRY = '127.0.0.1:30050'
         REGISTRY_API = '10.0.0.3:30050'
         K8S_REGISTRY = '10.0.0.3:30050'
@@ -51,7 +52,7 @@ pipeline {
             steps {
                 sh '''
                     echo "===== MAVEN TEST ====="
-                    ./mvnw clean test
+                    nice -n 10 ./mvnw -B clean test
                 '''
             }
         }
@@ -72,7 +73,7 @@ pipeline {
         stage('SonarQube Analysis') {
             steps {
                 withCredentials([string(credentialsId: 'sonar-token', variable: 'SONAR_TOKEN')]) {
-                    withEnv(['SONAR_HOST_URL=http://sonarqube-sonarqube.sonarqube.svc.cluster.local:9000', 'SONAR_SCANNER_JAVA_OPTS=-Xmx512m']) {
+                    withEnv(['SONAR_HOST_URL=http://sonarqube-sonarqube.sonarqube.svc.cluster.local:9000', 'SONAR_SCANNER_JAVA_OPTS=-Xmx512m -XX:ActiveProcessorCount=2']) {
                         sh '''
                             set -eu
                             ./mvnw -B org.sonarsource.scanner.maven:sonar-maven-plugin:5.8.0.7211:sonar \
