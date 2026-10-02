@@ -6,7 +6,7 @@ pipeline {
     }
 
     environment {
-        MAVEN_OPTS = '-Xmx384m -XX:ActiveProcessorCount=2'
+        MAVEN_OPTS = '-Xmx256m -XX:ActiveProcessorCount=1'
         DOCKER_REGISTRY = '127.0.0.1:13050'
         REGISTRY_API = '10.0.0.3:30050'
         K8S_REGISTRY = '10.0.0.3:30050'
@@ -61,7 +61,7 @@ pipeline {
             steps {
                 sh '''
                     echo "===== MAVEN PACKAGE ====="
-                    ./mvnw package -DskipTests
+                    nice -n 10 ./mvnw package -DskipTests
 
                     echo
                     echo "===== JAR ====="
@@ -73,10 +73,10 @@ pipeline {
         stage('SonarQube Analysis') {
             steps {
                 withCredentials([string(credentialsId: 'sonar-token', variable: 'SONAR_TOKEN')]) {
-                    withEnv(['SONAR_HOST_URL=http://sonarqube-sonarqube.sonarqube.svc.cluster.local:9000', 'SONAR_SCANNER_JAVA_OPTS=-Xmx512m -XX:ActiveProcessorCount=2']) {
+                    withEnv(['SONAR_HOST_URL=http://sonarqube-sonarqube.sonarqube.svc.cluster.local:9000', 'SONAR_SCANNER_JAVA_OPTS=-Xmx384m -XX:ActiveProcessorCount=1']) {
                         sh '''
                             set -eu
-                            ./mvnw -B org.sonarsource.scanner.maven:sonar-maven-plugin:5.8.0.7211:sonar \
+                            nice -n 10 ./mvnw -B org.sonarsource.scanner.maven:sonar-maven-plugin:5.8.0.7211:sonar \
                               -Dsonar.projectKey=petclinic \
                               -Dsonar.qualitygate.wait=true \
                               -Dsonar.qualitygate.timeout=300
@@ -100,9 +100,9 @@ pipeline {
                     echo "===== MULTI-ARCH BUILD & PUSH ====="
                     echo "IMAGE=${FULL_IMAGE}"
 
-                    # Refuse to build until both Docker's loopback route and the cluster route are ready.
-                    curl -fsS --retry 6 --retry-delay 5 --retry-connrefused \
-                      --connect-timeout 5 --max-time 15 "http://${DOCKER_REGISTRY}/v2/"
+                    # Docker uses the host network; Jenkins curl uses the agent pod network.
+                    docker pull --platform linux/arm64 \
+                      "${DOCKER_REGISTRY}/platform-upgrade/eclipse-temurin:21-jre-local"
                     curl -fsS --retry 6 --retry-delay 5 --retry-connrefused \
                       --connect-timeout 5 --max-time 15 "http://${REGISTRY_API}/v2/"
 
