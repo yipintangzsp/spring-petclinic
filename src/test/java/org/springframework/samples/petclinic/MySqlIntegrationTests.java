@@ -36,7 +36,6 @@ import org.springframework.web.client.RestTemplate;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 import org.testcontainers.mysql.MySQLContainer;
-import org.testcontainers.utility.DockerImageName;
 
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
 @ActiveProfiles("mysql")
@@ -47,7 +46,7 @@ class MySqlIntegrationTests {
 
 	@ServiceConnection
 	@Container
-	static MySQLContainer container = new MySQLContainer(DockerImageName.parse("mysql:9.7"));
+	static MySQLContainer container = TestDatabaseContainers.mysql();
 
 	@LocalServerPort
 	int port;

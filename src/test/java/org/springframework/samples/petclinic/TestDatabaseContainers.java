@@ -16,31 +16,24 @@
 
 package org.springframework.samples.petclinic;
 
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.testcontainers.service.connection.ServiceConnection;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Profile;
 import org.testcontainers.mysql.MySQLContainer;
+import org.testcontainers.utility.DockerImageName;
 
-/**
- * PetClinic Spring Boot Application.
- *
- * @author Dave Syer
- */
-@Configuration
-public class MysqlTestApplication {
+/** Database fixtures share the Docker host with the running platform. */
+final class TestDatabaseContainers {
 
-	@ServiceConnection
-	@Profile("mysql")
-	@Bean
-	static MySQLContainer container() {
-		return TestDatabaseContainers.mysql();
+	private static final long MYSQL_MEMORY_BYTES = 512L * 1024 * 1024;
+
+	private TestDatabaseContainers() {
 	}
 
-	public static void main(String[] args) {
-		SpringApplication.run(PetClinicApplication.class, "--spring.profiles.active=mysql",
-				"--spring.docker.compose.enabled=false");
+	static MySQLContainer mysql() {
+		return new MySQLContainer(DockerImageName.parse("mysql:9.7"))
+			.withCommand("--performance-schema=OFF", "--innodb-buffer-pool-size=64M", "--max-connections=30")
+			.withCreateContainerCmdModifier(cmd -> cmd.getHostConfig()
+				.withMemory(MYSQL_MEMORY_BYTES)
+				.withMemorySwap(MYSQL_MEMORY_BYTES)
+				.withOomScoreAdj(1000));
 	}
 
 }

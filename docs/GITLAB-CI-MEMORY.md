@@ -13,3 +13,7 @@ The source mirror now waits up to 10 minutes for the authenticated `/api/v4/user
 The DevOps VM remains at 20 GB. Avoid interpreting a successful run as proof that all 69 shared workloads can run at peak simultaneously. No workloads were disabled by this repair.
 
 Reference: https://docs.gitlab.com/omnibus/settings/memory_constrained_envs/
+
+## Docker test fixture budget
+
+A later validation run reproduced a global OOM at 15:41:57, killing the shared MySQL process while GitLab remained available. Maven JVM limits alone did not constrain the MySQL 9.7 Testcontainers process, which runs through the host Docker daemon outside Jenkins' cgroup. Both MySQL test entry points now use `TestDatabaseContainers.mysql()`: 512 MiB memory/swap ceiling, 64 MiB InnoDB buffer pool, at most 30 connections, performance schema disabled, and OOM score 1000 so a disposable fixture does not have higher OOM preference than the platform databases. This retains real MySQL integration tests; no tests are skipped by this change. The shared MySQL recovered automatically. No Trino or other software was stopped or migrated.
