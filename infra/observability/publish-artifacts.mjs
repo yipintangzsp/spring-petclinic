@@ -2,6 +2,7 @@ import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
 import {spawnSync} from 'node:child_process';
+import {waitGitLabReady} from './service-readiness.mjs';
 
 // Retry temporary service unavailability; authentication and validation errors still fail immediately.
 async function resilientFetch(url, options = {}) {
@@ -40,6 +41,8 @@ if(mode==='sonar-ready') {
  const base='http://gitlab-service.ns-devops.svc.cluster.local';
  const auth={'PRIVATE-TOKEN':process.env.GITLAB_TOKEN};
  if(!process.env.GITLAB_TOKEN)throw new Error('GitLab credential missing');
+ await waitGitLabReady(base);
+ console.log('GitLab Rails readiness verified');
  const user=await request(base,'/api/v4/user',{},auth);
  const full=user.username+'/petclinic-platform';
  let project;

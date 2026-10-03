@@ -52,6 +52,7 @@ pipeline {
             steps {
                 sh '''
                     echo "===== MAVEN TEST ====="
+                    node --test infra/observability/service-readiness.test.mjs
                     nice -n 10 ./mvnw -B clean test
                 '''
             }
