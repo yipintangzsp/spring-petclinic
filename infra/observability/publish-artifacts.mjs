@@ -41,9 +41,8 @@ if(mode==='sonar-ready') {
  const base='http://gitlab-service.ns-devops.svc.cluster.local';
  const auth={'PRIVATE-TOKEN':process.env.GITLAB_TOKEN};
  if(!process.env.GITLAB_TOKEN)throw new Error('GitLab credential missing');
- await waitGitLabReady(base);
+ const user=await waitGitLabReady(base,{headers:auth});
  console.log('GitLab Rails readiness verified');
- const user=await request(base,'/api/v4/user',{},auth);
  const full=user.username+'/petclinic-platform';
  let project;
  let response=await resilientFetch(base+'/api/v4/projects/'+encodeURIComponent(full),{headers:auth,timeoutMs:30000});

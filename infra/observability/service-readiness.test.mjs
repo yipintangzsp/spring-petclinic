@@ -10,12 +10,12 @@ async function server(handler, run) {
  finally {app.closeAllConnections();await new Promise(resolve=>app.close(resolve));}
 }
 const quick={timeoutMs:500,pollMs:10,requestTimeoutMs:100};
-test('waits for Rails recovery and never sends credentials',async()=>{
+test('waits for authenticated Rails API recovery without an IP allowlist change',async()=>{
  let calls=0;
  await server((req,res)=>{
-  assert.equal(req.url,'/-/readiness');assert.equal(req.headers.authorization,undefined);
-  calls++;res.statusCode=calls<3?503:200;res.end(calls<3?'startup':JSON.stringify({status:'ok'}));
- },async base=>{await waitGitLabReady(base,quick);assert.equal(calls,3);});
+  assert.equal(req.url,'/api/v4/user');assert.equal(req.headers['private-token'],'synthetic-test-token');
+  calls++;res.statusCode=calls<3?503:200;res.end(calls<3?'startup':JSON.stringify({id:1,username:'synthetic-test'}));
+ },async base=>{const user=await waitGitLabReady(base,{...quick,headers:{'PRIVATE-TOKEN':'synthetic-test-token'}});assert.equal(user.id,1);assert.equal(calls,3);});
 });
 test('a listening nginx with unhealthy Rails cannot pass',async()=>{
  await server((req,res)=>res.end(JSON.stringify({status:'failed'})),async base=>{

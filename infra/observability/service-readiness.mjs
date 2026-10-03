@@ -1,12 +1,12 @@
-// Wait for Rails, not just GitLab's nginx listener. Readiness uses no credentials.
+// Use the authenticated Rails API: health endpoints are localhost-only by default.
 export async function waitGitLabReady(base, {
- timeoutMs=600000, pollMs=10000, requestTimeoutMs=10000,
+ timeoutMs=600000, pollMs=10000, requestTimeoutMs=10000, headers={},
 }={}) {
  const deadline=Date.now()+timeoutMs;
  while(Date.now()<deadline) {
   let permanentError;
   try {
-   const response=await fetch(base+'/-/readiness', {
+   const response=await fetch(base+'/api/v4/user', {headers,
     signal:AbortSignal.timeout(Math.max(1,Math.min(requestTimeoutMs,deadline-Date.now()))),
    });
    if([401,403,404].includes(response.status)) {
@@ -14,7 +14,7 @@ export async function waitGitLabReady(base, {
    }
    if(response.ok) {
     const body=await response.json();
-    if(body.status==='ok')return;
+    if(Number.isInteger(body.id)&&body.id>0&&typeof body.username==='string'&&body.username)return body;
    } else await response.body?.cancel();
   } catch(error) { /* Transport failures and startup responses remain bounded. */ }
   if(permanentError)throw permanentError;
