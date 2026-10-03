@@ -52,7 +52,7 @@ pipeline {
             steps {
                 sh '''
                     echo "===== MAVEN TEST ====="
-                    node --test infra/observability/service-readiness.test.mjs
+                    node --test infra/observability/*.test.mjs
                     nice -n 10 ./mvnw -B clean test
                 '''
             }
@@ -309,51 +309,7 @@ pipeline {
                     printf '%s' "${TARGET_GIT_SHA}" > .target-git-revision
                     touch .deploy-started
 
-                    sync_ok=0
-
-                    for attempt in $(seq 1 180); do
-                        ARGO_SYNC=$(kubectl -n argocd get application petclinic \
-                          -o jsonpath='{.status.sync.status}' 2>/dev/null || true)
-
-                        ARGO_HEALTH=$(kubectl -n argocd get application petclinic \
-                          -o jsonpath='{.status.health.status}' 2>/dev/null || true)
-
-                        ARGO_REVISION=$(kubectl -n argocd get application petclinic \
-                          -o jsonpath='{.status.sync.revision}' 2>/dev/null || true)
-
-                        echo "ARGO_CHECK=${attempt} SYNC=${ARGO_SYNC} HEALTH=${ARGO_HEALTH} REVISION=${ARGO_REVISION}"
-
-                        # Replica health is verified in Rollout Verify.
-                        if [ "${ARGO_SYNC}" = "Synced" ] && \
-                           [ "${ARGO_REVISION}" = "${TARGET_GIT_SHA}" ]; then
-                            sync_ok=1
-                            break
-                        fi
-
-                        sleep 5
-                    done
-
-                    if [ "${sync_ok}" -ne 1 ]; then
-                        echo "ERROR: ArgoCD did not converge to ${TARGET_GIT_SHA}"
-                        exit 1
-                    fi
-
-                    echo
-                    echo "===== LIVE IMAGE VERIFY ====="
-
-                    LIVE_IMAGE=$(kubectl -n petclinic get deployment petclinic \
-                      -o jsonpath='{.spec.template.spec.containers[0].image}')
-
-                    echo "EXPECTED_IMAGE=${K8S_IMAGE}"
-                    echo "LIVE_IMAGE=${LIVE_IMAGE}"
-
-                    if [ "${LIVE_IMAGE}" != "${K8S_IMAGE}" ]; then
-                        echo "ERROR: live image does not match promoted image"
-                        exit 1
-                    fi
-
-                    echo
-                    echo "ARGOCD_DEPLOYMENT=OK"
+                    sh infra/observability/wait-gitops.sh "${TARGET_GIT_SHA}"
                 '''
             }
         }
