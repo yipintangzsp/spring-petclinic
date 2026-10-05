@@ -1,0 +1,656 @@
+{
+  "three_nodes": true,
+  "zero_application_restarts": true,
+  "other_platform_pods_unchanged": 63,
+  "other_platform_readiness_restarts_unchanged": true,
+  "all_three_pods_in_loki": {
+    "petclinic-5c86d88b68-5c5mz": {
+      "status": "success",
+      "data": {
+        "resultType": "streams",
+        "result": [
+          {
+            "stream": {
+              "app": "petclinic",
+              "container": "petclinic",
+              "detected_level": "info",
+              "instance": "petclinic/petclinic-5c86d88b68-5c5mz:petclinic",
+              "job": "loki.source.kubernetes.petclinic",
+              "namespace": "petclinic",
+              "node": "ucloud-worker",
+              "pod": "petclinic-5c86d88b68-5c5mz",
+              "service_name": "petclinic"
+            },
+            "values": [
+              [
+                "1791226858465375007",
+                "{\"@timestamp\":\"2026-10-05T19:00:58.464700225Z\",\"log\":{\"level\":\"INFO\",\"logger\":\"org.springframework.samples.petclinic.system.ClinicBusinessMetrics\"},\"process\":{\"pid\":1,\"thread\":{\"name\":\"http-nio-8080-exec-2\"}},\"service\":{\"name\":\"petclinic\",\"version\":\"0.9.0-ci-101\",\"node\":{}},\"message\":\"Petclinic aggregate database snapshot\",\"traceId\":\"a259ded04d7be7fd226ba1726a533793\",\"spanId\":\"0c1b1344f016956d\",\"event\":{\"action\":\"business_snapshot\",\"dataset\":\"petclinic.business\"},\"petclinic\":{\"owners\":11,\"pets\":13,\"vets\":6,\"visits\":5},\"ecs\":{\"version\":\"8.11\"}}\n"
+              ]
+            ]
+          }
+        ],
+        "stats": {
+          "summary": {
+            "bytesProcessedPerSecond": 436695,
+            "linesProcessedPerSecond": 752,
+            "totalBytesProcessed": 3481,
+            "totalLinesProcessed": 6,
+            "execTime": 0.007971,
+            "queueTime": 0.000625,
+            "subqueries": 0,
+            "totalEntriesReturned": 1,
+            "splits": 1,
+            "shards": 1,
+            "totalPostFilterLines": 6,
+            "totalStructuredMetadataBytesProcessed": 48
+          },
+          "querier": {
+            "store": {
+              "totalChunksRef": 0,
+              "totalChunksDownloaded": 0,
+              "chunksDownloadTime": 0,
+              "queryReferencedStructuredMetadata": false,
+              "queryUsedV2Engine": false,
+              "chunk": {
+                "headChunkBytes": 0,
+                "headChunkLines": 0,
+                "decompressedBytes": 0,
+                "decompressedLines": 0,
+                "compressedBytes": 0,
+                "totalDuplicates": 0,
+                "postFilterLines": 0,
+                "headChunkStructuredMetadataBytes": 0,
+                "decompressedStructuredMetadataBytes": 0
+              },
+              "chunkRefsFetchTime": 0,
+              "congestionControlLatency": 0,
+              "pipelineWrapperFilteredLines": 0,
+              "dataobj": {
+                "prePredicateDecompressedRows": 0,
+                "prePredicateDecompressedBytes": 0,
+                "prePredicateDecompressedStructuredMetadataBytes": 0,
+                "postPredicateRows": 0,
+                "postPredicateDecompressedBytes": 0,
+                "postPredicateStructuredMetadataBytes": 0,
+                "postFilterRows": 0,
+                "pagesScanned": 0,
+                "pagesDownloaded": 0,
+                "pagesDownloadedBytes": 0,
+                "pageBatches": 0,
+                "totalRowsAvailable": 0,
+                "totalPageDownloadTime": 0
+              }
+            },
+            "querierExecTime": 0.005519
+          },
+          "ingester": {
+            "totalReached": 1,
+            "totalChunksMatched": 1,
+            "totalBatches": 1,
+            "totalLinesSent": 1,
+            "store": {
+              "totalChunksRef": 0,
+              "totalChunksDownloaded": 0,
+              "chunksDownloadTime": 0,
+              "queryReferencedStructuredMetadata": false,
+              "queryUsedV2Engine": false,
+              "chunk": {
+                "headChunkBytes": 3481,
+                "headChunkLines": 6,
+                "decompressedBytes": 0,
+                "decompressedLines": 0,
+                "compressedBytes": 0,
+                "totalDuplicates": 0,
+                "postFilterLines": 6,
+                "headChunkStructuredMetadataBytes": 48,
+                "decompressedStructuredMetadataBytes": 0
+              },
+              "chunkRefsFetchTime": 112167,
+              "congestionControlLatency": 0,
+              "pipelineWrapperFilteredLines": 0,
+              "dataobj": {
+                "prePredicateDecompressedRows": 0,
+                "prePredicateDecompressedBytes": 0,
+                "prePredicateDecompressedStructuredMetadataBytes": 0,
+                "postPredicateRows": 0,
+                "postPredicateDecompressedBytes": 0,
+                "postPredicateStructuredMetadataBytes": 0,
+                "postFilterRows": 0,
+                "pagesScanned": 0,
+                "pagesDownloaded": 0,
+                "pagesDownloadedBytes": 0,
+                "pageBatches": 0,
+                "totalRowsAvailable": 0,
+                "totalPageDownloadTime": 0
+              }
+            },
+            "recvWaitTime": 0.001008
+          },
+          "cache": {
+            "chunk": {
+              "entriesFound": 0,
+              "entriesRequested": 0,
+              "entriesStored": 0,
+              "bytesReceived": 0,
+              "bytesSent": 0,
+              "requests": 0,
+              "downloadTime": 0,
+              "queryLengthServed": 0
+            },
+            "index": {
+              "entriesFound": 0,
+              "entriesRequested": 0,
+              "entriesStored": 0,
+              "bytesReceived": 0,
+              "bytesSent": 0,
+              "requests": 0,
+              "downloadTime": 0,
+              "queryLengthServed": 0
+            },
+            "result": {
+              "entriesFound": 0,
+              "entriesRequested": 0,
+              "entriesStored": 0,
+              "bytesReceived": 0,
+              "bytesSent": 0,
+              "requests": 0,
+              "downloadTime": 0,
+              "queryLengthServed": 0
+            },
+            "statsResult": {
+              "entriesFound": 0,
+              "entriesRequested": 0,
+              "entriesStored": 0,
+              "bytesReceived": 0,
+              "bytesSent": 0,
+              "requests": 0,
+              "downloadTime": 0,
+              "queryLengthServed": 0
+            },
+            "volumeResult": {
+              "entriesFound": 0,
+              "entriesRequested": 0,
+              "entriesStored": 0,
+              "bytesReceived": 0,
+              "bytesSent": 0,
+              "requests": 0,
+              "downloadTime": 0,
+              "queryLengthServed": 0
+            },
+            "seriesResult": {
+              "entriesFound": 0,
+              "entriesRequested": 0,
+              "entriesStored": 0,
+              "bytesReceived": 0,
+              "bytesSent": 0,
+              "requests": 0,
+              "downloadTime": 0,
+              "queryLengthServed": 0
+            },
+            "labelResult": {
+              "entriesFound": 0,
+              "entriesRequested": 0,
+              "entriesStored": 0,
+              "bytesReceived": 0,
+              "bytesSent": 0,
+              "requests": 0,
+              "downloadTime": 0,
+              "queryLengthServed": 0
+            },
+            "instantMetricResult": {
+              "entriesFound": 0,
+              "entriesRequested": 0,
+              "entriesStored": 0,
+              "bytesReceived": 0,
+              "bytesSent": 0,
+              "requests": 0,
+              "downloadTime": 0,
+              "queryLengthServed": 0
+            }
+          },
+          "index": {
+            "totalChunks": 0,
+            "postFilterChunks": 0,
+            "shardsDuration": 0,
+            "usedBloomFilters": false,
+            "totalStreams": 0,
+            "chunkRefsLookupTime": 0,
+            "bloomFilterTime": 0
+          }
+        }
+      }
+    },
+    "petclinic-5c86d88b68-gq6zd": {
+      "status": "success",
+      "data": {
+        "resultType": "streams",
+        "result": [
+          {
+            "stream": {
+              "app": "petclinic",
+              "container": "petclinic",
+              "detected_level": "info",
+              "instance": "petclinic/petclinic-5c86d88b68-gq6zd:petclinic",
+              "job": "loki.source.kubernetes.petclinic",
+              "namespace": "petclinic",
+              "node": "aliyun-worker",
+              "pod": "petclinic-5c86d88b68-gq6zd",
+              "service_name": "petclinic"
+            },
+            "values": [
+              [
+                "1791226873427501278",
+                "{\"@timestamp\":\"2026-10-05T19:01:13.427035779Z\",\"log\":{\"level\":\"INFO\",\"logger\":\"org.springframework.samples.petclinic.system.ClinicBusinessMetrics\"},\"process\":{\"pid\":1,\"thread\":{\"name\":\"http-nio-8080-exec-10\"}},\"service\":{\"name\":\"petclinic\",\"version\":\"0.9.0-ci-101\",\"node\":{}},\"message\":\"Petclinic aggregate database snapshot\",\"traceId\":\"f3ad663c672c32dcc639fe92f19fdf21\",\"spanId\":\"0978b0bedbad9c8a\",\"event\":{\"action\":\"business_snapshot\",\"dataset\":\"petclinic.business\"},\"petclinic\":{\"owners\":11,\"pets\":13,\"vets\":6,\"visits\":5},\"ecs\":{\"version\":\"8.11\"}}\n"
+              ]
+            ]
+          }
+        ],
+        "stats": {
+          "summary": {
+            "bytesProcessedPerSecond": 745701,
+            "linesProcessedPerSecond": 1263,
+            "totalBytesProcessed": 6492,
+            "totalLinesProcessed": 11,
+            "execTime": 0.008706,
+            "queueTime": 0.00022,
+            "subqueries": 0,
+            "totalEntriesReturned": 1,
+            "splits": 1,
+            "shards": 1,
+            "totalPostFilterLines": 11,
+            "totalStructuredMetadataBytesProcessed": 88
+          },
+          "querier": {
+            "store": {
+              "totalChunksRef": 0,
+              "totalChunksDownloaded": 0,
+              "chunksDownloadTime": 0,
+              "queryReferencedStructuredMetadata": false,
+              "queryUsedV2Engine": false,
+              "chunk": {
+                "headChunkBytes": 0,
+                "headChunkLines": 0,
+                "decompressedBytes": 0,
+                "decompressedLines": 0,
+                "compressedBytes": 0,
+                "totalDuplicates": 0,
+                "postFilterLines": 0,
+                "headChunkStructuredMetadataBytes": 0,
+                "decompressedStructuredMetadataBytes": 0
+              },
+              "chunkRefsFetchTime": 0,
+              "congestionControlLatency": 0,
+              "pipelineWrapperFilteredLines": 0,
+              "dataobj": {
+                "prePredicateDecompressedRows": 0,
+                "prePredicateDecompressedBytes": 0,
+                "prePredicateDecompressedStructuredMetadataBytes": 0,
+                "postPredicateRows": 0,
+                "postPredicateDecompressedBytes": 0,
+                "postPredicateStructuredMetadataBytes": 0,
+                "postFilterRows": 0,
+                "pagesScanned": 0,
+                "pagesDownloaded": 0,
+                "pagesDownloadedBytes": 0,
+                "pageBatches": 0,
+                "totalRowsAvailable": 0,
+                "totalPageDownloadTime": 0
+              }
+            },
+            "querierExecTime": 0.003886
+          },
+          "ingester": {
+            "totalReached": 1,
+            "totalChunksMatched": 1,
+            "totalBatches": 1,
+            "totalLinesSent": 1,
+            "store": {
+              "totalChunksRef": 0,
+              "totalChunksDownloaded": 0,
+              "chunksDownloadTime": 0,
+              "queryReferencedStructuredMetadata": false,
+              "queryUsedV2Engine": false,
+              "chunk": {
+                "headChunkBytes": 6492,
+                "headChunkLines": 11,
+                "decompressedBytes": 0,
+                "decompressedLines": 0,
+                "compressedBytes": 0,
+                "totalDuplicates": 0,
+                "postFilterLines": 11,
+                "headChunkStructuredMetadataBytes": 88,
+                "decompressedStructuredMetadataBytes": 0
+              },
+              "chunkRefsFetchTime": 141875,
+              "congestionControlLatency": 0,
+              "pipelineWrapperFilteredLines": 0,
+              "dataobj": {
+                "prePredicateDecompressedRows": 0,
+                "prePredicateDecompressedBytes": 0,
+                "prePredicateDecompressedStructuredMetadataBytes": 0,
+                "postPredicateRows": 0,
+                "postPredicateDecompressedBytes": 0,
+                "postPredicateStructuredMetadataBytes": 0,
+                "postFilterRows": 0,
+                "pagesScanned": 0,
+                "pagesDownloaded": 0,
+                "pagesDownloadedBytes": 0,
+                "pageBatches": 0,
+                "totalRowsAvailable": 0,
+                "totalPageDownloadTime": 0
+              }
+            },
+            "recvWaitTime": 0.000715
+          },
+          "cache": {
+            "chunk": {
+              "entriesFound": 0,
+              "entriesRequested": 0,
+              "entriesStored": 0,
+              "bytesReceived": 0,
+              "bytesSent": 0,
+              "requests": 0,
+              "downloadTime": 0,
+              "queryLengthServed": 0
+            },
+            "index": {
+              "entriesFound": 0,
+              "entriesRequested": 0,
+              "entriesStored": 0,
+              "bytesReceived": 0,
+              "bytesSent": 0,
+              "requests": 0,
+              "downloadTime": 0,
+              "queryLengthServed": 0
+            },
+            "result": {
+              "entriesFound": 0,
+              "entriesRequested": 0,
+              "entriesStored": 0,
+              "bytesReceived": 0,
+              "bytesSent": 0,
+              "requests": 0,
+              "downloadTime": 0,
+              "queryLengthServed": 0
+            },
+            "statsResult": {
+              "entriesFound": 0,
+              "entriesRequested": 0,
+              "entriesStored": 0,
+              "bytesReceived": 0,
+              "bytesSent": 0,
+              "requests": 0,
+              "downloadTime": 0,
+              "queryLengthServed": 0
+            },
+            "volumeResult": {
+              "entriesFound": 0,
+              "entriesRequested": 0,
+              "entriesStored": 0,
+              "bytesReceived": 0,
+              "bytesSent": 0,
+              "requests": 0,
+              "downloadTime": 0,
+              "queryLengthServed": 0
+            },
+            "seriesResult": {
+              "entriesFound": 0,
+              "entriesRequested": 0,
+              "entriesStored": 0,
+              "bytesReceived": 0,
+              "bytesSent": 0,
+              "requests": 0,
+              "downloadTime": 0,
+              "queryLengthServed": 0
+            },
+            "labelResult": {
+              "entriesFound": 0,
+              "entriesRequested": 0,
+              "entriesStored": 0,
+              "bytesReceived": 0,
+              "bytesSent": 0,
+              "requests": 0,
+              "downloadTime": 0,
+              "queryLengthServed": 0
+            },
+            "instantMetricResult": {
+              "entriesFound": 0,
+              "entriesRequested": 0,
+              "entriesStored": 0,
+              "bytesReceived": 0,
+              "bytesSent": 0,
+              "requests": 0,
+              "downloadTime": 0,
+              "queryLengthServed": 0
+            }
+          },
+          "index": {
+            "totalChunks": 0,
+            "postFilterChunks": 0,
+            "shardsDuration": 0,
+            "usedBloomFilters": false,
+            "totalStreams": 0,
+            "chunkRefsLookupTime": 0,
+            "bloomFilterTime": 0
+          }
+        }
+      }
+    },
+    "petclinic-5c86d88b68-mgbnd": {
+      "status": "success",
+      "data": {
+        "resultType": "streams",
+        "result": [
+          {
+            "stream": {
+              "app": "petclinic",
+              "container": "petclinic",
+              "detected_level": "info",
+              "instance": "petclinic/petclinic-5c86d88b68-mgbnd:petclinic",
+              "job": "loki.source.kubernetes.petclinic",
+              "namespace": "petclinic",
+              "node": "devops",
+              "pod": "petclinic-5c86d88b68-mgbnd",
+              "service_name": "petclinic"
+            },
+            "values": [
+              [
+                "1791226880502884357",
+                "{\"@timestamp\":\"2026-10-05T19:01:20.499442430Z\",\"log\":{\"level\":\"INFO\",\"logger\":\"org.springframework.samples.petclinic.system.PlatformObservability\"},\"process\":{\"pid\":1,\"thread\":{\"name\":\"http-nio-8080-exec-1\"}},\"service\":{\"name\":\"petclinic\",\"version\":\"0.9.0-ci-101\",\"node\":{}},\"message\":\"Petclinic platform inventory snapshot\",\"traceId\":\"bebb78fc34a2716aaa203ab45a736026\",\"spanId\":\"e918522421f770b3\",\"event\":{\"dataset\":\"petclinic.platform\",\"action\":\"platform_snapshot\"},\"platform\":{\"total\":74,\"ready\":61,\"paused\":13,\"snapshot_timestamp\":1791226796},\"ecs\":{\"version\":\"8.11\"}}\n"
+              ]
+            ]
+          }
+        ],
+        "stats": {
+          "summary": {
+            "bytesProcessedPerSecond": 1851165,
+            "linesProcessedPerSecond": 3721,
+            "totalBytesProcessed": 9451,
+            "totalLinesProcessed": 19,
+            "execTime": 0.005105,
+            "queueTime": 0.000164,
+            "subqueries": 0,
+            "totalEntriesReturned": 1,
+            "splits": 1,
+            "shards": 1,
+            "totalPostFilterLines": 19,
+            "totalStructuredMetadataBytesProcessed": 152
+          },
+          "querier": {
+            "store": {
+              "totalChunksRef": 0,
+              "totalChunksDownloaded": 0,
+              "chunksDownloadTime": 0,
+              "queryReferencedStructuredMetadata": false,
+              "queryUsedV2Engine": false,
+              "chunk": {
+                "headChunkBytes": 0,
+                "headChunkLines": 0,
+                "decompressedBytes": 0,
+                "decompressedLines": 0,
+                "compressedBytes": 0,
+                "totalDuplicates": 0,
+                "postFilterLines": 0,
+                "headChunkStructuredMetadataBytes": 0,
+                "decompressedStructuredMetadataBytes": 0
+              },
+              "chunkRefsFetchTime": 0,
+              "congestionControlLatency": 0,
+              "pipelineWrapperFilteredLines": 0,
+              "dataobj": {
+                "prePredicateDecompressedRows": 0,
+                "prePredicateDecompressedBytes": 0,
+                "prePredicateDecompressedStructuredMetadataBytes": 0,
+                "postPredicateRows": 0,
+                "postPredicateDecompressedBytes": 0,
+                "postPredicateStructuredMetadataBytes": 0,
+                "postFilterRows": 0,
+                "pagesScanned": 0,
+                "pagesDownloaded": 0,
+                "pagesDownloadedBytes": 0,
+                "pageBatches": 0,
+                "totalRowsAvailable": 0,
+                "totalPageDownloadTime": 0
+              }
+            },
+            "querierExecTime": 0.003655
+          },
+          "ingester": {
+            "totalReached": 1,
+            "totalChunksMatched": 1,
+            "totalBatches": 1,
+            "totalLinesSent": 1,
+            "store": {
+              "totalChunksRef": 0,
+              "totalChunksDownloaded": 0,
+              "chunksDownloadTime": 0,
+              "queryReferencedStructuredMetadata": false,
+              "queryUsedV2Engine": false,
+              "chunk": {
+                "headChunkBytes": 9451,
+                "headChunkLines": 19,
+                "decompressedBytes": 0,
+                "decompressedLines": 0,
+                "compressedBytes": 0,
+                "totalDuplicates": 0,
+                "postFilterLines": 19,
+                "headChunkStructuredMetadataBytes": 152,
+                "decompressedStructuredMetadataBytes": 0
+              },
+              "chunkRefsFetchTime": 121667,
+              "congestionControlLatency": 0,
+              "pipelineWrapperFilteredLines": 0,
+              "dataobj": {
+                "prePredicateDecompressedRows": 0,
+                "prePredicateDecompressedBytes": 0,
+                "prePredicateDecompressedStructuredMetadataBytes": 0,
+                "postPredicateRows": 0,
+                "postPredicateDecompressedBytes": 0,
+                "postPredicateStructuredMetadataBytes": 0,
+                "postFilterRows": 0,
+                "pagesScanned": 0,
+                "pagesDownloaded": 0,
+                "pagesDownloadedBytes": 0,
+                "pageBatches": 0,
+                "totalRowsAvailable": 0,
+                "totalPageDownloadTime": 0
+              }
+            },
+            "recvWaitTime": 0.000989
+          },
+          "cache": {
+            "chunk": {
+              "entriesFound": 0,
+              "entriesRequested": 0,
+              "entriesStored": 0,
+              "bytesReceived": 0,
+              "bytesSent": 0,
+              "requests": 0,
+              "downloadTime": 0,
+              "queryLengthServed": 0
+            },
+            "index": {
+              "entriesFound": 0,
+              "entriesRequested": 0,
+              "entriesStored": 0,
+              "bytesReceived": 0,
+              "bytesSent": 0,
+              "requests": 0,
+              "downloadTime": 0,
+              "queryLengthServed": 0
+            },
+            "result": {
+              "entriesFound": 0,
+              "entriesRequested": 0,
+              "entriesStored": 0,
+              "bytesReceived": 0,
+              "bytesSent": 0,
+              "requests": 0,
+              "downloadTime": 0,
+              "queryLengthServed": 0
+            },
+            "statsResult": {
+              "entriesFound": 0,
+              "entriesRequested": 0,
+              "entriesStored": 0,
+              "bytesReceived": 0,
+              "bytesSent": 0,
+              "requests": 0,
+              "downloadTime": 0,
+              "queryLengthServed": 0
+            },
+            "volumeResult": {
+              "entriesFound": 0,
+              "entriesRequested": 0,
+              "entriesStored": 0,
+              "bytesReceived": 0,
+              "bytesSent": 0,
+              "requests": 0,
+              "downloadTime": 0,
+              "queryLengthServed": 0
+            },
+            "seriesResult": {
+              "entriesFound": 0,
+              "entriesRequested": 0,
+              "entriesStored": 0,
+              "bytesReceived": 0,
+              "bytesSent": 0,
+              "requests": 0,
+              "downloadTime": 0,
+              "queryLengthServed": 0
+            },
+            "labelResult": {
+              "entriesFound": 0,
+              "entriesRequested": 0,
+              "entriesStored": 0,
+              "bytesReceived": 0,
+              "bytesSent": 0,
+              "requests": 0,
+              "downloadTime": 0,
+              "queryLengthServed": 0
+            },
+            "instantMetricResult": {
+              "entriesFound": 0,
+              "entriesRequested": 0,
+              "entriesStored": 0,
+              "bytesReceived": 0,
+              "bytesSent": 0,
+              "requests": 0,
+              "downloadTime": 0,
+              "queryLengthServed": 0
+            }
+          },
+          "index": {
+            "totalChunks": 0,
+            "postFilterChunks": 0,
+            "shardsDuration": 0,
+            "usedBloomFilters": false,
+            "totalStreams": 0,
+            "chunkRefsLookupTime": 0,
+            "bloomFilterTime": 0
+          }
+        }
+      }
+    }
+  }
+}

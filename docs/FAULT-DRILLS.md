@@ -41,6 +41,8 @@ Git 是部署权威。先区分镜像构建失败、Git promotion 未发生、Ar
 4. 先服务端 dry-run 校验，再经 Argo 同步，运行 watch-release.py <真实目标提交SHA> <证据JSON>；它有 600 秒期限并持续检查 HTTP 200/至少三个 Available 副本。
 5. rollout 收敛后运行 audit-production.py 和 verify-production.py，核对健康、日志、监控、版本与业务计数。回退不会删除数据，不修改 schema/PVC。
 
-PDB minAvailable=2 保护 Eviction API 的自愿维护操作，不约束 Deployment 滚动替换。当前全部副本在 devops，完整 drain 会被阻挡，禁止通过删 PDB 来假装完成 HA。
+PDB minAvailable=2 保护 Eviction API 的自愿维护操作，不约束 Deployment 滚动替换。2026-10-05 基线全部副本在 devops，完整 drain 会被阻挡；2026-10-06 完成应用跨节点部署与 worker 限定维护验证，完整过程见 [HA 场景](HA-20261006.md)。不删除 PDB、不强制驱逐；devops 仍承载共享数据库与控制平面，不能直接完整 drain。
 
 自动回滚尚未实现；本轮也没有主动倒退生产发行版本。需要先验证并发 promotion、源码 freshness、Argo selfHeal 和数据兼容性，再实现有边界的自动 Git 回退。Blue/Green、Canary、HPA 和跨节点硬反亲和留待容量/网络验收，不因组件名称增加而宣称生产成熟。
+
+2026-10-06 已实际验证通过 Git revert 恢复旧单节点选择器，再重新发布跨节点选择器；由 Argo 收敛并持续观察业务 HTTP 和副本可用性。它证明本次配置变更可回滚，不等同于数据库迁移或不同应用版本兼容性验收。

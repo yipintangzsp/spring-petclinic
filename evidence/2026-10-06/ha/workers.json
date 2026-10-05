@@ -1,0 +1,1473 @@
+{
+  "isolation": "unset readiness gate; no SQL initialization",
+  "workers": [
+    {
+      "node": "aliyun-worker",
+      "pod": "petclinic-ha-check-aliyun",
+      "status": {
+        "allocatedResources": {
+          "cpu": "100m",
+          "memory": "256Mi"
+        },
+        "conditions": [
+          {
+            "lastProbeTime": null,
+            "lastTransitionTime": "2026-10-05T18:40:42Z",
+            "observedGeneration": 1,
+            "status": "True",
+            "type": "PodReadyToStartContainers"
+          },
+          {
+            "lastProbeTime": null,
+            "lastTransitionTime": "2026-10-05T18:40:40Z",
+            "observedGeneration": 1,
+            "status": "True",
+            "type": "Initialized"
+          },
+          {
+            "lastProbeTime": null,
+            "lastTransitionTime": "2026-10-05T18:40:40Z",
+            "message": "corresponding condition of pod readiness gate \"ha.petclinic.devops.local/isolated\" does not exist.",
+            "observedGeneration": 1,
+            "reason": "ReadinessGatesNotReady",
+            "status": "False",
+            "type": "Ready"
+          },
+          {
+            "lastProbeTime": null,
+            "lastTransitionTime": "2026-10-05T18:41:47Z",
+            "observedGeneration": 1,
+            "status": "True",
+            "type": "ContainersReady"
+          },
+          {
+            "lastProbeTime": null,
+            "lastTransitionTime": "2026-10-05T18:40:40Z",
+            "observedGeneration": 1,
+            "status": "True",
+            "type": "PodScheduled"
+          }
+        ],
+        "containerStatuses": [
+          {
+            "allocatedResources": {
+              "cpu": "100m",
+              "memory": "256Mi"
+            },
+            "containerID": "containerd://77a8b772001ae5acb72684de6b37be5d72825273437034424ce942f1734cb458",
+            "image": "10.0.0.3:30050/petclinic/petclinic:0.9.0-ci-101",
+            "imageID": "10.0.0.3:30050/petclinic/petclinic@sha256:6abc559669c48f36bb7aaf21899ac2411ecc9e78b96b4aeda81166b5a564b1cd",
+            "lastState": {},
+            "name": "petclinic",
+            "ready": true,
+            "resources": {
+              "limits": {
+                "cpu": "500m",
+                "memory": "768Mi"
+              },
+              "requests": {
+                "cpu": "100m",
+                "memory": "256Mi"
+              }
+            },
+            "restartCount": 0,
+            "started": true,
+            "state": {
+              "running": {
+                "startedAt": "2026-10-05T18:40:56Z"
+              }
+            },
+            "user": {
+              "linux": {
+                "gid": 10001,
+                "supplementalGroups": [
+                  10001
+                ],
+                "uid": 10001
+              }
+            },
+            "volumeMounts": [
+              {
+                "mountPath": "/etc/petclinic-platform",
+                "name": "platform-snapshot",
+                "readOnly": true,
+                "recursiveReadOnly": "Disabled"
+              }
+            ]
+          }
+        ],
+        "hostIP": "10.0.0.1",
+        "hostIPs": [
+          {
+            "ip": "10.0.0.1"
+          }
+        ],
+        "observedGeneration": 1,
+        "phase": "Running",
+        "podIP": "10.42.1.26",
+        "podIPs": [
+          {
+            "ip": "10.42.1.26"
+          }
+        ],
+        "qosClass": "Burstable",
+        "resources": {
+          "limits": {
+            "cpu": "500m",
+            "memory": "768Mi"
+          },
+          "requests": {
+            "cpu": "79m",
+            "memory": "256Mi"
+          }
+        },
+        "startTime": "2026-10-05T18:40:40Z"
+      },
+      "events": [
+        {
+          "action": "Binding",
+          "apiVersion": "v1",
+          "eventTime": "2026-10-05T18:40:40.275343Z",
+          "firstTimestamp": null,
+          "involvedObject": {
+            "apiVersion": "v1",
+            "kind": "Pod",
+            "name": "petclinic-ha-check-aliyun",
+            "namespace": "petclinic",
+            "resourceVersion": "11548723",
+            "uid": "c5a48199-d70d-4155-b1d3-7799f2c558ce"
+          },
+          "kind": "Event",
+          "lastTimestamp": null,
+          "message": "Successfully assigned petclinic/petclinic-ha-check-aliyun to aliyun-worker",
+          "metadata": {
+            "creationTimestamp": "2026-10-05T18:40:40Z",
+            "name": "petclinic-ha-check-aliyun.18dbb63ac12f0792",
+            "namespace": "petclinic",
+            "resourceVersion": "11548725",
+            "uid": "4222a301-a6a6-44ec-9112-68125d62c159"
+          },
+          "reason": "Scheduled",
+          "reportingComponent": "default-scheduler",
+          "reportingInstance": "default-scheduler-devops",
+          "source": {},
+          "type": "Normal"
+        },
+        {
+          "apiVersion": "v1",
+          "count": 1,
+          "eventTime": null,
+          "firstTimestamp": "2026-10-05T18:40:42Z",
+          "involvedObject": {
+            "apiVersion": "v1",
+            "fieldPath": "spec.containers{petclinic}",
+            "kind": "Pod",
+            "name": "petclinic-ha-check-aliyun",
+            "namespace": "petclinic",
+            "resourceVersion": "11548724",
+            "uid": "c5a48199-d70d-4155-b1d3-7799f2c558ce"
+          },
+          "kind": "Event",
+          "lastTimestamp": "2026-10-05T18:40:42Z",
+          "message": "Pulling image \"10.0.0.3:30050/petclinic/petclinic:0.9.0-ci-101\"",
+          "metadata": {
+            "creationTimestamp": "2026-10-05T18:40:42Z",
+            "name": "petclinic-ha-check-aliyun.18dbb63b31c769fe",
+            "namespace": "petclinic",
+            "resourceVersion": "11548730",
+            "uid": "619c1598-5183-485d-ba30-9be87d400f1e"
+          },
+          "reason": "Pulling",
+          "reportingComponent": "kubelet",
+          "reportingInstance": "aliyun-worker",
+          "source": {
+            "component": "kubelet",
+            "host": "aliyun-worker"
+          },
+          "type": "Normal"
+        },
+        {
+          "apiVersion": "v1",
+          "count": 1,
+          "eventTime": null,
+          "firstTimestamp": "2026-10-05T18:40:56Z",
+          "involvedObject": {
+            "apiVersion": "v1",
+            "fieldPath": "spec.containers{petclinic}",
+            "kind": "Pod",
+            "name": "petclinic-ha-check-aliyun",
+            "namespace": "petclinic",
+            "resourceVersion": "11548724",
+            "uid": "c5a48199-d70d-4155-b1d3-7799f2c558ce"
+          },
+          "kind": "Event",
+          "lastTimestamp": "2026-10-05T18:40:56Z",
+          "message": "Successfully pulled image \"10.0.0.3:30050/petclinic/petclinic:0.9.0-ci-101\" in 14.28s (14.28s including waiting). Image size: 184611578 bytes.",
+          "metadata": {
+            "creationTimestamp": "2026-10-05T18:40:56Z",
+            "name": "petclinic-ha-check-aliyun.18dbb63e84efc166",
+            "namespace": "petclinic",
+            "resourceVersion": "11548750",
+            "uid": "20dad340-2b35-41fb-9348-1088ce5bd169"
+          },
+          "reason": "Pulled",
+          "reportingComponent": "kubelet",
+          "reportingInstance": "aliyun-worker",
+          "source": {
+            "component": "kubelet",
+            "host": "aliyun-worker"
+          },
+          "type": "Normal"
+        },
+        {
+          "apiVersion": "v1",
+          "count": 1,
+          "eventTime": null,
+          "firstTimestamp": "2026-10-05T18:40:56Z",
+          "involvedObject": {
+            "apiVersion": "v1",
+            "fieldPath": "spec.containers{petclinic}",
+            "kind": "Pod",
+            "name": "petclinic-ha-check-aliyun",
+            "namespace": "petclinic",
+            "resourceVersion": "11548724",
+            "uid": "c5a48199-d70d-4155-b1d3-7799f2c558ce"
+          },
+          "kind": "Event",
+          "lastTimestamp": "2026-10-05T18:40:56Z",
+          "message": "Container created",
+          "metadata": {
+            "creationTimestamp": "2026-10-05T18:40:56Z",
+            "name": "petclinic-ha-check-aliyun.18dbb63e8926548b",
+            "namespace": "petclinic",
+            "resourceVersion": "11548753",
+            "uid": "1ed61e74-7554-41fc-84c9-78174818beb0"
+          },
+          "reason": "Created",
+          "reportingComponent": "kubelet",
+          "reportingInstance": "aliyun-worker",
+          "source": {
+            "component": "kubelet",
+            "host": "aliyun-worker"
+          },
+          "type": "Normal"
+        },
+        {
+          "apiVersion": "v1",
+          "count": 1,
+          "eventTime": null,
+          "firstTimestamp": "2026-10-05T18:40:56Z",
+          "involvedObject": {
+            "apiVersion": "v1",
+            "fieldPath": "spec.containers{petclinic}",
+            "kind": "Pod",
+            "name": "petclinic-ha-check-aliyun",
+            "namespace": "petclinic",
+            "resourceVersion": "11548724",
+            "uid": "c5a48199-d70d-4155-b1d3-7799f2c558ce"
+          },
+          "kind": "Event",
+          "lastTimestamp": "2026-10-05T18:40:56Z",
+          "message": "Container started",
+          "metadata": {
+            "creationTimestamp": "2026-10-05T18:40:56Z",
+            "name": "petclinic-ha-check-aliyun.18dbb63e8d57fb17",
+            "namespace": "petclinic",
+            "resourceVersion": "11548754",
+            "uid": "d7188cca-a94c-4405-8ad6-36f227a38888"
+          },
+          "reason": "Started",
+          "reportingComponent": "kubelet",
+          "reportingInstance": "aliyun-worker",
+          "source": {
+            "component": "kubelet",
+            "host": "aliyun-worker"
+          },
+          "type": "Normal"
+        },
+        {
+          "apiVersion": "v1",
+          "count": 9,
+          "eventTime": null,
+          "firstTimestamp": "2026-10-05T18:41:01Z",
+          "involvedObject": {
+            "apiVersion": "v1",
+            "fieldPath": "spec.containers{petclinic}",
+            "kind": "Pod",
+            "name": "petclinic-ha-check-aliyun",
+            "namespace": "petclinic",
+            "resourceVersion": "11548724",
+            "uid": "c5a48199-d70d-4155-b1d3-7799f2c558ce"
+          },
+          "kind": "Event",
+          "lastTimestamp": "2026-10-05T18:41:41Z",
+          "message": "Startup probe failed: Get \"http://10.42.1.26:8080/actuator/health/liveness\": dial tcp 10.42.1.26:8080: connect: connection refused",
+          "metadata": {
+            "creationTimestamp": "2026-10-05T18:41:01Z",
+            "name": "petclinic-ha-check-aliyun.18dbb63fb2cbe033",
+            "namespace": "petclinic",
+            "resourceVersion": "11548819",
+            "uid": "8067ce30-cbf6-481f-a78f-1bda864f8327"
+          },
+          "reason": "Unhealthy",
+          "reportingComponent": "kubelet",
+          "reportingInstance": "aliyun-worker",
+          "source": {
+            "component": "kubelet",
+            "host": "aliyun-worker"
+          },
+          "type": "Warning"
+        }
+      ],
+      "ip": "10.42.1.26",
+      "image_id": "10.0.0.3:30050/petclinic/petclinic@sha256:6abc559669c48f36bb7aaf21899ac2411ecc9e78b96b4aeda81166b5a564b1cd",
+      "health": {
+        "": {
+          "groups": [
+            "liveness",
+            "readiness"
+          ],
+          "status": "UP"
+        },
+        "/readiness": {
+          "status": "UP"
+        },
+        "/liveness": {
+          "status": "UP"
+        }
+      },
+      "dns": "10.43.26.6      postgresql.ns-data.svc.cluster.local\n",
+      "service_http": true,
+      "validation_service_http": true,
+      "kubernetes_service_http": "401",
+      "worker_to_devops_pod": true,
+      "devops_to_worker_pod": "200",
+      "prometheus_targets": [
+        {
+          "discoveredLabels": {
+            "__address__": "10.42.1.26:8080",
+            "__always_scrape_classic_histograms__": "false",
+            "__convert_classic_histograms_to_nhcb__": "false",
+            "__meta_kubernetes_endpoint_address_target_kind": "Pod",
+            "__meta_kubernetes_endpoint_address_target_name": "petclinic-ha-check-aliyun",
+            "__meta_kubernetes_endpoint_node_name": "aliyun-worker",
+            "__meta_kubernetes_endpoint_port_name": "http",
+            "__meta_kubernetes_endpoint_port_protocol": "TCP",
+            "__meta_kubernetes_endpoint_ready": "false",
+            "__meta_kubernetes_endpoints_annotation_endpoints_kubernetes_io_last_change_trigger_time": "2026-10-05T18:40:40Z",
+            "__meta_kubernetes_endpoints_annotationpresent_endpoints_kubernetes_io_last_change_trigger_time": "true",
+            "__meta_kubernetes_endpoints_label_app_kubernetes_io_instance": "petclinic",
+            "__meta_kubernetes_endpoints_label_endpoints_kubernetes_io_managed_by": "endpoint-controller",
+            "__meta_kubernetes_endpoints_labelpresent_app_kubernetes_io_instance": "true",
+            "__meta_kubernetes_endpoints_labelpresent_endpoints_kubernetes_io_managed_by": "true",
+            "__meta_kubernetes_endpoints_name": "petclinic",
+            "__meta_kubernetes_namespace": "petclinic",
+            "__meta_kubernetes_pod_container_image": "10.0.0.3:30050/petclinic/petclinic:0.9.0-ci-101",
+            "__meta_kubernetes_pod_container_init": "false",
+            "__meta_kubernetes_pod_container_name": "petclinic",
+            "__meta_kubernetes_pod_container_port_name": "http",
+            "__meta_kubernetes_pod_container_port_number": "8080",
+            "__meta_kubernetes_pod_container_port_protocol": "TCP",
+            "__meta_kubernetes_pod_host_ip": "10.0.0.1",
+            "__meta_kubernetes_pod_ip": "10.42.1.26",
+            "__meta_kubernetes_pod_label_app": "petclinic",
+            "__meta_kubernetes_pod_label_app_kubernetes_io_managed_by": "petclinic-ha-validation-20261006",
+            "__meta_kubernetes_pod_label_ha_validation": "petclinic-ha-validation-20261006",
+            "__meta_kubernetes_pod_labelpresent_app": "true",
+            "__meta_kubernetes_pod_labelpresent_app_kubernetes_io_managed_by": "true",
+            "__meta_kubernetes_pod_labelpresent_ha_validation": "true",
+            "__meta_kubernetes_pod_name": "petclinic-ha-check-aliyun",
+            "__meta_kubernetes_pod_node_name": "aliyun-worker",
+            "__meta_kubernetes_pod_phase": "Running",
+            "__meta_kubernetes_pod_ready": "false",
+            "__meta_kubernetes_pod_uid": "c5a48199-d70d-4155-b1d3-7799f2c558ce",
+            "__meta_kubernetes_service_annotation_kubectl_kubernetes_io_last_applied_configuration": "{\"apiVersion\":\"v1\",\"kind\":\"Service\",\"metadata\":{\"annotations\":{},\"labels\":{\"app.kubernetes.io/instance\":\"petclinic\"},\"name\":\"petclinic\",\"namespace\":\"petclinic\"},\"spec\":{\"ports\":[{\"name\":\"http\",\"port\":80,\"targetPort\":\"http\"}],\"selector\":{\"app\":\"petclinic\"},\"type\":\"ClusterIP\"}}\n",
+            "__meta_kubernetes_service_annotationpresent_kubectl_kubernetes_io_last_applied_configuration": "true",
+            "__meta_kubernetes_service_label_app_kubernetes_io_instance": "petclinic",
+            "__meta_kubernetes_service_labelpresent_app_kubernetes_io_instance": "true",
+            "__meta_kubernetes_service_name": "petclinic",
+            "__metrics_path__": "/actuator/prometheus",
+            "__scheme__": "http",
+            "__scrape_interval__": "30s",
+            "__scrape_native_histograms__": "false",
+            "__scrape_timeout__": "10s",
+            "job": "serviceMonitor/petclinic/petclinic/0"
+          },
+          "labels": {
+            "container": "petclinic",
+            "endpoint": "http",
+            "instance": "10.42.1.26:8080",
+            "job": "petclinic",
+            "namespace": "petclinic",
+            "pod": "petclinic-ha-check-aliyun",
+            "service": "petclinic"
+          },
+          "scrapePool": "serviceMonitor/petclinic/petclinic/0",
+          "scrapeUrl": "http://10.42.1.26:8080/actuator/prometheus",
+          "globalUrl": "http://10.42.1.26:8080/actuator/prometheus",
+          "lastError": "",
+          "lastScrape": "2026-10-05T18:42:00.739542258Z",
+          "lastScrapeDuration": 0.383078355,
+          "health": "up",
+          "scrapeInterval": "30s",
+          "scrapeTimeout": "10s"
+        }
+      ],
+      "loki": {
+        "status": "success",
+        "data": {
+          "resultType": "streams",
+          "result": [
+            {
+              "stream": {
+                "app": "petclinic",
+                "container": "petclinic",
+                "detected_level": "info",
+                "instance": "petclinic/petclinic-ha-check-aliyun:petclinic",
+                "job": "loki.source.kubernetes.petclinic",
+                "namespace": "petclinic",
+                "node": "aliyun-worker",
+                "pod": "petclinic-ha-check-aliyun",
+                "service_name": "petclinic"
+              },
+              "values": [
+                [
+                  "1791225720895629135",
+                  "{\"@timestamp\":\"2026-10-05T18:42:00.895005778Z\",\"log\":{\"level\":\"INFO\",\"logger\":\"org.springframework.samples.petclinic.system.ClinicBusinessMetrics\"},\"process\":{\"pid\":1,\"thread\":{\"name\":\"http-nio-8080-exec-2\"}},\"service\":{\"name\":\"petclinic\",\"version\":\"0.9.0-ci-101\",\"node\":{}},\"message\":\"Petclinic aggregate database snapshot\",\"traceId\":\"9db2a6888344fa77fdba7c5f2bfbc538\",\"spanId\":\"6a3bafa5aa252d56\",\"event\":{\"action\":\"business_snapshot\",\"dataset\":\"petclinic.business\"},\"petclinic\":{\"owners\":11,\"pets\":13,\"vets\":6,\"visits\":5},\"ecs\":{\"version\":\"8.11\"}}\n"
+                ],
+                [
+                  "1791225718848349135",
+                  "{\"@timestamp\":\"2026-10-05T18:41:58.846812956Z\",\"log\":{\"level\":\"INFO\",\"logger\":\"org.springframework.samples.petclinic.system.ClinicRequestAuditFilter\"},\"process\":{\"pid\":1,\"thread\":{\"name\":\"http-nio-8080-exec-7\"}},\"service\":{\"name\":\"petclinic\",\"version\":\"0.9.0-ci-101\",\"node\":{}},\"message\":\"Petclinic request completed\",\"traceId\":\"14ab9b22d92ab93c4ce8b743c5b1d292\",\"spanId\":\"c691bcb86d887418\",\"event\":{\"dataset\":\"petclinic.http\",\"action\":\"http_request\",\"duration\":3512799606},\"http\":{\"request\":{\"method\":\"GET\"},\"route\":\"/owners\",\"response\":{\"status_code\":200}},\"ecs\":{\"version\":\"8.11\"}}\n"
+                ]
+              ]
+            }
+          ],
+          "stats": {
+            "summary": {
+              "bytesProcessedPerSecond": 964782,
+              "linesProcessedPerSecond": 2395,
+              "totalBytesProcessed": 10876,
+              "totalLinesProcessed": 27,
+              "execTime": 0.011273,
+              "queueTime": 0.000438,
+              "subqueries": 0,
+              "totalEntriesReturned": 2,
+              "splits": 1,
+              "shards": 1,
+              "totalPostFilterLines": 27,
+              "totalStructuredMetadataBytesProcessed": 216
+            },
+            "querier": {
+              "store": {
+                "totalChunksRef": 0,
+                "totalChunksDownloaded": 0,
+                "chunksDownloadTime": 0,
+                "queryReferencedStructuredMetadata": false,
+                "queryUsedV2Engine": false,
+                "chunk": {
+                  "headChunkBytes": 0,
+                  "headChunkLines": 0,
+                  "decompressedBytes": 0,
+                  "decompressedLines": 0,
+                  "compressedBytes": 0,
+                  "totalDuplicates": 0,
+                  "postFilterLines": 0,
+                  "headChunkStructuredMetadataBytes": 0,
+                  "decompressedStructuredMetadataBytes": 0
+                },
+                "chunkRefsFetchTime": 0,
+                "congestionControlLatency": 0,
+                "pipelineWrapperFilteredLines": 0,
+                "dataobj": {
+                  "prePredicateDecompressedRows": 0,
+                  "prePredicateDecompressedBytes": 0,
+                  "prePredicateDecompressedStructuredMetadataBytes": 0,
+                  "postPredicateRows": 0,
+                  "postPredicateDecompressedBytes": 0,
+                  "postPredicateStructuredMetadataBytes": 0,
+                  "postFilterRows": 0,
+                  "pagesScanned": 0,
+                  "pagesDownloaded": 0,
+                  "pagesDownloadedBytes": 0,
+                  "pageBatches": 0,
+                  "totalRowsAvailable": 0,
+                  "totalPageDownloadTime": 0
+                }
+              },
+              "querierExecTime": 0.008854
+            },
+            "ingester": {
+              "totalReached": 1,
+              "totalChunksMatched": 1,
+              "totalBatches": 1,
+              "totalLinesSent": 2,
+              "store": {
+                "totalChunksRef": 0,
+                "totalChunksDownloaded": 0,
+                "chunksDownloadTime": 0,
+                "queryReferencedStructuredMetadata": false,
+                "queryUsedV2Engine": false,
+                "chunk": {
+                  "headChunkBytes": 10876,
+                  "headChunkLines": 27,
+                  "decompressedBytes": 0,
+                  "decompressedLines": 0,
+                  "compressedBytes": 0,
+                  "totalDuplicates": 0,
+                  "postFilterLines": 27,
+                  "headChunkStructuredMetadataBytes": 216,
+                  "decompressedStructuredMetadataBytes": 0
+                },
+                "chunkRefsFetchTime": 178833,
+                "congestionControlLatency": 0,
+                "pipelineWrapperFilteredLines": 0,
+                "dataobj": {
+                  "prePredicateDecompressedRows": 0,
+                  "prePredicateDecompressedBytes": 0,
+                  "prePredicateDecompressedStructuredMetadataBytes": 0,
+                  "postPredicateRows": 0,
+                  "postPredicateDecompressedBytes": 0,
+                  "postPredicateStructuredMetadataBytes": 0,
+                  "postFilterRows": 0,
+                  "pagesScanned": 0,
+                  "pagesDownloaded": 0,
+                  "pagesDownloadedBytes": 0,
+                  "pageBatches": 0,
+                  "totalRowsAvailable": 0,
+                  "totalPageDownloadTime": 0
+                }
+              },
+              "recvWaitTime": 0.002054
+            },
+            "cache": {
+              "chunk": {
+                "entriesFound": 0,
+                "entriesRequested": 0,
+                "entriesStored": 0,
+                "bytesReceived": 0,
+                "bytesSent": 0,
+                "requests": 0,
+                "downloadTime": 0,
+                "queryLengthServed": 0
+              },
+              "index": {
+                "entriesFound": 0,
+                "entriesRequested": 0,
+                "entriesStored": 0,
+                "bytesReceived": 0,
+                "bytesSent": 0,
+                "requests": 0,
+                "downloadTime": 0,
+                "queryLengthServed": 0
+              },
+              "result": {
+                "entriesFound": 0,
+                "entriesRequested": 0,
+                "entriesStored": 0,
+                "bytesReceived": 0,
+                "bytesSent": 0,
+                "requests": 0,
+                "downloadTime": 0,
+                "queryLengthServed": 0
+              },
+              "statsResult": {
+                "entriesFound": 0,
+                "entriesRequested": 0,
+                "entriesStored": 0,
+                "bytesReceived": 0,
+                "bytesSent": 0,
+                "requests": 0,
+                "downloadTime": 0,
+                "queryLengthServed": 0
+              },
+              "volumeResult": {
+                "entriesFound": 0,
+                "entriesRequested": 0,
+                "entriesStored": 0,
+                "bytesReceived": 0,
+                "bytesSent": 0,
+                "requests": 0,
+                "downloadTime": 0,
+                "queryLengthServed": 0
+              },
+              "seriesResult": {
+                "entriesFound": 0,
+                "entriesRequested": 0,
+                "entriesStored": 0,
+                "bytesReceived": 0,
+                "bytesSent": 0,
+                "requests": 0,
+                "downloadTime": 0,
+                "queryLengthServed": 0
+              },
+              "labelResult": {
+                "entriesFound": 0,
+                "entriesRequested": 0,
+                "entriesStored": 0,
+                "bytesReceived": 0,
+                "bytesSent": 0,
+                "requests": 0,
+                "downloadTime": 0,
+                "queryLengthServed": 0
+              },
+              "instantMetricResult": {
+                "entriesFound": 0,
+                "entriesRequested": 0,
+                "entriesStored": 0,
+                "bytesReceived": 0,
+                "bytesSent": 0,
+                "requests": 0,
+                "downloadTime": 0,
+                "queryLengthServed": 0
+              }
+            },
+            "index": {
+              "totalChunks": 0,
+              "postFilterChunks": 0,
+              "shardsDuration": 0,
+              "usedBloomFilters": false,
+              "totalStreams": 0,
+              "chunkRefsLookupTime": 0,
+              "bloomFilterTime": 0
+            }
+          }
+        }
+      },
+      "excluded_from_production": true,
+      "passed": true
+    },
+    {
+      "node": "ucloud-worker",
+      "pod": "petclinic-ha-check-ucloud",
+      "status": {
+        "allocatedResources": {
+          "cpu": "100m",
+          "memory": "256Mi"
+        },
+        "conditions": [
+          {
+            "lastProbeTime": null,
+            "lastTransitionTime": "2026-10-05T18:42:15Z",
+            "observedGeneration": 1,
+            "status": "True",
+            "type": "PodReadyToStartContainers"
+          },
+          {
+            "lastProbeTime": null,
+            "lastTransitionTime": "2026-10-05T18:42:14Z",
+            "observedGeneration": 1,
+            "status": "True",
+            "type": "Initialized"
+          },
+          {
+            "lastProbeTime": null,
+            "lastTransitionTime": "2026-10-05T18:42:14Z",
+            "message": "corresponding condition of pod readiness gate \"ha.petclinic.devops.local/isolated\" does not exist.",
+            "observedGeneration": 1,
+            "reason": "ReadinessGatesNotReady",
+            "status": "False",
+            "type": "Ready"
+          },
+          {
+            "lastProbeTime": null,
+            "lastTransitionTime": "2026-10-05T18:46:15Z",
+            "observedGeneration": 1,
+            "status": "True",
+            "type": "ContainersReady"
+          },
+          {
+            "lastProbeTime": null,
+            "lastTransitionTime": "2026-10-05T18:42:14Z",
+            "observedGeneration": 1,
+            "status": "True",
+            "type": "PodScheduled"
+          }
+        ],
+        "containerStatuses": [
+          {
+            "allocatedResources": {
+              "cpu": "100m",
+              "memory": "256Mi"
+            },
+            "containerID": "containerd://6b68d0562cddb896387713f9f374f29610037face21b0f348d0a5930bd348906",
+            "image": "10.0.0.3:30050/petclinic/petclinic:0.9.0-ci-101",
+            "imageID": "10.0.0.3:30050/petclinic/petclinic@sha256:6abc559669c48f36bb7aaf21899ac2411ecc9e78b96b4aeda81166b5a564b1cd",
+            "lastState": {},
+            "name": "petclinic",
+            "ready": true,
+            "resources": {
+              "limits": {
+                "cpu": "500m",
+                "memory": "768Mi"
+              },
+              "requests": {
+                "cpu": "100m",
+                "memory": "256Mi"
+              }
+            },
+            "restartCount": 0,
+            "started": true,
+            "state": {
+              "running": {
+                "startedAt": "2026-10-05T18:45:17Z"
+              }
+            },
+            "user": {
+              "linux": {
+                "gid": 10001,
+                "supplementalGroups": [
+                  10001
+                ],
+                "uid": 10001
+              }
+            },
+            "volumeMounts": [
+              {
+                "mountPath": "/etc/petclinic-platform",
+                "name": "platform-snapshot",
+                "readOnly": true,
+                "recursiveReadOnly": "Disabled"
+              }
+            ]
+          }
+        ],
+        "hostIP": "10.0.0.2",
+        "hostIPs": [
+          {
+            "ip": "10.0.0.2"
+          }
+        ],
+        "observedGeneration": 1,
+        "phase": "Running",
+        "podIP": "10.42.3.188",
+        "podIPs": [
+          {
+            "ip": "10.42.3.188"
+          }
+        ],
+        "qosClass": "Burstable",
+        "resources": {
+          "limits": {
+            "cpu": "500m",
+            "memory": "768Mi"
+          },
+          "requests": {
+            "cpu": "79m",
+            "memory": "256Mi"
+          }
+        },
+        "startTime": "2026-10-05T18:42:14Z"
+      },
+      "events": [
+        {
+          "action": "Binding",
+          "apiVersion": "v1",
+          "eventTime": "2026-10-05T18:42:14.621161Z",
+          "firstTimestamp": null,
+          "involvedObject": {
+            "apiVersion": "v1",
+            "kind": "Pod",
+            "name": "petclinic-ha-check-ucloud",
+            "namespace": "petclinic",
+            "resourceVersion": "11548871",
+            "uid": "f5bcd669-21ce-481d-8c81-d853094e6592"
+          },
+          "kind": "Event",
+          "lastTimestamp": null,
+          "message": "Successfully assigned petclinic/petclinic-ha-check-ucloud to ucloud-worker",
+          "metadata": {
+            "creationTimestamp": "2026-10-05T18:42:14Z",
+            "name": "petclinic-ha-check-ucloud.18dbb650b8a1f3d0",
+            "namespace": "petclinic",
+            "resourceVersion": "11548874",
+            "uid": "c8858aab-b0ca-4b05-8490-24d3c0367154"
+          },
+          "reason": "Scheduled",
+          "reportingComponent": "default-scheduler",
+          "reportingInstance": "default-scheduler-devops",
+          "source": {},
+          "type": "Normal"
+        },
+        {
+          "apiVersion": "v1",
+          "count": 1,
+          "eventTime": null,
+          "firstTimestamp": "2026-10-05T18:42:15Z",
+          "involvedObject": {
+            "apiVersion": "v1",
+            "fieldPath": "spec.containers{petclinic}",
+            "kind": "Pod",
+            "name": "petclinic-ha-check-ucloud",
+            "namespace": "petclinic",
+            "resourceVersion": "11548873",
+            "uid": "f5bcd669-21ce-481d-8c81-d853094e6592"
+          },
+          "kind": "Event",
+          "lastTimestamp": "2026-10-05T18:42:15Z",
+          "message": "Pulling image \"10.0.0.3:30050/petclinic/petclinic:0.9.0-ci-101\"",
+          "metadata": {
+            "creationTimestamp": "2026-10-05T18:42:15Z",
+            "name": "petclinic-ha-check-ucloud.18dbb650ddb95386",
+            "namespace": "petclinic",
+            "resourceVersion": "11548876",
+            "uid": "34b1c62d-1d0c-4d45-9141-fb3c9e941ca2"
+          },
+          "reason": "Pulling",
+          "reportingComponent": "kubelet",
+          "reportingInstance": "ucloud-worker",
+          "source": {
+            "component": "kubelet",
+            "host": "ucloud-worker"
+          },
+          "type": "Normal"
+        },
+        {
+          "apiVersion": "v1",
+          "count": 1,
+          "eventTime": null,
+          "firstTimestamp": "2026-10-05T18:45:17Z",
+          "involvedObject": {
+            "apiVersion": "v1",
+            "fieldPath": "spec.containers{petclinic}",
+            "kind": "Pod",
+            "name": "petclinic-ha-check-ucloud",
+            "namespace": "petclinic",
+            "resourceVersion": "11548873",
+            "uid": "f5bcd669-21ce-481d-8c81-d853094e6592"
+          },
+          "kind": "Event",
+          "lastTimestamp": "2026-10-05T18:45:17Z",
+          "message": "Successfully pulled image \"10.0.0.3:30050/petclinic/petclinic:0.9.0-ci-101\" in 3m1.878s (3m1.878s including waiting). Image size: 184611578 bytes.",
+          "metadata": {
+            "creationTimestamp": "2026-10-05T18:45:17Z",
+            "name": "petclinic-ha-check-ucloud.18dbb67b3689324b",
+            "namespace": "petclinic",
+            "resourceVersion": "11549091",
+            "uid": "66a43cbc-0839-43f9-9749-a0a4a757397d"
+          },
+          "reason": "Pulled",
+          "reportingComponent": "kubelet",
+          "reportingInstance": "ucloud-worker",
+          "source": {
+            "component": "kubelet",
+            "host": "ucloud-worker"
+          },
+          "type": "Normal"
+        },
+        {
+          "apiVersion": "v1",
+          "count": 1,
+          "eventTime": null,
+          "firstTimestamp": "2026-10-05T18:45:17Z",
+          "involvedObject": {
+            "apiVersion": "v1",
+            "fieldPath": "spec.containers{petclinic}",
+            "kind": "Pod",
+            "name": "petclinic-ha-check-ucloud",
+            "namespace": "petclinic",
+            "resourceVersion": "11548873",
+            "uid": "f5bcd669-21ce-481d-8c81-d853094e6592"
+          },
+          "kind": "Event",
+          "lastTimestamp": "2026-10-05T18:45:17Z",
+          "message": "Container created",
+          "metadata": {
+            "creationTimestamp": "2026-10-05T18:45:17Z",
+            "name": "petclinic-ha-check-ucloud.18dbb67b45e52ae4",
+            "namespace": "petclinic",
+            "resourceVersion": "11549092",
+            "uid": "b84c40ef-6d48-4bac-8baf-1d922a5f80f0"
+          },
+          "reason": "Created",
+          "reportingComponent": "kubelet",
+          "reportingInstance": "ucloud-worker",
+          "source": {
+            "component": "kubelet",
+            "host": "ucloud-worker"
+          },
+          "type": "Normal"
+        },
+        {
+          "apiVersion": "v1",
+          "count": 1,
+          "eventTime": null,
+          "firstTimestamp": "2026-10-05T18:45:17Z",
+          "involvedObject": {
+            "apiVersion": "v1",
+            "fieldPath": "spec.containers{petclinic}",
+            "kind": "Pod",
+            "name": "petclinic-ha-check-ucloud",
+            "namespace": "petclinic",
+            "resourceVersion": "11548873",
+            "uid": "f5bcd669-21ce-481d-8c81-d853094e6592"
+          },
+          "kind": "Event",
+          "lastTimestamp": "2026-10-05T18:45:17Z",
+          "message": "Container started",
+          "metadata": {
+            "creationTimestamp": "2026-10-05T18:45:17Z",
+            "name": "petclinic-ha-check-ucloud.18dbb67b4948a368",
+            "namespace": "petclinic",
+            "resourceVersion": "11549093",
+            "uid": "4cfd3a21-b26a-42e7-a54b-b51b99938374"
+          },
+          "reason": "Started",
+          "reportingComponent": "kubelet",
+          "reportingInstance": "ucloud-worker",
+          "source": {
+            "component": "kubelet",
+            "host": "ucloud-worker"
+          },
+          "type": "Normal"
+        },
+        {
+          "apiVersion": "v1",
+          "count": 11,
+          "eventTime": null,
+          "firstTimestamp": "2026-10-05T18:45:19Z",
+          "involvedObject": {
+            "apiVersion": "v1",
+            "fieldPath": "spec.containers{petclinic}",
+            "kind": "Pod",
+            "name": "petclinic-ha-check-ucloud",
+            "namespace": "petclinic",
+            "resourceVersion": "11548873",
+            "uid": "f5bcd669-21ce-481d-8c81-d853094e6592"
+          },
+          "kind": "Event",
+          "lastTimestamp": "2026-10-05T18:46:09Z",
+          "message": "Startup probe failed: Get \"http://10.42.3.188:8080/actuator/health/liveness\": dial tcp 10.42.3.188:8080: connect: connection refused",
+          "metadata": {
+            "creationTimestamp": "2026-10-05T18:45:20Z",
+            "name": "petclinic-ha-check-ucloud.18dbb67be055fc71",
+            "namespace": "petclinic",
+            "resourceVersion": "11549169",
+            "uid": "11c1ab30-8f52-4658-9e6f-fb18fbb0cd4d"
+          },
+          "reason": "Unhealthy",
+          "reportingComponent": "kubelet",
+          "reportingInstance": "ucloud-worker",
+          "source": {
+            "component": "kubelet",
+            "host": "ucloud-worker"
+          },
+          "type": "Warning"
+        }
+      ],
+      "ip": "10.42.3.188",
+      "image_id": "10.0.0.3:30050/petclinic/petclinic@sha256:6abc559669c48f36bb7aaf21899ac2411ecc9e78b96b4aeda81166b5a564b1cd",
+      "health": {
+        "": {
+          "groups": [
+            "liveness",
+            "readiness"
+          ],
+          "status": "UP"
+        },
+        "/readiness": {
+          "status": "UP"
+        },
+        "/liveness": {
+          "status": "UP"
+        }
+      },
+      "dns": "10.43.26.6      postgresql.ns-data.svc.cluster.local\n",
+      "service_http": true,
+      "validation_service_http": true,
+      "kubernetes_service_http": "401",
+      "worker_to_devops_pod": true,
+      "devops_to_worker_pod": "200",
+      "prometheus_targets": [
+        {
+          "discoveredLabels": {
+            "__address__": "10.42.3.188:8080",
+            "__always_scrape_classic_histograms__": "false",
+            "__convert_classic_histograms_to_nhcb__": "false",
+            "__meta_kubernetes_endpoint_address_target_kind": "Pod",
+            "__meta_kubernetes_endpoint_address_target_name": "petclinic-ha-check-ucloud",
+            "__meta_kubernetes_endpoint_node_name": "ucloud-worker",
+            "__meta_kubernetes_endpoint_port_name": "http",
+            "__meta_kubernetes_endpoint_port_protocol": "TCP",
+            "__meta_kubernetes_endpoint_ready": "false",
+            "__meta_kubernetes_endpoints_annotation_endpoints_kubernetes_io_last_change_trigger_time": "2026-10-05T18:42:14Z",
+            "__meta_kubernetes_endpoints_annotationpresent_endpoints_kubernetes_io_last_change_trigger_time": "true",
+            "__meta_kubernetes_endpoints_label_app_kubernetes_io_instance": "petclinic",
+            "__meta_kubernetes_endpoints_label_endpoints_kubernetes_io_managed_by": "endpoint-controller",
+            "__meta_kubernetes_endpoints_labelpresent_app_kubernetes_io_instance": "true",
+            "__meta_kubernetes_endpoints_labelpresent_endpoints_kubernetes_io_managed_by": "true",
+            "__meta_kubernetes_endpoints_name": "petclinic",
+            "__meta_kubernetes_namespace": "petclinic",
+            "__meta_kubernetes_pod_container_image": "10.0.0.3:30050/petclinic/petclinic:0.9.0-ci-101",
+            "__meta_kubernetes_pod_container_init": "false",
+            "__meta_kubernetes_pod_container_name": "petclinic",
+            "__meta_kubernetes_pod_container_port_name": "http",
+            "__meta_kubernetes_pod_container_port_number": "8080",
+            "__meta_kubernetes_pod_container_port_protocol": "TCP",
+            "__meta_kubernetes_pod_host_ip": "10.0.0.2",
+            "__meta_kubernetes_pod_ip": "10.42.3.188",
+            "__meta_kubernetes_pod_label_app": "petclinic",
+            "__meta_kubernetes_pod_label_app_kubernetes_io_managed_by": "petclinic-ha-validation-20261006",
+            "__meta_kubernetes_pod_label_ha_validation": "petclinic-ha-validation-20261006",
+            "__meta_kubernetes_pod_labelpresent_app": "true",
+            "__meta_kubernetes_pod_labelpresent_app_kubernetes_io_managed_by": "true",
+            "__meta_kubernetes_pod_labelpresent_ha_validation": "true",
+            "__meta_kubernetes_pod_name": "petclinic-ha-check-ucloud",
+            "__meta_kubernetes_pod_node_name": "ucloud-worker",
+            "__meta_kubernetes_pod_phase": "Running",
+            "__meta_kubernetes_pod_ready": "false",
+            "__meta_kubernetes_pod_uid": "f5bcd669-21ce-481d-8c81-d853094e6592",
+            "__meta_kubernetes_service_annotation_kubectl_kubernetes_io_last_applied_configuration": "{\"apiVersion\":\"v1\",\"kind\":\"Service\",\"metadata\":{\"annotations\":{},\"labels\":{\"app.kubernetes.io/instance\":\"petclinic\"},\"name\":\"petclinic\",\"namespace\":\"petclinic\"},\"spec\":{\"ports\":[{\"name\":\"http\",\"port\":80,\"targetPort\":\"http\"}],\"selector\":{\"app\":\"petclinic\"},\"type\":\"ClusterIP\"}}\n",
+            "__meta_kubernetes_service_annotationpresent_kubectl_kubernetes_io_last_applied_configuration": "true",
+            "__meta_kubernetes_service_label_app_kubernetes_io_instance": "petclinic",
+            "__meta_kubernetes_service_labelpresent_app_kubernetes_io_instance": "true",
+            "__meta_kubernetes_service_name": "petclinic",
+            "__metrics_path__": "/actuator/prometheus",
+            "__scheme__": "http",
+            "__scrape_interval__": "30s",
+            "__scrape_native_histograms__": "false",
+            "__scrape_timeout__": "10s",
+            "job": "serviceMonitor/petclinic/petclinic/0"
+          },
+          "labels": {
+            "container": "petclinic",
+            "endpoint": "http",
+            "instance": "10.42.3.188:8080",
+            "job": "petclinic",
+            "namespace": "petclinic",
+            "pod": "petclinic-ha-check-ucloud",
+            "service": "petclinic"
+          },
+          "scrapePool": "serviceMonitor/petclinic/petclinic/0",
+          "scrapeUrl": "http://10.42.3.188:8080/actuator/prometheus",
+          "globalUrl": "http://10.42.3.188:8080/actuator/prometheus",
+          "lastError": "",
+          "lastScrape": "2026-10-05T18:46:38.147933658Z",
+          "lastScrapeDuration": 1.406453076,
+          "health": "up",
+          "scrapeInterval": "30s",
+          "scrapeTimeout": "10s"
+        }
+      ],
+      "loki": {
+        "status": "success",
+        "data": {
+          "resultType": "streams",
+          "result": [
+            {
+              "stream": {
+                "app": "petclinic",
+                "container": "petclinic",
+                "detected_level": "info",
+                "instance": "petclinic/petclinic-ha-check-ucloud:petclinic",
+                "job": "loki.source.kubernetes.petclinic",
+                "namespace": "petclinic",
+                "node": "ucloud-worker",
+                "pod": "petclinic-ha-check-ucloud",
+                "service_name": "petclinic"
+              },
+              "values": [
+                [
+                  "1791225998547792227",
+                  "{\"@timestamp\":\"2026-10-05T18:46:38.547062076Z\",\"log\":{\"level\":\"INFO\",\"logger\":\"org.springframework.samples.petclinic.system.ClinicBusinessMetrics\"},\"process\":{\"pid\":1,\"thread\":{\"name\":\"http-nio-8080-exec-4\"}},\"service\":{\"name\":\"petclinic\",\"version\":\"0.9.0-ci-101\",\"node\":{}},\"message\":\"Petclinic aggregate database snapshot\",\"traceId\":\"a6c7961d775ba5e951e5ce38508b0a94\",\"spanId\":\"3f2516114fd721e8\",\"event\":{\"action\":\"business_snapshot\",\"dataset\":\"petclinic.business\"},\"petclinic\":{\"owners\":11,\"pets\":13,\"vets\":6,\"visits\":5},\"ecs\":{\"version\":\"8.11\"}}\n"
+                ],
+                [
+                  "1791225988620627865",
+                  "{\"@timestamp\":\"2026-10-05T18:46:28.619632152Z\",\"log\":{\"level\":\"INFO\",\"logger\":\"org.springframework.samples.petclinic.system.ClinicRequestAuditFilter\"},\"process\":{\"pid\":1,\"thread\":{\"name\":\"http-nio-8080-exec-8\"}},\"service\":{\"name\":\"petclinic\",\"version\":\"0.9.0-ci-101\",\"node\":{}},\"message\":\"Petclinic request completed\",\"traceId\":\"052f491ad699cb5d134445ac6049ea89\",\"spanId\":\"65185253efab6806\",\"event\":{\"dataset\":\"petclinic.http\",\"action\":\"http_request\",\"duration\":3320598928},\"http\":{\"request\":{\"method\":\"GET\"},\"route\":\"/owners\",\"response\":{\"status_code\":200}},\"ecs\":{\"version\":\"8.11\"}}\n"
+                ]
+              ]
+            }
+          ],
+          "stats": {
+            "summary": {
+              "bytesProcessedPerSecond": 1373020,
+              "linesProcessedPerSecond": 3408,
+              "totalBytesProcessed": 10876,
+              "totalLinesProcessed": 27,
+              "execTime": 0.007921,
+              "queueTime": 0.000224,
+              "subqueries": 0,
+              "totalEntriesReturned": 2,
+              "splits": 1,
+              "shards": 1,
+              "totalPostFilterLines": 27,
+              "totalStructuredMetadataBytesProcessed": 216
+            },
+            "querier": {
+              "store": {
+                "totalChunksRef": 0,
+                "totalChunksDownloaded": 0,
+                "chunksDownloadTime": 0,
+                "queryReferencedStructuredMetadata": false,
+                "queryUsedV2Engine": false,
+                "chunk": {
+                  "headChunkBytes": 0,
+                  "headChunkLines": 0,
+                  "decompressedBytes": 0,
+                  "decompressedLines": 0,
+                  "compressedBytes": 0,
+                  "totalDuplicates": 0,
+                  "postFilterLines": 0,
+                  "headChunkStructuredMetadataBytes": 0,
+                  "decompressedStructuredMetadataBytes": 0
+                },
+                "chunkRefsFetchTime": 0,
+                "congestionControlLatency": 0,
+                "pipelineWrapperFilteredLines": 0,
+                "dataobj": {
+                  "prePredicateDecompressedRows": 0,
+                  "prePredicateDecompressedBytes": 0,
+                  "prePredicateDecompressedStructuredMetadataBytes": 0,
+                  "postPredicateRows": 0,
+                  "postPredicateDecompressedBytes": 0,
+                  "postPredicateStructuredMetadataBytes": 0,
+                  "postFilterRows": 0,
+                  "pagesScanned": 0,
+                  "pagesDownloaded": 0,
+                  "pagesDownloadedBytes": 0,
+                  "pageBatches": 0,
+                  "totalRowsAvailable": 0,
+                  "totalPageDownloadTime": 0
+                }
+              },
+              "querierExecTime": 0.00495
+            },
+            "ingester": {
+              "totalReached": 1,
+              "totalChunksMatched": 1,
+              "totalBatches": 1,
+              "totalLinesSent": 2,
+              "store": {
+                "totalChunksRef": 0,
+                "totalChunksDownloaded": 0,
+                "chunksDownloadTime": 0,
+                "queryReferencedStructuredMetadata": false,
+                "queryUsedV2Engine": false,
+                "chunk": {
+                  "headChunkBytes": 10876,
+                  "headChunkLines": 27,
+                  "decompressedBytes": 0,
+                  "decompressedLines": 0,
+                  "compressedBytes": 0,
+                  "totalDuplicates": 0,
+                  "postFilterLines": 27,
+                  "headChunkStructuredMetadataBytes": 216,
+                  "decompressedStructuredMetadataBytes": 0
+                },
+                "chunkRefsFetchTime": 214125,
+                "congestionControlLatency": 0,
+                "pipelineWrapperFilteredLines": 0,
+                "dataobj": {
+                  "prePredicateDecompressedRows": 0,
+                  "prePredicateDecompressedBytes": 0,
+                  "prePredicateDecompressedStructuredMetadataBytes": 0,
+                  "postPredicateRows": 0,
+                  "postPredicateDecompressedBytes": 0,
+                  "postPredicateStructuredMetadataBytes": 0,
+                  "postFilterRows": 0,
+                  "pagesScanned": 0,
+                  "pagesDownloaded": 0,
+                  "pagesDownloadedBytes": 0,
+                  "pageBatches": 0,
+                  "totalRowsAvailable": 0,
+                  "totalPageDownloadTime": 0
+                }
+              },
+              "recvWaitTime": 0.001076
+            },
+            "cache": {
+              "chunk": {
+                "entriesFound": 0,
+                "entriesRequested": 0,
+                "entriesStored": 0,
+                "bytesReceived": 0,
+                "bytesSent": 0,
+                "requests": 0,
+                "downloadTime": 0,
+                "queryLengthServed": 0
+              },
+              "index": {
+                "entriesFound": 0,
+                "entriesRequested": 0,
+                "entriesStored": 0,
+                "bytesReceived": 0,
+                "bytesSent": 0,
+                "requests": 0,
+                "downloadTime": 0,
+                "queryLengthServed": 0
+              },
+              "result": {
+                "entriesFound": 0,
+                "entriesRequested": 0,
+                "entriesStored": 0,
+                "bytesReceived": 0,
+                "bytesSent": 0,
+                "requests": 0,
+                "downloadTime": 0,
+                "queryLengthServed": 0
+              },
+              "statsResult": {
+                "entriesFound": 0,
+                "entriesRequested": 0,
+                "entriesStored": 0,
+                "bytesReceived": 0,
+                "bytesSent": 0,
+                "requests": 0,
+                "downloadTime": 0,
+                "queryLengthServed": 0
+              },
+              "volumeResult": {
+                "entriesFound": 0,
+                "entriesRequested": 0,
+                "entriesStored": 0,
+                "bytesReceived": 0,
+                "bytesSent": 0,
+                "requests": 0,
+                "downloadTime": 0,
+                "queryLengthServed": 0
+              },
+              "seriesResult": {
+                "entriesFound": 0,
+                "entriesRequested": 0,
+                "entriesStored": 0,
+                "bytesReceived": 0,
+                "bytesSent": 0,
+                "requests": 0,
+                "downloadTime": 0,
+                "queryLengthServed": 0
+              },
+              "labelResult": {
+                "entriesFound": 0,
+                "entriesRequested": 0,
+                "entriesStored": 0,
+                "bytesReceived": 0,
+                "bytesSent": 0,
+                "requests": 0,
+                "downloadTime": 0,
+                "queryLengthServed": 0
+              },
+              "instantMetricResult": {
+                "entriesFound": 0,
+                "entriesRequested": 0,
+                "entriesStored": 0,
+                "bytesReceived": 0,
+                "bytesSent": 0,
+                "requests": 0,
+                "downloadTime": 0,
+                "queryLengthServed": 0
+              }
+            },
+            "index": {
+              "totalChunks": 0,
+              "postFilterChunks": 0,
+              "shardsDuration": 0,
+              "usedBloomFilters": false,
+              "totalStreams": 0,
+              "chunkRefsLookupTime": 0,
+              "bloomFilterTime": 0
+            }
+          }
+        }
+      },
+      "excluded_from_production": true,
+      "passed": true
+    }
+  ],
+  "cleanup": true,
+  "image": "10.0.0.3:30050/petclinic/petclinic:0.9.0-ci-101",
+  "nodes": [
+    {
+      "name": "aliyun-worker",
+      "labels": {
+        "beta.kubernetes.io/arch": "amd64",
+        "beta.kubernetes.io/instance-type": "k3s",
+        "beta.kubernetes.io/os": "linux",
+        "kubernetes.io/arch": "amd64",
+        "kubernetes.io/hostname": "aliyun-worker",
+        "kubernetes.io/os": "linux",
+        "node-role": "cloud-worker",
+        "node.kubernetes.io/instance-type": "k3s",
+        "node.zhanglab.io/expiry-risk": "true",
+        "node.zhanglab.io/important-workloads": "avoid",
+        "node.zhanglab.io/scheduling": "limited-cloud",
+        "plan.upgrade.cattle.io/k3s-agent-v1-36-1": "e2118e612ae451b26496650e4536b80f3b29ac540413af6ab7a1e77e"
+      },
+      "taints": [
+        {
+          "effect": "NoSchedule",
+          "key": "cloud",
+          "value": "true"
+        }
+      ],
+      "allocatable": {
+        "cpu": "2",
+        "ephemeral-storage": "39788796283",
+        "hugepages-1Gi": "0",
+        "hugepages-2Mi": "0",
+        "memory": "1647532Ki",
+        "pods": "110"
+      },
+      "conditions": [
+        {
+          "lastHeartbeatTime": "2026-10-05T18:39:47Z",
+          "lastTransitionTime": "2026-10-03T03:36:39Z",
+          "message": "kubelet has sufficient memory available",
+          "reason": "KubeletHasSufficientMemory",
+          "status": "False",
+          "type": "MemoryPressure"
+        },
+        {
+          "lastHeartbeatTime": "2026-10-05T18:39:47Z",
+          "lastTransitionTime": "2026-10-03T03:36:39Z",
+          "message": "kubelet has no disk pressure",
+          "reason": "KubeletHasNoDiskPressure",
+          "status": "False",
+          "type": "DiskPressure"
+        },
+        {
+          "lastHeartbeatTime": "2026-10-05T18:39:47Z",
+          "lastTransitionTime": "2026-10-03T03:36:39Z",
+          "message": "kubelet has sufficient PID available",
+          "reason": "KubeletHasSufficientPID",
+          "status": "False",
+          "type": "PIDPressure"
+        },
+        {
+          "lastHeartbeatTime": "2026-10-05T18:39:47Z",
+          "lastTransitionTime": "2026-10-03T03:36:39Z",
+          "message": "kubelet is posting ready status",
+          "reason": "KubeletReady",
+          "status": "True",
+          "type": "Ready"
+        }
+      ]
+    },
+    {
+      "name": "devops",
+      "labels": {
+        "beta.kubernetes.io/arch": "arm64",
+        "beta.kubernetes.io/instance-type": "k3s",
+        "beta.kubernetes.io/os": "linux",
+        "kubernetes.io/arch": "arm64",
+        "kubernetes.io/hostname": "devops",
+        "kubernetes.io/os": "linux",
+        "node-role": "master",
+        "node-role.kubernetes.io/control-plane": "true",
+        "node.kubernetes.io/instance-type": "k3s",
+        "plan.upgrade.cattle.io/k3s-server-v1-36-1": "e2118e612ae451b26496650e4536b80f3b29ac540413af6ab7a1e77e"
+      },
+      "taints": [],
+      "allocatable": {
+        "cpu": "6",
+        "ephemeral-storage": "248876315044",
+        "hugepages-1Gi": "0",
+        "hugepages-2Mi": "0",
+        "hugepages-32Mi": "0",
+        "hugepages-64Ki": "0",
+        "memory": "20425576Ki",
+        "pods": "110"
+      },
+      "conditions": [
+        {
+          "lastHeartbeatTime": "2026-10-05T18:37:35Z",
+          "lastTransitionTime": "2026-10-04T11:01:03Z",
+          "message": "kubelet has sufficient memory available",
+          "reason": "KubeletHasSufficientMemory",
+          "status": "False",
+          "type": "MemoryPressure"
+        },
+        {
+          "lastHeartbeatTime": "2026-10-05T18:37:35Z",
+          "lastTransitionTime": "2026-10-04T11:01:03Z",
+          "message": "kubelet has no disk pressure",
+          "reason": "KubeletHasNoDiskPressure",
+          "status": "False",
+          "type": "DiskPressure"
+        },
+        {
+          "lastHeartbeatTime": "2026-10-05T18:37:35Z",
+          "lastTransitionTime": "2026-10-04T11:01:03Z",
+          "message": "kubelet has sufficient PID available",
+          "reason": "KubeletHasSufficientPID",
+          "status": "False",
+          "type": "PIDPressure"
+        },
+        {
+          "lastHeartbeatTime": "2026-10-05T18:37:35Z",
+          "lastTransitionTime": "2026-10-04T11:01:03Z",
+          "message": "kubelet is posting ready status",
+          "reason": "KubeletReady",
+          "status": "True",
+          "type": "Ready"
+        }
+      ]
+    },
+    {
+      "name": "ucloud-worker",
+      "labels": {
+        "beta.kubernetes.io/arch": "amd64",
+        "beta.kubernetes.io/instance-type": "k3s",
+        "beta.kubernetes.io/os": "linux",
+        "kubernetes.io/arch": "amd64",
+        "kubernetes.io/hostname": "ucloud-worker",
+        "kubernetes.io/os": "linux",
+        "node-role": "cloud-worker",
+        "node.kubernetes.io/instance-type": "k3s",
+        "node.zhanglab.io/expiry-risk": "true",
+        "node.zhanglab.io/important-workloads": "avoid",
+        "node.zhanglab.io/scheduling": "limited-cloud",
+        "plan.upgrade.cattle.io/k3s-agent-v1-36-1": "e2118e612ae451b26496650e4536b80f3b29ac540413af6ab7a1e77e"
+      },
+      "taints": [
+        {
+          "effect": "NoSchedule",
+          "key": "cloud",
+          "value": "true"
+        }
+      ],
+      "allocatable": {
+        "cpu": "2",
+        "ephemeral-storage": "78900761129",
+        "hugepages-1Gi": "0",
+        "hugepages-2Mi": "0",
+        "memory": "3968068Ki",
+        "pods": "110"
+      },
+      "conditions": [
+        {
+          "lastHeartbeatTime": "2026-10-05T18:36:06Z",
+          "lastTransitionTime": "2026-10-04T09:36:54Z",
+          "message": "kubelet has sufficient memory available",
+          "reason": "KubeletHasSufficientMemory",
+          "status": "False",
+          "type": "MemoryPressure"
+        },
+        {
+          "lastHeartbeatTime": "2026-10-05T18:36:06Z",
+          "lastTransitionTime": "2026-10-04T09:36:54Z",
+          "message": "kubelet has no disk pressure",
+          "reason": "KubeletHasNoDiskPressure",
+          "status": "False",
+          "type": "DiskPressure"
+        },
+        {
+          "lastHeartbeatTime": "2026-10-05T18:36:06Z",
+          "lastTransitionTime": "2026-10-04T09:36:54Z",
+          "message": "kubelet has sufficient PID available",
+          "reason": "KubeletHasSufficientPID",
+          "status": "False",
+          "type": "PIDPressure"
+        },
+        {
+          "lastHeartbeatTime": "2026-10-05T18:36:06Z",
+          "lastTransitionTime": "2026-10-04T09:36:54Z",
+          "message": "kubelet is posting ready status",
+          "reason": "KubeletReady",
+          "status": "True",
+          "type": "Ready"
+        }
+      ]
+    }
+  ],
+  "service_created": true,
+  "passed": true
+}

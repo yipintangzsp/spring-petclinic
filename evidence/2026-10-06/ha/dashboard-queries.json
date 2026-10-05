@@ -1,0 +1,80 @@
+[
+  {
+    "panel": "Request Rate",
+    "query": "sum(rate(http_server_requests_seconds_count{namespace=\"petclinic\",job=\"petclinic\",uri!~\"/actuator/.*\"}[5m]))",
+    "status": "success",
+    "series": 1
+  },
+  {
+    "panel": "5xx Error Rate",
+    "query": "100 * (sum(rate(http_server_requests_seconds_count{namespace=\"petclinic\",job=\"petclinic\",uri!~\"/actuator/.*\",status=~\"5..\"}[5m])) or vector(0)) / clamp_min(sum(rate(http_server_requests_seconds_count{namespace=\"petclinic\",job=\"petclinic\",uri!~\"/actuator/.*\"}[5m])), 0.000001)",
+    "status": "success",
+    "series": 1
+  },
+  {
+    "panel": "P95 Latency",
+    "query": "histogram_quantile(0.95, sum by (le) (rate(http_server_requests_seconds_bucket{namespace=\"petclinic\",job=\"petclinic\",uri!~\"/actuator/.*\"}[5m])))",
+    "status": "success",
+    "series": 1
+  },
+  {
+    "panel": "JVM Heap Used by Pod",
+    "query": "sum by (pod) (jvm_memory_used_bytes{namespace=\"petclinic\",job=\"petclinic\",area=\"heap\"})",
+    "status": "success",
+    "series": 3
+  },
+  {
+    "panel": "Pod Ready (1=ready)",
+    "query": "kube_pod_status_ready{namespace=\"petclinic\",condition=\"true\",pod=~\"petclinic-.*\"}",
+    "status": "success",
+    "series": 3
+  },
+  {
+    "panel": "CPU Used by Pod",
+    "query": "sum by(pod)(rate(container_cpu_usage_seconds_total{namespace=\"petclinic\",container=\"petclinic\"}[5m]))",
+    "status": "success",
+    "series": 7
+  },
+  {
+    "panel": "Memory Working Set / Request / Limit",
+    "query": "container_memory_working_set_bytes{namespace=\"petclinic\",container=\"petclinic\"}",
+    "status": "success",
+    "series": 3
+  },
+  {
+    "panel": "Memory Working Set / Request / Limit",
+    "query": "kube_pod_container_resource_requests{namespace=\"petclinic\",container=\"petclinic\",resource=\"memory\",unit=\"byte\"}",
+    "status": "success",
+    "series": 3
+  },
+  {
+    "panel": "Memory Working Set / Request / Limit",
+    "query": "kube_pod_container_resource_limits{namespace=\"petclinic\",container=\"petclinic\",resource=\"memory\",unit=\"byte\"}",
+    "status": "success",
+    "series": 3
+  },
+  {
+    "panel": "HTTP Status Codes",
+    "query": "sum by(status)(rate(http_server_requests_seconds_count{namespace=\"petclinic\",job=\"petclinic\",uri!~\"/actuator.*\"}[5m]))",
+    "status": "success",
+    "series": 1
+  },
+  {
+    "panel": "Pod Restarts (last hour)",
+    "query": "increase(kube_pod_container_status_restarts_total{namespace=\"petclinic\",container=\"petclinic\"}[1h])",
+    "status": "success",
+    "series": 15
+  },
+  {
+    "panel": "JVM GC Pause per Second",
+    "query": "sum by(pod)(rate(jvm_gc_pause_seconds_sum{namespace=\"petclinic\",job=\"petclinic\"}[5m]))",
+    "status": "success",
+    "series": 6
+  },
+  {
+    "panel": "ECS Error / Fatal Logs",
+    "query": "{app=\"petclinic\",namespace=\"petclinic\"} | json severity=\"log.level\" | severity=~\"ERROR|FATAL\"",
+    "status": "success",
+    "series": 0
+  }
+]
