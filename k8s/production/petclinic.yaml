@@ -28,10 +28,10 @@ spec:
         app: petclinic
 
     spec:
-      # Current release passed isolated image/network/DB/metrics/log acceptance
-      # on both amd64 workers (2026-10-06). Allow all three Linux nodes.
+      # Cloud links are not production-ready; restore multi-node placement only
+      # after node and Pod-network acceptance passes.
       nodeSelector:
-        kubernetes.io/os: linux
+        kubernetes.io/hostname: devops
 
       tolerations:
         - key: cloud
