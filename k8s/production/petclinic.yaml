@@ -76,6 +76,14 @@ spec:
               containerPort: 8080
 
           env:
+            # Schema/demo initialization is an explicit admin operation, never Pod startup.
+            - name: SPRING_SQL_INIT_MODE
+              value: never
+            # Budget at most 36 connections even at 6 replicas; idle baseline was 30.
+            - name: SPRING_DATASOURCE_HIKARI_MAXIMUM_POOL_SIZE
+              value: "6"
+            - name: SPRING_DATASOURCE_HIKARI_MINIMUM_IDLE
+              value: "2"
             - name: SERVER_SHUTDOWN
               value: graceful
             - name: SPRING_LIFECYCLE_TIMEOUT_PER_SHUTDOWN_PHASE
@@ -163,7 +171,7 @@ spec:
           resources:
             requests:
               cpu: 100m
-              memory: 256Mi
+              memory: 512Mi
             limits:
               cpu: 500m
               memory: 768Mi
