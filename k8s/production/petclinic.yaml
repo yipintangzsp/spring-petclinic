@@ -15,8 +15,10 @@ spec:
   strategy:
     type: RollingUpdate
     rollingUpdate:
-      maxSurge: 1
-      maxUnavailable: 0
+      # Small worker cannot safely overlap old/new JVMs during a rollout.
+      # Keep at least two available; do not create a surge Pod.
+      maxSurge: 0
+      maxUnavailable: 1
 
   selector:
     matchLabels:

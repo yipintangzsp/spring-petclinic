@@ -11,7 +11,7 @@ data:
       "annotations": {
         "list": []
       },
-      "description": "Petclinic Pod readiness, resource usage, HTTP status and latency, JVM and structured ECS errors. Empty error log results mean no matching errors in the selected range.",
+      "description": "Petclinic Pod readiness, resource usage, HTTP status and latency, JVM and structured ECS errors. Empty error log results mean no matching errors in the selected range. Hikari pool pressure.",
       "editable": true,
       "graphTooltip": 1,
       "links": [],
@@ -485,6 +485,54 @@ data:
             "wrapLogMessage": true,
             "sortOrder": "Descending"
           }
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "description": "Measured pool pressure and autoscaler intent; compare with Ready Pods and scheduler events.",
+          "fieldConfig": {
+            "defaults": {
+              "unit": "short"
+            },
+            "overrides": []
+          },
+          "gridPos": {
+            "x": 0,
+            "y": 51,
+            "w": 12,
+            "h": 8
+          },
+          "id": 201,
+          "options": {
+            "legend": {
+              "displayMode": "list",
+              "placement": "bottom"
+            },
+            "tooltip": {
+              "mode": "single"
+            }
+          },
+          "targets": [
+            {
+              "refId": "A",
+              "expr": "hikaricp_connections_active{namespace=\"petclinic\"}",
+              "legendFormat": "{{pod}} active"
+            },
+            {
+              "refId": "B",
+              "expr": "hikaricp_connections_idle{namespace=\"petclinic\"}",
+              "legendFormat": "{{pod}} idle"
+            },
+            {
+              "refId": "C",
+              "expr": "hikaricp_connections_pending{namespace=\"petclinic\"}",
+              "legendFormat": "{{pod}} pending"
+            }
+          ],
+          "title": "Hikari connection pool",
+          "type": "timeseries"
         }
       ],
       "refresh": "30s",
@@ -504,5 +552,5 @@ data:
       "timezone": "browser",
       "title": "Petclinic Production Troubleshooting",
       "uid": "petclinic-app-metrics",
-      "version": 2
+      "version": 3
     }

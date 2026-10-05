@@ -28,6 +28,7 @@ def collect():
   'pdb':lambda:a.kube('-n petclinic get pdb petclinic'),
   'endpoints':lambda:a.kube('-n petclinic get endpointslice -l kubernetes.io/service-name=petclinic'),
   'events':lambda:a.kube('-n petclinic get events'),
+  'database':lambda:a.remote("sudo -n k3s kubectl exec -n ns-data deploy/postgresql -- psql -U postgres -d petclinic -Atc \"SELECT state,count(*) FROM pg_stat_activity WHERE datname='petclinic' GROUP BY state; SELECT numbackends,xact_commit,xact_rollback,deadlocks,temp_bytes FROM pg_stat_database WHERE datname='petclinic';\""),
   **{k:lambda e=e:a.query(PROM,'/api/v1/query',{'query':e}) for k,e in EXPRS.items()}}
  with ThreadPoolExecutor(max_workers=6) as pool:
   futures={k:pool.submit(fn) for k,fn in tasks.items()}
