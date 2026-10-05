@@ -15,7 +15,7 @@
 - [生产资源与责任边界](k8s/production/README.md)
 - [本轮审计、五项缺口、风险与验收](docs/UPGRADE-20261005.md)
 - [0.9 业务与平台集成](docs/UPGRADE-20261002-09.md)
-- [既有 Jenkins 完整发布验收](docs/ACCEPTANCE-20261004-JENKINS.md)
+- [发布回退与故障排障手册](docs/FAULT-DRILLS.md)
 
 运行前后可重复检查：`python3 infra/observability/audit-production.py evidence/2026-10-05/after.json`。部署回退通过普通 Git revert 交给 Argo 收敛，保留数据库/PVC。不要直接执行旧版本或示例数据库清理 YAML。
 
@@ -61,7 +61,7 @@ See below for more details.
 
 ## Building a Container
 
-There is no `Dockerfile` in this project. You can build a container image (if you have a docker daemon) using the Spring Boot build plugin:
+This fork includes a `Dockerfile` and a multi-architecture Jenkins pipeline using the existing local registry. See the production documentation above. For standalone development, you can also build a container using the Spring Boot build plugin:
 
 ## Running the Container Image
 

@@ -10,14 +10,17 @@ This directory contains the declarative production baseline for the Petclinic ap
   - Ingress
 - `petclinic-configmap.yaml`
   - Non-sensitive application configuration
-- `postgresql-service.yaml`
-  - Network dependency used by Petclinic to reach the shared PostgreSQL instance
+- `petclinic-pdb.yaml`
+  - Requires two available replicas for voluntary eviction; does not provide cross-node HA
+- ServiceMonitor, PrometheusRule and three existing Grafana dashboard ConfigMaps
+  - The existing `petclinic-app-metrics` UID now contains the consolidated troubleshooting dashboard
 
 ## External / shared dependencies
 
 The following resources are intentionally not managed as part of the Petclinic application baseline:
 
 - PostgreSQL Deployment in namespace `ns-data`
+- PostgreSQL Service (reference manifest in `../shared/`, outside this application's sync directory)
 - PostgreSQL PVC
 - PostgreSQL administrator Secret
 - Petclinic PostgreSQL database
@@ -63,3 +66,5 @@ Jenkins waits for the promoted Git revision, ArgoCD Synced/Healthy, and the expe
 ## Continuing the current task
 
 The baseline audit, workflow upgrades, validation progress, release evidence and rollback procedure are recorded in [2026-09-30 upgrade task](../../docs/UPGRADE-20260930.md). Update that ledger when continuing this work.
+
+The current [2026-10-05 audit and validation](../../docs/UPGRADE-20261005.md) documents production endpoint boundaries, explicit shutdown budget, PDB and the existing dashboard upgrade. Use the [fault and rollback runbook](../../docs/FAULT-DRILLS.md) for scoped diagnosis. Current placement remains on devops; do not drain it or enable HPA without shared-capacity and worker-network acceptance.

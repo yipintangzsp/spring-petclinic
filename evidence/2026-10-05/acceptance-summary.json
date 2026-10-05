@@ -1,0 +1,34 @@
+{
+  "application_image": "0.9.0-ci-101",
+  "config_commits": [
+    "9bd8701c",
+    "befa1789",
+    "0a09a54b"
+  ],
+  "verified": [
+    "GitOps Synced/Healthy",
+    "3 Ready/Available replicas",
+    "7 business entrypoints HTTP 200",
+    "management endpoints restricted",
+    "3 Prometheus targets up",
+    "13 dashboard queries successful",
+    "Grafana provisioned dashboard confirmed",
+    "expected HTTP 500 visible in Prometheus and Loki",
+    "database counts unchanged",
+    "other platform pod readiness not regressed",
+    "amd64/arm64 index matches running pods"
+  ],
+  "drills": {
+    "image": true,
+    "crash": true,
+    "readiness": true,
+    "pending": true
+  },
+  "drill_cleanup": true,
+  "limitations": [
+    "all production replicas on devops",
+    "repository proxy depends on laptop",
+    "no new complete CI run for config-only changes",
+    "no automatic Git rollback or HPA acceptance"
+  ]
+}
