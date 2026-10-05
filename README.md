@@ -2,6 +2,25 @@
 
 [![Open in Gitpod](https://gitpod.io/button/open-in-gitpod.svg)](https://gitpod.io/#https://github.com/spring-projects/spring-petclinic) [![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://github.com/codespaces/new?hide_repo_select=true&ref=main&repo=7517918)
 
+## 当前 DevOps 实战平台
+
+本仓库在原 PetClinic 业务模型上持续演进。生产运行于现有混合 arm64/amd64 k3s 集群，使用共享 PostgreSQL 持久化；提供主人、宠物、医生、就诊管理、搜索分页、统计、系统版本和平台运行状态页面。
+
+发布链路：Jenkins 测试与 Sonar 质量门禁 → 双架构本地 Registry 镜像 → Git manifest promotion → Argo CD → Kubernetes 滚动更新 → 健康与版本验证。GitLab 保留源码镜像与独立审计，Harbor 保留镜像副本；扫描请求与扫描完成分别记录。镜像使用明确发行号，源码 SHA、镜像版本、部署信息可追踪。
+
+监控保留 Prometheus/Grafana；结构化请求与业务日志经 Alloy/Loki 查询，现有 Filebeat/Elasticsearch/Kibana 和 OTLP/Jaeger 集成继续保留。数据统计跨副本取 max，避免同一数据库重复计数；业务身份、正文、查询参数不进入请求审计日志。
+
+当前边界：三个生产副本固定于 devops，尚无跨节点容灾保证；共享节点容量、云隧道和仓库出口需要持续验证。组件已安装不代表所有软件已成为业务依赖，平台容器健康不代表发布、扫描或故障演练全部成功。
+
+- [生产资源与责任边界](k8s/production/README.md)
+- [本轮审计、五项缺口、风险与验收](docs/UPGRADE-20261005.md)
+- [0.9 业务与平台集成](docs/UPGRADE-20261002-09.md)
+- [既有 Jenkins 完整发布验收](docs/ACCEPTANCE-20261004-JENKINS.md)
+
+运行前后可重复检查：`python3 infra/observability/audit-production.py evidence/2026-10-05/after.json`。部署回退通过普通 Git revert 交给 Argo 收敛，保留数据库/PVC。不要直接执行旧版本或示例数据库清理 YAML。
+
+以下为上游开发说明；生产构建采用本仓库 Dockerfile/Jenkinsfile，不使用下面示例中的 latest。
+
 ## Understanding the Spring Petclinic application with a few diagrams
 
 See the presentation here:  

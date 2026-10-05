@@ -8,6 +8,9 @@ metadata:
 
 spec:
   replicas: 3
+  minReadySeconds: 10
+  progressDeadlineSeconds: 600
+  revisionHistoryLimit: 5
 
   strategy:
     type: RollingUpdate
@@ -49,6 +52,8 @@ spec:
             - pod-template-hash
 
       automountServiceAccountToken: false
+      # 5s endpoint propagation + 25s application shutdown phase + margin.
+      terminationGracePeriodSeconds: 45
 
       securityContext:
         runAsNonRoot: true
@@ -71,6 +76,10 @@ spec:
               containerPort: 8080
 
           env:
+            - name: SERVER_SHUTDOWN
+              value: graceful
+            - name: SPRING_LIFECYCLE_TIMEOUT_PER_SHUTDOWN_PHASE
+              value: 25s
             # Preserve probes/metrics without exposing administrative endpoints.
             - name: MANAGEMENT_ENDPOINTS_WEB_EXPOSURE_INCLUDE
               value: health,info,prometheus,metrics
@@ -121,6 +130,11 @@ spec:
             - name: platform-snapshot
               mountPath: /etc/petclinic-platform
               readOnly: true
+
+          lifecycle:
+            preStop:
+              exec:
+                command: ["/bin/sh", "-c", "sleep 5"]
 
           startupProbe:
             httpGet:
