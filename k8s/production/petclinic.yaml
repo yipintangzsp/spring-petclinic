@@ -71,6 +71,12 @@ spec:
               containerPort: 8080
 
           env:
+            # Preserve probes/metrics without exposing administrative endpoints.
+            - name: MANAGEMENT_ENDPOINTS_WEB_EXPOSURE_INCLUDE
+              value: health,info,prometheus,metrics
+            # Prometheus scrapes metrics; OTLP traces remain enabled.
+            - name: MANAGEMENT_OTLP_METRICS_EXPORT_ENABLED
+              value: 'false'
             - name: MANAGEMENT_TRACING_EXPORT_OTLP_ENABLED
               value: 'true'
             - name: MANAGEMENT_OPENTELEMETRY_TRACING_EXPORT_OTLP_ENDPOINT
