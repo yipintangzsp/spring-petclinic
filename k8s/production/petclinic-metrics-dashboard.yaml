@@ -11,7 +11,7 @@ data:
       "annotations": {
         "list": []
       },
-      "description": "Petclinic application metrics backed by Prometheus.",
+      "description": "Petclinic Pod readiness, resource usage, HTTP status and latency, JVM and structured ECS errors. Empty error log results mean no matching errors in the selected range.",
       "editable": true,
       "graphTooltip": 1,
       "links": [],
@@ -64,7 +64,7 @@ data:
                 "uid": "prometheus"
               },
               "editorMode": "code",
-              "expr": "sum(rate(http_server_requests_seconds_count{job=\"petclinic\",uri!~\"/actuator/.*\"}[$__rate_interval]))",
+              "expr": "sum(rate(http_server_requests_seconds_count{namespace=\"petclinic\",job=\"petclinic\",uri!~\"/actuator/.*\"}[$__rate_interval]))",
               "legendFormat": "Petclinic",
               "range": true,
               "refId": "A"
@@ -130,7 +130,7 @@ data:
                 "uid": "prometheus"
               },
               "editorMode": "code",
-              "expr": "100 * (sum(rate(http_server_requests_seconds_count{job=\"petclinic\",uri!~\"/actuator/.*\",status=~\"5..\"}[$__rate_interval])) or vector(0)) / clamp_min(sum(rate(http_server_requests_seconds_count{job=\"petclinic\",uri!~\"/actuator/.*\"}[$__rate_interval])), 0.000001)",
+              "expr": "100 * (sum(rate(http_server_requests_seconds_count{namespace=\"petclinic\",job=\"petclinic\",uri!~\"/actuator/.*\",status=~\"5..\"}[$__rate_interval])) or vector(0)) / clamp_min(sum(rate(http_server_requests_seconds_count{namespace=\"petclinic\",job=\"petclinic\",uri!~\"/actuator/.*\"}[$__rate_interval])), 0.000001)",
               "instant": true,
               "refId": "A"
             }
@@ -173,7 +173,7 @@ data:
                 "uid": "prometheus"
               },
               "editorMode": "code",
-              "expr": "histogram_quantile(0.95, sum by (le) (rate(http_server_requests_seconds_bucket{job=\"petclinic\",uri!~\"/actuator/.*\"}[$__rate_interval])))",
+              "expr": "histogram_quantile(0.95, sum by (le) (rate(http_server_requests_seconds_bucket{namespace=\"petclinic\",job=\"petclinic\",uri!~\"/actuator/.*\"}[$__rate_interval])))",
               "legendFormat": "P95",
               "range": true,
               "refId": "A"
@@ -217,7 +217,7 @@ data:
                 "uid": "prometheus"
               },
               "editorMode": "code",
-              "expr": "sum by (pod) (jvm_memory_used_bytes{job=\"petclinic\",area=\"heap\"})",
+              "expr": "sum by (pod) (jvm_memory_used_bytes{namespace=\"petclinic\",job=\"petclinic\",area=\"heap\"})",
               "legendFormat": "{{pod}}",
               "range": true,
               "refId": "A"
@@ -225,6 +225,266 @@ data:
           ],
           "title": "JVM Heap Used by Pod",
           "type": "timeseries"
+        },
+        {
+          "id": 101,
+          "type": "timeseries",
+          "title": "Pod Ready (1=ready)",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "gridPos": {
+            "x": 0,
+            "y": 17,
+            "w": 12,
+            "h": 8
+          },
+          "targets": [
+            {
+              "refId": "A",
+              "expr": "kube_pod_status_ready{namespace=\"petclinic\",condition=\"true\",pod=~\"petclinic-.*\"}",
+              "legendFormat": "{{pod}}"
+            }
+          ],
+          "fieldConfig": {
+            "defaults": {
+              "unit": "short"
+            },
+            "overrides": []
+          },
+          "options": {
+            "legend": {
+              "displayMode": "table",
+              "placement": "bottom"
+            },
+            "tooltip": {
+              "mode": "multi"
+            }
+          }
+        },
+        {
+          "id": 102,
+          "type": "timeseries",
+          "title": "CPU Used by Pod",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "gridPos": {
+            "x": 12,
+            "y": 17,
+            "w": 12,
+            "h": 8
+          },
+          "targets": [
+            {
+              "refId": "A",
+              "expr": "sum by(pod)(rate(container_cpu_usage_seconds_total{namespace=\"petclinic\",container=\"petclinic\"}[$__rate_interval]))",
+              "legendFormat": "{{pod}}"
+            }
+          ],
+          "fieldConfig": {
+            "defaults": {
+              "unit": "cores"
+            },
+            "overrides": []
+          },
+          "options": {
+            "legend": {
+              "displayMode": "table",
+              "placement": "bottom"
+            },
+            "tooltip": {
+              "mode": "multi"
+            }
+          }
+        },
+        {
+          "id": 103,
+          "type": "timeseries",
+          "title": "Memory Working Set / Request / Limit",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "gridPos": {
+            "x": 0,
+            "y": 25,
+            "w": 12,
+            "h": 8
+          },
+          "targets": [
+            {
+              "refId": "A",
+              "expr": "container_memory_working_set_bytes{namespace=\"petclinic\",container=\"petclinic\"}",
+              "legendFormat": "{{pod}} used"
+            },
+            {
+              "refId": "B",
+              "expr": "kube_pod_container_resource_requests{namespace=\"petclinic\",container=\"petclinic\",resource=\"memory\",unit=\"byte\"}",
+              "legendFormat": "{{pod}} request"
+            },
+            {
+              "refId": "C",
+              "expr": "kube_pod_container_resource_limits{namespace=\"petclinic\",container=\"petclinic\",resource=\"memory\",unit=\"byte\"}",
+              "legendFormat": "{{pod}} limit"
+            }
+          ],
+          "fieldConfig": {
+            "defaults": {
+              "unit": "bytes"
+            },
+            "overrides": []
+          },
+          "options": {
+            "legend": {
+              "displayMode": "table",
+              "placement": "bottom"
+            },
+            "tooltip": {
+              "mode": "multi"
+            }
+          }
+        },
+        {
+          "id": 104,
+          "type": "timeseries",
+          "title": "HTTP Status Codes",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "gridPos": {
+            "x": 12,
+            "y": 25,
+            "w": 12,
+            "h": 8
+          },
+          "targets": [
+            {
+              "refId": "A",
+              "expr": "sum by(status)(rate(http_server_requests_seconds_count{namespace=\"petclinic\",job=\"petclinic\",uri!~\"/actuator.*\"}[$__rate_interval]))",
+              "legendFormat": "HTTP {{status}}"
+            }
+          ],
+          "fieldConfig": {
+            "defaults": {
+              "unit": "reqps"
+            },
+            "overrides": []
+          },
+          "options": {
+            "legend": {
+              "displayMode": "table",
+              "placement": "bottom"
+            },
+            "tooltip": {
+              "mode": "multi"
+            }
+          }
+        },
+        {
+          "id": 105,
+          "type": "timeseries",
+          "title": "Pod Restarts (last hour)",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "gridPos": {
+            "x": 0,
+            "y": 33,
+            "w": 12,
+            "h": 8
+          },
+          "targets": [
+            {
+              "refId": "A",
+              "expr": "increase(kube_pod_container_status_restarts_total{namespace=\"petclinic\",container=\"petclinic\"}[1h])",
+              "legendFormat": "{{pod}}"
+            }
+          ],
+          "fieldConfig": {
+            "defaults": {
+              "unit": "short"
+            },
+            "overrides": []
+          },
+          "options": {
+            "legend": {
+              "displayMode": "table",
+              "placement": "bottom"
+            },
+            "tooltip": {
+              "mode": "multi"
+            }
+          }
+        },
+        {
+          "id": 106,
+          "type": "timeseries",
+          "title": "JVM GC Pause per Second",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "gridPos": {
+            "x": 12,
+            "y": 33,
+            "w": 12,
+            "h": 8
+          },
+          "targets": [
+            {
+              "refId": "A",
+              "expr": "sum by(pod)(rate(jvm_gc_pause_seconds_sum{namespace=\"petclinic\",job=\"petclinic\"}[$__rate_interval]))",
+              "legendFormat": "{{pod}}"
+            }
+          ],
+          "fieldConfig": {
+            "defaults": {
+              "unit": "s"
+            },
+            "overrides": []
+          },
+          "options": {
+            "legend": {
+              "displayMode": "table",
+              "placement": "bottom"
+            },
+            "tooltip": {
+              "mode": "multi"
+            }
+          }
+        },
+        {
+          "id": 107,
+          "type": "logs",
+          "title": "ECS Error / Fatal Logs",
+          "description": "Parses log.level from existing ECS JSON at query time. Trace IDs remain JSON fields, not stream labels. Empty results can mean no errors; confirm the Loki stream separately.",
+          "datasource": {
+            "type": "loki",
+            "uid": "loki"
+          },
+          "gridPos": {
+            "x": 0,
+            "y": 41,
+            "w": 24,
+            "h": 10
+          },
+          "targets": [
+            {
+              "refId": "A",
+              "expr": "{app=\"petclinic\",namespace=\"petclinic\"} | json severity=\"log.level\" | severity=~\"ERROR|FATAL\""
+            }
+          ],
+          "options": {
+            "showTime": true,
+            "showLabels": false,
+            "wrapLogMessage": true,
+            "sortOrder": "Descending"
+          }
         }
       ],
       "refresh": "30s",
@@ -242,7 +502,7 @@ data:
         "to": "now"
       },
       "timezone": "browser",
-      "title": "Petclinic Application Metrics",
+      "title": "Petclinic Production Troubleshooting",
       "uid": "petclinic-app-metrics",
-      "version": 1
+      "version": 2
     }
