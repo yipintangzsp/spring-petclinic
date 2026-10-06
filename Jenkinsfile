@@ -320,8 +320,9 @@ pipeline {
                     set -eu
                     echo "===== ROLLOUT STATUS ====="
 
-                    kubectl -n petclinic rollout status deployment/petclinic \
-                      --timeout=600s
+                    # Same 600-second budget, with ongoing Pod/node/Lease diagnostics
+                    # and an exact image + Git revision gate before reporting success.
+                    node infra/observability/verify-rollout.mjs "$(cat .target-git-revision)"
 
                     # Wait for Argo's resource health cache after rollout completion.
                     for attempt in $(seq 1 24); do
