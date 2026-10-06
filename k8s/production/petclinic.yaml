@@ -78,6 +78,13 @@ spec:
               containerPort: 8080
 
           env:
+            # Metrics are ~247KiB; gzip reduces slow cross-node scrape transport.
+            - name: SERVER_COMPRESSION_ENABLED
+              value: "true"
+            - name: SERVER_COMPRESSION_MIN_RESPONSE_SIZE
+              value: "2KB"
+            - name: SERVER_COMPRESSION_MIME_TYPES
+              value: text/plain,application/openmetrics-text
             # Schema/demo initialization is an explicit admin operation, never Pod startup.
             - name: SPRING_SQL_INIT_MODE
               value: never
