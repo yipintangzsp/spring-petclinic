@@ -3,6 +3,9 @@
 		"-//Checkstyle//DTD SuppressionFilter Configuration 1.2//EN"
 		"https://checkstyle.org/dtds/suppressions_1_2.dtd">
 <suppressions>
+    <!-- These two internal endpoints currently have no TLS listener; preserve their real URLs. -->
+    <suppress files="docs[\\/]UPGRADE-20261005\.md$" checks="NoHttp" message=".*http://192\.168\.1\.236:10808.*"/>
+    <suppress files="infra[\\/]data[\\/]verify-demo-browser\.cjs$" checks="NoHttp" message=".*http://petclinic\.devops\.local.*"/>
     <!-- SonarQube is the existing cluster-local HTTP service, not a public endpoint. -->
     <suppress files="Jenkinsfile" checks="NoHttp" message=".*sonarqube-sonarqube\.sonarqube\.svc\.cluster\.local:9000.*"/>
     <!-- Existing in-cluster OTLP services use HTTP; keep this exception scoped to telemetry manifests. -->
