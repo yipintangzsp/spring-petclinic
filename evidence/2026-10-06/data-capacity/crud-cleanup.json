@@ -1,0 +1,6 @@
+{
+  "sql": "BEGIN;\nDO $$ BEGIN IF NOT EXISTS(SELECT 1 FROM owners WHERE id=12 AND first_name='DemoAcceptance' AND last_name='Capacity20261006' AND telephone='5550199999') OR NOT EXISTS(SELECT 1 FROM pets WHERE id=14 AND owner_id=12 AND name='DemoAcceptancePetUpdated') THEN RAISE EXCEPTION 'Acceptance ownership mismatch'; END IF; END $$;\nDELETE FROM visits WHERE pet_id=14 AND description='Synthetic capacity acceptance appointment';\nDELETE FROM pets WHERE id=14 AND owner_id=12 AND name='DemoAcceptancePetUpdated';\nDELETE FROM owners WHERE id=12 AND first_name='DemoAcceptance' AND last_name='Capacity20261006';\nCOMMIT;\nSELECT 'owners',count(*) FROM owners UNION ALL SELECT 'pets',count(*) FROM pets UNION ALL SELECT 'vets',count(*) FROM vets UNION ALL SELECT 'visits',count(*) FROM visits;\n",
+  "exit": 0,
+  "result": "BEGIN\nDO\nDELETE 1\nDELETE 1\nDELETE 1\nCOMMIT\nowners|200\npets|350\nvets|20\nvisits|1200\n",
+  "error": ""
+}

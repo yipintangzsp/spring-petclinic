@@ -1,0 +1,3018 @@
+{
+  "nodes": {
+    "apiVersion": "v1",
+    "items": [
+      {
+        "apiVersion": "v1",
+        "kind": "Node",
+        "metadata": {
+          "annotations": {
+            "alpha.kubernetes.io/provided-node-ip": "10.0.0.1",
+            "flannel.alpha.coreos.com/backend-data": "{\"VNI\":1,\"VtepMAC\":\"22:78:8e:29:f7:5d\"}",
+            "flannel.alpha.coreos.com/backend-type": "vxlan",
+            "flannel.alpha.coreos.com/kube-subnet-manager": "true",
+            "flannel.alpha.coreos.com/public-ip": "10.0.0.1",
+            "k3s.io/hostname": "cloud-node-1",
+            "k3s.io/internal-ip": "10.0.0.1",
+            "k3s.io/node-args": "[\"agent\",\"--node-ip\",\"10.0.0.1\",\"--node-name\",\"aliyun-worker\",\"--flannel-iface\",\"wg0\"]",
+            "k3s.io/node-config-hash": "VV2GZLOU2E6TSZISAXTVGWBMLYVZEWA23OVCA4GWNFHJ7SIPBS2Q====",
+            "k3s.io/node-env": "{\"K3S_TOKEN\":\"********\",\"K3S_URL\":\"https://10.0.0.3:6443\"}",
+            "node.alpha.kubernetes.io/ttl": "0",
+            "volumes.kubernetes.io/controller-managed-attach-detach": "true"
+          },
+          "creationTimestamp": "2026-05-19T07:04:56Z",
+          "finalizers": [
+            "wrangler.cattle.io/node"
+          ],
+          "labels": {
+            "beta.kubernetes.io/arch": "amd64",
+            "beta.kubernetes.io/instance-type": "k3s",
+            "beta.kubernetes.io/os": "linux",
+            "kubernetes.io/arch": "amd64",
+            "kubernetes.io/hostname": "aliyun-worker",
+            "kubernetes.io/os": "linux",
+            "node-role": "cloud-worker",
+            "node.kubernetes.io/instance-type": "k3s",
+            "node.zhanglab.io/expiry-risk": "true",
+            "node.zhanglab.io/important-workloads": "avoid",
+            "node.zhanglab.io/scheduling": "limited-cloud",
+            "plan.upgrade.cattle.io/k3s-agent-v1-36-1": "e2118e612ae451b26496650e4536b80f3b29ac540413af6ab7a1e77e"
+          },
+          "name": "aliyun-worker",
+          "resourceVersion": "11552344",
+          "uid": "50d3efd6-6bd5-4bc7-be01-87b8f5bb5ae9"
+        },
+        "spec": {
+          "podCIDR": "10.42.1.0/24",
+          "podCIDRs": [
+            "10.42.1.0/24"
+          ],
+          "providerID": "k3s://aliyun-worker",
+          "taints": [
+            {
+              "effect": "NoSchedule",
+              "key": "cloud",
+              "value": "true"
+            }
+          ]
+        },
+        "status": {
+          "addresses": [
+            {
+              "address": "10.0.0.1",
+              "type": "InternalIP"
+            },
+            {
+              "address": "cloud-node-1",
+              "type": "Hostname"
+            }
+          ],
+          "allocatable": {
+            "cpu": "2",
+            "ephemeral-storage": "39788796283",
+            "hugepages-1Gi": "0",
+            "hugepages-2Mi": "0",
+            "memory": "1647532Ki",
+            "pods": "110"
+          },
+          "capacity": {
+            "cpu": "2",
+            "ephemeral-storage": "40901312Ki",
+            "hugepages-1Gi": "0",
+            "hugepages-2Mi": "0",
+            "memory": "1647532Ki",
+            "pods": "110"
+          },
+          "conditions": [
+            {
+              "lastHeartbeatTime": "2026-10-05T19:22:42Z",
+              "lastTransitionTime": "2026-10-03T03:36:39Z",
+              "message": "kubelet has sufficient memory available",
+              "reason": "KubeletHasSufficientMemory",
+              "status": "False",
+              "type": "MemoryPressure"
+            },
+            {
+              "lastHeartbeatTime": "2026-10-05T19:22:42Z",
+              "lastTransitionTime": "2026-10-03T03:36:39Z",
+              "message": "kubelet has no disk pressure",
+              "reason": "KubeletHasNoDiskPressure",
+              "status": "False",
+              "type": "DiskPressure"
+            },
+            {
+              "lastHeartbeatTime": "2026-10-05T19:22:42Z",
+              "lastTransitionTime": "2026-10-03T03:36:39Z",
+              "message": "kubelet has sufficient PID available",
+              "reason": "KubeletHasSufficientPID",
+              "status": "False",
+              "type": "PIDPressure"
+            },
+            {
+              "lastHeartbeatTime": "2026-10-05T19:22:42Z",
+              "lastTransitionTime": "2026-10-03T03:36:39Z",
+              "message": "kubelet is posting ready status",
+              "reason": "KubeletReady",
+              "status": "True",
+              "type": "Ready"
+            }
+          ],
+          "daemonEndpoints": {
+            "kubeletEndpoint": {
+              "Port": 10250
+            }
+          },
+          "declaredFeatures": [
+            "ExtendWebSocketsToKubelet",
+            "InPlacePodLevelResourcesVerticalScaling",
+            "InPlacePodVerticalScalingInitContainers",
+            "RestartAllContainersOnContainerExits"
+          ],
+          "features": {
+            "supplementalGroupsPolicy": true
+          },
+          "images": [
+            {
+              "names": [
+                "10.0.0.3:30050/petclinic/petclinic@sha256:6f24fd8878d9950128706b38efca7892a576c5d6201f13534bc21d57df38af85",
+                "10.0.0.3:30050/petclinic/petclinic:0.4.0-ci-63"
+              ],
+              "sizeBytes": 247483615
+            },
+            {
+              "names": [
+                "ghcr.io/flaresolverr/flaresolverr@sha256:8ec879159770fbc6c5dd5230ad36b96acced05756e5fbd3a63e730a2bc3a3c56",
+                "ghcr.io/flaresolverr/flaresolverr:v3.3.2"
+              ],
+              "sizeBytes": 234323738
+            },
+            {
+              "names": [
+                "10.0.0.3:30050/petclinic/petclinic@sha256:4845c443ba550cd9db99509ef993db69dab32ce16b168aabc747c573032d7032",
+                "10.0.0.3:30050/petclinic/petclinic:0.4.0-ci-61"
+              ],
+              "sizeBytes": 185788773
+            },
+            {
+              "names": [
+                "10.0.0.3:30050/petclinic/petclinic@sha256:bfc836b0623a5744d628a66ecdf51c8f5b3fdeffd909eb40ba5f97f152878c46",
+                "10.0.0.3:30050/petclinic/petclinic:0.4.0-ci-60"
+              ],
+              "sizeBytes": 185788680
+            },
+            {
+              "names": [
+                "10.0.0.3:30050/petclinic/petclinic@sha256:6abc559669c48f36bb7aaf21899ac2411ecc9e78b96b4aeda81166b5a564b1cd",
+                "10.0.0.3:30050/petclinic/petclinic:0.9.0-ci-101"
+              ],
+              "sizeBytes": 184611578
+            },
+            {
+              "names": [
+                "10.0.0.3:30050/petclinic/petclinic@sha256:837ee6cbb28e4e0db808ec7c9d0184634e9916ace6fefac2c3d23faba64452a1",
+                "10.0.0.3:30050/petclinic/petclinic:0.4.0-ci-58"
+              ],
+              "sizeBytes": 183578964
+            },
+            {
+              "names": [
+                "10.0.0.3:30050/petclinic/petclinic@sha256:35c7d8aca889643d2d5c3eab2649502516ee6fcd48aff8142176bdb0cca484b5",
+                "10.0.0.3:30050/petclinic/petclinic@sha256:f4150ea0cb40eb1eb328f925950c90aa0877a96aedbf3a0e5967efd5fe63f0a6",
+                "10.0.0.3:30050/petclinic/petclinic:0.4.0-ci-16",
+                "10.0.0.3:30050/petclinic/petclinic:0.4.0-ci-17"
+              ],
+              "sizeBytes": 183578935
+            },
+            {
+              "names": [
+                "10.0.0.3:30050/petclinic/petclinic@sha256:8373e16572cad8d0918b249c2facdc563614dbb20f587200ec09a3f9dfdf609c",
+                "10.0.0.3:30050/petclinic/petclinic:0.4.0-ci-28"
+              ],
+              "sizeBytes": 183578931
+            },
+            {
+              "names": [
+                "10.0.0.3:30050/petclinic/petclinic@sha256:1286d16737f83b5584c32121e41316e8bc0a27bcb9aa9b65dd9304a52a33cd3b",
+                "10.0.0.3:30050/petclinic/petclinic:0.4.0-ci-33"
+              ],
+              "sizeBytes": 183578931
+            },
+            {
+              "names": [
+                "10.0.0.3:30050/petclinic/petclinic@sha256:436b84c7aa692ae4114011a74b4a342e6871aeb38ca2fd34a63f6800611e81e1",
+                "10.0.0.3:30050/petclinic/petclinic:0.4.0-ci-18"
+              ],
+              "sizeBytes": 183578931
+            },
+            {
+              "names": [
+                "10.0.0.3:30050/petclinic/petclinic@sha256:9eaf8257187ccbd53eafc9bdb079d13a0f8a594e83383643622e149d690c385b",
+                "10.0.0.3:30050/petclinic/petclinic:0.4.0-ci-35"
+              ],
+              "sizeBytes": 183578927
+            },
+            {
+              "names": [
+                "10.0.0.3:30050/petclinic/petclinic@sha256:4284951ba65407cbf9f66ab850c875c22b96e709b611a66c81a6068a943d50cb",
+                "10.0.0.3:30050/petclinic/petclinic@sha256:895a0b8ae06edbc78651beafaf13238389f1bf35239c1f19d2b382fd809ec5c7",
+                "10.0.0.3:30050/petclinic/petclinic:0.4.0-ci-21",
+                "10.0.0.3:30050/petclinic/petclinic:0.4.0-ci-22"
+              ],
+              "sizeBytes": 183578925
+            },
+            {
+              "names": [
+                "10.0.0.3:30050/petclinic/petclinic@sha256:10187139872e08b6cc9b00833632e1c3ae9c78c0e16655dd5c86bee39f3264eb",
+                "10.0.0.3:30050/petclinic/petclinic@sha256:50c6834e555e96a8bc8968e7608f436b7fc4c1a8f61ab0922ccc269b8bb3cec7",
+                "10.0.0.3:30050/petclinic/petclinic:0.4.0-ci-31",
+                "10.0.0.3:30050/petclinic/petclinic:0.4.0-ci-32"
+              ],
+              "sizeBytes": 183578924
+            },
+            {
+              "names": [
+                "10.0.0.3:30050/petclinic/petclinic@sha256:39599b3b09d121f9d907b393e1543d430d0f990ec2f6d5d37737eba32d3aebda",
+                "10.0.0.3:30050/petclinic/petclinic:0.4.0-ci-34"
+              ],
+              "sizeBytes": 183578921
+            },
+            {
+              "names": [
+                "10.0.0.3:30050/petclinic/petclinic@sha256:a8f03da166e70496f345200fec310b543500c5e9ecaf0d253c327be668dc4156",
+                "10.0.0.3:30050/petclinic/petclinic@sha256:bc7929a1fd4b0212c18f5d92253dec36ebd9f94993d387f50ce7ceebdf3381a6",
+                "10.0.0.3:30050/petclinic/petclinic:0.4.0-ci-19",
+                "10.0.0.3:30050/petclinic/petclinic:0.4.0-ci-20"
+              ],
+              "sizeBytes": 183578910
+            },
+            {
+              "names": [
+                "10.0.0.3:30050/petclinic/petclinic@sha256:a7420496fbc6aed77fe4677b373797c05f4c09203a19a42809ca2015b55609f3",
+                "10.0.0.3:30050/petclinic/petclinic:0.4.0-ci-23"
+              ],
+              "sizeBytes": 183578904
+            },
+            {
+              "names": [
+                "10.0.0.3:30050/petclinic/petclinic@sha256:004d4a125277aa81c857853e6a6b7c915e8365d7baaeea24ab90b281b37364c8",
+                "10.0.0.3:30050/petclinic/petclinic@sha256:2a6964b92d78101ef1213590716f58fcc37b5b09132dc7304a7f6d71b5b78902",
+                "10.0.0.3:30050/petclinic/petclinic@sha256:389851f227e3ab465b2ce483b103911d6eb68926eceddd28a0a67b9d98377766",
+                "10.0.0.3:30050/petclinic/petclinic@sha256:55244c71db11672ed6fee4fab3842c0584e174724754f356ee9e493b3a79a533",
+                "10.0.0.3:30050/petclinic/petclinic@sha256:71c779db26a3c13b4e3df289d53a415dd3bdeb1c3db8fe1ec817760775806f69"
+              ],
+              "sizeBytes": 183578891
+            },
+            {
+              "names": [
+                "10.0.0.3:30050/petclinic/petclinic@sha256:1ce4827b42cfa36dfa9be03981a90291f4a4ddad63921fd1e476be0e5451695f",
+                "10.0.0.3:30050/petclinic/petclinic@sha256:d54cae71bef414e6950191c3e2046c59c9b6da9b1479f95764fdf4f74f674631",
+                "10.0.0.3:30050/petclinic/petclinic:0.4.0-ci-24",
+                "10.0.0.3:30050/petclinic/petclinic:0.4.0-ci-25"
+              ],
+              "sizeBytes": 183578874
+            },
+            {
+              "names": [
+                "10.0.0.3:30050/petclinic/petclinic@sha256:1fb002537a5986021b5ac10d790ce4b8e43df80cff499aa094e3e7de94ae3433",
+                "10.0.0.3:30050/petclinic/petclinic@sha256:bef20d5c3f8882f69fa10f293059f0062a0832756a619d00963fc75145a107d4",
+                "10.0.0.3:30050/petclinic/petclinic:0.4.0-ci-55",
+                "10.0.0.3:30050/petclinic/petclinic:0.4.0-ci-56"
+              ],
+              "sizeBytes": 183578873
+            },
+            {
+              "names": [
+                "10.0.0.3:30050/petclinic/petclinic@sha256:07f446681566becf66fc1fe0443423fddc3408546d26789726a2257a26340a1e",
+                "10.0.0.3:30050/petclinic/petclinic:0.4.0-ci-36"
+              ],
+              "sizeBytes": 183578872
+            },
+            {
+              "names": [
+                "10.0.0.3:30050/petclinic/petclinic@sha256:e497ac3bcdd919dcc4b42fa145178577ebda20ca0e758e33012b523d0a72a24b",
+                "10.0.0.3:30050/petclinic/petclinic:0.4.0-ci-11"
+              ],
+              "sizeBytes": 183578862
+            },
+            {
+              "names": [
+                "10.0.0.3:30050/petclinic/petclinic@sha256:1b5af13089812173b43dc8400cea10d75b626015c6489ca6d28b6d497230102c",
+                "10.0.0.3:30050/petclinic/petclinic@sha256:53069700c66345ac006b516703e5fc4f99968daeab86f4adffb60f18861e73a8",
+                "10.0.0.3:30050/petclinic/petclinic:0.4.0-ci-48",
+                "10.0.0.3:30050/petclinic/petclinic:0.4.0-ci-49"
+              ],
+              "sizeBytes": 183578814
+            },
+            {
+              "names": [
+                "10.0.0.3:30050/petclinic/petclinic@sha256:ee213b6c220a33520e756cec57d1e823548a127017970fd6d212b3a56fedee14",
+                "10.0.0.3:30050/petclinic/petclinic:0.4.0-ci-27"
+              ],
+              "sizeBytes": 183578799
+            },
+            {
+              "names": [
+                "10.0.0.3:30050/petclinic/petclinic@sha256:5745084838a8dc580f68bcd80d2c833765c05bda790cbe649c80c6640b524f79",
+                "10.0.0.3:30050/petclinic/petclinic@sha256:ce48ad15b73e2904b2c1b988043229a39ff9eaef68782b0e2fef87360831398d",
+                "10.0.0.3:30050/petclinic/petclinic:0.4.0-ci-45",
+                "10.0.0.3:30050/petclinic/petclinic:0.4.0-ci-46"
+              ],
+              "sizeBytes": 183578796
+            },
+            {
+              "names": [
+                "10.0.0.3:30050/petclinic/petclinic@sha256:8eb2b5dd7fbe0ff8c1d8fda951aa941b1e9bf2331b86254008897c9dc52d530a",
+                "10.0.0.3:30050/petclinic/petclinic:0.4.0-ci-57"
+              ],
+              "sizeBytes": 183578790
+            },
+            {
+              "names": [
+                "10.0.0.3:30050/petclinic/petclinic@sha256:ec18242fa71bc6bfd1f21e04c3b76dfa1b99f28f116182a134009bb809341586",
+                "10.0.0.3:30050/petclinic/petclinic:0.3.0"
+              ],
+              "sizeBytes": 183578741
+            },
+            {
+              "names": [
+                "10.0.0.3:30050/petclinic/petclinic@sha256:82b90f6aaa251bb0b8cd45a2c0443b87685d3f84d8cb313d33d661e7dcb0c5f6",
+                "10.0.0.3:30050/petclinic/petclinic:0.2.0"
+              ],
+              "sizeBytes": 183578610
+            },
+            {
+              "names": [
+                "10.0.0.3:30050/petclinic/petclinic@sha256:e8b7ff35cff966786d966e6eb363ee788351a72c26655666563250222fef7aed",
+                "10.0.0.3:30050/petclinic/petclinic:0.8.0-ci-85"
+              ],
+              "sizeBytes": 177412977
+            },
+            {
+              "names": [
+                "10.0.0.3:30050/petclinic/petclinic@sha256:5824bcdaf379b6331c65bf041640088c136ae2baafb40dd7bfa86f086907a6d4",
+                "10.0.0.3:30050/petclinic/petclinic:0.8.0-ci-83"
+              ],
+              "sizeBytes": 177412960
+            },
+            {
+              "names": [
+                "10.0.0.3:30050/petclinic/petclinic@sha256:46ba83a75ee827419a43fb2d3a4d4d5f2293e0f7b9a765be61bc789c3571f4b5",
+                "10.0.0.3:30050/petclinic/petclinic:0.8.0-ci-87"
+              ],
+              "sizeBytes": 177412938
+            },
+            {
+              "names": [
+                "10.0.0.3:30050/petclinic/petclinic@sha256:488526fac9b9f0ee58622239c3387319dcd4c42811ce6a2b9de27420b9d5f3e9",
+                "10.0.0.3:30050/petclinic/petclinic:0.5.0-ci-78"
+              ],
+              "sizeBytes": 175429645
+            },
+            {
+              "names": [
+                "10.0.0.3:30050/petclinic/petclinic@sha256:1f6c7a12f2e67db2f400a782f20c097ab3ce805c34d689c221d37d3115a4a2c7",
+                "10.0.0.3:30050/petclinic/petclinic:0.5.0-ci-77"
+              ],
+              "sizeBytes": 175429263
+            },
+            {
+              "names": [
+                "10.0.0.3:30050/petclinic/petclinic@sha256:fe8716be19ba48fb89283677f97751f02e219e45979b3f15a17ec6d433be4974",
+                "10.0.0.3:30050/petclinic/petclinic:0.4.0-ci-70"
+              ],
+              "sizeBytes": 175398499
+            },
+            {
+              "names": [
+                "10.0.0.3:30050/petclinic/petclinic@sha256:17b5b01adb7fcdddadb48154962c588417c3a8df6b44a4927ab20aab13fffc1a",
+                "10.0.0.3:30050/petclinic/petclinic:0.4.0-ci-67"
+              ],
+              "sizeBytes": 175398477
+            },
+            {
+              "names": [
+                "10.0.0.3:30050/petclinic/petclinic@sha256:f155f032a8ac7f015fe133786f2df85301b7754b7a6347a93404a2f2617884fe",
+                "10.0.0.3:30050/petclinic/petclinic:0.4.0-ci-73"
+              ],
+              "sizeBytes": 175398447
+            },
+            {
+              "names": [
+                "10.0.0.3:30050/petclinic/petclinic@sha256:0ab0e0ae25b43f39e329c012e707dae535cb7976e7550581a387d5cf0c5de160",
+                "10.0.0.3:30050/petclinic/petclinic:0.4.0-ci-74"
+              ],
+              "sizeBytes": 175398431
+            },
+            {
+              "names": [
+                "10.0.0.3:30050/petclinic/petclinic@sha256:b190810ceef422d875bbda33cb5eb36a82b903641ef7e8555266838ed810dc57",
+                "10.0.0.3:30050/petclinic/petclinic:0.4.0-ci-75"
+              ],
+              "sizeBytes": 175398429
+            },
+            {
+              "names": [
+                "10.0.0.3:30050/petclinic/petclinic@sha256:fe83245e674a098434ebca241fd554aa3ca4dadbab777580c191e9d0a22a7ace",
+                "10.0.0.3:30050/petclinic/petclinic:0.4.0-ci-64"
+              ],
+              "sizeBytes": 175388658
+            },
+            {
+              "names": [
+                "10.0.0.3:30050/petclinic/petclinic@sha256:1ff021fe2651c02b92f4f49ee38540dbc71ab210fee31bc1c18094db6daea587",
+                "10.0.0.3:30050/petclinic/petclinic@sha256:c31f70e80ea046dda2b32af41d639e4bf7dac2dddf8527a458502b3e0e1e1500",
+                "10.0.0.3:30050/petclinic/petclinic:0.4.0-ci-65",
+                "10.0.0.3:30050/petclinic/petclinic:0.4.0-ci-66"
+              ],
+              "sizeBytes": 175388614
+            },
+            {
+              "names": [
+                "127.0.0.1:30050/platform-upgrade/grafana-alloy:v1.18.1-amd64",
+                "docker.io/grafana/alloy:v1.18.1"
+              ],
+              "sizeBytes": 171026662
+            },
+            {
+              "names": [
+                "10.0.0.3:30050/diagnostics/postgres@sha256:4301b1f81d6ec4fd0d8dc5b34c7d6aa2946d5cd7afc794fd644d6f1973a55f37",
+                "10.0.0.3:30050/diagnostics/postgres:18.4"
+              ],
+              "sizeBytes": 160972596
+            },
+            {
+              "names": [
+                "10.0.0.3:30050/diagnostics/postgres@sha256:0826e5f2996099babb925e09fb72bf2c6eb5d187cfcae20aa9291af1612307e4",
+                "10.0.0.3:30050/diagnostics/postgres:18.4-amd64",
+                "10.0.0.3:30050/library/postgres:18.4"
+              ],
+              "sizeBytes": 160971677
+            },
+            {
+              "names": [
+                "127.0.0.1:30050/platform-upgrade/grafana-alloy@sha256:53a7f350ef2b4fa06993c88041c7c85fb6a34309500d5197ebdf5222ddf278dc",
+                "127.0.0.1:30050/platform-upgrade/grafana-alloy:v1.18.1-arm64"
+              ],
+              "sizeBytes": 157246834
+            },
+            {
+              "names": [
+                "docker.elastic.co/beats/filebeat@sha256:b7645bf950ddb3132ecd17a184e4abe1aa2faf3809ba33ae769a8aa6ca936824",
+                "docker.elastic.co/beats/filebeat:8.19.17"
+              ],
+              "sizeBytes": 157125164
+            },
+            {
+              "names": [
+                "docker.elastic.co/beats/filebeat@sha256:eee4666d5a3bdc663ba1c8a1e44de44523670034c2ccfc6dca746bb987bc8676",
+                "docker.elastic.co/beats/filebeat:9.4.2"
+              ],
+              "sizeBytes": 136348358
+            },
+            {
+              "names": [
+                "docker.elastic.co/beats/filebeat@sha256:4c382f205946363bfc122382794d72b00b480ef8949ce66e0f8b2503f77d7844",
+                "docker.elastic.co/beats/filebeat:8.12.0"
+              ],
+              "sizeBytes": 133630313
+            },
+            {
+              "names": [
+                "docker.elastic.co/beats/filebeat@sha256:fa4330da529e88e51241c5a3091ff6484f0ea74a79e516c78524bc7ac0faae79",
+                "docker.elastic.co/beats/filebeat:9.4.4"
+              ],
+              "sizeBytes": 133156251
+            },
+            {
+              "names": [
+                "docker.elastic.co/beats/filebeat@sha256:cf7e9080de9b6413a072535aac07a6e1c690cf0d8c500be7a76225d47e89c30a",
+                "docker.elastic.co/beats/filebeat:7.17.10"
+              ],
+              "sizeBytes": 112570473
+            },
+            {
+              "names": [
+                "docker.io/rancher/k3s-upgrade@sha256:204ceadf970c96dc8f04ae1c17240c1fbb8fbbba891f5a9f4246c8163473e4dc",
+                "docker.io/rancher/k3s-upgrade:v1.36.1-k3s1"
+              ],
+              "sizeBytes": 77481959
+            },
+            {
+              "names": [
+                "docker.m.daocloud.io/goharbor/harbor-jobservice@sha256:e2b0298e894d725d68954b786c61c5dd607114f6129534756c8f7985124c07a6",
+                "docker.m.daocloud.io/goharbor/harbor-jobservice:v2.14.3"
+              ],
+              "sizeBytes": 74802491
+            }
+          ],
+          "nodeInfo": {
+            "architecture": "amd64",
+            "bootID": "9f00959b-d89f-445f-8a13-1f8506877c75",
+            "containerRuntimeVersion": "containerd://2.2.3-k3s1",
+            "kernelVersion": "5.15.0-170-generic",
+            "kubeProxyVersion": "",
+            "kubeletVersion": "v1.36.1+k3s1",
+            "machineID": "62e2daf440d84f75a6116293e67a9c25",
+            "operatingSystem": "linux",
+            "osImage": "Ubuntu 22.04.5 LTS",
+            "systemUUID": "62e2daf4-40d8-4f75-a611-6293e67a9c25"
+          },
+          "runtimeHandlers": [
+            {
+              "features": {
+                "recursiveReadOnlyMounts": true,
+                "userNamespaces": true
+              },
+              "name": ""
+            },
+            {
+              "features": {
+                "recursiveReadOnlyMounts": true,
+                "userNamespaces": true
+              },
+              "name": "runc"
+            },
+            {
+              "features": {
+                "recursiveReadOnlyMounts": false,
+                "userNamespaces": false
+              },
+              "name": "runhcs-wcow-process"
+            }
+          ]
+        }
+      },
+      {
+        "apiVersion": "v1",
+        "kind": "Node",
+        "metadata": {
+          "annotations": {
+            "alpha.kubernetes.io/provided-node-ip": "10.0.0.3",
+            "flannel.alpha.coreos.com/backend-data": "{\"VNI\":1,\"VtepMAC\":\"62:fb:af:72:4b:ac\"}",
+            "flannel.alpha.coreos.com/backend-type": "vxlan",
+            "flannel.alpha.coreos.com/kube-subnet-manager": "true",
+            "flannel.alpha.coreos.com/public-ip": "10.0.0.3",
+            "k3s.io/hostname": "devops",
+            "k3s.io/internal-ip": "10.0.0.3",
+            "k3s.io/node-args": "[\"server\",\"--flannel-iface\",\"wg0\",\"--disable\",\"metrics-server\",\"--pause-image\",\"docker.io/rancher/mirrored-pause:3.6\"]",
+            "k3s.io/node-config-hash": "R2X6XSY7NMFUWHFNXC46YA6X6JHXYTUW6LC4NIDY7HOD23QG43GA====",
+            "k3s.io/node-env": "{\"K3S_ARGS\":\"--pause-image=rancher/mirrored-pause:3.6\"}",
+            "node.alpha.kubernetes.io/ttl": "0",
+            "volumes.kubernetes.io/controller-managed-attach-detach": "true"
+          },
+          "creationTimestamp": "2026-04-17T07:53:05Z",
+          "finalizers": [
+            "wrangler.cattle.io/node"
+          ],
+          "labels": {
+            "beta.kubernetes.io/arch": "arm64",
+            "beta.kubernetes.io/instance-type": "k3s",
+            "beta.kubernetes.io/os": "linux",
+            "kubernetes.io/arch": "arm64",
+            "kubernetes.io/hostname": "devops",
+            "kubernetes.io/os": "linux",
+            "node-role": "master",
+            "node-role.kubernetes.io/control-plane": "true",
+            "node.kubernetes.io/instance-type": "k3s",
+            "plan.upgrade.cattle.io/k3s-server-v1-36-1": "e2118e612ae451b26496650e4536b80f3b29ac540413af6ab7a1e77e"
+          },
+          "name": "devops",
+          "resourceVersion": "11552399",
+          "uid": "0d449f42-6f73-4843-9578-ce8b9dd75e1c"
+        },
+        "spec": {
+          "podCIDR": "10.42.0.0/24",
+          "podCIDRs": [
+            "10.42.0.0/24"
+          ],
+          "providerID": "k3s://devops"
+        },
+        "status": {
+          "addresses": [
+            {
+              "address": "10.0.0.3",
+              "type": "InternalIP"
+            },
+            {
+              "address": "devops",
+              "type": "Hostname"
+            }
+          ],
+          "allocatable": {
+            "cpu": "6",
+            "ephemeral-storage": "248876315044",
+            "hugepages-1Gi": "0",
+            "hugepages-2Mi": "0",
+            "hugepages-32Mi": "0",
+            "hugepages-64Ki": "0",
+            "memory": "20425576Ki",
+            "pods": "110"
+          },
+          "capacity": {
+            "cpu": "6",
+            "ephemeral-storage": "255835028Ki",
+            "hugepages-1Gi": "0",
+            "hugepages-2Mi": "0",
+            "hugepages-32Mi": "0",
+            "hugepages-64Ki": "0",
+            "memory": "20425576Ki",
+            "pods": "110"
+          },
+          "conditions": [
+            {
+              "lastHeartbeatTime": "2026-10-05T19:23:26Z",
+              "lastTransitionTime": "2026-10-04T11:01:03Z",
+              "message": "kubelet has sufficient memory available",
+              "reason": "KubeletHasSufficientMemory",
+              "status": "False",
+              "type": "MemoryPressure"
+            },
+            {
+              "lastHeartbeatTime": "2026-10-05T19:23:26Z",
+              "lastTransitionTime": "2026-10-04T11:01:03Z",
+              "message": "kubelet has no disk pressure",
+              "reason": "KubeletHasNoDiskPressure",
+              "status": "False",
+              "type": "DiskPressure"
+            },
+            {
+              "lastHeartbeatTime": "2026-10-05T19:23:26Z",
+              "lastTransitionTime": "2026-10-04T11:01:03Z",
+              "message": "kubelet has sufficient PID available",
+              "reason": "KubeletHasSufficientPID",
+              "status": "False",
+              "type": "PIDPressure"
+            },
+            {
+              "lastHeartbeatTime": "2026-10-05T19:23:26Z",
+              "lastTransitionTime": "2026-10-04T11:01:03Z",
+              "message": "kubelet is posting ready status",
+              "reason": "KubeletReady",
+              "status": "True",
+              "type": "Ready"
+            }
+          ],
+          "daemonEndpoints": {
+            "kubeletEndpoint": {
+              "Port": 10250
+            }
+          },
+          "declaredFeatures": [
+            "ExtendWebSocketsToKubelet",
+            "InPlacePodLevelResourcesVerticalScaling",
+            "InPlacePodVerticalScalingInitContainers",
+            "RestartAllContainersOnContainerExits"
+          ],
+          "features": {
+            "supplementalGroupsPolicy": true
+          },
+          "images": [
+            {
+              "names": [
+                "docker.io/apache/airflow:3.3.0"
+              ],
+              "sizeBytes": 2379512353
+            },
+            {
+              "names": [
+                "127.0.0.1:30050/platform-upgrade/gitlab-ce:19.2.0-ce.0-arm64"
+              ],
+              "sizeBytes": 1327241027
+            },
+            {
+              "names": [
+                "docker.io/library/sonarqube@sha256:dee9e6ba92725b2ecaa533b61133c46098cfbf8ea2e5a3424ab7b4b8f7a1a821",
+                "docker.io/library/sonarqube:26.3.0.120487-community"
+              ],
+              "sizeBytes": 1128867328
+            },
+            {
+              "names": [
+                "127.0.0.1:30050/platform-upgrade/trinodb-trino:483"
+              ],
+              "sizeBytes": 1033261196
+            },
+            {
+              "names": [
+                "192.168.1.58:30050/library/superset@sha256:f9360eb1ee9b9f99f2d05d5c0dfdb7fd18c4c878719b7d2d267a725060a396da",
+                "192.168.1.58:30050/library/superset:6.1.0-mysqlconnector-9.6.0"
+              ],
+              "sizeBytes": 913548692
+            },
+            {
+              "names": [
+                "127.0.0.1:30050/platform-upgrade/elasticsearch:9.4.4-arm64"
+              ],
+              "sizeBytes": 730250262
+            },
+            {
+              "names": [
+                "127.0.0.1:30050/platform-upgrade/kibana:9.4.4-arm64"
+              ],
+              "sizeBytes": 561636998
+            },
+            {
+              "names": [
+                "127.0.0.1:30050/platform-upgrade/grafana-grafana:13.1.1-arm64"
+              ],
+              "sizeBytes": 352717456
+            },
+            {
+              "names": [
+                "127.0.0.1:30050/jenkins-custom:2.568.1-lts-atomic-node20-v1"
+              ],
+              "sizeBytes": 324185329
+            },
+            {
+              "names": [
+                "127.0.0.1:30050/platform-upgrade/flaresolverr:v3.5.0-arm64"
+              ],
+              "sizeBytes": 286481167
+            },
+            {
+              "names": [
+                "127.0.0.1:30050/platform-upgrade/apache-kafka:4.3.1"
+              ],
+              "sizeBytes": 238602428
+            },
+            {
+              "names": [
+                "127.0.0.1:30050/platform-upgrade/mysql:8.4.10-arm64"
+              ],
+              "sizeBytes": 233699804
+            },
+            {
+              "names": [
+                "10.0.0.3:30050/petclinic/petclinic@sha256:6abc559669c48f36bb7aaf21899ac2411ecc9e78b96b4aeda81166b5a564b1cd",
+                "10.0.0.3:30050/petclinic/petclinic:0.9.0-ci-101"
+              ],
+              "sizeBytes": 193330458
+            },
+            {
+              "names": [
+                "10.0.0.3:30050/petclinic/petclinic@sha256:ebb9b7a284c20da981915ede398d0cdb6da0e1a0c127f242bf8224ded41857f8",
+                "10.0.0.3:30050/petclinic/petclinic:0.9.0-ci-96"
+              ],
+              "sizeBytes": 193330437
+            },
+            {
+              "names": [
+                "10.0.0.3:30050/petclinic/petclinic@sha256:2ed615b8703e59beef757585170ba88b41224cc206c4abf4846fa0b9dc95a671",
+                "10.0.0.3:30050/petclinic/petclinic:0.9.0-ci-100"
+              ],
+              "sizeBytes": 193330432
+            },
+            {
+              "names": [
+                "10.0.0.3:30050/petclinic/petclinic@sha256:e8b7ff35cff966786d966e6eb363ee788351a72c26655666563250222fef7aed",
+                "10.0.0.3:30050/petclinic/petclinic:0.8.0-ci-85"
+              ],
+              "sizeBytes": 186131856
+            },
+            {
+              "names": [
+                "10.0.0.3:30050/petclinic/petclinic@sha256:5824bcdaf379b6331c65bf041640088c136ae2baafb40dd7bfa86f086907a6d4",
+                "10.0.0.3:30050/petclinic/petclinic:0.8.0-ci-83"
+              ],
+              "sizeBytes": 186131838
+            },
+            {
+              "names": [
+                "10.0.0.3:30050/petclinic/petclinic@sha256:46ba83a75ee827419a43fb2d3a4d4d5f2293e0f7b9a765be61bc789c3571f4b5",
+                "10.0.0.3:30050/petclinic/petclinic:0.8.0-ci-87"
+              ],
+              "sizeBytes": 186131825
+            },
+            {
+              "names": [
+                "10.0.0.3:30050/petclinic/petclinic@sha256:086b91c1576483d97cb3196efcc8779c8f766844b882a4b85417632818a13f9d",
+                "10.0.0.3:30050/petclinic/petclinic:0.7.0-ci-82"
+              ],
+              "sizeBytes": 186128646
+            },
+            {
+              "names": [
+                "127.0.0.1:30050/platform-upgrade/argocd:v3.4.5-arm64"
+              ],
+              "sizeBytes": 184224852
+            },
+            {
+              "names": [
+                "10.0.0.3:30050/petclinic/petclinic@sha256:8b3a4bcdcd975fc939e08e4742fbc52806e0084bb01cacf1eacf417f4d5f79d5",
+                "10.0.0.3:30050/petclinic/petclinic:0.6.0-ci-80"
+              ],
+              "sizeBytes": 184154683
+            },
+            {
+              "names": [
+                "10.0.0.3:30050/petclinic/petclinic@sha256:488526fac9b9f0ee58622239c3387319dcd4c42811ce6a2b9de27420b9d5f3e9",
+                "10.0.0.3:30050/petclinic/petclinic:0.5.0-ci-78"
+              ],
+              "sizeBytes": 184148523
+            },
+            {
+              "names": [
+                "10.0.0.3:30050/petclinic/petclinic@sha256:1f6c7a12f2e67db2f400a782f20c097ab3ce805c34d689c221d37d3115a4a2c7",
+                "10.0.0.3:30050/petclinic/petclinic:0.5.0-ci-77"
+              ],
+              "sizeBytes": 184148141
+            },
+            {
+              "names": [
+                "10.0.0.3:30050/petclinic/petclinic@sha256:b190810ceef422d875bbda33cb5eb36a82b903641ef7e8555266838ed810dc57",
+                "10.0.0.3:30050/petclinic/petclinic:0.4.0-ci-75"
+              ],
+              "sizeBytes": 184117308
+            },
+            {
+              "names": [
+                "docker.io/goharbor/harbor-registryctl:2.14.2"
+              ],
+              "sizeBytes": 166893891
+            },
+            {
+              "names": [
+                "docker.io/grafana/alloy@sha256:0f4434c92b3e6cdac38bb129b344e1790c246f7b6e2eaffcc16a5fa363240e33",
+                "127.0.0.1:30050/platform-upgrade/grafana-alloy:v1.18.1-arm64",
+                "docker.io/grafana/alloy:v1.18.1"
+              ],
+              "sizeBytes": 157246834
+            },
+            {
+              "names": [
+                "docker.io/library/postgres@sha256:9b1d34adbce1dd07ee6e94b4a2cf698884b89bd44a6c9c12f5da8f3acbfe4957",
+                "127.0.0.1:30050/platform-repair/postgres:15-arm64",
+                "docker.io/library/postgres:15"
+              ],
+              "sizeBytes": 156784982
+            },
+            {
+              "names": [
+                "127.0.0.1:30050/goharbor/trivy-adapter-photon:v2.14.3",
+                "docker.io/goharbor/trivy-adapter-photon:v2.14.3"
+              ],
+              "sizeBytes": 134952163
+            },
+            {
+              "names": [
+                "10.0.0.3:30050/platform-upgrade/eclipse-temurin@sha256:69bc3d67c3f9f788cbc235723fdaf8a569015125590a2f7d9ed455537a1f4312",
+                "10.0.0.3:30050/platform-upgrade/eclipse-temurin:21-jre-local"
+              ],
+              "sizeBytes": 122412303
+            },
+            {
+              "names": [
+                "127.0.0.1:30050/platform-upgrade/filebeat:9.4.4-arm64",
+                "docker.elastic.co/beats/filebeat:9.4.4"
+              ],
+              "sizeBytes": 120296263
+            },
+            {
+              "names": [
+                "127.0.0.1:30050/platform-upgrade/postgres@sha256:122c9942437efcbbb8d595fc578dee7d26ee1543c2a8634d183adfa4a1e55b4d",
+                "127.0.0.1:30050/platform-upgrade/postgres:18.4-alpine3.24-arm64"
+              ],
+              "sizeBytes": 117816655
+            },
+            {
+              "names": [
+                "127.0.0.1:30050/platform-upgrade/prometheus:v3.13.1-arm64"
+              ],
+              "sizeBytes": 98144549
+            },
+            {
+              "names": [
+                "docker.io/goharbor/registry-photon:2.14.2"
+              ],
+              "sizeBytes": 94071419
+            },
+            {
+              "names": [
+                "docker.io/rancher/local-path-provisioner@sha256:1eba82e9c386038b4af6d69cca7519fac738c28c42735ed48ce70c882ad0d80f",
+                "docker.io/rancher/local-path-provisioner:v0.0.36"
+              ],
+              "sizeBytes": 84943328
+            },
+            {
+              "names": [
+                "docker.m.daocloud.io/goharbor/harbor-jobservice@sha256:e2b0298e894d725d68954b786c61c5dd607114f6129534756c8f7985124c07a6",
+                "docker.m.daocloud.io/goharbor/harbor-jobservice:v2.14.3"
+              ],
+              "sizeBytes": 74802491
+            },
+            {
+              "names": [
+                "127.0.0.1:30050/goharbor/harbor-core@sha256:2b552fae1a19d4a63dc3006131f548d64651e52a8318d36905e30a40cd6a6a24",
+                "127.0.0.1:30050/goharbor/harbor-core:v2.14.3-arm64-native"
+              ],
+              "sizeBytes": 67020360
+            },
+            {
+              "names": [
+                "127.0.0.1:30050/platform-upgrade/gitlab-runner:alpine-v19.2.0-arm64"
+              ],
+              "sizeBytes": 65605182
+            },
+            {
+              "names": [
+                "127.0.0.1:30050/platform-upgrade/node:24.18.0-alpine3.23-arm64"
+              ],
+              "sizeBytes": 58518085
+            },
+            {
+              "names": [
+                "docker.io/goharbor/harbor-portal@sha256:2556b6c7dd832bf22ed8b177245fa5fbcd70255959e69c5d0fbe2153f4bd2243",
+                "docker.io/goharbor/harbor-portal:v2.14.3"
+              ],
+              "sizeBytes": 56696973
+            },
+            {
+              "names": [
+                "127.0.0.1:30050/goharbor/harbor-jobservice:v2.14.3-arm64-native"
+              ],
+              "sizeBytes": 50732274
+            },
+            {
+              "names": [
+                "docker.io/rancher/mirrored-library-traefik@sha256:34d5089d0b414945342848518b383f11f5b3a645504ed87b77ffeb9d683d0e48",
+                "docker.io/rancher/mirrored-library-traefik:3.6.13"
+              ],
+              "sizeBytes": 47741378
+            },
+            {
+              "names": [
+                "127.0.0.1:30050/platform-upgrade/jaeger:2.20.0-arm64"
+              ],
+              "sizeBytes": 46908904
+            },
+            {
+              "names": [
+                "127.0.0.1:30050/platform-upgrade/dex:v2.45.1-arm64"
+              ],
+              "sizeBytes": 43820594
+            },
+            {
+              "names": [
+                "127.0.0.1:30050/platform-upgrade/opentelemetry-collector:0.157.0-arm64"
+              ],
+              "sizeBytes": 43175591
+            },
+            {
+              "names": [
+                "127.0.0.1:30050/platform-upgrade/loki:3.7.4-arm64"
+              ],
+              "sizeBytes": 42546794
+            },
+            {
+              "names": [
+                "192.168.1.58:30050/library/redis@sha256:868bed65af15480a27ca0f32d5d0b0f0c0c603a65d32db141cdf20a909ccf387",
+                "192.168.1.58:30050/library/redis:7.0"
+              ],
+              "sizeBytes": 42135846
+            },
+            {
+              "names": [
+                "127.0.0.1:30050/jkvideo-web@sha256:74a2fdd8079cf71c3f18c438cfdf0ecc38d69193c17a226543beece909c4b0c1",
+                "127.0.0.1:30050/jkvideo-web:b5b7c58"
+              ],
+              "sizeBytes": 41112760
+            },
+            {
+              "names": [
+                "harbor.devops.local/library/portainer-portainer-ce:2.39.5"
+              ],
+              "sizeBytes": 38157331
+            },
+            {
+              "names": [
+                "127.0.0.1:30050/platform-upgrade/redis@sha256:ca5075df9552da2423c20c691a0208d60106f2ea71b47406d52c396bf0a6bd65",
+                "127.0.0.1:30050/platform-upgrade/redis:8.8.1-alpine-arm64"
+              ],
+              "sizeBytes": 37292674
+            },
+            {
+              "names": [
+                "127.0.0.1:30050/hello-app@sha256:8307f17467af89e5ff2995b915722010967788bd10db8916635f0dd1b70738fd",
+                "127.0.0.1:30050/hello-app:6973c70",
+                "127.0.0.1:30050/hello-app:7dc4699"
+              ],
+              "sizeBytes": 32733214
+            }
+          ],
+          "nodeInfo": {
+            "architecture": "arm64",
+            "bootID": "5207dfbd-ab80-4b6e-a148-180d2d32c31f",
+            "containerRuntimeVersion": "containerd://2.2.3-k3s1",
+            "kernelVersion": "7.0.0-34-generic",
+            "kubeProxyVersion": "",
+            "kubeletVersion": "v1.36.1+k3s1",
+            "machineID": "4c8dedbcd2fb43f699ecc2c6f9c1ff46",
+            "operatingSystem": "linux",
+            "osImage": "Ubuntu 24.04.4 LTS",
+            "swap": {
+              "capacity": 12884893696
+            },
+            "systemUUID": "4c8dedbc-d2fb-43f6-99ec-c2c6f9c1ff46"
+          },
+          "runtimeHandlers": [
+            {
+              "features": {
+                "recursiveReadOnlyMounts": true,
+                "userNamespaces": true
+              },
+              "name": ""
+            },
+            {
+              "features": {
+                "recursiveReadOnlyMounts": true,
+                "userNamespaces": true
+              },
+              "name": "runc"
+            },
+            {
+              "features": {
+                "recursiveReadOnlyMounts": false,
+                "userNamespaces": false
+              },
+              "name": "runhcs-wcow-process"
+            }
+          ]
+        }
+      },
+      {
+        "apiVersion": "v1",
+        "kind": "Node",
+        "metadata": {
+          "annotations": {
+            "alpha.kubernetes.io/provided-node-ip": "10.0.0.2",
+            "flannel.alpha.coreos.com/backend-data": "{\"VNI\":1,\"VtepMAC\":\"62:98:bf:be:d1:ec\"}",
+            "flannel.alpha.coreos.com/backend-type": "vxlan",
+            "flannel.alpha.coreos.com/kube-subnet-manager": "true",
+            "flannel.alpha.coreos.com/public-ip": "10.0.0.2",
+            "k3s.io/hostname": "10-40-161-249",
+            "k3s.io/internal-ip": "10.0.0.2",
+            "k3s.io/node-args": "[\"agent\",\"--node-ip\",\"10.0.0.2\",\"--node-name\",\"ucloud-worker\",\"--flannel-iface\",\"wg0\"]",
+            "k3s.io/node-config-hash": "DTBGOVB3JOB67C2LMMCMUCN42Y4B2TDOWIRETNVWY33YZH5XHIQA====",
+            "k3s.io/node-env": "{\"K3S_TOKEN\":\"********\",\"K3S_URL\":\"https://10.0.0.3:6443\"}",
+            "node.alpha.kubernetes.io/ttl": "0",
+            "volumes.kubernetes.io/controller-managed-attach-detach": "true"
+          },
+          "creationTimestamp": "2026-05-19T07:10:09Z",
+          "finalizers": [
+            "wrangler.cattle.io/node"
+          ],
+          "labels": {
+            "beta.kubernetes.io/arch": "amd64",
+            "beta.kubernetes.io/instance-type": "k3s",
+            "beta.kubernetes.io/os": "linux",
+            "kubernetes.io/arch": "amd64",
+            "kubernetes.io/hostname": "ucloud-worker",
+            "kubernetes.io/os": "linux",
+            "node-role": "cloud-worker",
+            "node.kubernetes.io/instance-type": "k3s",
+            "node.zhanglab.io/expiry-risk": "true",
+            "node.zhanglab.io/important-workloads": "avoid",
+            "node.zhanglab.io/scheduling": "limited-cloud",
+            "plan.upgrade.cattle.io/k3s-agent-v1-36-1": "e2118e612ae451b26496650e4536b80f3b29ac540413af6ab7a1e77e"
+          },
+          "name": "ucloud-worker",
+          "resourceVersion": "11552264",
+          "uid": "143e7e30-e8ac-4b26-b1ff-cf4a0941983a"
+        },
+        "spec": {
+          "podCIDR": "10.42.3.0/24",
+          "podCIDRs": [
+            "10.42.3.0/24"
+          ],
+          "providerID": "k3s://ucloud-worker",
+          "taints": [
+            {
+              "effect": "NoSchedule",
+              "key": "cloud",
+              "value": "true"
+            }
+          ]
+        },
+        "status": {
+          "addresses": [
+            {
+              "address": "10.0.0.2",
+              "type": "InternalIP"
+            },
+            {
+              "address": "10-40-161-249",
+              "type": "Hostname"
+            }
+          ],
+          "allocatable": {
+            "cpu": "2",
+            "ephemeral-storage": "78900761129",
+            "hugepages-1Gi": "0",
+            "hugepages-2Mi": "0",
+            "memory": "3968068Ki",
+            "pods": "110"
+          },
+          "capacity": {
+            "cpu": "2",
+            "ephemeral-storage": "81106868Ki",
+            "hugepages-1Gi": "0",
+            "hugepages-2Mi": "0",
+            "memory": "3968068Ki",
+            "pods": "110"
+          },
+          "conditions": [
+            {
+              "lastHeartbeatTime": "2026-10-05T19:21:32Z",
+              "lastTransitionTime": "2026-10-04T09:36:54Z",
+              "message": "kubelet has sufficient memory available",
+              "reason": "KubeletHasSufficientMemory",
+              "status": "False",
+              "type": "MemoryPressure"
+            },
+            {
+              "lastHeartbeatTime": "2026-10-05T19:21:32Z",
+              "lastTransitionTime": "2026-10-04T09:36:54Z",
+              "message": "kubelet has no disk pressure",
+              "reason": "KubeletHasNoDiskPressure",
+              "status": "False",
+              "type": "DiskPressure"
+            },
+            {
+              "lastHeartbeatTime": "2026-10-05T19:21:32Z",
+              "lastTransitionTime": "2026-10-04T09:36:54Z",
+              "message": "kubelet has sufficient PID available",
+              "reason": "KubeletHasSufficientPID",
+              "status": "False",
+              "type": "PIDPressure"
+            },
+            {
+              "lastHeartbeatTime": "2026-10-05T19:21:32Z",
+              "lastTransitionTime": "2026-10-04T09:36:54Z",
+              "message": "kubelet is posting ready status",
+              "reason": "KubeletReady",
+              "status": "True",
+              "type": "Ready"
+            }
+          ],
+          "daemonEndpoints": {
+            "kubeletEndpoint": {
+              "Port": 10250
+            }
+          },
+          "declaredFeatures": [
+            "ExtendWebSocketsToKubelet",
+            "InPlacePodLevelResourcesVerticalScaling",
+            "InPlacePodVerticalScalingInitContainers",
+            "RestartAllContainersOnContainerExits"
+          ],
+          "features": {
+            "supplementalGroupsPolicy": true
+          },
+          "images": [
+            {
+              "names": [
+                "docker.io/trinodb/trino@sha256:fca43d1fdfdcd45f36b791f7117a47f8ce69c58232e5398bfdb8539cd28e778b"
+              ],
+              "sizeBytes": 1036351024
+            },
+            {
+              "names": [
+                "127.0.0.1:30050/platform-upgrade/flaresolverr@sha256:96ea0bb7b589785f802bf586b00440ca96bfa12b27c3a6a69f0077ef5300fa31",
+                "127.0.0.1:30050/platform-upgrade/flaresolverr:v3.5.0-arm64"
+              ],
+              "sizeBytes": 286481167
+            },
+            {
+              "names": [
+                "ghcr.io/flaresolverr/flaresolverr@sha256:139dfee1c6f89249c8d665d1333a42e8ec74ec0a86bc6bb1c8461e10d3a66a47",
+                "ghcr.io/flaresolverr/flaresolverr:v3.5.0"
+              ],
+              "sizeBytes": 281958369
+            },
+            {
+              "names": [
+                "10.0.0.3:30050/petclinic/petclinic@sha256:6f24fd8878d9950128706b38efca7892a576c5d6201f13534bc21d57df38af85",
+                "10.0.0.3:30050/petclinic/petclinic:0.4.0-ci-63"
+              ],
+              "sizeBytes": 247483615
+            },
+            {
+              "names": [
+                "ghcr.io/flaresolverr/flaresolverr@sha256:8ec879159770fbc6c5dd5230ad36b96acced05756e5fbd3a63e730a2bc3a3c56",
+                "ghcr.io/flaresolverr/flaresolverr:v3.3.2"
+              ],
+              "sizeBytes": 234323738
+            },
+            {
+              "names": [
+                "10.0.0.3:30050/petclinic/petclinic@sha256:4845c443ba550cd9db99509ef993db69dab32ce16b168aabc747c573032d7032",
+                "10.0.0.3:30050/petclinic/petclinic:0.4.0-ci-61"
+              ],
+              "sizeBytes": 185788773
+            },
+            {
+              "names": [
+                "10.0.0.3:30050/petclinic/petclinic@sha256:bfc836b0623a5744d628a66ecdf51c8f5b3fdeffd909eb40ba5f97f152878c46",
+                "10.0.0.3:30050/petclinic/petclinic:0.4.0-ci-60"
+              ],
+              "sizeBytes": 185788680
+            },
+            {
+              "names": [
+                "10.0.0.3:30050/petclinic/petclinic@sha256:6abc559669c48f36bb7aaf21899ac2411ecc9e78b96b4aeda81166b5a564b1cd",
+                "10.0.0.3:30050/petclinic/petclinic:0.9.0-ci-101"
+              ],
+              "sizeBytes": 184611578
+            },
+            {
+              "names": [
+                "10.0.0.3:30050/petclinic/petclinic@sha256:837ee6cbb28e4e0db808ec7c9d0184634e9916ace6fefac2c3d23faba64452a1",
+                "10.0.0.3:30050/petclinic/petclinic:0.4.0-ci-58"
+              ],
+              "sizeBytes": 183578964
+            },
+            {
+              "names": [
+                "10.0.0.3:30050/petclinic/petclinic@sha256:640eb938f8a7086a7acfe636fbcd04d9e560b89a6a676dbee49518b19d3d7647",
+                "10.0.0.3:30050/petclinic/petclinic:0.4.0-ci-38"
+              ],
+              "sizeBytes": 183578936
+            },
+            {
+              "names": [
+                "10.0.0.3:30050/petclinic/petclinic@sha256:35c7d8aca889643d2d5c3eab2649502516ee6fcd48aff8142176bdb0cca484b5",
+                "10.0.0.3:30050/petclinic/petclinic@sha256:f4150ea0cb40eb1eb328f925950c90aa0877a96aedbf3a0e5967efd5fe63f0a6",
+                "10.0.0.3:30050/petclinic/petclinic:0.4.0-ci-16",
+                "10.0.0.3:30050/petclinic/petclinic:0.4.0-ci-17"
+              ],
+              "sizeBytes": 183578935
+            },
+            {
+              "names": [
+                "10.0.0.3:30050/petclinic/petclinic@sha256:8373e16572cad8d0918b249c2facdc563614dbb20f587200ec09a3f9dfdf609c",
+                "10.0.0.3:30050/petclinic/petclinic:0.4.0-ci-28"
+              ],
+              "sizeBytes": 183578931
+            },
+            {
+              "names": [
+                "10.0.0.3:30050/petclinic/petclinic@sha256:1286d16737f83b5584c32121e41316e8bc0a27bcb9aa9b65dd9304a52a33cd3b",
+                "10.0.0.3:30050/petclinic/petclinic:0.4.0-ci-33"
+              ],
+              "sizeBytes": 183578931
+            },
+            {
+              "names": [
+                "10.0.0.3:30050/petclinic/petclinic@sha256:436b84c7aa692ae4114011a74b4a342e6871aeb38ca2fd34a63f6800611e81e1",
+                "10.0.0.3:30050/petclinic/petclinic:0.4.0-ci-18"
+              ],
+              "sizeBytes": 183578931
+            },
+            {
+              "names": [
+                "10.0.0.3:30050/petclinic/petclinic@sha256:9eaf8257187ccbd53eafc9bdb079d13a0f8a594e83383643622e149d690c385b",
+                "10.0.0.3:30050/petclinic/petclinic:0.4.0-ci-35"
+              ],
+              "sizeBytes": 183578927
+            },
+            {
+              "names": [
+                "10.0.0.3:30050/petclinic/petclinic@sha256:4284951ba65407cbf9f66ab850c875c22b96e709b611a66c81a6068a943d50cb",
+                "10.0.0.3:30050/petclinic/petclinic@sha256:895a0b8ae06edbc78651beafaf13238389f1bf35239c1f19d2b382fd809ec5c7",
+                "10.0.0.3:30050/petclinic/petclinic:0.4.0-ci-21",
+                "10.0.0.3:30050/petclinic/petclinic:0.4.0-ci-22"
+              ],
+              "sizeBytes": 183578925
+            },
+            {
+              "names": [
+                "10.0.0.3:30050/petclinic/petclinic@sha256:10187139872e08b6cc9b00833632e1c3ae9c78c0e16655dd5c86bee39f3264eb",
+                "10.0.0.3:30050/petclinic/petclinic@sha256:50c6834e555e96a8bc8968e7608f436b7fc4c1a8f61ab0922ccc269b8bb3cec7",
+                "10.0.0.3:30050/petclinic/petclinic:0.4.0-ci-31",
+                "10.0.0.3:30050/petclinic/petclinic:0.4.0-ci-32"
+              ],
+              "sizeBytes": 183578924
+            },
+            {
+              "names": [
+                "10.0.0.3:30050/petclinic/petclinic@sha256:7cb3949d5981f3585bdd5272591fcff053b08c2edf2d66cd80d202398ce79094",
+                "10.0.0.3:30050/petclinic/petclinic:0.4.0-ci-29"
+              ],
+              "sizeBytes": 183578922
+            },
+            {
+              "names": [
+                "10.0.0.3:30050/petclinic/petclinic@sha256:1a11061638517d3b633af42b9ef4b29fb88bba9680850e9f31d8bf66275a182c",
+                "10.0.0.3:30050/petclinic/petclinic:0.4.0-ci-39"
+              ],
+              "sizeBytes": 183578922
+            },
+            {
+              "names": [
+                "10.0.0.3:30050/petclinic/petclinic@sha256:39599b3b09d121f9d907b393e1543d430d0f990ec2f6d5d37737eba32d3aebda",
+                "10.0.0.3:30050/petclinic/petclinic:0.4.0-ci-34"
+              ],
+              "sizeBytes": 183578921
+            },
+            {
+              "names": [
+                "10.0.0.3:30050/petclinic/petclinic@sha256:a8f03da166e70496f345200fec310b543500c5e9ecaf0d253c327be668dc4156",
+                "10.0.0.3:30050/petclinic/petclinic@sha256:bc7929a1fd4b0212c18f5d92253dec36ebd9f94993d387f50ce7ceebdf3381a6",
+                "10.0.0.3:30050/petclinic/petclinic:0.4.0-ci-19",
+                "10.0.0.3:30050/petclinic/petclinic:0.4.0-ci-20"
+              ],
+              "sizeBytes": 183578910
+            },
+            {
+              "names": [
+                "10.0.0.3:30050/petclinic/petclinic@sha256:a7420496fbc6aed77fe4677b373797c05f4c09203a19a42809ca2015b55609f3",
+                "10.0.0.3:30050/petclinic/petclinic:0.4.0-ci-23"
+              ],
+              "sizeBytes": 183578904
+            },
+            {
+              "names": [
+                "10.0.0.3:30050/petclinic/petclinic@sha256:004d4a125277aa81c857853e6a6b7c915e8365d7baaeea24ab90b281b37364c8",
+                "10.0.0.3:30050/petclinic/petclinic@sha256:2a6964b92d78101ef1213590716f58fcc37b5b09132dc7304a7f6d71b5b78902",
+                "10.0.0.3:30050/petclinic/petclinic@sha256:389851f227e3ab465b2ce483b103911d6eb68926eceddd28a0a67b9d98377766",
+                "10.0.0.3:30050/petclinic/petclinic@sha256:55244c71db11672ed6fee4fab3842c0584e174724754f356ee9e493b3a79a533",
+                "10.0.0.3:30050/petclinic/petclinic@sha256:71c779db26a3c13b4e3df289d53a415dd3bdeb1c3db8fe1ec817760775806f69"
+              ],
+              "sizeBytes": 183578891
+            },
+            {
+              "names": [
+                "10.0.0.3:30050/petclinic/petclinic@sha256:1ce4827b42cfa36dfa9be03981a90291f4a4ddad63921fd1e476be0e5451695f",
+                "10.0.0.3:30050/petclinic/petclinic@sha256:d54cae71bef414e6950191c3e2046c59c9b6da9b1479f95764fdf4f74f674631",
+                "10.0.0.3:30050/petclinic/petclinic:0.4.0-ci-24",
+                "10.0.0.3:30050/petclinic/petclinic:0.4.0-ci-25"
+              ],
+              "sizeBytes": 183578874
+            },
+            {
+              "names": [
+                "10.0.0.3:30050/petclinic/petclinic@sha256:1fb002537a5986021b5ac10d790ce4b8e43df80cff499aa094e3e7de94ae3433",
+                "10.0.0.3:30050/petclinic/petclinic@sha256:bef20d5c3f8882f69fa10f293059f0062a0832756a619d00963fc75145a107d4",
+                "10.0.0.3:30050/petclinic/petclinic:0.4.0-ci-55",
+                "10.0.0.3:30050/petclinic/petclinic:0.4.0-ci-56"
+              ],
+              "sizeBytes": 183578873
+            },
+            {
+              "names": [
+                "10.0.0.3:30050/petclinic/petclinic@sha256:07f446681566becf66fc1fe0443423fddc3408546d26789726a2257a26340a1e",
+                "10.0.0.3:30050/petclinic/petclinic:0.4.0-ci-36"
+              ],
+              "sizeBytes": 183578872
+            },
+            {
+              "names": [
+                "10.0.0.3:30050/petclinic/petclinic@sha256:e497ac3bcdd919dcc4b42fa145178577ebda20ca0e758e33012b523d0a72a24b",
+                "10.0.0.3:30050/petclinic/petclinic:0.4.0-ci-11"
+              ],
+              "sizeBytes": 183578862
+            },
+            {
+              "names": [
+                "10.0.0.3:30050/petclinic/petclinic@sha256:1b5af13089812173b43dc8400cea10d75b626015c6489ca6d28b6d497230102c",
+                "10.0.0.3:30050/petclinic/petclinic@sha256:53069700c66345ac006b516703e5fc4f99968daeab86f4adffb60f18861e73a8",
+                "10.0.0.3:30050/petclinic/petclinic:0.4.0-ci-48",
+                "10.0.0.3:30050/petclinic/petclinic:0.4.0-ci-49"
+              ],
+              "sizeBytes": 183578814
+            },
+            {
+              "names": [
+                "10.0.0.3:30050/petclinic/petclinic@sha256:26ee79e9460ff18d585bfc3768da6fbd5c5f87d840555df8ccf3efb667fde2f9",
+                "10.0.0.3:30050/petclinic/petclinic@sha256:ee213b6c220a33520e756cec57d1e823548a127017970fd6d212b3a56fedee14",
+                "10.0.0.3:30050/petclinic/petclinic:0.4.0-ci-26",
+                "10.0.0.3:30050/petclinic/petclinic:0.4.0-ci-27"
+              ],
+              "sizeBytes": 183578799
+            },
+            {
+              "names": [
+                "10.0.0.3:30050/petclinic/petclinic@sha256:5745084838a8dc580f68bcd80d2c833765c05bda790cbe649c80c6640b524f79",
+                "10.0.0.3:30050/petclinic/petclinic@sha256:ce48ad15b73e2904b2c1b988043229a39ff9eaef68782b0e2fef87360831398d",
+                "10.0.0.3:30050/petclinic/petclinic:0.4.0-ci-45",
+                "10.0.0.3:30050/petclinic/petclinic:0.4.0-ci-46"
+              ],
+              "sizeBytes": 183578796
+            },
+            {
+              "names": [
+                "10.0.0.3:30050/petclinic/petclinic@sha256:8eb2b5dd7fbe0ff8c1d8fda951aa941b1e9bf2331b86254008897c9dc52d530a",
+                "10.0.0.3:30050/petclinic/petclinic:0.4.0-ci-57"
+              ],
+              "sizeBytes": 183578790
+            },
+            {
+              "names": [
+                "10.0.0.3:30050/petclinic/petclinic@sha256:ec18242fa71bc6bfd1f21e04c3b76dfa1b99f28f116182a134009bb809341586",
+                "10.0.0.3:30050/petclinic/petclinic:0.3.0"
+              ],
+              "sizeBytes": 183578741
+            },
+            {
+              "names": [
+                "10.0.0.3:30050/petclinic/petclinic@sha256:82b90f6aaa251bb0b8cd45a2c0443b87685d3f84d8cb313d33d661e7dcb0c5f6",
+                "10.0.0.3:30050/petclinic/petclinic:0.2.0"
+              ],
+              "sizeBytes": 183578610
+            },
+            {
+              "names": [
+                "10.0.0.3:30050/petclinic/petclinic@sha256:e8b7ff35cff966786d966e6eb363ee788351a72c26655666563250222fef7aed",
+                "10.0.0.3:30050/petclinic/petclinic:0.8.0-ci-85"
+              ],
+              "sizeBytes": 177412977
+            },
+            {
+              "names": [
+                "10.0.0.3:30050/petclinic/petclinic@sha256:46ba83a75ee827419a43fb2d3a4d4d5f2293e0f7b9a765be61bc789c3571f4b5",
+                "10.0.0.3:30050/petclinic/petclinic:0.8.0-ci-87"
+              ],
+              "sizeBytes": 177412938
+            },
+            {
+              "names": [
+                "10.0.0.3:30050/petclinic/petclinic@sha256:086b91c1576483d97cb3196efcc8779c8f766844b882a4b85417632818a13f9d",
+                "10.0.0.3:30050/petclinic/petclinic:0.7.0-ci-82"
+              ],
+              "sizeBytes": 177409768
+            },
+            {
+              "names": [
+                "10.0.0.3:30050/petclinic/petclinic@sha256:8b3a4bcdcd975fc939e08e4742fbc52806e0084bb01cacf1eacf417f4d5f79d5",
+                "10.0.0.3:30050/petclinic/petclinic:0.6.0-ci-80"
+              ],
+              "sizeBytes": 175435805
+            },
+            {
+              "names": [
+                "10.0.0.3:30050/petclinic/petclinic@sha256:488526fac9b9f0ee58622239c3387319dcd4c42811ce6a2b9de27420b9d5f3e9",
+                "10.0.0.3:30050/petclinic/petclinic:0.5.0-ci-78"
+              ],
+              "sizeBytes": 175429645
+            },
+            {
+              "names": [
+                "10.0.0.3:30050/petclinic/petclinic@sha256:1f6c7a12f2e67db2f400a782f20c097ab3ce805c34d689c221d37d3115a4a2c7",
+                "10.0.0.3:30050/petclinic/petclinic:0.5.0-ci-77"
+              ],
+              "sizeBytes": 175429263
+            },
+            {
+              "names": [
+                "10.0.0.3:30050/petclinic/petclinic@sha256:17b5b01adb7fcdddadb48154962c588417c3a8df6b44a4927ab20aab13fffc1a",
+                "10.0.0.3:30050/petclinic/petclinic:0.4.0-ci-67"
+              ],
+              "sizeBytes": 175398477
+            },
+            {
+              "names": [
+                "10.0.0.3:30050/petclinic/petclinic@sha256:f155f032a8ac7f015fe133786f2df85301b7754b7a6347a93404a2f2617884fe",
+                "10.0.0.3:30050/petclinic/petclinic:0.4.0-ci-73"
+              ],
+              "sizeBytes": 175398447
+            },
+            {
+              "names": [
+                "10.0.0.3:30050/petclinic/petclinic@sha256:0ab0e0ae25b43f39e329c012e707dae535cb7976e7550581a387d5cf0c5de160",
+                "10.0.0.3:30050/petclinic/petclinic:0.4.0-ci-74"
+              ],
+              "sizeBytes": 175398431
+            },
+            {
+              "names": [
+                "10.0.0.3:30050/petclinic/petclinic@sha256:b190810ceef422d875bbda33cb5eb36a82b903641ef7e8555266838ed810dc57",
+                "10.0.0.3:30050/petclinic/petclinic:0.4.0-ci-75"
+              ],
+              "sizeBytes": 175398429
+            },
+            {
+              "names": [
+                "10.0.0.3:30050/petclinic/petclinic@sha256:fe83245e674a098434ebca241fd554aa3ca4dadbab777580c191e9d0a22a7ace",
+                "10.0.0.3:30050/petclinic/petclinic:0.4.0-ci-64"
+              ],
+              "sizeBytes": 175388658
+            },
+            {
+              "names": [
+                "10.0.0.3:30050/petclinic/petclinic@sha256:1ff021fe2651c02b92f4f49ee38540dbc71ab210fee31bc1c18094db6daea587",
+                "10.0.0.3:30050/petclinic/petclinic@sha256:c31f70e80ea046dda2b32af41d639e4bf7dac2dddf8527a458502b3e0e1e1500",
+                "10.0.0.3:30050/petclinic/petclinic:0.4.0-ci-65",
+                "10.0.0.3:30050/petclinic/petclinic:0.4.0-ci-66"
+              ],
+              "sizeBytes": 175388614
+            },
+            {
+              "names": [
+                "docker.io/grafana/alloy@sha256:0f4434c92b3e6cdac38bb129b344e1790c246f7b6e2eaffcc16a5fa363240e33",
+                "docker.io/grafana/alloy:v1.18.1"
+              ],
+              "sizeBytes": 171026662
+            },
+            {
+              "names": [
+                "10.0.0.3:30050/library/postgres-arm64:18.4",
+                "10.0.0.3:30050/library/postgres:18.4",
+                "docker.io/library/postgres:18.4"
+              ],
+              "sizeBytes": 162375656
+            },
+            {
+              "names": [
+                "10.0.0.3:30050/diagnostics/postgres@sha256:4301b1f81d6ec4fd0d8dc5b34c7d6aa2946d5cd7afc794fd644d6f1973a55f37",
+                "10.0.0.3:30050/diagnostics/postgres:18.4"
+              ],
+              "sizeBytes": 160972596
+            },
+            {
+              "names": [
+                "10.0.0.3:30050/diagnostics/postgres@sha256:0826e5f2996099babb925e09fb72bf2c6eb5d187cfcae20aa9291af1612307e4",
+                "10.0.0.3:30050/diagnostics/postgres:18.4-amd64"
+              ],
+              "sizeBytes": 160971677
+            },
+            {
+              "names": [
+                "127.0.0.1:30050/platform-upgrade/grafana-alloy@sha256:53a7f350ef2b4fa06993c88041c7c85fb6a34309500d5197ebdf5222ddf278dc",
+                "127.0.0.1:30050/platform-upgrade/grafana-alloy:v1.18.1-arm64"
+              ],
+              "sizeBytes": 157246834
+            }
+          ],
+          "nodeInfo": {
+            "architecture": "amd64",
+            "bootID": "f82865b5-4520-4bbb-ad29-70373d659afb",
+            "containerRuntimeVersion": "containerd://2.2.3-k3s1",
+            "kernelVersion": "5.15.0-113-generic",
+            "kubeProxyVersion": "",
+            "kubeletVersion": "v1.36.1+k3s1",
+            "machineID": "9f25fa7ef5d05a68de9ce9f576ff50e1",
+            "operatingSystem": "linux",
+            "osImage": "Ubuntu 22.04.4 LTS",
+            "systemUUID": "b5a53265-9d29-49ac-8b46-96a739441e7c"
+          },
+          "runtimeHandlers": [
+            {
+              "features": {
+                "recursiveReadOnlyMounts": true,
+                "userNamespaces": true
+              },
+              "name": ""
+            },
+            {
+              "features": {
+                "recursiveReadOnlyMounts": true,
+                "userNamespaces": true
+              },
+              "name": "runc"
+            },
+            {
+              "features": {
+                "recursiveReadOnlyMounts": false,
+                "userNamespaces": false
+              },
+              "name": "runhcs-wcow-process"
+            }
+          ]
+        }
+      }
+    ],
+    "kind": "List",
+    "metadata": {
+      "resourceVersion": ""
+    }
+  },
+  "pods": [
+    {
+      "namespace": "argocd",
+      "name": "argocd-application-controller-0",
+      "spec": {
+        "nodeName": "devops",
+        "containers": [
+          {
+            "name": "argocd-application-controller",
+            "resources": {
+              "limits": {
+                "cpu": "500m",
+                "memory": "512Mi"
+              },
+              "requests": {
+                "cpu": "50m",
+                "memory": "128Mi"
+              }
+            }
+          }
+        ],
+        "initContainers": []
+      },
+      "phase": "Running"
+    },
+    {
+      "namespace": "argocd",
+      "name": "argocd-applicationset-controller-79958f54f7-mskbf",
+      "spec": {
+        "nodeName": "devops",
+        "containers": [
+          {
+            "name": "argocd-applicationset-controller",
+            "resources": {}
+          }
+        ],
+        "initContainers": []
+      },
+      "phase": "Running"
+    },
+    {
+      "namespace": "argocd",
+      "name": "argocd-dex-server-766b8f97dc-s9jwg",
+      "spec": {
+        "nodeName": "devops",
+        "containers": [
+          {
+            "name": "dex",
+            "resources": {}
+          }
+        ],
+        "initContainers": [
+          {
+            "resources": {}
+          }
+        ]
+      },
+      "phase": "Running"
+    },
+    {
+      "namespace": "argocd",
+      "name": "argocd-notifications-controller-679f4c8dd5-r6mf6",
+      "spec": {
+        "nodeName": "devops",
+        "containers": [
+          {
+            "name": "argocd-notifications-controller",
+            "resources": {}
+          }
+        ],
+        "initContainers": []
+      },
+      "phase": "Running"
+    },
+    {
+      "namespace": "argocd",
+      "name": "argocd-redis-5c656fcdcb-g6w6z",
+      "spec": {
+        "nodeName": "devops",
+        "containers": [
+          {
+            "name": "redis",
+            "resources": {}
+          }
+        ],
+        "initContainers": [
+          {
+            "resources": {}
+          }
+        ]
+      },
+      "phase": "Running"
+    },
+    {
+      "namespace": "argocd",
+      "name": "argocd-repo-server-75dc648fcc-ph2z9",
+      "spec": {
+        "nodeName": "devops",
+        "containers": [
+          {
+            "name": "argocd-repo-server",
+            "resources": {}
+          }
+        ],
+        "initContainers": [
+          {
+            "resources": {}
+          }
+        ]
+      },
+      "phase": "Running"
+    },
+    {
+      "namespace": "argocd",
+      "name": "argocd-server-f67c4458c-b75h2",
+      "spec": {
+        "nodeName": "devops",
+        "containers": [
+          {
+            "name": "argocd-server",
+            "resources": {}
+          }
+        ],
+        "initContainers": []
+      },
+      "phase": "Running"
+    },
+    {
+      "namespace": "data-infra",
+      "name": "airflow-triggerer-0",
+      "spec": {
+        "nodeName": "devops",
+        "containers": [
+          {
+            "name": "triggerer",
+            "resources": {
+              "limits": {
+                "cpu": "500m",
+                "memory": "768Mi"
+              },
+              "requests": {
+                "cpu": "50m",
+                "memory": "256Mi"
+              }
+            }
+          },
+          {
+            "name": "triggerer-log-groomer",
+            "resources": {}
+          }
+        ],
+        "initContainers": [
+          {
+            "resources": {}
+          }
+        ]
+      },
+      "phase": "Running"
+    },
+    {
+      "namespace": "data-infra",
+      "name": "superset-654dc6f9fc-mgxdj",
+      "spec": {
+        "nodeName": "devops",
+        "containers": [
+          {
+            "name": "superset",
+            "resources": {
+              "limits": {
+                "memory": "512Mi"
+              },
+              "requests": {
+                "memory": "256Mi"
+              }
+            }
+          }
+        ],
+        "initContainers": [
+          {
+            "resources": {}
+          }
+        ]
+      },
+      "phase": "Running"
+    },
+    {
+      "namespace": "data-infra",
+      "name": "superset-redis-master-0",
+      "spec": {
+        "nodeName": "devops",
+        "containers": [
+          {
+            "name": "redis",
+            "resources": {
+              "limits": {
+                "memory": "128Mi"
+              },
+              "requests": {
+                "memory": "64Mi"
+              }
+            }
+          }
+        ],
+        "initContainers": []
+      },
+      "phase": "Running"
+    },
+    {
+      "namespace": "data-infra",
+      "name": "superset-worker-d88b6f5d8-rq4hv",
+      "spec": {
+        "nodeName": "devops",
+        "containers": [
+          {
+            "name": "superset",
+            "resources": {}
+          }
+        ],
+        "initContainers": [
+          {
+            "resources": {}
+          }
+        ]
+      },
+      "phase": "Running"
+    },
+    {
+      "namespace": "data-infra",
+      "name": "trino-coordinator-5d8cdfb749-4z5hh",
+      "spec": {
+        "nodeName": "devops",
+        "containers": [
+          {
+            "name": "trino-coordinator",
+            "resources": {
+              "limits": {
+                "memory": "2Gi"
+              },
+              "requests": {
+                "memory": "512Mi"
+              }
+            }
+          }
+        ],
+        "initContainers": []
+      },
+      "phase": "Running"
+    },
+    {
+      "namespace": "data-infra",
+      "name": "trino-worker-5dd5d6cdc5-qcc6v",
+      "spec": {
+        "nodeName": "ucloud-worker",
+        "containers": [
+          {
+            "name": "trino-worker",
+            "resources": {
+              "limits": {
+                "memory": "2Gi"
+              },
+              "requests": {
+                "cpu": "250m",
+                "memory": "1Gi"
+              }
+            }
+          }
+        ],
+        "initContainers": []
+      },
+      "phase": "Running"
+    },
+    {
+      "namespace": "default",
+      "name": "elasticsearch-6dddd94847-zhz7f",
+      "spec": {
+        "nodeName": "devops",
+        "containers": [
+          {
+            "name": "elasticsearch",
+            "resources": {
+              "limits": {
+                "memory": "2Gi"
+              },
+              "requests": {
+                "memory": "1Gi"
+              }
+            }
+          }
+        ],
+        "initContainers": []
+      },
+      "phase": "Running"
+    },
+    {
+      "namespace": "default",
+      "name": "filebeat-6jmd8",
+      "spec": {
+        "nodeName": "devops",
+        "containers": [
+          {
+            "name": "filebeat",
+            "resources": {}
+          }
+        ],
+        "initContainers": []
+      },
+      "phase": "Running"
+    },
+    {
+      "namespace": "default",
+      "name": "filebeat-gzjtm",
+      "spec": {
+        "nodeName": "ucloud-worker",
+        "containers": [
+          {
+            "name": "filebeat",
+            "resources": {}
+          }
+        ],
+        "initContainers": []
+      },
+      "phase": "Running"
+    },
+    {
+      "namespace": "default",
+      "name": "filebeat-txkf5",
+      "spec": {
+        "nodeName": "aliyun-worker",
+        "containers": [
+          {
+            "name": "filebeat",
+            "resources": {}
+          }
+        ],
+        "initContainers": []
+      },
+      "phase": "Running"
+    },
+    {
+      "namespace": "default",
+      "name": "kibana-687c479669-68qfj",
+      "spec": {
+        "nodeName": "devops",
+        "containers": [
+          {
+            "name": "kibana",
+            "resources": {
+              "limits": {
+                "cpu": "500m",
+                "memory": "2Gi"
+              },
+              "requests": {
+                "cpu": "50m",
+                "memory": "512Mi"
+              }
+            }
+          }
+        ],
+        "initContainers": []
+      },
+      "phase": "Running"
+    },
+    {
+      "namespace": "harbor",
+      "name": "harbor-core-79fb89df74-x65sk",
+      "spec": {
+        "nodeName": "devops",
+        "containers": [
+          {
+            "name": "core",
+            "resources": {}
+          }
+        ],
+        "initContainers": []
+      },
+      "phase": "Running"
+    },
+    {
+      "namespace": "harbor",
+      "name": "harbor-database-0",
+      "spec": {
+        "nodeName": "devops",
+        "containers": [
+          {
+            "name": "database",
+            "resources": {}
+          }
+        ],
+        "initContainers": [
+          {
+            "resources": {}
+          }
+        ]
+      },
+      "phase": "Running"
+    },
+    {
+      "namespace": "harbor",
+      "name": "harbor-jobservice-58b75bb8dc-znsdf",
+      "spec": {
+        "nodeName": "devops",
+        "containers": [
+          {
+            "name": "jobservice",
+            "resources": {}
+          }
+        ],
+        "initContainers": []
+      },
+      "phase": "Running"
+    },
+    {
+      "namespace": "harbor",
+      "name": "harbor-portal-546b6c47b4-jsvw9",
+      "spec": {
+        "nodeName": "devops",
+        "containers": [
+          {
+            "name": "portal",
+            "resources": {}
+          }
+        ],
+        "initContainers": []
+      },
+      "phase": "Running"
+    },
+    {
+      "namespace": "harbor",
+      "name": "harbor-redis-arm64-6478fb4c64-8dkht",
+      "spec": {
+        "nodeName": "devops",
+        "containers": [
+          {
+            "name": "redis",
+            "resources": {}
+          }
+        ],
+        "initContainers": []
+      },
+      "phase": "Running"
+    },
+    {
+      "namespace": "harbor",
+      "name": "harbor-registry-5fdb7fb997-lkpck",
+      "spec": {
+        "nodeName": "devops",
+        "containers": [
+          {
+            "name": "registry",
+            "resources": {}
+          },
+          {
+            "name": "registryctl",
+            "resources": {}
+          }
+        ],
+        "initContainers": []
+      },
+      "phase": "Running"
+    },
+    {
+      "namespace": "harbor",
+      "name": "harbor-trivy-0",
+      "spec": {
+        "nodeName": "devops",
+        "containers": [
+          {
+            "name": "trivy",
+            "resources": {
+              "limits": {
+                "cpu": "1",
+                "memory": "1Gi"
+              },
+              "requests": {
+                "cpu": "200m",
+                "memory": "512Mi"
+              }
+            }
+          }
+        ],
+        "initContainers": []
+      },
+      "phase": "Running"
+    },
+    {
+      "namespace": "kube-system",
+      "name": "coredns-68859b4dd-pxkmc",
+      "spec": {
+        "nodeName": "devops",
+        "containers": [
+          {
+            "name": "coredns",
+            "resources": {
+              "limits": {
+                "memory": "170Mi"
+              },
+              "requests": {
+                "cpu": "100m",
+                "memory": "70Mi"
+              }
+            }
+          }
+        ],
+        "initContainers": []
+      },
+      "phase": "Running"
+    },
+    {
+      "namespace": "kube-system",
+      "name": "local-path-provisioner-5d5cfd7fd7-s5pxz",
+      "spec": {
+        "nodeName": "devops",
+        "containers": [
+          {
+            "name": "local-path-provisioner",
+            "resources": {}
+          }
+        ],
+        "initContainers": []
+      },
+      "phase": "Running"
+    },
+    {
+      "namespace": "kube-system",
+      "name": "metrics-server-74559cc84c-4gjnf",
+      "spec": {
+        "nodeName": "devops",
+        "containers": [
+          {
+            "name": "metrics-server",
+            "resources": {
+              "requests": {
+                "cpu": "100m",
+                "memory": "70Mi"
+              }
+            }
+          }
+        ],
+        "initContainers": []
+      },
+      "phase": "Running"
+    },
+    {
+      "namespace": "kube-system",
+      "name": "svclb-traefik-3eaada12-4ltjp",
+      "spec": {
+        "nodeName": "devops",
+        "containers": [
+          {
+            "name": "lb-tcp-80",
+            "resources": {}
+          },
+          {
+            "name": "lb-tcp-443",
+            "resources": {}
+          }
+        ],
+        "initContainers": []
+      },
+      "phase": "Running"
+    },
+    {
+      "namespace": "kube-system",
+      "name": "traefik-5568f87f6b-lr2tn",
+      "spec": {
+        "nodeName": "devops",
+        "containers": [
+          {
+            "name": "traefik",
+            "resources": {
+              "limits": {
+                "memory": "512Mi"
+              },
+              "requests": {
+                "cpu": "100m",
+                "memory": "128Mi"
+              }
+            }
+          }
+        ],
+        "initContainers": []
+      },
+      "phase": "Running"
+    },
+    {
+      "namespace": "monitoring",
+      "name": "alloy-2s9d4",
+      "spec": {
+        "nodeName": "ucloud-worker",
+        "containers": [
+          {
+            "name": "alloy",
+            "resources": {}
+          },
+          {
+            "name": "config-reloader",
+            "resources": {
+              "requests": {
+                "cpu": "10m",
+                "memory": "50Mi"
+              }
+            }
+          }
+        ],
+        "initContainers": []
+      },
+      "phase": "Running"
+    },
+    {
+      "namespace": "monitoring",
+      "name": "alloy-7jjkn",
+      "spec": {
+        "nodeName": "devops",
+        "containers": [
+          {
+            "name": "alloy",
+            "resources": {}
+          },
+          {
+            "name": "config-reloader",
+            "resources": {
+              "requests": {
+                "cpu": "10m",
+                "memory": "50Mi"
+              }
+            }
+          }
+        ],
+        "initContainers": []
+      },
+      "phase": "Running"
+    },
+    {
+      "namespace": "monitoring",
+      "name": "alloy-lhjvd",
+      "spec": {
+        "nodeName": "aliyun-worker",
+        "containers": [
+          {
+            "name": "alloy",
+            "resources": {}
+          },
+          {
+            "name": "config-reloader",
+            "resources": {
+              "requests": {
+                "cpu": "10m",
+                "memory": "50Mi"
+              }
+            }
+          }
+        ],
+        "initContainers": []
+      },
+      "phase": "Running"
+    },
+    {
+      "namespace": "monitoring",
+      "name": "jaeger-f97bb8cc4-gpjhm",
+      "spec": {
+        "nodeName": "devops",
+        "containers": [
+          {
+            "name": "jaeger",
+            "resources": {}
+          }
+        ],
+        "initContainers": []
+      },
+      "phase": "Running"
+    },
+    {
+      "namespace": "monitoring",
+      "name": "kube-stack-grafana-7ff6b767dd-2kmv5",
+      "spec": {
+        "nodeName": "devops",
+        "containers": [
+          {
+            "name": "grafana-sc-dashboard",
+            "resources": {}
+          },
+          {
+            "name": "grafana-sc-datasources",
+            "resources": {}
+          },
+          {
+            "name": "grafana",
+            "resources": {
+              "limits": {
+                "cpu": "500m",
+                "memory": "768Mi"
+              },
+              "requests": {
+                "cpu": "50m",
+                "memory": "256Mi"
+              }
+            }
+          }
+        ],
+        "initContainers": []
+      },
+      "phase": "Running"
+    },
+    {
+      "namespace": "monitoring",
+      "name": "kube-stack-kube-prometheus-operator-5d6477dcd5-6np8n",
+      "spec": {
+        "nodeName": "devops",
+        "containers": [
+          {
+            "name": "kube-prometheus-stack",
+            "resources": {}
+          }
+        ],
+        "initContainers": []
+      },
+      "phase": "Running"
+    },
+    {
+      "namespace": "monitoring",
+      "name": "kube-stack-kube-state-metrics-8449d6d76b-4cdrh",
+      "spec": {
+        "nodeName": "devops",
+        "containers": [
+          {
+            "name": "kube-state-metrics",
+            "resources": {}
+          }
+        ],
+        "initContainers": []
+      },
+      "phase": "Running"
+    },
+    {
+      "namespace": "monitoring",
+      "name": "kube-stack-prometheus-node-exporter-729qr",
+      "spec": {
+        "nodeName": "aliyun-worker",
+        "containers": [
+          {
+            "name": "node-exporter",
+            "resources": {}
+          }
+        ],
+        "initContainers": []
+      },
+      "phase": "Running"
+    },
+    {
+      "namespace": "monitoring",
+      "name": "kube-stack-prometheus-node-exporter-dhw2h",
+      "spec": {
+        "nodeName": "ucloud-worker",
+        "containers": [
+          {
+            "name": "node-exporter",
+            "resources": {}
+          }
+        ],
+        "initContainers": []
+      },
+      "phase": "Running"
+    },
+    {
+      "namespace": "monitoring",
+      "name": "kube-stack-prometheus-node-exporter-rq7tc",
+      "spec": {
+        "nodeName": "devops",
+        "containers": [
+          {
+            "name": "node-exporter",
+            "resources": {}
+          }
+        ],
+        "initContainers": []
+      },
+      "phase": "Running"
+    },
+    {
+      "namespace": "monitoring",
+      "name": "loki-0",
+      "spec": {
+        "nodeName": "devops",
+        "containers": [
+          {
+            "name": "loki",
+            "resources": {
+              "limits": {
+                "cpu": "500m",
+                "memory": "512Mi"
+              },
+              "requests": {
+                "cpu": "50m",
+                "memory": "128Mi"
+              }
+            }
+          },
+          {
+            "name": "loki-sc-rules",
+            "resources": {}
+          }
+        ],
+        "initContainers": []
+      },
+      "phase": "Running"
+    },
+    {
+      "namespace": "monitoring",
+      "name": "otel-collector-84f8575866-t9msh",
+      "spec": {
+        "nodeName": "devops",
+        "containers": [
+          {
+            "name": "otel-collector",
+            "resources": {
+              "limits": {
+                "cpu": "200m",
+                "memory": "256Mi"
+              },
+              "requests": {
+                "cpu": "25m",
+                "memory": "64Mi"
+              }
+            }
+          }
+        ],
+        "initContainers": []
+      },
+      "phase": "Running"
+    },
+    {
+      "namespace": "monitoring",
+      "name": "prometheus-kube-stack-kube-prometheus-prometheus-0",
+      "spec": {
+        "nodeName": "devops",
+        "containers": [
+          {
+            "name": "prometheus",
+            "resources": {
+              "requests": {
+                "memory": "400Mi"
+              }
+            }
+          },
+          {
+            "name": "config-reloader",
+            "resources": {}
+          }
+        ],
+        "initContainers": [
+          {
+            "resources": {}
+          }
+        ]
+      },
+      "phase": "Running"
+    },
+    {
+      "namespace": "ns-apps",
+      "name": "hello-app-6796587b9f-v9gmj",
+      "spec": {
+        "nodeName": "devops",
+        "containers": [
+          {
+            "name": "hello-app",
+            "resources": {
+              "limits": {
+                "cpu": "200m",
+                "memory": "256Mi"
+              },
+              "requests": {
+                "cpu": "50m",
+                "memory": "64Mi"
+              }
+            }
+          }
+        ],
+        "initContainers": []
+      },
+      "phase": "Running"
+    },
+    {
+      "namespace": "ns-apps",
+      "name": "jkvideo-web-688b5965b4-5xhw8",
+      "spec": {
+        "nodeName": "devops",
+        "containers": [
+          {
+            "name": "jkvideo-web",
+            "resources": {}
+          }
+        ],
+        "initContainers": []
+      },
+      "phase": "Running"
+    },
+    {
+      "namespace": "ns-bigdata",
+      "name": "filebeat-kafka-gbcb7",
+      "spec": {
+        "nodeName": "devops",
+        "containers": [
+          {
+            "name": "filebeat",
+            "resources": {}
+          }
+        ],
+        "initContainers": []
+      },
+      "phase": "Running"
+    },
+    {
+      "namespace": "ns-bigdata",
+      "name": "filebeat-kafka-mlj4m",
+      "spec": {
+        "nodeName": "ucloud-worker",
+        "containers": [
+          {
+            "name": "filebeat",
+            "resources": {}
+          }
+        ],
+        "initContainers": []
+      },
+      "phase": "Running"
+    },
+    {
+      "namespace": "ns-bigdata",
+      "name": "filebeat-kafka-shwrc",
+      "spec": {
+        "nodeName": "aliyun-worker",
+        "containers": [
+          {
+            "name": "filebeat",
+            "resources": {}
+          }
+        ],
+        "initContainers": []
+      },
+      "phase": "Running"
+    },
+    {
+      "namespace": "ns-bigdata",
+      "name": "kafka-65d4d8d4bc-xv8c9",
+      "spec": {
+        "nodeName": "devops",
+        "containers": [
+          {
+            "name": "kafka",
+            "resources": {
+              "limits": {
+                "memory": "1Gi"
+              },
+              "requests": {
+                "memory": "512Mi"
+              }
+            }
+          }
+        ],
+        "initContainers": []
+      },
+      "phase": "Running"
+    },
+    {
+      "namespace": "ns-data",
+      "name": "mysql-774889fb45-2bxr4",
+      "spec": {
+        "nodeName": "devops",
+        "containers": [
+          {
+            "name": "mysql",
+            "resources": {}
+          }
+        ],
+        "initContainers": []
+      },
+      "phase": "Running"
+    },
+    {
+      "namespace": "ns-data",
+      "name": "mysql-replica-65bfcddfc9-pd4fq",
+      "spec": {
+        "nodeName": "devops",
+        "containers": [
+          {
+            "name": "mysql",
+            "resources": {
+              "limits": {
+                "cpu": "1",
+                "memory": "768Mi"
+              },
+              "requests": {
+                "cpu": "100m",
+                "memory": "256Mi"
+              }
+            }
+          }
+        ],
+        "initContainers": []
+      },
+      "phase": "Running"
+    },
+    {
+      "namespace": "ns-data",
+      "name": "postgresql-6fd49d6467-rdjk9",
+      "spec": {
+        "nodeName": "devops",
+        "containers": [
+          {
+            "name": "harbor-db",
+            "resources": {}
+          }
+        ],
+        "initContainers": []
+      },
+      "phase": "Running"
+    },
+    {
+      "namespace": "ns-devops",
+      "name": "flaresolverr-df88978dd-qkxw5",
+      "spec": {
+        "nodeName": "devops",
+        "containers": [
+          {
+            "name": "flaresolverr",
+            "resources": {
+              "limits": {
+                "cpu": "500m",
+                "memory": "768Mi"
+              },
+              "requests": {
+                "cpu": "80m",
+                "memory": "192Mi"
+              }
+            }
+          }
+        ],
+        "initContainers": []
+      },
+      "phase": "Running"
+    },
+    {
+      "namespace": "ns-devops",
+      "name": "github-webhook-relay-849556c7c8-7kwsb",
+      "spec": {
+        "nodeName": "devops",
+        "containers": [
+          {
+            "name": "relay",
+            "resources": {
+              "limits": {
+                "memory": "96Mi"
+              },
+              "requests": {
+                "cpu": "5m",
+                "memory": "32Mi"
+              }
+            }
+          }
+        ],
+        "initContainers": []
+      },
+      "phase": "Running"
+    },
+    {
+      "namespace": "ns-devops",
+      "name": "gitlab-578fd9dcbb-kc8rh",
+      "spec": {
+        "nodeName": "devops",
+        "containers": [
+          {
+            "name": "gitlab",
+            "resources": {
+              "limits": {
+                "memory": "4Gi"
+              },
+              "requests": {
+                "cpu": "250m",
+                "memory": "2560Mi"
+              }
+            }
+          }
+        ],
+        "initContainers": []
+      },
+      "phase": "Running"
+    },
+    {
+      "namespace": "ns-devops",
+      "name": "gitlab-runner-84c867fc49-lkxcz",
+      "spec": {
+        "nodeName": "devops",
+        "containers": [
+          {
+            "name": "gitlab-runner",
+            "resources": {}
+          }
+        ],
+        "initContainers": []
+      },
+      "phase": "Running"
+    },
+    {
+      "namespace": "ns-devops",
+      "name": "jenkins-6955bc6b65-lhspt",
+      "spec": {
+        "nodeName": "devops",
+        "containers": [
+          {
+            "name": "jenkins",
+            "resources": {
+              "limits": {
+                "cpu": "2",
+                "memory": "3Gi"
+              },
+              "requests": {
+                "cpu": "500m",
+                "memory": "1Gi"
+              }
+            }
+          }
+        ],
+        "initContainers": [
+          {
+            "resources": {}
+          }
+        ]
+      },
+      "phase": "Running"
+    },
+    {
+      "namespace": "ns-devops",
+      "name": "jenkins-build-log-filebeat-es-65699f8fd9-2z6nm",
+      "spec": {
+        "nodeName": "devops",
+        "containers": [
+          {
+            "name": "filebeat",
+            "resources": {
+              "limits": {
+                "cpu": "200m",
+                "memory": "256Mi"
+              },
+              "requests": {
+                "cpu": "20m",
+                "memory": "96Mi"
+              }
+            }
+          }
+        ],
+        "initContainers": []
+      },
+      "phase": "Running"
+    },
+    {
+      "namespace": "ns-devops",
+      "name": "jenkins-build-log-filebeat-kafka-7868f4dbf7-v6thx",
+      "spec": {
+        "nodeName": "devops",
+        "containers": [
+          {
+            "name": "filebeat",
+            "resources": {
+              "limits": {
+                "cpu": "200m",
+                "memory": "256Mi"
+              },
+              "requests": {
+                "cpu": "20m",
+                "memory": "96Mi"
+              }
+            }
+          }
+        ],
+        "initContainers": []
+      },
+      "phase": "Running"
+    },
+    {
+      "namespace": "ns-devops",
+      "name": "local-registry-787c9549d6-dsplb",
+      "spec": {
+        "nodeName": "devops",
+        "containers": [
+          {
+            "name": "registry",
+            "resources": {
+              "limits": {
+                "memory": "512Mi"
+              },
+              "requests": {
+                "cpu": "50m",
+                "memory": "128Mi"
+              }
+            }
+          }
+        ],
+        "initContainers": []
+      },
+      "phase": "Running"
+    },
+    {
+      "namespace": "ns-devops",
+      "name": "portainer-687ffb46f7-zr77p",
+      "spec": {
+        "nodeName": "devops",
+        "containers": [
+          {
+            "name": "portainer",
+            "resources": {
+              "limits": {
+                "cpu": "200m",
+                "memory": "256Mi"
+              },
+              "requests": {
+                "cpu": "20m",
+                "memory": "64Mi"
+              }
+            }
+          }
+        ],
+        "initContainers": []
+      },
+      "phase": "Running"
+    },
+    {
+      "namespace": "petclinic",
+      "name": "petclinic-5c86d88b68-5c5mz",
+      "spec": {
+        "nodeName": "ucloud-worker",
+        "containers": [
+          {
+            "name": "petclinic",
+            "resources": {
+              "limits": {
+                "cpu": "500m",
+                "memory": "768Mi"
+              },
+              "requests": {
+                "cpu": "100m",
+                "memory": "256Mi"
+              }
+            }
+          }
+        ],
+        "initContainers": []
+      },
+      "phase": "Running"
+    },
+    {
+      "namespace": "petclinic",
+      "name": "petclinic-5c86d88b68-gq6zd",
+      "spec": {
+        "nodeName": "aliyun-worker",
+        "containers": [
+          {
+            "name": "petclinic",
+            "resources": {
+              "limits": {
+                "cpu": "500m",
+                "memory": "768Mi"
+              },
+              "requests": {
+                "cpu": "100m",
+                "memory": "256Mi"
+              }
+            }
+          }
+        ],
+        "initContainers": []
+      },
+      "phase": "Running"
+    },
+    {
+      "namespace": "petclinic",
+      "name": "petclinic-5c86d88b68-mgbnd",
+      "spec": {
+        "nodeName": "devops",
+        "containers": [
+          {
+            "name": "petclinic",
+            "resources": {
+              "limits": {
+                "cpu": "500m",
+                "memory": "768Mi"
+              },
+              "requests": {
+                "cpu": "100m",
+                "memory": "256Mi"
+              }
+            }
+          }
+        ],
+        "initContainers": []
+      },
+      "phase": "Running"
+    },
+    {
+      "namespace": "sonarqube",
+      "name": "sonarqube-sonarqube-0",
+      "spec": {
+        "nodeName": "devops",
+        "containers": [
+          {
+            "name": "sonarqube",
+            "resources": {
+              "limits": {
+                "cpu": "800m",
+                "ephemeral-storage": "10Gi",
+                "memory": "3Gi"
+              },
+              "requests": {
+                "cpu": "500m",
+                "ephemeral-storage": "1536M",
+                "memory": "1Gi"
+              }
+            }
+          }
+        ],
+        "initContainers": [
+          {
+            "resources": {}
+          },
+          {
+            "resources": {}
+          }
+        ]
+      },
+      "phase": "Running"
+    },
+    {
+      "namespace": "system-upgrade",
+      "name": "system-upgrade-controller-fb6bcd8b4-g22kt",
+      "spec": {
+        "nodeName": "devops",
+        "containers": [
+          {
+            "name": "system-upgrade-controller",
+            "resources": {}
+          }
+        ],
+        "initContainers": []
+      },
+      "phase": "Running"
+    }
+  ],
+  "metrics": {
+    "kind": "NodeMetricsList",
+    "apiVersion": "metrics.k8s.io/v1beta1",
+    "metadata": {},
+    "items": [
+      {
+        "metadata": {
+          "name": "aliyun-worker",
+          "creationTimestamp": "2026-10-05T19:23:34Z",
+          "labels": {
+            "beta.kubernetes.io/arch": "amd64",
+            "beta.kubernetes.io/instance-type": "k3s",
+            "beta.kubernetes.io/os": "linux",
+            "kubernetes.io/arch": "amd64",
+            "kubernetes.io/hostname": "aliyun-worker",
+            "kubernetes.io/os": "linux",
+            "node-role": "cloud-worker",
+            "node.kubernetes.io/instance-type": "k3s",
+            "node.zhanglab.io/expiry-risk": "true",
+            "node.zhanglab.io/important-workloads": "avoid",
+            "node.zhanglab.io/scheduling": "limited-cloud",
+            "plan.upgrade.cattle.io/k3s-agent-v1-36-1": "e2118e612ae451b26496650e4536b80f3b29ac540413af6ab7a1e77e"
+          }
+        },
+        "timestamp": "2026-10-05T19:23:21Z",
+        "window": "10.014s",
+        "usage": {
+          "cpu": "93868583n",
+          "memory": "1106052Ki"
+        }
+      },
+      {
+        "metadata": {
+          "name": "devops",
+          "creationTimestamp": "2026-10-05T19:23:34Z",
+          "labels": {
+            "beta.kubernetes.io/arch": "arm64",
+            "beta.kubernetes.io/instance-type": "k3s",
+            "beta.kubernetes.io/os": "linux",
+            "kubernetes.io/arch": "arm64",
+            "kubernetes.io/hostname": "devops",
+            "kubernetes.io/os": "linux",
+            "node-role": "master",
+            "node-role.kubernetes.io/control-plane": "true",
+            "node.kubernetes.io/instance-type": "k3s",
+            "plan.upgrade.cattle.io/k3s-server-v1-36-1": "e2118e612ae451b26496650e4536b80f3b29ac540413af6ab7a1e77e"
+          }
+        },
+        "timestamp": "2026-10-05T19:23:22Z",
+        "window": "10.184s",
+        "usage": {
+          "cpu": "1243421052n",
+          "memory": "16188736Ki"
+        }
+      },
+      {
+        "metadata": {
+          "name": "ucloud-worker",
+          "creationTimestamp": "2026-10-05T19:23:34Z",
+          "labels": {
+            "beta.kubernetes.io/arch": "amd64",
+            "beta.kubernetes.io/instance-type": "k3s",
+            "beta.kubernetes.io/os": "linux",
+            "kubernetes.io/arch": "amd64",
+            "kubernetes.io/hostname": "ucloud-worker",
+            "kubernetes.io/os": "linux",
+            "node-role": "cloud-worker",
+            "node.kubernetes.io/instance-type": "k3s",
+            "node.zhanglab.io/expiry-risk": "true",
+            "node.zhanglab.io/important-workloads": "avoid",
+            "node.zhanglab.io/scheduling": "limited-cloud",
+            "plan.upgrade.cattle.io/k3s-agent-v1-36-1": "e2118e612ae451b26496650e4536b80f3b29ac540413af6ab7a1e77e"
+          }
+        },
+        "timestamp": "2026-10-05T19:23:26Z",
+        "window": "20.037s",
+        "usage": {
+          "cpu": "77260018n",
+          "memory": "2436616Ki"
+        }
+      }
+    ]
+  }
+}

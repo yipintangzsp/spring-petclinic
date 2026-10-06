@@ -1,10 +1,17 @@
 """Bounded read-only HTTP load. Run on devops with Python stdlib; no image pull."""
-import argparse,collections,json,math,threading,time,urllib.request,concurrent.futures,subprocess
+import argparse,collections,json,math,threading,time,urllib.request,concurrent.futures,subprocess,signal
 from pathlib import Path
 p=argparse.ArgumentParser();p.add_argument('output');p.add_argument('--stage',action='append',required=True,help='name:qps:seconds');p.add_argument('--workers',type=int,default=6);args=p.parse_args()
 assert 1<=args.workers<=8
 opener=urllib.request.build_opener(urllib.request.ProxyHandler({})); paths=['/owners?q=Demo&page=1','/owners?q=Demo&page=2','/owners/1000001','/owners/1000001/pets/1000001','/pets?type=cat','/vets.html','/']
 stop=threading.Event();results=[]
+def interrupted(signum,frame):
+ results.append({'guard':'operator_stop','signal':signum,'time':time.time()});stop.set()
+signal.signal(signal.SIGTERM,interrupted);signal.signal(signal.SIGINT,interrupted)
+initial=json.loads(subprocess.check_output(['sudo','-n','k3s','kubectl','get','nodes','-o','json'],timeout=10))
+not_ready=[n['metadata']['name'] for n in initial['items'] if not any(c['type']=='Ready' and c['status']=='True' for c in n['status']['conditions'])]
+if not_ready:
+ Path(args.output).write_text(json.dumps([{'blocked':'Nodes not Ready; no load sent','nodes':not_ready,'time':time.time()}],indent=2));raise SystemExit(2)
 def request(n):
  start=time.monotonic()
  try:
@@ -17,6 +24,9 @@ def guard():
   try:
    nodes=json.loads(subprocess.check_output(['sudo','-n','k3s','kubectl','get','nodes','-o','json'],timeout=10))
    metrics=json.loads(subprocess.check_output(['sudo','-n','k3s','kubectl','get','--raw','/apis/metrics.k8s.io/v1beta1/nodes'],timeout=10))
+   bad=[n['metadata']['name']for n in nodes['items']if not any(c['type']=='Ready'and c['status']=='True'for c in n['status']['conditions'])]
+   if bad or len(metrics['items'])!=len(nodes['items']):
+    results.append({'guard':'node_not_ready_or_metrics_missing','nodes':bad,'time':time.time()});stop.set();continue
    capacities={n['metadata']['name']:int(n['status']['allocatable']['memory'].rstrip('Ki')) for n in nodes['items']}
    for n in metrics['items']:
     ratio=int(n['usage']['memory'].rstrip('Ki'))/capacities[n['metadata']['name']]

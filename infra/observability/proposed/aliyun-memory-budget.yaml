@@ -1,0 +1,7 @@
+# PROPOSAL ONLY. Not installed. Requires explicit approval because this changes
+# the kubelet budget for every workload on aliyun-worker.
+# Target: /etc/rancher/k3s/config.yaml.d/80-petclinic-memory-budget.yaml
+# k3s '+' appends instead of replacing pre-existing kubelet arguments.
+kubelet-arg+:
+  - system-reserved=memory=768Mi
+  - eviction-hard=memory.available<150Mi,nodefs.available<5%,imagefs.available<5%

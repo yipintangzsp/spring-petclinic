@@ -1,0 +1,239 @@
+{
+  "assumptions": {
+    "app_request_cpu": 0.1,
+    "app_request_memory_mib": 512,
+    "app_planning_memory_mib": 640,
+    "headroom_mib": {
+      "devops": 2048,
+      "aliyun-worker": 256,
+      "ucloud-worker": 512
+    },
+    "scope": "Unschedulable node with DB/control/storage still available; not a devops physical outage",
+    "reservation": "Explicit planning margin; no kubelet reservation changes"
+  },
+  "nodes": {
+    "aliyun-worker": {
+      "allocatable": {
+        "cpu": "2",
+        "ephemeral-storage": "39788796283",
+        "hugepages-1Gi": "0",
+        "hugepages-2Mi": "0",
+        "memory": "1647532Ki",
+        "pods": "110"
+      },
+      "allocated": {
+        "requests": {
+          "cpu": 0.11,
+          "memory": 320864256.0
+        },
+        "limits": {
+          "cpu": 0.5,
+          "memory": 805306368.0
+        }
+      },
+      "pods": 5,
+      "conditions": {
+        "MemoryPressure": "False",
+        "DiskPressure": "False",
+        "PIDPressure": "False",
+        "Ready": "True"
+      },
+      "cpu_cores": {
+        "min": 0.079097173,
+        "avg": 0.09174063291666668,
+        "p95": 0.130204692,
+        "max": 0.130204692
+      },
+      "memory_mib": {
+        "min": 1074.07421875,
+        "avg": 1077.6901041666667,
+        "p95": 1087.02734375,
+        "max": 1087.02734375
+      },
+      "non_app_actual_peak_mib": 718.5625,
+      "non_app_memory_request_mib": 50.0,
+      "scheduler_app_slots": 3,
+      "memory_safe_app_slots": 0
+    },
+    "devops": {
+      "allocatable": {
+        "cpu": "6",
+        "ephemeral-storage": "248876315044",
+        "hugepages-1Gi": "0",
+        "hugepages-2Mi": "0",
+        "hugepages-32Mi": "0",
+        "hugepages-64Ki": "0",
+        "memory": "20425576Ki",
+        "pods": "110"
+      },
+      "allocated": {
+        "requests": {
+          "cpu": 2.48,
+          "memory": 11255414784.0
+        },
+        "limits": {
+          "cpu": 9.3,
+          "memory": 27793555456.0
+        }
+      },
+      "pods": 55,
+      "conditions": {
+        "MemoryPressure": "False",
+        "DiskPressure": "False",
+        "PIDPressure": "False",
+        "Ready": "True"
+      },
+      "cpu_cores": {
+        "min": 0.814481872,
+        "avg": 1.3420023085833332,
+        "p95": 1.962635201,
+        "max": 1.962635201
+      },
+      "memory_mib": {
+        "min": 15682.5625,
+        "avg": 15728.356770833334,
+        "p95": 15853.046875,
+        "max": 15853.046875
+      },
+      "non_app_actual_peak_mib": 15446.46875,
+      "non_app_memory_request_mib": 10478.0,
+      "scheduler_app_slots": 18,
+      "memory_safe_app_slots": 3
+    },
+    "ucloud-worker": {
+      "allocatable": {
+        "cpu": "2",
+        "ephemeral-storage": "78900761129",
+        "hugepages-1Gi": "0",
+        "hugepages-2Mi": "0",
+        "memory": "3968068Ki",
+        "pods": "110"
+      },
+      "allocated": {
+        "requests": {
+          "cpu": 0.36,
+          "memory": 1394606080.0
+        },
+        "limits": {
+          "cpu": 0.5,
+          "memory": 2952790016.0
+        }
+      },
+      "pods": 6,
+      "conditions": {
+        "MemoryPressure": "False",
+        "DiskPressure": "False",
+        "PIDPressure": "False",
+        "Ready": "True"
+      },
+      "cpu_cores": {
+        "min": 0.046520289000000006,
+        "avg": 0.0611404465,
+        "p95": 0.153697105,
+        "max": 0.153697105
+      },
+      "memory_mib": {
+        "min": 2365.65234375,
+        "avg": 2369.4296875,
+        "p95": 2373.31640625,
+        "max": 2373.31640625
+      },
+      "non_app_actual_peak_mib": 1992.2109375,
+      "non_app_memory_request_mib": 1074.0,
+      "scheduler_app_slots": 5,
+      "memory_safe_app_slots": 2
+    }
+  },
+  "scenarios": {
+    "aliyun-worker": {
+      "scheduler_slots": 23,
+      "safe_slots": 5,
+      "replicas": {
+        "3": {
+          "scheduler_fits": true,
+          "memory_safe": true,
+          "pending_by_requests": 0,
+          "capacity_deficit": 0
+        },
+        "4": {
+          "scheduler_fits": true,
+          "memory_safe": true,
+          "pending_by_requests": 0,
+          "capacity_deficit": 0
+        },
+        "5": {
+          "scheduler_fits": true,
+          "memory_safe": true,
+          "pending_by_requests": 0,
+          "capacity_deficit": 0
+        },
+        "6": {
+          "scheduler_fits": true,
+          "memory_safe": false,
+          "pending_by_requests": 0,
+          "capacity_deficit": 1
+        }
+      }
+    },
+    "devops": {
+      "scheduler_slots": 8,
+      "safe_slots": 2,
+      "replicas": {
+        "3": {
+          "scheduler_fits": true,
+          "memory_safe": false,
+          "pending_by_requests": 0,
+          "capacity_deficit": 1
+        },
+        "4": {
+          "scheduler_fits": true,
+          "memory_safe": false,
+          "pending_by_requests": 0,
+          "capacity_deficit": 2
+        },
+        "5": {
+          "scheduler_fits": true,
+          "memory_safe": false,
+          "pending_by_requests": 0,
+          "capacity_deficit": 3
+        },
+        "6": {
+          "scheduler_fits": true,
+          "memory_safe": false,
+          "pending_by_requests": 0,
+          "capacity_deficit": 4
+        }
+      }
+    },
+    "ucloud-worker": {
+      "scheduler_slots": 21,
+      "safe_slots": 3,
+      "replicas": {
+        "3": {
+          "scheduler_fits": true,
+          "memory_safe": true,
+          "pending_by_requests": 0,
+          "capacity_deficit": 0
+        },
+        "4": {
+          "scheduler_fits": true,
+          "memory_safe": false,
+          "pending_by_requests": 0,
+          "capacity_deficit": 1
+        },
+        "5": {
+          "scheduler_fits": true,
+          "memory_safe": false,
+          "pending_by_requests": 0,
+          "capacity_deficit": 2
+        },
+        "6": {
+          "scheduler_fits": true,
+          "memory_safe": false,
+          "pending_by_requests": 0,
+          "capacity_deficit": 3
+        }
+      }
+    }
+  }
+}

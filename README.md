@@ -196,3 +196,5 @@ For additional details, please refer to the blog post [Hello DCO, Goodbye CLA: S
 ## License
 
 The Spring PetClinic sample application is released under version 2.0 of the [Apache License](https://www.apache.org/licenses/LICENSE-2.0).
+
+本轮数据与容量验收见 [2026-10-06 数据/容量记录](docs/DATA-CAPACITY-20261006.md)。Demo 数据为 200 owners / 350 pets / 20 vets / 1200 visits，显式 opt-in seed、关闭 Pod 启动初始化、Hikari 预算和零 surge 发布已落地。HPA 尚未启用：worker 系统内存预留及内存驱逐阈值缺失，需要先完成 [限定 aliyun 的修复审查](docs/ALIYUN-MEMORY-CHANGE-PROPOSAL.md)。详见 [HA 边界](docs/HA-BOUNDARY.md)，不宣称 Full-stack HA。
