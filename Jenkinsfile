@@ -10,13 +10,11 @@ pipeline {
         MAVEN_OPTS = '-Xmx256m -XX:ActiveProcessorCount=1'
         DOCKER_REGISTRY = '127.0.0.1:13050'
         REGISTRY_API = '10.0.0.3:30050'
-        K8S_REGISTRY = '10.0.0.3:30050'
 
         IMAGE_REPO = 'petclinic/petclinic'
         IMAGE_TAG = "0.10.0-ci-${BUILD_NUMBER}"
 
         FULL_IMAGE = "${DOCKER_REGISTRY}/${IMAGE_REPO}:${IMAGE_TAG}"
-        K8S_IMAGE = "${K8S_REGISTRY}/${IMAGE_REPO}:${IMAGE_TAG}"
     }
 
     stages {

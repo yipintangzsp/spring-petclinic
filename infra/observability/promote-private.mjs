@@ -32,6 +32,10 @@ if(process.argv[1]&&import.meta.url===pathToFileURL(process.argv[1]).href){
   git(['fetch','origin','main']);
   if(git(['rev-parse','origin/main'])!==source)throw Error('Private main changed after this build started');
   git(['checkout','-B','main','origin/main']);
+  const built=fs.readFileSync('target/platform/image-digest.txt','utf8').trim();
+  const scanned=JSON.parse(fs.readFileSync('target/platform/harbor.json','utf8'));
+  if(scanned.digest!==built||scanned.scan_status!=='Success'||scanned.scans?.length!==2)throw Error('Completed runtime scan evidence required');
+  if(process.env.K8S_IMAGE!=='core.harbor.domain/petclinic/petclinic@'+built)throw Error('Release image must match verified scan evidence');
   const file='k8s/production/petclinic.yaml';
   const original=fs.readFileSync(file,'utf8');
   const changed=promoteManifest(original,{image:process.env.K8S_IMAGE,tag:process.env.IMAGE_TAG,number:process.env.BUILD_NUMBER,source,time:new Date().toISOString()});
