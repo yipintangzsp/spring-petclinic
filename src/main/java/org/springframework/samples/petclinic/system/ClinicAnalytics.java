@@ -18,7 +18,7 @@ import org.springframework.stereotype.Service;
 @Service
 class ClinicAnalytics {
 
-	private final JdbcTemplate jdbc;
+	private final @Nullable JdbcTemplate jdbc;
 
 	private Snapshot cached;
 
@@ -26,11 +26,8 @@ class ClinicAnalytics {
 
 	@Autowired
 	ClinicAnalytics(ObjectProvider<JdbcTemplate> templates) {
-		this(templates.getIfAvailable());
-	}
-
-	ClinicAnalytics(@Nullable JdbcTemplate jdbc) {
-		this.jdbc = jdbc == null ? null : new JdbcTemplate(jdbc.getDataSource());
+		JdbcTemplate available = templates.getIfAvailable();
+		this.jdbc = available == null ? null : new JdbcTemplate(available.getDataSource());
 		if (this.jdbc != null) {
 			this.jdbc.setQueryTimeout(3);
 		}
@@ -87,7 +84,7 @@ class ClinicAnalytics {
 	record Type(String name, long pets) {
 	}
 
-	record Snapshot(Run run, List<Day> days, List<Type> types, boolean available, boolean failed) {
+	record Snapshot(@Nullable Run run, List<Day> days, List<Type> types, boolean available, boolean failed) {
 	}
 
 }
