@@ -7,7 +7,9 @@ import {pathToFileURL} from 'node:url';
 export const productionNodes = ['devops', 'aliyun-worker', 'ucloud-worker'];
 export function assessPreflight(s, now = Date.now()) {
  const blockers = [], nodes = [];
- for (const name of productionNodes) {
+ const requiredNodes = s.targetNodes ?? productionNodes;
+ if (!requiredNodes.length) blockers.push('NO_VERIFIED_TARGET_NODE');
+ for (const name of requiredNodes) {
   const node = s.nodes.find(n => n.metadata.name === name);
   const lease = s.leases.find(l => l.metadata.name === name);
   const renewed = Date.parse(lease?.spec.renewTime);
@@ -27,7 +29,8 @@ export function assessPreflight(s, now = Date.now()) {
  }
  const ready = s.pods.filter(p => !p.metadata.deletionTimestamp &&
   p.status.conditions?.some(c => c.type === 'Ready' && c.status === 'True') &&
-  s.nodes.some(n => n.metadata.name === p.spec.nodeName && n.status.conditions.some(c => c.type === 'Ready' && c.status === 'True')));
+  s.nodes.some(n => n.metadata.name === p.spec.nodeName && n.status.conditions.some(c => c.type === 'Ready' && c.status === 'True')) &&
+  s.leases.some(l => l.metadata.name === p.spec.nodeName && now - Date.parse(l.spec.renewTime) <= 40000));
  const endpoints = s.slices.flatMap(x => x.endpoints ?? []).filter(e => e.conditions?.ready === true &&
   e.conditions?.terminating !== true && e.conditions?.serving !== false &&
   ready.some(p => p.metadata.uid === e.targetRef?.uid && p.spec.nodeName === e.nodeName));
@@ -36,7 +39,8 @@ export function assessPreflight(s, now = Date.now()) {
  const endpointPods = new Set(endpoints.map(e => e.targetRef.uid));
  if (ready.length < desired || available < desired || endpointPods.size < desired)
   blockers.push(`BUSINESS_CAPACITY: desired=${desired}, ready=${ready.length}, available=${available}, endpointPods=${endpointPods.size}`);
- return {ok: blockers.length === 0, blockers, nodes, desired, available,
+ return {ok: blockers.length === 0, blockers, nodes, targetNodes: requiredNodes,
+  excludedNodes: s.nodes.filter(n => !requiredNodes.includes(n.metadata.name)).map(n => ({name:n.metadata.name,conditions:n.status.conditions,renewTime:s.leases.find(l=>l.metadata.name===n.metadata.name)?.spec.renewTime})), desired, available,
   pods: s.pods.map(p => ({name: p.metadata.name, uid: p.metadata.uid, node: p.spec.nodeName,
    deletionTimestamp: p.metadata.deletionTimestamp, ready: ready.includes(p)})),
   readyEndpointPods: endpointPods.size};
@@ -50,11 +54,21 @@ export async function preflight({output = 'target/platform/preflight.json', wind
   if (r.status !== 0) throw Error(`PREFLIGHT_API_ERROR: ${args.join(' ')}: ${r.error?.message || r.stderr.trim()}`);
   return JSON.parse(r.stdout);
  }
- collect ??= () => ({nodes: kube(['get', 'nodes']).items,
-  leases: kube(['-n', 'kube-node-lease', 'get', 'leases']).items,
-  pods: kube(['-n', 'petclinic', 'get', 'pods', '-l', 'app=petclinic']).items,
-  slices: kube(['-n', 'petclinic', 'get', 'endpointslices', '-l', 'kubernetes.io/service-name=petclinic']).items,
-  deployment: kube(['-n', 'petclinic', 'get', 'deployment', 'petclinic'])});
+ collect ??= () => {
+  const nodes=kube(['get','nodes']).items;
+  const planned=kube(['create','--dry-run=client','--validate=false','-f','k8s/production/petclinic.yaml']);
+  const d=(planned.items??[planned]).find(x=>x.kind==='Deployment'&&x.metadata.name==='petclinic');
+  if(!d)throw Error('Planned production Deployment missing');
+  const selector=d.spec.template.spec.nodeSelector;
+  if(!selector||!Object.keys(selector).length)throw Error('Explicit measured target selection required');
+  const targetNodes=nodes.filter(n=>Object.entries(selector).every(([key,value])=>n.metadata.labels[key]===value)).map(n=>n.metadata.name);
+  return {nodes,targetNodes,
+   leases:kube(['-n','kube-node-lease','get','leases']).items,
+   pods:kube(['-n','petclinic','get','pods','-l','app=petclinic']).items,
+   slices:kube(['-n','petclinic','get','endpointslices','-l','kubernetes.io/service-name=petclinic']).items,
+   deployment:kube(['-n','petclinic','get','deployment','petclinic'])};
+ };
+
  try {
   while (true) {
    const assessment = assessPreflight(await collect());
@@ -62,7 +76,7 @@ export async function preflight({output = 'target/platform/preflight.json', wind
    console.log(`RELEASE_PREFLIGHT ${JSON.stringify(assessment)}`);
    if (!assessment.ok) throw Error(`INFRASTRUCTURE_NOT_READY: ${assessment.blockers.join('; ')}`);
    if (Date.now() - started >= windowMs) {
-    if (windowMs > 0 && productionNodes.some(name =>
+    if (windowMs > 0 && samples.at(-1).assessment.nodes.map(n=>n.name).some(name =>
      samples.at(-1).assessment.nodes.find(n => n.name === name).renewTime === samples[0].assessment.nodes.find(n => n.name === name).renewTime))
      throw Error('LEASE_NOT_PROGRESSING: fresh timestamp alone does not prove connectivity');
     return assessment;

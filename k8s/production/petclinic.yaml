@@ -30,10 +30,11 @@ spec:
         app: petclinic
 
     spec:
-      # Current release passed isolated image/network/DB/metrics/log acceptance
-      # on both amd64 workers (2026-10-06). Allow all three Linux nodes.
+      # Keep this release on the measured local node while cloud tunnels fluctuate.
+      # The preflight derives required nodes from this explicit selector.
       nodeSelector:
         kubernetes.io/os: linux
+        kubernetes.io/hostname: devops
 
       tolerations:
         - key: cloud
@@ -53,6 +54,8 @@ spec:
           matchLabelKeys:
             - pod-template-hash
 
+      imagePullSecrets:
+        - name: petclinic-harbor-pull
       automountServiceAccountToken: false
       # 5s endpoint propagation + 25s application shutdown phase + margin.
       terminationGracePeriodSeconds: 45

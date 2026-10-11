@@ -1,3 +1,5 @@
+本轮私有平台升级与准确状态见 [2026-10-11 升级记录](docs/UPGRADE-20261011.md)、[全组件盘点](docs/PLATFORM-INVENTORY-20261011.md)和[实测资源与按需策略](docs/RESOURCE-POLICY-20261011.md)。新版统计入口 `/insights`，本轮源码/发布主来源为私有 GitLab；下列历史平台介绍不替代本轮实时验收。
+
 # Spring PetClinic Sample Application [![Build Status](https://github.com/spring-projects/spring-petclinic/actions/workflows/maven-build.yml/badge.svg)](https://github.com/spring-projects/spring-petclinic/actions/workflows/maven-build.yml)[![Build Status](https://github.com/spring-projects/spring-petclinic/actions/workflows/gradle-build.yml/badge.svg)](https://github.com/spring-projects/spring-petclinic/actions/workflows/gradle-build.yml)
 
 [![Open in Gitpod](https://gitpod.io/button/open-in-gitpod.svg)](https://gitpod.io/#https://github.com/spring-projects/spring-petclinic) [![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://github.com/codespaces/new?hide_repo_select=true&ref=main&repo=7517918)

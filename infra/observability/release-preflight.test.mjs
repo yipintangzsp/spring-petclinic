@@ -63,3 +63,18 @@ test('API failures fail closed and still retain evidence', async () => {
   assert.equal(JSON.parse(fs.readFileSync(output)).failure, 'API unavailable');
  } finally { fs.rmSync(dir, {recursive: true, force: true}); }
 });
+
+test('explicit local targets exclude an unhealthy cloud worker and report it', () => {
+ const s = snapshot(); s.targetNodes = ['devops'];
+ s.pods.forEach(p => p.spec.nodeName = 'devops');
+ s.slices[0].endpoints.forEach(e => e.nodeName = 'devops');
+ s.nodes[2].status.conditions[0].status = 'Unknown';
+ s.leases[2].spec.renewTime = new Date(Date.now() - 600000).toISOString();
+ const result = assessPreflight(s);
+ assert.equal(result.ok, true);
+ assert.equal(result.excludedNodes.some(n => n.name === 'ucloud-worker'), true);
+});
+test('a selector matching no target nodes blocks publishing', () => {
+ const s = snapshot(); s.targetNodes = [];
+ assert.equal(assessPreflight(s).ok, false);
+});

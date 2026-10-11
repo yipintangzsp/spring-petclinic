@@ -75,7 +75,7 @@ if(mode==='sonar-ready') {
   console.log('Harbor private project ready');
  } else if(mode==='harbor-copy') {
   const tag=process.env.IMAGE_TAG;
-  if(!/^0\.9\.0-ci-\d+$/.test(tag))throw new Error('Invalid release tag');
+  if(!/^0\.(?:9|10)\.0-ci-\d+$/.test(tag))throw new Error('Invalid release tag');
   const repo='petclinic/petclinic', source='http://10.0.0.3:30050', destination=base;
   // Core authenticates repository tokens and proxies to the Basic-auth internal registry.
   const token=await request(base,'/service/token?service=harbor-registry&scope='+encodeURIComponent('repository:'+repo+':pull,push')+'&account='+encodeURIComponent(process.env.HARBOR_USER),{},auth);
@@ -116,14 +116,40 @@ if(mode==='sonar-ready') {
   console.log('Harbor multi-architecture copy verified: '+tag+' '+result.digest);
  } else {
   const tag=process.env.IMAGE_TAG;
-  if(!/^0\.9\.0-ci-\d+$/.test(tag))throw new Error('Invalid release tag');
+  if(!/^0\.(?:9|10)\.0-ci-\d+$/.test(tag))throw new Error('Invalid release tag');
   const route='/api/v2.0/projects/petclinic/repositories/petclinic/artifacts/'+encodeURIComponent(tag);
   const artifact=await request(base,route,{},auth);
   const scan=await resilientFetch(base+route+'/scan',{method:'POST',headers:auth,timeoutMs:30000});
   if(!scan.ok&&scan.status!==409)throw new Error('Harbor scan request failed');
   fs.mkdirSync('target/platform',{recursive:true});
-  fs.writeFileSync('target/platform/harbor.json',JSON.stringify({tag,digest:artifact.digest,architecture:artifact.extra_attrs?.architecture,scan_requested:true,scan_status:'requested'},null,2));
-  console.log(`Harbor multi-architecture audit copy verified: ${tag} ${artifact.digest}; vulnerability scan requested`);
+  const expected=fs.readFileSync('target/platform/image-digest.txt','utf8').trim();
+  if(artifact.digest!==expected)throw Error('Harbor digest differs from built OCI index');
+  const children=(artifact.references??[]).filter(c=>['arm64','amd64'].includes(c.platform?.architecture));
+  if(children.length!==2)throw Error('Expected two runtime architecture artifacts');
+  const deadline=Date.now()+600000;
+  const scans=[];
+  for(const child of children){
+   const childRoute='/api/v2.0/projects/petclinic/repositories/petclinic/artifacts/'+encodeURIComponent(child.child_digest);
+   const requested=await resilientFetch(base+childRoute+'/scan',{method:'POST',headers:auth,timeoutMs:20000});
+   if(!requested.ok&&requested.status!==409)throw Error('Runtime scan request failed');
+   let summary;
+   while(Date.now()<deadline){
+    const a=await request(base,childRoute+'?with_scan_overview=true',{},auth);
+    summary=Object.values(a.scan_overview??{}).find(s=>s.scan_status);
+    if(summary?.scan_status==='Success')break;
+    if(summary?.scan_status==='Error'||summary?.scan_status==='Stopped'){
+     fs.writeFileSync('target/platform/harbor.json',JSON.stringify({tag,digest:artifact.digest,scan_status:summary.scan_status,architecture:child.platform.architecture,summary},null,2));
+     throw Error('Harbor vulnerability scan did not succeed for '+child.platform.architecture);
+    }
+    console.log('Harbor scan '+child.platform.architecture+': '+(summary?.scan_status??'pending'));
+    await new Promise(r=>setTimeout(r,5000));
+   }
+   if(summary?.scan_status!=='Success')throw Error('Harbor scan deadline exceeded');
+   scans.push({architecture:child.platform.architecture,digest:child.child_digest,...summary});
+  }
+  fs.writeFileSync('target/platform/harbor.json',JSON.stringify({tag,digest:artifact.digest,scan_requested:true,scan_status:'Success',scans},null,2));
+  console.log('Harbor multi-architecture push/digest and completed vulnerability scans verified: '+tag);
+
  }
  } else if(mode==='kafka') {
  const env=['env','KAFKA_HEAP_OPTS=-Xms32M -Xmx128M'];

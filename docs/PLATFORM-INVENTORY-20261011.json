@@ -1,0 +1,2900 @@
+[
+  {
+    "component": "argocd-applicationset-controller",
+    "namespace": "argocd",
+    "kind": "Deployment",
+    "source": "既有 Kubernetes 清单/运维部署",
+    "images": [
+      "127.0.0.1:30050/platform-upgrade/argocd:v3.4.5-arm64"
+    ],
+    "nodes": [
+      "devops"
+    ],
+    "architectures": [
+      "arm64"
+    ],
+    "desired": 1,
+    "ready": 1,
+    "resources": [
+      {
+        "container": "argocd-applicationset-controller",
+        "resources": {}
+      }
+    ],
+    "storage": [
+      "emptyDir",
+      "emptyDir"
+    ],
+    "entries": [
+      "argocd-applicationset-controller:7000,8080"
+    ],
+    "purpose": "GitOps 比较与同步",
+    "state": "运行，功能验收待补",
+    "evidence": "workloads.json + pods.json；安装/就绪证据不等同功能验收",
+    "next": "按本职功能取得输入/输出证据；0副本保持预算准入"
+  },
+  {
+    "component": "argocd-dex-server",
+    "namespace": "argocd",
+    "kind": "Deployment",
+    "source": "既有 Kubernetes 清单/运维部署",
+    "images": [
+      "127.0.0.1:30050/platform-upgrade/dex:v2.45.1-arm64"
+    ],
+    "nodes": [
+      "devops"
+    ],
+    "architectures": [
+      "arm64"
+    ],
+    "desired": 1,
+    "ready": 1,
+    "resources": [
+      {
+        "container": "dex",
+        "resources": {}
+      },
+      {
+        "container": "copyutil",
+        "resources": {}
+      }
+    ],
+    "storage": [
+      "emptyDir",
+      "emptyDir"
+    ],
+    "entries": [
+      "argocd-dex-server:5556,5557,5558"
+    ],
+    "purpose": "GitOps 比较与同步",
+    "state": "运行，功能验收待补",
+    "evidence": "workloads.json + pods.json；安装/就绪证据不等同功能验收",
+    "next": "按本职功能取得输入/输出证据；0副本保持预算准入"
+  },
+  {
+    "component": "argocd-notifications-controller",
+    "namespace": "argocd",
+    "kind": "Deployment",
+    "source": "既有 Kubernetes 清单/运维部署",
+    "images": [
+      "127.0.0.1:30050/platform-upgrade/argocd:v3.4.5-arm64"
+    ],
+    "nodes": [
+      "devops"
+    ],
+    "architectures": [
+      "arm64"
+    ],
+    "desired": 1,
+    "ready": 1,
+    "resources": [
+      {
+        "container": "argocd-notifications-controller",
+        "resources": {}
+      }
+    ],
+    "storage": [],
+    "entries": [
+      "argocd-notifications-controller-metrics:9001"
+    ],
+    "purpose": "GitOps 比较与同步",
+    "state": "运行，功能验收待补",
+    "evidence": "workloads.json + pods.json；安装/就绪证据不等同功能验收",
+    "next": "按本职功能取得输入/输出证据；0副本保持预算准入"
+  },
+  {
+    "component": "argocd-redis",
+    "namespace": "argocd",
+    "kind": "Deployment",
+    "source": "既有 Kubernetes 清单/运维部署",
+    "images": [
+      "127.0.0.1:30050/platform-upgrade/redis:8.8.1-alpine-arm64"
+    ],
+    "nodes": [
+      "devops"
+    ],
+    "architectures": [
+      "arm64"
+    ],
+    "desired": 1,
+    "ready": 1,
+    "resources": [
+      {
+        "container": "redis",
+        "resources": {}
+      },
+      {
+        "container": "secret-init",
+        "resources": {}
+      }
+    ],
+    "storage": [],
+    "entries": [
+      "argocd-redis:6379"
+    ],
+    "purpose": "GitOps 比较与同步",
+    "state": "运行，功能验收待补",
+    "evidence": "workloads.json + pods.json；安装/就绪证据不等同功能验收",
+    "next": "按本职功能取得输入/输出证据；0副本保持预算准入"
+  },
+  {
+    "component": "argocd-repo-server",
+    "namespace": "argocd",
+    "kind": "Deployment",
+    "source": "既有 Kubernetes 清单/运维部署",
+    "images": [
+      "127.0.0.1:30050/platform-upgrade/argocd:v3.4.5-arm64"
+    ],
+    "nodes": [
+      "devops"
+    ],
+    "architectures": [
+      "arm64"
+    ],
+    "desired": 1,
+    "ready": 1,
+    "resources": [
+      {
+        "container": "argocd-repo-server",
+        "resources": {}
+      },
+      {
+        "container": "copyutil",
+        "resources": {}
+      }
+    ],
+    "storage": [
+      "emptyDir",
+      "emptyDir",
+      "emptyDir",
+      "emptyDir",
+      "emptyDir"
+    ],
+    "entries": [
+      "argocd-repo-server:8081,8084"
+    ],
+    "purpose": "GitOps 比较与同步",
+    "state": "运行，功能验收待补",
+    "evidence": "workloads.json + pods.json；安装/就绪证据不等同功能验收",
+    "next": "按本职功能取得输入/输出证据；0副本保持预算准入"
+  },
+  {
+    "component": "argocd-server",
+    "namespace": "argocd",
+    "kind": "Deployment",
+    "source": "既有 Kubernetes 清单/运维部署",
+    "images": [
+      "127.0.0.1:30050/platform-upgrade/argocd:v3.4.5-arm64"
+    ],
+    "nodes": [
+      "devops"
+    ],
+    "architectures": [
+      "arm64"
+    ],
+    "desired": 1,
+    "ready": 1,
+    "resources": [
+      {
+        "container": "argocd-server",
+        "resources": {}
+      }
+    ],
+    "storage": [
+      "emptyDir",
+      "emptyDir"
+    ],
+    "entries": [
+      "argocd-server:80,443",
+      "argocd-server-metrics:8083",
+      "argocd.devops.local"
+    ],
+    "purpose": "GitOps 比较与同步",
+    "state": "运行，功能验收待补",
+    "evidence": "workloads.json + pods.json；安装/就绪证据不等同功能验收",
+    "next": "按本职功能取得输入/输出证据；0副本保持预算准入"
+  },
+  {
+    "component": "cook",
+    "namespace": "cook",
+    "kind": "Deployment",
+    "source": "既有 Kubernetes 清单/运维部署",
+    "images": [
+      "core.harbor.domain/cook/cook@sha256:372e33fb6c3be30d263941a00f782df83c68b65b4267ceab32d0c390d855a780"
+    ],
+    "nodes": [
+      "devops"
+    ],
+    "architectures": [
+      "arm64"
+    ],
+    "desired": 1,
+    "ready": 1,
+    "resources": [
+      {
+        "container": "web",
+        "resources": {
+          "limits": {
+            "cpu": "200m",
+            "memory": "96Mi"
+          },
+          "requests": {
+            "cpu": "25m",
+            "memory": "24Mi"
+          }
+        }
+      }
+    ],
+    "storage": [
+      "emptyDir"
+    ],
+    "entries": [
+      "cook:80",
+      "cook.devops.local"
+    ],
+    "purpose": "菜谱正文、图片、搜索、手机布局",
+    "state": "运行，功能验收待补",
+    "evidence": "workloads.json + pods.json；安装/就绪证据不等同功能验收",
+    "next": "按本职功能取得输入/输出证据；0副本保持预算准入"
+  },
+  {
+    "component": "cook-blackbox",
+    "namespace": "cook",
+    "kind": "Deployment",
+    "source": "既有 Kubernetes 清单/运维部署",
+    "images": [
+      "core.harbor.domain/cook/blackbox-exporter@sha256:88f7d7397ad4cf415b575df60c937fef09e0534cb8a3e060bedff6e61da9e613"
+    ],
+    "nodes": [
+      "devops"
+    ],
+    "architectures": [
+      "arm64"
+    ],
+    "desired": 1,
+    "ready": 1,
+    "resources": [
+      {
+        "container": "prober",
+        "resources": {
+          "limits": {
+            "cpu": "100m",
+            "memory": "64Mi"
+          },
+          "requests": {
+            "cpu": "10m",
+            "memory": "24Mi"
+          }
+        }
+      }
+    ],
+    "storage": [],
+    "entries": [
+      "cook-blackbox:9115"
+    ],
+    "purpose": "本地与 Pages HTTP 探测",
+    "state": "运行，功能验收待补",
+    "evidence": "workloads.json + pods.json；安装/就绪证据不等同功能验收",
+    "next": "按本职功能取得输入/输出证据；0副本保持预算准入"
+  },
+  {
+    "component": "airflow-api-server",
+    "namespace": "data-infra",
+    "kind": "Deployment",
+    "source": "Helm airflow airflow-1.20.0",
+    "images": [
+      "apache/airflow:3.3.0"
+    ],
+    "nodes": [],
+    "architectures": [],
+    "desired": 0,
+    "ready": 0,
+    "resources": [
+      {
+        "container": "api-server",
+        "resources": {
+          "limits": {
+            "cpu": "500m",
+            "memory": "768Mi"
+          },
+          "requests": {
+            "cpu": "50m",
+            "memory": "256Mi"
+          }
+        }
+      },
+      {
+        "container": "wait-for-airflow-migrations",
+        "resources": {}
+      }
+    ],
+    "storage": [],
+    "entries": [
+      "airflow-api-server:8080",
+      "airflow.devops.local"
+    ],
+    "purpose": "有界增量统计编排；当前仅 triggerer，核心尚关闭",
+    "state": "已安装但按需关闭",
+    "evidence": "workloads.json + pods.json；安装/就绪证据不等同功能验收",
+    "next": "按本职功能取得输入/输出证据；0副本保持预算准入"
+  },
+  {
+    "component": "airflow-dag-processor",
+    "namespace": "data-infra",
+    "kind": "Deployment",
+    "source": "Helm airflow airflow-1.20.0",
+    "images": [
+      "apache/airflow:3.3.0",
+      "apache/airflow:3.3.0"
+    ],
+    "nodes": [],
+    "architectures": [],
+    "desired": 0,
+    "ready": 0,
+    "resources": [
+      {
+        "container": "dag-processor",
+        "resources": {
+          "limits": {
+            "cpu": "500m",
+            "memory": "768Mi"
+          },
+          "requests": {
+            "cpu": "50m",
+            "memory": "256Mi"
+          }
+        }
+      },
+      {
+        "container": "dag-processor-log-groomer",
+        "resources": {}
+      },
+      {
+        "container": "wait-for-airflow-migrations",
+        "resources": {}
+      }
+    ],
+    "storage": [
+      "emptyDir"
+    ],
+    "entries": [],
+    "purpose": "有界增量统计编排；当前仅 triggerer，核心尚关闭",
+    "state": "已安装但按需关闭",
+    "evidence": "workloads.json + pods.json；安装/就绪证据不等同功能验收",
+    "next": "按本职功能取得输入/输出证据；0副本保持预算准入"
+  },
+  {
+    "component": "airflow-scheduler",
+    "namespace": "data-infra",
+    "kind": "Deployment",
+    "source": "Helm airflow airflow-1.20.0",
+    "images": [
+      "apache/airflow:3.3.0",
+      "apache/airflow:3.3.0"
+    ],
+    "nodes": [],
+    "architectures": [],
+    "desired": 0,
+    "ready": 0,
+    "resources": [
+      {
+        "container": "scheduler",
+        "resources": {
+          "limits": {
+            "memory": "1Gi"
+          },
+          "requests": {
+            "memory": "512Mi"
+          }
+        }
+      },
+      {
+        "container": "scheduler-log-groomer",
+        "resources": {}
+      },
+      {
+        "container": "wait-for-airflow-migrations",
+        "resources": {
+          "limits": {
+            "memory": "512Mi"
+          },
+          "requests": {
+            "memory": "256Mi"
+          }
+        }
+      }
+    ],
+    "storage": [
+      "emptyDir"
+    ],
+    "entries": [],
+    "purpose": "有界增量统计编排；当前仅 triggerer，核心尚关闭",
+    "state": "已安装但按需关闭",
+    "evidence": "workloads.json + pods.json；安装/就绪证据不等同功能验收",
+    "next": "按本职功能取得输入/输出证据；0副本保持预算准入"
+  },
+  {
+    "component": "airflow-statsd",
+    "namespace": "data-infra",
+    "kind": "Deployment",
+    "source": "Helm airflow airflow-1.20.0",
+    "images": [
+      "127.0.0.1:30050/platform-upgrade/statsd-exporter:v0.30.0-arm64"
+    ],
+    "nodes": [],
+    "architectures": [],
+    "desired": 0,
+    "ready": 0,
+    "resources": [
+      {
+        "container": "statsd",
+        "resources": {}
+      }
+    ],
+    "storage": [],
+    "entries": [
+      "airflow-statsd:9125,9102"
+    ],
+    "purpose": "有界增量统计编排；当前仅 triggerer，核心尚关闭",
+    "state": "已安装但按需关闭",
+    "evidence": "workloads.json + pods.json；安装/就绪证据不等同功能验收",
+    "next": "按本职功能取得输入/输出证据；0副本保持预算准入"
+  },
+  {
+    "component": "minio",
+    "namespace": "data-infra",
+    "kind": "Deployment",
+    "source": "Helm minio minio-5.4.0",
+    "images": [
+      "quay.io/minio/minio:RELEASE.2025-09-07T16-13-09Z"
+    ],
+    "nodes": [],
+    "architectures": [],
+    "desired": 0,
+    "ready": 0,
+    "resources": [
+      {
+        "container": "minio",
+        "resources": {
+          "requests": {
+            "memory": "512Mi"
+          }
+        }
+      }
+    ],
+    "storage": [
+      "PVC minio"
+    ],
+    "entries": [
+      "minio:9000",
+      "minio-console:9001",
+      "minio.devops.local"
+    ],
+    "purpose": "对象存储，按需关闭；本轮不作为必需依赖",
+    "state": "已安装但按需关闭",
+    "evidence": "workloads.json + pods.json；安装/就绪证据不等同功能验收",
+    "next": "按本职功能取得输入/输出证据；0副本保持预算准入"
+  },
+  {
+    "component": "superset",
+    "namespace": "data-infra",
+    "kind": "Deployment",
+    "source": "Helm superset superset-0.15.2",
+    "images": [
+      "192.168.1.58:30050/library/superset:6.1.0-mysqlconnector-9.6.0"
+    ],
+    "nodes": [
+      "devops"
+    ],
+    "architectures": [
+      "arm64"
+    ],
+    "desired": 1,
+    "ready": 1,
+    "resources": [
+      {
+        "container": "superset",
+        "resources": {
+          "limits": {
+            "memory": "512Mi"
+          },
+          "requests": {
+            "memory": "256Mi"
+          }
+        }
+      },
+      {
+        "container": "wait-for-postgres",
+        "resources": {}
+      }
+    ],
+    "storage": [],
+    "entries": [
+      "superset:8088",
+      "superset.devops.local"
+    ],
+    "purpose": "统计查询与看板",
+    "state": "运行，功能验收待补",
+    "evidence": "workloads.json + pods.json；安装/就绪证据不等同功能验收",
+    "next": "按本职功能取得输入/输出证据；0副本保持预算准入"
+  },
+  {
+    "component": "superset-worker",
+    "namespace": "data-infra",
+    "kind": "Deployment",
+    "source": "Helm superset superset-0.15.2",
+    "images": [
+      "192.168.1.58:30050/library/superset:6.1.0-mysqlconnector-9.6.0"
+    ],
+    "nodes": [
+      "devops"
+    ],
+    "architectures": [
+      "arm64"
+    ],
+    "desired": 1,
+    "ready": 1,
+    "resources": [
+      {
+        "container": "superset",
+        "resources": {}
+      },
+      {
+        "container": "wait-for-postgres-redis",
+        "resources": {}
+      }
+    ],
+    "storage": [],
+    "entries": [],
+    "purpose": "Celery 异步查询/报告；已核实空闲后改为按需",
+    "state": "运行，功能验收待补",
+    "evidence": "workloads.json + pods.json；安装/就绪证据不等同功能验收",
+    "next": "按本职功能取得输入/输出证据；0副本保持预算准入"
+  },
+  {
+    "component": "trino-coordinator",
+    "namespace": "data-infra",
+    "kind": "Deployment",
+    "source": "Helm trino trino-1.42.1",
+    "images": [
+      "127.0.0.1:30050/platform-upgrade/trinodb-trino:483"
+    ],
+    "nodes": [
+      "devops"
+    ],
+    "architectures": [
+      "arm64"
+    ],
+    "desired": 1,
+    "ready": 1,
+    "resources": [
+      {
+        "container": "trino-coordinator",
+        "resources": {
+          "limits": {
+            "memory": "2Gi"
+          },
+          "requests": {
+            "memory": "512Mi"
+          }
+        }
+      }
+    ],
+    "storage": [],
+    "entries": [
+      "trino:8080",
+      "trino.devops.local"
+    ],
+    "purpose": "SQL 查询分析结果",
+    "state": "运行，功能验收待补",
+    "evidence": "workloads.json + pods.json；安装/就绪证据不等同功能验收",
+    "next": "按本职功能取得输入/输出证据；0副本保持预算准入"
+  },
+  {
+    "component": "trino-worker",
+    "namespace": "data-infra",
+    "kind": "Deployment",
+    "source": "Helm trino trino-1.42.1",
+    "images": [
+      "trinodb/trino:483@sha256:fca43d1fdfdcd45f36b791f7117a47f8ce69c58232e5398bfdb8539cd28e778b"
+    ],
+    "nodes": [
+      "ucloud-worker"
+    ],
+    "architectures": [
+      "amd64"
+    ],
+    "desired": 1,
+    "ready": 1,
+    "resources": [
+      {
+        "container": "trino-worker",
+        "resources": {
+          "limits": {
+            "memory": "2Gi"
+          },
+          "requests": {
+            "cpu": "250m",
+            "memory": "1Gi"
+          }
+        }
+      }
+    ],
+    "storage": [],
+    "entries": [
+      "trino-worker:8080"
+    ],
+    "purpose": "SQL 查询分析结果",
+    "state": "运行，功能验收待补",
+    "evidence": "workloads.json + pods.json；安装/就绪证据不等同功能验收",
+    "next": "按本职功能取得输入/输出证据；0副本保持预算准入"
+  },
+  {
+    "component": "elasticsearch",
+    "namespace": "default",
+    "kind": "Deployment",
+    "source": "既有 Kubernetes 清单/运维部署",
+    "images": [
+      "127.0.0.1:30050/platform-upgrade/elasticsearch:9.4.4-arm64"
+    ],
+    "nodes": [
+      "devops"
+    ],
+    "architectures": [
+      "arm64"
+    ],
+    "desired": 1,
+    "ready": 1,
+    "resources": [
+      {
+        "container": "elasticsearch",
+        "resources": {
+          "limits": {
+            "memory": "2Gi"
+          },
+          "requests": {
+            "memory": "1Gi"
+          }
+        }
+      }
+    ],
+    "storage": [
+      "hostPath /opt/devops/data/elasticsearch"
+    ],
+    "entries": [
+      "elasticsearch:9200"
+    ],
+    "purpose": "Filebeat 业务及构建日志索引",
+    "state": "运行，功能验收待补",
+    "evidence": "workloads.json + pods.json；安装/就绪证据不等同功能验收",
+    "next": "按本职功能取得输入/输出证据；0副本保持预算准入"
+  },
+  {
+    "component": "kibana",
+    "namespace": "default",
+    "kind": "Deployment",
+    "source": "既有 Kubernetes 清单/运维部署",
+    "images": [
+      "127.0.0.1:30050/platform-upgrade/kibana:9.4.4-arm64"
+    ],
+    "nodes": [
+      "devops"
+    ],
+    "architectures": [
+      "arm64"
+    ],
+    "desired": 1,
+    "ready": 1,
+    "resources": [
+      {
+        "container": "kibana",
+        "resources": {
+          "limits": {
+            "cpu": "500m",
+            "memory": "2Gi"
+          },
+          "requests": {
+            "cpu": "50m",
+            "memory": "512Mi"
+          }
+        }
+      }
+    ],
+    "storage": [
+      "hostPath /opt/devops/data/kibana"
+    ],
+    "entries": [
+      "kibana-service:5601",
+      "kibana.devops.local"
+    ],
+    "purpose": "应用/版本/Pod/时间日志查询",
+    "state": "运行，功能验收待补",
+    "evidence": "workloads.json + pods.json；安装/就绪证据不等同功能验收",
+    "next": "按本职功能取得输入/输出证据；0副本保持预算准入"
+  },
+  {
+    "component": "harbor-core",
+    "namespace": "harbor",
+    "kind": "Deployment",
+    "source": "Helm harbor harbor-1.18.3",
+    "images": [
+      "127.0.0.1:30050/goharbor/harbor-core:v2.14.3-arm64-native"
+    ],
+    "nodes": [
+      "devops"
+    ],
+    "architectures": [
+      "arm64"
+    ],
+    "desired": 1,
+    "ready": 0,
+    "resources": [
+      {
+        "container": "core",
+        "resources": {}
+      }
+    ],
+    "storage": [
+      "emptyDir"
+    ],
+    "entries": [
+      "harbor-core:80",
+      "core.harbor.domain",
+      "harbor.devops.local"
+    ],
+    "purpose": "私有镜像、凭据、仓库持久化及扫描",
+    "state": "运行异常",
+    "evidence": "workloads.json + pods.json；安装/就绪证据不等同功能验收",
+    "next": "按本职功能取得输入/输出证据；0副本保持预算准入"
+  },
+  {
+    "component": "harbor-jobservice",
+    "namespace": "harbor",
+    "kind": "Deployment",
+    "source": "Helm harbor harbor-1.18.3",
+    "images": [
+      "127.0.0.1:30050/goharbor/harbor-jobservice:v2.14.3-arm64-native"
+    ],
+    "nodes": [
+      "devops"
+    ],
+    "architectures": [
+      "arm64"
+    ],
+    "desired": 1,
+    "ready": 0,
+    "resources": [
+      {
+        "container": "jobservice",
+        "resources": {}
+      }
+    ],
+    "storage": [
+      "emptyDir"
+    ],
+    "entries": [
+      "harbor-jobservice:80"
+    ],
+    "purpose": "私有镜像、凭据、仓库持久化及扫描",
+    "state": "运行异常",
+    "evidence": "workloads.json + pods.json；安装/就绪证据不等同功能验收",
+    "next": "按本职功能取得输入/输出证据；0副本保持预算准入"
+  },
+  {
+    "component": "harbor-portal",
+    "namespace": "harbor",
+    "kind": "Deployment",
+    "source": "Helm harbor harbor-1.18.3",
+    "images": [
+      "goharbor/harbor-portal:v2.14.3"
+    ],
+    "nodes": [
+      "devops"
+    ],
+    "architectures": [
+      "arm64"
+    ],
+    "desired": 1,
+    "ready": 1,
+    "resources": [
+      {
+        "container": "portal",
+        "resources": {}
+      }
+    ],
+    "storage": [],
+    "entries": [
+      "harbor-portal:80",
+      "core.harbor.domain",
+      "harbor.devops.local"
+    ],
+    "purpose": "私有镜像、凭据、仓库持久化及扫描",
+    "state": "运行，功能验收待补",
+    "evidence": "workloads.json + pods.json；安装/就绪证据不等同功能验收",
+    "next": "按本职功能取得输入/输出证据；0副本保持预算准入"
+  },
+  {
+    "component": "harbor-redis-arm64",
+    "namespace": "harbor",
+    "kind": "Deployment",
+    "source": "既有 Kubernetes 清单/运维部署",
+    "images": [
+      "127.0.0.1:30050/platform-upgrade/redis:8.8.1-alpine-arm64"
+    ],
+    "nodes": [
+      "devops"
+    ],
+    "architectures": [
+      "arm64"
+    ],
+    "desired": 1,
+    "ready": 0,
+    "resources": [
+      {
+        "container": "redis",
+        "resources": {}
+      }
+    ],
+    "storage": [
+      "PVC harbor-redis-arm64-data"
+    ],
+    "entries": [
+      "harbor-redis-arm64:6379"
+    ],
+    "purpose": "私有镜像、凭据、仓库持久化及扫描",
+    "state": "运行异常",
+    "evidence": "workloads.json + pods.json；安装/就绪证据不等同功能验收",
+    "next": "按本职功能取得输入/输出证据；0副本保持预算准入"
+  },
+  {
+    "component": "harbor-registry",
+    "namespace": "harbor",
+    "kind": "Deployment",
+    "source": "Helm harbor harbor-1.18.3",
+    "images": [
+      "goharbor/registry-photon:2.14.2",
+      "goharbor/harbor-registryctl:2.14.2"
+    ],
+    "nodes": [
+      "devops"
+    ],
+    "architectures": [
+      "arm64"
+    ],
+    "desired": 1,
+    "ready": 1,
+    "resources": [
+      {
+        "container": "registry",
+        "resources": {}
+      },
+      {
+        "container": "registryctl",
+        "resources": {}
+      }
+    ],
+    "storage": [
+      "PVC harbor-registry"
+    ],
+    "entries": [
+      "harbor-registry:5000,8080"
+    ],
+    "purpose": "私有镜像、凭据、仓库持久化及扫描",
+    "state": "运行，功能验收待补",
+    "evidence": "workloads.json + pods.json；安装/就绪证据不等同功能验收",
+    "next": "按本职功能取得输入/输出证据；0副本保持预算准入"
+  },
+  {
+    "component": "coredns",
+    "namespace": "kube-system",
+    "kind": "Deployment",
+    "source": "既有 Kubernetes 清单/运维部署",
+    "images": [
+      "rancher/mirrored-coredns-coredns:1.14.3"
+    ],
+    "nodes": [
+      "devops"
+    ],
+    "architectures": [
+      "arm64"
+    ],
+    "desired": 1,
+    "ready": 1,
+    "resources": [
+      {
+        "container": "coredns",
+        "resources": {
+          "limits": {
+            "memory": "170Mi"
+          },
+          "requests": {
+            "cpu": "100m",
+            "memory": "70Mi"
+          }
+        }
+      }
+    ],
+    "storage": [],
+    "entries": [
+      "kube-dns:53,53,9153",
+      "kube-stack-kube-prometheus-coredns:9153"
+    ],
+    "purpose": "集群 DNS",
+    "state": "运行，功能验收待补",
+    "evidence": "workloads.json + pods.json；安装/就绪证据不等同功能验收",
+    "next": "按本职功能取得输入/输出证据；0副本保持预算准入"
+  },
+  {
+    "component": "local-path-provisioner",
+    "namespace": "kube-system",
+    "kind": "Deployment",
+    "source": "既有 Kubernetes 清单/运维部署",
+    "images": [
+      "rancher/local-path-provisioner:v0.0.36"
+    ],
+    "nodes": [
+      "devops"
+    ],
+    "architectures": [
+      "arm64"
+    ],
+    "desired": 1,
+    "ready": 1,
+    "resources": [
+      {
+        "container": "local-path-provisioner",
+        "resources": {}
+      }
+    ],
+    "storage": [],
+    "entries": [],
+    "purpose": "本地 PVC 动态供应与已有数据卷",
+    "state": "运行，功能验收待补",
+    "evidence": "workloads.json + pods.json；安装/就绪证据不等同功能验收",
+    "next": "按本职功能取得输入/输出证据；0副本保持预算准入"
+  },
+  {
+    "component": "metrics-server",
+    "namespace": "kube-system",
+    "kind": "Deployment",
+    "source": "既有 Kubernetes 清单/运维部署",
+    "images": [
+      "rancher/mirrored-metrics-server:v0.8.1"
+    ],
+    "nodes": [
+      "devops"
+    ],
+    "architectures": [
+      "arm64"
+    ],
+    "desired": 1,
+    "ready": 1,
+    "resources": [
+      {
+        "container": "metrics-server",
+        "resources": {
+          "requests": {
+            "cpu": "100m",
+            "memory": "70Mi"
+          }
+        }
+      }
+    ],
+    "storage": [
+      "emptyDir"
+    ],
+    "entries": [
+      "metrics-server:443"
+    ],
+    "purpose": "资源指标 API",
+    "state": "运行，功能验收待补",
+    "evidence": "workloads.json + pods.json；安装/就绪证据不等同功能验收",
+    "next": "按本职功能取得输入/输出证据；0副本保持预算准入"
+  },
+  {
+    "component": "traefik",
+    "namespace": "kube-system",
+    "kind": "Deployment",
+    "source": "Helm traefik traefik-39.0.701+up39.0.7",
+    "images": [
+      "docker.io/rancher/mirrored-library-traefik:3.6.13"
+    ],
+    "nodes": [
+      "devops"
+    ],
+    "architectures": [
+      "arm64"
+    ],
+    "desired": 1,
+    "ready": 1,
+    "resources": [
+      {
+        "container": "traefik",
+        "resources": {
+          "limits": {
+            "memory": "512Mi"
+          },
+          "requests": {
+            "cpu": "100m",
+            "memory": "128Mi"
+          }
+        }
+      }
+    ],
+    "storage": [
+      "emptyDir",
+      "emptyDir"
+    ],
+    "entries": [
+      "cook-traefik-metrics:9100",
+      "traefik:80,443"
+    ],
+    "purpose": "Ingress 主机名路由与反向代理",
+    "state": "运行，功能验收待补",
+    "evidence": "workloads.json + pods.json；安装/就绪证据不等同功能验收",
+    "next": "按本职功能取得输入/输出证据；0副本保持预算准入"
+  },
+  {
+    "component": "jaeger",
+    "namespace": "monitoring",
+    "kind": "Deployment",
+    "source": "Helm jaeger jaeger-4.7.0",
+    "images": [
+      "127.0.0.1:30050/platform-upgrade/jaeger:2.20.0-arm64"
+    ],
+    "nodes": [
+      "devops"
+    ],
+    "architectures": [
+      "arm64"
+    ],
+    "desired": 1,
+    "ready": 1,
+    "resources": [
+      {
+        "container": "jaeger",
+        "resources": {}
+      }
+    ],
+    "storage": [],
+    "entries": [
+      "jaeger:5775,5778,6831,6832,9411,14250,14267,14268,4317,4318,16686,16685,8888,8889",
+      "jaeger.devops.local"
+    ],
+    "purpose": "OTLP 请求 trace 查询",
+    "state": "运行，功能验收待补",
+    "evidence": "workloads.json + pods.json；安装/就绪证据不等同功能验收",
+    "next": "按本职功能取得输入/输出证据；0副本保持预算准入"
+  },
+  {
+    "component": "kube-stack-grafana",
+    "namespace": "monitoring",
+    "kind": "Deployment",
+    "source": "Helm kube-stack kube-prometheus-stack-84.3.0",
+    "images": [
+      "127.0.0.1:30050/platform-upgrade/k8s-sidecar:2.8.1-arm64",
+      "127.0.0.1:30050/platform-upgrade/k8s-sidecar:2.8.1-arm64",
+      "127.0.0.1:30050/platform-upgrade/grafana-grafana:13.1.1-arm64"
+    ],
+    "nodes": [
+      "devops"
+    ],
+    "architectures": [
+      "arm64"
+    ],
+    "desired": 1,
+    "ready": 1,
+    "resources": [
+      {
+        "container": "grafana-sc-dashboard",
+        "resources": {}
+      },
+      {
+        "container": "grafana-sc-datasources",
+        "resources": {}
+      },
+      {
+        "container": "grafana",
+        "resources": {
+          "limits": {
+            "cpu": "500m",
+            "memory": "768Mi"
+          },
+          "requests": {
+            "cpu": "50m",
+            "memory": "256Mi"
+          }
+        }
+      }
+    ],
+    "storage": [
+      "PVC kube-stack-grafana",
+      "emptyDir",
+      "emptyDir",
+      "emptyDir"
+    ],
+    "entries": [
+      "kube-stack-grafana:80",
+      "grafana.devops.local"
+    ],
+    "purpose": "Prometheus/Loki 看板与告警评估",
+    "state": "运行，功能验收待补",
+    "evidence": "workloads.json + pods.json；安装/就绪证据不等同功能验收",
+    "next": "按本职功能取得输入/输出证据；0副本保持预算准入"
+  },
+  {
+    "component": "kube-stack-kube-prometheus-operator",
+    "namespace": "monitoring",
+    "kind": "Deployment",
+    "source": "Helm kube-stack kube-prometheus-stack-84.3.0",
+    "images": [
+      "127.0.0.1:30050/platform-upgrade/prometheus-operator:v0.92.1-arm64"
+    ],
+    "nodes": [
+      "devops"
+    ],
+    "architectures": [
+      "arm64"
+    ],
+    "desired": 1,
+    "ready": 1,
+    "resources": [
+      {
+        "container": "kube-prometheus-stack",
+        "resources": {}
+      }
+    ],
+    "storage": [],
+    "entries": [
+      "kube-stack-kube-prometheus-operator:443"
+    ],
+    "purpose": "Prometheus/ServiceMonitor/规则控制器",
+    "state": "运行，功能验收待补",
+    "evidence": "workloads.json + pods.json；安装/就绪证据不等同功能验收",
+    "next": "按本职功能取得输入/输出证据；0副本保持预算准入"
+  },
+  {
+    "component": "kube-stack-kube-state-metrics",
+    "namespace": "monitoring",
+    "kind": "Deployment",
+    "source": "Helm kube-stack kube-prometheus-stack-84.3.0",
+    "images": [
+      "127.0.0.1:30050/platform-upgrade/kube-state-metrics:v2.19.1-arm64"
+    ],
+    "nodes": [
+      "devops"
+    ],
+    "architectures": [
+      "arm64"
+    ],
+    "desired": 1,
+    "ready": 1,
+    "resources": [
+      {
+        "container": "kube-state-metrics",
+        "resources": {}
+      }
+    ],
+    "storage": [],
+    "entries": [
+      "kube-stack-kube-state-metrics:8080"
+    ],
+    "purpose": "Kubernetes 对象状态指标",
+    "state": "运行，功能验收待补",
+    "evidence": "workloads.json + pods.json；安装/就绪证据不等同功能验收",
+    "next": "按本职功能取得输入/输出证据；0副本保持预算准入"
+  },
+  {
+    "component": "otel-collector",
+    "namespace": "monitoring",
+    "kind": "Deployment",
+    "source": "既有 Kubernetes 清单/运维部署",
+    "images": [
+      "127.0.0.1:30050/platform-upgrade/opentelemetry-collector:0.157.0-arm64"
+    ],
+    "nodes": [
+      "devops"
+    ],
+    "architectures": [
+      "arm64"
+    ],
+    "desired": 1,
+    "ready": 1,
+    "resources": [
+      {
+        "container": "otel-collector",
+        "resources": {
+          "limits": {
+            "cpu": "200m",
+            "memory": "256Mi"
+          },
+          "requests": {
+            "cpu": "25m",
+            "memory": "64Mi"
+          }
+        }
+      }
+    ],
+    "storage": [],
+    "entries": [
+      "otel-collector:4317,4318,8888,8889"
+    ],
+    "purpose": "OTLP 接收和 trace 转发",
+    "state": "运行，功能验收待补",
+    "evidence": "workloads.json + pods.json；安装/就绪证据不等同功能验收",
+    "next": "按本职功能取得输入/输出证据；0副本保持预算准入"
+  },
+  {
+    "component": "hello-app",
+    "namespace": "ns-apps",
+    "kind": "Deployment",
+    "source": "既有 Kubernetes 清单/运维部署",
+    "images": [
+      "127.0.0.1:30050/hello-app:6973c70"
+    ],
+    "nodes": [
+      "devops"
+    ],
+    "architectures": [
+      "arm64"
+    ],
+    "desired": 1,
+    "ready": 1,
+    "resources": [
+      {
+        "container": "hello-app",
+        "resources": {
+          "limits": {
+            "cpu": "200m",
+            "memory": "256Mi"
+          },
+          "requests": {
+            "cpu": "50m",
+            "memory": "64Mi"
+          }
+        }
+      }
+    ],
+    "storage": [],
+    "entries": [
+      "hello-app:80"
+    ],
+    "purpose": "独立平台门户；按本职验证",
+    "state": "运行，功能验收待补",
+    "evidence": "workloads.json + pods.json；安装/就绪证据不等同功能验收",
+    "next": "按本职功能取得输入/输出证据；0副本保持预算准入"
+  },
+  {
+    "component": "jkvideo-web",
+    "namespace": "ns-apps",
+    "kind": "Deployment",
+    "source": "既有 Kubernetes 清单/运维部署",
+    "images": [
+      "127.0.0.1:30050/jkvideo-web:b5b7c58"
+    ],
+    "nodes": [
+      "devops"
+    ],
+    "architectures": [
+      "arm64"
+    ],
+    "desired": 1,
+    "ready": 1,
+    "resources": [
+      {
+        "container": "jkvideo-web",
+        "resources": {}
+      }
+    ],
+    "storage": [],
+    "entries": [
+      "jkvideo-web:80"
+    ],
+    "purpose": "独立视频 Web 应用；按本职验证",
+    "state": "运行，功能验收待补",
+    "evidence": "workloads.json + pods.json；安装/就绪证据不等同功能验收",
+    "next": "按本职功能取得输入/输出证据；0副本保持预算准入"
+  },
+  {
+    "component": "flink-jobmanager",
+    "namespace": "ns-bigdata",
+    "kind": "Deployment",
+    "source": "既有 Kubernetes 清单/运维部署",
+    "images": [
+      "127.0.0.1:30050/platform-upgrade/flink:2.3.0-scala_2.12-java17"
+    ],
+    "nodes": [],
+    "architectures": [],
+    "desired": 0,
+    "ready": 0,
+    "resources": [
+      {
+        "container": "jobmanager",
+        "resources": {}
+      },
+      {
+        "container": "copy-flink-libs",
+        "resources": {}
+      },
+      {
+        "container": "copy-kafka-jar",
+        "resources": {}
+      }
+    ],
+    "storage": [
+      "emptyDir",
+      "hostPath /home/zhang/devops-bigdata/flink-sql-connector-kafka-5.0.0-2.2.jar"
+    ],
+    "entries": [
+      "flink-jobmanager:6123,8081",
+      "flink.devops.local"
+    ],
+    "purpose": "按需窗口统计，结束后保存状态并停止",
+    "state": "已安装但按需关闭",
+    "evidence": "workloads.json + pods.json；安装/就绪证据不等同功能验收",
+    "next": "按本职功能取得输入/输出证据；0副本保持预算准入"
+  },
+  {
+    "component": "flink-taskmanager",
+    "namespace": "ns-bigdata",
+    "kind": "Deployment",
+    "source": "既有 Kubernetes 清单/运维部署",
+    "images": [
+      "127.0.0.1:30050/platform-upgrade/flink:2.3.0-scala_2.12-java17"
+    ],
+    "nodes": [],
+    "architectures": [],
+    "desired": 0,
+    "ready": 0,
+    "resources": [
+      {
+        "container": "taskmanager",
+        "resources": {}
+      },
+      {
+        "container": "copy-flink-libs",
+        "resources": {}
+      },
+      {
+        "container": "copy-kafka-jar",
+        "resources": {}
+      }
+    ],
+    "storage": [
+      "emptyDir",
+      "hostPath /home/zhang/devops-bigdata/flink-sql-connector-kafka-5.0.0-2.2.jar"
+    ],
+    "entries": [],
+    "purpose": "按需窗口统计，结束后保存状态并停止",
+    "state": "已安装但按需关闭",
+    "evidence": "workloads.json + pods.json；安装/就绪证据不等同功能验收",
+    "next": "按本职功能取得输入/输出证据；0副本保持预算准入"
+  },
+  {
+    "component": "kafka",
+    "namespace": "ns-bigdata",
+    "kind": "Deployment",
+    "source": "既有 Kubernetes 清单/运维部署",
+    "images": [
+      "127.0.0.1:30050/platform-upgrade/apache-kafka:4.3.1"
+    ],
+    "nodes": [
+      "devops"
+    ],
+    "architectures": [
+      "arm64"
+    ],
+    "desired": 1,
+    "ready": 1,
+    "resources": [
+      {
+        "container": "kafka",
+        "resources": {
+          "limits": {
+            "memory": "1Gi"
+          },
+          "requests": {
+            "memory": "512Mi"
+          }
+        }
+      }
+    ],
+    "storage": [],
+    "entries": [
+      "kafka:9092"
+    ],
+    "purpose": "日志和发布事件 broker",
+    "state": "运行，功能验收待补",
+    "evidence": "workloads.json + pods.json；安装/就绪证据不等同功能验收",
+    "next": "按本职功能取得输入/输出证据；0副本保持预算准入"
+  },
+  {
+    "component": "kafka-ui",
+    "namespace": "ns-bigdata",
+    "kind": "Deployment",
+    "source": "既有 Kubernetes 清单/运维部署",
+    "images": [
+      "provectuslabs/kafka-ui:v0.7.2"
+    ],
+    "nodes": [],
+    "architectures": [],
+    "desired": 0,
+    "ready": 0,
+    "resources": [
+      {
+        "container": "kafka-ui",
+        "resources": {
+          "limits": {
+            "memory": "512Mi"
+          },
+          "requests": {
+            "memory": "256Mi"
+          }
+        }
+      }
+    ],
+    "storage": [],
+    "entries": [
+      "kafka-ui:8080",
+      "kafka.devops.local"
+    ],
+    "purpose": "Kafka 管理 UI，按需关闭",
+    "state": "已安装但按需关闭",
+    "evidence": "workloads.json + pods.json；安装/就绪证据不等同功能验收",
+    "next": "按本职功能取得输入/输出证据；0副本保持预算准入"
+  },
+  {
+    "component": "spark-operator-controller",
+    "namespace": "ns-bigdata",
+    "kind": "Deployment",
+    "source": "Helm spark-operator spark-operator-2.5.0",
+    "images": [
+      "ghcr.io/kubeflow/spark-operator/controller:2.5.1"
+    ],
+    "nodes": [],
+    "architectures": [],
+    "desired": 0,
+    "ready": 0,
+    "resources": [
+      {
+        "container": "spark-operator-controller",
+        "resources": {
+          "limits": {
+            "cpu": "200m",
+            "memory": "256Mi"
+          },
+          "requests": {
+            "cpu": "20m",
+            "memory": "64Mi"
+          }
+        }
+      }
+    ],
+    "storage": [
+      "emptyDir"
+    ],
+    "entries": [],
+    "purpose": "按需 SparkApplication 管理，当前无任务",
+    "state": "已安装但按需关闭",
+    "evidence": "workloads.json + pods.json；安装/就绪证据不等同功能验收",
+    "next": "按本职功能取得输入/输出证据；0副本保持预算准入"
+  },
+  {
+    "component": "spark-operator-webhook",
+    "namespace": "ns-bigdata",
+    "kind": "Deployment",
+    "source": "Helm spark-operator spark-operator-2.5.0",
+    "images": [
+      "ghcr.io/kubeflow/spark-operator/controller:2.5.1"
+    ],
+    "nodes": [],
+    "architectures": [],
+    "desired": 0,
+    "ready": 0,
+    "resources": [
+      {
+        "container": "spark-operator-webhook",
+        "resources": {
+          "limits": {
+            "cpu": "500m",
+            "memory": "256Mi"
+          },
+          "requests": {
+            "cpu": "50m",
+            "memory": "64Mi"
+          }
+        }
+      }
+    ],
+    "storage": [
+      "emptyDir"
+    ],
+    "entries": [
+      "spark-operator-webhook-svc:9443"
+    ],
+    "purpose": "按需 SparkApplication 管理，当前无任务",
+    "state": "已安装但按需关闭",
+    "evidence": "workloads.json + pods.json；安装/就绪证据不等同功能验收",
+    "next": "按本职功能取得输入/输出证据；0副本保持预算准入"
+  },
+  {
+    "component": "mysql",
+    "namespace": "ns-data",
+    "kind": "Deployment",
+    "source": "既有 Kubernetes 清单/运维部署",
+    "images": [
+      "127.0.0.1:30050/platform-upgrade/mysql:8.4.10-arm64"
+    ],
+    "nodes": [
+      "devops"
+    ],
+    "architectures": [
+      "arm64"
+    ],
+    "desired": 1,
+    "ready": 1,
+    "resources": [
+      {
+        "container": "mysql",
+        "resources": {}
+      }
+    ],
+    "storage": [
+      "hostPath /home/zhang/devops-stack/mysql/data"
+    ],
+    "entries": [
+      "mysql:3306"
+    ],
+    "purpose": "已有 MySQL 应用数据库",
+    "state": "运行，功能验收待补",
+    "evidence": "workloads.json + pods.json；安装/就绪证据不等同功能验收",
+    "next": "按本职功能取得输入/输出证据；0副本保持预算准入"
+  },
+  {
+    "component": "mysql-replica",
+    "namespace": "ns-data",
+    "kind": "Deployment",
+    "source": "既有 Kubernetes 清单/运维部署",
+    "images": [
+      "127.0.0.1:30050/platform-upgrade/mysql:8.4.10-arm64"
+    ],
+    "nodes": [
+      "devops"
+    ],
+    "architectures": [
+      "arm64"
+    ],
+    "desired": 1,
+    "ready": 1,
+    "resources": [
+      {
+        "container": "mysql",
+        "resources": {
+          "limits": {
+            "cpu": "1",
+            "memory": "768Mi"
+          },
+          "requests": {
+            "cpu": "100m",
+            "memory": "256Mi"
+          }
+        }
+      }
+    ],
+    "storage": [
+      "hostPath /home/zhang/devops-stack/mysql-replica/data"
+    ],
+    "entries": [
+      "mysql-replica:3306"
+    ],
+    "purpose": "MySQL 复制；不默认作分析读取",
+    "state": "运行，功能验收待补",
+    "evidence": "workloads.json + pods.json；安装/就绪证据不等同功能验收",
+    "next": "按本职功能取得输入/输出证据；0副本保持预算准入"
+  },
+  {
+    "component": "postgresql",
+    "namespace": "ns-data",
+    "kind": "Deployment",
+    "source": "既有 Kubernetes 清单/运维部署",
+    "images": [
+      "127.0.0.1:30050/platform-upgrade/postgres:18.4-alpine3.24-arm64"
+    ],
+    "nodes": [
+      "devops"
+    ],
+    "architectures": [
+      "arm64"
+    ],
+    "desired": 1,
+    "ready": 1,
+    "resources": [
+      {
+        "container": "harbor-db",
+        "resources": {}
+      }
+    ],
+    "storage": [
+      "PVC postgresql-data"
+    ],
+    "entries": [
+      "postgresql:5432"
+    ],
+    "purpose": "Petclinic 共享持久化数据库及隔离分析 schema",
+    "state": "运行，功能验收待补",
+    "evidence": "workloads.json + pods.json；安装/就绪证据不等同功能验收",
+    "next": "按本职功能取得输入/输出证据；0副本保持预算准入"
+  },
+  {
+    "component": "flaresolverr",
+    "namespace": "ns-devops",
+    "kind": "Deployment",
+    "source": "既有 Kubernetes 清单/运维部署",
+    "images": [
+      "127.0.0.1:30050/platform-upgrade/flaresolverr:v3.5.0-arm64"
+    ],
+    "nodes": [
+      "devops"
+    ],
+    "architectures": [
+      "arm64"
+    ],
+    "desired": 1,
+    "ready": 1,
+    "resources": [
+      {
+        "container": "flaresolverr",
+        "resources": {
+          "limits": {
+            "cpu": "500m",
+            "memory": "768Mi"
+          },
+          "requests": {
+            "cpu": "80m",
+            "memory": "192Mi"
+          }
+        }
+      }
+    ],
+    "storage": [],
+    "entries": [],
+    "purpose": "已有独立浏览器挑战服务",
+    "state": "运行，功能验收待补",
+    "evidence": "workloads.json + pods.json；安装/就绪证据不等同功能验收",
+    "next": "按本职功能取得输入/输出证据；0副本保持预算准入"
+  },
+  {
+    "component": "github-webhook-relay",
+    "namespace": "ns-devops",
+    "kind": "Deployment",
+    "source": "既有 Kubernetes 清单/运维部署",
+    "images": [
+      "127.0.0.1:30050/platform-upgrade/node:24.18.0-alpine3.23-arm64"
+    ],
+    "nodes": [
+      "devops"
+    ],
+    "architectures": [
+      "arm64"
+    ],
+    "desired": 1,
+    "ready": 1,
+    "resources": [
+      {
+        "container": "relay",
+        "resources": {
+          "limits": {
+            "memory": "96Mi"
+          },
+          "requests": {
+            "cpu": "5m",
+            "memory": "32Mi"
+          }
+        }
+      }
+    ],
+    "storage": [],
+    "entries": [
+      "github-webhook-relay:8080"
+    ],
+    "purpose": "GitHub/Webhook 转发；只做有界 HTTP 访问",
+    "state": "运行，功能验收待补",
+    "evidence": "workloads.json + pods.json；安装/就绪证据不等同功能验收",
+    "next": "按本职功能取得输入/输出证据；0副本保持预算准入"
+  },
+  {
+    "component": "gitlab",
+    "namespace": "ns-devops",
+    "kind": "Deployment",
+    "source": "既有 Kubernetes 清单/运维部署",
+    "images": [
+      "127.0.0.1:30050/platform-upgrade/gitlab-ce:19.2.0-ce.0-arm64"
+    ],
+    "nodes": [
+      "devops"
+    ],
+    "architectures": [
+      "arm64"
+    ],
+    "desired": 1,
+    "ready": 1,
+    "resources": [
+      {
+        "container": "gitlab",
+        "resources": {
+          "limits": {
+            "memory": "4Gi"
+          },
+          "requests": {
+            "cpu": "250m",
+            "memory": "2560Mi"
+          }
+        }
+      }
+    ],
+    "storage": [
+      "PVC gitlab-pvc"
+    ],
+    "entries": [
+      "gitlab-service:80,22",
+      "gitlab.devops.local"
+    ],
+    "purpose": "私有源码与审计",
+    "state": "运行，功能验收待补",
+    "evidence": "workloads.json + pods.json；安装/就绪证据不等同功能验收",
+    "next": "按本职功能取得输入/输出证据；0副本保持预算准入"
+  },
+  {
+    "component": "gitlab-runner",
+    "namespace": "ns-devops",
+    "kind": "Deployment",
+    "source": "既有 Kubernetes 清单/运维部署",
+    "images": [
+      "127.0.0.1:30050/platform-upgrade/gitlab-runner:alpine-v19.2.0-arm64"
+    ],
+    "nodes": [
+      "devops"
+    ],
+    "architectures": [
+      "arm64"
+    ],
+    "desired": 1,
+    "ready": 1,
+    "resources": [
+      {
+        "container": "gitlab-runner",
+        "resources": {}
+      }
+    ],
+    "storage": [],
+    "entries": [],
+    "purpose": "源码审计；不部署 Petclinic",
+    "state": "运行，功能验收待补",
+    "evidence": "workloads.json + pods.json；安装/就绪证据不等同功能验收",
+    "next": "按本职功能取得输入/输出证据；0副本保持预算准入"
+  },
+  {
+    "component": "jenkins",
+    "namespace": "ns-devops",
+    "kind": "Deployment",
+    "source": "既有 Kubernetes 清单/运维部署",
+    "images": [
+      "127.0.0.1:30050/jenkins-custom:2.568.1-lts-atomic-node20-v1"
+    ],
+    "nodes": [
+      "devops"
+    ],
+    "architectures": [
+      "arm64"
+    ],
+    "desired": 1,
+    "ready": 1,
+    "resources": [
+      {
+        "container": "jenkins",
+        "resources": {
+          "limits": {
+            "cpu": "2",
+            "memory": "3Gi"
+          },
+          "requests": {
+            "cpu": "500m",
+            "memory": "1Gi"
+          }
+        }
+      },
+      {
+        "container": "fix-permissions",
+        "resources": {}
+      }
+    ],
+    "storage": [
+      "hostPath /usr/libexec/docker/cli-plugins/docker-compose",
+      "hostPath /usr/share/zoneinfo/Asia/Shanghai",
+      "PVC jenkins-pvc",
+      "hostPath /var/run/docker.sock",
+      "hostPath /usr/bin/docker",
+      "hostPath /home/zhang/devops-tools/kubectl",
+      "hostPath /usr/local/bin/docker-safe",
+      "hostPath /usr/bin/docker.original",
+      "hostPath /usr/libexec/docker/cli-plugins/docker-buildx"
+    ],
+    "entries": [
+      "jenkins:8080,50000",
+      "jenkins.devops.local"
+    ],
+    "purpose": "测试/质量门/双架构构建与发布",
+    "state": "运行，功能验收待补",
+    "evidence": "workloads.json + pods.json；安装/就绪证据不等同功能验收",
+    "next": "按本职功能取得输入/输出证据；0副本保持预算准入"
+  },
+  {
+    "component": "jenkins-build-log-filebeat-es",
+    "namespace": "ns-devops",
+    "kind": "Deployment",
+    "source": "既有 Kubernetes 清单/运维部署",
+    "images": [
+      "docker.elastic.co/beats/filebeat:9.4.4"
+    ],
+    "nodes": [
+      "devops"
+    ],
+    "architectures": [
+      "arm64"
+    ],
+    "desired": 1,
+    "ready": 1,
+    "resources": [
+      {
+        "container": "filebeat",
+        "resources": {
+          "limits": {
+            "cpu": "200m",
+            "memory": "256Mi"
+          },
+          "requests": {
+            "cpu": "20m",
+            "memory": "96Mi"
+          }
+        }
+      }
+    ],
+    "storage": [
+      "PVC jenkins-pvc",
+      "hostPath /opt/devops/filebeat-registry/jenkins-es"
+    ],
+    "entries": [],
+    "purpose": "构建日志写入 Elasticsearch",
+    "state": "运行，功能验收待补",
+    "evidence": "workloads.json + pods.json；安装/就绪证据不等同功能验收",
+    "next": "按本职功能取得输入/输出证据；0副本保持预算准入"
+  },
+  {
+    "component": "jenkins-build-log-filebeat-kafka",
+    "namespace": "ns-devops",
+    "kind": "Deployment",
+    "source": "既有 Kubernetes 清单/运维部署",
+    "images": [
+      "docker.elastic.co/beats/filebeat:9.4.4"
+    ],
+    "nodes": [
+      "devops"
+    ],
+    "architectures": [
+      "arm64"
+    ],
+    "desired": 1,
+    "ready": 1,
+    "resources": [
+      {
+        "container": "filebeat",
+        "resources": {
+          "limits": {
+            "cpu": "200m",
+            "memory": "256Mi"
+          },
+          "requests": {
+            "cpu": "20m",
+            "memory": "96Mi"
+          }
+        }
+      }
+    ],
+    "storage": [
+      "PVC jenkins-pvc",
+      "hostPath /opt/devops/filebeat-registry/jenkins-kafka"
+    ],
+    "entries": [],
+    "purpose": "构建日志写入 Kafka",
+    "state": "运行，功能验收待补",
+    "evidence": "workloads.json + pods.json；安装/就绪证据不等同功能验收",
+    "next": "按本职功能取得输入/输出证据；0副本保持预算准入"
+  },
+  {
+    "component": "local-registry",
+    "namespace": "ns-devops",
+    "kind": "Deployment",
+    "source": "既有 Kubernetes 清单/运维部署",
+    "images": [
+      "docker.io/goharbor/registry-photon:2.14.2"
+    ],
+    "nodes": [
+      "devops"
+    ],
+    "architectures": [
+      "arm64"
+    ],
+    "desired": 1,
+    "ready": 1,
+    "resources": [
+      {
+        "container": "registry",
+        "resources": {
+          "limits": {
+            "memory": "512Mi"
+          },
+          "requests": {
+            "cpu": "50m",
+            "memory": "128Mi"
+          }
+        }
+      }
+    ],
+    "storage": [
+      "hostPath /home/zhang/devops-stack/ops-managed/registry-data"
+    ],
+    "entries": [
+      "local-registry:5000"
+    ],
+    "purpose": "既有镜像入口/构建缓存",
+    "state": "运行，功能验收待补",
+    "evidence": "workloads.json + pods.json；安装/就绪证据不等同功能验收",
+    "next": "按本职功能取得输入/输出证据；0副本保持预算准入"
+  },
+  {
+    "component": "portainer",
+    "namespace": "ns-devops",
+    "kind": "Deployment",
+    "source": "既有 Kubernetes 清单/运维部署",
+    "images": [
+      "harbor.devops.local/library/portainer-portainer-ce:2.39.5"
+    ],
+    "nodes": [
+      "devops"
+    ],
+    "architectures": [
+      "arm64"
+    ],
+    "desired": 1,
+    "ready": 1,
+    "resources": [
+      {
+        "container": "portainer",
+        "resources": {
+          "limits": {
+            "cpu": "200m",
+            "memory": "256Mi"
+          },
+          "requests": {
+            "cpu": "20m",
+            "memory": "64Mi"
+          }
+        }
+      }
+    ],
+    "storage": [
+      "hostPath /opt/devops/data/portainer"
+    ],
+    "entries": [
+      "portainer:9000",
+      "portainer.devops.local"
+    ],
+    "purpose": "容器与集群管理 UI/API",
+    "state": "运行，功能验收待补",
+    "evidence": "workloads.json + pods.json；安装/就绪证据不等同功能验收",
+    "next": "按本职功能取得输入/输出证据；0副本保持预算准入"
+  },
+  {
+    "component": "openclaw-controller",
+    "namespace": "ns-openclaw",
+    "kind": "Deployment",
+    "source": "既有 Kubernetes 清单/运维部署",
+    "images": [
+      "127.0.0.1:30050/platform-upgrade/open-webui:v0.10.2-arm64"
+    ],
+    "nodes": [],
+    "architectures": [],
+    "desired": 0,
+    "ready": 0,
+    "resources": [
+      {
+        "container": "openclaw-dashboard",
+        "resources": {
+          "limits": {
+            "cpu": "500m",
+            "memory": "1Gi"
+          },
+          "requests": {
+            "cpu": "50m",
+            "memory": "256Mi"
+          }
+        }
+      }
+    ],
+    "storage": [
+      "PVC pvc-openclaw-data"
+    ],
+    "entries": [
+      "openclaw-controller-svc:8080"
+    ],
+    "purpose": "已有独立控制器，按需关闭",
+    "state": "已安装但按需关闭",
+    "evidence": "workloads.json + pods.json；安装/就绪证据不等同功能验收",
+    "next": "按本职功能取得输入/输出证据；0副本保持预算准入"
+  },
+  {
+    "component": "petclinic",
+    "namespace": "petclinic",
+    "kind": "Deployment",
+    "source": "既有 Kubernetes 清单/运维部署",
+    "images": [
+      "10.0.0.3:30050/petclinic/petclinic:0.9.0-ci-113"
+    ],
+    "nodes": [
+      "devops"
+    ],
+    "architectures": [
+      "arm64"
+    ],
+    "desired": 3,
+    "ready": 3,
+    "resources": [
+      {
+        "container": "petclinic",
+        "resources": {
+          "limits": {
+            "cpu": "500m",
+            "memory": "768Mi"
+          },
+          "requests": {
+            "cpu": "100m",
+            "memory": "512Mi"
+          }
+        }
+      }
+    ],
+    "storage": [],
+    "entries": [
+      "petclinic:80",
+      "petclinic.devops.local"
+    ],
+    "purpose": "主人/宠物/医生/就诊业务及统计读取",
+    "state": "运行，功能验收待补",
+    "evidence": "workloads.json + pods.json；安装/就绪证据不等同功能验收",
+    "next": "按本职功能取得输入/输出证据；0副本保持预算准入"
+  },
+  {
+    "component": "system-upgrade-controller",
+    "namespace": "system-upgrade",
+    "kind": "Deployment",
+    "source": "既有 Kubernetes 清单/运维部署",
+    "images": [
+      "127.0.0.1:30050/platform-upgrade/system-upgrade-controller:v0.20.1-arm64"
+    ],
+    "nodes": [
+      "devops"
+    ],
+    "architectures": [
+      "arm64"
+    ],
+    "desired": 1,
+    "ready": 1,
+    "resources": [
+      {
+        "container": "system-upgrade-controller",
+        "resources": {}
+      }
+    ],
+    "storage": [
+      "hostPath /etc/ssl",
+      "hostPath /etc/pki",
+      "hostPath /etc/ca-certificates",
+      "emptyDir"
+    ],
+    "entries": [],
+    "purpose": "升级计划控制器；无需为验收触发升级",
+    "state": "运行，功能验收待补",
+    "evidence": "workloads.json + pods.json；安装/就绪证据不等同功能验收",
+    "next": "按本职功能取得输入/输出证据；0副本保持预算准入"
+  },
+  {
+    "component": "zabbix-server",
+    "namespace": "zabbix",
+    "kind": "Deployment",
+    "source": "既有 Kubernetes 清单/运维部署",
+    "images": [
+      "127.0.0.1:30050/platform-upgrade/zabbix-server-mysql:ubuntu-7.4.12"
+    ],
+    "nodes": [],
+    "architectures": [],
+    "desired": 0,
+    "ready": 0,
+    "resources": [
+      {
+        "container": "zabbix-server",
+        "resources": {
+          "limits": {
+            "cpu": "500m",
+            "memory": "512Mi"
+          },
+          "requests": {
+            "cpu": "100m",
+            "memory": "256Mi"
+          }
+        }
+      },
+      {
+        "container": "wait-for-mysql",
+        "resources": {}
+      }
+    ],
+    "storage": [
+      "hostPath /home/zhang/devops-stack/zabbix/zbx_env/usr/lib/zabbix/alertscripts"
+    ],
+    "entries": [
+      "zabbix-server:10051"
+    ],
+    "purpose": "已有独立监控服务，按需关闭",
+    "state": "已安装但按需关闭",
+    "evidence": "workloads.json + pods.json；安装/就绪证据不等同功能验收",
+    "next": "按本职功能取得输入/输出证据；0副本保持预算准入"
+  },
+  {
+    "component": "zabbix-web",
+    "namespace": "zabbix",
+    "kind": "Deployment",
+    "source": "既有 Kubernetes 清单/运维部署",
+    "images": [
+      "127.0.0.1:30050/platform-upgrade/zabbix-web-nginx-mysql:ubuntu-7.4.12"
+    ],
+    "nodes": [],
+    "architectures": [],
+    "desired": 0,
+    "ready": 0,
+    "resources": [
+      {
+        "container": "zabbix-web",
+        "resources": {
+          "limits": {
+            "cpu": "300m",
+            "memory": "256Mi"
+          },
+          "requests": {
+            "cpu": "100m",
+            "memory": "128Mi"
+          }
+        }
+      },
+      {
+        "container": "wait-for-server",
+        "resources": {}
+      }
+    ],
+    "storage": [],
+    "entries": [
+      "zabbix-web:8080",
+      "zabbix.devops.local"
+    ],
+    "purpose": "已有独立监控服务，按需关闭",
+    "state": "已安装但按需关闭",
+    "evidence": "workloads.json + pods.json；安装/就绪证据不等同功能验收",
+    "next": "按本职功能取得输入/输出证据；0副本保持预算准入"
+  },
+  {
+    "component": "argocd-application-controller",
+    "namespace": "argocd",
+    "kind": "StatefulSet",
+    "source": "既有 Kubernetes 清单/运维部署",
+    "images": [
+      "127.0.0.1:30050/platform-upgrade/argocd:v3.4.5-arm64"
+    ],
+    "nodes": [
+      "devops"
+    ],
+    "architectures": [
+      "arm64"
+    ],
+    "desired": 1,
+    "ready": 1,
+    "resources": [
+      {
+        "container": "argocd-application-controller",
+        "resources": {
+          "limits": {
+            "cpu": "500m",
+            "memory": "512Mi"
+          },
+          "requests": {
+            "cpu": "50m",
+            "memory": "128Mi"
+          }
+        }
+      }
+    ],
+    "storage": [
+      "emptyDir",
+      "emptyDir"
+    ],
+    "entries": [
+      "argocd-metrics:8082"
+    ],
+    "purpose": "GitOps 比较与同步",
+    "state": "运行，功能验收待补",
+    "evidence": "workloads.json + pods.json；安装/就绪证据不等同功能验收",
+    "next": "按本职功能取得输入/输出证据；0副本保持预算准入"
+  },
+  {
+    "component": "airflow-triggerer",
+    "namespace": "data-infra",
+    "kind": "StatefulSet",
+    "source": "Helm airflow airflow-1.20.0",
+    "images": [
+      "apache/airflow:3.3.0",
+      "apache/airflow:3.3.0"
+    ],
+    "nodes": [
+      "devops"
+    ],
+    "architectures": [
+      "arm64"
+    ],
+    "desired": 1,
+    "ready": 1,
+    "resources": [
+      {
+        "container": "triggerer",
+        "resources": {
+          "limits": {
+            "cpu": "500m",
+            "memory": "768Mi"
+          },
+          "requests": {
+            "cpu": "50m",
+            "memory": "256Mi"
+          }
+        }
+      },
+      {
+        "container": "triggerer-log-groomer",
+        "resources": {}
+      },
+      {
+        "container": "wait-for-airflow-migrations",
+        "resources": {}
+      }
+    ],
+    "storage": [],
+    "entries": [
+      "airflow-triggerer:8794"
+    ],
+    "purpose": "有界增量统计编排；当前仅 triggerer，核心尚关闭",
+    "state": "运行，功能验收待补",
+    "evidence": "workloads.json + pods.json；安装/就绪证据不等同功能验收",
+    "next": "按本职功能取得输入/输出证据；0副本保持预算准入"
+  },
+  {
+    "component": "superset-redis-master",
+    "namespace": "data-infra",
+    "kind": "StatefulSet",
+    "source": "Helm superset superset-0.15.2",
+    "images": [
+      "192.168.1.58:30050/library/redis:7.0"
+    ],
+    "nodes": [
+      "devops"
+    ],
+    "architectures": [
+      "arm64"
+    ],
+    "desired": 1,
+    "ready": 1,
+    "resources": [
+      {
+        "container": "redis",
+        "resources": {
+          "limits": {
+            "memory": "128Mi"
+          },
+          "requests": {
+            "memory": "64Mi"
+          }
+        }
+      }
+    ],
+    "storage": [
+      "emptyDir",
+      "emptyDir",
+      "emptyDir"
+    ],
+    "entries": [
+      "superset-redis-headless:6379",
+      "superset-redis-master:6379"
+    ],
+    "purpose": "统计查询与看板",
+    "state": "运行，功能验收待补",
+    "evidence": "workloads.json + pods.json；安装/就绪证据不等同功能验收",
+    "next": "按本职功能取得输入/输出证据；0副本保持预算准入"
+  },
+  {
+    "component": "harbor-database",
+    "namespace": "harbor",
+    "kind": "StatefulSet",
+    "source": "Helm harbor harbor-1.18.3",
+    "images": [
+      "127.0.0.1:30050/platform-repair/postgres:15-arm64"
+    ],
+    "nodes": [
+      "devops"
+    ],
+    "architectures": [
+      "arm64"
+    ],
+    "desired": 1,
+    "ready": 1,
+    "resources": [
+      {
+        "container": "database",
+        "resources": {}
+      },
+      {
+        "container": "data-permissions-ensurer",
+        "resources": {}
+      }
+    ],
+    "storage": [
+      "PVC harbor-database-pvc",
+      "emptyDir"
+    ],
+    "entries": [
+      "harbor-database:5432"
+    ],
+    "purpose": "私有镜像、凭据、仓库持久化及扫描",
+    "state": "运行，功能验收待补",
+    "evidence": "workloads.json + pods.json；安装/就绪证据不等同功能验收",
+    "next": "按本职功能取得输入/输出证据；0副本保持预算准入"
+  },
+  {
+    "component": "harbor-trivy",
+    "namespace": "harbor",
+    "kind": "StatefulSet",
+    "source": "Helm harbor harbor-1.18.3",
+    "images": [
+      "goharbor/trivy-adapter-photon:v2.14.3"
+    ],
+    "nodes": [
+      "devops"
+    ],
+    "architectures": [
+      "arm64"
+    ],
+    "desired": 1,
+    "ready": 1,
+    "resources": [
+      {
+        "container": "trivy",
+        "resources": {
+          "limits": {
+            "cpu": "1",
+            "memory": "1Gi"
+          },
+          "requests": {
+            "cpu": "200m",
+            "memory": "512Mi"
+          }
+        }
+      }
+    ],
+    "storage": [],
+    "entries": [
+      "harbor-trivy:8080"
+    ],
+    "purpose": "私有镜像、凭据、仓库持久化及扫描",
+    "state": "运行，功能验收待补",
+    "evidence": "workloads.json + pods.json；安装/就绪证据不等同功能验收",
+    "next": "按本职功能取得输入/输出证据；0副本保持预算准入"
+  },
+  {
+    "component": "loki",
+    "namespace": "monitoring",
+    "kind": "StatefulSet",
+    "source": "Helm loki loki-6.55.0",
+    "images": [
+      "127.0.0.1:30050/platform-upgrade/loki:3.7.4-arm64",
+      "127.0.0.1:30050/platform-upgrade/k8s-sidecar:2.8.1-arm64"
+    ],
+    "nodes": [
+      "devops"
+    ],
+    "architectures": [
+      "arm64"
+    ],
+    "desired": 1,
+    "ready": 1,
+    "resources": [
+      {
+        "container": "loki",
+        "resources": {
+          "limits": {
+            "cpu": "500m",
+            "memory": "512Mi"
+          },
+          "requests": {
+            "cpu": "50m",
+            "memory": "128Mi"
+          }
+        }
+      },
+      {
+        "container": "loki-sc-rules",
+        "resources": {}
+      }
+    ],
+    "storage": [
+      "emptyDir",
+      "emptyDir"
+    ],
+    "entries": [
+      "loki:3100,9095",
+      "loki-headless:3100",
+      "loki-memberlist:7946"
+    ],
+    "purpose": "结构化日志存储/查询",
+    "state": "运行，功能验收待补",
+    "evidence": "workloads.json + pods.json；安装/就绪证据不等同功能验收",
+    "next": "按本职功能取得输入/输出证据；0副本保持预算准入"
+  },
+  {
+    "component": "prometheus-kube-stack-kube-prometheus-prometheus",
+    "namespace": "monitoring",
+    "kind": "StatefulSet",
+    "source": "Helm kube-stack kube-prometheus-stack-84.3.0",
+    "images": [
+      "127.0.0.1:30050/platform-upgrade/prometheus:v3.13.1-arm64",
+      "127.0.0.1:30050/platform-upgrade/prometheus-config-reloader:v0.92.1-arm64"
+    ],
+    "nodes": [
+      "devops"
+    ],
+    "architectures": [
+      "arm64"
+    ],
+    "desired": 1,
+    "ready": 1,
+    "resources": [
+      {
+        "container": "prometheus",
+        "resources": {
+          "requests": {
+            "memory": "400Mi"
+          }
+        }
+      },
+      {
+        "container": "config-reloader",
+        "resources": {}
+      },
+      {
+        "container": "init-config-reloader",
+        "resources": {}
+      }
+    ],
+    "storage": [
+      "emptyDir",
+      "emptyDir"
+    ],
+    "entries": [
+      "kube-stack-kube-prometheus-prometheus:9090,8080",
+      "prometheus-operated:9090",
+      "prometheus.devops.local"
+    ],
+    "purpose": "指标采集、历史与 PromQL",
+    "state": "运行，功能验收待补",
+    "evidence": "workloads.json + pods.json；安装/就绪证据不等同功能验收",
+    "next": "按本职功能取得输入/输出证据；0副本保持预算准入"
+  },
+  {
+    "component": "sonarqube-sonarqube",
+    "namespace": "sonarqube",
+    "kind": "StatefulSet",
+    "source": "Helm sonarqube sonarqube-2026.2.1",
+    "images": [
+      "sonarqube:26.3.0.120487-community"
+    ],
+    "nodes": [
+      "devops"
+    ],
+    "architectures": [
+      "arm64"
+    ],
+    "desired": 1,
+    "ready": 1,
+    "resources": [
+      {
+        "container": "sonarqube",
+        "resources": {
+          "limits": {
+            "cpu": "800m",
+            "ephemeral-storage": "10Gi",
+            "memory": "3Gi"
+          },
+          "requests": {
+            "cpu": "500m",
+            "ephemeral-storage": "1536M",
+            "memory": "1Gi"
+          }
+        }
+      },
+      {
+        "container": "init-sysctl",
+        "resources": {}
+      },
+      {
+        "container": "concat-properties",
+        "resources": {}
+      }
+    ],
+    "storage": [
+      "PVC sonarqube-data",
+      "emptyDir",
+      "emptyDir"
+    ],
+    "entries": [
+      "sonarqube-sonarqube:9000",
+      "sonar.devops.local",
+      "sonarqube.devops.local"
+    ],
+    "purpose": "质量分析及门禁",
+    "state": "运行，功能验收待补",
+    "evidence": "workloads.json + pods.json；安装/就绪证据不等同功能验收",
+    "next": "按本职功能取得输入/输出证据；0副本保持预算准入"
+  },
+  {
+    "component": "filebeat",
+    "namespace": "default",
+    "kind": "DaemonSet",
+    "source": "既有 Kubernetes 清单/运维部署",
+    "images": [
+      "docker.elastic.co/beats/filebeat:9.4.4"
+    ],
+    "nodes": [
+      "aliyun-worker",
+      "devops",
+      "ucloud-worker"
+    ],
+    "architectures": [
+      "amd64",
+      "arm64"
+    ],
+    "desired": 3,
+    "ready": 3,
+    "resources": [
+      {
+        "container": "filebeat",
+        "resources": {}
+      }
+    ],
+    "storage": [
+      "hostPath /var/log/pods",
+      "hostPath /etc/localtime"
+    ],
+    "entries": [],
+    "purpose": "Kubernetes 日志采集到 Elasticsearch",
+    "state": "运行，功能验收待补",
+    "evidence": "workloads.json + pods.json；安装/就绪证据不等同功能验收",
+    "next": "按本职功能取得输入/输出证据；0副本保持预算准入"
+  },
+  {
+    "component": "svclb-traefik-3eaada12",
+    "namespace": "kube-system",
+    "kind": "DaemonSet",
+    "source": "既有 Kubernetes 清单/运维部署",
+    "images": [
+      "rancher/klipper-lb:v0.4.17",
+      "rancher/klipper-lb:v0.4.17"
+    ],
+    "nodes": [
+      "devops"
+    ],
+    "architectures": [
+      "arm64"
+    ],
+    "desired": 1,
+    "ready": 1,
+    "resources": [
+      {
+        "container": "lb-tcp-80",
+        "resources": {}
+      },
+      {
+        "container": "lb-tcp-443",
+        "resources": {}
+      }
+    ],
+    "storage": [],
+    "entries": [],
+    "purpose": "Traefik ServiceLB 入口",
+    "state": "运行，功能验收待补",
+    "evidence": "workloads.json + pods.json；安装/就绪证据不等同功能验收",
+    "next": "按本职功能取得输入/输出证据；0副本保持预算准入"
+  },
+  {
+    "component": "alloy",
+    "namespace": "monitoring",
+    "kind": "DaemonSet",
+    "source": "Helm alloy alloy-1.11.1",
+    "images": [
+      "docker.io/grafana/alloy:v1.18.1",
+      "quay.io/prometheus-operator/prometheus-config-reloader:v0.91.0@sha256:7d9e4eea5f1139e602508871f422b0116c60e87c662f3dcd234d5ab60cd0d8c1"
+    ],
+    "nodes": [
+      "aliyun-worker",
+      "devops",
+      "ucloud-worker"
+    ],
+    "architectures": [
+      "amd64",
+      "arm64"
+    ],
+    "desired": 3,
+    "ready": 3,
+    "resources": [
+      {
+        "container": "alloy",
+        "resources": {}
+      },
+      {
+        "container": "config-reloader",
+        "resources": {
+          "requests": {
+            "cpu": "10m",
+            "memory": "50Mi"
+          }
+        }
+      }
+    ],
+    "storage": [],
+    "entries": [
+      "alloy:12345"
+    ],
+    "purpose": "结构化 Kubernetes 日志至 Loki",
+    "state": "运行，功能验收待补",
+    "evidence": "workloads.json + pods.json；安装/就绪证据不等同功能验收",
+    "next": "按本职功能取得输入/输出证据；0副本保持预算准入"
+  },
+  {
+    "component": "kube-stack-prometheus-node-exporter",
+    "namespace": "monitoring",
+    "kind": "DaemonSet",
+    "source": "Helm kube-stack kube-prometheus-stack-84.3.0",
+    "images": [
+      "quay.io/prometheus/node-exporter:v1.12.1"
+    ],
+    "nodes": [
+      "aliyun-worker",
+      "devops",
+      "ucloud-worker"
+    ],
+    "architectures": [
+      "amd64",
+      "arm64"
+    ],
+    "desired": 3,
+    "ready": 3,
+    "resources": [
+      {
+        "container": "node-exporter",
+        "resources": {}
+      }
+    ],
+    "storage": [
+      "hostPath /proc",
+      "hostPath /sys",
+      "hostPath /"
+    ],
+    "entries": [
+      "kube-stack-prometheus-node-exporter:9100"
+    ],
+    "purpose": "CPU/内存/磁盘/压力节点指标",
+    "state": "运行，功能验收待补",
+    "evidence": "workloads.json + pods.json；安装/就绪证据不等同功能验收",
+    "next": "按本职功能取得输入/输出证据；0副本保持预算准入"
+  },
+  {
+    "component": "filebeat-kafka",
+    "namespace": "ns-bigdata",
+    "kind": "DaemonSet",
+    "source": "既有 Kubernetes 清单/运维部署",
+    "images": [
+      "docker.elastic.co/beats/filebeat:9.4.4"
+    ],
+    "nodes": [
+      "aliyun-worker",
+      "devops",
+      "ucloud-worker"
+    ],
+    "architectures": [
+      "amd64",
+      "arm64"
+    ],
+    "desired": 3,
+    "ready": 3,
+    "resources": [
+      {
+        "container": "filebeat",
+        "resources": {}
+      }
+    ],
+    "storage": [
+      "hostPath /var/log",
+      "hostPath /var/log/pods",
+      "hostPath /var/lib/docker/containers"
+    ],
+    "entries": [],
+    "purpose": "Kubernetes 日志写入 Kafka",
+    "state": "运行，功能验收待补",
+    "evidence": "workloads.json + pods.json；安装/就绪证据不等同功能验收",
+    "next": "按本职功能取得输入/输出证据；0副本保持预算准入"
+  },
+  {
+    "component": "airflow-db-upgrade-v2",
+    "namespace": "data-infra",
+    "kind": "Job",
+    "source": "既有 Kubernetes 清单/运维部署",
+    "images": [
+      "apache/airflow:3.1.8"
+    ],
+    "nodes": [],
+    "architectures": [],
+    "desired": 1,
+    "ready": 0,
+    "resources": [
+      {
+        "container": "migrate",
+        "resources": {}
+      }
+    ],
+    "storage": [],
+    "entries": [],
+    "purpose": "有界增量统计编排；当前仅 triggerer，核心尚关闭",
+    "state": "历史 Job 失败/未完成",
+    "evidence": "workloads.json + pods.json；安装/就绪证据不等同功能验收",
+    "next": "按本职功能取得输入/输出证据；0副本保持预算准入"
+  },
+  {
+    "component": "superset-init-db",
+    "namespace": "data-infra",
+    "kind": "Job",
+    "source": "既有 Kubernetes 清单/运维部署",
+    "images": [
+      "192.168.1.58:30050/library/superset:6.1.0-mysqlconnector-9.6.0"
+    ],
+    "nodes": [],
+    "architectures": [],
+    "desired": 1,
+    "ready": 1,
+    "resources": [
+      {
+        "container": "superset-init-db",
+        "resources": {}
+      },
+      {
+        "container": "wait-for-postgres",
+        "resources": {}
+      }
+    ],
+    "storage": [],
+    "entries": [],
+    "purpose": "统计查询与看板",
+    "state": "历史 Job 成功",
+    "evidence": "workloads.json + pods.json；安装/就绪证据不等同功能验收",
+    "next": "按本职功能取得输入/输出证据；0副本保持预算准入"
+  },
+  {
+    "component": "helm-install-traefik",
+    "namespace": "kube-system",
+    "kind": "Job",
+    "source": "既有 Kubernetes 清单/运维部署",
+    "images": [
+      "rancher/klipper-helm:v0.10.0-build20260513"
+    ],
+    "nodes": [],
+    "architectures": [],
+    "desired": 1,
+    "ready": 1,
+    "resources": [
+      {
+        "container": "helm",
+        "resources": {
+          "limits": {
+            "cpu": "32",
+            "memory": "32G"
+          },
+          "requests": {
+            "cpu": "100m",
+            "memory": "10M"
+          }
+        }
+      }
+    ],
+    "storage": [
+      "emptyDir",
+      "emptyDir",
+      "emptyDir",
+      "emptyDir"
+    ],
+    "entries": [],
+    "purpose": "已有平台支持任务；用途需进一步确认",
+    "state": "历史 Job 成功",
+    "evidence": "workloads.json + pods.json；安装/就绪证据不等同功能验收",
+    "next": "按本职功能取得输入/输出证据；0副本保持预算准入"
+  },
+  {
+    "component": "helm-install-traefik-crd",
+    "namespace": "kube-system",
+    "kind": "Job",
+    "source": "既有 Kubernetes 清单/运维部署",
+    "images": [
+      "rancher/klipper-helm:v0.10.0-build20260513"
+    ],
+    "nodes": [],
+    "architectures": [],
+    "desired": 1,
+    "ready": 1,
+    "resources": [
+      {
+        "container": "helm",
+        "resources": {
+          "limits": {
+            "cpu": "32",
+            "memory": "32G"
+          },
+          "requests": {
+            "cpu": "100m",
+            "memory": "10M"
+          }
+        }
+      }
+    ],
+    "storage": [
+      "emptyDir",
+      "emptyDir",
+      "emptyDir",
+      "emptyDir"
+    ],
+    "entries": [],
+    "purpose": "已有平台支持任务；用途需进一步确认",
+    "state": "历史 Job 成功",
+    "evidence": "workloads.json + pods.json；安装/就绪证据不等同功能验收",
+    "next": "按本职功能取得输入/输出证据；0副本保持预算准入"
+  }
+]

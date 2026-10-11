@@ -3,6 +3,7 @@ pipeline {
 
     options {
         disableConcurrentBuilds()
+        timeout(time: 45, unit: 'MINUTES')
     }
 
     environment {
@@ -12,7 +13,7 @@ pipeline {
         K8S_REGISTRY = '10.0.0.3:30050'
 
         IMAGE_REPO = 'petclinic/petclinic'
-        IMAGE_TAG = "0.9.0-ci-${BUILD_NUMBER}"
+        IMAGE_TAG = "0.10.0-ci-${BUILD_NUMBER}"
 
         FULL_IMAGE = "${DOCKER_REGISTRY}/${IMAGE_REPO}:${IMAGE_TAG}"
         K8S_IMAGE = "${K8S_REGISTRY}/${IMAGE_REPO}:${IMAGE_TAG}"
@@ -52,6 +53,7 @@ pipeline {
         stage('Infrastructure Preflight') {
             steps {
                 // Maven clean removes target; retain the first gate's evidence outside it.
+                sh 'node infra/observability/heavy-lease.mjs acquire'
                 sh 'node infra/observability/release-preflight.mjs .infra-preflight-before-build.json'
             }
         }
@@ -114,7 +116,7 @@ pipeline {
             }
         }
 
-        stage('GitLab Source Mirror') {
+        stage('GitLab Source Audit') {
             steps {
                 withCredentials([usernamePassword(credentialsId: 'gitlab-creds', usernameVariable: 'GITLAB_USER', passwordVariable: 'GITLAB_TOKEN')]) {
                     sh 'node infra/observability/publish-artifacts.mjs gitlab'
@@ -172,10 +174,11 @@ pipeline {
                       grep -Eq '"architecture"[[:space:]]*:[[:space:]]*"arm64"'
                     echo "linux/arm64: OK"
                 '''
+                sh 'node infra/observability/record-image.mjs'
             }
         }
 
-        stage('Harbor Audit Copy') {
+        stage('Harbor Push & Scan') {
             steps {
                 withCredentials([usernamePassword(credentialsId: 'harbor-creds', usernameVariable: 'HARBOR_USER', passwordVariable: 'HARBOR_PASS')]) {
                     sh '''
@@ -185,121 +188,17 @@ pipeline {
                         node infra/observability/publish-artifacts.mjs harbor-scan
                     '''
                 }
+                script {
+                    env.K8S_IMAGE = 'core.harbor.domain/petclinic/petclinic@' + readFile('target/platform/image-digest.txt').trim()
+                }
             }
         }
 
         stage('Git Promotion') {
             steps {
-                // Recheck after the build, before any GitOps change can trigger a rollout.
                 sh 'node infra/observability/release-preflight.mjs target/platform/preflight-before-promotion.json'
-                withCredentials([
-                    sshUserPrivateKey(
-                        credentialsId: 'github-petclinic-ssh',
-                        keyFileVariable: 'GITHUB_SSH_KEY',
-                        usernameVariable: 'GITHUB_SSH_USER'
-                    )
-                ]) {
-                    sh '''
-                        set -eu
-
-                        echo "===== GIT IMAGE PROMOTION ====="
-
-                        export GIT_SSH_COMMAND="ssh -i ${GITHUB_SSH_KEY} -o IdentitiesOnly=yes -o StrictHostKeyChecking=yes -o UserKnownHostsFile=/var/jenkins_home/.ssh/known_hosts"
-
-                        MANIFEST="k8s/production/petclinic.yaml"
-                        SOURCE_GIT_SHA=$(cat .git-sha)
-
-                        echo
-                        echo "===== FETCH REMOTE MAIN ====="
-                        FETCH_OK=false
-                        for attempt in 1 2 3 4 5; do
-                            if git fetch origin main; then
-                                FETCH_OK=true
-                                break
-                            fi
-                            echo "git fetch failed (attempt ${attempt}/5); retrying after 5s"
-                            sleep 5
-                        done
-                        if [ "${FETCH_OK}" != "true" ]; then
-                            echo "ERROR: unable to fetch origin/main after 5 attempts."
-                            exit 1
-                        fi
-
-                        REMOTE_MAIN_SHA=$(git rev-parse refs/remotes/origin/main)
-
-                        echo "SOURCE_GIT_SHA=${SOURCE_GIT_SHA}"
-                        echo "REMOTE_MAIN_SHA=${REMOTE_MAIN_SHA}"
-
-                        if [ "${SOURCE_GIT_SHA}" != "${REMOTE_MAIN_SHA}" ]; then
-                            echo "ERROR: origin/main changed after this build started."
-                            echo "Refusing to promote an image built from stale source."
-                            exit 1
-                        fi
-
-                        echo
-                        echo "===== CHECKOUT PROMOTION BRANCH ====="
-                        git checkout -B main refs/remotes/origin/main
-
-                        echo
-                        echo "===== CURRENT MANIFEST IMAGE ====="
-                        grep -E '^[[:space:]]*image:[[:space:]]+10\\.0\\.0\\.3:30050/petclinic/petclinic:' "${MANIFEST}"
-
-                        IMAGE_LINE_COUNT=$(grep -Ec '^[[:space:]]*image:[[:space:]]+10\\.0\\.0\\.3:30050/petclinic/petclinic:' "${MANIFEST}")
-
-                        echo "IMAGE_LINE_COUNT=${IMAGE_LINE_COUNT}"
-
-                        if [ "${IMAGE_LINE_COUNT}" -ne 1 ]; then
-                            echo "ERROR: expected exactly one Petclinic image line."
-                            exit 1
-                        fi
-
-                        echo
-                        echo "===== PROMOTE IMAGE ====="
-
-                        sed -i -E \
-                          "s#^([[:space:]]*)image:[[:space:]]+10\\.0\\.0\\.3:30050/petclinic/petclinic:.*#\\1image: ${K8S_IMAGE}#" \
-                          "${MANIFEST}"
-
-                        BUILD_TIME_UTC=$(date -u +'%Y-%m-%dT%H:%M:%SZ')
-
-                        # YAML single quotes remain literal after Groovy and shell parsing.
-                        # This is especially important for BUILD_NUMBER, which Kubernetes
-                        # requires to be a string in an environment variable value.
-                        sed -i -E "/name: APPLICATION_VERSION/{n;s#^([[:space:]]*)value:.*#\\1value: '${IMAGE_TAG}'#;}" "${MANIFEST}"
-                        sed -i -E "/name: BUILD_NUMBER/{n;s#^([[:space:]]*)value:.*#\\1value: '${BUILD_NUMBER}'#;}" "${MANIFEST}"
-                        sed -i -E "/name: BUILD_GIT_COMMIT/{n;s#^([[:space:]]*)value:.*#\\1value: '${SOURCE_GIT_SHA}'#;}" "${MANIFEST}"
-                        sed -i -E "/name: BUILD_TIME/{n;s#^([[:space:]]*)value:.*#\\1value: '${BUILD_TIME_UTC}'#;}" "${MANIFEST}"
-
-                        echo
-                        echo "===== PROMOTED MANIFEST IMAGE ====="
-                        grep -E '^[[:space:]]*image:' "${MANIFEST}"
-                        grep -A1 -E 'name: (APPLICATION_VERSION|BUILD_NUMBER|BUILD_GIT_COMMIT|BUILD_TIME)' "${MANIFEST}"
-
-                        echo
-                        echo "===== PROMOTION DIFF ====="
-                        git diff -- "${MANIFEST}"
-
-                        if git diff --quiet -- "${MANIFEST}"; then
-                            echo "GIT_PROMOTION=NO_CHANGE"
-                            exit 0
-                        fi
-
-                        git config user.name "jenkins-petclinic-ci"
-                        git config user.email "jenkins-petclinic-ci@users.noreply.github.com"
-
-                        git add "${MANIFEST}"
-
-                        git commit \
-                          -m "cd: promote petclinic image to ${IMAGE_TAG}"
-
-                        echo
-                        echo "===== PUSH PROMOTION ====="
-                        git push origin main:main
-
-                        echo
-                        echo "GIT_PROMOTION=OK"
-                        git log -1 --oneline
-                    '''
+                withCredentials([usernamePassword(credentialsId: 'gitlab-creds', usernameVariable: 'GITLAB_USER', passwordVariable: 'GITLAB_TOKEN')]) {
+                    sh 'node infra/observability/promote-private.mjs'
                 }
             }
         }
@@ -398,6 +297,9 @@ pipeline {
 
     post {
         always {
+            catchError(buildResult: 'FAILURE', stageResult: 'FAILURE') {
+                sh 'node infra/observability/heavy-lease.mjs release'
+            }
             junit testResults: 'target/surefire-reports/*.xml', allowEmptyResults: true
             archiveArtifacts artifacts: '.infra-preflight-before-build.json,target/platform/*.json', allowEmptyArchive: true
         }
