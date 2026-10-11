@@ -9,6 +9,8 @@ import java.time.LocalDate;
 import java.util.List;
 
 import org.springframework.dao.DataAccessException;
+import org.springframework.beans.factory.ObjectProvider;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 
@@ -21,12 +23,22 @@ class ClinicAnalytics {
 
 	private long checked;
 
+	@Autowired
+	ClinicAnalytics(ObjectProvider<JdbcTemplate> templates) {
+		this(templates.getIfAvailable());
+	}
+
 	ClinicAnalytics(JdbcTemplate jdbc) {
-		this.jdbc = new JdbcTemplate(jdbc.getDataSource());
-		this.jdbc.setQueryTimeout(3);
+		this.jdbc = jdbc == null ? null : new JdbcTemplate(jdbc.getDataSource());
+		if (this.jdbc != null) {
+			this.jdbc.setQueryTimeout(3);
+		}
 	}
 
 	synchronized Snapshot snapshot() {
+		if (this.jdbc == null) {
+			return new Snapshot(null, List.of(), List.of(), false, true);
+		}
 		if (this.checked != 0 && System.nanoTime() - this.checked < 15_000_000_000L) {
 			return this.cached;
 		}

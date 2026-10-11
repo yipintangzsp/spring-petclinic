@@ -2,59 +2,59 @@
 <html xmlns:th="https://www.thymeleaf.org" th:replace="~{fragments/layout :: layout (~{::body},'insights')}">
 <body>
 <section class="insight-heading">
-  <p class="insight-eyebrow">CLINIC INSIGHTS · 业务统计</p>
-  <h1>看见每一天的照护</h1>
-  <p>就诊趋势与宠物类型，来自最近一次成功生成的统计结果。</p>
-  <a th:href="@{/owners}">返回日常业务 <span aria-hidden="true">↗</span></a>
+  <p class="insight-eyebrow" th:text="#{insights.eyebrow}"></p>
+  <h1 th:text="#{insights.title}"></h1>
+  <p th:text="#{insights.intro}"></p>
+  <a th:href="@{/owners}" th:text="#{insights.back}"></a>
 </section>
 <form method="get" th:action="@{/insights}" class="insight-filter" id="insight-filter">
-  <label for="from">开始日期<input type="date" id="from" name="from" th:value="${from}" required></label>
-  <span aria-hidden="true">—</span>
-  <label for="to">结束日期<input type="date" id="to" name="to" th:value="${to}" required></label>
-  <button type="submit" id="filter-button">查看统计</button>
+  <label for="from"><span th:text="#{insights.from}"></span><input type="date" id="from" name="from" th:value="${from}" required></label>
+  <span aria-hidden="true" th:text="'—'"></span>
+  <label for="to"><span th:text="#{insights.to}"></span><input type="date" id="to" name="to" th:value="${to}" required></label>
+  <button type="submit" id="filter-button" th:text="#{insights.submit}"></button>
   <p id="filter-status" role="status" aria-live="polite"></p>
 </form>
 <section th:if="${!analytics.available}" class="insight-empty" role="status">
-  <h2 th:text="${analytics.failed ? '统计暂时不可用' : '等待首次统计结果'}">等待首次统计结果</h2>
-  <p>尚无可展示的成功结果。主人、宠物和就诊管理仍可正常使用。</p>
-  <a th:href="@{/pets}">查看宠物</a>
+  <h2 th:text="${analytics.failed} ? #{insights.unavailable} : #{insights.waiting}"></h2>
+  <p th:text="#{insights.missing}"></p>
+  <a th:href="@{/pets}" th:text="#{insights.petsLink}"></a>
 </section>
 <th:block th:if="${analytics.available}">
   <div class="insight-provenance">
-    <strong th:text="${analytics.run.sourceKind == 'demo' ? '演示业务数据 · 现有数据库' : '业务数据 · 现有数据库'}">数据来源</strong>
-    <span>最近成功更新 <time th:text="${analytics.run.generatedAt}">时间</time></span>
+    <strong th:text="${analytics.run.sourceKind == 'demo'} ? #{insights.demo} : #{insights.business}"></strong>
+    <span><span th:text="#{insights.updated}"></span> <time th:text="${analytics.run.generatedAt}"></time></span>
   </div>
-  <p th:if="${analytics.failed}" class="insight-notice" role="alert">本次统计读取失败，正在展示最近一次成功结果。</p>
-  <p th:if="${outOfWindow}" class="insight-notice" role="status">所选日期超出当前统计覆盖范围，仅展示已覆盖部分。覆盖：<span th:text="${analytics.run.start}"></span> 至 <span th:text="${analytics.run.end}"></span>。</p>
+  <p th:if="${analytics.failed}" class="insight-notice" role="alert" th:text="#{insights.failed}"></p>
+  <p th:if="${outOfWindow}" class="insight-notice" role="status" th:text="#{insights.coverage(${analytics.run.start},${analytics.run.end})}"></p>
   <div class="insight-counts">
-    <article><span>所选日期 · 就诊记录</span><strong id="visit-count" th:text="${visitCount}">0</strong><small>包含已登记的未来就诊，不等同已完成诊疗</small></article>
-    <article><span>主人总数</span><strong th:text="${analytics.run.owners}">0</strong><small>统计快照时点</small></article>
-    <article><span>宠物总数</span><strong th:text="${analytics.run.pets}">0</strong><small>统计快照时点</small></article>
-    <article><span>医生总数</span><strong th:text="${analytics.run.vets}">0</strong><small>统计快照时点</small></article>
+    <article><span th:text="#{insights.visits}"></span><strong id="visit-count" th:text="${visitCount}">0</strong><small th:text="#{insights.future}"></small></article>
+    <article><span th:text="#{insights.owners}"></span><strong th:text="${analytics.run.owners}">0</strong><small th:text="#{insights.snapshot}"></small></article>
+    <article><span th:text="#{insights.pets}"></span><strong th:text="${analytics.run.pets}">0</strong><small th:text="#{insights.snapshot}"></small></article>
+    <article><span th:text="#{insights.vets}"></span><strong th:text="${analytics.run.vets}">0</strong><small th:text="#{insights.snapshot}"></small></article>
   </div>
   <div class="insight-panels">
-    <section class="insight-panel"><header><span class="insight-eyebrow">01 / DAILY CARE</span><h2>就诊趋势</h2><p>按登记日期统计，日期筛选仅作用于此趋势及就诊记录数。</p></header>
-      <p th:if="${days.isEmpty()}" class="insight-empty" id="empty-range">此日期范围暂无就诊记录。</p>
-      <div class="insight-trend" th:unless="${days.isEmpty()}" role="list" aria-label="每日就诊数量">
+    <section class="insight-panel"><header><span class="insight-eyebrow" th:text="#{insights.trendEyebrow}"></span><h2 th:text="#{insights.trend}"></h2><p th:text="#{insights.trendNote}"></p></header>
+      <p th:if="${days.isEmpty()}" class="insight-empty" id="empty-range" th:text="#{insights.empty}"></p>
+      <div class="insight-trend" th:unless="${days.isEmpty()}" role="list" th:aria-label="#{insights.dailyLabel}">
         <div class="insight-day" th:each="day : ${days}" role="listitem"><time th:text="${day.date}"></time><span class="insight-bar-track"><span class="insight-bar" th:style="'width:' + (${day.visits} * 100.0 / ${peak}) + '%'"></span></span><strong th:text="${day.visits}"></strong></div>
       </div>
     </section>
-    <section class="insight-panel"><header><span class="insight-eyebrow">02 / OUR COMPANIONS</span><h2>宠物类型分布</h2><p>全体宠物在统计快照时点的分布，与就诊日期筛选无关。</p></header>
+    <section class="insight-panel"><header><span class="insight-eyebrow" th:text="#{insights.typesEyebrow}"></span><h2 th:text="#{insights.types}"></h2><p th:text="#{insights.typesNote}"></p></header>
       <ul class="insight-types"><li th:each="type : ${analytics.types}"><span th:text="${type.name}"></span><strong th:text="${type.pets}"></strong></li></ul>
-      <p class="insight-footnote">数据由独立分析任务生成。分析任务关闭时仍可读取已保存结果。</p>
+      <p class="insight-footnote" th:text="#{insights.footnote}"></p>
     </section>
   </div>
 </th:block>
-<script>
+<script th:inline="javascript">
   document.getElementById('insight-filter').addEventListener('submit', function(event) {
     const start = new Date(document.getElementById('from').value);
     const end = new Date(document.getElementById('to').value);
     const status = document.getElementById('filter-status');
     if (end < start || (end - start) / 86400000 > 365) {
-      event.preventDefault(); status.textContent = '请选择不超过 366 天的有效日期范围。'; return;
+      event.preventDefault(); status.textContent = /*[[#{insights.invalid}]]*/ 'Choose a valid date range.'; return;
     }
     document.getElementById('filter-button').disabled = true;
-    status.textContent = '正在加载统计…';
+    status.textContent = /*[[#{insights.loading}]]*/ 'Loading insights…';
   });
 </script>
 </body>

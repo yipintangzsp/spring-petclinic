@@ -45,6 +45,7 @@ class ClinicAnalyticsTests {
 		assertThat(first.run().owners()).isEqualTo(200);
 		assertThat(first.days().get(0).visits()).isEqualTo(7);
 		jdbc.execute("DROP TABLE petclinic_analytics.runs");
+		assertThat(analytics.snapshot()).isSameAs(first);
 		ReflectionTestUtils.setField(analytics, "checked", 0L);
 		var stale = analytics.snapshot();
 		assertThat(stale.available()).isTrue();

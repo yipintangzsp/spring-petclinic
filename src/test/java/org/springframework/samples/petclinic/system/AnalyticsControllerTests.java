@@ -43,7 +43,7 @@ class AnalyticsControllerTests {
 
 	@Test
 	void filterUsesInclusiveDatesAndKeepsDimensionCounts() throws Exception {
-		this.mvc.perform(get("/insights").param("from", "2026-10-02").param("to", "2026-10-02"))
+		this.mvc.perform(get("/insights").param("lang", "zh").param("from", "2026-10-02").param("to", "2026-10-02"))
 			.andExpect(status().isOk())
 			.andExpect(model().attribute("visitCount", 9L))
 			.andExpect(content().string(containsString("演示业务数据")))
@@ -53,7 +53,7 @@ class AnalyticsControllerTests {
 
 	@Test
 	void emptyRangeDoesNotInventCounts() throws Exception {
-		this.mvc.perform(get("/insights").param("from", "2026-10-03").param("to", "2026-10-04"))
+		this.mvc.perform(get("/insights").param("lang", "zh").param("from", "2026-10-03").param("to", "2026-10-04"))
 			.andExpect(status().isOk())
 			.andExpect(model().attribute("visitCount", 0L))
 			.andExpect(content().string(containsString("此日期范围暂无就诊记录")));
@@ -61,18 +61,19 @@ class AnalyticsControllerTests {
 
 	@Test
 	void rejectReversedAndOversizedAndMalformedRanges() throws Exception {
-		this.mvc.perform(get("/insights").param("from", "2026-10-04").param("to", "2026-10-03"))
+		this.mvc.perform(get("/insights").param("lang", "zh").param("from", "2026-10-04").param("to", "2026-10-03"))
 			.andExpect(status().isBadRequest());
-		this.mvc.perform(get("/insights").param("from", "2025-01-01").param("to", "2026-10-03"))
+		this.mvc.perform(get("/insights").param("lang", "zh").param("from", "2025-01-01").param("to", "2026-10-03"))
 			.andExpect(status().isBadRequest());
-		this.mvc.perform(get("/insights").param("from", "invalid")).andExpect(status().isBadRequest());
+		this.mvc.perform(get("/insights").param("lang", "zh").param("from", "invalid"))
+			.andExpect(status().isBadRequest());
 	}
 
 	@Test
 	void unavailableAnalysisKeepsNavigationUsable() throws Exception {
 		when(this.analytics.snapshot())
 			.thenReturn(new ClinicAnalytics.Snapshot(null, List.of(), List.of(), false, true));
-		this.mvc.perform(get("/insights"))
+		this.mvc.perform(get("/insights").param("lang", "zh"))
 			.andExpect(status().isOk())
 			.andExpect(content().string(containsString("统计暂时不可用")))
 			.andExpect(content().string(containsString("/pets")));
@@ -80,7 +81,7 @@ class AnalyticsControllerTests {
 
 	@Test
 	void outOfCoverageIsExplicit() throws Exception {
-		this.mvc.perform(get("/insights").param("from", "2025-12-30").param("to", "2026-01-02"))
+		this.mvc.perform(get("/insights").param("lang", "zh").param("from", "2025-12-30").param("to", "2026-01-02"))
 			.andExpect(status().isOk())
 			.andExpect(content().string(containsString("所选日期超出当前统计覆盖范围")));
 	}
@@ -90,7 +91,7 @@ class AnalyticsControllerTests {
 		var current = this.analytics.snapshot();
 		when(this.analytics.snapshot())
 			.thenReturn(new ClinicAnalytics.Snapshot(current.run(), current.days(), current.types(), true, true));
-		this.mvc.perform(get("/insights").param("from", "2026-10-01").param("to", "2026-10-02"))
+		this.mvc.perform(get("/insights").param("lang", "zh").param("from", "2026-10-01").param("to", "2026-10-02"))
 			.andExpect(status().isOk())
 			.andExpect(model().attribute("visitCount", 16L))
 			.andExpect(content().string(containsString("本次统计读取失败")));
