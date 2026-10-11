@@ -8,7 +8,7 @@ ALL=CORE+['airflow-triggerer']
 
 
 def replicas(count):
-    return [f'{name}={count if name in CORE else 0}' for name in ALL]
+    return [{'name':name,'count':count if name in CORE else 0} for name in ALL]
 
 
 def switch(count,revision):
@@ -68,7 +68,7 @@ def run(revision,evidence):
             for mode in ['none','retry','timeout','none']:
                 guard.check();runid='manual__platform_'+datetime.datetime.now(datetime.timezone.utc).strftime('%Y%m%dT%H%M%S')+'_'+mode
                 conf={'from':'2026-01-01','to':'2026-12-31','verify_retry':mode}
-                code="import inspect,json;from airflow.api.common.trigger_dag import trigger_dag;from airflow.models.dag import DagModel;from airflow.utils.session import create_session\nwith create_session() as s:\n d=s.get(DagModel,'petclinic_insights');d.is_paused=False\nkwargs="+repr({'dag_id':'petclinic_insights','run_id':runid,'conf':conf})+"\nr=trigger_dag(**kwargs);print('RESULT:'+json.dumps({'run_id':r.run_id,'state':str(r.state)}))"
+                code="import inspect,json;from airflow.utils.types import DagRunTriggeredByType;from airflow.api.common.trigger_dag import trigger_dag;from airflow.models.dag import DagModel;from airflow.utils.session import create_session\nwith create_session() as s:\n d=s.get(DagModel,'petclinic_insights');d.is_paused=False\nkwargs="+repr({'dag_id':'petclinic_insights','run_id':runid,'conf':conf})+"\nkwargs['triggered_by']=DagRunTriggeredByType.CLI\nr=trigger_dag(**kwargs);print('RESULT:'+json.dumps({'run_id':r.run_id,'state':str(r.state)}))"
                 triggered=python(pod,code);print('Triggered',runid,flush=True)
                 for _ in range(66):
                     guard.check()
