@@ -48,17 +48,20 @@ export function assessPreflight(s, now = Date.now()) {
 
 export async function preflight({output = 'target/platform/preflight.json', windowMs = 30000, pollMs = 5000, collect} = {}) {
  const samples = [], started = Date.now(); let failure;
- function kube(args) {
+ function kube(args, input) {
   const r = spawnSync('kubectl', ['--request-timeout=5s', ...args, '-o', 'json'],
-   {encoding: 'utf8', timeout: 6000, maxBuffer: 4 * 1024 * 1024});
+   {input, encoding: 'utf8', timeout: 6000, maxBuffer: 4 * 1024 * 1024});
   if (r.status !== 0) throw Error(`PREFLIGHT_API_ERROR: ${args.join(' ')}: ${r.error?.message || r.stderr.trim()}`);
   return JSON.parse(r.stdout);
  }
  collect ??= () => {
   const nodes=kube(['get','nodes']).items;
-  const planned=kube(['create','--dry-run=client','--validate=false','-f','k8s/production/petclinic.yaml']);
-  const d=(planned.items??[planned]).find(x=>x.kind==='Deployment'&&x.metadata.name==='petclinic');
-  if(!d)throw Error('Planned production Deployment missing');
+  // kubectl create emits concatenated JSON for multi-document input. Parse only
+  // the single Deployment document through kubectl's YAML decoder.
+  const documents=fs.readFileSync('k8s/production/petclinic.yaml','utf8').split(/^---\s*$/m).filter(x=>/^kind:\s*Deployment\s*$/m.test(x));
+  if(documents.length!==1)throw Error('Exactly one planned production Deployment required');
+  const d=kube(['create','--dry-run=client','--validate=false','-f','-'],documents[0]);
+  if(d.kind!=='Deployment'||d.metadata.name!=='petclinic')throw Error('Planned production Deployment missing');
   const selector=d.spec.template.spec.nodeSelector;
   if(!selector||!Object.keys(selector).length)throw Error('Explicit measured target selection required');
   const targetNodes=nodes.filter(n=>Object.entries(selector).every(([key,value])=>n.metadata.labels[key]===value)).map(n=>n.metadata.name);
