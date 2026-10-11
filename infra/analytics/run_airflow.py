@@ -89,7 +89,7 @@ def run(revision,evidence):
             switch(0,revision)
             for _ in range(50):
                 pods=kube(['-n','data-infra','get','pods','-o','json'])['items']
-                active=[p for p in pods if p['metadata'].get('labels',{}).get('release')=='airflow' or p['metadata'].get('labels',{}).get('kubernetes_executor')=='True']
+                active=[p for p in pods if p['status']['phase'] not in ['Succeeded','Failed'] and (p['metadata'].get('labels',{}).get('release')=='airflow' or p['metadata'].get('labels',{}).get('kubernetes_executor')=='True' or p['metadata'].get('labels',{}).get('component')=='worker' and p['metadata'].get('labels',{}).get('app')=='petclinic-analysis' or p['metadata']['name']==pod)]
                 if not active:break
                 time.sleep(3)
             else:raise RuntimeError('Airflow compute still exists; retain Lease for investigation')

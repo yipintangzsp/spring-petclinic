@@ -6,7 +6,7 @@ Redis AOF 原件 13,195,889 字节，SHA256 `c4f7d5ca08e84f0db8c7e2d41d62df87fc2
 
 构建 #123 已完成双架构镜像推送及摘要校验，但扫描被首次数据库下载阻塞：Trivy 0.69.3 从 mirror.gcr.io 下载漏洞库在五分钟超时。生产更新未开始。保留失败构建、扫描日志和镜像。
 
-数据库修复采用官方支持的缓存填充方式：从 GHCR 获取 OCI manifest，流式下载每个数据库 blob，验证完整 SHA256 和字节数，再在停止 scanner 后解包至原 PVC。仅接受数据库文件和 metadata.json；不绕过 TLS、漏洞扫描或数据库更新。漏洞库和 Java 库分别存放于既有缓存的 `trivy/db`、`trivy/java-db`，保留修改前缓存和下载摘要、元数据。
+数据库修复采用官方支持的缓存填充方式：从 GHCR 获取 OCI manifest，流式下载每个数据库 blob，验证完整 SHA256 和字节数，再在停止 scanner 后解包至原 PVC。仅接受数据库文件和 metadata.json；不绕过 TLS、漏洞扫描或数据库更新。Trivy 0.69.3 要求手工填充时记录非零 `DownloadedAt`：已分别使用文件实际下载完成时间 `2026-10-11T10:43:52.173732Z`、`2026-10-11T10:48:25.343230Z`，原始 metadata 单独保留，UpdatedAt/NextUpdate 均不修改。此前零值导致 #125 再次下载，已在发布前停止该构建。漏洞库和 Java 库分别存放于既有缓存的 `trivy/db`、`trivy/java-db`，保留修改前缓存和下载摘要、元数据。
 
 重启时发现原公开镜像标签需要重新拉取，而既有 local-registry 已保存完全相同的 manifest `sha256:5c6f7162804cd94d41672a694579f136ccc9730d024dda9ad24e0f42bdae6f36`，config digest 与修改前容器的 imageID 一致。改为该本地镜像摘要，避免外部拉取阻塞。实际镜像架构为 AMD64，现有 ARM 节点使用既有模拟支持；不应将 scanner 写成原生 ARM64。版本保持 v2.14.3 / Trivy 0.69.3。
 
@@ -28,3 +28,5 @@ kubectl -n harbor set env statefulset/harbor-trivy \
 流水线只依次请求 ARM64、AMD64 运行时子镜像扫描，不再同时请求 OCI index 和子镜像。两份真实扫描均成功后才允许 GitOps promotion。完成扫描不等于不存在漏洞；报告保留实际严重度和数量，发布身份以完整 OCI index digest 固定。
 
 参考：[Trivy 官方缓存填充与自托管数据库文档](https://trivy.dev/docs/latest/guide/advanced/self-hosting/)。实际修复及后续发布结果以最终验收记录为准。
+
+对应版本行为依据：[Trivy v0.69.3 数据库校验源码](https://github.com/aquasecurity/trivy/blob/v0.69.3/pkg/db/db.go)。

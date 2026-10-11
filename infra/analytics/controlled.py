@@ -1,5 +1,6 @@
 """Shared resource admission and monitoring for one manual analytics run at a time."""
 import datetime as dt
+import fcntl
 import json
 import re
 import shlex
@@ -46,8 +47,12 @@ def jenkins(path, method='GET'):
     if path not in allowed:
         raise ValueError('Only resource concurrency operations are supported')
     command = shlex.join(['sudo', '-n', 'kubectl', 'exec', '-i', '-n', 'ns-devops',
-                          'deploy/github-webhook-relay', '--', 'node', '-e', JENKINS_REQUEST])
-    result = json.loads(remote(command, json.dumps({'path': path, 'method': method}), timeout=40))
+                          'deploy/github-webhook-relay', '--', 'node', '--max-old-space-size=24', '-e', JENKINS_REQUEST])
+    lock_dir = Path.home() / '.codex' / 'locks'
+    lock_dir.mkdir(mode=0o700, exist_ok=True)
+    with (lock_dir / 'petclinic-jenkins-relay.lock').open('a') as lock:
+        fcntl.flock(lock, fcntl.LOCK_EX)
+        result = json.loads(remote(command, json.dumps({'path': path, 'method': method}), timeout=40))
     return json.loads(result['body']) if result['body'].strip().startswith('{') else result['status']
 
 
