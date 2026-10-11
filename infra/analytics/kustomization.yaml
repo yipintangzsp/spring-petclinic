@@ -1,0 +1,17 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+namespace: data-infra
+resources:
+  - airflow/config.json
+  - airflow/airflow-api-server.json
+  - airflow/airflow-scheduler.json
+  - airflow/airflow-dag-processor.json
+  - airflow/airflow-triggerer.json
+  - airflow/airflow-statsd.json
+configMapGenerator:
+  - name: petclinic-analysis-code
+    files:
+      - clinic_task.py=clinic_task.py
+      - petclinic_dag.py=petclinic_dag.py
+generatorOptions:
+  disableNameSuffixHash: true

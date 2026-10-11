@@ -3,6 +3,8 @@
 		"-//Checkstyle//DTD SuppressionFilter Configuration 1.2//EN"
 		"https://checkstyle.org/dtds/suppressions_1_2.dtd">
 <suppressions>
+    <!-- Probe the existing LAN ingress through SSH; this listener has no TLS. -->
+    <suppress files="infra[\\/]analytics[\\/]controlled\.py$" checks="NoHttp" message=".*http://192\.168\.1\.58.*"/>
     <!-- These two internal endpoints currently have no TLS listener; preserve their real URLs. -->
     <suppress files="docs[\\/]UPGRADE-20261005\.md$" checks="NoHttp" message=".*http://192\.168\.1\.236:10808.*"/>
     <suppress files="infra[\\/]data[\\/]verify-demo-browser\.cjs$" checks="NoHttp" message=".*http://petclinic\.devops\.local.*"/>

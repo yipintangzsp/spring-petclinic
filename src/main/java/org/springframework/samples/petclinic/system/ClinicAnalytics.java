@@ -9,6 +9,7 @@ import java.time.LocalDate;
 import java.util.List;
 
 import org.springframework.dao.DataAccessException;
+import org.jspecify.annotations.Nullable;
 import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -28,7 +29,7 @@ class ClinicAnalytics {
 		this(templates.getIfAvailable());
 	}
 
-	ClinicAnalytics(JdbcTemplate jdbc) {
+	ClinicAnalytics(@Nullable JdbcTemplate jdbc) {
 		this.jdbc = jdbc == null ? null : new JdbcTemplate(jdbc.getDataSource());
 		if (this.jdbc != null) {
 			this.jdbc.setQueryTimeout(3);

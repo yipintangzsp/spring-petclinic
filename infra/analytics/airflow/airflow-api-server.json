@@ -1,0 +1,339 @@
+{
+  "apiVersion": "apps/v1",
+  "kind": "Deployment",
+  "metadata": {
+    "name": "airflow-api-server",
+    "namespace": "data-infra",
+    "labels": {
+      "app.kubernetes.io/part-of": "petclinic-analysis"
+    }
+  },
+  "spec": {
+    "progressDeadlineSeconds": 600,
+    "replicas": 0,
+    "revisionHistoryLimit": 10,
+    "selector": {
+      "matchLabels": {
+        "component": "api-server",
+        "release": "airflow",
+        "tier": "airflow"
+      }
+    },
+    "strategy": {
+      "type": "Recreate"
+    },
+    "template": {
+      "metadata": {
+        "annotations": {
+          "checksum/airflow-config": "4f211f77bb46dc872c2d6bd0ef5f1ca37f6f79f72aac054efc9819b61cf99ab4",
+          "checksum/extra-configmaps": "e862ea47e13e634cf17d476323784fa27dac20015550c230953b526182f5cac8",
+          "checksum/extra-secrets": "e9582fdd622296c976cbc10a5ba7d6702c28a24fe80795ea5b84ba443a56c827",
+          "checksum/jwt-secret": "2d3125535939c4c0da4c917dda4f4278e2e5b71465a1d81ab56308d3be625436",
+          "checksum/metadata-secret": "7026c5aaf5972476bfd9ae918b7baa8d607fdd139f2eac25dbf7c847a75999cb",
+          "checksum/pgbouncer-config-secret": "1dae2adc757473469686d37449d076b0c82404f61413b58ae68b3c5e99527688",
+          "kubectl.kubernetes.io/restartedAt": "2026-04-22T12:11:07+08:00"
+        },
+        "labels": {
+          "component": "api-server",
+          "release": "airflow",
+          "tier": "airflow"
+        }
+      },
+      "spec": {
+        "affinity": {
+          "podAntiAffinity": {
+            "preferredDuringSchedulingIgnoredDuringExecution": [
+              {
+                "podAffinityTerm": {
+                  "labelSelector": {
+                    "matchLabels": {
+                      "component": "api-server"
+                    }
+                  },
+                  "topologyKey": "kubernetes.io/hostname"
+                },
+                "weight": 100
+              }
+            ]
+          }
+        },
+        "containers": [
+          {
+            "args": [
+              "bash",
+              "-c",
+              "exec airflow api-server --workers 1"
+            ],
+            "env": [
+              {
+                "name": "AIRFLOW__CORE__FERNET_KEY",
+                "valueFrom": {
+                  "secretKeyRef": {
+                    "key": "fernet-key",
+                    "name": "airflow-fernet-key"
+                  }
+                }
+              },
+              {
+                "name": "AIRFLOW_HOME",
+                "value": "/opt/airflow"
+              },
+              {
+                "name": "AIRFLOW__DATABASE__SQL_ALCHEMY_CONN",
+                "valueFrom": {
+                  "secretKeyRef": {
+                    "key": "connection",
+                    "name": "airflow-metadata"
+                  }
+                }
+              },
+              {
+                "name": "AIRFLOW_CONN_AIRFLOW_DB",
+                "valueFrom": {
+                  "secretKeyRef": {
+                    "key": "connection",
+                    "name": "airflow-metadata"
+                  }
+                }
+              },
+              {
+                "name": "AIRFLOW__API__SECRET_KEY",
+                "valueFrom": {
+                  "secretKeyRef": {
+                    "key": "api-secret-key",
+                    "name": "airflow-api-secret-key"
+                  }
+                }
+              },
+              {
+                "name": "AIRFLOW__API_AUTH__JWT_SECRET",
+                "valueFrom": {
+                  "secretKeyRef": {
+                    "key": "jwt-secret",
+                    "name": "airflow-jwt-secret"
+                  }
+                }
+              },
+              {
+                "name": "AIRFLOW__CORE__PARALLELISM",
+                "value": "1"
+              },
+              {
+                "name": "AIRFLOW__SCHEDULER__PARSING_PROCESSES",
+                "value": "1"
+              }
+            ],
+            "image": "apache/airflow:3.3.0",
+            "imagePullPolicy": "IfNotPresent",
+            "livenessProbe": {
+              "failureThreshold": 8,
+              "httpGet": {
+                "path": "/api/v2/monitor/health",
+                "port": 8080,
+                "scheme": "HTTP"
+              },
+              "initialDelaySeconds": 90,
+              "periodSeconds": 10,
+              "successThreshold": 1,
+              "timeoutSeconds": 10
+            },
+            "name": "api-server",
+            "ports": [
+              {
+                "containerPort": 8080,
+                "name": "api-server",
+                "protocol": "TCP"
+              }
+            ],
+            "readinessProbe": {
+              "failureThreshold": 8,
+              "httpGet": {
+                "path": "/api/v2/monitor/health",
+                "port": 8080,
+                "scheme": "HTTP"
+              },
+              "initialDelaySeconds": 60,
+              "periodSeconds": 10,
+              "successThreshold": 1,
+              "timeoutSeconds": 10
+            },
+            "resources": {
+              "requests": {
+                "cpu": "100m",
+                "memory": "512Mi"
+              },
+              "limits": {
+                "cpu": "750m",
+                "memory": "768Mi"
+              }
+            },
+            "securityContext": {
+              "allowPrivilegeEscalation": false,
+              "capabilities": {
+                "drop": [
+                  "ALL"
+                ]
+              }
+            },
+            "startupProbe": {
+              "failureThreshold": 18,
+              "httpGet": {
+                "path": "/api/v2/monitor/health",
+                "port": 8080,
+                "scheme": "HTTP"
+              },
+              "periodSeconds": 10,
+              "successThreshold": 1,
+              "timeoutSeconds": 20
+            },
+            "terminationMessagePath": "/dev/termination-log",
+            "terminationMessagePolicy": "File",
+            "volumeMounts": [
+              {
+                "mountPath": "/opt/airflow/airflow.cfg",
+                "name": "config",
+                "readOnly": true,
+                "subPath": "airflow.cfg"
+              },
+              {
+                "mountPath": "/opt/airflow/config/airflow_local_settings.py",
+                "name": "config",
+                "readOnly": true,
+                "subPath": "airflow_local_settings.py"
+              },
+              {
+                "name": "analysis-code",
+                "mountPath": "/opt/airflow/dags",
+                "readOnly": true
+              }
+            ],
+            "envFrom": [
+              {
+                "secretRef": {
+                  "name": "petclinic-analysis-db"
+                }
+              }
+            ]
+          }
+        ],
+        "dnsPolicy": "ClusterFirst",
+        "initContainers": [
+          {
+            "args": [
+              "airflow",
+              "db",
+              "check-migrations",
+              "--migration-wait-timeout=60"
+            ],
+            "env": [
+              {
+                "name": "AIRFLOW__CORE__FERNET_KEY",
+                "valueFrom": {
+                  "secretKeyRef": {
+                    "key": "fernet-key",
+                    "name": "airflow-fernet-key"
+                  }
+                }
+              },
+              {
+                "name": "AIRFLOW_HOME",
+                "value": "/opt/airflow"
+              },
+              {
+                "name": "AIRFLOW__DATABASE__SQL_ALCHEMY_CONN",
+                "valueFrom": {
+                  "secretKeyRef": {
+                    "key": "connection",
+                    "name": "airflow-metadata"
+                  }
+                }
+              },
+              {
+                "name": "AIRFLOW_CONN_AIRFLOW_DB",
+                "valueFrom": {
+                  "secretKeyRef": {
+                    "key": "connection",
+                    "name": "airflow-metadata"
+                  }
+                }
+              },
+              {
+                "name": "AIRFLOW__API__SECRET_KEY",
+                "valueFrom": {
+                  "secretKeyRef": {
+                    "key": "api-secret-key",
+                    "name": "airflow-api-secret-key"
+                  }
+                }
+              }
+            ],
+            "image": "apache/airflow:3.3.0",
+            "imagePullPolicy": "IfNotPresent",
+            "name": "wait-for-airflow-migrations",
+            "resources": {
+              "requests": {
+                "cpu": "50m",
+                "memory": "128Mi"
+              },
+              "limits": {
+                "cpu": "300m",
+                "memory": "256Mi"
+              }
+            },
+            "securityContext": {
+              "allowPrivilegeEscalation": false,
+              "capabilities": {
+                "drop": [
+                  "ALL"
+                ]
+              }
+            },
+            "terminationMessagePath": "/dev/termination-log",
+            "terminationMessagePolicy": "File",
+            "volumeMounts": [
+              {
+                "mountPath": "/opt/airflow/airflow.cfg",
+                "name": "config",
+                "readOnly": true,
+                "subPath": "airflow.cfg"
+              },
+              {
+                "mountPath": "/opt/airflow/config/airflow_local_settings.py",
+                "name": "config",
+                "readOnly": true,
+                "subPath": "airflow_local_settings.py"
+              }
+            ]
+          }
+        ],
+        "restartPolicy": "Always",
+        "schedulerName": "default-scheduler",
+        "securityContext": {
+          "fsGroup": 0,
+          "runAsUser": 50000
+        },
+        "serviceAccount": "airflow-api-server",
+        "serviceAccountName": "airflow-api-server",
+        "terminationGracePeriodSeconds": 30,
+        "volumes": [
+          {
+            "configMap": {
+              "defaultMode": 420,
+              "name": "airflow-config"
+            },
+            "name": "config"
+          },
+          {
+            "name": "analysis-code",
+            "configMap": {
+              "name": "petclinic-analysis-code"
+            }
+          }
+        ],
+        "nodeSelector": {
+          "kubernetes.io/hostname": "devops"
+        }
+      }
+    }
+  }
+}
