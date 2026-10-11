@@ -40,7 +40,7 @@ if(process.argv[1]&&import.meta.url===pathToFileURL(process.argv[1]).href){
   const original=fs.readFileSync(file,'utf8');
   const changed=promoteManifest(original,{image:process.env.K8S_IMAGE,tag:process.env.IMAGE_TAG,number:process.env.BUILD_NUMBER,source,time:new Date().toISOString()});
   fs.writeFileSync(file,changed);git(['config','user.name','jenkins-petclinic-ci']);git(['config','user.email','petclinic-ci@devops.local']);git(['add',file]);
-  git(['commit','-m',`cd: promote petclinic image to ${process.env.IMAGE_TAG} [skip ci]`]);
+  git(['commit','-m',`cd: promote petclinic image to ${process.env.IMAGE_TAG} [skip ci] [ci-skip]`]);
   git(['push','origin','main:main']);
   const revision=git(['rev-parse','HEAD']);
   fs.mkdirSync('target/platform',{recursive:true});
