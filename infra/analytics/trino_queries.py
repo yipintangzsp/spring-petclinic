@@ -38,6 +38,6 @@ def query(base,sql):
     return {'queryId':response['id'],'sql':sql,'columns':columns,'rows':rows,'stats':history,'durationSeconds':round(time.monotonic()-start,3)}
 
 if __name__=='__main__':
-    p=argparse.ArgumentParser();p.add_argument('--base',default='http://trino-coordinator.data-infra.svc.cluster.local:8080');p.add_argument('--output',required=True);a=p.parse_args()
+    p=argparse.ArgumentParser();p.add_argument('--base',required=True);p.add_argument('--output',required=True);a=p.parse_args()
     result={name:query(a.base,sql) for name,sql in QUERIES.items()};daily=sum(row[1] for row in result['daily']['rows']);types=sum(row[1] for row in result['types']['rows']);total=result['totals']['rows'][0]
     assert types==total[6];assert daily<=total[8];result['reconciliation']={'windowVisits':daily,'pets':types,'sourceVisits':total[8]};Path(a.output).write_text(json.dumps(result,indent=2));print(json.dumps({'queryIds':{k:v['queryId'] for k,v in result.items() if k!='reconciliation'},'reconciliation':result['reconciliation']}))
