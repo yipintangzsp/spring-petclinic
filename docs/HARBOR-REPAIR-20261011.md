@@ -8,9 +8,15 @@ Redis AOF 原件 13,195,889 字节，SHA256 `c4f7d5ca08e84f0db8c7e2d41d62df87fc2
 
 数据库修复采用官方支持的缓存填充方式：从 GHCR 获取 OCI manifest，流式下载每个数据库 blob，验证完整 SHA256 和字节数，再在停止 scanner 后解包至原 PVC。仅接受数据库文件和 metadata.json；不绕过 TLS、漏洞扫描或数据库更新。漏洞库和 Java 库分别存放于既有缓存的 `trivy/db`、`trivy/java-db`，保留修改前缓存和下载摘要、元数据。
 
+重启时发现原公开镜像标签需要重新拉取，而既有 local-registry 已保存完全相同的 manifest `sha256:5c6f7162804cd94d41672a694579f136ccc9730d024dda9ad24e0f42bdae6f36`，config digest 与修改前容器的 imageID 一致。改为该本地镜像摘要，避免外部拉取阻塞。实际镜像架构为 AMD64，现有 ARM 节点使用既有模拟支持；不应将 scanner 写成原生 ARM64。版本保持 v2.14.3 / Trivy 0.69.3。
+
+缓存填充的瞬时内存 full PSI avg10 为 12.74，触发 >5 的停止条件；业务健康请求仍全部为 200。暂缓新增重任务，待连续样本压力回落并确认 scanner 就绪后恢复。完整数据库元数据、资源样本和修改前配置均保留于私有证据目录。
+
 既有 StatefulSet 最小配置变更：
 
 ```sh
+kubectl -n harbor set image statefulset/harbor-trivy \
+  trivy=127.0.0.1:30050/goharbor/trivy-adapter-photon@sha256:5c6f7162804cd94d41672a694579f136ccc9730d024dda9ad24e0f42bdae6f36
 kubectl -n harbor set env statefulset/harbor-trivy \
   SCANNER_TRIVY_DB_REPOSITORY=ghcr.io/aquasecurity/trivy-db \
   SCANNER_TRIVY_JAVA_DB_REPOSITORY=ghcr.io/aquasecurity/trivy-java-db \
