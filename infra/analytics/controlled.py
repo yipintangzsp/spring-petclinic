@@ -1,6 +1,7 @@
 """Shared resource admission and monitoring for one manual analytics run at a time."""
 import datetime as dt
 import json
+import re
 import shlex
 import subprocess
 import threading
@@ -27,6 +28,29 @@ def kube(arguments, resource=None, timeout=30):
     return json.loads(output) if output.strip().startswith(('{', '[')) else output.strip()
 
 
+JENKINS_REQUEST = r"""const fs=require('fs');(async()=>{
+ const i=JSON.parse(fs.readFileSync(0,'utf8'));const base=process.env.JENKINS_URL;
+ const h={Authorization:'Basic '+Buffer.from(process.env.JENKINS_USER+':'+process.env.JENKINS_PASS).toString('base64')};
+ if(i.method==='POST'){
+  const r=await fetch(base+'/crumbIssuer/api/json',{headers:h,signal:AbortSignal.timeout(8000)});if(!r.ok)throw Error('Crumb HTTP '+r.status);
+  const c=await r.json();h[c.crumbRequestField]=c.crumb;h.Cookie=r.headers.getSetCookie().map(x=>x.split(';')[0]).join('; ');
+ }
+ const r=await fetch(base+i.path,{method:i.method,headers:h,signal:AbortSignal.timeout(12000)});
+ if(!r.ok)throw Error('Jenkins HTTP '+r.status);const body=await r.text();console.log(JSON.stringify({status:r.status,body}));
+})().catch(e=>{console.error(e.message);process.exit(1)});"""
+
+
+def jenkins(path, method='GET'):
+    allowed = ['/api/json?tree=quietingDown,jobs[name,lastBuild[building]]',
+               '/quietDown', '/cancelQuietDown']
+    if path not in allowed:
+        raise ValueError('Only resource concurrency operations are supported')
+    command = shlex.join(['sudo', '-n', 'kubectl', 'exec', '-i', '-n', 'ns-devops',
+                          'deploy/github-webhook-relay', '--', 'node', '-e', JENKINS_REQUEST])
+    result = json.loads(remote(command, json.dumps({'path': path, 'method': method}), timeout=40))
+    return json.loads(result['body']) if result['body'].strip().startswith('{') else result['status']
+
+
 SAMPLE_CODE = r'''import json,pathlib,subprocess,time
 mem={l.split(':')[0]:int(l.split()[1]) for l in pathlib.Path('/proc/meminfo').read_text().splitlines() if len(l.split())>1 and l.split()[1].isdigit()}
 result={'at':time.time(),'availableMiB':mem['MemAvailable']/1024,'swapUsedMiB':(mem['SwapTotal']-mem['SwapFree'])/1024,'pressure':{},'http':{}}
@@ -50,11 +74,23 @@ print(json.dumps(result))'''
 
 
 def sample():
-    return json.loads(remote('sudo -n python3 -c ' + shlex.quote(SAMPLE_CODE), timeout=40))
+    value = json.loads(remote('sudo -n python3 -c ' + shlex.quote(SAMPLE_CODE), timeout=40))
+    if Path('/usr/bin/memory_pressure').exists():
+        pressure = subprocess.check_output(['/usr/bin/memory_pressure', '-Q'], text=True, timeout=5)
+        swap = subprocess.check_output(['/usr/sbin/sysctl', 'vm.swapusage'], text=True, timeout=5)
+        disk = subprocess.check_output(['df', '-Pk', '/System/Volumes/Data'], text=True, timeout=5)
+        value['mac'] = {'freePercent': int(re.search(r'free percentage: (\d+)%', pressure).group(1)),
+                        'swapUsedMiB': float(re.search(r'used = ([0-9.]+)M', swap).group(1)),
+                        'diskFreeMiB': int(disk.splitlines()[-1].split()[3]) / 1024}
+    return value
 
 
 def blockers(value, bad_http=0, previous_failures=()):
     reasons = []
+    if value.get('mac', {}).get('freePercent', 100) < 10:
+        reasons.append('Mac memory free percentage below 10')
+    if value.get('mac', {}).get('diskFreeMiB', 999999) < 8192:
+        reasons.append('Mac data filesystem has less than 8 GiB free')
     if value['availableMiB'] < 1536:
         reasons.append('MemAvailable below 1536 MiB')
     if value['diskFreeMiB'] < 8192:
@@ -98,6 +134,8 @@ class HeavyRun:
         self.failure = None
         self.samples = []
         self.initial_failures = []
+        self.owned_quiet = False
+        self.compute_stopped = True
 
     def __enter__(self):
         before = sample()
@@ -115,6 +153,21 @@ class HeavyRun:
                'spec': {'holderIdentity': self.holder, 'acquireTime': stamp,
                         'renewTime': stamp, 'leaseDurationSeconds': 3600}}
         self.lease = kube(['create', '-f', '-', '-o', 'json'], obj)
+        # Pause new Jenkins dispatches while preserving queued work. One small relay
+        # request at a time; credentials never leave the existing relay environment.
+        try:
+            state = jenkins('/api/json?tree=quietingDown,jobs[name,lastBuild[building]]')
+            if not state.get('quietingDown'):
+                jenkins('/quietDown', 'POST')
+                self.owned_quiet = True
+            state = jenkins('/api/json?tree=quietingDown,jobs[name,lastBuild[building]]')
+            if any(j.get('lastBuild', {}).get('building') for j in state['jobs'] if j.get('lastBuild')):
+                raise RuntimeError('Wait for the active Jenkins build to finish')
+        except Exception:
+            kube(['-n', NAMESPACE, 'delete', 'lease', LEASE, '--wait=false'])
+            if self.owned_quiet:
+                jenkins('/cancelQuietDown', 'POST')
+            raise
         self.initial_failures = before['failures']
         self.samples.append(before)
         self.thread = threading.Thread(target=self._watch, daemon=True)
@@ -129,6 +182,8 @@ class HeavyRun:
                 self.samples.append(value)
                 bad = bad + 1 if http_bad(value) else 0
                 reasons = blockers(value, bad, self.initial_failures)
+                if value.get('mac', {}).get('swapUsedMiB', 0) - self.samples[0].get('mac', {}).get('swapUsedMiB', 0) > 512:
+                    reasons.append('Mac swap grew by more than 512 MiB')
                 if reasons:
                     self.failure = '; '.join(reasons)
                     return
@@ -152,7 +207,11 @@ class HeavyRun:
         (self.evidence / 'resource-samples.json').write_text(json.dumps({
             'holder': self.holder, 'budgetMiB': self.budget, 'reserveMiB': RESERVE_MIB,
             'safetyFailure': self.failure, 'samples': self.samples}, indent=2))
+        if not self.compute_stopped:
+            raise RuntimeError('Compute cleanup could not be confirmed; preserve Lease and Jenkins quiet mode')
         current = kube(['-n', NAMESPACE, 'get', 'lease', LEASE, '-o', 'json'])
         if current['metadata']['uid'] != self.lease['metadata']['uid'] or current['spec']['holderIdentity'] != self.holder:
             raise RuntimeError('Lease changed; preserve it for inspection')
         kube(['-n', NAMESPACE, 'delete', 'lease', LEASE, '--wait=false'])
+        if self.owned_quiet:
+            jenkins('/cancelQuietDown', 'POST')

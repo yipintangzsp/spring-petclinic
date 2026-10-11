@@ -119,16 +119,16 @@ if(mode==='sonar-ready') {
   if(!/^0\.(?:9|10)\.0-ci-\d+$/.test(tag))throw new Error('Invalid release tag');
   const route='/api/v2.0/projects/petclinic/repositories/petclinic/artifacts/'+encodeURIComponent(tag);
   const artifact=await request(base,route,{},auth);
-  const scan=await resilientFetch(base+route+'/scan',{method:'POST',headers:auth,timeoutMs:30000});
-  if(!scan.ok&&scan.status!==409)throw new Error('Harbor scan request failed');
+  // Scan runtime children sequentially: scanning the index also queues both
+  // architectures and duplicates work inside the single scanner process.
   fs.mkdirSync('target/platform',{recursive:true});
   const expected=fs.readFileSync('target/platform/image-digest.txt','utf8').trim();
   if(artifact.digest!==expected)throw Error('Harbor digest differs from built OCI index');
   const children=(artifact.references??[]).filter(c=>['arm64','amd64'].includes(c.platform?.architecture));
   if(children.length!==2)throw Error('Expected two runtime architecture artifacts');
-  const deadline=Date.now()+600000;
   const scans=[];
   for(const child of children){
+   const deadline=Date.now()+900000;
    const childRoute='/api/v2.0/projects/petclinic/repositories/petclinic/artifacts/'+encodeURIComponent(child.child_digest);
    const requested=await resilientFetch(base+childRoute+'/scan',{method:'POST',headers:auth,timeoutMs:20000});
    if(!requested.ok&&requested.status!==409)throw Error('Runtime scan request failed');
