@@ -207,6 +207,8 @@ class HeavyRun:
         (self.evidence / 'resource-samples.json').write_text(json.dumps({
             'holder': self.holder, 'budgetMiB': self.budget, 'reserveMiB': RESERVE_MIB,
             'safetyFailure': self.failure, 'samples': self.samples}, indent=2))
+        if self.thread.is_alive():
+            raise RuntimeError('Monitor has not stopped; preserve Lease and Jenkins quiet mode')
         if not self.compute_stopped:
             raise RuntimeError('Compute cleanup could not be confirmed; preserve Lease and Jenkins quiet mode')
         current = kube(['-n', NAMESPACE, 'get', 'lease', LEASE, '-o', 'json'])
