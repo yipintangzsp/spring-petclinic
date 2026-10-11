@@ -7,6 +7,7 @@ package org.springframework.samples.petclinic.system;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.util.List;
+import javax.sql.DataSource;
 
 import org.springframework.dao.DataAccessException;
 import org.jspecify.annotations.Nullable;
@@ -27,8 +28,12 @@ class ClinicAnalytics {
 	@Autowired
 	ClinicAnalytics(ObjectProvider<JdbcTemplate> templates) {
 		JdbcTemplate available = templates.getIfAvailable();
-		this.jdbc = available == null ? null : new JdbcTemplate(available.getDataSource());
-		if (this.jdbc != null) {
+		DataSource dataSource = available == null ? null : available.getDataSource();
+		if (dataSource == null) {
+			this.jdbc = null;
+		}
+		else {
+			this.jdbc = new JdbcTemplate(dataSource);
 			this.jdbc.setQueryTimeout(3);
 		}
 	}

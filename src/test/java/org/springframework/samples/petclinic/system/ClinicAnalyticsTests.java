@@ -29,6 +29,13 @@ class ClinicAnalyticsTests {
 	}
 
 	@Test
+	void aTemplateWithoutDataSourceDoesNotBreakTheApplication() {
+		var snapshot = analytics(new JdbcTemplate()).snapshot();
+		assertThat(snapshot.available()).isFalse();
+		assertThat(snapshot.failed()).isTrue();
+	}
+
+	@Test
 	void missingAnalysisSchemaDoesNotFailBusinessPage() {
 		JdbcTemplate jdbc = new JdbcTemplate(new DriverManagerDataSource("jdbc:h2:mem:analytics-missing"));
 		var snapshot = analytics(jdbc).snapshot();

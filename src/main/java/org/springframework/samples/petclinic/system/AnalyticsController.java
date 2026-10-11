@@ -46,8 +46,8 @@ class AnalyticsController {
 		model.addAttribute("days", days);
 		model.addAttribute("visitCount", count);
 		model.addAttribute("peak", Math.max(1, peak));
-		model.addAttribute("outOfWindow",
-				snapshot.available() && (start.isBefore(snapshot.run().start()) || end.isAfter(snapshot.run().end())));
+		var run = snapshot.run();
+		model.addAttribute("outOfWindow", run != null && (start.isBefore(run.start()) || end.isAfter(run.end())));
 		return "insights";
 	}
 
