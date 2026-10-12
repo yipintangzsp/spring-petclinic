@@ -20,14 +20,10 @@ class ClinicAnalysisMetrics implements MeterBinder {
 
 	@Override
 	public void bindTo(MeterRegistry registry) {
-		Gauge
-			.builder("petclinic.analysis.available", this.analytics,
-					analytics -> analytics.snapshot().available() ? 1 : 0)
+		Gauge.builder("petclinic.analysis.available", this.analytics, source -> source.snapshot().available() ? 1 : 0)
 			.strongReference(true)
 			.register(registry);
-		Gauge
-			.builder("petclinic.analysis.read.failed", this.analytics,
-					analytics -> analytics.snapshot().failed() ? 1 : 0)
+		Gauge.builder("petclinic.analysis.read.failed", this.analytics, source -> source.snapshot().failed() ? 1 : 0)
 			.strongReference(true)
 			.register(registry);
 		Gauge.builder("petclinic.analysis.last.success.seconds", this.analytics, ClinicAnalysisMetrics::lastSuccess)

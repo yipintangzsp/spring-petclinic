@@ -32,6 +32,8 @@ import org.springframework.stereotype.Component;
 @Component
 class PlatformObservability implements MeterBinder {
 
+	private static final String READY = "ready";
+
 	private static final Logger log = LoggerFactory.getLogger(PlatformObservability.class);
 
 	private final Path path;
@@ -54,7 +56,7 @@ class PlatformObservability implements MeterBinder {
 	@Override
 	public synchronized void bindTo(MeterRegistry registry) {
 		this.registry = registry;
-		Gauge.builder("petclinic.platform.snapshot.age", this, platform -> platform.snapshotAge())
+		Gauge.builder("petclinic.platform.snapshot.age", this, PlatformObservability::snapshotAge)
 			.baseUnit("seconds")
 			.register(registry);
 		snapshot();
@@ -80,21 +82,10 @@ class PlatformObservability implements MeterBinder {
 					Software item = new Software(values.getProperty(key + "id"), values.getProperty(key + "name"),
 							values.getProperty(key + "namespace"),
 							Integer.parseInt(values.getProperty(key + "desired")),
-							Integer.parseInt(values.getProperty(key + "ready")),
-							values.getProperty(key + "endpoint", ""),
+							Integer.parseInt(values.getProperty(key + READY)), values.getProperty(key + "endpoint", ""),
 							values.getProperty(key + "integration", "部署状态已同步"));
 					software.add(item);
-					if (this.registry != null) {
-						for (String state : List.of("ready", "desired")) {
-							Gauge
-								.builder("petclinic.platform.workload", this,
-										platform -> platform.value(item.id(), state))
-								.tag("software", item.name())
-								.tag("namespace", item.namespace())
-								.tag("state", state)
-								.register(this.registry);
-						}
-					}
+					registerWorkloadMetrics(item);
 				}
 				this.snapshot = new Snapshot(List.copyOf(software), updated, true);
 				log.atInfo()
@@ -106,15 +97,7 @@ class PlatformObservability implements MeterBinder {
 					.addKeyValue("platform.paused", software.stream().filter(s -> s.desired() == 0).count())
 					.addKeyValue("platform.snapshot_timestamp", updated)
 					.log("Petclinic platform inventory snapshot");
-				for (String metric : List.of("last.completed.build", "last.duration.seconds", "last.success",
-						"building")) {
-					this.pipelineValues.put(metric,
-							Double.parseDouble(values.getProperty("pipeline." + metric, "NaN")));
-					if (this.registry != null) {
-						Gauge.builder("petclinic.pipeline." + metric, this, platform -> platform.pipelineValue(metric))
-							.register(this.registry);
-					}
-				}
+				registerPipelineMetrics(values);
 				values.stringPropertyNames().stream().filter(key -> key.startsWith("osint.")).forEach(key -> {
 					String[] parts = key.split("\\.", 3);
 					if (this.registry != null && parts.length == 3) {
@@ -133,6 +116,29 @@ class PlatformObservability implements MeterBinder {
 		return this.snapshot;
 	}
 
+	private void registerPipelineMetrics(Properties values) {
+		for (String metric : List.of("last.completed.build", "last.duration.seconds", "last.success", "building")) {
+			this.pipelineValues.put(metric, Double.parseDouble(values.getProperty("pipeline." + metric, "NaN")));
+			if (this.registry != null) {
+				Gauge.builder("petclinic.pipeline." + metric, this, platform -> platform.pipelineValue(metric))
+					.register(this.registry);
+			}
+		}
+	}
+
+	private void registerWorkloadMetrics(Software item) {
+		if (this.registry == null) {
+			return;
+		}
+		for (String state : List.of(READY, "desired")) {
+			Gauge.builder("petclinic.platform.workload", this, platform -> platform.value(item.id(), state))
+				.tag("software", item.name())
+				.tag("namespace", item.namespace())
+				.tag("state", state)
+				.register(this.registry);
+		}
+	}
+
 	private synchronized double pipelineValue(String key) {
 		return snapshot().fresh() ? this.pipelineValues.getOrDefault(key, Double.NaN) : Double.NaN;
 	}
@@ -149,7 +155,7 @@ class PlatformObservability implements MeterBinder {
 		return current.software()
 			.stream()
 			.filter(s -> s.id().equals(id))
-			.mapToDouble(s -> "ready".equals(state) ? s.ready() : s.desired())
+			.mapToDouble(s -> READY.equals(state) ? s.ready() : s.desired())
 			.findFirst()
 			.orElse(Double.NaN);
 	}
@@ -157,7 +163,10 @@ class PlatformObservability implements MeterBinder {
 	public record Software(String id, String name, String namespace, int desired, int ready, String endpoint,
 			String integration) {
 		public String state() {
-			return desired == 0 ? "按需关闭" : ready >= desired ? "副本就绪" : "副本不足";
+			if (desired == 0) {
+				return "按需关闭";
+			}
+			return ready >= desired ? "副本就绪" : "副本不足";
 		}
 	}
 
