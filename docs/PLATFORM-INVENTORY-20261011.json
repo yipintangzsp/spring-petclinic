@@ -13,6 +13,13 @@
     "architectures": [
       "arm64"
     ],
+    "imageArchitectures": {
+      "127.0.0.1:30050/platform-upgrade/argocd:v3.4.5-arm64": {
+        "architecture": "arm64",
+        "os": "linux",
+        "evidence": "本地 containerd OCI config"
+      }
+    },
     "desired": 1,
     "ready": 1,
     "resources": [
@@ -21,6 +28,9 @@
         "resources": {}
       }
     ],
+    "nodeSelector": {
+      "kubernetes.io/os": "linux"
+    },
     "storage": [
       "emptyDir",
       "emptyDir"
@@ -29,9 +39,10 @@
       "argocd-applicationset-controller:7000,8080"
     ],
     "purpose": "GitOps 比较与同步",
-    "state": "运行，功能验收待补",
+    "state": "运行，实际功能未验证（未完成）",
     "evidence": "workloads.json + pods.json；安装/就绪证据不等同功能验收",
-    "next": "按本职功能取得输入/输出证据；0副本保持预算准入"
+    "next": "未发现本轮ApplicationSet输入任务",
+    "limitations": "未发现本轮ApplicationSet输入任务"
   },
   {
     "component": "argocd-dex-server",
@@ -47,6 +58,13 @@
     "architectures": [
       "arm64"
     ],
+    "imageArchitectures": {
+      "127.0.0.1:30050/platform-upgrade/dex:v2.45.1-arm64": {
+        "architecture": "arm64",
+        "os": "linux",
+        "evidence": "本地 containerd OCI config"
+      }
+    },
     "desired": 1,
     "ready": 1,
     "resources": [
@@ -59,6 +77,9 @@
         "resources": {}
       }
     ],
+    "nodeSelector": {
+      "kubernetes.io/os": "linux"
+    },
     "storage": [
       "emptyDir",
       "emptyDir"
@@ -67,9 +88,10 @@
       "argocd-dex-server:5556,5557,5558"
     ],
     "purpose": "GitOps 比较与同步",
-    "state": "运行，功能验收待补",
+    "state": "运行，实际功能未验证（未完成）",
     "evidence": "workloads.json + pods.json；安装/就绪证据不等同功能验收",
-    "next": "按本职功能取得输入/输出证据；0副本保持预算准入"
+    "next": "SSO未配置/未取得登录流证据",
+    "limitations": "SSO未配置/未取得登录流证据"
   },
   {
     "component": "argocd-notifications-controller",
@@ -85,6 +107,13 @@
     "architectures": [
       "arm64"
     ],
+    "imageArchitectures": {
+      "127.0.0.1:30050/platform-upgrade/argocd:v3.4.5-arm64": {
+        "architecture": "arm64",
+        "os": "linux",
+        "evidence": "本地 containerd OCI config"
+      }
+    },
     "desired": 1,
     "ready": 1,
     "resources": [
@@ -93,14 +122,18 @@
         "resources": {}
       }
     ],
+    "nodeSelector": {
+      "kubernetes.io/os": "linux"
+    },
     "storage": [],
     "entries": [
       "argocd-notifications-controller-metrics:9001"
     ],
     "purpose": "GitOps 比较与同步",
-    "state": "运行，功能验收待补",
+    "state": "运行，实际功能未验证（未完成）",
     "evidence": "workloads.json + pods.json；安装/就绪证据不等同功能验收",
-    "next": "按本职功能取得输入/输出证据；0副本保持预算准入"
+    "next": "未配置本轮接收渠道；通知送达未验证",
+    "limitations": "未配置本轮接收渠道；通知送达未验证"
   },
   {
     "component": "argocd-redis",
@@ -116,6 +149,13 @@
     "architectures": [
       "arm64"
     ],
+    "imageArchitectures": {
+      "127.0.0.1:30050/platform-upgrade/redis:8.8.1-alpine-arm64": {
+        "architecture": "arm64",
+        "os": "linux",
+        "evidence": "本地 containerd OCI config"
+      }
+    },
     "desired": 1,
     "ready": 1,
     "resources": [
@@ -128,14 +168,18 @@
         "resources": {}
       }
     ],
+    "nodeSelector": {
+      "kubernetes.io/os": "linux"
+    },
     "storage": [],
     "entries": [
       "argocd-redis:6379"
     ],
     "purpose": "GitOps 比较与同步",
-    "state": "运行，功能验收待补",
-    "evidence": "workloads.json + pods.json；安装/就绪证据不等同功能验收",
-    "next": "按本职功能取得输入/输出证据；0副本保持预算准入"
+    "state": "运行且已验证",
+    "evidence": "GitOps发布/回滚/恢复验收",
+    "next": "维持当前本职流程；证据有效范围见交付记录",
+    "actualUse": "实际GitOps比较/同步依赖缓存"
   },
   {
     "component": "argocd-repo-server",
@@ -151,6 +195,13 @@
     "architectures": [
       "arm64"
     ],
+    "imageArchitectures": {
+      "127.0.0.1:30050/platform-upgrade/argocd:v3.4.5-arm64": {
+        "architecture": "arm64",
+        "os": "linux",
+        "evidence": "本地 containerd OCI config"
+      }
+    },
     "desired": 1,
     "ready": 1,
     "resources": [
@@ -163,6 +214,9 @@
         "resources": {}
       }
     ],
+    "nodeSelector": {
+      "kubernetes.io/os": "linux"
+    },
     "storage": [
       "emptyDir",
       "emptyDir",
@@ -174,9 +228,10 @@
       "argocd-repo-server:8081,8084"
     ],
     "purpose": "GitOps 比较与同步",
-    "state": "运行，功能验收待补",
-    "evidence": "workloads.json + pods.json；安装/就绪证据不等同功能验收",
-    "next": "按本职功能取得输入/输出证据；0副本保持预算准入"
+    "state": "运行且已验证",
+    "evidence": "Argo sync revision及发布归档",
+    "next": "维持当前本职流程；证据有效范围见交付记录",
+    "actualUse": "实际私有GitLab源码与GitOps拉取"
   },
   {
     "component": "argocd-server",
@@ -192,6 +247,13 @@
     "architectures": [
       "arm64"
     ],
+    "imageArchitectures": {
+      "127.0.0.1:30050/platform-upgrade/argocd:v3.4.5-arm64": {
+        "architecture": "arm64",
+        "os": "linux",
+        "evidence": "本地 containerd OCI config"
+      }
+    },
     "desired": 1,
     "ready": 1,
     "resources": [
@@ -200,6 +262,9 @@
         "resources": {}
       }
     ],
+    "nodeSelector": {
+      "kubernetes.io/os": "linux"
+    },
     "storage": [
       "emptyDir",
       "emptyDir"
@@ -210,9 +275,10 @@
       "argocd.devops.local"
     ],
     "purpose": "GitOps 比较与同步",
-    "state": "运行，功能验收待补",
-    "evidence": "workloads.json + pods.json；安装/就绪证据不等同功能验收",
-    "next": "按本职功能取得输入/输出证据；0副本保持预算准入"
+    "state": "运行且已验证",
+    "evidence": "GitOps发布/回滚/恢复验收",
+    "next": "维持当前本职流程；证据有效范围见交付记录",
+    "actualUse": "真实Application API状态与修订查询"
   },
   {
     "component": "cook",
@@ -228,6 +294,13 @@
     "architectures": [
       "arm64"
     ],
+    "imageArchitectures": {
+      "core.harbor.domain/cook/cook@sha256:372e33fb6c3be30d263941a00f782df83c68b65b4267ceab32d0c390d855a780": {
+        "architecture": "arm64",
+        "os": "linux",
+        "evidence": "本地 containerd OCI config"
+      }
+    },
     "desired": 1,
     "ready": 1,
     "resources": [
@@ -245,6 +318,10 @@
         }
       }
     ],
+    "nodeSelector": {
+      "kubernetes.io/arch": "arm64",
+      "kubernetes.io/hostname": "devops"
+    },
     "storage": [
       "emptyDir"
     ],
@@ -253,9 +330,10 @@
       "cook.devops.local"
     ],
     "purpose": "菜谱正文、图片、搜索、手机布局",
-    "state": "运行，功能验收待补",
-    "evidence": "workloads.json + pods.json；安装/就绪证据不等同功能验收",
-    "next": "按本职功能取得输入/输出证据；0副本保持预算准入"
+    "state": "运行且已验证",
+    "evidence": "cook-local、cook-pages 浏览器结果",
+    "next": "维持当前本职流程；证据有效范围见交付记录",
+    "actualUse": "本地/Pages 菜谱正文、图片、搜索、手机布局通过"
   },
   {
     "component": "cook-blackbox",
@@ -271,6 +349,13 @@
     "architectures": [
       "arm64"
     ],
+    "imageArchitectures": {
+      "core.harbor.domain/cook/blackbox-exporter@sha256:88f7d7397ad4cf415b575df60c937fef09e0534cb8a3e060bedff6e61da9e613": {
+        "architecture": "arm64",
+        "os": "linux",
+        "evidence": "本地 containerd OCI config"
+      }
+    },
     "desired": 1,
     "ready": 1,
     "resources": [
@@ -288,25 +373,35 @@
         }
       }
     ],
+    "nodeSelector": {
+      "kubernetes.io/arch": "arm64",
+      "kubernetes.io/hostname": "devops"
+    },
     "storage": [],
     "entries": [
       "cook-blackbox:9115"
     ],
     "purpose": "本地与 Pages HTTP 探测",
-    "state": "运行，功能验收待补",
-    "evidence": "workloads.json + pods.json；安装/就绪证据不等同功能验收",
-    "next": "按本职功能取得输入/输出证据；0副本保持预算准入"
+    "state": "运行且已验证",
+    "evidence": "Cook 回归与既有 probe 指标",
+    "next": "维持当前本职流程；证据有效范围见交付记录",
+    "actualUse": "本地/Pages 实际 HTTP 探测"
   },
   {
     "component": "airflow-api-server",
     "namespace": "data-infra",
     "kind": "Deployment",
-    "source": "Helm airflow airflow-1.20.0",
+    "source": "既有 Kubernetes 清单/运维部署",
     "images": [
       "apache/airflow:3.3.0"
     ],
     "nodes": [],
     "architectures": [],
+    "imageArchitectures": {
+      "apache/airflow:3.3.0": {
+        "architecture": "未在本地运行时缓存中验证"
+      }
+    },
     "desired": 0,
     "ready": 0,
     "resources": [
@@ -314,41 +409,59 @@
         "container": "api-server",
         "resources": {
           "limits": {
-            "cpu": "500m",
+            "cpu": "750m",
             "memory": "768Mi"
           },
           "requests": {
-            "cpu": "50m",
-            "memory": "256Mi"
+            "cpu": "100m",
+            "memory": "768Mi"
           }
         }
       },
       {
         "container": "wait-for-airflow-migrations",
-        "resources": {}
+        "resources": {
+          "limits": {
+            "cpu": "500m",
+            "memory": "384Mi"
+          },
+          "requests": {
+            "cpu": "100m",
+            "memory": "384Mi"
+          }
+        }
       }
     ],
+    "nodeSelector": {
+      "kubernetes.io/hostname": "devops"
+    },
     "storage": [],
     "entries": [
       "airflow-api-server:8080",
       "airflow.devops.local"
     ],
-    "purpose": "有界增量统计编排；当前仅 triggerer，核心尚关闭",
+    "purpose": "真实增量统计/质量/重试/超时编排；验收后全部计算关闭",
     "state": "已安装但按需关闭",
-    "evidence": "workloads.json + pods.json；安装/就绪证据不等同功能验收",
-    "next": "按本职功能取得输入/输出证据；0副本保持预算准入"
+    "evidence": "airflow-actual-3/dag-history.json、database-reconciliation.txt",
+    "next": "保持按需关闭；以新鲜资源采样准入，仅运行一个任务",
+    "actualUse": "4次真实 DagRun，重试及90s超时重试，幂等结果"
   },
   {
     "component": "airflow-dag-processor",
     "namespace": "data-infra",
     "kind": "Deployment",
-    "source": "Helm airflow airflow-1.20.0",
+    "source": "既有 Kubernetes 清单/运维部署",
     "images": [
       "apache/airflow:3.3.0",
       "apache/airflow:3.3.0"
     ],
     "nodes": [],
     "architectures": [],
+    "imageArchitectures": {
+      "apache/airflow:3.3.0": {
+        "architecture": "未在本地运行时缓存中验证"
+      }
+    },
     "desired": 0,
     "ready": 0,
     "resources": [
@@ -356,44 +469,71 @@
         "container": "dag-processor",
         "resources": {
           "limits": {
-            "cpu": "500m",
+            "cpu": "750m",
             "memory": "768Mi"
           },
           "requests": {
-            "cpu": "50m",
-            "memory": "256Mi"
+            "cpu": "100m",
+            "memory": "768Mi"
           }
         }
       },
       {
         "container": "dag-processor-log-groomer",
-        "resources": {}
+        "resources": {
+          "limits": {
+            "cpu": "100m",
+            "memory": "64Mi"
+          },
+          "requests": {
+            "cpu": "10m",
+            "memory": "64Mi"
+          }
+        }
       },
       {
         "container": "wait-for-airflow-migrations",
-        "resources": {}
+        "resources": {
+          "limits": {
+            "cpu": "500m",
+            "memory": "384Mi"
+          },
+          "requests": {
+            "cpu": "100m",
+            "memory": "384Mi"
+          }
+        }
       }
     ],
+    "nodeSelector": {
+      "kubernetes.io/hostname": "devops"
+    },
     "storage": [
       "emptyDir"
     ],
     "entries": [],
-    "purpose": "有界增量统计编排；当前仅 triggerer，核心尚关闭",
+    "purpose": "真实增量统计/质量/重试/超时编排；验收后全部计算关闭",
     "state": "已安装但按需关闭",
-    "evidence": "workloads.json + pods.json；安装/就绪证据不等同功能验收",
-    "next": "按本职功能取得输入/输出证据；0副本保持预算准入"
+    "evidence": "airflow-actual-3/dag-history.json、database-reconciliation.txt",
+    "next": "保持按需关闭；以新鲜资源采样准入，仅运行一个任务",
+    "actualUse": "4次真实 DagRun，重试及90s超时重试，幂等结果"
   },
   {
     "component": "airflow-scheduler",
     "namespace": "data-infra",
     "kind": "Deployment",
-    "source": "Helm airflow airflow-1.20.0",
+    "source": "既有 Kubernetes 清单/运维部署",
     "images": [
       "apache/airflow:3.3.0",
       "apache/airflow:3.3.0"
     ],
     "nodes": [],
     "architectures": [],
+    "imageArchitectures": {
+      "apache/airflow:3.3.0": {
+        "architecture": "未在本地运行时缓存中验证"
+      }
+    },
     "desired": 0,
     "ready": 0,
     "resources": [
@@ -401,64 +541,99 @@
         "container": "scheduler",
         "resources": {
           "limits": {
-            "memory": "1Gi"
+            "cpu": "750m",
+            "memory": "768Mi"
           },
           "requests": {
-            "memory": "512Mi"
+            "cpu": "100m",
+            "memory": "768Mi"
           }
         }
       },
       {
         "container": "scheduler-log-groomer",
-        "resources": {}
+        "resources": {
+          "limits": {
+            "cpu": "100m",
+            "memory": "64Mi"
+          },
+          "requests": {
+            "cpu": "10m",
+            "memory": "64Mi"
+          }
+        }
       },
       {
         "container": "wait-for-airflow-migrations",
         "resources": {
           "limits": {
-            "memory": "512Mi"
+            "cpu": "500m",
+            "memory": "384Mi"
           },
           "requests": {
-            "memory": "256Mi"
+            "cpu": "100m",
+            "memory": "384Mi"
           }
         }
       }
     ],
+    "nodeSelector": {
+      "kubernetes.io/hostname": "devops"
+    },
     "storage": [
       "emptyDir"
     ],
     "entries": [],
-    "purpose": "有界增量统计编排；当前仅 triggerer，核心尚关闭",
+    "purpose": "真实增量统计/质量/重试/超时编排；验收后全部计算关闭",
     "state": "已安装但按需关闭",
-    "evidence": "workloads.json + pods.json；安装/就绪证据不等同功能验收",
-    "next": "按本职功能取得输入/输出证据；0副本保持预算准入"
+    "evidence": "airflow-actual-3/dag-history.json、database-reconciliation.txt",
+    "next": "保持按需关闭；以新鲜资源采样准入，仅运行一个任务",
+    "actualUse": "4次真实 DagRun，重试及90s超时重试，幂等结果"
   },
   {
     "component": "airflow-statsd",
     "namespace": "data-infra",
     "kind": "Deployment",
-    "source": "Helm airflow airflow-1.20.0",
+    "source": "既有 Kubernetes 清单/运维部署",
     "images": [
       "127.0.0.1:30050/platform-upgrade/statsd-exporter:v0.30.0-arm64"
     ],
     "nodes": [],
     "architectures": [],
+    "imageArchitectures": {
+      "127.0.0.1:30050/platform-upgrade/statsd-exporter:v0.30.0-arm64": {
+        "architecture": "未在本地运行时缓存中验证"
+      }
+    },
     "desired": 0,
     "ready": 0,
     "resources": [
       {
         "container": "statsd",
-        "resources": {}
+        "resources": {
+          "limits": {
+            "cpu": "250m",
+            "memory": "64Mi"
+          },
+          "requests": {
+            "cpu": "20m",
+            "memory": "32Mi"
+          }
+        }
       }
     ],
+    "nodeSelector": {
+      "kubernetes.io/hostname": "devops"
+    },
     "storage": [],
     "entries": [
       "airflow-statsd:9125,9102"
     ],
-    "purpose": "有界增量统计编排；当前仅 triggerer，核心尚关闭",
+    "purpose": "真实增量统计/质量/重试/超时编排；验收后全部计算关闭",
     "state": "已安装但按需关闭",
-    "evidence": "workloads.json + pods.json；安装/就绪证据不等同功能验收",
-    "next": "按本职功能取得输入/输出证据；0副本保持预算准入"
+    "evidence": "airflow-actual-3/dag-history.json、database-reconciliation.txt",
+    "next": "保持按需关闭；以新鲜资源采样准入，仅运行一个任务",
+    "actualUse": "4次真实 DagRun，重试及90s超时重试，幂等结果"
   },
   {
     "component": "minio",
@@ -470,6 +645,11 @@
     ],
     "nodes": [],
     "architectures": [],
+    "imageArchitectures": {
+      "quay.io/minio/minio:RELEASE.2025-09-07T16-13-09Z": {
+        "architecture": "未在本地运行时缓存中验证"
+      }
+    },
     "desired": 0,
     "ready": 0,
     "resources": [
@@ -482,6 +662,7 @@
         }
       }
     ],
+    "nodeSelector": {},
     "storage": [
       "PVC minio"
     ],
@@ -501,7 +682,7 @@
     "kind": "Deployment",
     "source": "Helm superset superset-0.15.2",
     "images": [
-      "192.168.1.58:30050/library/superset:6.1.0-mysqlconnector-9.6.0"
+      "127.0.0.1:30050/platform-upgrade/superset-analytics@sha256:aa3c7e2993de3d60aeab155e34071df87cff7a5dda5ec6e125e38b4b62c8f0ed"
     ],
     "nodes": [
       "devops"
@@ -509,6 +690,13 @@
     "architectures": [
       "arm64"
     ],
+    "imageArchitectures": {
+      "127.0.0.1:30050/platform-upgrade/superset-analytics@sha256:aa3c7e2993de3d60aeab155e34071df87cff7a5dda5ec6e125e38b4b62c8f0ed": {
+        "architecture": "arm64",
+        "os": "linux",
+        "evidence": "本地 containerd OCI config"
+      }
+    },
     "desired": 1,
     "ready": 1,
     "resources": [
@@ -516,10 +704,12 @@
         "container": "superset",
         "resources": {
           "limits": {
-            "memory": "512Mi"
+            "cpu": "1",
+            "memory": "768Mi"
           },
           "requests": {
-            "memory": "256Mi"
+            "cpu": "100m",
+            "memory": "768Mi"
           }
         }
       },
@@ -528,15 +718,17 @@
         "resources": {}
       }
     ],
+    "nodeSelector": {},
     "storage": [],
     "entries": [
       "superset:8088",
       "superset.devops.local"
     ],
     "purpose": "统计查询与看板",
-    "state": "运行，功能验收待补",
-    "evidence": "workloads.json + pods.json；安装/就绪证据不等同功能验收",
-    "next": "按本职功能取得输入/输出证据；0副本保持预算准入"
+    "state": "运行且已验证",
+    "evidence": "superset-actual/browser-complete.json、dashboard.png",
+    "next": "维持当前本职流程；证据有效范围见交付记录",
+    "actualUse": "4个实际图表 API及浏览器，923/350与时间/演示来源"
   },
   {
     "component": "superset-worker",
@@ -546,14 +738,15 @@
     "images": [
       "192.168.1.58:30050/library/superset:6.1.0-mysqlconnector-9.6.0"
     ],
-    "nodes": [
-      "devops"
-    ],
-    "architectures": [
-      "arm64"
-    ],
-    "desired": 1,
-    "ready": 1,
+    "nodes": [],
+    "architectures": [],
+    "imageArchitectures": {
+      "192.168.1.58:30050/library/superset:6.1.0-mysqlconnector-9.6.0": {
+        "architecture": "未在本地运行时缓存中验证"
+      }
+    },
+    "desired": 0,
+    "ready": 0,
     "resources": [
       {
         "container": "superset",
@@ -564,12 +757,14 @@
         "resources": {}
       }
     ],
+    "nodeSelector": {},
     "storage": [],
     "entries": [],
     "purpose": "Celery 异步查询/报告；已核实空闲后改为按需",
-    "state": "运行，功能验收待补",
-    "evidence": "workloads.json + pods.json；安装/就绪证据不等同功能验收",
-    "next": "按本职功能取得输入/输出证据；0副本保持预算准入"
+    "state": "已安装但按需关闭",
+    "evidence": "superset-actual/browser-complete.json、dashboard.png",
+    "next": "保持按需关闭；以新鲜资源采样准入，仅运行一个任务",
+    "actualUse": "4个实际图表 API及浏览器，923/350与时间/演示来源"
   },
   {
     "component": "trino-coordinator",
@@ -585,6 +780,13 @@
     "architectures": [
       "arm64"
     ],
+    "imageArchitectures": {
+      "127.0.0.1:30050/platform-upgrade/trinodb-trino:483": {
+        "architecture": "arm64",
+        "os": "linux",
+        "evidence": "本地 containerd OCI config"
+      }
+    },
     "desired": 1,
     "ready": 1,
     "resources": [
@@ -592,23 +794,27 @@
         "container": "trino-coordinator",
         "resources": {
           "limits": {
+            "cpu": "1",
             "memory": "2Gi"
           },
           "requests": {
-            "memory": "512Mi"
+            "cpu": "250m",
+            "memory": "2Gi"
           }
         }
       }
     ],
+    "nodeSelector": {},
     "storage": [],
     "entries": [
       "trino:8080",
       "trino.devops.local"
     ],
     "purpose": "SQL 查询分析结果",
-    "state": "运行，功能验收待补",
-    "evidence": "workloads.json + pods.json；安装/就绪证据不等同功能验收",
-    "next": "按本职功能取得输入/输出证据；0副本保持预算准入"
+    "state": "运行且已验证",
+    "evidence": "trino-local-actual；云端并发超时限制见交付记录",
+    "next": "维持当前本职流程；证据有效范围见交付记录",
+    "actualUse": "PostgreSQL 只读连接、实际查询；本地0.759–3.738s"
   },
   {
     "component": "trino-worker",
@@ -618,36 +824,42 @@
     "images": [
       "trinodb/trino:483@sha256:fca43d1fdfdcd45f36b791f7117a47f8ce69c58232e5398bfdb8539cd28e778b"
     ],
-    "nodes": [
-      "ucloud-worker"
-    ],
-    "architectures": [
-      "amd64"
-    ],
-    "desired": 1,
-    "ready": 1,
+    "nodes": [],
+    "architectures": [],
+    "imageArchitectures": {
+      "trinodb/trino:483@sha256:fca43d1fdfdcd45f36b791f7117a47f8ce69c58232e5398bfdb8539cd28e778b": {
+        "architecture": "未在本地运行时缓存中验证"
+      }
+    },
+    "desired": 0,
+    "ready": 0,
     "resources": [
       {
         "container": "trino-worker",
         "resources": {
           "limits": {
+            "cpu": "1",
             "memory": "2Gi"
           },
           "requests": {
             "cpu": "250m",
-            "memory": "1Gi"
+            "memory": "2Gi"
           }
         }
       }
     ],
+    "nodeSelector": {
+      "kubernetes.io/hostname": "ucloud-worker"
+    },
     "storage": [],
     "entries": [
       "trino-worker:8080"
     ],
     "purpose": "SQL 查询分析结果",
-    "state": "运行，功能验收待补",
-    "evidence": "workloads.json + pods.json；安装/就绪证据不等同功能验收",
-    "next": "按本职功能取得输入/输出证据；0副本保持预算准入"
+    "state": "已安装但按需关闭",
+    "evidence": "trino-local-actual；云端并发超时限制见交付记录",
+    "next": "保持按需关闭；以新鲜资源采样准入，仅运行一个任务",
+    "actualUse": "PostgreSQL 只读连接、实际查询；本地0.759–3.738s"
   },
   {
     "component": "elasticsearch",
@@ -663,6 +875,13 @@
     "architectures": [
       "arm64"
     ],
+    "imageArchitectures": {
+      "127.0.0.1:30050/platform-upgrade/elasticsearch:9.4.4-arm64": {
+        "architecture": "arm64",
+        "os": "linux",
+        "evidence": "本地 containerd OCI config"
+      }
+    },
     "desired": 1,
     "ready": 1,
     "resources": [
@@ -678,6 +897,7 @@
         }
       }
     ],
+    "nodeSelector": {},
     "storage": [
       "hostPath /opt/devops/data/elasticsearch"
     ],
@@ -685,9 +905,10 @@
       "elasticsearch:9200"
     ],
     "purpose": "Filebeat 业务及构建日志索引",
-    "state": "运行，功能验收待补",
-    "evidence": "workloads.json + pods.json；安装/就绪证据不等同功能验收",
-    "next": "按本职功能取得输入/输出证据；0副本保持预算准入"
+    "state": "运行且已验证",
+    "evidence": "telemetry-actual",
+    "next": "维持当前本职流程；证据有效范围见交付记录",
+    "actualUse": "真实版本/Pod/时间查询，trace关联、实际ILM"
   },
   {
     "component": "kibana",
@@ -703,6 +924,13 @@
     "architectures": [
       "arm64"
     ],
+    "imageArchitectures": {
+      "127.0.0.1:30050/platform-upgrade/kibana:9.4.4-arm64": {
+        "architecture": "arm64",
+        "os": "linux",
+        "evidence": "本地 containerd OCI config"
+      }
+    },
     "desired": 1,
     "ready": 1,
     "resources": [
@@ -720,6 +948,7 @@
         }
       }
     ],
+    "nodeSelector": {},
     "storage": [
       "hostPath /opt/devops/data/kibana"
     ],
@@ -728,9 +957,10 @@
       "kibana.devops.local"
     ],
     "purpose": "应用/版本/Pod/时间日志查询",
-    "state": "运行，功能验收待补",
-    "evidence": "workloads.json + pods.json；安装/就绪证据不等同功能验收",
-    "next": "按本职功能取得输入/输出证据；0副本保持预算准入"
+    "state": "运行且已验证",
+    "evidence": "telemetry-actual/kibana-real-search.json",
+    "next": "维持当前本职流程；证据有效范围见交付记录",
+    "actualUse": "真实数据视图和保存搜索，近期日志509条以上"
   },
   {
     "component": "harbor-core",
@@ -746,14 +976,25 @@
     "architectures": [
       "arm64"
     ],
+    "imageArchitectures": {
+      "127.0.0.1:30050/goharbor/harbor-core:v2.14.3-arm64-native": {
+        "architecture": "arm64",
+        "os": "linux",
+        "evidence": "本地 containerd OCI config"
+      }
+    },
     "desired": 1,
-    "ready": 0,
+    "ready": 1,
     "resources": [
       {
         "container": "core",
         "resources": {}
       }
     ],
+    "nodeSelector": {
+      "kubernetes.io/arch": "arm64",
+      "kubernetes.io/hostname": "devops"
+    },
     "storage": [
       "emptyDir"
     ],
@@ -763,9 +1004,10 @@
       "harbor.devops.local"
     ],
     "purpose": "私有镜像、凭据、仓库持久化及扫描",
-    "state": "运行异常",
-    "evidence": "workloads.json + pods.json；安装/就绪证据不等同功能验收",
-    "next": "按本职功能取得输入/输出证据；0副本保持预算准入"
+    "state": "运行且已验证",
+    "evidence": "HARBOR-REPAIR-20261011.md；build-127及补丁发布归档",
+    "next": "维持当前本职流程；证据有效范围见交付记录",
+    "actualUse": "Redis精确修复、实际认证/镜像推送/双架构扫描/目标pull"
   },
   {
     "component": "harbor-jobservice",
@@ -781,14 +1023,25 @@
     "architectures": [
       "arm64"
     ],
+    "imageArchitectures": {
+      "127.0.0.1:30050/goharbor/harbor-jobservice:v2.14.3-arm64-native": {
+        "architecture": "arm64",
+        "os": "linux",
+        "evidence": "本地 containerd OCI config"
+      }
+    },
     "desired": 1,
-    "ready": 0,
+    "ready": 1,
     "resources": [
       {
         "container": "jobservice",
         "resources": {}
       }
     ],
+    "nodeSelector": {
+      "kubernetes.io/arch": "arm64",
+      "kubernetes.io/hostname": "devops"
+    },
     "storage": [
       "emptyDir"
     ],
@@ -796,9 +1049,10 @@
       "harbor-jobservice:80"
     ],
     "purpose": "私有镜像、凭据、仓库持久化及扫描",
-    "state": "运行异常",
-    "evidence": "workloads.json + pods.json；安装/就绪证据不等同功能验收",
-    "next": "按本职功能取得输入/输出证据；0副本保持预算准入"
+    "state": "运行且已验证",
+    "evidence": "HARBOR-REPAIR-20261011.md；build-127及补丁发布归档",
+    "next": "维持当前本职流程；证据有效范围见交付记录",
+    "actualUse": "Redis精确修复、实际认证/镜像推送/双架构扫描/目标pull"
   },
   {
     "component": "harbor-portal",
@@ -814,6 +1068,13 @@
     "architectures": [
       "arm64"
     ],
+    "imageArchitectures": {
+      "goharbor/harbor-portal:v2.14.3": {
+        "architecture": "amd64",
+        "os": "linux",
+        "evidence": "本地 containerd OCI config"
+      }
+    },
     "desired": 1,
     "ready": 1,
     "resources": [
@@ -822,6 +1083,7 @@
         "resources": {}
       }
     ],
+    "nodeSelector": {},
     "storage": [],
     "entries": [
       "harbor-portal:80",
@@ -829,9 +1091,10 @@
       "harbor.devops.local"
     ],
     "purpose": "私有镜像、凭据、仓库持久化及扫描",
-    "state": "运行，功能验收待补",
-    "evidence": "workloads.json + pods.json；安装/就绪证据不等同功能验收",
-    "next": "按本职功能取得输入/输出证据；0副本保持预算准入"
+    "state": "运行且已验证",
+    "evidence": "HARBOR-REPAIR-20261011.md；build-127及补丁发布归档",
+    "next": "维持当前本职流程；证据有效范围见交付记录",
+    "actualUse": "Redis精确修复、实际认证/镜像推送/双架构扫描/目标pull"
   },
   {
     "component": "harbor-redis-arm64",
@@ -847,14 +1110,24 @@
     "architectures": [
       "arm64"
     ],
+    "imageArchitectures": {
+      "127.0.0.1:30050/platform-upgrade/redis:8.8.1-alpine-arm64": {
+        "architecture": "arm64",
+        "os": "linux",
+        "evidence": "本地 containerd OCI config"
+      }
+    },
     "desired": 1,
-    "ready": 0,
+    "ready": 1,
     "resources": [
       {
         "container": "redis",
         "resources": {}
       }
     ],
+    "nodeSelector": {
+      "kubernetes.io/hostname": "devops"
+    },
     "storage": [
       "PVC harbor-redis-arm64-data"
     ],
@@ -862,9 +1135,10 @@
       "harbor-redis-arm64:6379"
     ],
     "purpose": "私有镜像、凭据、仓库持久化及扫描",
-    "state": "运行异常",
-    "evidence": "workloads.json + pods.json；安装/就绪证据不等同功能验收",
-    "next": "按本职功能取得输入/输出证据；0副本保持预算准入"
+    "state": "运行且已验证",
+    "evidence": "HARBOR-REPAIR-20261011.md；build-127及补丁发布归档",
+    "next": "维持当前本职流程；证据有效范围见交付记录",
+    "actualUse": "Redis精确修复、实际认证/镜像推送/双架构扫描/目标pull"
   },
   {
     "component": "harbor-registry",
@@ -881,6 +1155,18 @@
     "architectures": [
       "arm64"
     ],
+    "imageArchitectures": {
+      "goharbor/registry-photon:2.14.2": {
+        "architecture": "arm64",
+        "os": "linux",
+        "evidence": "本地 containerd OCI config"
+      },
+      "goharbor/harbor-registryctl:2.14.2": {
+        "architecture": "arm64",
+        "os": "linux",
+        "evidence": "本地 containerd OCI config"
+      }
+    },
     "desired": 1,
     "ready": 1,
     "resources": [
@@ -893,6 +1179,10 @@
         "resources": {}
       }
     ],
+    "nodeSelector": {
+      "kubernetes.io/arch": "arm64",
+      "kubernetes.io/hostname": "devops"
+    },
     "storage": [
       "PVC harbor-registry"
     ],
@@ -900,9 +1190,10 @@
       "harbor-registry:5000,8080"
     ],
     "purpose": "私有镜像、凭据、仓库持久化及扫描",
-    "state": "运行，功能验收待补",
-    "evidence": "workloads.json + pods.json；安装/就绪证据不等同功能验收",
-    "next": "按本职功能取得输入/输出证据；0副本保持预算准入"
+    "state": "运行且已验证",
+    "evidence": "HARBOR-REPAIR-20261011.md；build-127及补丁发布归档",
+    "next": "维持当前本职流程；证据有效范围见交付记录",
+    "actualUse": "Redis精确修复、实际认证/镜像推送/双架构扫描/目标pull"
   },
   {
     "component": "coredns",
@@ -918,6 +1209,13 @@
     "architectures": [
       "arm64"
     ],
+    "imageArchitectures": {
+      "rancher/mirrored-coredns-coredns:1.14.3": {
+        "architecture": "arm64",
+        "os": "linux",
+        "evidence": "本地 containerd OCI config"
+      }
+    },
     "desired": 1,
     "ready": 1,
     "resources": [
@@ -934,15 +1232,19 @@
         }
       }
     ],
+    "nodeSelector": {
+      "kubernetes.io/os": "linux"
+    },
     "storage": [],
     "entries": [
       "kube-dns:53,53,9153",
       "kube-stack-kube-prometheus-coredns:9153"
     ],
     "purpose": "集群 DNS",
-    "state": "运行，功能验收待补",
-    "evidence": "workloads.json + pods.json；安装/就绪证据不等同功能验收",
-    "next": "按本职功能取得输入/输出证据；0副本保持预算准入"
+    "state": "运行且已验证",
+    "evidence": "support-components-actual.json",
+    "next": "维持当前本职流程；证据有效范围见交付记录",
+    "actualUse": "Runner容器实际解析PostgreSQL跨namespace服务名"
   },
   {
     "component": "local-path-provisioner",
@@ -958,6 +1260,13 @@
     "architectures": [
       "arm64"
     ],
+    "imageArchitectures": {
+      "rancher/local-path-provisioner:v0.0.36": {
+        "architecture": "arm64",
+        "os": "linux",
+        "evidence": "本地 containerd OCI config"
+      }
+    },
     "desired": 1,
     "ready": 1,
     "resources": [
@@ -966,12 +1275,16 @@
         "resources": {}
       }
     ],
+    "nodeSelector": {
+      "kubernetes.io/os": "linux"
+    },
     "storage": [],
     "entries": [],
     "purpose": "本地 PVC 动态供应与已有数据卷",
-    "state": "运行，功能验收待补",
-    "evidence": "workloads.json + pods.json；安装/就绪证据不等同功能验收",
-    "next": "按本职功能取得输入/输出证据；0副本保持预算准入"
+    "state": "运行且已验证",
+    "evidence": "support-components-actual.json；业务/分析任务实际事务",
+    "next": "维持当前本职流程；证据有效范围见交付记录",
+    "actualUse": "14个已有PVC，已绑定的数据卷支撑实际数据库/备份读写"
   },
   {
     "component": "metrics-server",
@@ -987,6 +1300,13 @@
     "architectures": [
       "arm64"
     ],
+    "imageArchitectures": {
+      "rancher/mirrored-metrics-server:v0.8.1": {
+        "architecture": "arm64",
+        "os": "linux",
+        "evidence": "本地 containerd OCI config"
+      }
+    },
     "desired": 1,
     "ready": 1,
     "resources": [
@@ -1000,6 +1320,9 @@
         }
       }
     ],
+    "nodeSelector": {
+      "kubernetes.io/os": "linux"
+    },
     "storage": [
       "emptyDir"
     ],
@@ -1007,9 +1330,10 @@
       "metrics-server:443"
     ],
     "purpose": "资源指标 API",
-    "state": "运行，功能验收待补",
-    "evidence": "workloads.json + pods.json；安装/就绪证据不等同功能验收",
-    "next": "按本职功能取得输入/输出证据；0副本保持预算准入"
+    "state": "运行且已验证",
+    "evidence": "support-components-actual.json",
+    "next": "维持当前本职流程；证据有效范围见交付记录",
+    "actualUse": "资源指标API实际返回3个节点数据"
   },
   {
     "component": "traefik",
@@ -1025,6 +1349,13 @@
     "architectures": [
       "arm64"
     ],
+    "imageArchitectures": {
+      "docker.io/rancher/mirrored-library-traefik:3.6.13": {
+        "architecture": "arm64",
+        "os": "linux",
+        "evidence": "本地 containerd OCI config"
+      }
+    },
     "desired": 1,
     "ready": 1,
     "resources": [
@@ -1041,6 +1372,7 @@
         }
       }
     ],
+    "nodeSelector": {},
     "storage": [
       "emptyDir",
       "emptyDir"
@@ -1050,9 +1382,10 @@
       "traefik:80,443"
     ],
     "purpose": "Ingress 主机名路由与反向代理",
-    "state": "运行，功能验收待补",
-    "evidence": "workloads.json + pods.json；安装/就绪证据不等同功能验收",
-    "next": "按本职功能取得输入/输出证据；0副本保持预算准入"
+    "state": "运行且已验证",
+    "evidence": "业务/Cook回归、hello-route-repair.log",
+    "next": "维持当前本职流程；证据有效范围见交付记录",
+    "actualUse": "实际Petclinic/Cook/Hello主机路由200"
   },
   {
     "component": "jaeger",
@@ -1068,6 +1401,13 @@
     "architectures": [
       "arm64"
     ],
+    "imageArchitectures": {
+      "127.0.0.1:30050/platform-upgrade/jaeger:2.20.0-arm64": {
+        "architecture": "arm64",
+        "os": "linux",
+        "evidence": "本地 containerd OCI config"
+      }
+    },
     "desired": 1,
     "ready": 1,
     "resources": [
@@ -1076,15 +1416,17 @@
         "resources": {}
       }
     ],
+    "nodeSelector": {},
     "storage": [],
     "entries": [
       "jaeger:5775,5778,6831,6832,9411,14250,14267,14268,4317,4318,16686,16685,8888,8889",
       "jaeger.devops.local"
     ],
     "purpose": "OTLP 请求 trace 查询",
-    "state": "运行，功能验收待补",
-    "evidence": "workloads.json + pods.json；安装/就绪证据不等同功能验收",
-    "next": "按本职功能取得输入/输出证据；0副本保持预算准入"
+    "state": "运行且已验证",
+    "evidence": "telemetry-actual/jaeger-trace.json",
+    "next": "维持当前本职流程；证据有效范围见交付记录",
+    "actualUse": "实际/insights trace/span可查询"
   },
   {
     "component": "kube-stack-grafana",
@@ -1102,6 +1444,18 @@
     "architectures": [
       "arm64"
     ],
+    "imageArchitectures": {
+      "127.0.0.1:30050/platform-upgrade/k8s-sidecar:2.8.1-arm64": {
+        "architecture": "arm64",
+        "os": "linux",
+        "evidence": "本地 containerd OCI config"
+      },
+      "127.0.0.1:30050/platform-upgrade/grafana-grafana:13.1.1-arm64": {
+        "architecture": "arm64",
+        "os": "linux",
+        "evidence": "本地 containerd OCI config"
+      }
+    },
     "desired": 1,
     "ready": 1,
     "resources": [
@@ -1127,6 +1481,7 @@
         }
       }
     ],
+    "nodeSelector": {},
     "storage": [
       "PVC kube-stack-grafana",
       "emptyDir",
@@ -1138,9 +1493,10 @@
       "grafana.devops.local"
     ],
     "purpose": "Prometheus/Loki 看板与告警评估",
-    "state": "运行，功能验收待补",
-    "evidence": "workloads.json + pods.json；安装/就绪证据不等同功能验收",
-    "next": "按本职功能取得输入/输出证据；0副本保持预算准入"
+    "state": "运行且已验证",
+    "evidence": "telemetry-actual/grafana-real-queries.json",
+    "next": "维持当前本职流程；证据有效范围见交付记录",
+    "actualUse": "既有Pod/Hikari看板真实data source查询；发布/分析看板另验收"
   },
   {
     "component": "kube-stack-kube-prometheus-operator",
@@ -1156,6 +1512,13 @@
     "architectures": [
       "arm64"
     ],
+    "imageArchitectures": {
+      "127.0.0.1:30050/platform-upgrade/prometheus-operator:v0.92.1-arm64": {
+        "architecture": "arm64",
+        "os": "linux",
+        "evidence": "本地 containerd OCI config"
+      }
+    },
     "desired": 1,
     "ready": 1,
     "resources": [
@@ -1164,14 +1527,16 @@
         "resources": {}
       }
     ],
+    "nodeSelector": {},
     "storage": [],
     "entries": [
       "kube-stack-kube-prometheus-operator:443"
     ],
     "purpose": "Prometheus/ServiceMonitor/规则控制器",
-    "state": "运行，功能验收待补",
-    "evidence": "workloads.json + pods.json；安装/就绪证据不等同功能验收",
-    "next": "按本职功能取得输入/输出证据；0副本保持预算准入"
+    "state": "运行且已验证",
+    "evidence": "analysis-rules-evaluated.json、发布/分析指标",
+    "next": "维持当前本职流程；证据有效范围见交付记录",
+    "actualUse": "实际ServiceMonitor及规则评估"
   },
   {
     "component": "kube-stack-kube-state-metrics",
@@ -1187,6 +1552,13 @@
     "architectures": [
       "arm64"
     ],
+    "imageArchitectures": {
+      "127.0.0.1:30050/platform-upgrade/kube-state-metrics:v2.19.1-arm64": {
+        "architecture": "arm64",
+        "os": "linux",
+        "evidence": "本地 containerd OCI config"
+      }
+    },
     "desired": 1,
     "ready": 1,
     "resources": [
@@ -1195,14 +1567,16 @@
         "resources": {}
       }
     ],
+    "nodeSelector": {},
     "storage": [],
     "entries": [
       "kube-stack-kube-state-metrics:8080"
     ],
     "purpose": "Kubernetes 对象状态指标",
-    "state": "运行，功能验收待补",
-    "evidence": "workloads.json + pods.json；安装/就绪证据不等同功能验收",
-    "next": "按本职功能取得输入/输出证据；0副本保持预算准入"
+    "state": "运行且已验证",
+    "evidence": "support-http-metrics-actual.json",
+    "next": "维持当前本职流程；证据有效范围见交付记录",
+    "actualUse": "实际Petclinic可用副本PromQL样本"
   },
   {
     "component": "otel-collector",
@@ -1218,6 +1592,13 @@
     "architectures": [
       "arm64"
     ],
+    "imageArchitectures": {
+      "127.0.0.1:30050/platform-upgrade/opentelemetry-collector:0.157.0-arm64": {
+        "architecture": "arm64",
+        "os": "linux",
+        "evidence": "本地 containerd OCI config"
+      }
+    },
     "desired": 1,
     "ready": 1,
     "resources": [
@@ -1235,14 +1616,18 @@
         }
       }
     ],
+    "nodeSelector": {
+      "kubernetes.io/hostname": "devops"
+    },
     "storage": [],
     "entries": [
       "otel-collector:4317,4318,8888,8889"
     ],
     "purpose": "OTLP 接收和 trace 转发",
-    "state": "运行，功能验收待补",
-    "evidence": "workloads.json + pods.json；安装/就绪证据不等同功能验收",
-    "next": "按本职功能取得输入/输出证据；0副本保持预算准入"
+    "state": "运行且已验证",
+    "evidence": "telemetry-actual/jaeger-trace.json",
+    "next": "维持当前本职流程；证据有效范围见交付记录",
+    "actualUse": "实际请求trace被转发到Jaeger"
   },
   {
     "component": "hello-app",
@@ -1258,6 +1643,13 @@
     "architectures": [
       "arm64"
     ],
+    "imageArchitectures": {
+      "127.0.0.1:30050/hello-app:6973c70": {
+        "architecture": "arm64",
+        "os": "linux",
+        "evidence": "本地 containerd OCI config"
+      }
+    },
     "desired": 1,
     "ready": 1,
     "resources": [
@@ -1275,14 +1667,18 @@
         }
       }
     ],
+    "nodeSelector": {},
     "storage": [],
     "entries": [
-      "hello-app:80"
+      "hello-app:80",
+      "hello.devops.local"
     ],
     "purpose": "独立平台门户；按本职验证",
-    "state": "运行，功能验收待补",
-    "evidence": "workloads.json + pods.json；安装/就绪证据不等同功能验收",
-    "next": "按本职功能取得输入/输出证据；0副本保持预算准入"
+    "state": "运行且已验证",
+    "evidence": "support-http-metrics-actual.json、hello-route-repair.log",
+    "next": "桌面功能通过；已有手机布局溢出，本轮未改Hello源码",
+    "actualUse": "实际桌面页面/浏览器HTTP200无JS错误；修复历史跨namespace错误路由",
+    "limitations": "桌面功能通过；已有手机布局溢出，本轮未改Hello源码"
   },
   {
     "component": "jkvideo-web",
@@ -1298,6 +1694,13 @@
     "architectures": [
       "arm64"
     ],
+    "imageArchitectures": {
+      "127.0.0.1:30050/jkvideo-web:b5b7c58": {
+        "architecture": "arm64",
+        "os": "linux",
+        "evidence": "本地 containerd OCI config"
+      }
+    },
     "desired": 1,
     "ready": 1,
     "resources": [
@@ -1306,14 +1709,17 @@
         "resources": {}
       }
     ],
+    "nodeSelector": {},
     "storage": [],
     "entries": [
       "jkvideo-web:80"
     ],
     "purpose": "独立视频 Web 应用；按本职验证",
-    "state": "运行，功能验收待补",
-    "evidence": "workloads.json + pods.json；安装/就绪证据不等同功能验收",
-    "next": "按本职功能取得输入/输出证据；0副本保持预算准入"
+    "state": "运行且已验证",
+    "evidence": "support-http-metrics-actual.json",
+    "next": "页面已验证，第三方视频播放未验收",
+    "actualUse": "独立Web Service实际HTTP200；外部视频播放未验收",
+    "limitations": "页面已验证，第三方视频播放未验收"
   },
   {
     "component": "flink-jobmanager",
@@ -1325,25 +1731,74 @@
     ],
     "nodes": [],
     "architectures": [],
+    "imageArchitectures": {
+      "127.0.0.1:30050/platform-upgrade/flink:2.3.0-scala_2.12-java17": {
+        "architecture": "未在本地运行时缓存中验证"
+      }
+    },
     "desired": 0,
     "ready": 0,
     "resources": [
       {
         "container": "jobmanager",
-        "resources": {}
+        "resources": {
+          "limits": {
+            "cpu": "1",
+            "memory": "1Gi"
+          },
+          "requests": {
+            "cpu": "250m",
+            "memory": "1Gi"
+          }
+        }
       },
       {
         "container": "copy-flink-libs",
-        "resources": {}
+        "resources": {
+          "limits": {
+            "cpu": "250m",
+            "memory": "128Mi"
+          },
+          "requests": {
+            "cpu": "50m",
+            "memory": "128Mi"
+          }
+        }
       },
       {
         "container": "copy-kafka-jar",
-        "resources": {}
+        "resources": {
+          "limits": {
+            "cpu": "250m",
+            "memory": "128Mi"
+          },
+          "requests": {
+            "cpu": "50m",
+            "memory": "128Mi"
+          }
+        }
+      },
+      {
+        "container": "prepare-clinic-state",
+        "resources": {
+          "limits": {
+            "cpu": "100m",
+            "memory": "64Mi"
+          },
+          "requests": {
+            "cpu": "25m",
+            "memory": "64Mi"
+          }
+        }
       }
     ],
+    "nodeSelector": {
+      "kubernetes.io/hostname": "devops"
+    },
     "storage": [
       "emptyDir",
-      "hostPath /home/zhang/devops-bigdata/flink-sql-connector-kafka-5.0.0-2.2.jar"
+      "hostPath /home/zhang/devops-bigdata/flink-sql-connector-kafka-5.0.0-2.2.jar",
+      "hostPath /opt/petclinic-observability/state/flink/petclinic-window-092657"
     ],
     "entries": [
       "flink-jobmanager:6123,8081",
@@ -1351,8 +1806,9 @@
     ],
     "purpose": "按需窗口统计，结束后保存状态并停止",
     "state": "已安装但按需关闭",
-    "evidence": "workloads.json + pods.json；安装/就绪证据不等同功能验收",
-    "next": "按本职功能取得输入/输出证据；0副本保持预算准入"
+    "evidence": "flink-actual-4/result.json",
+    "next": "保持按需关闭；以新鲜资源采样准入，仅运行一个任务",
+    "actualUse": "1200行两轮窗口、923年内计数、checkpoint/savepoint恢复、lag=0"
   },
   {
     "component": "flink-taskmanager",
@@ -1364,31 +1820,81 @@
     ],
     "nodes": [],
     "architectures": [],
+    "imageArchitectures": {
+      "127.0.0.1:30050/platform-upgrade/flink:2.3.0-scala_2.12-java17": {
+        "architecture": "未在本地运行时缓存中验证"
+      }
+    },
     "desired": 0,
     "ready": 0,
     "resources": [
       {
         "container": "taskmanager",
-        "resources": {}
+        "resources": {
+          "limits": {
+            "cpu": "1",
+            "memory": "1536Mi"
+          },
+          "requests": {
+            "cpu": "250m",
+            "memory": "1536Mi"
+          }
+        }
       },
       {
         "container": "copy-flink-libs",
-        "resources": {}
+        "resources": {
+          "limits": {
+            "cpu": "250m",
+            "memory": "128Mi"
+          },
+          "requests": {
+            "cpu": "50m",
+            "memory": "128Mi"
+          }
+        }
       },
       {
         "container": "copy-kafka-jar",
-        "resources": {}
+        "resources": {
+          "limits": {
+            "cpu": "250m",
+            "memory": "128Mi"
+          },
+          "requests": {
+            "cpu": "50m",
+            "memory": "128Mi"
+          }
+        }
+      },
+      {
+        "container": "prepare-clinic-state",
+        "resources": {
+          "limits": {
+            "cpu": "100m",
+            "memory": "64Mi"
+          },
+          "requests": {
+            "cpu": "25m",
+            "memory": "64Mi"
+          }
+        }
       }
     ],
+    "nodeSelector": {
+      "kubernetes.io/hostname": "devops"
+    },
     "storage": [
       "emptyDir",
-      "hostPath /home/zhang/devops-bigdata/flink-sql-connector-kafka-5.0.0-2.2.jar"
+      "hostPath /home/zhang/devops-bigdata/flink-sql-connector-kafka-5.0.0-2.2.jar",
+      "hostPath /opt/petclinic-observability/state/flink/petclinic-window-092657"
     ],
     "entries": [],
     "purpose": "按需窗口统计，结束后保存状态并停止",
     "state": "已安装但按需关闭",
-    "evidence": "workloads.json + pods.json；安装/就绪证据不等同功能验收",
-    "next": "按本职功能取得输入/输出证据；0副本保持预算准入"
+    "evidence": "flink-actual-4/result.json",
+    "next": "保持按需关闭；以新鲜资源采样准入，仅运行一个任务",
+    "actualUse": "1200行两轮窗口、923年内计数、checkpoint/savepoint恢复、lag=0"
   },
   {
     "component": "kafka",
@@ -1404,6 +1910,13 @@
     "architectures": [
       "arm64"
     ],
+    "imageArchitectures": {
+      "127.0.0.1:30050/platform-upgrade/apache-kafka:4.3.1": {
+        "architecture": "arm64",
+        "os": "linux",
+        "evidence": "本地 containerd OCI config"
+      }
+    },
     "desired": 1,
     "ready": 1,
     "resources": [
@@ -1411,22 +1924,30 @@
         "container": "kafka",
         "resources": {
           "limits": {
+            "cpu": "1",
             "memory": "1Gi"
           },
           "requests": {
-            "memory": "512Mi"
+            "cpu": "250m",
+            "memory": "1Gi"
           }
         }
       }
     ],
-    "storage": [],
+    "nodeSelector": {
+      "kubernetes.io/hostname": "devops"
+    },
+    "storage": [
+      "hostPath /opt/petclinic-observability/state/kafka-20261012T010132/data"
+    ],
     "entries": [
       "kafka:9092"
     ],
     "purpose": "日志和发布事件 broker",
-    "state": "运行，功能验收待补",
-    "evidence": "workloads.json + pods.json；安装/就绪证据不等同功能验收",
-    "next": "按本职功能取得输入/输出证据；0副本保持预算准入"
+    "state": "运行且已验证",
+    "evidence": "kafka-preservation-actual、kafka-audit、flink-actual-4",
+    "next": "维持当前本职流程；证据有效范围见交付记录",
+    "actualUse": "发布事件/Jenkins/Flink日志实际消费，持久化前后offset一致"
   },
   {
     "component": "kafka-ui",
@@ -1438,6 +1959,11 @@
     ],
     "nodes": [],
     "architectures": [],
+    "imageArchitectures": {
+      "provectuslabs/kafka-ui:v0.7.2": {
+        "architecture": "未在本地运行时缓存中验证"
+      }
+    },
     "desired": 0,
     "ready": 0,
     "resources": [
@@ -1453,6 +1979,7 @@
         }
       }
     ],
+    "nodeSelector": {},
     "storage": [],
     "entries": [
       "kafka-ui:8080",
@@ -1460,8 +1987,9 @@
     ],
     "purpose": "Kafka 管理 UI，按需关闭",
     "state": "已安装但按需关闭",
-    "evidence": "workloads.json + pods.json；安装/就绪证据不等同功能验收",
-    "next": "按本职功能取得输入/输出证据；0副本保持预算准入"
+    "evidence": "kafka-preservation-actual、kafka-audit、flink-actual-4",
+    "next": "保持按需关闭；以新鲜资源采样准入，仅运行一个任务",
+    "actualUse": "发布事件/Jenkins/Flink日志实际消费，持久化前后offset一致"
   },
   {
     "component": "spark-operator-controller",
@@ -1469,10 +1997,15 @@
     "kind": "Deployment",
     "source": "Helm spark-operator spark-operator-2.5.0",
     "images": [
-      "ghcr.io/kubeflow/spark-operator/controller:2.5.1"
+      "127.0.0.1:30050/platform-upgrade/kubeflow-spark-operator-controller@sha256:68f4d74790b9a3a06f6b1ac5a5414c4b0b25c68b20ea68e8f8d87132e3a398f5"
     ],
     "nodes": [],
     "architectures": [],
+    "imageArchitectures": {
+      "127.0.0.1:30050/platform-upgrade/kubeflow-spark-operator-controller@sha256:68f4d74790b9a3a06f6b1ac5a5414c4b0b25c68b20ea68e8f8d87132e3a398f5": {
+        "architecture": "未在本地运行时缓存中验证"
+      }
+    },
     "desired": 0,
     "ready": 0,
     "resources": [
@@ -1480,24 +2013,26 @@
         "container": "spark-operator-controller",
         "resources": {
           "limits": {
-            "cpu": "200m",
-            "memory": "256Mi"
+            "cpu": "1",
+            "memory": "1Gi"
           },
           "requests": {
-            "cpu": "20m",
-            "memory": "64Mi"
+            "cpu": "100m",
+            "memory": "1Gi"
           }
         }
       }
     ],
+    "nodeSelector": {},
     "storage": [
       "emptyDir"
     ],
     "entries": [],
-    "purpose": "按需 SparkApplication 管理，当前无任务",
+    "purpose": "真实 SparkApplication 管理；4.0.1 快照统计完成后关闭",
     "state": "已安装但按需关闭",
-    "evidence": "workloads.json + pods.json；安装/就绪证据不等同功能验收",
-    "next": "按本职功能取得输入/输出证据；0副本保持预算准入"
+    "evidence": "spark-profile-actual/result.json",
+    "next": "保持按需关闭；以新鲜资源采样准入，仅运行一个任务",
+    "actualUse": "Spark4.0.1实际Job 0–10，年度923，driver/executor内核峰值"
   },
   {
     "component": "spark-operator-webhook",
@@ -1505,10 +2040,15 @@
     "kind": "Deployment",
     "source": "Helm spark-operator spark-operator-2.5.0",
     "images": [
-      "ghcr.io/kubeflow/spark-operator/controller:2.5.1"
+      "127.0.0.1:30050/platform-upgrade/kubeflow-spark-operator-controller@sha256:68f4d74790b9a3a06f6b1ac5a5414c4b0b25c68b20ea68e8f8d87132e3a398f5"
     ],
     "nodes": [],
     "architectures": [],
+    "imageArchitectures": {
+      "127.0.0.1:30050/platform-upgrade/kubeflow-spark-operator-controller@sha256:68f4d74790b9a3a06f6b1ac5a5414c4b0b25c68b20ea68e8f8d87132e3a398f5": {
+        "architecture": "未在本地运行时缓存中验证"
+      }
+    },
     "desired": 0,
     "ready": 0,
     "resources": [
@@ -1516,26 +2056,28 @@
         "container": "spark-operator-webhook",
         "resources": {
           "limits": {
-            "cpu": "500m",
+            "cpu": "1",
             "memory": "256Mi"
           },
           "requests": {
-            "cpu": "50m",
-            "memory": "64Mi"
+            "cpu": "100m",
+            "memory": "256Mi"
           }
         }
       }
     ],
+    "nodeSelector": {},
     "storage": [
       "emptyDir"
     ],
     "entries": [
       "spark-operator-webhook-svc:9443"
     ],
-    "purpose": "按需 SparkApplication 管理，当前无任务",
+    "purpose": "真实 SparkApplication 管理；4.0.1 快照统计完成后关闭",
     "state": "已安装但按需关闭",
-    "evidence": "workloads.json + pods.json；安装/就绪证据不等同功能验收",
-    "next": "按本职功能取得输入/输出证据；0副本保持预算准入"
+    "evidence": "spark-profile-actual/result.json",
+    "next": "保持按需关闭；以新鲜资源采样准入，仅运行一个任务",
+    "actualUse": "Spark4.0.1实际Job 0–10，年度923，driver/executor内核峰值"
   },
   {
     "component": "mysql",
@@ -1551,6 +2093,13 @@
     "architectures": [
       "arm64"
     ],
+    "imageArchitectures": {
+      "127.0.0.1:30050/platform-upgrade/mysql:8.4.10-arm64": {
+        "architecture": "arm64",
+        "os": "linux",
+        "evidence": "本地 containerd OCI config"
+      }
+    },
     "desired": 1,
     "ready": 1,
     "resources": [
@@ -1559,6 +2108,7 @@
         "resources": {}
       }
     ],
+    "nodeSelector": {},
     "storage": [
       "hostPath /home/zhang/devops-stack/mysql/data"
     ],
@@ -1566,9 +2116,10 @@
       "mysql:3306"
     ],
     "purpose": "已有 MySQL 应用数据库",
-    "state": "运行，功能验收待补",
-    "evidence": "workloads.json + pods.json；安装/就绪证据不等同功能验收",
-    "next": "按本职功能取得输入/输出证据；0副本保持预算准入"
+    "state": "运行且已验证",
+    "evidence": "support-components-actual.json、Superset看板",
+    "next": "维持当前本职流程；证据有效范围见交付记录",
+    "actualUse": "8.4.10实际SELECT VERSION(),1；Superset元数据库正常"
   },
   {
     "component": "mysql-replica",
@@ -1584,6 +2135,13 @@
     "architectures": [
       "arm64"
     ],
+    "imageArchitectures": {
+      "127.0.0.1:30050/platform-upgrade/mysql:8.4.10-arm64": {
+        "architecture": "arm64",
+        "os": "linux",
+        "evidence": "本地 containerd OCI config"
+      }
+    },
     "desired": 1,
     "ready": 1,
     "resources": [
@@ -1601,6 +2159,9 @@
         }
       }
     ],
+    "nodeSelector": {
+      "kubernetes.io/hostname": "devops"
+    },
     "storage": [
       "hostPath /home/zhang/devops-stack/mysql-replica/data"
     ],
@@ -1608,9 +2169,10 @@
       "mysql-replica:3306"
     ],
     "purpose": "MySQL 复制；不默认作分析读取",
-    "state": "运行，功能验收待补",
-    "evidence": "workloads.json + pods.json；安装/就绪证据不等同功能验收",
-    "next": "按本职功能取得输入/输出证据；0副本保持预算准入"
+    "state": "运行且已验证",
+    "evidence": "mysql-replica-health.json",
+    "next": "维持当前本职流程；证据有效范围见交付记录",
+    "actualUse": "复制IO/SQL Yes，延迟0s，错误号0；不作分析源"
   },
   {
     "component": "postgresql",
@@ -1626,6 +2188,13 @@
     "architectures": [
       "arm64"
     ],
+    "imageArchitectures": {
+      "127.0.0.1:30050/platform-upgrade/postgres:18.4-alpine3.24-arm64": {
+        "architecture": "arm64",
+        "os": "linux",
+        "evidence": "本地 containerd OCI config"
+      }
+    },
     "desired": 1,
     "ready": 1,
     "resources": [
@@ -1634,6 +2203,7 @@
         "resources": {}
       }
     ],
+    "nodeSelector": {},
     "storage": [
       "PVC postgresql-data"
     ],
@@ -1641,9 +2211,10 @@
       "postgresql:5432"
     ],
     "purpose": "Petclinic 共享持久化数据库及隔离分析 schema",
-    "state": "运行，功能验收待补",
-    "evidence": "workloads.json + pods.json；安装/就绪证据不等同功能验收",
-    "next": "按本职功能取得输入/输出证据；0副本保持预算准入"
+    "state": "运行且已验证",
+    "evidence": "analytics、airflow-actual-3、业务发布验收",
+    "next": "维持当前本职流程；证据有效范围见交付记录",
+    "actualUse": "实际业务SQL与事务分析发布，1200唯一事实/923年内；最小汇总读取权限"
   },
   {
     "component": "flaresolverr",
@@ -1659,6 +2230,13 @@
     "architectures": [
       "arm64"
     ],
+    "imageArchitectures": {
+      "127.0.0.1:30050/platform-upgrade/flaresolverr:v3.5.0-arm64": {
+        "architecture": "arm64",
+        "os": "linux",
+        "evidence": "本地 containerd OCI config"
+      }
+    },
     "desired": 1,
     "ready": 1,
     "resources": [
@@ -1676,12 +2254,18 @@
         }
       }
     ],
+    "nodeSelector": {
+      "kubernetes.io/arch": "arm64",
+      "kubernetes.io/hostname": "devops"
+    },
     "storage": [],
     "entries": [],
     "purpose": "已有独立浏览器挑战服务",
-    "state": "运行，功能验收待补",
-    "evidence": "workloads.json + pods.json；安装/就绪证据不等同功能验收",
-    "next": "按本职功能取得输入/输出证据；0副本保持预算准入"
+    "state": "运行且已验证",
+    "evidence": "flaresolverr-actual/result.json；768Mi准入",
+    "next": "本地页面取回已验证；外部挑战未验收",
+    "actualUse": "3.5.0实际浏览器取回本地Cook页面200/3680字节/7.61s",
+    "limitations": "本地页面取回已验证；外部挑战未验收"
   },
   {
     "component": "github-webhook-relay",
@@ -1697,6 +2281,13 @@
     "architectures": [
       "arm64"
     ],
+    "imageArchitectures": {
+      "127.0.0.1:30050/platform-upgrade/node:24.18.0-alpine3.23-arm64": {
+        "architecture": "arm64",
+        "os": "linux",
+        "evidence": "本地 containerd OCI config"
+      }
+    },
     "desired": 1,
     "ready": 1,
     "resources": [
@@ -1713,14 +2304,16 @@
         }
       }
     ],
+    "nodeSelector": {},
     "storage": [],
     "entries": [
       "github-webhook-relay:8080"
     ],
     "purpose": "GitHub/Webhook 转发；只做有界 HTTP 访问",
-    "state": "运行，功能验收待补",
-    "evidence": "workloads.json + pods.json；安装/就绪证据不等同功能验收",
-    "next": "按本职功能取得输入/输出证据；0副本保持预算准入"
+    "state": "运行且已验证",
+    "evidence": "support-http-metrics-actual.json；Jenkins归档/API验证",
+    "next": "维持当前本职流程；证据有效范围见交付记录",
+    "actualUse": "健康API及实际有界Jenkins认证查询"
   },
   {
     "component": "gitlab",
@@ -1736,6 +2329,13 @@
     "architectures": [
       "arm64"
     ],
+    "imageArchitectures": {
+      "127.0.0.1:30050/platform-upgrade/gitlab-ce:19.2.0-ce.0-arm64": {
+        "architecture": "arm64",
+        "os": "linux",
+        "evidence": "本地 containerd OCI config"
+      }
+    },
     "desired": 1,
     "ready": 1,
     "resources": [
@@ -1752,6 +2352,7 @@
         }
       }
     ],
+    "nodeSelector": {},
     "storage": [
       "PVC gitlab-pvc"
     ],
@@ -1760,9 +2361,10 @@
       "gitlab.devops.local"
     ],
     "purpose": "私有源码与审计",
-    "state": "运行，功能验收待补",
-    "evidence": "workloads.json + pods.json；安装/就绪证据不等同功能验收",
-    "next": "按本职功能取得输入/输出证据；0副本保持预算准入"
+    "state": "运行且已验证",
+    "evidence": "private-push-*.json、Runner及Jenkins归档",
+    "next": "维持当前本职流程；证据有效范围见交付记录",
+    "actualUse": "私有源码正常推送、真实Webhook及原生审计"
   },
   {
     "component": "gitlab-runner",
@@ -1778,20 +2380,38 @@
     "architectures": [
       "arm64"
     ],
+    "imageArchitectures": {
+      "127.0.0.1:30050/platform-upgrade/gitlab-runner:alpine-v19.2.0-arm64": {
+        "architecture": "arm64",
+        "os": "linux",
+        "evidence": "本地 containerd OCI config"
+      }
+    },
     "desired": 1,
     "ready": 1,
     "resources": [
       {
         "container": "gitlab-runner",
-        "resources": {}
+        "resources": {
+          "limits": {
+            "cpu": "500m",
+            "memory": "128Mi"
+          },
+          "requests": {
+            "cpu": "100m",
+            "memory": "128Mi"
+          }
+        }
       }
     ],
+    "nodeSelector": {},
     "storage": [],
     "entries": [],
     "purpose": "源码审计；不部署 Petclinic",
-    "state": "运行，功能验收待补",
-    "evidence": "workloads.json + pods.json；安装/就绪证据不等同功能验收",
-    "next": "按本职功能取得输入/输出证据；0副本保持预算准入"
+    "state": "运行且已验证",
+    "evidence": "runner-security-641.log；gitlab-security-runner-jobs.json",
+    "next": "维持当前本职流程；证据有效范围见交付记录",
+    "actualUse": "19.2.0原生helper审计641成功13.09s，128+128Mi任务预算"
   },
   {
     "component": "jenkins",
@@ -1807,6 +2427,13 @@
     "architectures": [
       "arm64"
     ],
+    "imageArchitectures": {
+      "127.0.0.1:30050/jenkins-custom:2.568.1-lts-atomic-node20-v1": {
+        "architecture": "arm64",
+        "os": "linux",
+        "evidence": "本地 containerd OCI config"
+      }
+    },
     "desired": 1,
     "ready": 1,
     "resources": [
@@ -1828,6 +2455,7 @@
         "resources": {}
       }
     ],
+    "nodeSelector": {},
     "storage": [
       "hostPath /usr/libexec/docker/cli-plugins/docker-compose",
       "hostPath /usr/share/zoneinfo/Asia/Shanghai",
@@ -1844,9 +2472,10 @@
       "jenkins.devops.local"
     ],
     "purpose": "测试/质量门/双架构构建与发布",
-    "state": "运行，功能验收待补",
-    "evidence": "workloads.json + pods.json；安装/就绪证据不等同功能验收",
-    "next": "按本职功能取得输入/输出证据；0副本保持预算准入"
+    "state": "运行且已验证",
+    "evidence": "真实Jenkins发布归档；失败构建保留且未部署",
+    "next": "维持当前本职流程；证据有效范围见交付记录",
+    "actualUse": "完整阶段、94项测试、质量门、镜像/GitOps/健康及Kafka事件归档"
   },
   {
     "component": "jenkins-build-log-filebeat-es",
@@ -1862,6 +2491,13 @@
     "architectures": [
       "arm64"
     ],
+    "imageArchitectures": {
+      "docker.elastic.co/beats/filebeat:9.4.4": {
+        "architecture": "arm64",
+        "os": "linux",
+        "evidence": "本地 containerd OCI config"
+      }
+    },
     "desired": 1,
     "ready": 1,
     "resources": [
@@ -1879,15 +2515,17 @@
         }
       }
     ],
+    "nodeSelector": {},
     "storage": [
       "PVC jenkins-pvc",
       "hostPath /opt/devops/filebeat-registry/jenkins-es"
     ],
     "entries": [],
     "purpose": "构建日志写入 Elasticsearch",
-    "state": "运行，功能验收待补",
-    "evidence": "workloads.json + pods.json；安装/就绪证据不等同功能验收",
-    "next": "按本职功能取得输入/输出证据；0副本保持预算准入"
+    "state": "运行且已验证",
+    "evidence": "构建日志索引、telemetry-actual",
+    "next": "维持当前本职流程；证据有效范围见交付记录",
+    "actualUse": "真实构建日志进入ES"
   },
   {
     "component": "jenkins-build-log-filebeat-kafka",
@@ -1903,6 +2541,13 @@
     "architectures": [
       "arm64"
     ],
+    "imageArchitectures": {
+      "docker.elastic.co/beats/filebeat:9.4.4": {
+        "architecture": "arm64",
+        "os": "linux",
+        "evidence": "本地 containerd OCI config"
+      }
+    },
     "desired": 1,
     "ready": 1,
     "resources": [
@@ -1920,15 +2565,17 @@
         }
       }
     ],
+    "nodeSelector": {},
     "storage": [
       "PVC jenkins-pvc",
       "hostPath /opt/devops/filebeat-registry/jenkins-kafka"
     ],
     "entries": [],
     "purpose": "构建日志写入 Kafka",
-    "state": "运行，功能验收待补",
-    "evidence": "workloads.json + pods.json；安装/就绪证据不等同功能验收",
-    "next": "按本职功能取得输入/输出证据；0副本保持预算准入"
+    "state": "运行且已验证",
+    "evidence": "kafka-audit",
+    "next": "维持当前本职流程；证据有效范围见交付记录",
+    "actualUse": "Jenkins日志真实生产并消费"
   },
   {
     "component": "local-registry",
@@ -1944,6 +2591,13 @@
     "architectures": [
       "arm64"
     ],
+    "imageArchitectures": {
+      "docker.io/goharbor/registry-photon:2.14.2": {
+        "architecture": "arm64",
+        "os": "linux",
+        "evidence": "本地 containerd OCI config"
+      }
+    },
     "desired": 1,
     "ready": 1,
     "resources": [
@@ -1960,6 +2614,7 @@
         }
       }
     ],
+    "nodeSelector": {},
     "storage": [
       "hostPath /home/zhang/devops-stack/ops-managed/registry-data"
     ],
@@ -1967,9 +2622,10 @@
       "local-registry:5000"
     ],
     "purpose": "既有镜像入口/构建缓存",
-    "state": "运行，功能验收待补",
-    "evidence": "workloads.json + pods.json；安装/就绪证据不等同功能验收",
-    "next": "按本职功能取得输入/输出证据；0副本保持预算准入"
+    "state": "运行且已验证",
+    "evidence": "发布归档、runner-helper-repair-actual、spark-runtime-derived.json",
+    "next": "维持当前本职流程；证据有效范围见交付记录",
+    "actualUse": "原OCI层与摘要校验，双架构镜像及native helper实际目标拉取"
   },
   {
     "component": "portainer",
@@ -1985,6 +2641,13 @@
     "architectures": [
       "arm64"
     ],
+    "imageArchitectures": {
+      "harbor.devops.local/library/portainer-portainer-ce:2.39.5": {
+        "architecture": "arm64",
+        "os": "linux",
+        "evidence": "本地 containerd OCI config"
+      }
+    },
     "desired": 1,
     "ready": 1,
     "resources": [
@@ -2002,6 +2665,7 @@
         }
       }
     ],
+    "nodeSelector": {},
     "storage": [
       "hostPath /opt/devops/data/portainer"
     ],
@@ -2010,9 +2674,11 @@
       "portainer.devops.local"
     ],
     "purpose": "容器与集群管理 UI/API",
-    "state": "运行，功能验收待补",
-    "evidence": "workloads.json + pods.json；安装/就绪证据不等同功能验收",
-    "next": "按本职功能取得输入/输出证据；0副本保持预算准入"
+    "state": "运行且已验证",
+    "evidence": "support-http-metrics-actual.json",
+    "next": "已验证版本/状态API，登录后管理操作未验收",
+    "actualUse": "状态API200，实际2.39.5；登录后容器管理未验证",
+    "limitations": "已验证版本/状态API，登录后管理操作未验收"
   },
   {
     "component": "openclaw-controller",
@@ -2024,6 +2690,11 @@
     ],
     "nodes": [],
     "architectures": [],
+    "imageArchitectures": {
+      "127.0.0.1:30050/platform-upgrade/open-webui:v0.10.2-arm64": {
+        "architecture": "未在本地运行时缓存中验证"
+      }
+    },
     "desired": 0,
     "ready": 0,
     "resources": [
@@ -2041,6 +2712,7 @@
         }
       }
     ],
+    "nodeSelector": {},
     "storage": [
       "PVC pvc-openclaw-data"
     ],
@@ -2058,7 +2730,7 @@
     "kind": "Deployment",
     "source": "既有 Kubernetes 清单/运维部署",
     "images": [
-      "10.0.0.3:30050/petclinic/petclinic:0.9.0-ci-113"
+      "core.harbor.domain/petclinic/petclinic@sha256:b4106f65256a5c7164a9ccdc2e1696462ec18cc472da2ad71eae64dc5c08f533"
     ],
     "nodes": [
       "devops"
@@ -2066,6 +2738,11 @@
     "architectures": [
       "arm64"
     ],
+    "imageArchitectures": {
+      "core.harbor.domain/petclinic/petclinic@sha256:b4106f65256a5c7164a9ccdc2e1696462ec18cc472da2ad71eae64dc5c08f533": {
+        "architecture": "未验证"
+      }
+    },
     "desired": 3,
     "ready": 3,
     "resources": [
@@ -2083,15 +2760,20 @@
         }
       }
     ],
+    "nodeSelector": {
+      "kubernetes.io/hostname": "devops",
+      "kubernetes.io/os": "linux"
+    },
     "storage": [],
     "entries": [
       "petclinic:80",
       "petclinic.devops.local"
     ],
     "purpose": "主人/宠物/医生/就诊业务及统计读取",
-    "state": "运行，功能验收待补",
-    "evidence": "workloads.json + pods.json；安装/就绪证据不等同功能验收",
-    "next": "按本职功能取得输入/输出证据；0副本保持预算准入"
+    "state": "运行且已验证",
+    "evidence": "UPGRADE-20261011.md；发布归档、petclinic-insights-browser、telemetry-actual",
+    "next": "维持当前本职流程；证据有效范围见交付记录",
+    "actualUse": "业务统计、94项 CI、GitOps 发布/回滚恢复，指标/日志/trace"
   },
   {
     "component": "system-upgrade-controller",
@@ -2107,6 +2789,13 @@
     "architectures": [
       "arm64"
     ],
+    "imageArchitectures": {
+      "127.0.0.1:30050/platform-upgrade/system-upgrade-controller:v0.20.1-arm64": {
+        "architecture": "arm64",
+        "os": "linux",
+        "evidence": "本地 containerd OCI config"
+      }
+    },
     "desired": 1,
     "ready": 1,
     "resources": [
@@ -2115,6 +2804,7 @@
         "resources": {}
       }
     ],
+    "nodeSelector": {},
     "storage": [
       "hostPath /etc/ssl",
       "hostPath /etc/pki",
@@ -2123,9 +2813,10 @@
     ],
     "entries": [],
     "purpose": "升级计划控制器；无需为验收触发升级",
-    "state": "运行，功能验收待补",
-    "evidence": "workloads.json + pods.json；安装/就绪证据不等同功能验收",
-    "next": "按本职功能取得输入/输出证据；0副本保持预算准入"
+    "state": "运行且已验证",
+    "evidence": "support-components-actual.json",
+    "next": "维持当前本职流程；证据有效范围见交付记录",
+    "actualUse": "2个现有Plan Complete/Validated及当前k3s版本；未触发无必要升级"
   },
   {
     "component": "zabbix-server",
@@ -2137,6 +2828,11 @@
     ],
     "nodes": [],
     "architectures": [],
+    "imageArchitectures": {
+      "127.0.0.1:30050/platform-upgrade/zabbix-server-mysql:ubuntu-7.4.12": {
+        "architecture": "未在本地运行时缓存中验证"
+      }
+    },
     "desired": 0,
     "ready": 0,
     "resources": [
@@ -2158,6 +2854,7 @@
         "resources": {}
       }
     ],
+    "nodeSelector": {},
     "storage": [
       "hostPath /home/zhang/devops-stack/zabbix/zbx_env/usr/lib/zabbix/alertscripts"
     ],
@@ -2179,6 +2876,11 @@
     ],
     "nodes": [],
     "architectures": [],
+    "imageArchitectures": {
+      "127.0.0.1:30050/platform-upgrade/zabbix-web-nginx-mysql:ubuntu-7.4.12": {
+        "architecture": "未在本地运行时缓存中验证"
+      }
+    },
     "desired": 0,
     "ready": 0,
     "resources": [
@@ -2200,6 +2902,7 @@
         "resources": {}
       }
     ],
+    "nodeSelector": {},
     "storage": [],
     "entries": [
       "zabbix-web:8080",
@@ -2224,6 +2927,13 @@
     "architectures": [
       "arm64"
     ],
+    "imageArchitectures": {
+      "127.0.0.1:30050/platform-upgrade/argocd:v3.4.5-arm64": {
+        "architecture": "arm64",
+        "os": "linux",
+        "evidence": "本地 containerd OCI config"
+      }
+    },
     "desired": 1,
     "ready": 1,
     "resources": [
@@ -2241,6 +2951,9 @@
         }
       }
     ],
+    "nodeSelector": {
+      "kubernetes.io/os": "linux"
+    },
     "storage": [
       "emptyDir",
       "emptyDir"
@@ -2249,58 +2962,84 @@
       "argocd-metrics:8082"
     ],
     "purpose": "GitOps 比较与同步",
-    "state": "运行，功能验收待补",
-    "evidence": "workloads.json + pods.json；安装/就绪证据不等同功能验收",
-    "next": "按本职功能取得输入/输出证据；0副本保持预算准入"
+    "state": "运行且已验证",
+    "evidence": "gitops-rehearsal/results-live-witness.json、Jenkins发布归档",
+    "next": "维持当前本职流程；证据有效范围见交付记录",
+    "actualUse": "正常发布/GitOps回滚/恢复实际同步健康"
   },
   {
     "component": "airflow-triggerer",
     "namespace": "data-infra",
     "kind": "StatefulSet",
-    "source": "Helm airflow airflow-1.20.0",
+    "source": "既有 Kubernetes 清单/运维部署",
     "images": [
       "apache/airflow:3.3.0",
       "apache/airflow:3.3.0"
     ],
-    "nodes": [
-      "devops"
-    ],
-    "architectures": [
-      "arm64"
-    ],
-    "desired": 1,
-    "ready": 1,
+    "nodes": [],
+    "architectures": [],
+    "imageArchitectures": {
+      "apache/airflow:3.3.0": {
+        "architecture": "未在本地运行时缓存中验证"
+      }
+    },
+    "desired": 0,
+    "ready": 0,
     "resources": [
       {
         "container": "triggerer",
         "resources": {
           "limits": {
             "cpu": "500m",
-            "memory": "768Mi"
+            "memory": "512Mi"
           },
           "requests": {
-            "cpu": "50m",
+            "cpu": "100m",
             "memory": "256Mi"
           }
         }
       },
       {
         "container": "triggerer-log-groomer",
-        "resources": {}
+        "resources": {
+          "limits": {
+            "cpu": "250m",
+            "memory": "64Mi"
+          },
+          "requests": {
+            "cpu": "20m",
+            "memory": "32Mi"
+          }
+        }
       },
       {
         "container": "wait-for-airflow-migrations",
-        "resources": {}
+        "resources": {
+          "limits": {
+            "cpu": "300m",
+            "memory": "256Mi"
+          },
+          "requests": {
+            "cpu": "50m",
+            "memory": "128Mi"
+          }
+        }
       }
     ],
-    "storage": [],
+    "nodeSelector": {
+      "kubernetes.io/hostname": "devops"
+    },
+    "storage": [
+      "PVC 模板 logs 默认 100Gi"
+    ],
     "entries": [
       "airflow-triggerer:8794"
     ],
-    "purpose": "有界增量统计编排；当前仅 triggerer，核心尚关闭",
-    "state": "运行，功能验收待补",
-    "evidence": "workloads.json + pods.json；安装/就绪证据不等同功能验收",
-    "next": "按本职功能取得输入/输出证据；0副本保持预算准入"
+    "purpose": "真实增量统计/质量/重试/超时编排；验收后全部计算关闭",
+    "state": "已安装但按需关闭",
+    "evidence": "airflow-actual-3/dag-history.json、database-reconciliation.txt",
+    "next": "保持按需关闭；以新鲜资源采样准入，仅运行一个任务",
+    "actualUse": "4次真实 DagRun，重试及90s超时重试，幂等结果"
   },
   {
     "component": "superset-redis-master",
@@ -2316,6 +3055,13 @@
     "architectures": [
       "arm64"
     ],
+    "imageArchitectures": {
+      "192.168.1.58:30050/library/redis:7.0": {
+        "architecture": "arm64",
+        "os": "linux",
+        "evidence": "本地 containerd OCI config"
+      }
+    },
     "desired": 1,
     "ready": 1,
     "resources": [
@@ -2331,6 +3077,7 @@
         }
       }
     ],
+    "nodeSelector": {},
     "storage": [
       "emptyDir",
       "emptyDir",
@@ -2341,9 +3088,10 @@
       "superset-redis-master:6379"
     ],
     "purpose": "统计查询与看板",
-    "state": "运行，功能验收待补",
-    "evidence": "workloads.json + pods.json；安装/就绪证据不等同功能验收",
-    "next": "按本职功能取得输入/输出证据；0副本保持预算准入"
+    "state": "运行且已验证",
+    "evidence": "Superset 真实功能链路",
+    "next": "维持当前本职流程；证据有效范围见交付记录",
+    "actualUse": "既有看板依赖；实际登录及图表请求完成"
   },
   {
     "component": "harbor-database",
@@ -2359,6 +3107,13 @@
     "architectures": [
       "arm64"
     ],
+    "imageArchitectures": {
+      "127.0.0.1:30050/platform-repair/postgres:15-arm64": {
+        "architecture": "arm64",
+        "os": "linux",
+        "evidence": "本地 containerd OCI config"
+      }
+    },
     "desired": 1,
     "ready": 1,
     "resources": [
@@ -2371,17 +3126,23 @@
         "resources": {}
       }
     ],
+    "nodeSelector": {
+      "kubernetes.io/arch": "arm64",
+      "kubernetes.io/hostname": "devops"
+    },
     "storage": [
       "PVC harbor-database-pvc",
-      "emptyDir"
+      "emptyDir",
+      "PVC 模板 database-data 默认 1Gi"
     ],
     "entries": [
       "harbor-database:5432"
     ],
     "purpose": "私有镜像、凭据、仓库持久化及扫描",
-    "state": "运行，功能验收待补",
-    "evidence": "workloads.json + pods.json；安装/就绪证据不等同功能验收",
-    "next": "按本职功能取得输入/输出证据；0副本保持预算准入"
+    "state": "运行且已验证",
+    "evidence": "HARBOR-REPAIR-20261011.md；build-127及补丁发布归档",
+    "next": "维持当前本职流程；证据有效范围见交付记录",
+    "actualUse": "Redis精确修复、实际认证/镜像推送/双架构扫描/目标pull"
   },
   {
     "component": "harbor-trivy",
@@ -2389,7 +3150,7 @@
     "kind": "StatefulSet",
     "source": "Helm harbor harbor-1.18.3",
     "images": [
-      "goharbor/trivy-adapter-photon:v2.14.3"
+      "127.0.0.1:30050/goharbor/trivy-adapter-photon@sha256:5c6f7162804cd94d41672a694579f136ccc9730d024dda9ad24e0f42bdae6f36"
     ],
     "nodes": [
       "devops"
@@ -2397,6 +3158,13 @@
     "architectures": [
       "arm64"
     ],
+    "imageArchitectures": {
+      "127.0.0.1:30050/goharbor/trivy-adapter-photon@sha256:5c6f7162804cd94d41672a694579f136ccc9730d024dda9ad24e0f42bdae6f36": {
+        "architecture": "amd64",
+        "os": "linux",
+        "evidence": "本地 containerd OCI config"
+      }
+    },
     "desired": 1,
     "ready": 1,
     "resources": [
@@ -2414,14 +3182,20 @@
         }
       }
     ],
-    "storage": [],
+    "nodeSelector": {
+      "kubernetes.io/hostname": "devops"
+    },
+    "storage": [
+      "PVC 模板 data 默认 5Gi"
+    ],
     "entries": [
       "harbor-trivy:8080"
     ],
     "purpose": "私有镜像、凭据、仓库持久化及扫描",
-    "state": "运行，功能验收待补",
-    "evidence": "workloads.json + pods.json；安装/就绪证据不等同功能验收",
-    "next": "按本职功能取得输入/输出证据；0副本保持预算准入"
+    "state": "运行且已验证",
+    "evidence": "HARBOR-REPAIR-20261011.md；build-127及补丁发布归档",
+    "next": "维持当前本职流程；证据有效范围见交付记录",
+    "actualUse": "Redis精确修复、实际认证/镜像推送/双架构扫描/目标pull"
   },
   {
     "component": "loki",
@@ -2438,6 +3212,18 @@
     "architectures": [
       "arm64"
     ],
+    "imageArchitectures": {
+      "127.0.0.1:30050/platform-upgrade/loki:3.7.4-arm64": {
+        "architecture": "arm64",
+        "os": "linux",
+        "evidence": "本地 containerd OCI config"
+      },
+      "127.0.0.1:30050/platform-upgrade/k8s-sidecar:2.8.1-arm64": {
+        "architecture": "arm64",
+        "os": "linux",
+        "evidence": "本地 containerd OCI config"
+      }
+    },
     "desired": 1,
     "ready": 1,
     "resources": [
@@ -2459,6 +3245,7 @@
         "resources": {}
       }
     ],
+    "nodeSelector": {},
     "storage": [
       "emptyDir",
       "emptyDir"
@@ -2469,9 +3256,10 @@
       "loki-memberlist:7946"
     ],
     "purpose": "结构化日志存储/查询",
-    "state": "运行，功能验收待补",
-    "evidence": "workloads.json + pods.json；安装/就绪证据不等同功能验收",
-    "next": "按本职功能取得输入/输出证据；0副本保持预算准入"
+    "state": "运行且已验证",
+    "evidence": "telemetry-actual/loki-trace-correlation.json",
+    "next": "维持当前本职流程；证据有效范围见交付记录",
+    "actualUse": "实际日志查询及trace关联；未配置自动retention"
   },
   {
     "component": "prometheus-kube-stack-kube-prometheus-prometheus",
@@ -2488,6 +3276,18 @@
     "architectures": [
       "arm64"
     ],
+    "imageArchitectures": {
+      "127.0.0.1:30050/platform-upgrade/prometheus:v3.13.1-arm64": {
+        "architecture": "arm64",
+        "os": "linux",
+        "evidence": "本地 containerd OCI config"
+      },
+      "127.0.0.1:30050/platform-upgrade/prometheus-config-reloader:v0.92.1-arm64": {
+        "architecture": "arm64",
+        "os": "linux",
+        "evidence": "本地 containerd OCI config"
+      }
+    },
     "desired": 1,
     "ready": 1,
     "resources": [
@@ -2508,6 +3308,7 @@
         "resources": {}
       }
     ],
+    "nodeSelector": {},
     "storage": [
       "emptyDir",
       "emptyDir"
@@ -2518,9 +3319,10 @@
       "prometheus.devops.local"
     ],
     "purpose": "指标采集、历史与 PromQL",
-    "state": "运行，功能验收待补",
-    "evidence": "workloads.json + pods.json；安装/就绪证据不等同功能验收",
-    "next": "按本职功能取得输入/输出证据；0副本保持预算准入"
+    "state": "运行且已验证",
+    "evidence": "telemetry-actual；资源采样",
+    "next": "维持当前本职流程；证据有效范围见交付记录",
+    "actualUse": "真实业务/节点/任务指标查询和告警评估"
   },
   {
     "component": "sonarqube-sonarqube",
@@ -2536,6 +3338,13 @@
     "architectures": [
       "arm64"
     ],
+    "imageArchitectures": {
+      "sonarqube:26.3.0.120487-community": {
+        "architecture": "arm64",
+        "os": "linux",
+        "evidence": "本地 containerd OCI config"
+      }
+    },
     "desired": 1,
     "ready": 1,
     "resources": [
@@ -2563,6 +3372,7 @@
         "resources": {}
       }
     ],
+    "nodeSelector": {},
     "storage": [
       "PVC sonarqube-data",
       "emptyDir",
@@ -2574,9 +3384,10 @@
       "sonarqube.devops.local"
     ],
     "purpose": "质量分析及门禁",
-    "state": "运行，功能验收待补",
-    "evidence": "workloads.json + pods.json；安装/就绪证据不等同功能验收",
-    "next": "按本职功能取得输入/输出证据；0副本保持预算准入"
+    "state": "运行且已验证",
+    "evidence": "sonar-findings-131.json及成功发布",
+    "next": "维持当前本职流程；证据有效范围见交付记录",
+    "actualUse": "真实源码分析和质量门，新代码覆盖率92.1%；不绕过门禁"
   },
   {
     "component": "filebeat",
@@ -2595,23 +3406,32 @@
       "amd64",
       "arm64"
     ],
-    "desired": 3,
-    "ready": 3,
+    "imageArchitectures": {
+      "docker.elastic.co/beats/filebeat:9.4.4": {
+        "architecture": "arm64",
+        "os": "linux",
+        "evidence": "本地 containerd OCI config"
+      }
+    },
+    "desired": 2,
+    "ready": 2,
     "resources": [
       {
         "container": "filebeat",
         "resources": {}
       }
     ],
+    "nodeSelector": {},
     "storage": [
       "hostPath /var/log/pods",
       "hostPath /etc/localtime"
     ],
     "entries": [],
     "purpose": "Kubernetes 日志采集到 Elasticsearch",
-    "state": "运行，功能验收待补",
-    "evidence": "workloads.json + pods.json；安装/就绪证据不等同功能验收",
-    "next": "按本职功能取得输入/输出证据；0副本保持预算准入"
+    "state": "运行且已验证",
+    "evidence": "telemetry-actual/kibana-real-search.json、trace关联",
+    "next": "维持当前本职流程；证据有效范围见交付记录",
+    "actualUse": "真实结构化业务日志进入正确ES索引"
   },
   {
     "component": "svclb-traefik-3eaada12",
@@ -2628,6 +3448,13 @@
     "architectures": [
       "arm64"
     ],
+    "imageArchitectures": {
+      "rancher/klipper-lb:v0.4.17": {
+        "architecture": "arm64",
+        "os": "linux",
+        "evidence": "本地 containerd OCI config"
+      }
+    },
     "desired": 1,
     "ready": 1,
     "resources": [
@@ -2640,12 +3467,14 @@
         "resources": {}
       }
     ],
+    "nodeSelector": {},
     "storage": [],
     "entries": [],
     "purpose": "Traefik ServiceLB 入口",
-    "state": "运行，功能验收待补",
-    "evidence": "workloads.json + pods.json；安装/就绪证据不等同功能验收",
-    "next": "按本职功能取得输入/输出证据；0副本保持预算准入"
+    "state": "运行且已验证",
+    "evidence": "业务/Cook回归及Hello路由修复",
+    "next": "维持当前本职流程；证据有效范围见交付记录",
+    "actualUse": "实际主机Ingress业务请求到达Traefik"
   },
   {
     "component": "alloy",
@@ -2665,8 +3494,20 @@
       "amd64",
       "arm64"
     ],
-    "desired": 3,
-    "ready": 3,
+    "imageArchitectures": {
+      "docker.io/grafana/alloy:v1.18.1": {
+        "architecture": "arm64",
+        "os": "linux",
+        "evidence": "本地 containerd OCI config"
+      },
+      "quay.io/prometheus-operator/prometheus-config-reloader:v0.91.0@sha256:7d9e4eea5f1139e602508871f422b0116c60e87c662f3dcd234d5ab60cd0d8c1": {
+        "architecture": "arm64",
+        "os": "linux",
+        "evidence": "本地 containerd OCI config"
+      }
+    },
+    "desired": 2,
+    "ready": 2,
     "resources": [
       {
         "container": "alloy",
@@ -2682,14 +3523,16 @@
         }
       }
     ],
+    "nodeSelector": {},
     "storage": [],
     "entries": [
       "alloy:12345"
     ],
     "purpose": "结构化 Kubernetes 日志至 Loki",
-    "state": "运行，功能验收待补",
-    "evidence": "workloads.json + pods.json；安装/就绪证据不等同功能验收",
-    "next": "按本职功能取得输入/输出证据；0副本保持预算准入"
+    "state": "运行且已验证",
+    "evidence": "telemetry-actual/loki-trace-correlation.json",
+    "next": "维持当前本职流程；证据有效范围见交付记录",
+    "actualUse": "实际同一trace日志进入Loki"
   },
   {
     "component": "kube-stack-prometheus-node-exporter",
@@ -2708,14 +3551,24 @@
       "amd64",
       "arm64"
     ],
+    "imageArchitectures": {
+      "quay.io/prometheus/node-exporter:v1.12.1": {
+        "architecture": "arm64",
+        "os": "linux",
+        "evidence": "本地 containerd OCI config"
+      }
+    },
     "desired": 3,
-    "ready": 3,
+    "ready": 2,
     "resources": [
       {
         "container": "node-exporter",
         "resources": {}
       }
     ],
+    "nodeSelector": {
+      "kubernetes.io/os": "linux"
+    },
     "storage": [
       "hostPath /proc",
       "hostPath /sys",
@@ -2725,9 +3578,10 @@
       "kube-stack-prometheus-node-exporter:9100"
     ],
     "purpose": "CPU/内存/磁盘/压力节点指标",
-    "state": "运行，功能验收待补",
-    "evidence": "workloads.json + pods.json；安装/就绪证据不等同功能验收",
-    "next": "按本职功能取得输入/输出证据；0副本保持预算准入"
+    "state": "运行异常",
+    "evidence": "support-http-metrics-actual.json、资源采样",
+    "next": "维持当前本职流程；证据有效范围见交付记录",
+    "actualUse": "3节点实际MemAvailable时间序列"
   },
   {
     "component": "filebeat-kafka",
@@ -2746,24 +3600,33 @@
       "amd64",
       "arm64"
     ],
-    "desired": 3,
-    "ready": 3,
+    "imageArchitectures": {
+      "docker.elastic.co/beats/filebeat:9.4.4": {
+        "architecture": "arm64",
+        "os": "linux",
+        "evidence": "本地 containerd OCI config"
+      }
+    },
+    "desired": 2,
+    "ready": 2,
     "resources": [
       {
         "container": "filebeat",
         "resources": {}
       }
     ],
+    "nodeSelector": {},
     "storage": [
       "hostPath /var/log",
       "hostPath /var/log/pods",
       "hostPath /var/lib/docker/containers"
     ],
     "entries": [],
-    "purpose": "Kubernetes 日志写入 Kafka",
-    "state": "运行，功能验收待补",
-    "evidence": "workloads.json + pods.json；安装/就绪证据不等同功能验收",
-    "next": "按本职功能取得输入/输出证据；0副本保持预算准入"
+    "purpose": "Flink 文件日志写入 Kafka；其他应用不由此 DS 采集",
+    "state": "运行且已验证",
+    "evidence": "kafka-audit；正常关闭 Flink 时无新输入",
+    "next": "维持当前本职流程；证据有效范围见交付记录",
+    "actualUse": "真实 Flink 文件日志流和有界消费"
   },
   {
     "component": "airflow-db-upgrade-v2",
@@ -2775,6 +3638,11 @@
     ],
     "nodes": [],
     "architectures": [],
+    "imageArchitectures": {
+      "apache/airflow:3.1.8": {
+        "architecture": "未在本地运行时缓存中验证"
+      }
+    },
     "desired": 1,
     "ready": 0,
     "resources": [
@@ -2783,12 +3651,143 @@
         "resources": {}
       }
     ],
+    "nodeSelector": {},
     "storage": [],
     "entries": [],
-    "purpose": "有界增量统计编排；当前仅 triggerer，核心尚关闭",
+    "purpose": "真实增量统计/质量/重试/超时编排；验收后全部计算关闭",
     "state": "历史 Job 失败/未完成",
-    "evidence": "workloads.json + pods.json；安装/就绪证据不等同功能验收",
-    "next": "按本职功能取得输入/输出证据；0副本保持预算准入"
+    "evidence": "airflow-actual-3/dag-history.json、database-reconciliation.txt",
+    "next": "保留历史对象/备份；不为展示重新执行持久化修复",
+    "actualUse": "4次真实 DagRun，重试及90s超时重试，幂等结果"
+  },
+  {
+    "component": "petclinic-analysis-baseline-20261011",
+    "namespace": "data-infra",
+    "kind": "Job",
+    "source": "既有 Kubernetes 清单/运维部署",
+    "images": [
+      "apache/airflow:3.3.0"
+    ],
+    "nodes": [],
+    "architectures": [],
+    "imageArchitectures": {
+      "apache/airflow:3.3.0": {
+        "architecture": "未在本地运行时缓存中验证"
+      }
+    },
+    "desired": 1,
+    "ready": 0,
+    "resources": [
+      {
+        "container": "analysis",
+        "resources": {
+          "limits": {
+            "cpu": "500m",
+            "memory": "512Mi"
+          },
+          "requests": {
+            "cpu": "100m",
+            "memory": "256Mi"
+          }
+        }
+      }
+    ],
+    "nodeSelector": {
+      "kubernetes.io/hostname": "devops"
+    },
+    "storage": [],
+    "entries": [],
+    "purpose": "主人/宠物/医生/就诊业务及统计读取",
+    "state": "历史 Job 失败/未完成",
+    "evidence": "UPGRADE-20261011.md；发布归档、petclinic-insights-browser、telemetry-actual",
+    "next": "保留历史对象/备份；不为展示重新执行持久化修复",
+    "actualUse": "业务统计、94项 CI、GitOps 发布/回滚恢复，指标/日志/trace"
+  },
+  {
+    "component": "petclinic-analysis-success-20261011",
+    "namespace": "data-infra",
+    "kind": "Job",
+    "source": "既有 Kubernetes 清单/运维部署",
+    "images": [
+      "apache/airflow:3.3.0"
+    ],
+    "nodes": [],
+    "architectures": [],
+    "imageArchitectures": {
+      "apache/airflow:3.3.0": {
+        "architecture": "未在本地运行时缓存中验证"
+      }
+    },
+    "desired": 1,
+    "ready": 1,
+    "resources": [
+      {
+        "container": "analysis",
+        "resources": {
+          "limits": {
+            "cpu": "500m",
+            "memory": "512Mi"
+          },
+          "requests": {
+            "cpu": "100m",
+            "memory": "256Mi"
+          }
+        }
+      }
+    ],
+    "nodeSelector": {
+      "kubernetes.io/hostname": "devops"
+    },
+    "storage": [],
+    "entries": [],
+    "purpose": "主人/宠物/医生/就诊业务及统计读取",
+    "state": "历史 Job 成功",
+    "evidence": "UPGRADE-20261011.md；发布归档、petclinic-insights-browser、telemetry-actual",
+    "next": "保留历史对象/备份；不为展示重新执行持久化修复",
+    "actualUse": "业务统计、94项 CI、GitOps 发布/回滚恢复，指标/日志/trace"
+  },
+  {
+    "component": "petclinic-analysis-verified-20261011",
+    "namespace": "data-infra",
+    "kind": "Job",
+    "source": "既有 Kubernetes 清单/运维部署",
+    "images": [
+      "apache/airflow:3.3.0"
+    ],
+    "nodes": [],
+    "architectures": [],
+    "imageArchitectures": {
+      "apache/airflow:3.3.0": {
+        "architecture": "未在本地运行时缓存中验证"
+      }
+    },
+    "desired": 1,
+    "ready": 0,
+    "resources": [
+      {
+        "container": "analysis",
+        "resources": {
+          "limits": {
+            "cpu": "500m",
+            "memory": "512Mi"
+          },
+          "requests": {
+            "cpu": "100m",
+            "memory": "256Mi"
+          }
+        }
+      }
+    ],
+    "nodeSelector": {
+      "kubernetes.io/hostname": "devops"
+    },
+    "storage": [],
+    "entries": [],
+    "purpose": "主人/宠物/医生/就诊业务及统计读取",
+    "state": "历史 Job 失败/未完成",
+    "evidence": "UPGRADE-20261011.md；发布归档、petclinic-insights-browser、telemetry-actual",
+    "next": "保留历史对象/备份；不为展示重新执行持久化修复",
+    "actualUse": "业务统计、94项 CI、GitOps 发布/回滚恢复，指标/日志/trace"
   },
   {
     "component": "superset-init-db",
@@ -2800,6 +3799,11 @@
     ],
     "nodes": [],
     "architectures": [],
+    "imageArchitectures": {
+      "192.168.1.58:30050/library/superset:6.1.0-mysqlconnector-9.6.0": {
+        "architecture": "未在本地运行时缓存中验证"
+      }
+    },
     "desired": 1,
     "ready": 1,
     "resources": [
@@ -2812,12 +3816,155 @@
         "resources": {}
       }
     ],
+    "nodeSelector": {},
     "storage": [],
     "entries": [],
     "purpose": "统计查询与看板",
     "state": "历史 Job 成功",
-    "evidence": "workloads.json + pods.json；安装/就绪证据不等同功能验收",
-    "next": "按本职功能取得输入/输出证据；0副本保持预算准入"
+    "evidence": "superset-actual/browser-complete.json、dashboard.png",
+    "next": "保留历史对象/备份；不为展示重新执行持久化修复",
+    "actualUse": "4个实际图表 API及浏览器，923/350与时间/演示来源"
+  },
+  {
+    "component": "harbor-aof-check-20261011",
+    "namespace": "harbor",
+    "kind": "Job",
+    "source": "既有 Kubernetes 清单/运维部署",
+    "images": [
+      "127.0.0.1:30050/platform-upgrade/redis:8.8.1-alpine-arm64"
+    ],
+    "nodes": [],
+    "architectures": [],
+    "imageArchitectures": {
+      "127.0.0.1:30050/platform-upgrade/redis:8.8.1-alpine-arm64": {
+        "architecture": "arm64",
+        "os": "linux",
+        "evidence": "本地 containerd OCI config"
+      }
+    },
+    "desired": 1,
+    "ready": 0,
+    "resources": [
+      {
+        "container": "check",
+        "resources": {
+          "limits": {
+            "cpu": "500m",
+            "memory": "128Mi"
+          },
+          "requests": {
+            "cpu": "100m",
+            "memory": "64Mi"
+          }
+        }
+      }
+    ],
+    "nodeSelector": {
+      "kubernetes.io/hostname": "devops"
+    },
+    "storage": [
+      "hostPath /opt/petclinic-observability/backups/platform-20261011/redis-original"
+    ],
+    "entries": [],
+    "purpose": "私有镜像、凭据、仓库持久化及扫描",
+    "state": "历史 Job 失败/未完成",
+    "evidence": "HARBOR-REPAIR-20261011.md；build-127及补丁发布归档",
+    "next": "保留历史对象/备份；不为展示重新执行持久化修复",
+    "actualUse": "Redis精确修复、实际认证/镜像推送/双架构扫描/目标pull"
+  },
+  {
+    "component": "harbor-aof-rehearsal-20261011",
+    "namespace": "harbor",
+    "kind": "Job",
+    "source": "既有 Kubernetes 清单/运维部署",
+    "images": [
+      "127.0.0.1:30050/platform-upgrade/redis:8.8.1-alpine-arm64"
+    ],
+    "nodes": [],
+    "architectures": [],
+    "imageArchitectures": {
+      "127.0.0.1:30050/platform-upgrade/redis:8.8.1-alpine-arm64": {
+        "architecture": "arm64",
+        "os": "linux",
+        "evidence": "本地 containerd OCI config"
+      }
+    },
+    "desired": 1,
+    "ready": 0,
+    "resources": [
+      {
+        "container": "check",
+        "resources": {
+          "limits": {
+            "cpu": "500m",
+            "memory": "128Mi"
+          },
+          "requests": {
+            "cpu": "100m",
+            "memory": "64Mi"
+          }
+        }
+      }
+    ],
+    "nodeSelector": {
+      "kubernetes.io/hostname": "devops"
+    },
+    "storage": [
+      "hostPath /opt/petclinic-observability/backups/platform-20261011/redis-rehearsal"
+    ],
+    "entries": [],
+    "purpose": "私有镜像、凭据、仓库持久化及扫描",
+    "state": "历史 Job 失败/未完成",
+    "evidence": "HARBOR-REPAIR-20261011.md；build-127及补丁发布归档",
+    "next": "保留历史对象/备份；不为展示重新执行持久化修复",
+    "actualUse": "Redis精确修复、实际认证/镜像推送/双架构扫描/目标pull"
+  },
+  {
+    "component": "harbor-aof-repair-test-20261011",
+    "namespace": "harbor",
+    "kind": "Job",
+    "source": "既有 Kubernetes 清单/运维部署",
+    "images": [
+      "127.0.0.1:30050/platform-upgrade/redis:8.8.1-alpine-arm64"
+    ],
+    "nodes": [],
+    "architectures": [],
+    "imageArchitectures": {
+      "127.0.0.1:30050/platform-upgrade/redis:8.8.1-alpine-arm64": {
+        "architecture": "arm64",
+        "os": "linux",
+        "evidence": "本地 containerd OCI config"
+      }
+    },
+    "desired": 1,
+    "ready": 1,
+    "resources": [
+      {
+        "container": "check",
+        "resources": {
+          "limits": {
+            "cpu": "500m",
+            "memory": "256Mi"
+          },
+          "requests": {
+            "cpu": "100m",
+            "memory": "64Mi"
+          }
+        }
+      }
+    ],
+    "nodeSelector": {
+      "kubernetes.io/hostname": "devops"
+    },
+    "storage": [
+      "hostPath /opt/petclinic-observability/backups/platform-20261011/redis-rehearsal"
+    ],
+    "entries": [],
+    "purpose": "私有镜像、凭据、仓库持久化及扫描",
+    "state": "历史 Job 成功",
+    "evidence": "HARBOR-REPAIR-20261011.md；build-127及补丁发布归档",
+    "next": "保留历史对象/备份；不为展示重新执行持久化修复",
+    "actualUse": "Redis精确修复、实际认证/镜像推送/双架构扫描/目标pull"
   },
   {
     "component": "helm-install-traefik",
@@ -2829,6 +3976,11 @@
     ],
     "nodes": [],
     "architectures": [],
+    "imageArchitectures": {
+      "rancher/klipper-helm:v0.10.0-build20260513": {
+        "architecture": "未在本地运行时缓存中验证"
+      }
+    },
     "desired": 1,
     "ready": 1,
     "resources": [
@@ -2846,6 +3998,9 @@
         }
       }
     ],
+    "nodeSelector": {
+      "kubernetes.io/os": "linux"
+    },
     "storage": [
       "emptyDir",
       "emptyDir",
@@ -2856,7 +4011,7 @@
     "purpose": "已有平台支持任务；用途需进一步确认",
     "state": "历史 Job 成功",
     "evidence": "workloads.json + pods.json；安装/就绪证据不等同功能验收",
-    "next": "按本职功能取得输入/输出证据；0副本保持预算准入"
+    "next": "保留历史对象/备份；不为展示重新执行持久化修复"
   },
   {
     "component": "helm-install-traefik-crd",
@@ -2868,6 +4023,11 @@
     ],
     "nodes": [],
     "architectures": [],
+    "imageArchitectures": {
+      "rancher/klipper-helm:v0.10.0-build20260513": {
+        "architecture": "未在本地运行时缓存中验证"
+      }
+    },
     "desired": 1,
     "ready": 1,
     "resources": [
@@ -2885,6 +4045,9 @@
         }
       }
     ],
+    "nodeSelector": {
+      "kubernetes.io/os": "linux"
+    },
     "storage": [
       "emptyDir",
       "emptyDir",
@@ -2895,6 +4058,86 @@
     "purpose": "已有平台支持任务；用途需进一步确认",
     "state": "历史 Job 成功",
     "evidence": "workloads.json + pods.json；安装/就绪证据不等同功能验收",
-    "next": "按本职功能取得输入/输出证据；0副本保持预算准入"
+    "next": "保留历史对象/备份；不为展示重新执行持久化修复"
+  },
+  {
+    "component": "portainer-host-docker",
+    "namespace": "宿主 Docker",
+    "kind": "Docker container",
+    "source": "既有Docker部署",
+    "images": [
+      "portainer/portainer-ce:2.39.0"
+    ],
+    "nodes": [
+      "devops"
+    ],
+    "architectures": [
+      "arm64"
+    ],
+    "imageArchitectures": {
+      "portainer/portainer-ce:2.39.0": {
+        "architecture": "arm64",
+        "evidence": "Docker image inspect"
+      }
+    },
+    "desired": 1,
+    "ready": 1,
+    "resources": [
+      {
+        "container": "portainer",
+        "resources": {
+          "memoryLimit": "未设置"
+        }
+      }
+    ],
+    "storage": [
+      "Docker portainer_data volume",
+      "Docker socket"
+    ],
+    "entries": [
+      "192.168.1.58:9000"
+    ],
+    "purpose": "独立宿主Docker管理实例",
+    "actualUse": "状态API200、真实版本2.39.0；登录后管理未验收",
+    "state": "运行且已验证（限状态API）",
+    "evidence": "host-portainer-actual.txt",
+    "next": "保留原实例；管理操作另验收"
+  },
+  {
+    "component": "docker-engine",
+    "namespace": "宿主系统",
+    "kind": "systemd / Docker",
+    "source": "既有系统服务",
+    "images": [
+      "Docker29.6.2"
+    ],
+    "nodes": [
+      "devops"
+    ],
+    "architectures": [
+      "arm64"
+    ],
+    "imageArchitectures": {},
+    "desired": 1,
+    "ready": 1,
+    "resources": [
+      {
+        "container": "dockerd",
+        "resources": {
+          "memoryLimit": "见宿主资源采样；历史服务"
+        }
+      }
+    ],
+    "storage": [
+      "/var/lib/docker现有镜像/容器层"
+    ],
+    "entries": [
+      "既有Docker socket"
+    ],
+    "purpose": "Jenkins构建与临时测试数据库",
+    "actualUse": "实际双架构构建、OCI缓存与Testcontainers94项测试",
+    "state": "运行且已验证",
+    "evidence": "docker-components-current.txt、成功Jenkins131归档",
+    "next": "沿用既有daemon；构建顺序及共享Lease保护"
   }
 ]
