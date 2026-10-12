@@ -51,7 +51,7 @@ Spark读取只有visit_id/date的1200行快照，输出真实Job IDs、年度923
 
 ## 存储、日志及关闭后的证据
 
-Kafka数据现位于已有VM磁盘hostPath `/opt/petclinic-observability/state/kafka-20261012T010132/data`，保留原Topic及168h策略。验收时应核对 broker Ready、`kafka-topics.sh --version` 为4.3.1、关键Topic末端位置，并实际消费最新发布事件；最终基线是 `petclinic-release-v09:0=2` 且包含 `0.10.0-ci-131`。Flink状态位于 `/opt/petclinic-observability/state/flink/petclinic-window-092657`；两次savepoint和Topic保留。本地单节点磁盘不是跨节点高可用。
+Kafka数据现位于已有VM磁盘hostPath `/opt/petclinic-observability/state/kafka-20261012T010132/data`，保留原Topic及168h策略。验收时应核对 broker Ready、`kafka-topics.sh --version` 为4.3.1、关键Topic末端位置，并实际消费最新发布事件；VM重启恢复后的最终基线是 `jenkins-logs:0=2189`、`petclinic-release-v09:0=2`，且后者包含 `0.10.0-ci-131`。Flink状态位于 `/opt/petclinic-observability/state/flink/petclinic-window-092657`；两次savepoint和Topic保留。本地单节点磁盘不是跨节点高可用。
 
 业务 Filebeat→ES 提供版本/Pod/时间/trace检索；Alloy→Loki用于Grafana运维关联，因此业务日志有重复采集与存储成本。Kafka Filebeat只采集Flink文件路径，Jenkins另有日志采集器；本轮有界消费者证明实际流入及消费，未宣称存在长期Kafka→ES消费者。正常关闭Flink后，该路径无新消息是预期状态。
 
