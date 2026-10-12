@@ -81,19 +81,27 @@ class ObservabilityTests {
 				item.0.desired=0
 				item.0.ready=0
 				osint.blackbird.succeeded=7
+				pipeline.last.completed.build=127
+				pipeline.last.duration.seconds=493.215
+				pipeline.last.success=1
+				pipeline.building=0
 				updated=""" + Instant.now().getEpochSecond() + "\n");
 		PlatformObservability platform = new PlatformObservability(file.toString());
 		{
 			SimpleMeterRegistry registry = new SimpleMeterRegistry();
 			platform.bindTo(registry);
 			assertThat(platform.snapshot().fresh()).isTrue();
-			assertThat(platform.snapshot().software().get(0).state()).isEqualTo("已停用");
+			assertThat(platform.snapshot().software().get(0).state()).isEqualTo("按需关闭");
 			assertThat(registry.get("petclinic.platform.workload").tag("state", "desired").gauge().value()).isZero();
 			assertThat(registry.get("petclinic.osint.jobs")
 				.tag("tool", "blackbird")
 				.tag("status", "succeeded")
 				.gauge()
 				.value()).isEqualTo(7);
+			assertThat(registry.get("petclinic.pipeline.last.completed.build").gauge().value()).isEqualTo(127);
+			assertThat(registry.get("petclinic.pipeline.last.duration.seconds").gauge().value()).isEqualTo(493.215);
+			assertThat(registry.get("petclinic.pipeline.last.success").gauge().value()).isEqualTo(1);
+			assertThat(registry.get("petclinic.pipeline.building").gauge().value()).isZero();
 			registry.close();
 		}
 	}

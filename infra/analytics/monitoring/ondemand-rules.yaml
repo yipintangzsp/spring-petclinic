@@ -1,0 +1,35 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: petclinic-analysis
+  namespace: data-infra
+  labels:
+    release: kube-stack
+spec:
+  groups:
+    - name: petclinic-analysis
+      rules:
+        - alert: PetclinicAnalysisComputeUnavailable
+          expr: (kube_deployment_spec_replicas{namespace=~"data-infra|ns-bigdata",deployment=~"airflow-.*|flink-.*|spark-operator-.*"} > 0) and on(namespace,deployment) (kube_deployment_status_replicas_available{namespace=~"data-infra|ns-bigdata",deployment=~"airflow-.*|flink-.*|spark-operator-.*"} == 0)
+          for: 5m
+          labels:
+            severity: warning
+          annotations:
+            summary: 已准入的分析组件启动后不可用
+            description: 仅在期望副本大于零时评估；按需关闭不会触发此告警。
+        - alert: PetclinicAnalysisReadFailed
+          expr: max(petclinic_analysis_read_failed{namespace="petclinic"}) > 0
+          for: 5m
+          labels:
+            severity: warning
+          annotations:
+            summary: Petclinic 读取统计结果失败
+            description: 核对汇总表读取权限和数据库连接；核心业务不依赖分析计算服务。
+        - alert: PetclinicAnalysisSnapshotOld
+          expr: (time() - max(petclinic_analysis_last_success_seconds{namespace="petclinic"}) > 604800) and (max(petclinic_analysis_last_success_seconds{namespace="petclinic"}) > 0)
+          for: 30m
+          labels:
+            severity: info
+          annotations:
+            summary: 手动分析快照已超过七天
+            description: 这是手动任务的数据时效提示，不是关闭分析组件的故障。

@@ -44,6 +44,8 @@ class PlatformObservability implements MeterBinder {
 
 	private final Map<String, Double> jobCounts = new HashMap<>();
 
+	private final Map<String, Double> pipelineValues = new HashMap<>();
+
 	PlatformObservability(
 			@Value("${petclinic.platform.snapshot:/etc/petclinic-platform/snapshot.properties}") String path) {
 		this.path = Path.of(path);
@@ -104,6 +106,15 @@ class PlatformObservability implements MeterBinder {
 					.addKeyValue("platform.paused", software.stream().filter(s -> s.desired() == 0).count())
 					.addKeyValue("platform.snapshot_timestamp", updated)
 					.log("Petclinic platform inventory snapshot");
+				for (String metric : List.of("last.completed.build", "last.duration.seconds", "last.success",
+						"building")) {
+					this.pipelineValues.put(metric,
+							Double.parseDouble(values.getProperty("pipeline." + metric, "NaN")));
+					if (this.registry != null) {
+						Gauge.builder("petclinic.pipeline." + metric, this, platform -> platform.pipelineValue(metric))
+							.register(this.registry);
+					}
+				}
 				values.stringPropertyNames().stream().filter(key -> key.startsWith("osint.")).forEach(key -> {
 					String[] parts = key.split("\\.", 3);
 					if (this.registry != null && parts.length == 3) {
@@ -120,6 +131,10 @@ class PlatformObservability implements MeterBinder {
 			}
 		}
 		return this.snapshot;
+	}
+
+	private synchronized double pipelineValue(String key) {
+		return snapshot().fresh() ? this.pipelineValues.getOrDefault(key, Double.NaN) : Double.NaN;
 	}
 
 	private synchronized double jobCount(String key) {
@@ -142,7 +157,7 @@ class PlatformObservability implements MeterBinder {
 	public record Software(String id, String name, String namespace, int desired, int ready, String endpoint,
 			String integration) {
 		public String state() {
-			return desired == 0 ? "已停用" : ready >= desired ? "副本就绪" : "副本不足";
+			return desired == 0 ? "按需关闭" : ready >= desired ? "副本就绪" : "副本不足";
 		}
 	}
 

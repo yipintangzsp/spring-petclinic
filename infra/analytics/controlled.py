@@ -26,7 +26,11 @@ def remote(command, body=None, timeout=30):
 def kube(arguments, resource=None, timeout=30):
     output = remote(shlex.join(['sudo', '-n', 'kubectl', '--request-timeout=10s', *arguments]),
                     None if resource is None else json.dumps(resource), timeout)
-    return json.loads(output) if output.strip().startswith(('{', '[')) else output.strip()
+    try:
+        return json.loads(output) if output.strip().startswith(('{', '[')) else output.strip()
+    except json.JSONDecodeError:
+        # JSON-lines logs are text; only a complete JSON response is an object.
+        return output.strip()
 
 
 JENKINS_REQUEST = r"""const fs=require('fs');(async()=>{

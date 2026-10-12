@@ -4,6 +4,8 @@
  */
 package org.springframework.samples.petclinic.system;
 
+import io.micrometer.core.instrument.simple.SimpleMeterRegistry;
+
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.support.StaticListableBeanFactory;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -26,6 +28,10 @@ class ClinicAnalyticsTests {
 		var snapshot = new ClinicAnalytics(factory.getBeanProvider(JdbcTemplate.class)).snapshot();
 		assertThat(snapshot.available()).isFalse();
 		assertThat(snapshot.failed()).isTrue();
+		var registry = new SimpleMeterRegistry();
+		new ClinicAnalysisMetrics(new ClinicAnalytics(factory.getBeanProvider(JdbcTemplate.class))).bindTo(registry);
+		assertThat(registry.get("petclinic.analysis.available").gauge().value()).isZero();
+		assertThat(registry.get("petclinic.analysis.last.success.seconds").gauge().value()).isZero();
 	}
 
 	@Test
@@ -62,7 +68,13 @@ class ClinicAnalyticsTests {
 		jdbc.execute("INSERT INTO petclinic_analytics.daily_visits VALUES ('success','2026-10-01',7)");
 		jdbc.execute("INSERT INTO petclinic_analytics.pet_types VALUES ('success','dog',350)");
 		var analytics = analytics(jdbc);
+		var registry = new SimpleMeterRegistry();
+		new ClinicAnalysisMetrics(analytics).bindTo(registry);
 		var first = analytics.snapshot();
+		assertThat(registry.get("petclinic.analysis.available").gauge().value()).isEqualTo(1);
+		assertThat(registry.get("petclinic.analysis.read.failed").gauge().value()).isZero();
+		assertThat(registry.get("petclinic.analysis.last.success.seconds").gauge().value()).isPositive();
+		assertThat(registry.get("petclinic.analysis.window.visits").gauge().value()).isEqualTo(7);
 		assertThat(first.available()).isTrue();
 		assertThat(first.run().owners()).isEqualTo(200);
 		assertThat(first.days().get(0).visits()).isEqualTo(7);
@@ -74,6 +86,9 @@ class ClinicAnalyticsTests {
 		assertThat(stale.failed()).isTrue();
 		assertThat(stale.run()).isEqualTo(first.run());
 		assertThat(stale.days()).isEqualTo(first.days());
+		assertThat(registry.get("petclinic.analysis.available").gauge().value()).isEqualTo(1);
+		assertThat(registry.get("petclinic.analysis.read.failed").gauge().value()).isEqualTo(1);
+		assertThat(registry.get("petclinic.analysis.window.visits").gauge().value()).isEqualTo(7);
 	}
 
 }

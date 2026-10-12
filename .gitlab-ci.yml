@@ -1,6 +1,13 @@
 stages: [audit]
 release-source-audit:
   stage: audit
+  timeout: 2m
+  variables:
+    KUBERNETES_MEMORY_REQUEST: "128Mi"
+    KUBERNETES_MEMORY_LIMIT: "128Mi"
+    KUBERNETES_CPU_REQUEST: "100m"
+    KUBERNETES_CPU_LIMIT: "500m"
+    JAVA_TOOL_OPTIONS: "-Xmx32m -XX:ActiveProcessorCount=1"
   image: 10.0.0.3:30050/platform-upgrade/eclipse-temurin:21-jre-local
   script:
     - java -version

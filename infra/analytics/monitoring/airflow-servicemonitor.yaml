@@ -1,0 +1,16 @@
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: petclinic-airflow-statsd
+  namespace: data-infra
+  labels:
+    release: kube-stack
+spec:
+  selector:
+    matchLabels:
+      release: airflow
+      component: statsd
+  endpoints:
+    - port: statsd-scrape
+      interval: 15s
+      scrapeTimeout: 5s
