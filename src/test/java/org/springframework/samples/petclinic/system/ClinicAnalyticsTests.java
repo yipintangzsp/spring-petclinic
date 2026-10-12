@@ -32,6 +32,7 @@ class ClinicAnalyticsTests {
 		new ClinicAnalysisMetrics(new ClinicAnalytics(factory.getBeanProvider(JdbcTemplate.class))).bindTo(registry);
 		assertThat(registry.get("petclinic.analysis.available").gauge().value()).isZero();
 		assertThat(registry.get("petclinic.analysis.last.success.seconds").gauge().value()).isZero();
+		assertThat(registry.get("petclinic.analysis.window.visits").gauge().value()).isNaN();
 	}
 
 	@Test

@@ -10,7 +10,7 @@ data:
     {
       "uid": "petclinic-release-analysis",
       "title": "Petclinic · 发布与分析验收",
-      "description": "真实 HTTP、Pod、JVM、连接池、Jenkins 最近构建及隔离统计结果。业务数量跨副本取 max；Airflow 指标为既有 StatsD 进程累计，重启会归零。Spark/Flink 按需运行时的历史峰值及 Job IDs 见验收文档，正常关闭不是错误。",
+      "description": "真实 HTTP、Pod、JVM、连接池、Jenkins 最近构建及隔离统计结果。业务数量跨副本取 max；Airflow 指标为既有 StatsD 进程累计，重启会归零。Spark/Flink 按需运行时的历史峰值及 Job IDs 见验收文档，正常关闭不是错误。 按需 Airflow 关闭时从过去24h真实采样读取累计；窗口超过保留区间时显示无数据。",
       "schemaVersion": 39,
       "version": 1,
       "refresh": "30s",
@@ -116,7 +116,7 @@ data:
           "targets": [
             {
               "refId": "A",
-              "expr": "sum(rate(http_server_requests_seconds_count{namespace=\"petclinic\",status=~\"5..\"}[5m])) / clamp_min(sum(rate(http_server_requests_seconds_count{namespace=\"petclinic\"}[5m])),0.001)",
+              "expr": "(sum(rate(http_server_requests_seconds_count{namespace=\"petclinic\",status=~\"5..\"}[5m])) or (sum(rate(http_server_requests_seconds_count{namespace=\"petclinic\"}[5m]))*0)) / clamp_min(sum(rate(http_server_requests_seconds_count{namespace=\"petclinic\"}[5m])),0.001)",
               "datasource": {
                 "type": "prometheus",
                 "uid": "prometheus"
@@ -539,7 +539,7 @@ data:
         },
         {
           "id": 15,
-          "title": "Airflow 实际成功任务数",
+          "title": "Airflow 24h 内观测到的成功累计",
           "type": "timeseries",
           "datasource": {
             "type": "prometheus",
@@ -560,7 +560,7 @@ data:
           "targets": [
             {
               "refId": "A",
-              "expr": "airflow_ti_successes",
+              "expr": "max_over_time(airflow_ti_successes[24h])",
               "datasource": {
                 "type": "prometheus",
                 "uid": "prometheus"
@@ -576,7 +576,7 @@ data:
         },
         {
           "id": 16,
-          "title": "Airflow 有界读取重试次数",
+          "title": "Airflow 24h 内观测到的读取重试",
           "type": "timeseries",
           "datasource": {
             "type": "prometheus",
@@ -597,7 +597,7 @@ data:
           "targets": [
             {
               "refId": "A",
-              "expr": "airflow_ti_finish_petclinic_insights_bounded_read_up_for_retry",
+              "expr": "max_over_time(airflow_ti_finish_petclinic_insights_bounded_read_up_for_retry[24h])",
               "datasource": {
                 "type": "prometheus",
                 "uid": "prometheus"
@@ -634,7 +634,7 @@ data:
           "targets": [
             {
               "refId": "A",
-              "expr": "airflow_task_duration_sum / clamp_min(airflow_task_duration_count,1)",
+              "expr": "max_over_time(airflow_task_duration_sum[24h]) / clamp_min(max_over_time(airflow_task_duration_count[24h]),1)",
               "datasource": {
                 "type": "prometheus",
                 "uid": "prometheus"

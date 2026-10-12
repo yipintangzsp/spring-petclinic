@@ -20,19 +20,32 @@ class ClinicAnalysisMetrics implements MeterBinder {
 
 	@Override
 	public void bindTo(MeterRegistry registry) {
-		Gauge.builder("petclinic.analysis.available", this, metrics -> metrics.analytics.snapshot().available() ? 1 : 0)
+		Gauge
+			.builder("petclinic.analysis.available", this.analytics,
+					analytics -> analytics.snapshot().available() ? 1 : 0)
+			.strongReference(true)
 			.register(registry);
-		Gauge.builder("petclinic.analysis.read.failed", this, metrics -> metrics.analytics.snapshot().failed() ? 1 : 0)
+		Gauge
+			.builder("petclinic.analysis.read.failed", this.analytics,
+					analytics -> analytics.snapshot().failed() ? 1 : 0)
+			.strongReference(true)
 			.register(registry);
-		Gauge.builder("petclinic.analysis.last.success.seconds", this, ClinicAnalysisMetrics::lastSuccess)
+		Gauge.builder("petclinic.analysis.last.success.seconds", this.analytics, ClinicAnalysisMetrics::lastSuccess)
+			.strongReference(true)
 			.register(registry);
-		Gauge.builder("petclinic.analysis.window.visits", this,
-				metrics -> metrics.analytics.snapshot().days().stream().mapToLong(ClinicAnalytics.Day::visits).sum())
+		Gauge.builder("petclinic.analysis.window.visits", this.analytics, ClinicAnalysisMetrics::windowVisits)
+			.strongReference(true)
 			.register(registry);
 	}
 
-	private double lastSuccess() {
-		var run = this.analytics.snapshot().run();
+	private static double windowVisits(ClinicAnalytics analytics) {
+		var snapshot = analytics.snapshot();
+		return snapshot.available() ? snapshot.days().stream().mapToLong(ClinicAnalytics.Day::visits).sum()
+				: Double.NaN;
+	}
+
+	private static double lastSuccess(ClinicAnalytics analytics) {
+		var run = analytics.snapshot().run();
 		return run == null ? 0 : run.generatedAt().getEpochSecond();
 	}
 
