@@ -38,7 +38,7 @@ class AnalyticsControllerTests {
 		when(this.analytics.snapshot()).thenReturn(new ClinicAnalytics.Snapshot(run,
 				List.of(new ClinicAnalytics.Day(LocalDate.parse("2026-10-01"), 7),
 						new ClinicAnalytics.Day(LocalDate.parse("2026-10-02"), 9)),
-				List.of(new ClinicAnalytics.Type("dog", 350)), true, false));
+				List.of(new ClinicAnalytics.Type("dog", 350)), null, true, false));
 	}
 
 	@Test
@@ -72,7 +72,7 @@ class AnalyticsControllerTests {
 	@Test
 	void unavailableAnalysisKeepsNavigationUsable() throws Exception {
 		when(this.analytics.snapshot())
-			.thenReturn(new ClinicAnalytics.Snapshot(null, List.of(), List.of(), false, true));
+			.thenReturn(new ClinicAnalytics.Snapshot(null, List.of(), List.of(), null, false, true));
 		this.mvc.perform(get("/insights").param("lang", "zh"))
 			.andExpect(status().isOk())
 			.andExpect(content().string(containsString("统计暂时不可用")))
@@ -90,7 +90,7 @@ class AnalyticsControllerTests {
 	void staleSuccessIsDisplayedWithFailureNotice() throws Exception {
 		var current = this.analytics.snapshot();
 		when(this.analytics.snapshot())
-			.thenReturn(new ClinicAnalytics.Snapshot(current.run(), current.days(), current.types(), true, true));
+			.thenReturn(new ClinicAnalytics.Snapshot(current.run(), current.days(), current.types(), null, true, true));
 		this.mvc.perform(get("/insights").param("lang", "zh").param("from", "2026-10-01").param("to", "2026-10-02"))
 			.andExpect(status().isOk())
 			.andExpect(model().attribute("visitCount", 16L))

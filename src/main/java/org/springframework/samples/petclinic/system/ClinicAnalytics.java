@@ -40,13 +40,14 @@ class ClinicAnalytics {
 
 	synchronized Snapshot snapshot() {
 		if (this.jdbc == null) {
-			return new Snapshot(null, List.of(), List.of(), false, true);
+			return new Snapshot(null, List.of(), List.of(), null, false, true);
 		}
 		if (this.checked != 0 && System.nanoTime() - this.checked < 15_000_000_000L) {
 			return this.cached;
 		}
 		this.checked = System.nanoTime();
 		try {
+			Execution execution = latestExecution();
 			List<Run> runs = this.jdbc.query("""
 					SELECT run_id, generated_at, window_start, window_end, source_kind, owners, pets, vets, visits
 					FROM petclinic_analytics.runs WHERE status = 'success' ORDER BY generated_at DESC LIMIT 1
@@ -56,7 +57,7 @@ class ClinicAnalytics {
 							rs.getString("source_kind"), rs.getLong("owners"), rs.getLong("pets"), rs.getLong("vets"),
 							rs.getLong("visits")));
 			if (runs.isEmpty()) {
-				this.cached = new Snapshot(null, List.of(), List.of(), false, false);
+				this.cached = new Snapshot(null, List.of(), List.of(), execution, false, false);
 			}
 			else {
 				Run run = runs.get(0);
@@ -68,15 +69,34 @@ class ClinicAnalytics {
 						SELECT type, pets FROM petclinic_analytics.pet_types
 						WHERE run_id = ? ORDER BY pets DESC, type LIMIT 64
 						""", (rs, n) -> new Type(rs.getString("type"), rs.getLong("pets")), run.id());
-				this.cached = new Snapshot(run, days, types, true, false);
+				this.cached = new Snapshot(run, days, types, execution, true, false);
 			}
 		}
 		catch (DataAccessException ex) {
-			this.cached = this.cached != null && this.cached.available()
-					? new Snapshot(this.cached.run(), this.cached.days(), this.cached.types(), true, true)
-					: new Snapshot(null, List.of(), List.of(), false, true);
+			this.cached = this.cached != null && this.cached.available() ? new Snapshot(this.cached.run(),
+					this.cached.days(), this.cached.types(), this.cached.execution(), true, true)
+					: new Snapshot(null, List.of(), List.of(), null, false, true);
 		}
 		return this.cached;
+	}
+
+	private @Nullable Execution latestExecution() {
+		try {
+			List<Execution> rows = this.jdbc.query("""
+					SELECT batch_id, status, stage, started_at, finished_at, error
+					FROM petclinic_analytics.executions ORDER BY started_at DESC LIMIT 1
+					""",
+					(rs, n) -> new Execution(rs.getString("batch_id"), rs.getString("status"), rs.getString("stage"),
+							rs.getTimestamp("started_at").toInstant(),
+							rs.getTimestamp("finished_at") == null ? null : rs.getTimestamp("finished_at").toInstant(),
+							rs.getString("error")));
+			return rows.isEmpty() ? null : rows.get(0);
+		}
+		catch (DataAccessException ignored) {
+			// The application and additive orchestration schema can be rolled out
+			// independently.
+			return null;
+		}
 	}
 
 	record Run(String id, Instant generatedAt, LocalDate start, LocalDate end, String sourceKind, long owners,
@@ -89,7 +109,12 @@ class ClinicAnalytics {
 	record Type(String name, long pets) {
 	}
 
-	record Snapshot(@Nullable Run run, List<Day> days, List<Type> types, boolean available, boolean failed) {
+	record Execution(String batchId, String status, String stage, Instant startedAt, @Nullable Instant finishedAt,
+			@Nullable String error) {
+	}
+
+	record Snapshot(@Nullable Run run, List<Day> days, List<Type> types, @Nullable Execution execution,
+			boolean available, boolean failed) {
 	}
 
 }

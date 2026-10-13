@@ -20,6 +20,9 @@
   <a th:href="@{/pets}" th:text="#{insights.petsLink}"></a>
 </section>
 <th:block th:if="${analytics.available}">
+  <p th:if="${analytics.execution != null}" class="insight-notice" role="status"
+     th:classappend="' analysis-' + ${analytics.execution.status}"
+     th:text="${analytics.execution.status == 'running'} ? #{insights.running(${analytics.execution.stage})} : (${analytics.execution.status == 'failed'} ? #{insights.pipelineFailed(${analytics.execution.stage})} : #{insights.pipelineSuccess})"></p>
   <div class="insight-provenance">
     <strong th:text="${analytics.run.sourceKind == 'demo'} ? #{insights.demo} : #{insights.business}"></strong>
     <span><span th:text="#{insights.updated}"></span> <time th:text="${analytics.run.generatedAt}"></time></span>

@@ -4,12 +4,20 @@ The current Visit controller creates records; no update/delete watermark exists.
 If that contract changes, add CDC or updated_at before claiming incremental edits.
 """
 import argparse
+import csv
 import datetime as dt
+import hashlib
+import io
 import json
 import os
 import time
+import urllib.request
 
 MAX_ROWS = 5000
+SPARK_IMAGE = ('127.0.0.1:30050/platform-upgrade/spark-runtime@'
+               'sha256:711ace285d47914adfeec1a4db16d30632cade0717c971e9049d4adf59dcb500')
+LEASE_NAMESPACE = 'data-infra'
+LEASE_NAME = 'platform-heavy'
 
 
 def connect():
@@ -132,6 +140,474 @@ def publish(batch, run_id):
               'watermark': watermark, 'duration_seconds': round(time.monotonic()-started, 3)}
     print(json.dumps(result), flush=True)
     return result
+
+
+def _kube():
+    from kubernetes import client, config
+    config.load_incluster_config()
+    return client.CoreV1Api(), client.AppsV1Api(), client.CustomObjectsApi(), client.CoordinationV1Api()
+
+
+def _selector_pod(namespace, deployment):
+    core, apps, _, _ = _kube()
+    labels = apps.read_namespaced_deployment(deployment, namespace).spec.selector.match_labels
+    selector = ','.join(f'{key}={value}' for key, value in labels.items())
+    pods = [pod for pod in core.list_namespaced_pod(namespace, label_selector=selector).items
+            if pod.status.phase == 'Running']
+    if not pods:
+        raise RuntimeError(f'No running pod for {namespace}/{deployment}')
+    return pods[0].metadata.name
+
+
+def _exec(namespace, deployment, command, body=None, timeout=90):
+    from kubernetes.stream import stream
+    core, _, _, _ = _kube()
+    pod = _selector_pod(namespace, deployment)
+    if body is None:
+        return stream(core.connect_get_namespaced_pod_exec, pod, namespace, command=command,
+                      stderr=True, stdin=False, stdout=True, tty=False,
+                      _request_timeout=timeout)
+    channel = stream(core.connect_get_namespaced_pod_exec, pod, namespace, command=command,
+                     stderr=True, stdin=True, stdout=True, tty=False,
+                     _preload_content=False, _request_timeout=timeout)
+    channel.write_stdin(body)
+    channel.close_stdin()
+    output = ''
+    deadline = time.monotonic() + timeout
+    while channel.is_open() and time.monotonic() < deadline:
+        channel.update(timeout=1)
+        if channel.peek_stdout():
+            output += channel.read_stdout()
+        if channel.peek_stderr():
+            output += channel.read_stderr()
+    channel.close()
+    return output
+
+
+def _code(name):
+    core, _, _, _ = _kube()
+    data = core.read_namespaced_config_map('petclinic-analysis-code', 'data-infra').data or {}
+    if name not in data:
+        raise RuntimeError(f'Analysis ConfigMap is missing {name}')
+    return data[name]
+
+
+def _jenkins(path, method='GET'):
+    allowed = {'/api/json?tree=quietingDown,jobs[name,lastBuild[building]]',
+               '/quietDown', '/cancelQuietDown'}
+    if path not in allowed:
+        raise ValueError('Unsupported Jenkins resource operation')
+    script = r"""const fs=require('fs');(async()=>{const i=JSON.parse(fs.readFileSync(0,'utf8'));
+const h={Authorization:'Basic '+Buffer.from(process.env.JENKINS_USER+':'+process.env.JENKINS_PASS).toString('base64')};
+if(i.method==='POST'){const q=await fetch(process.env.JENKINS_URL+'/crumbIssuer/api/json',{headers:h});
+const c=await q.json();h[c.crumbRequestField]=c.crumb;h.Cookie=q.headers.getSetCookie().map(x=>x.split(';')[0]).join('; ')}
+const r=await fetch(process.env.JENKINS_URL+i.path,{method:i.method,headers:h,signal:AbortSignal.timeout(12000)});
+if(!r.ok)throw Error('HTTP '+r.status);console.log(await r.text())})().catch(e=>{console.error(e.message);process.exit(1)})"""
+    output = _exec('ns-devops', 'github-webhook-relay',
+                   ['node', '--max-old-space-size=24', '-e', script],
+                   json.dumps({'path': path, 'method': method}), 40)
+    return json.loads(output) if output.strip().startswith('{') else output.strip()
+
+
+def _execution(batch_id, stage, status=None, **values):
+    columns = {'spark_application', 'spark_application_id', 'flink_job_id',
+               'kafka_input_topic', 'kafka_output_topic', 'kafka_consumer_group',
+               'trino_query_id', 'superset_chart_id', 'error'}
+    invalid = set(values) - columns
+    if invalid:
+        raise ValueError(f'Unsupported execution fields: {invalid}')
+    assignments = ['stage=%s', 'updated_at=now()']
+    params = [stage]
+    if status:
+        assignments.append('status=%s')
+        params.append(status)
+        if status in ('success', 'failed'):
+            assignments.append('finished_at=now()')
+    for key, value in values.items():
+        assignments.append(f'{key}=%s')
+        params.append(value)
+    params.append(batch_id)
+    with connect() as db, db.cursor() as cur:
+        cur.execute(f"UPDATE petclinic_analytics.executions SET {','.join(assignments)} WHERE batch_id=%s", params)
+
+
+def acquire_guard(start, end, dag_run_id):
+    window(start, end)
+    core, _, _, coordination = _kube()
+    node = core.read_node('devops')
+    if not any(c.type == 'Ready' and c.status == 'True' for c in node.status.conditions):
+        raise RuntimeError('devops node is not Ready')
+    alloc_mib = int(node.status.allocatable['memory'][:-2]) / 1024
+    metrics = json.loads(core.api_client.call_api('/apis/metrics.k8s.io/v1beta1/nodes/devops', 'GET',
+                                                  response_type='str', auth_settings=['BearerToken'],
+                                                  _return_http_data_only=True))
+    used = metrics['usage']['memory']
+    used_mib = int(used[:-2]) / 1024 if used.endswith('Ki') else int(used[:-2])
+    available = alloc_mib - used_mib
+    if available < 10240:
+        raise RuntimeError(f'Node available memory {available:.0f} MiB is below the 10240 MiB orchestration floor')
+    holder = 'airflow:' + hashlib.sha256(dag_run_id.encode()).hexdigest()[:24]
+    now = dt.datetime.now(dt.timezone.utc)
+    from kubernetes import client
+    lease = client.V1Lease(metadata=client.V1ObjectMeta(name=LEASE_NAME, namespace=LEASE_NAMESPACE,
+                           annotations={'petclinic.devops.local/budget-mib': '8674'}),
+                           spec=client.V1LeaseSpec(holder_identity=holder, acquire_time=now,
+                                                  renew_time=now, lease_duration_seconds=3600))
+    try:
+        made = coordination.create_namespaced_lease(LEASE_NAMESPACE, lease)
+    except client.exceptions.ApiException as error:
+        if error.status != 409:
+            raise
+        made = coordination.read_namespaced_lease(LEASE_NAME, LEASE_NAMESPACE)
+        if made.spec.holder_identity != holder:
+            raise RuntimeError(f'Heavy resource lock is held by {made.spec.holder_identity}')
+    owned_quiet = False
+    try:
+        state = _jenkins('/api/json?tree=quietingDown,jobs[name,lastBuild[building]]')
+        owned_quiet = not state.get('quietingDown', False)
+        if owned_quiet:
+            _jenkins('/quietDown', 'POST')
+        state = _jenkins('/api/json?tree=quietingDown,jobs[name,lastBuild[building]]')
+        active = [job['name'] for job in state.get('jobs', []) if job.get('lastBuild', {}).get('building')]
+        if active:
+            raise RuntimeError(f'Jenkins still has active builds: {active}')
+    except Exception:
+        if owned_quiet:
+            try:
+                _jenkins('/cancelQuietDown', 'POST')
+            except Exception:
+                pass
+        coordination.delete_namespaced_lease(LEASE_NAME, LEASE_NAMESPACE)
+        raise
+    return {'holder': holder, 'lease_uid': made.metadata.uid, 'owned_quiet': owned_quiet,
+            'dag_run_id': dag_run_id, 'from': start, 'to': end,
+            'available_mib': round(available, 2)}
+
+
+def create_snapshot(guard):
+    with connect() as db:
+        db.set_session(readonly=True, isolation_level='REPEATABLE READ')
+        with db.cursor() as cur:
+            cur.execute('''SELECT v.id,v.visit_date,v.pet_id,t.name
+                           FROM public.visits v JOIN public.pets p ON p.id=v.pet_id
+                           JOIN public.types t ON t.id=p.type_id ORDER BY v.id LIMIT %s''', (MAX_ROWS + 1,))
+            rows = cur.fetchall()
+            cur.execute('SELECT count(*) FROM public.owners'); owners = cur.fetchone()[0]
+            cur.execute('SELECT count(*) FROM public.pets'); pets = cur.fetchone()[0]
+            cur.execute('SELECT count(*) FROM public.vets'); vets = cur.fetchone()[0]
+    if not 0 < len(rows) <= MAX_ROWS:
+        raise RuntimeError('Bounded visit snapshot is empty or exceeds 5000 rows')
+    buffer = io.StringIO(); writer = csv.writer(buffer, lineterminator='\n')
+    writer.writerow(['visit_id', 'visit_date', 'pet_id', 'pet_type'])
+    writer.writerows((row[0], row[1].isoformat(), row[2], row[3]) for row in rows)
+    text = buffer.getvalue(); digest = hashlib.sha256(text.encode()).hexdigest()
+    batch_id = f"petclinic-{guard['from']}-{guard['to']}-{digest[:12]}"
+    execution_id = hashlib.sha256(guard['dag_run_id'].encode()).hexdigest()[:12]
+    name = 'petclinic-' + digest[:20]
+    core, _, _, _ = _kube()
+    from kubernetes import client
+    data = {'visits.csv': text, 'clinic_snapshot.py': _code('clinic_snapshot.py')}
+    body = client.V1ConfigMap(metadata=client.V1ObjectMeta(name=name, namespace='default',
+                              labels={'app': 'petclinic-analysis', 'batch': batch_id,
+                                      'airflow-holder': guard['holder'].replace(':', '-')}), data=data)
+    try:
+        core.create_namespaced_config_map('default', body)
+    except client.exceptions.ApiException as error:
+        if error.status != 409:
+            raise
+        current = core.read_namespaced_config_map(name, 'default')
+        if current.data != data:
+            raise RuntimeError('Immutable snapshot ConfigMap name collision')
+    with connect() as db, db.cursor() as cur:
+        cur.execute(_code('schema.sql'))
+        cur.execute('''INSERT INTO petclinic_analytics.executions
+                    (batch_id,dag_run_id,window_start,window_end,status,stage,attempt)
+                    VALUES (%s,%s,%s,%s,'running','snapshot',1)
+                    ON CONFLICT (batch_id) DO UPDATE SET dag_run_id=EXCLUDED.dag_run_id,
+                    status='running',stage='snapshot',finished_at=NULL,error=NULL,
+                    attempt=petclinic_analytics.executions.attempt+1,updated_at=now()''',
+                    (batch_id, guard['dag_run_id'], guard['from'], guard['to']))
+    return {'batch_id': batch_id, 'config_map': name, 'sha256': digest, 'input_rows': len(rows),
+            'unique_visit_ids': len({row[0] for row in rows}), 'owners': owners, 'pets': pets,
+            'vets': vets, 'execution_id': execution_id,
+            'minimum_date': min(row[1] for row in rows).isoformat(),
+            'maximum_date': max(row[1] for row in rows).isoformat()}
+
+
+def validate_snapshot(snapshot, start, end, fail_probe=False, try_number=1):
+    if fail_probe and try_number == 1:
+        raise RuntimeError('Controlled first-attempt orchestration failure')
+    if snapshot['input_rows'] != snapshot['unique_visit_ids']:
+        raise ValueError('Snapshot visit IDs are not unique')
+    core, _, _, _ = _kube()
+    text = core.read_namespaced_config_map(snapshot['config_map'], 'default').data['visits.csv']
+    rows = list(csv.DictReader(io.StringIO(text)))
+    if hashlib.sha256(text.encode()).hexdigest() != snapshot['sha256'] or len(rows) != snapshot['input_rows']:
+        raise ValueError('Snapshot content does not match its immutable metadata')
+    window_rows = [row for row in rows if start <= row['visit_date'] <= end]
+    by_type = {}
+    for row in window_rows:
+        by_type[row['pet_type']] = by_type.get(row['pet_type'], 0) + 1
+    # MySQL runs the independent baseline query in its existing pod. Credentials stay in that pod.
+    quote = lambda value: "'" + str(value).replace("'", "''") + "'"
+    values = ','.join(f"({quote(snapshot['batch_id'])},{r['visit_id']},{quote(r['visit_date'])},{r['pet_id']},{quote(r['pet_type'])},{quote(snapshot['sha256'])})" for r in rows)
+    sql = f'''CREATE DATABASE IF NOT EXISTS petclinic_analytics_baseline;
+CREATE TABLE IF NOT EXISTS petclinic_analytics_baseline.snapshot_visits
+(batch_id VARCHAR(96),visit_id BIGINT,visit_date DATE,pet_id BIGINT,pet_type VARCHAR(64),snapshot_sha CHAR(64),PRIMARY KEY(batch_id,visit_id));
+INSERT INTO petclinic_analytics_baseline.snapshot_visits VALUES {values}
+ON DUPLICATE KEY UPDATE visit_date=VALUES(visit_date),pet_id=VALUES(pet_id),pet_type=VALUES(pet_type),snapshot_sha=VALUES(snapshot_sha);
+SELECT COUNT(*),COUNT(DISTINCT visit_id),SUM(visit_date BETWEEN {quote(start)} AND {quote(end)})
+FROM petclinic_analytics_baseline.snapshot_visits WHERE batch_id={quote(snapshot['batch_id'])};'''
+    result = _exec('ns-data', 'mysql', ['sh', '-lc', 'MYSQL_PWD="$MYSQL_ROOT_PASSWORD" mysql -uroot --batch --raw --skip-column-names'], sql, 90)
+    last = [line for line in result.splitlines() if '\t' in line][-1].split('\t')
+    mysql = {'input_rows': int(last[0]), 'unique_visit_ids': int(last[1]), 'window_visits': int(last[2])}
+    expected = {'input_rows': len(rows), 'unique_visit_ids': len({r['visit_id'] for r in rows}),
+                'window_visits': len(window_rows)}
+    if mysql != expected:
+        raise ValueError(f'MySQL baseline mismatch: {mysql} != {expected}')
+    _execution(snapshot['batch_id'], 'validated')
+    return {**expected, 'visits_by_pet_type': [{'type': key, 'visits': by_type[key]} for key in sorted(by_type)],
+            'mysql': mysql}
+
+
+def submit_spark(snapshot, start, end):
+    _, _, custom, _ = _kube()
+    name = 'petclinic-airflow-' + snapshot['execution_id']
+    role = {'cores': 1, 'coreLimit': '1000m', 'memory': '512m', 'memoryOverhead': '512m',
+            'labels': {'app': 'petclinic-analysis', 'batch': snapshot['batch_id'],
+                       'execution': snapshot['execution_id']},
+            'volumeMounts': [{'name': 'snapshot', 'mountPath': '/opt/clinic', 'readOnly': True}],
+            'securityContext': {'runAsUser': 185, 'runAsGroup': 185, 'runAsNonRoot': True,
+                                'allowPrivilegeEscalation': False, 'capabilities': {'drop': ['ALL']}}}
+    body = {'apiVersion': 'sparkoperator.k8s.io/v1beta2', 'kind': 'SparkApplication',
+            'metadata': {'name': name, 'namespace': 'default',
+                         'labels': {'app': 'petclinic-analysis', 'batch': snapshot['batch_id'],
+                                    'execution': snapshot['execution_id']}},
+            'spec': {'type': 'Python', 'pythonVersion': '3', 'mode': 'cluster', 'image': SPARK_IMAGE,
+                     'imagePullPolicy': 'IfNotPresent', 'sparkVersion': '4.0.1',
+                     'mainApplicationFile': 'local:///opt/clinic/clinic_snapshot.py',
+                     'arguments': ['--from', start, '--to', end, '--batch-id', snapshot['batch_id'],
+                                   '--ui-hold-seconds', '45'],
+                     'restartPolicy': {'type': 'Never'}, 'timeToLiveSeconds': 900,
+                     'nodeSelector': {'kubernetes.io/hostname': 'devops'},
+                     'sparkConf': {'spark.sql.shuffle.partitions': '1', 'spark.default.parallelism': '1',
+                                   'spark.ui.enabled': 'true', 'spark.driver.maxResultSize': '64m'},
+                     'volumes': [{'name': 'snapshot', 'configMap': {'name': snapshot['config_map']}}],
+                     'driver': {**role, 'serviceAccount': 'spark-operator-spark'},
+                     'executor': {**role, 'instances': 1}}}
+    try:
+        custom.create_namespaced_custom_object('sparkoperator.k8s.io', 'v1beta2', 'default',
+                                               'sparkapplications', body)
+    except Exception as error:
+        if getattr(error, 'status', None) != 409:
+            raise
+        raise RuntimeError(f'SparkApplication {name} already exists for this DAG run') from error
+    _execution(snapshot['batch_id'], 'spark-submitted', spark_application=name)
+    return name
+
+
+def verify_spark(snapshot, baseline, application):
+    core, _, custom, _ = _kube()
+    app = custom.get_namespaced_custom_object('sparkoperator.k8s.io', 'v1beta2', 'default',
+                                              'sparkapplications', application)
+    state = app.get('status', {}).get('applicationState', {}).get('state')
+    if state != 'COMPLETED':
+        raise RuntimeError(f'SparkApplication terminal state is {state}')
+    pod = app.get('status', {}).get('driverInfo', {}).get('podName')
+    logs = core.read_namespaced_pod_log(pod, 'default', tail_lines=500)
+    matches = [line.split('CLINIC_RESULT:', 1)[1] for line in logs.splitlines() if 'CLINIC_RESULT:' in line]
+    if len(matches) != 1:
+        raise RuntimeError('Spark driver did not emit one business result')
+    result = json.loads(matches[0])
+    for source, target in [('inputRows', 'input_rows'), ('uniqueVisitIds', 'unique_visit_ids'),
+                           ('windowVisits', 'window_visits')]:
+        if result[source] != baseline[target]:
+            raise ValueError(f'Spark/MySQL mismatch for {source}')
+    application_id = app.get('status', {}).get('sparkApplicationId', result.get('applicationId'))
+    _execution(snapshot['batch_id'], 'spark-complete', spark_application=application,
+               spark_application_id=application_id)
+    return {'application': application, 'application_id': application_id,
+            'driver_pod': pod, 'job_ids': result.get('jobIds', []), 'result': result,
+            'ui_command': f"ssh -t -L 4040:127.0.0.1:4040 192.168.1.58 'sudo kubectl -n default port-forward pod/{pod} 4040:4040'"}
+
+
+def _flink_api(path, method='GET', payload=None):
+    request = urllib.request.Request('http' + '://flink-jobmanager.ns-bigdata:8081' + path,
+                                     data=None if payload is None else json.dumps(payload).encode(),
+                                     method=method, headers={'Content-Type': 'application/json'})
+    with urllib.request.urlopen(request, timeout=12) as response:
+        text = response.read().decode()
+    return json.loads(text) if text else {}
+
+
+def run_flink_bounded(snapshot, baseline):
+    core, apps, _, _ = _kube()
+    input_topic, output_topic, group = ('petclinic-window-092657-input',
+                                         'petclinic-window-092657-output',
+                                         'petclinic-airflow-window-v1')
+    jobs = []
+    try:
+        for name in ('flink-jobmanager', 'flink-taskmanager'):
+            apps.patch_namespaced_deployment_scale(name, 'ns-bigdata', {'spec': {'replicas': 1}})
+        for _ in range(90):
+            if all((apps.read_namespaced_deployment(name, 'ns-bigdata').status.ready_replicas or 0) == 1
+                   for name in ('flink-jobmanager', 'flink-taskmanager')):
+                break
+            time.sleep(4)
+        else:
+            raise RuntimeError('Flink core did not become Ready')
+        for topic in (input_topic, output_topic):
+            _exec('ns-bigdata', 'kafka', ['env', 'KAFKA_HEAP_OPTS=-Xms32M -Xmx128M',
+                  '/opt/kafka/bin/kafka-topics.sh', '--bootstrap-server', 'localhost:9092', '--create',
+                  '--if-not-exists', '--topic', topic, '--partitions', '1', '--replication-factor', '1'])
+        sql = _code('clinic_windows.sql').replace('petclinic-snapshot-20261011', input_topic) \
+            .replace('petclinic-windows-20261011', output_topic) \
+            .replace('petclinic-flink-20261011', group) \
+            .replace('Petclinic bounded snapshot window acceptance', 'Petclinic Airflow bounded daily windows')
+        submit = _exec('ns-bigdata', 'flink-jobmanager', ['bash', '-lc',
+                       "cat >/tmp/petclinic-airflow.sql; /opt/flink/bin/sql-client.sh -Drest.address=flink-jobmanager -Drest.port=8081 -f /tmp/petclinic-airflow.sql"],
+                       "SET 'execution.target'='remote';\nSET 'execution.attached'='false';\n" + sql, 120)
+        import re
+        found = re.findall(r'Job ID:\s*([a-f0-9]{32})', submit)
+        for _ in range(20):
+            running = [job for job in _flink_api('/jobs/overview').get('jobs', []) if job['state'] == 'RUNNING']
+            if len(running) == 1:
+                job_id = running[0]['jid']; jobs.append(job_id); break
+            time.sleep(2)
+        else:
+            raise RuntimeError('No unique running Flink job after SQL submission: ' + submit[-1000:])
+        text = core.read_namespaced_config_map(snapshot['config_map'], 'default').data['visits.csv']
+        rows = list(csv.DictReader(io.StringIO(text)))
+        messages = '\n'.join(json.dumps({'snapshot_id': snapshot['batch_id'], 'visit_id': int(row['visit_id']),
+                                           'visit_date': row['visit_date']}) for row in rows) + '\n'
+        _exec('ns-bigdata', 'kafka', ['env', 'KAFKA_HEAP_OPTS=-Xms32M -Xmx128M',
+              '/opt/kafka/bin/kafka-console-producer.sh', '--bootstrap-server', 'localhost:9092',
+              '--topic', input_topic, '--producer-property', 'acks=all',
+              '--producer-property', 'enable.idempotence=true'], messages, 90)
+        values = {}
+        raw = ''
+        for _ in range(40):
+            raw = _exec('ns-bigdata', 'kafka', ['sh', '-lc',
+                   f'env KAFKA_HEAP_OPTS="-Xms32M -Xmx128M" /opt/kafka/bin/kafka-console-consumer.sh --bootstrap-server localhost:9092 --topic {output_topic} --from-beginning --timeout-ms 4000 --max-messages 10000 --property print.key=true --property key.separator="\t" 2>/dev/null || test $? -eq 1'], timeout=20)
+            for line in raw.splitlines():
+                if '\t' in line:
+                    key, value = line.split('\t', 1)
+                    if value not in ('', 'null'):
+                        decoded = json.loads(value)
+                        if decoded.get('snapshot_id') == snapshot['batch_id']:
+                            values[key] = decoded
+            total = sum(int(value['visits']) for value in values.values())
+            if total == baseline['input_rows']:
+                break
+            if total > baseline['input_rows']:
+                raise RuntimeError('Flink output duplicated the bounded batch')
+            time.sleep(3)
+        else:
+            raise RuntimeError('Flink daily window output did not reconcile')
+        checkpoint = None
+        for _ in range(30):
+            checks = _flink_api('/jobs/' + job_id + '/checkpoints')
+            if checks.get('counts', {}).get('completed', 0) > 0:
+                checkpoint = checks.get('latest', {}).get('completed'); break
+            time.sleep(3)
+        if checkpoint is None:
+            raise RuntimeError('Flink completed no checkpoint')
+        offsets = _exec('ns-bigdata', 'kafka', ['env', 'KAFKA_HEAP_OPTS=-Xms32M -Xmx128M',
+                        '/opt/kafka/bin/kafka-consumer-groups.sh', '--bootstrap-server', 'localhost:9092',
+                        '--describe', '--group', group])
+        try:
+            _flink_api('/jobs/' + job_id + '?mode=cancel', 'PATCH')
+        except Exception:
+            pass
+        _execution(snapshot['batch_id'], 'flink-complete', flink_job_id=job_id,
+                   kafka_input_topic=input_topic, kafka_output_topic=output_topic,
+                   kafka_consumer_group=group)
+        return {'job_id': job_id, 'input_topic': input_topic, 'output_topic': output_topic,
+                'consumer_group': group, 'input_rows': len(rows), 'output_visits': total,
+                'output_keys': len(values), 'checkpoint': checkpoint, 'offsets': offsets,
+                'message_sample': list(values.values())[:3]}
+    finally:
+        for job in jobs:
+            try:
+                _flink_api('/jobs/' + job + '?mode=cancel', 'PATCH')
+            except Exception:
+                pass
+        for name in ('flink-jobmanager', 'flink-taskmanager'):
+            try:
+                apps.patch_namespaced_deployment_scale(name, 'ns-bigdata', {'spec': {'replicas': 0}})
+            except Exception:
+                pass
+
+
+def publish_orchestrated(snapshot, start, end, dag_run_id):
+    result = publish(quality(extract(start, end)), 'airflow:' + snapshot['batch_id'])
+    _execution(snapshot['batch_id'], 'published')
+    return result
+
+
+def verify_trino_and_superset(snapshot, baseline):
+    sql = ("SELECT visits FROM postgresql.petclinic_analytics.runs "
+           "WHERE run_id='airflow:" + snapshot['batch_id'].replace("'", "''") + "' AND status='success'")
+    request = urllib.request.Request('http' + '://trino.data-infra:8080/v1/statement', data=sql.encode(), method='POST',
+                                     headers={'X-Trino-User': 'petclinic-airflow', 'X-Trino-Catalog': 'postgresql',
+                                              'X-Trino-Schema': 'petclinic_analytics'})
+    with urllib.request.urlopen(request, timeout=20) as response:
+        page = json.loads(response.read())
+    query_id = page['id']; rows = page.get('data', [])
+    while page.get('nextUri'):
+        with urllib.request.urlopen(page['nextUri'], timeout=20) as response:
+            page = json.loads(response.read())
+        rows.extend(page.get('data', []))
+    if not rows or int(rows[0][0]) != snapshot['input_rows']:
+        raise ValueError('Trino result does not match the source snapshot')
+    with urllib.request.urlopen('http' + '://superset.data-infra:8088/health', timeout=10) as response:
+        health = response.read().decode().strip()
+    if response.status != 200:
+        raise RuntimeError('Superset health endpoint failed')
+    # Chart IDs are read from the existing Superset metadata without exposing credentials.
+    chart = _exec('ns-data', 'mysql', ['sh', '-lc',
+                  'MYSQL_PWD="$MYSQL_ROOT_PASSWORD" mysql -uroot --batch --raw --skip-column-names superset -e "SELECT id FROM slices WHERE slice_name LIKE \'Petclinic%\' ORDER BY id LIMIT 1"'])
+    chart_id = int([line for line in chart.splitlines() if line.strip().isdigit()][0])
+    _execution(snapshot['batch_id'], 'verified', trino_query_id=query_id, superset_chart_id=chart_id)
+    return {'trino_query_id': query_id, 'trino_visits': int(rows[0][0]),
+            'superset_health': health, 'superset_chart_id': chart_id,
+            'mysql_window_visits': baseline['window_visits']}
+
+
+def complete_execution(snapshot):
+    _execution(snapshot['batch_id'], 'complete', 'success')
+    return {'batch_id': snapshot['batch_id'], 'status': 'success'}
+
+
+def release_guard(guard, snapshot=None, failed=False, error=None):
+    core, apps, custom, coordination = _kube()
+    if snapshot:
+        if failed:
+            _execution(snapshot['batch_id'], 'failed', 'failed', error=(error or 'Airflow task failed')[:2000])
+        try:
+            core.delete_namespaced_config_map(snapshot['config_map'], 'default')
+        except Exception:
+            pass
+        for app in custom.list_namespaced_custom_object('sparkoperator.k8s.io', 'v1beta2', 'default',
+                                                        'sparkapplications',
+                                                        label_selector='execution=' + snapshot['execution_id']).get('items', []):
+            try:
+                custom.delete_namespaced_custom_object('sparkoperator.k8s.io', 'v1beta2', 'default',
+                                                       'sparkapplications', app['metadata']['name'])
+            except Exception:
+                pass
+    for name in ('flink-jobmanager', 'flink-taskmanager'):
+        try:
+            apps.patch_namespaced_deployment_scale(name, 'ns-bigdata', {'spec': {'replicas': 0}})
+        except Exception:
+            pass
+    current = coordination.read_namespaced_lease(LEASE_NAME, LEASE_NAMESPACE)
+    if current.metadata.uid != guard['lease_uid'] or current.spec.holder_identity != guard['holder']:
+        raise RuntimeError('Heavy resource Lease ownership changed; refusing unsafe release')
+    if guard.get('owned_quiet'):
+        _jenkins('/cancelQuietDown', 'POST')
+    coordination.delete_namespaced_lease(LEASE_NAME, LEASE_NAMESPACE)
+    return {'released': True, 'jenkins_resumed': guard.get('owned_quiet', False)}
 
 
 if __name__ == '__main__':

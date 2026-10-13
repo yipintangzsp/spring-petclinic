@@ -1,6 +1,5 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
-namespace: data-infra
 resources:
   - airflow/config.json
   - airflow/airflow-api-server.json
@@ -8,10 +7,15 @@ resources:
   - airflow/airflow-dag-processor.json
   - airflow/airflow-triggerer.json
   - airflow/airflow-statsd.json
+  - airflow/orchestration-rbac.yaml
 configMapGenerator:
   - name: petclinic-analysis-code
+    namespace: data-infra
     files:
       - clinic_task.py=clinic_task.py
       - petclinic_dag.py=petclinic_dag.py
+      - clinic_snapshot.py=spark/clinic_snapshot.py
+      - clinic_windows.sql=flink/clinic_windows.sql
+      - schema.sql=schema.sql
 generatorOptions:
   disableNameSuffixHash: true
