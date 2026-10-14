@@ -268,7 +268,7 @@ def acquire_guard(start, end, dag_run_id):
         if owned_quiet:
             _jenkins('/quietDown', 'POST')
         state = _jenkins('/api/json?tree=quietingDown,jobs[name,lastBuild[building]]')
-        active = [job['name'] for job in state.get('jobs', []) if job.get('lastBuild', {}).get('building')]
+        active = [job['name'] for job in state.get('jobs', []) if (job.get('lastBuild') or {}).get('building')]
         if active:
             raise RuntimeError(f'Jenkins still has active builds: {active}')
     except Exception:

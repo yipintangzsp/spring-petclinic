@@ -1,0 +1,24 @@
+{
+  "spec": {
+    "template": {
+      "spec": {
+        "containers": [
+          {
+            "name": "trivy",
+            "image": "192.168.1.58:30050/platform-repair/harbor-trivy-arm64@sha256:c7586c7d21d967a5c652827256f1b357761c4384f6b5c7e7f459dcbda01e2355",
+            "env": [
+              {
+                "name": "SCANNER_TRIVY_DB_REPOSITORY",
+                "value": "ghcr.io/aquasecurity/trivy-db"
+              },
+              {
+                "name": "SCANNER_TRIVY_JAVA_DB_REPOSITORY",
+                "value": "ghcr.io/aquasecurity/trivy-java-db"
+              }
+            ]
+          }
+        ]
+      }
+    }
+  }
+}

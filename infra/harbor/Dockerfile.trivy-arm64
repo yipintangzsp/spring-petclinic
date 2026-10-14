@@ -1,0 +1,15 @@
+FROM golang:1.24-alpine AS builder
+ENV GOPROXY=https://goproxy.cn,direct
+WORKDIR /src
+COPY go.mod go.sum ./
+RUN go mod download
+COPY . .
+RUN CGO_ENABLED=0 GOOS=linux GOARCH=arm64 go build -trimpath -o /out/scanner-trivy ./cmd/scanner-trivy
+
+FROM aquasec/trivy:0.69.3
+ARG TRIVY_VERSION=0.69.3
+RUN adduser -u 10000 -D -g '' scanner scanner
+COPY --from=builder /out/scanner-trivy /home/scanner/bin/scanner-trivy
+ENV TRIVY_VERSION=${TRIVY_VERSION}
+USER scanner
+ENTRYPOINT ["/home/scanner/bin/scanner-trivy"]

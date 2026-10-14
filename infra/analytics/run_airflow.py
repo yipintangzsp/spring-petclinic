@@ -87,7 +87,8 @@ def run(revision, evidence_path):
             jenkins('/quietDown', 'POST')
             owned_quiet = True
         state = jenkins('/api/json?tree=quietingDown,jobs[name,lastBuild[building]]')
-        active = [job['name'] for job in state.get('jobs', []) if job.get('lastBuild', {}).get('building')]
+        active = [job['name'] for job in state.get('jobs', [])
+                  if (job.get('lastBuild') or {}).get('building')]
         if active:
             raise RuntimeError('Jenkins still has active builds: ' + ','.join(active))
 
