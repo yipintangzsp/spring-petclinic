@@ -3,6 +3,12 @@
 		"-//Checkstyle//DTD SuppressionFilter Configuration 1.2//EN"
 		"https://checkstyle.org/dtds/suppressions_1_2.dtd">
 <suppressions>
+    <!-- Existing private GitLab SCM service has no TLS listener. -->
+    <suppress files="k8s[\\/]production[\\/]alertmanager-application\.yaml$" checks="NoHttp" message=".*http://gitlab-service\.ns-devops\.svc\.cluster\.local/root/petclinic-platform\.git.*"/>
+    <!-- The existing local egress proxy is HTTP; destination TLS remains verified. -->
+    <suppress files="infra[\\/]harbor[\\/]trivy-arm64-patch\.json$" checks="NoHttp" message=".*http://192\.168\.1\.236:10808.*"/>
+    <!-- Recovery documentation records the same existing LAN listeners. -->
+    <suppress files="docs[\\/]RECOVERY-20261014\.md$" checks="NoHttp" message=".*http://(petclinic|superset|jenkins)\.devops\.local/.*"/>
     <!-- These documented existing LAN listeners have no TLS endpoint. -->
     <suppress files="docs[\\/]OPERATIONS-20261011\.md$" checks="NoHttp" message=".*http://([a-z-]+\.devops\.local|core\.harbor\.domain)/.*"/>
     <!-- Probe the existing LAN ingress through SSH; this listener has no TLS. -->

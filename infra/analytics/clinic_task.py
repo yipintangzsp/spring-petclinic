@@ -82,10 +82,12 @@ def quality(batch):
     return batch
 
 
-def publish(batch, run_id):
+def publish(batch, run_id, publication_status='success'):
     from psycopg2.extras import execute_values
     if not run_id or len(run_id) > 200:
         raise ValueError('Invalid analysis run ID')
+    if publication_status not in ('success', 'pending'):
+        raise ValueError('Unsupported publication status')
     kind = os.environ.get('ANALYTICS_SOURCE_KIND', '')
     if kind not in ('demo', 'business'):
         raise ValueError('Explicit demo/business provenance is required')
@@ -118,12 +120,12 @@ def publish(batch, run_id):
             counts = batch['counts']
             cur.execute('''INSERT INTO petclinic_analytics.runs
                         (run_id,generated_at,window_start,window_end,source_kind,owners,pets,vets,visits,watermark,input_rows,status)
-                        VALUES (%s,now(),%s,%s,%s,%s,%s,%s,%s,%s,%s,'success')
+                        VALUES (%s,now(),%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)
                         ON CONFLICT (run_id) DO UPDATE SET generated_at=EXCLUDED.generated_at,
                         owners=EXCLUDED.owners,pets=EXCLUDED.pets,vets=EXCLUDED.vets,visits=EXCLUDED.visits,
                         watermark=EXCLUDED.watermark,input_rows=EXCLUDED.input_rows''',
                         (run_id,batch['window_start'],batch['window_end'],kind,counts['owners'],
-                         counts['pets'],counts['vets'],counts['visits'],watermark,len(batch['visits'])))
+                         counts['pets'],counts['vets'],counts['visits'],watermark,len(batch['visits']),publication_status))
             cur.execute('''INSERT INTO petclinic_analytics.daily_visits (run_id,stat_date,visits)
                            SELECT %s,visit_date,count(*) FROM petclinic_analytics.visit_facts
                            WHERE visit_date BETWEEN %s AND %s GROUP BY visit_date
@@ -160,18 +162,21 @@ def _selector_pod(namespace, deployment):
 
 
 def _exec(namespace, deployment, command, body=None, timeout=90):
+    import base64
     from kubernetes.stream import stream
     core, _, _, _ = _kube()
     pod = _selector_pod(namespace, deployment)
-    if body is None:
-        return stream(core.connect_get_namespaced_pod_exec, pod, namespace, command=command,
-                      stderr=True, stdin=False, stdout=True, tty=False,
-                      _request_timeout=timeout)
+    if body is not None:
+        payload = body.encode()
+        if len(payload) > 512 * 1024:
+            raise ValueError('Remote exec input exceeds the 512 KiB bound')
+        # Close the child's stdin through a finite pipe. The installed Kubernetes
+        # websocket protocol has no portable close_stdin method.
+        command = ['sh', '-c', 'payload="$1"; shift; printf %s "$payload" | base64 -d | "$@"',
+                   'petclinic-exec', base64.b64encode(payload).decode(), *command]
     channel = stream(core.connect_get_namespaced_pod_exec, pod, namespace, command=command,
-                     stderr=True, stdin=True, stdout=True, tty=False,
+                     stderr=True, stdin=False, stdout=True, tty=False,
                      _preload_content=False, _request_timeout=timeout)
-    channel.write_stdin(body)
-    channel.close_stdin()
     output = ''
     deadline = time.monotonic() + timeout
     while channel.is_open() and time.monotonic() < deadline:
@@ -180,7 +185,13 @@ def _exec(namespace, deployment, command, body=None, timeout=90):
             output += channel.read_stdout()
         if channel.peek_stderr():
             output += channel.read_stderr()
+    if channel.is_open():
+        channel.close()
+        raise TimeoutError(f'Remote exec exceeded {timeout} seconds')
+    code = channel.returncode
     channel.close()
+    if code not in (0, None):
+        raise RuntimeError(f'Remote exec failed with code {code}: {output[-1500:]}')
     return output
 
 
@@ -540,14 +551,14 @@ def run_flink_bounded(snapshot, baseline):
 
 
 def publish_orchestrated(snapshot, start, end, dag_run_id):
-    result = publish(quality(extract(start, end)), 'airflow:' + snapshot['batch_id'])
+    result = publish(quality(extract(start, end)), 'airflow:' + snapshot['batch_id'], 'pending')
     _execution(snapshot['batch_id'], 'published')
     return result
 
 
 def verify_trino_and_superset(snapshot, baseline):
     sql = ("SELECT visits FROM postgresql.petclinic_analytics.runs "
-           "WHERE run_id='airflow:" + snapshot['batch_id'].replace("'", "''") + "' AND status='success'")
+           "WHERE run_id='airflow:" + snapshot['batch_id'].replace("'", "''") + "' AND status IN ('pending','success')")
     request = urllib.request.Request('http' + '://trino.data-infra:8080/v1/statement', data=sql.encode(), method='POST',
                                      headers={'X-Trino-User': 'petclinic-airflow', 'X-Trino-Catalog': 'postgresql',
                                               'X-Trino-Schema': 'petclinic_analytics'})
@@ -575,7 +586,14 @@ def verify_trino_and_superset(snapshot, baseline):
 
 
 def complete_execution(snapshot):
-    _execution(snapshot['batch_id'], 'complete', 'success')
+    with connect() as db, db.cursor() as cur:
+        cur.execute("UPDATE petclinic_analytics.runs SET status='success' WHERE run_id=%s",
+                    ('airflow:' + snapshot['batch_id'],))
+        if cur.rowcount != 1:
+            raise RuntimeError('No staged analytics result to publish')
+        cur.execute("""UPDATE petclinic_analytics.executions
+                       SET stage='complete',status='success',finished_at=now(),updated_at=now()
+                       WHERE batch_id=%s""", (snapshot['batch_id'],))
     return {'batch_id': snapshot['batch_id'], 'status': 'success'}
 
 

@@ -33,8 +33,23 @@ CREATE TABLE IF NOT EXISTS petclinic_analytics.runs (
   visits BIGINT NOT NULL CHECK (visits >= 0),
   watermark BIGINT NOT NULL,
   input_rows INTEGER NOT NULL,
-  status TEXT NOT NULL CHECK (status IN ('success'))
+  status TEXT NOT NULL CHECK (status IN ('success','pending'))
 );
+-- Extend the existing result table without changing its successful rows.
+-- Readers continue selecting status='success' until orchestration verifies it.
+DO $$
+BEGIN
+  IF EXISTS (
+    SELECT 1 FROM pg_constraint
+    WHERE conrelid='petclinic_analytics.runs'::regclass
+      AND conname='runs_status_check'
+      AND pg_get_constraintdef(oid) NOT LIKE '%pending%'
+  ) THEN
+    ALTER TABLE petclinic_analytics.runs DROP CONSTRAINT runs_status_check;
+    ALTER TABLE petclinic_analytics.runs ADD CONSTRAINT runs_status_check
+      CHECK (status IN ('success','pending'));
+  END IF;
+END $$;
 CREATE TABLE IF NOT EXISTS petclinic_analytics.visit_facts (
   visit_id BIGINT PRIMARY KEY,
   visit_date DATE NOT NULL,

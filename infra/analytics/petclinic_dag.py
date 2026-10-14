@@ -71,13 +71,12 @@ def insights():
         context = get_current_context()
         guard = context['ti'].xcom_pull(task_ids='acquire')
         value = context['ti'].xcom_pull(task_ids='snapshot')
-        states = context['dag_run'].get_task_instances()
-        failures = [item for item in states if item.task_id != 'cleanup' and
-                    str(getattr(item.state, 'value', item.state)).lower() in ('failed', 'upstream_failed')]
-        error = '; '.join(f'{item.task_id}:{item.state}' for item in failures)
+        completed = context['ti'].xcom_pull(task_ids='complete')
+        failed = not completed or completed.get('status') != 'success'
+        error = 'Upstream verification did not complete; inspect task attempts in Airflow' if failed else None
         if guard is None:
             return {'released': False, 'reason': 'admission did not acquire the shared Lease'}
-        return release_guard(guard, value, bool(failures), error)
+        return release_guard(guard, value, failed, error)
 
     guard = acquire()
     value = snapshot(guard)
