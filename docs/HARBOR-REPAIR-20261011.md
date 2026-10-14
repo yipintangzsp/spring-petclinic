@@ -1,5 +1,7 @@
 # Harbor 最小修复与扫描数据库维护
 
+> 2026-10-14 当前状态以 [恢复与发布验收](RECOVERY-20261014.md) 为准：生产 #134；#135 受控停止；联合编排未完成（宿主磁盘不足、Java DB 更新网络受阻）。以下旧数字与验收属于历史记录。Spark Operator/Webhook 当前常驻保留。
+
 Redis AOF 原件 13,195,889 字节，SHA256 `c4f7d5ca08e84f0db8c7e2d41d62df87fc2b61c47f02a892407cc6a925a10847`。独立副本验证 RDB 校验及有效 AOF 前缀正常，末尾 135 字节全部为零。用户单独授权后，保存所有 AOF/RDB/manifest 原件，仅截除 135 字节；修复后 SHA256 `6bd2a1dbac2e2fefa73e39ea065575535198c357cb5f28a0b905926354bad0d4`。Redis PONG、BGSAVE、AOF 写入状态均正常，core/jobservice 恢复。
 
 原件和演练副本保存在服务器私有目录 `/opt/petclinic-observability/backups/platform-20261011/redis-original`、`redis-rehearsal`。恢复原件会重新引入已确认损坏尾部，不应作为常规回滚。任何进一步修改持久化文件必须重新取证；不得自动截断其他文件。

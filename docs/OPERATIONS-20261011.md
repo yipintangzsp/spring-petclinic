@@ -1,5 +1,7 @@
 # Petclinic 发布与按需分析操作
 
+> 2026-10-14 当前状态以 [恢复与发布验收](RECOVERY-20261014.md) 为准：生产 #134；#135 受控停止；联合编排未完成（宿主磁盘不足、Java DB 更新网络受阻）。以下旧数字与验收属于历史记录。Spark Operator/Webhook 当前常驻保留。
+
 本轮内部源码仅推送私有 GitLab `root/petclinic-platform`。公开 GitHub 原仓库和 Cook 的审查后公开导出流程保留；内部配置、网络、数据库备份、原始日志不得直接公开同步。详细组件、资源和发布结果分别见本目录 inventory、RESOURCE-POLICY 和 UPGRADE 文件。
 
 ## 业务与发布入口
@@ -36,7 +38,7 @@ python3 infra/analytics/run_airflow.py \
 
 # 上一个控制器完全退出后，才执行下一个。
 python3 infra/analytics/run_spark.py \
-  --image 127.0.0.1:30050/platform-upgrade/spark-runtime@sha256:711ace285d47914adfeec1a4db16d30632cade0717c971e9049d4adf59dcb500 \
+  --from 2026-01-01 --to 2026-12-31 --repeats 2 \
   --evidence /Users/zhangsir/code/evidence/platform-20261011/spark-new-run
 
 python3 infra/analytics/run_flink.py \

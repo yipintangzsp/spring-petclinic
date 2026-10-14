@@ -1,5 +1,7 @@
 # 全平台盘点 · 2026-10-12
 
+> 2026-10-14 当前状态以 [恢复与发布验收](RECOVERY-20261014.md) 为准：生产 #134；#135 受控停止；联合编排未完成（宿主磁盘不足、Java DB 更新网络受阻）。以下旧数字与验收属于历史记录。Spark Operator/Webhook 当前常驻保留。
+
 已重新遍历全部命名空间工作负载、存储、Service/Ingress、Helm与Argo对象。功能状态依据真实输入/输出，版本与节点架构分列；镜像架构来自devops本地containerd OCI config，云节点从同名多架构索引选择的子镜像未逐一验证，不能由本地缓存架构推断；未缓存项明确记为未验证。Harbor portal和Trivy镜像为AMD64运行于ARM64节点，存在仿真开销。最终发布摘要另见交付文档。
 
 |组件 / 命名空间|来源 / 镜像版本|节点架构 / 本地镜像缓存架构|期望/就绪|资源与存储|入口|实际用途|状态 / 证据 / 下一步|
@@ -101,3 +103,15 @@ Portainer Kubernetes API真实版本2.39.5；宿主Docker另有Portainer2.39.0�
 通知控制器/Dex/ApplicationSet无本轮实际输入输出，不能将Running当作完整功能。新分析规则health=ok，正常0副本不报错，通知送达未验证。
 
 详细requests/limits、init容器、PVC模板、hostPath、来源与镜像架构在同目录JSON；无资源限制的历史支持组件如实记录，不将它们伪装为已完成全平台容量治理。
+
+## 2026-10-14 当前关键组件分类
+
+|组件|分类|当前副本/实际内存观测|限制|
+|---|---|---|---|
+|Petclinic、GitLab、Jenkins、Sonar、Harbor、Kafka|已接入业务流程|业务3副本约1280Mi；GitLab2477Mi、Jenkins847Mi、Sonar1623Mi、Kafka466Mi|最新成功发布#134，#135未晋升；Trivy Java DB更新受阻|
+|Trino / Superset|已接入统计查询与看板，历史功能验收通过|本地协调器864Mi、Superset Web235Mi|本轮没有完整DAG下的新Query ID/图表数据验收；云worker0，阻塞根因未解决|
+|Spark Operator / Webhook|已完成独立功能验收，用户要求常驻|1/1；实测13Mi /18Mi|requests/limits仍为controller1Gi、webhook256Mi；Driver/Executor当前无|
+|Airflow|历史独立功能验收通过；按需关闭|核心0、任务Pod无|本轮联合编排未完成|
+|Flink|历史独立窗口/状态恢复验收通过；按需关闭|JM/TM0|本轮联合编排未完成|
+|Superset worker / Trino云worker|按需关闭|0|同步查询沿用本地模式|
+|Prometheus / Alertmanager|规则firing验收通过；接收/路由未完成|Prometheus561Mi；Alertmanager未部署|无外部通知送达证据|

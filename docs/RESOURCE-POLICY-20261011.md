@@ -1,5 +1,7 @@
 # 实测资源与按需运行策略 · 2026-10-11
 
+> 2026-10-14 当前状态以 [恢复与发布验收](RECOVERY-20261014.md) 为准：生产 #134；#135 受控停止；联合编排未完成（宿主磁盘不足、Java DB 更新网络受阻）。以下旧数字与验收属于历史记录。Spark Operator/Webhook 当前常驻保留。
+
 ## 基线与准入
 
 Mac M1 实测物理内存 32 GiB，保留现有 UTM 配置；不关机扩容。初始 devops 客机约 19.48 GiB，6 CPU，12 GiB swap；恢复工作时重新测得24.39 GiB（24976.76MiB），后续按这个实时环境验证。基线 11 次、约 324 秒，MemAvailable 最低 2.87 GiB，所有本地业务/数据库健康/API 检查成功；根盘 87%、剩余约 32 GiB。Mac、客机 CPU/内存/Swap/磁盘/inode/I/O/PSI、全部节点 allocatable/Pressure/Pod requests/limits 已单独取证。
@@ -56,3 +58,11 @@ Trivy数据库大文件缓存准备曾触发memory full PSI12.74%的真实安全
 原已成功发布 #127 的精确构建窗口（排除随后中止的#128）：21个样本，可用内存最低8174.53MiB、Swap最高891.93MiB、memory/io full PSI 0.20/2.03%，全部业务/数据库健康与API检查正常。
 
 最终成功 #131 完整窗口32个样本、677.144s，VM可用最低7302.75MiB、Swap最高924.02MiB、memory/io full PSI 0.51/2.10%；Mac空闲最低47%。全部业务/数据库健康与API检查正常，无资源安全停止。
+
+## 2026-10-14 准入复验
+
+最终五样本 VM 可用最低12590MiB，Mac内存空闲40–44%、Swap3705–3713MiB，VM根盘可用约30GiB。Airflow完整4096MiB + 串行Spark或Flink4096MiB + 系统/业务安全储备1250MiB =9442MiB，控制器准入10240MiB。MySQL主/从445/459MiB、Kafka466MiB、Trino864MiB、Superset235MiB、业务约1280MiB及现有系统服务均计入运行基线；不把这些必要服务当作可随意关闭的余量。
+
+Mac数据卷最低5979MiB，低于8192MiB停止线2213MiB。已回收可重建缓存并fstrim；仍拒绝联合编排。后续须先稳定恢复至少12GiB宿主可用空间，为Java漏洞库/镜像/日志增长保留余量。未以降低requests/limits、放宽停止阈值或删除持久业务数据准入。详情及原始资源证据见RECOVERY-20261014.md。
+
+Spark Operator与Webhook按用户要求常驻1副本，已纳入Argo spark-operator应用；driver/executor、Flink及Airflow任务计算仍按需。旧表格中“完成后关闭Operator”的历史策略已被此期望状态替代。
