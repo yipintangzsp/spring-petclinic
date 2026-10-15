@@ -9,7 +9,7 @@ import subprocess
 import time
 from pathlib import Path
 
-from controlled import blockers, http_bad, jenkins, kube, sample
+from controlled import HOST, blockers, http_bad, jenkins, kube, sample
 
 CORE = ['airflow-api-server', 'airflow-scheduler', 'airflow-dag-processor', 'airflow-statsd']
 ALL = CORE + ['airflow-triggerer']
@@ -55,12 +55,15 @@ def wait_ready(record):
 
 
 def page(evidence, run_id, suffix):
-    result = subprocess.run(['curl', '--noproxy', '*', '-sS', '--max-time', '8',
+    result = subprocess.run(['curl', '--noproxy', '*', '--resolve', f'petclinic.devops.local:80:{HOST}',
+                             '-sS', '--max-time', '8',
                              '-w', '\n%{http_code}', 'http' + '://petclinic.devops.local/insights'],
                             capture_output=True, text=True, timeout=10)
     html, _, status = result.stdout.rpartition('\n')
     if result.returncode or status != '200':
-        raise RuntimeError('Business insights page failed during orchestration')
+        (evidence / f'{run_id}-page-error.json').write_text(json.dumps({
+            'exit_code': result.returncode, 'http_status': status, 'stderr': result.stderr[-1000:]}))
+        raise RuntimeError('Business insights page failed during orchestration: HTTP ' + status)
     (evidence / f'{run_id}-{suffix}.html').write_text(html)
     return {'http_status': int(status), 'states': re.findall(r'analysis-(running|success|failed)', html),
             'sha256': hashlib.sha256(html.encode()).hexdigest()}
@@ -98,7 +101,8 @@ def wait_run(pod, run_id, evidence, history, record):
         result['page'] = page(evidence, run_id, 'current')
         for state in result['page']['states']:
             if state not in observed:
-                page(evidence, run_id, state)
+                (evidence / f'{run_id}-{state}.html').write_bytes(
+                    (evidence / f'{run_id}-current.html').read_bytes())
                 observed.add(state)
         result['observed_page_states'] = sorted(observed)
         application = details.get('spark_submit')
