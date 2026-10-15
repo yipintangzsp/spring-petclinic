@@ -1,10 +1,18 @@
 import unittest
 import hashlib
+import subprocess
 from unittest.mock import MagicMock, patch
-from clinic_task import publish_orchestrated, quality, release_guard, validate_snapshot, window
+from clinic_task import finite_input, publish_orchestrated, quality, release_guard, validate_snapshot, window
 
 
 class QualityChecks(unittest.TestCase):
+    def test_finite_remote_input_handles_a_real_batch_above_linux_single_argument_limit(self):
+        body = ('{"snapshot_id":"bounded","visit_id":1234,"visit_date":"2026-10-11"}\n' * 2300)
+        command = finite_input(['cat'], body)
+        self.assertLess(max(len(argument.encode()) for argument in command), 128 * 1024)
+        result = subprocess.run(command, capture_output=True, text=True, check=True, timeout=5)
+        self.assertEqual(result.stdout, body)
+
     def batch(self):
         return {'window_start': '2026-01-01', 'window_end': '2026-12-31', 'watermark': 0,
                 'counts': {'pets': 1}, 'visits': [{'id': 1, 'date': '2026-10-11',
@@ -39,6 +47,15 @@ class QualityChecks(unittest.TestCase):
         with patch('clinic_task.extract', return_value=batch), patch('clinic_task.publish') as writer:
             with self.assertRaisesRegex(ValueError, 'Source changed'):
                 publish_orchestrated({'sha256': 'captured'}, '2026-01-01', '2026-12-31', 'run')
+            writer.assert_not_called()
+
+    def test_changed_dimensions_cannot_reuse_an_unchanged_visit_snapshot(self):
+        batch = self.batch()
+        batch.update(source_sha256='unchanged', source_metadata_sha256='new-pet-dimensions')
+        with patch('clinic_task.extract', return_value=batch), patch('clinic_task.publish') as writer:
+            with self.assertRaisesRegex(ValueError, 'Source changed'):
+                publish_orchestrated({'sha256': 'unchanged', 'source_metadata_sha256': 'captured'},
+                                     '2026-01-01', '2026-12-31', 'run')
             writer.assert_not_called()
 
     def test_foreign_lease_prevents_cleanup(self):

@@ -37,6 +37,12 @@ def window(start, end):
     return first, last
 
 
+def snapshot_identity(source_sha256, counts, types):
+    identity = {'visits_sha256': source_sha256, 'counts': counts,
+                'pet_types': sorted(types, key=lambda item: item['name'])}
+    return hashlib.sha256(json.dumps(identity, sort_keys=True, separators=(',', ':')).encode()).hexdigest()
+
+
 def extract(start, end):
     first, last = window(start, end)
     with connect() as db:
@@ -71,7 +77,8 @@ def extract(start, end):
             source_sha256 = hashlib.sha256(source.getvalue().encode()).hexdigest()
     return {'window_start': str(first), 'window_end': str(last), 'watermark': watermark,
             'counts': counts, 'visits': visits, 'types': types, 'missing_type': missing_type,
-            'source_sha256': source_sha256}
+            'source_sha256': source_sha256,
+            'source_metadata_sha256': snapshot_identity(source_sha256, counts, types)}
 
 
 def quality(batch):
@@ -207,19 +214,27 @@ def _selector_pod(namespace, deployment):
     return pods[0].metadata.name
 
 
-def _exec(namespace, deployment, command, body=None, timeout=90, pod=None):
+def finite_input(command, body):
     import base64
+    payload = body.encode()
+    if len(payload) > 512 * 1024:
+        raise ValueError('Remote exec input exceeds the 512 KiB bound')
+    encoded = base64.b64encode(payload).decode()
+    chunks = [encoded[i:i + 32768] for i in range(0, len(encoded), 32768)]
+    # Linux also limits each argument to 128 KiB, independently of ARG_MAX.
+    # printf is a shell builtin; a finite pipe supplies portable stdin EOF.
+    script = ('count="$1"; shift; payload=""; while [ "$count" -gt 0 ]; do '
+              'payload="$payload$1"; shift; count=$((count-1)); done; '
+              'printf %s "$payload" | base64 -d | "$@"')
+    return ['sh', '-c', script, 'petclinic-exec', str(len(chunks)), *chunks, *command]
+
+
+def _exec(namespace, deployment, command, body=None, timeout=90, pod=None):
     from kubernetes.stream import stream
     core, _, _, _ = _kube()
     pod = pod or _selector_pod(namespace, deployment)
     if body is not None:
-        payload = body.encode()
-        if len(payload) > 512 * 1024:
-            raise ValueError('Remote exec input exceeds the 512 KiB bound')
-        # Close the child's stdin through a finite pipe. The installed Kubernetes
-        # websocket protocol has no portable close_stdin method.
-        command = ['sh', '-c', 'payload="$1"; shift; printf %s "$payload" | base64 -d | "$@"',
-                   'petclinic-exec', base64.b64encode(payload).decode(), *command]
+        command = finite_input(command, body)
     channel = stream(core.connect_get_namespaced_pod_exec, pod, namespace, command=command,
                      stderr=True, stdin=False, stdout=True, tty=False,
                      _preload_content=False, _request_timeout=timeout)
@@ -360,13 +375,20 @@ def create_snapshot(guard):
             cur.execute('SELECT count(*) FROM public.owners'); owners = cur.fetchone()[0]
             cur.execute('SELECT count(*) FROM public.pets'); pets = cur.fetchone()[0]
             cur.execute('SELECT count(*) FROM public.vets'); vets = cur.fetchone()[0]
+            cur.execute('''SELECT t.name,count(*) FROM public.pets p JOIN public.types t ON t.id=p.type_id
+                           GROUP BY t.name ORDER BY t.name LIMIT 65''')
+            types = [{'name': row[0], 'pets': row[1]} for row in cur.fetchall()]
     if not 0 < len(rows) <= MAX_ROWS:
         raise RuntimeError('Bounded visit snapshot is empty or exceeds 5000 rows')
     buffer = io.StringIO(); writer = csv.writer(buffer, lineterminator='\n')
     writer.writerow(['visit_id', 'visit_date', 'pet_id', 'pet_type'])
     writer.writerows((row[0], row[1].isoformat(), row[2], row[3]) for row in rows)
     text = buffer.getvalue(); digest = hashlib.sha256(text.encode()).hexdigest()
-    batch_id = f"petclinic-{guard['from']}-{guard['to']}-{digest[:12]}"
+    counts = {'owners': owners, 'pets': pets, 'vets': vets, 'visits': len(rows)}
+    if any(count > MAX_ROWS for count in counts.values()) or len(types) > 64:
+        raise ValueError('Snapshot dimensions exceed the approved row budget')
+    metadata_digest = snapshot_identity(digest, counts, types)
+    batch_id = f"petclinic-{guard['from']}-{guard['to']}-{metadata_digest[:12]}"
     execution_id = hashlib.sha256(guard['dag_run_id'].encode()).hexdigest()[:12]
     name = 'petclinic-' + digest[:20]
     core, _, _, _ = _kube()
@@ -395,6 +417,7 @@ def create_snapshot(guard):
                     attempt=petclinic_analytics.executions.attempt+1,updated_at=now()''',
                     (batch_id, guard['dag_run_id'], guard['from'], guard['to']))
     return {'batch_id': batch_id, 'config_map': name, 'sha256': digest, 'input_rows': len(rows),
+            'source_metadata_sha256': metadata_digest,
             'unique_visit_ids': len({row[0] for row in rows}), 'owners': owners, 'pets': pets,
             'vets': vets, 'execution_id': execution_id, 'holder': guard['holder'],
             'minimum_date': min(row[1] for row in rows).isoformat(),
@@ -715,7 +738,7 @@ def run_flink_bounded(snapshot, baseline):
 
 def publish_orchestrated(snapshot, start, end, dag_run_id):
     batch = quality(extract(start, end))
-    if batch['source_sha256'] != snapshot['sha256']:
+    if batch['source_sha256'] != snapshot['sha256'] or batch['source_metadata_sha256'] != snapshot['source_metadata_sha256']:
         raise ValueError('Source changed after the bounded snapshot; retain the last successful result')
     result = publish(batch, 'airflow:' + snapshot['batch_id'], 'pending')
     _execution(snapshot['batch_id'], 'published')
