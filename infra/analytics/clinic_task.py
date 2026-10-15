@@ -43,6 +43,112 @@ def snapshot_identity(source_sha256, counts, types):
     return hashlib.sha256(json.dumps(identity, sort_keys=True, separators=(',', ':')).encode()).hexdigest()
 
 
+def cpu_request_milli(value):
+    from decimal import Decimal, ROUND_CEILING
+    text = str(value)
+    factors = {'m': Decimal(1), 'u': Decimal('0.001'), 'n': Decimal('0.000001')}
+    factor = factors.get(text[-1:], Decimal(1000))
+    number = text[:-1] if text[-1:] in factors else text
+    return int((Decimal(number) * factor).to_integral_value(rounding=ROUND_CEILING))
+
+
+def pod_cpu_request_milli(pod):
+    spec = pod['spec']
+    if spec.get('resources', {}).get('requests', {}).get('cpu') is not None:
+        raise ValueError('Pod-level CPU allocation needs an explicitly reviewed budget')
+    def request(container):
+        return cpu_request_milli(container.get('resources', {}).get('requests', {}).get('cpu', '0'))
+    native_sidecars, initialization = 0, 0
+    for container in spec.get('initContainers', []):
+        value = request(container)
+        if container.get('restartPolicy') == 'Always':
+            native_sidecars += value
+            initialization = max(initialization, native_sidecars)
+        else:
+            initialization = max(initialization, native_sidecars + value)
+    return max(sum(request(c) for c in spec['containers']) + native_sidecars, initialization) + \
+        cpu_request_milli(spec.get('overhead', {}).get('cpu', '0'))
+
+
+SONAR_PAUSE = 'petclinic.devops.local/paused-sonar'
+SONAR_OWNER = 'petclinic.devops.local/analysis-holder'
+
+
+def restore_build_services(guard):
+    _, apps, _, coordination = _kube()
+    lease = coordination.read_namespaced_lease(LEASE_NAME, LEASE_NAMESPACE)
+    if lease.metadata.uid != guard['lease_uid'] or lease.spec.holder_identity != guard['holder']:
+        raise RuntimeError('Lease changed before build-service restoration')
+    original = json.loads((lease.metadata.annotations or {}).get(SONAR_PAUSE, 'null'))
+    if original is None:
+        return {'sonar_restored': True, 'sonar_paused': False}
+    item = apps.read_namespaced_stateful_set('sonarqube-sonarqube', 'sonarqube')
+    owner = (item.metadata.annotations or {}).get(SONAR_OWNER)
+    if item.metadata.uid != original['uid'] or owner not in (None, guard['holder']):
+        raise RuntimeError('Sonar ownership changed; preserve Lease and Jenkins pause')
+    if owner is None and item.spec.replicas != original['replicas']:
+        raise RuntimeError('Sonar has no owned restoration marker; preserve its state')
+    if item.spec.replicas != original['replicas']:
+        apps.patch_namespaced_stateful_set('sonarqube-sonarqube', 'sonarqube', [
+            {'op': 'test', 'path': '/metadata/uid', 'value': original['uid']},
+            {'op': 'test', 'path': '/metadata/annotations/petclinic.devops.local~1analysis-holder', 'value': guard['holder']},
+            {'op': 'replace', 'path': '/spec/replicas', 'value': original['replicas']}])
+    for _ in range(100):
+        item = apps.read_namespaced_stateful_set('sonarqube-sonarqube', 'sonarqube')
+        if item.metadata.uid != original['uid']:
+            raise RuntimeError('Sonar UID changed while restoring')
+        if item.status.ready_replicas == original['replicas']:
+            break
+        time.sleep(2)
+    else:
+        raise RuntimeError('Sonar readiness not restored; retain Lease and Jenkins pause')
+    if (item.metadata.annotations or {}).get(SONAR_OWNER) == guard['holder']:
+        apps.patch_namespaced_stateful_set('sonarqube-sonarqube', 'sonarqube', [
+            {'op': 'test', 'path': '/metadata/uid', 'value': original['uid']},
+            {'op': 'test', 'path': '/metadata/annotations/petclinic.devops.local~1analysis-holder', 'value': guard['holder']},
+            {'op': 'remove', 'path': '/metadata/annotations/petclinic.devops.local~1analysis-holder'}])
+    return {'sonar_restored': True, 'sonar_paused': True, 'sonar_replicas': original['replicas']}
+
+
+def admit_compute_cpu(guard):
+    core, apps, _, coordination = _kube()
+    measured = check_resources()
+    required = 2250  # Spark driver+executor 2000m plus 250m scheduling reserve.
+    available = measured['cpuAllocatableMilli'] - measured['cpuRequestedMilli']
+    paused = False
+    if available < required:
+        sonar = apps.read_namespaced_stateful_set('sonarqube-sonarqube', 'sonarqube')
+        if sonar.spec.replicas != 1 or (sonar.metadata.annotations or {}).get(SONAR_OWNER):
+            raise RuntimeError('CPU capacity insufficient; Sonar cannot be safely paused')
+        original = {'uid': sonar.metadata.uid, 'replicas': sonar.spec.replicas}
+        released = sum(cpu_request_milli(c.resources.requests.get('cpu', '0'))
+                       for c in sonar.spec.template.spec.containers if c.resources and c.resources.requests)
+        if available + released < required:
+            raise RuntimeError(f'CPU budget requires {required}m; even pausing Sonar leaves only {available + released}m')
+        # Every known scanner is dispatched by Jenkins; all jobs were checked idle
+        # and Jenkins remains quiet under the owned heavy Lease before this pause.
+        coordination.patch_namespaced_lease(LEASE_NAME, LEASE_NAMESPACE,
+            {'metadata': {'annotations': {SONAR_PAUSE: json.dumps(original)}}})
+        operations = [{'op': 'test', 'path': '/metadata/uid', 'value': original['uid']},
+                      {'op': 'test', 'path': '/spec/replicas', 'value': original['replicas']}]
+        if sonar.metadata.annotations is None:
+            operations.append({'op': 'add', 'path': '/metadata/annotations', 'value': {}})
+        operations += [
+            {'op': 'add', 'path': '/metadata/annotations/petclinic.devops.local~1analysis-holder', 'value': guard['holder']},
+            {'op': 'replace', 'path': '/spec/replicas', 'value': 0}]
+        apps.patch_namespaced_stateful_set('sonarqube-sonarqube', 'sonarqube', operations)
+        paused = True
+    for _ in range(40):
+        measured = check_resources()
+        available = measured['cpuAllocatableMilli'] - measured['cpuRequestedMilli']
+        sonar = apps.read_namespaced_stateful_set('sonarqube-sonarqube', 'sonarqube') if paused else None
+        if available >= required and (not paused or (sonar.status.replicas or 0) == 0):
+            return {'compute_cpu_milli': 2000, 'cpu_reserve_milli': 250,
+                    'cpu_available_milli': available, 'sonar_paused': paused}
+        time.sleep(2)
+    raise RuntimeError('CPU admission did not become available; do not submit compute')
+
+
 def extract(start, end):
     first, last = window(start, end)
     with connect() as db:
@@ -342,26 +448,34 @@ def acquire_guard(start, end, dag_run_id):
         if made.spec.holder_identity != holder:
             raise RuntimeError(f'Heavy resource lock is held by {made.spec.holder_identity}')
     owned_quiet = False
+    guard = {'holder': holder, 'lease_uid': made.metadata.uid}
     try:
         state = _jenkins('/api/json?tree=quietingDown,jobs[name,lastBuild[building]]')
-        owned_quiet = not state.get('quietingDown', False)
-        if owned_quiet:
+        quiet_note = 'petclinic.devops.local/jenkins-owned-quiet'
+        current_lease = coordination.read_namespaced_lease(LEASE_NAME, LEASE_NAMESPACE)
+        annotations = current_lease.metadata.annotations or {}
+        if quiet_note in annotations:
+            owned_quiet = annotations[quiet_note] == 'true'
+        else:
+            owned_quiet = not state.get('quietingDown', False)
+            coordination.patch_namespaced_lease(LEASE_NAME, LEASE_NAMESPACE,
+                {'metadata': {'annotations': {quiet_note: str(owned_quiet).lower()}}})
+        if not state.get('quietingDown', False):
             _jenkins('/quietDown', 'POST')
         state = _jenkins('/api/json?tree=quietingDown,jobs[name,lastBuild[building]]')
         active = [job['name'] for job in state.get('jobs', []) if (job.get('lastBuild') or {}).get('building')]
         if active:
             raise RuntimeError(f'Jenkins still has active builds: {active}')
+        cpu = admit_compute_cpu(guard)
     except Exception:
+        restore_build_services(guard)
         if owned_quiet:
-            try:
-                _jenkins('/cancelQuietDown', 'POST')
-            except Exception:
-                pass
+            _jenkins('/cancelQuietDown', 'POST')
         coordination.delete_namespaced_lease(LEASE_NAME, LEASE_NAMESPACE)
         raise
     return {'holder': holder, 'lease_uid': made.metadata.uid, 'owned_quiet': owned_quiet,
             'dag_run_id': dag_run_id, 'from': start, 'to': end,
-            'available_mib': round(available, 2)}
+            'available_mib': round(available, 2), 'cpu_admission': cpu}
 
 
 def create_snapshot(guard):
@@ -887,12 +1001,13 @@ def release_guard(guard, snapshot=None, failed=False, error=None):
         for item in core.list_namespaced_config_map('default', label_selector=
                 'airflow-holder=' + guard['holder'].replace(':', '-')).items:
             ignore_missing(lambda: core.delete_namespaced_config_map(item.metadata.name, 'default'))
+    restored = restore_build_services(guard)
     if guard.get('owned_quiet'):
         _jenkins('/cancelQuietDown', 'POST')
     coordination.delete_namespaced_lease(LEASE_NAME, LEASE_NAMESPACE)
     if status_error:
         raise RuntimeError('Compute released and Jenkins restored, but failure status could not be saved') from status_error
-    return {'released': True, 'jenkins_resumed': guard.get('owned_quiet', False)}
+    return {'released': True, 'jenkins_resumed': guard.get('owned_quiet', False), **restored}
 
 
 if __name__ == '__main__':

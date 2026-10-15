@@ -2,6 +2,8 @@
 import datetime as dt
 import fcntl
 import json
+import inspect
+from clinic_task import cpu_request_milli, pod_cpu_request_milli
 import re
 import shlex
 import subprocess
@@ -60,7 +62,7 @@ def jenkins(path, method='GET'):
     return json.loads(result['body']) if result['body'].strip().startswith('{') else result['status']
 
 
-SAMPLE_CODE = r'''import json,pathlib,subprocess,time
+SAMPLE_CODE = inspect.getsource(cpu_request_milli) + '\n' + inspect.getsource(pod_cpu_request_milli) + '\n' + r'''import json,pathlib,subprocess,time
 mem={l.split(':')[0]:int(l.split()[1]) for l in pathlib.Path('/proc/meminfo').read_text().splitlines() if len(l.split())>1 and l.split()[1].isdigit()}
 result={'at':time.time(),'availableMiB':mem['MemAvailable']/1024,'swapUsedMiB':(mem['SwapTotal']-mem['SwapFree'])/1024,'pressure':{},'http':{}}
 for kind in ['memory','io','cpu']:
@@ -70,6 +72,8 @@ for name,host,path in [('petclinic','petclinic.devops.local','/actuator/health/r
 p=subprocess.run(['kubectl','--request-timeout=5s','get','--raw=/readyz'],capture_output=True,text=True,timeout=6);result['apiReady']=p.returncode==0 and p.stdout.strip()=='ok'
 p=subprocess.run(['kubectl','--request-timeout=5s','get','nodes','-o','json'],capture_output=True,text=True,timeout=6);nodes=json.loads(p.stdout)['items'];node=next(n for n in nodes if n['metadata']['name']=='devops');result['conditions']=node['status']['conditions']
 p=subprocess.run(['kubectl','--request-timeout=5s','get','pods','-A','-o','json'],capture_output=True,text=True,timeout=6);pods=json.loads(p.stdout)['items'];result['failures']=[];result['resources']=[]
+result['cpuAllocatableMilli']=cpu_request_milli(node['status']['allocatable']['cpu'])
+result['cpuRequestedMilli']=sum(pod_cpu_request_milli(pod) for pod in pods if pod['spec'].get('nodeName')=='devops' and pod['status'].get('phase') not in ['Succeeded','Failed'])
 for pod in pods:
  if pod['spec'].get('nodeName')!='devops':continue
  for c in pod['status'].get('containerStatuses',[]):

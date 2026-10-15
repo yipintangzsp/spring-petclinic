@@ -172,3 +172,29 @@ roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: Role
   name: petclinic-airflow-baseline
+
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: petclinic-airflow-sonar-pause
+  namespace: sonarqube
+rules:
+  - apiGroups: ["apps"]
+    resources: ["statefulsets"]
+    resourceNames: ["sonarqube-sonarqube"]
+    verbs: ["get", "patch"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: petclinic-airflow-sonar-pause
+  namespace: sonarqube
+subjects:
+  - kind: ServiceAccount
+    name: airflow-worker
+    namespace: data-infra
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: petclinic-airflow-sonar-pause

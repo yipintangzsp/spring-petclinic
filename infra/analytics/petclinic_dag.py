@@ -69,18 +69,20 @@ def insights():
         return verify_trino_and_superset(value, baseline)
 
     @task(show_return_value_in_logs=False)
-    def complete(value, verification):
+    def complete(value, verification, released):
         del verification
+        if not released.get('released'):
+            raise RuntimeError('Compute cleanup did not complete; keep results pending')
         return complete_execution(value)
 
-    @task(trigger_rule='all_done', retries=0, execution_timeout=dt.timedelta(minutes=4),
+    @task(trigger_rule='all_done', retries=0, execution_timeout=dt.timedelta(minutes=7),
           show_return_value_in_logs=False)
     def cleanup():
         context = get_current_context()
         guard = context['ti'].xcom_pull(task_ids='acquire')
         value = context['ti'].xcom_pull(task_ids='snapshot')
-        completed = context['ti'].xcom_pull(task_ids='complete')
-        failed = not completed or completed.get('status') != 'success'
+        verified = context['ti'].xcom_pull(task_ids='verify')
+        failed = not verified
         error = 'Upstream verification did not complete; inspect task attempts in Airflow' if failed else None
         if guard is None:
             return {'released': False, 'reason': 'admission did not acquire the shared Lease'}
@@ -88,6 +90,11 @@ def insights():
 
     @task(trigger_rule='one_failed', retries=0)
     def failure_status():
+        context = get_current_context()
+        value = context['ti'].xcom_pull(task_ids='snapshot')
+        if value:
+            from clinic_task import _execution
+            _execution(value['batch_id'], 'failed', 'failed', error='A task failed; inspect task attempts and cleanup status')
         # An all_done cleanup leaf must not turn a failed business run green.
         raise RuntimeError('Analysis failed; cleanup ran independently. Inspect the failed task and its logs.')
 
@@ -106,10 +113,10 @@ def insights():
     flink_result = flink(value, baseline, spark)
     published = publish(value, flink_result)
     verification = verify(value, baseline, published)
-    done = complete(value, verification)
     released = cleanup()
     guard >> released
-    done >> released
+    verification >> released
+    done = complete(value, verification, released)
     failed = failure_status()
     for upstream in (guard, value, baseline, application, spark_wait, spark,
                      flink_result, published, verification, done, released):

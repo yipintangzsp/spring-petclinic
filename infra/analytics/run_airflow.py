@@ -138,6 +138,42 @@ def wait_run(pod, run_id, evidence, history, record):
     raise RuntimeError('DAG run exceeded the 30 minute acceptance deadline')
 
 
+def restore_owned_sonar(lease, evidence):
+    metadata = lease['metadata']
+    original = json.loads(metadata.get('annotations', {}).get('petclinic.devops.local/paused-sonar', 'null'))
+    if original is None:
+        return
+    holder = lease['spec']['holderIdentity']
+    namespace, name = 'sonarqube', 'sonarqube-sonarqube'
+    item = kube(['-n', namespace, 'get', 'statefulset', name, '-o', 'json'])
+    owner = item['metadata'].get('annotations', {}).get('petclinic.devops.local/analysis-holder')
+    if item['metadata']['uid'] != original['uid'] or owner not in (None, holder):
+        raise RuntimeError('Sonar ownership changed; retain Jenkins quiet and Lease')
+    if owner is None and item['spec']['replicas'] != original['replicas']:
+        raise RuntimeError('Unowned Sonar state changed; refuse restoration')
+    if item['spec']['replicas'] != original['replicas']:
+        kube(['-n', namespace, 'patch', 'statefulset', name, '--type=json', '-p', json.dumps([
+            {'op': 'test', 'path': '/metadata/uid', 'value': original['uid']},
+            {'op': 'test', 'path': '/metadata/annotations/petclinic.devops.local~1analysis-holder', 'value': holder},
+            {'op': 'replace', 'path': '/spec/replicas', 'value': original['replicas']}])])
+    for _ in range(100):
+        item = kube(['-n', namespace, 'get', 'statefulset', name, '-o', 'json'])
+        if item['metadata']['uid'] != original['uid']:
+            raise RuntimeError('Sonar UID changed during restoration')
+        if item['status'].get('readyReplicas', 0) == original['replicas']:
+            break
+        time.sleep(2)
+    else:
+        raise RuntimeError('Sonar did not recover readiness; retain Lease and Jenkins pause')
+    if item['metadata'].get('annotations', {}).get('petclinic.devops.local/analysis-holder') == holder:
+        kube(['-n', namespace, 'patch', 'statefulset', name, '--type=json', '-p', json.dumps([
+            {'op': 'test', 'path': '/metadata/uid', 'value': original['uid']},
+            {'op': 'test', 'path': '/metadata/annotations/petclinic.devops.local~1analysis-holder', 'value': holder},
+            {'op': 'remove', 'path': '/metadata/annotations/petclinic.devops.local~1analysis-holder'}])])
+    (evidence / 'abort-sonar-restored.json').write_text(json.dumps({
+        'holder': holder, 'uid': original['uid'], 'replicas': original['replicas'], 'ready': True}, indent=2))
+
+
 def abort_owned(run_ids, evidence):
     """Stop only compute carrying this acceptance controller's run identities."""
     actions = []
@@ -177,6 +213,7 @@ def abort_owned(run_ids, evidence):
         leases = kube(['-n', 'data-infra', 'get', 'leases', '-o', 'json'])['items']
         for lease in leases:
             if lease['metadata']['name'] == 'platform-heavy' and lease['spec'].get('holderIdentity') == holder:
+                restore_owned_sonar(lease, evidence)
                 kube(['-n', 'data-infra', 'delete', 'lease', 'platform-heavy', '--wait=false'])
         for cm in kube(['-n', 'default', 'get', 'configmaps', '-l', 'airflow-holder=' + holder.replace(':', '-'), '-o', 'json'])['items']:
             kube(['-n', 'default', 'delete', 'configmap', cm['metadata']['name']])
@@ -300,6 +337,8 @@ def run(revision, evidence_path, keep_running=False):
                 raise RuntimeError(f'DAG run {run_id}: expected {expected}, observed {result["state"]}')
             if result['jenkins'].get('quietingDown', False) != initial_quiet:
                 raise RuntimeError('The DAG did not restore the original Jenkins state')
+            if not result['xcom'].get('cleanup', {}).get('sonar_restored'):
+                raise RuntimeError('The DAG did not verify Sonar restoration before resuming Jenkins')
             if not result['xcom'].get('cleanup', {}).get('released'):
                 raise RuntimeError('DAG cleanup did not confirm resource and Lease release')
             leases = kube(['-n', 'data-infra', 'get', 'leases', '-o', 'json'])['items']

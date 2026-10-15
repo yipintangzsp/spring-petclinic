@@ -2,7 +2,7 @@ import unittest
 import hashlib
 import subprocess
 from unittest.mock import MagicMock, patch
-from clinic_task import finite_input, publish_orchestrated, quality, release_guard, validate_snapshot, window
+from clinic_task import cpu_request_milli, pod_cpu_request_milli, restore_build_services, finite_input, publish_orchestrated, quality, release_guard, validate_snapshot, window
 
 
 class QualityChecks(unittest.TestCase):
@@ -12,6 +12,32 @@ class QualityChecks(unittest.TestCase):
         self.assertLess(max(len(argument.encode()) for argument in command), 128 * 1024)
         result = subprocess.run(command, capture_output=True, text=True, check=True, timeout=5)
         self.assertEqual(result.stdout, body)
+
+    def test_cpu_units_round_up_for_safe_scheduler_accounting(self):
+        for value, expected in [('1', 1000), ('0.125', 125), ('100m', 100),
+                                ('100000u', 100), ('100000001n', 101)]:
+            self.assertEqual(cpu_request_milli(value), expected)
+
+    def test_cpu_budget_includes_native_sidecars_init_peak_and_overhead(self):
+        pod = {'spec': {'containers': [{'resources': {'requests': {'cpu': '100m'}}}],
+                       'initContainers': [
+                           {'restartPolicy': 'Always', 'resources': {'requests': {'cpu': '20m'}}},
+                           {'resources': {'requests': {'cpu': '200m'}}}],
+                       'overhead': {'cpu': '5m'}}}
+        self.assertEqual(pod_cpu_request_milli(pod), 225)
+
+    def test_sonar_foreign_owner_cannot_be_restored_or_scaled(self):
+        core, apps, custom, coordination = [MagicMock() for _ in range(4)]
+        lease = coordination.read_namespaced_lease.return_value
+        lease.metadata.uid = 'lease'; lease.spec.holder_identity = 'ours'
+        lease.metadata.annotations = {'petclinic.devops.local/paused-sonar': '{"uid":"sonar","replicas":1}'}
+        item = apps.read_namespaced_stateful_set.return_value
+        item.metadata.uid = 'sonar'
+        item.metadata.annotations = {'petclinic.devops.local/analysis-holder': 'someone-else'}
+        with patch('clinic_task._kube', return_value=(core, apps, custom, coordination)):
+            with self.assertRaisesRegex(RuntimeError, 'ownership changed'):
+                restore_build_services({'lease_uid': 'lease', 'holder': 'ours'})
+        apps.patch_namespaced_stateful_set.assert_not_called()
 
     def batch(self):
         return {'window_start': '2026-01-01', 'window_end': '2026-12-31', 'watermark': 0,
