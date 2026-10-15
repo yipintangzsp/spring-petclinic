@@ -1,6 +1,7 @@
 import unittest
+import hashlib
 from unittest.mock import MagicMock, patch
-from clinic_task import publish_orchestrated, quality, release_guard, window
+from clinic_task import publish_orchestrated, quality, release_guard, validate_snapshot, window
 
 
 class QualityChecks(unittest.TestCase):
@@ -51,6 +52,19 @@ class QualityChecks(unittest.TestCase):
         apps.patch_namespaced_deployment_scale.assert_not_called()
         custom.delete_namespaced_custom_object.assert_not_called()
         coordination.delete_namespaced_lease.assert_not_called()
+
+    def test_mysql_type_mismatch_cannot_pass_an_equal_total(self):
+        text = 'visit_id,visit_date,pet_id,pet_type\n1,2026-10-11,1,dog\n'
+        snapshot = {'input_rows': 1, 'unique_visit_ids': 1, 'config_map': 'owned',
+                    'batch_id': 'bounded', 'sha256': hashlib.sha256(text.encode()).hexdigest()}
+        core = MagicMock()
+        core.read_namespaced_config_map.return_value.data = {'visits.csv': text}
+        with patch('clinic_task._kube', return_value=(core, None, None, None)), \
+                patch('clinic_task._exec', return_value='counts\t1\t1\t1\ntype\tcat\t1\n'), \
+                patch('clinic_task._execution') as status:
+            with self.assertRaisesRegex(ValueError, 'MySQL baseline mismatch'):
+                validate_snapshot(snapshot, '2026-01-01', '2026-12-31')
+            status.assert_not_called()
 
 
 if __name__ == '__main__':

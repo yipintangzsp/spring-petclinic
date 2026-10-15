@@ -178,13 +178,18 @@ def run(revision, evidence_path, keep_running=False):
     accepted = False
     run_ids, results = [], []
     initial_quiet = False
+    bad_http = 0
 
     def record():
+        nonlocal bad_http
         value = sample()
+        bad_http = bad_http + 1 if http_bad(value) else 0
         samples.append(value)
-        reasons = blockers(value, previous_failures=samples[0]['failures'])
-        if http_bad(value):
-            reasons.append('Business/API health check failed')
+        reasons = blockers(value, bad_http=bad_http, previous_failures=samples[0]['failures'])
+        if not value['apiReady'] or (len(samples) == 1 and http_bad(value)):
+            reasons.append('API or initial business health check failed')
+        if value.get('mac', {}).get('swapUsedMiB', 0) - samples[0].get('mac', {}).get('swapUsedMiB', 0) > 512:
+            reasons.append('Mac swap grew by more than 512 MiB')
         if reasons:
             raise RuntimeError('Safety stop: ' + '; '.join(reasons))
         (evidence / 'resource-samples.json').write_text(json.dumps(samples, indent=2))

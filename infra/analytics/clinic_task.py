@@ -381,6 +381,8 @@ def create_snapshot(guard):
         if error.status != 409:
             raise
         current = core.read_namespaced_config_map(name, 'default')
+        if (current.metadata.labels or {}).get('airflow-holder') != guard['holder'].replace(':', '-'):
+            raise RuntimeError('Snapshot ConfigMap belongs to another execution; preserve it for inspection')
         if current.data != data:
             raise RuntimeError('Immutable snapshot ConfigMap name collision')
     with connect() as db, db.cursor() as cur:
@@ -421,17 +423,23 @@ CREATE TABLE IF NOT EXISTS petclinic_analytics_baseline.snapshot_visits
 (batch_id VARCHAR(96),visit_id BIGINT,visit_date DATE,pet_id BIGINT,pet_type VARCHAR(64),snapshot_sha CHAR(64),PRIMARY KEY(batch_id,visit_id));
 INSERT INTO petclinic_analytics_baseline.snapshot_visits VALUES {values}
 ON DUPLICATE KEY UPDATE visit_date=VALUES(visit_date),pet_id=VALUES(pet_id),pet_type=VALUES(pet_type),snapshot_sha=VALUES(snapshot_sha);
-SELECT COUNT(*),COUNT(DISTINCT visit_id),SUM(visit_date BETWEEN {quote(start)} AND {quote(end)})
-FROM petclinic_analytics_baseline.snapshot_visits WHERE batch_id={quote(snapshot['batch_id'])};'''
+SELECT 'counts',COUNT(*),COUNT(DISTINCT visit_id),SUM(visit_date BETWEEN {quote(start)} AND {quote(end)})
+FROM petclinic_analytics_baseline.snapshot_visits WHERE batch_id={quote(snapshot['batch_id'])};
+SELECT 'type',pet_type,COUNT(*) FROM petclinic_analytics_baseline.snapshot_visits
+WHERE batch_id={quote(snapshot['batch_id'])} AND visit_date BETWEEN {quote(start)} AND {quote(end)}
+GROUP BY pet_type ORDER BY pet_type;'''
     result = _exec('ns-data', 'mysql', ['sh', '-lc', 'MYSQL_PWD="$MYSQL_ROOT_PASSWORD" mysql -uroot --batch --raw --skip-column-names'], sql, 90)
-    last = [line for line in result.splitlines() if '\t' in line][-1].split('\t')
+    last = next(line.split('\t')[1:] for line in result.splitlines() if line.startswith('counts\t'))
     mysql = {'input_rows': int(last[0]), 'unique_visit_ids': int(last[1]), 'window_visits': int(last[2])}
+    mysql_types = {parts[1]: int(parts[2]) for line in result.splitlines()
+                   if (parts := line.split('\t'))[0] == 'type'}
     expected = {'input_rows': len(rows), 'unique_visit_ids': len({r['visit_id'] for r in rows}),
                 'window_visits': len(window_rows)}
-    if mysql != expected:
+    if mysql != expected or mysql_types != by_type:
         raise ValueError(f'MySQL baseline mismatch: {mysql} != {expected}')
     _execution(snapshot['batch_id'], 'validated')
     return {**expected, 'visits_by_pet_type': [{'type': key, 'visits': by_type[key]} for key in sorted(by_type)],
+            'visits_by_type': mysql_types, 'window_start': start, 'window_end': end,
             'mysql': mysql}
 
 
@@ -488,6 +496,8 @@ def verify_spark(snapshot, baseline, application):
                            ('windowVisits', 'window_visits')]:
         if result[source] != baseline[target]:
             raise ValueError(f'Spark/MySQL mismatch for {source}')
+    if {item['type']: item['visits'] for item in result['visitsByPetType']} != baseline['visits_by_type']:
+        raise ValueError('Spark/MySQL visit type totals do not reconcile')
     application_id = app.get('status', {}).get('sparkApplicationId', result.get('applicationId'))
     _execution(snapshot['batch_id'], 'spark-complete', spark_application=application,
                spark_application_id=application_id)
@@ -550,14 +560,16 @@ def run_flink_bounded(snapshot, baseline):
             time.sleep(2)
         else:
             raise RuntimeError('Flink registered no single bounded task slot')
-        for topic in (input_topic, output_topic):
-            _exec('ns-bigdata', 'kafka', ['env', 'KAFKA_HEAP_OPTS=-Xms32M -Xmx128M',
-                  '/opt/kafka/bin/kafka-topics.sh', '--bootstrap-server', 'localhost:9092', '--create',
-                  '--if-not-exists', '--topic', topic, '--partitions', '1', '--replication-factor', '1'])
+        input_before, output_before = topic_end(input_topic), topic_end(output_topic)
+        if set(input_before) != {0} or set(output_before) != {0}:
+            raise RuntimeError('Existing analytics topics must retain their one-partition layout')
         sql = _code('clinic_windows.sql').replace('petclinic-snapshot-20261011', input_topic) \
             .replace('petclinic-windows-20261011', output_topic) \
             .replace('petclinic-flink-20261011', group) \
-            .replace('Petclinic bounded snapshot window acceptance', 'Petclinic Airflow bounded daily windows')
+            .replace('Petclinic bounded snapshot window acceptance', 'Petclinic Airflow bounded replay windows') \
+            .replace("'scan.startup.mode'='earliest-offset'",
+                     "'scan.startup.mode'='specific-offsets',\n 'scan.startup.specific-offsets'='partition:0,offset:"
+                     + str(input_before[0]) + "'")
         import copy
         jm = apps.read_namespaced_deployment('flink-jobmanager', 'ns-bigdata')
         spec = copy.deepcopy(core.api_client.sanitize_for_serialization(jm.spec.template.spec))
@@ -612,9 +624,6 @@ def run_flink_bounded(snapshot, baseline):
             time.sleep(2)
         else:
             raise RuntimeError('Flink source did not initialize a checkpoint before batch publication')
-        input_before, output_before = topic_end(input_topic), topic_end(output_topic)
-        if set(input_before) != {0} or set(output_before) != {0}:
-            raise RuntimeError('Existing analytics topics must retain their one-partition layout')
         text = core.read_namespaced_config_map(snapshot['config_map'], 'default').data['visits.csv']
         rows = list(csv.DictReader(io.StringIO(text)))
         messages = '\n'.join(json.dumps({'snapshot_id': snapshot['batch_id'], 'visit_id': int(row['visit_id']),
@@ -633,12 +642,16 @@ def run_flink_bounded(snapshot, baseline):
             check_resources()
             raw = _exec('ns-bigdata', 'kafka', ['sh', '-lc',
                    f'env KAFKA_HEAP_OPTS="-Xms32M -Xmx128M" /opt/kafka/bin/kafka-console-consumer.sh --bootstrap-server localhost:9092 --topic {output_topic} --partition 0 --offset {output_before[0]} --timeout-ms 4000 --max-messages 10000 --consumer-property isolation.level=read_committed --property print.key=true --property key.separator="\t" 2>/dev/null || test $? -eq 1'], timeout=20)
+            read_keys = set()
             for line in raw.splitlines():
                 if '\t' in line:
                     key, value = line.split('\t', 1)
                     if value not in ('', 'null'):
                         decoded = json.loads(value)
                         if decoded.get('snapshot_id') == snapshot['batch_id']:
+                            if key in read_keys:
+                                raise ValueError('Duplicate final processing-window key in committed Kafka output')
+                            read_keys.add(key)
                             values[key] = decoded
             total = sum(int(value['visits']) for value in values.values())
             offsets = _exec('ns-bigdata', 'kafka', ['env', 'KAFKA_HEAP_OPTS=-Xms32M -Xmx128M',
@@ -663,6 +676,14 @@ def run_flink_bounded(snapshot, baseline):
             time.sleep(3)
         if checkpoint is None:
             raise RuntimeError('Flink completed no checkpoint')
+        annual = sum(int(value['visits']) for value in values.values()
+                     if baseline['window_start'] <= value['visit_date'] <= baseline['window_end'])
+        if annual != baseline['window_visits']:
+            raise ValueError('Flink business-date window does not match MySQL')
+        for value in values.values():
+            duration = dt.datetime.fromisoformat(value['window_end']) - dt.datetime.fromisoformat(value['window_start'])
+            if duration.total_seconds() != 5:
+                raise ValueError('Flink output does not use the accepted five-second processing-time windows')
         output_after = topic_end(output_topic)
         if output_after[0] <= output_before[0]:
             raise RuntimeError('Flink emitted no newly committed window messages for this execution')
@@ -675,6 +696,7 @@ def run_flink_bounded(snapshot, baseline):
                    kafka_consumer_group=group)
         return {'job_id': job_id, 'input_topic': input_topic, 'output_topic': output_topic,
                 'consumer_group': group, 'input_rows': len(rows), 'output_visits': total,
+                'window_visits': annual, 'window_kind': 'five-second processing-time replay; visit_date retained',
                 'output_keys': len(values), 'checkpoint': checkpoint, 'offsets': offsets,
                 'input_offsets_before': input_before, 'input_offsets_after': input_after,
                 'output_offsets_before': output_before, 'output_offsets_after': output_after,

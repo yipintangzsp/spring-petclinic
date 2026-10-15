@@ -134,6 +134,10 @@ pipeline {
                     curl -fsS --retry 6 --retry-delay 5 --retry-connrefused \
                       --connect-timeout 5 --max-time 15 "http://${REGISTRY_API}/v2/"
 
+                    # Use the existing outbound proxy only for these pinned Ubuntu downloads.
+                    PACKAGE_HTTPS_PROXY="http://192.168.1.236:10808" \
+                      node --max-old-space-size=64 infra/runtime/prepare-security-packages.mjs
+
                     docker buildx build \
                       --platform linux/amd64,linux/arm64 \
                       -t "${FULL_IMAGE}" \
