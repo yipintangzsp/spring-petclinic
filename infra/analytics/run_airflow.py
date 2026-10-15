@@ -195,9 +195,12 @@ def run(revision, evidence_path, keep_running=False):
         (evidence / 'resource-samples.json').write_text(json.dumps(samples, indent=2))
         return value
 
-    before = record()
-    if before['availableMiB'] < 10240:
-        raise RuntimeError('Airflow orchestration requires at least 10240 MiB node MemAvailable')
+    for index in range(5):
+        before = record()
+        if before['availableMiB'] < 10240:
+            raise RuntimeError('Airflow orchestration requires at least 10240 MiB node MemAvailable in all five admission samples')
+        if index < 4:
+            time.sleep(15)
     if any(kube(['-n', 'data-infra', 'get', 'deployment', name, '-o', 'json'])['spec']['replicas']
            for name in CORE):
         raise RuntimeError('Acceptance expects idle Airflow core; do not take over an existing scheduler')
