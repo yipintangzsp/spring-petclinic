@@ -1,6 +1,8 @@
 // Download pinned security packages before BuildKit, with bounded retries.
-import { createHash } from 'node:crypto';
-import { readFile, mkdir, rename, rm } from 'node:fs/promises';
+import { readFile, mkdir } from 'node:fs/promises';
+import { homedir } from 'node:os';
+import { join } from 'node:path';
+import { materializePackage } from './security-package-cache.mjs';
 import { execFile } from 'node:child_process';
 import { promisify } from 'node:util';
 const exec = promisify(execFile);
@@ -16,19 +18,16 @@ for (const [architecture, packages] of Object.entries(lock)) {
     if (url.protocol !== 'https:' || !['ports.ubuntu.com', 'archive.ubuntu.com'].includes(url.hostname)
         || !/^[a-f0-9]{64}$/.test(artifact.sha256)) throw new Error('Invalid security package source');
     const path = new URL(url.pathname.split('/').pop(), directory);
-    const temporary = new URL(path.href + '.part');
-    try {
-      const options = ['-fLsS', '--retry', '1', '--retry-all-errors', '--connect-timeout', '10',
-        '--max-time', '90', '--output', temporary.pathname];
-      if (process.env.PACKAGE_HTTPS_PROXY) options.push('--proxy', process.env.PACKAGE_HTTPS_PROXY);
-      await exec('curl', [...options, url.href], { timeout: 200000, maxBuffer: 8192 });
-      const digest = createHash('sha256').update(await readFile(temporary)).digest('hex');
-      if (digest !== artifact.sha256) throw new Error('Security package SHA256 mismatch: ' + artifact.package);
-      await rename(temporary, path);
-      console.log(`${architecture} ${artifact.package} ${artifact.version} sha256:${digest}`);
-    } finally {
-      await rm(temporary, { force: true });
-    }
+    const cacheFile = join(process.env.SECURITY_PACKAGE_CACHE_DIR ||
+      join(homedir(), '.cache', 'petclinic-security-packages'), artifact.sha256 + '.deb');
+    const result = await materializePackage({ sha256: artifact.sha256, cacheFile,
+      outputFile: path.pathname, download: async temporary => {
+        const options = ['-fLsS', '--retry', '1', '--retry-all-errors', '--connect-timeout', '10',
+          '--max-time', '180', '--output', temporary];
+        if (process.env.PACKAGE_HTTPS_PROXY) options.push('--proxy', process.env.PACKAGE_HTTPS_PROXY);
+        await exec('curl', [...options, url.href], { timeout: 380000, maxBuffer: 8192 });
+      } });
+    console.log(`${architecture} ${artifact.package} ${artifact.version} sha256:${artifact.sha256} cache=${result.cacheHit ? 'verified' : 'downloaded'}`);
   }));
   }
 }
