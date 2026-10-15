@@ -117,6 +117,16 @@ def wait_run(pod, run_id, evidence, history, record):
             time.sleep(11)
             result['page'] = page(evidence, run_id, 'terminal')
             result['database'] = database(pod)
+            files = python(pod, "import json;from pathlib import Path\n"
+                           "root=Path('/opt/airflow/logs/dag_id=petclinic_insights/run_id=' + " + repr(run_id) + ")\n"
+                           "logs={str(p.relative_to(root)):p.read_text(errors='replace')[-250000:] for p in root.rglob('*.log')}\n"
+                           "print('RESULT:'+json.dumps(logs))")
+            log_root = evidence / (run_id + '-task-logs')
+            for name, content in files.items():
+                path = log_root / name
+                path.parent.mkdir(parents=True, exist_ok=True)
+                path.write_text(content)
+            result['task_log_files'] = sorted(files)
             result['jenkins'] = jenkins('/api/json?tree=quietingDown,jobs[name,lastBuild[building]]')
             (evidence / f'{run_id}.json').write_text(json.dumps(result, indent=2))
             return result
@@ -306,10 +316,10 @@ def run(revision, evidence_path, keep_running=False):
                 if index > 1 and any(result['database'][key] != results[0]['database'][key]
                                      for key in ('facts', 'daily_rows', 'type_rows')):
                     raise RuntimeError('Replay added duplicate analytics facts or summaries')
-            if mode == 'retry' and not any(task['task_id'] == 'validate' and task['try_number'] == 2
+            if mode == 'retry' and not any(task['task_id'] == 'flink' and task['try_number'] == 2
                                             for task in result['tasks']):
-                raise RuntimeError('Controlled failure did not produce a second validate attempt')
-            if mode == 'fail' and not any(t['task_id'] == 'validate' and t['try_number'] == 2 for t in result['tasks']):
+                raise RuntimeError('Controlled failure did not produce a second Flink attempt')
+            if mode == 'fail' and not any(t['task_id'] == 'flink' and t['try_number'] == 2 for t in result['tasks']):
                 raise RuntimeError('Terminal failure did not exhaust its bounded retry')
             results.append(result)
             (evidence / 'acceptance.json').write_text(json.dumps(results, indent=2))

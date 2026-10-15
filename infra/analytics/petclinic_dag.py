@@ -39,10 +39,8 @@ def insights():
     @task(show_return_value_in_logs=False)
     def validate(value):
         context = get_current_context()
-        if context['params']['verify_retry'] == 'fail':
-            raise RuntimeError('Controlled terminal orchestration failure')
         return validate_snapshot(value, context['params']['from'], context['params']['to'],
-                                 context['params']['verify_retry'] == 'retry', context['ti'].try_number)
+                                 False, context['ti'].try_number)
 
     @task(show_return_value_in_logs=False)
     def spark_submit(value):
@@ -56,7 +54,8 @@ def insights():
     @task(show_return_value_in_logs=False)
     def flink(value, baseline, spark):
         del spark
-        return run_flink_bounded(value, baseline)
+        context = get_current_context()
+        return run_flink_bounded(value, baseline, context['params']['verify_retry'], context['ti'].try_number)
 
     @task(show_return_value_in_logs=False)
     def publish(value, flink_result):

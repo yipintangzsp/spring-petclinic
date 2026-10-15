@@ -408,7 +408,6 @@ def create_snapshot(guard):
         if current.data != data:
             raise RuntimeError('Immutable snapshot ConfigMap name collision')
     with connect() as db, db.cursor() as cur:
-        cur.execute(_code('schema.sql'))
         cur.execute('''INSERT INTO petclinic_analytics.executions
                     (batch_id,dag_run_id,window_start,window_end,status,stage,attempt)
                     VALUES (%s,%s,%s,%s,'running','snapshot',1)
@@ -538,7 +537,7 @@ def _flink_api(path, method='GET', payload=None):
     return json.loads(text) if text else {}
 
 
-def run_flink_bounded(snapshot, baseline):
+def run_flink_bounded(snapshot, baseline, fail_probe='none', try_number=1):
     core, apps, _, _ = _kube()
     input_topic, output_topic, group = ('petclinic-window-092657-input',
                                          'petclinic-window-092657-output',
@@ -558,7 +557,7 @@ def run_flink_bounded(snapshot, baseline):
     try:
         for name in ('flink-jobmanager', 'flink-taskmanager'):
             deployment = apps.read_namespaced_deployment(name, 'ns-bigdata')
-            if deployment.spec.replicas != 0:
+            if deployment.spec.replicas != 0 or (deployment.status.replicas or 0) != 0:
                 raise RuntimeError(f'{name} is already enabled; refusing to take over existing compute')
             apps.patch_namespaced_deployment(name, 'ns-bigdata', {'metadata': {'annotations': {
                 'petclinic.devops.local/analysis-execution': snapshot['execution_id']}}})
@@ -710,6 +709,17 @@ def run_flink_bounded(snapshot, baseline):
         output_after = topic_end(output_topic)
         if output_after[0] <= output_before[0]:
             raise RuntimeError('Flink emitted no newly committed window messages for this execution')
+        controlled_failure = fail_probe == 'fail' or (fail_probe == 'retry' and try_number == 1)
+        print('CLINIC_FLINK_EVIDENCE:' + json.dumps({
+            'dag_run_execution': snapshot['execution_id'], 'batch_id': snapshot['batch_id'],
+            'try_number': try_number, 'job_id': job_id, 'checkpoint': checkpoint,
+            'input_offsets_before': input_before, 'input_offsets_after': input_after,
+            'output_offsets_before': output_before, 'output_offsets_after': output_after,
+            'consumer_group': group, 'consumer_offsets': offsets,
+            'input_rows': len(rows), 'output_visits': total, 'window_visits': annual,
+            'controlled_failure': controlled_failure}), flush=True)
+        if controlled_failure:
+            raise RuntimeError('Controlled failure after real Kafka window output and checkpoint verification')
         try:
             _flink_api('/jobs/' + job_id + '?mode=cancel', 'PATCH')
         except Exception:
@@ -734,6 +744,24 @@ def run_flink_bounded(snapshot, baseline):
             apps.patch_namespaced_deployment_scale(name, 'ns-bigdata', {'spec': {'replicas': 0}})
         if created_client:
             core.delete_namespaced_pod(client_pod, 'ns-bigdata')
+        # A retry must not start a new core while the previous attempt still has
+        # terminating compute or its SQL client. Retain evidence and the Lease
+        # if graceful cleanup cannot be confirmed.
+        for _ in range(60):
+            active = []
+            for name in owned:
+                deployment = apps.read_namespaced_deployment(name, 'ns-bigdata')
+                selector = ','.join(f'{key}={value}' for key, value in deployment.spec.selector.match_labels.items())
+                active.extend(p.metadata.name for p in core.list_namespaced_pod(
+                    'ns-bigdata', label_selector=selector).items if p.status.phase not in ('Succeeded', 'Failed'))
+            active.extend(p.metadata.name for p in core.list_namespaced_pod(
+                'ns-bigdata', label_selector='execution=' + snapshot['execution_id']).items
+                if p.status.phase not in ('Succeeded', 'Failed'))
+            if not active:
+                break
+            time.sleep(2)
+        else:
+            raise RuntimeError(f'Flink attempt compute has not exited: {active}')
 
 
 def publish_orchestrated(snapshot, start, end, dag_run_id):

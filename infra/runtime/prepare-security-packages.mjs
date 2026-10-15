@@ -10,7 +10,8 @@ for (const [architecture, packages] of Object.entries(lock)) {
   const directory = new URL(architecture + '/', destination);
   await mkdir(directory, { recursive: true });
   // At most three small curl processes, and one architecture at a time.
-  await Promise.all(packages.map(async artifact => {
+  for (let index = 0; index < packages.length; index += 3) {
+  await Promise.all(packages.slice(index, index + 3).map(async artifact => {
     const url = new URL(artifact.url);
     if (url.protocol !== 'https:' || !['ports.ubuntu.com', 'archive.ubuntu.com'].includes(url.hostname)
         || !/^[a-f0-9]{64}$/.test(artifact.sha256)) throw new Error('Invalid security package source');
@@ -29,4 +30,5 @@ for (const [architecture, packages] of Object.entries(lock)) {
       await rm(temporary, { force: true });
     }
   }));
+  }
 }
