@@ -61,8 +61,17 @@ def extract(start, end):
             cur.execute('''SELECT count(*) FROM public.pets p LEFT JOIN public.types t ON p.type_id=t.id
                            WHERE t.id IS NULL''')
             missing_type = cur.fetchone()[0]
+            cur.execute('''SELECT v.id,v.visit_date,v.pet_id,t.name
+                           FROM public.visits v JOIN public.pets p ON p.id=v.pet_id
+                           JOIN public.types t ON t.id=p.type_id ORDER BY v.id LIMIT %s''', (MAX_ROWS + 1,))
+            source = io.StringIO()
+            writer = csv.writer(source, lineterminator='\n')
+            writer.writerow(['visit_id', 'visit_date', 'pet_id', 'pet_type'])
+            writer.writerows((r[0], r[1].isoformat(), r[2], r[3]) for r in cur.fetchall())
+            source_sha256 = hashlib.sha256(source.getvalue().encode()).hexdigest()
     return {'window_start': str(first), 'window_end': str(last), 'watermark': watermark,
-            'counts': counts, 'visits': visits, 'types': types, 'missing_type': missing_type}
+            'counts': counts, 'visits': visits, 'types': types, 'missing_type': missing_type,
+            'source_sha256': source_sha256}
 
 
 def quality(batch):
@@ -150,6 +159,43 @@ def _kube():
     return client.CoreV1Api(), client.AppsV1Api(), client.CustomObjectsApi(), client.CoordinationV1Api()
 
 
+def check_resources(baseline=None):
+    core, _, _, coordination = _kube()
+    measured = core.read_namespaced_config_map('platform-host-resources', 'data-infra')
+    value = json.loads(measured.data['sample.json'])
+    if not 0 <= time.time() - value['at'] <= 90:
+        raise RuntimeError('Host/VM resource measurement is stale; stop compute safely')
+    if baseline is None:
+        lease = coordination.read_namespaced_lease(LEASE_NAME, LEASE_NAMESPACE)
+        baseline = json.loads((lease.metadata.annotations or {}).get(
+            'petclinic.devops.local/guard-baseline', '{}'))
+    mac = value.get('mac') or {}
+    reasons = []
+    if mac.get('diskFreeMiB', 0) < 8192 or value['diskFreeMiB'] < 8192:
+        reasons.append('host or VM disk below 8 GiB')
+    if mac.get('freePercent', 0) < 10:
+        reasons.append('Mac free memory below 10 percent')
+    if mac.get('swapUsedMiB', 0) - baseline.get('macSwapMiB', mac.get('swapUsedMiB', 0)) > 512:
+        reasons.append('Mac swap grew by more than 512 MiB')
+    if value['availableMiB'] < 1536:
+        reasons.append('VM MemAvailable below 1536 MiB')
+    if value['pressure']['memory']['full']['avg10'] > 5 or value['pressure']['io']['full']['avg10'] > 10:
+        reasons.append('VM memory or I/O full PSI exceeded its stop threshold')
+    if not value['apiReady'] or value.get('consecutiveBadHttp', 0) >= 3:
+        reasons.append('API or repeated business checks failed')
+    for condition in value['conditions']:
+        if condition['type'] == 'Ready' and condition['status'] != 'True':
+            reasons.append('devops is not Ready')
+        if condition['type'].endswith('Pressure') and condition['status'] == 'True':
+            reasons.append(condition['type'])
+    prior = baseline.get('failures', value['failures'])
+    if any(failure not in prior for failure in value['failures']):
+        reasons.append('new OOM or eviction')
+    if reasons:
+        raise RuntimeError('Resource safety stop: ' + '; '.join(reasons))
+    return value
+
+
 def _selector_pod(namespace, deployment):
     core, apps, _, _ = _kube()
     labels = apps.read_namespaced_deployment(deployment, namespace).spec.selector.match_labels
@@ -161,11 +207,11 @@ def _selector_pod(namespace, deployment):
     return pods[0].metadata.name
 
 
-def _exec(namespace, deployment, command, body=None, timeout=90):
+def _exec(namespace, deployment, command, body=None, timeout=90, pod=None):
     import base64
     from kubernetes.stream import stream
     core, _, _, _ = _kube()
-    pod = _selector_pod(namespace, deployment)
+    pod = pod or _selector_pod(namespace, deployment)
     if body is not None:
         payload = body.encode()
         if len(payload) > 512 * 1024:
@@ -179,7 +225,15 @@ def _exec(namespace, deployment, command, body=None, timeout=90):
                      _preload_content=False, _request_timeout=timeout)
     output = ''
     deadline = time.monotonic() + timeout
+    next_probe = time.monotonic() + 15
     while channel.is_open() and time.monotonic() < deadline:
+        if time.monotonic() >= next_probe:
+            try:
+                check_resources()
+            except Exception:
+                channel.close()
+                raise
+            next_probe = time.monotonic() + 15
         channel.update(timeout=1)
         if channel.peek_stdout():
             output += channel.read_stdout()
@@ -190,7 +244,7 @@ def _exec(namespace, deployment, command, body=None, timeout=90):
         raise TimeoutError(f'Remote exec exceeded {timeout} seconds')
     code = channel.returncode
     channel.close()
-    if code not in (0, None):
+    if code != 0:
         raise RuntimeError(f'Remote exec failed with code {code}: {output[-1500:]}')
     return output
 
@@ -248,20 +302,20 @@ def acquire_guard(start, end, dag_run_id):
     node = core.read_node('devops')
     if not any(c.type == 'Ready' and c.status == 'True' for c in node.status.conditions):
         raise RuntimeError('devops node is not Ready')
-    alloc_mib = int(node.status.allocatable['memory'][:-2]) / 1024
-    metrics = json.loads(core.api_client.call_api('/apis/metrics.k8s.io/v1beta1/nodes/devops', 'GET',
-                                                  response_type='str', auth_settings=['BearerToken'],
-                                                  _return_http_data_only=True))
-    used = metrics['usage']['memory']
-    used_mib = int(used[:-2]) / 1024 if used.endswith('Ki') else int(used[:-2])
-    available = alloc_mib - used_mib
-    if available < 10240:
-        raise RuntimeError(f'Node available memory {available:.0f} MiB is below the 10240 MiB orchestration floor')
+    measured = check_resources({})
+    available = measured['availableMiB']
+    # Airflow is already running here and included in MemAvailable. Reserve the
+    # remaining 4096 MiB compute, 768 MiB task and 1250 MiB safety allowance.
+    if available < 6114:
+        raise RuntimeError(f'Available memory {available:.0f} MiB is below the 6114 MiB remaining-task budget')
     holder = 'airflow:' + hashlib.sha256(dag_run_id.encode()).hexdigest()[:24]
     now = dt.datetime.now(dt.timezone.utc)
     from kubernetes import client
     lease = client.V1Lease(metadata=client.V1ObjectMeta(name=LEASE_NAME, namespace=LEASE_NAMESPACE,
-                           annotations={'petclinic.devops.local/budget-mib': '8674'}),
+                           annotations={'petclinic.devops.local/budget-mib': '8192',
+                                        'petclinic.devops.local/guard-baseline': json.dumps({
+                                            'macSwapMiB': measured['mac']['swapUsedMiB'],
+                                            'failures': measured['failures']})}),
                            spec=client.V1LeaseSpec(holder_identity=holder, acquire_time=now,
                                                   renew_time=now, lease_duration_seconds=3600))
     try:
@@ -335,12 +389,12 @@ def create_snapshot(guard):
                     (batch_id,dag_run_id,window_start,window_end,status,stage,attempt)
                     VALUES (%s,%s,%s,%s,'running','snapshot',1)
                     ON CONFLICT (batch_id) DO UPDATE SET dag_run_id=EXCLUDED.dag_run_id,
-                    status='running',stage='snapshot',finished_at=NULL,error=NULL,
+                    status='running',stage='snapshot',started_at=now(),finished_at=NULL,error=NULL,
                     attempt=petclinic_analytics.executions.attempt+1,updated_at=now()''',
                     (batch_id, guard['dag_run_id'], guard['from'], guard['to']))
     return {'batch_id': batch_id, 'config_map': name, 'sha256': digest, 'input_rows': len(rows),
             'unique_visit_ids': len({row[0] for row in rows}), 'owners': owners, 'pets': pets,
-            'vets': vets, 'execution_id': execution_id,
+            'vets': vets, 'execution_id': execution_id, 'holder': guard['holder'],
             'minimum_date': min(row[1] for row in rows).isoformat(),
             'maximum_date': max(row[1] for row in rows).isoformat()}
 
@@ -457,16 +511,45 @@ def run_flink_bounded(snapshot, baseline):
                                          'petclinic-window-092657-output',
                                          'petclinic-airflow-window-v1')
     jobs = []
+    owned = []
+    client_pod = 'petclinic-flink-sql-' + snapshot['execution_id']
+    created_client = False
+
+    def topic_end(topic):
+        result = _exec('ns-bigdata', 'kafka', ['env', 'KAFKA_HEAP_OPTS=-Xms32M -Xmx128M',
+                       '/opt/kafka/bin/kafka-get-offsets.sh', '--bootstrap-server', 'localhost:9092',
+                       '--topic', topic])
+        return {int(parts[1]): int(parts[2]) for line in result.splitlines()
+                if len(parts := line.split(':')) == 3 and parts[0] == topic}
+
     try:
         for name in ('flink-jobmanager', 'flink-taskmanager'):
+            deployment = apps.read_namespaced_deployment(name, 'ns-bigdata')
+            if deployment.spec.replicas != 0:
+                raise RuntimeError(f'{name} is already enabled; refusing to take over existing compute')
+            apps.patch_namespaced_deployment(name, 'ns-bigdata', {'metadata': {'annotations': {
+                'petclinic.devops.local/analysis-execution': snapshot['execution_id']}}})
+            owned.append(name)
             apps.patch_namespaced_deployment_scale(name, 'ns-bigdata', {'spec': {'replicas': 1}})
         for _ in range(90):
+            check_resources()
             if all((apps.read_namespaced_deployment(name, 'ns-bigdata').status.ready_replicas or 0) == 1
                    for name in ('flink-jobmanager', 'flink-taskmanager')):
                 break
             time.sleep(4)
         else:
             raise RuntimeError('Flink core did not become Ready')
+        for _ in range(30):
+            check_resources()
+            try:
+                overview = _flink_api('/overview')
+                if overview.get('slots-total', 0) == 1 and overview.get('flink-version') == '2.3.0':
+                    break
+            except OSError:
+                pass
+            time.sleep(2)
+        else:
+            raise RuntimeError('Flink registered no single bounded task slot')
         for topic in (input_topic, output_topic):
             _exec('ns-bigdata', 'kafka', ['env', 'KAFKA_HEAP_OPTS=-Xms32M -Xmx128M',
                   '/opt/kafka/bin/kafka-topics.sh', '--bootstrap-server', 'localhost:9092', '--create',
@@ -475,18 +558,63 @@ def run_flink_bounded(snapshot, baseline):
             .replace('petclinic-windows-20261011', output_topic) \
             .replace('petclinic-flink-20261011', group) \
             .replace('Petclinic bounded snapshot window acceptance', 'Petclinic Airflow bounded daily windows')
+        import copy
+        jm = apps.read_namespaced_deployment('flink-jobmanager', 'ns-bigdata')
+        spec = copy.deepcopy(core.api_client.sanitize_for_serialization(jm.spec.template.spec))
+        spec['containers'] = spec['containers'][:1]
+        container = spec['containers'][0]
+        container['name'] = 'sql-client'
+        container['command'] = ['bash', '-c']
+        container['args'] = ['sleep 900']
+        container['resources'] = {'requests': {'memory': '1024Mi', 'cpu': '100m'},
+                                  'limits': {'memory': '1024Mi', 'cpu': '1000m'}}
+        for key in ('ports', 'livenessProbe', 'readinessProbe', 'startupProbe'):
+            container.pop(key, None)
+        spec['automountServiceAccountToken'] = False
+        spec['restartPolicy'] = 'Never'
+        spec['activeDeadlineSeconds'] = 900
+        core.create_namespaced_pod('ns-bigdata', {'apiVersion': 'v1', 'kind': 'Pod',
+            'metadata': {'name': client_pod, 'labels': {'app': 'petclinic-analysis',
+                                                      'execution': snapshot['execution_id']}},
+            'spec': spec})
+        created_client = True
+        for _ in range(60):
+            check_resources()
+            pod = core.read_namespaced_pod(client_pod, 'ns-bigdata')
+            if any(c.ready for c in (pod.status.container_statuses or [])):
+                break
+            time.sleep(2)
+        else:
+            raise RuntimeError('Bounded Flink SQL client did not become Ready')
         submit = _exec('ns-bigdata', 'flink-jobmanager', ['bash', '-lc',
-                       "cat >/tmp/petclinic-airflow.sql; /opt/flink/bin/sql-client.sh -Drest.address=flink-jobmanager -Drest.port=8081 -f /tmp/petclinic-airflow.sql"],
-                       "SET 'execution.target'='remote';\nSET 'execution.attached'='false';\n" + sql, 120)
+                       "cat >/tmp/petclinic-airflow.sql; /opt/flink/bin/sql-client.sh -Djobmanager.rpc.address=flink-jobmanager -Drest.address=flink-jobmanager -Drest.port=8081 -f /tmp/petclinic-airflow.sql"],
+                       "SET 'execution.target'='remote';\nSET 'execution.attached'='false';\n" + sql,
+                       120, pod=client_pod)
         import re
         found = re.findall(r'Job ID:\s*([a-f0-9]{32})', submit)
         for _ in range(20):
+            check_resources()
             running = [job for job in _flink_api('/jobs/overview').get('jobs', []) if job['state'] == 'RUNNING']
             if len(running) == 1:
                 job_id = running[0]['jid']; jobs.append(job_id); break
             time.sleep(2)
         else:
             raise RuntimeError('No unique running Flink job after SQL submission: ' + submit[-1000:])
+        _execution(snapshot['batch_id'], 'flink-running', flink_job_id=job_id,
+                   kafka_input_topic=input_topic, kafka_output_topic=output_topic,
+                   kafka_consumer_group=group)
+        # A completed checkpoint proves the Kafka source was initialized before
+        # producing this batch (a first group starts at the existing topic end).
+        for _ in range(30):
+            check_resources()
+            if _flink_api('/jobs/' + job_id + '/checkpoints').get('counts', {}).get('completed', 0):
+                break
+            time.sleep(2)
+        else:
+            raise RuntimeError('Flink source did not initialize a checkpoint before batch publication')
+        input_before, output_before = topic_end(input_topic), topic_end(output_topic)
+        if set(input_before) != {0} or set(output_before) != {0}:
+            raise RuntimeError('Existing analytics topics must retain their one-partition layout')
         text = core.read_namespaced_config_map(snapshot['config_map'], 'default').data['visits.csv']
         rows = list(csv.DictReader(io.StringIO(text)))
         messages = '\n'.join(json.dumps({'snapshot_id': snapshot['batch_id'], 'visit_id': int(row['visit_id']),
@@ -495,11 +623,16 @@ def run_flink_bounded(snapshot, baseline):
               '/opt/kafka/bin/kafka-console-producer.sh', '--bootstrap-server', 'localhost:9092',
               '--topic', input_topic, '--producer-property', 'acks=all',
               '--producer-property', 'enable.idempotence=true'], messages, 90)
+        input_after = topic_end(input_topic)
+        if input_after[0] - input_before[0] < len(rows):
+            raise RuntimeError('Kafka did not persist the complete bounded message batch')
         values = {}
         raw = ''
+        offsets = ''
         for _ in range(40):
+            check_resources()
             raw = _exec('ns-bigdata', 'kafka', ['sh', '-lc',
-                   f'env KAFKA_HEAP_OPTS="-Xms32M -Xmx128M" /opt/kafka/bin/kafka-console-consumer.sh --bootstrap-server localhost:9092 --topic {output_topic} --from-beginning --timeout-ms 4000 --max-messages 10000 --property print.key=true --property key.separator="\t" 2>/dev/null || test $? -eq 1'], timeout=20)
+                   f'env KAFKA_HEAP_OPTS="-Xms32M -Xmx128M" /opt/kafka/bin/kafka-console-consumer.sh --bootstrap-server localhost:9092 --topic {output_topic} --partition 0 --offset {output_before[0]} --timeout-ms 4000 --max-messages 10000 --consumer-property isolation.level=read_committed --property print.key=true --property key.separator="\t" 2>/dev/null || test $? -eq 1'], timeout=20)
             for line in raw.splitlines():
                 if '\t' in line:
                     key, value = line.split('\t', 1)
@@ -508,7 +641,13 @@ def run_flink_bounded(snapshot, baseline):
                         if decoded.get('snapshot_id') == snapshot['batch_id']:
                             values[key] = decoded
             total = sum(int(value['visits']) for value in values.values())
-            if total == baseline['input_rows']:
+            offsets = _exec('ns-bigdata', 'kafka', ['env', 'KAFKA_HEAP_OPTS=-Xms32M -Xmx128M',
+                            '/opt/kafka/bin/kafka-consumer-groups.sh', '--bootstrap-server', 'localhost:9092',
+                            '--describe', '--group', group])
+            committed = [int(parts[3]) for line in offsets.splitlines()
+                         if len(parts := line.split()) >= 5 and parts[0] == group
+                         and parts[1] == input_topic and parts[3].isdigit()]
+            if total == baseline['input_rows'] and committed and min(committed) >= input_after[0]:
                 break
             if total > baseline['input_rows']:
                 raise RuntimeError('Flink output duplicated the bounded batch')
@@ -517,15 +656,16 @@ def run_flink_bounded(snapshot, baseline):
             raise RuntimeError('Flink daily window output did not reconcile')
         checkpoint = None
         for _ in range(30):
+            check_resources()
             checks = _flink_api('/jobs/' + job_id + '/checkpoints')
             if checks.get('counts', {}).get('completed', 0) > 0:
                 checkpoint = checks.get('latest', {}).get('completed'); break
             time.sleep(3)
         if checkpoint is None:
             raise RuntimeError('Flink completed no checkpoint')
-        offsets = _exec('ns-bigdata', 'kafka', ['env', 'KAFKA_HEAP_OPTS=-Xms32M -Xmx128M',
-                        '/opt/kafka/bin/kafka-consumer-groups.sh', '--bootstrap-server', 'localhost:9092',
-                        '--describe', '--group', group])
+        output_after = topic_end(output_topic)
+        if output_after[0] <= output_before[0]:
+            raise RuntimeError('Flink emitted no newly committed window messages for this execution')
         try:
             _flink_api('/jobs/' + job_id + '?mode=cancel', 'PATCH')
         except Exception:
@@ -536,6 +676,8 @@ def run_flink_bounded(snapshot, baseline):
         return {'job_id': job_id, 'input_topic': input_topic, 'output_topic': output_topic,
                 'consumer_group': group, 'input_rows': len(rows), 'output_visits': total,
                 'output_keys': len(values), 'checkpoint': checkpoint, 'offsets': offsets,
+                'input_offsets_before': input_before, 'input_offsets_after': input_after,
+                'output_offsets_before': output_before, 'output_offsets_after': output_after,
                 'message_sample': list(values.values())[:3]}
     finally:
         for job in jobs:
@@ -543,24 +685,28 @@ def run_flink_bounded(snapshot, baseline):
                 _flink_api('/jobs/' + job + '?mode=cancel', 'PATCH')
             except Exception:
                 pass
-        for name in ('flink-jobmanager', 'flink-taskmanager'):
-            try:
-                apps.patch_namespaced_deployment_scale(name, 'ns-bigdata', {'spec': {'replicas': 0}})
-            except Exception:
-                pass
+        for name in owned:
+            apps.patch_namespaced_deployment_scale(name, 'ns-bigdata', {'spec': {'replicas': 0}})
+        if created_client:
+            core.delete_namespaced_pod(client_pod, 'ns-bigdata')
 
 
 def publish_orchestrated(snapshot, start, end, dag_run_id):
-    result = publish(quality(extract(start, end)), 'airflow:' + snapshot['batch_id'], 'pending')
+    batch = quality(extract(start, end))
+    if batch['source_sha256'] != snapshot['sha256']:
+        raise ValueError('Source changed after the bounded snapshot; retain the last successful result')
+    result = publish(batch, 'airflow:' + snapshot['batch_id'], 'pending')
     _execution(snapshot['batch_id'], 'published')
     return result
 
 
 def verify_trino_and_superset(snapshot, baseline):
-    sql = ("SELECT visits FROM postgresql.petclinic_analytics.runs "
-           "WHERE run_id='airflow:" + snapshot['batch_id'].replace("'", "''") + "' AND status IN ('pending','success')")
+    sql = ("SELECT r.visits,COALESCE(sum(d.visits),0) FROM clinic.petclinic_analytics.runs r "
+           "LEFT JOIN clinic.petclinic_analytics.daily_visits d ON d.run_id=r.run_id "
+           "WHERE r.run_id='airflow:" + snapshot['batch_id'].replace("'", "''")
+           + "' AND r.status IN ('pending','success') GROUP BY r.visits")
     request = urllib.request.Request('http' + '://trino.data-infra:8080/v1/statement', data=sql.encode(), method='POST',
-                                     headers={'X-Trino-User': 'petclinic-airflow', 'X-Trino-Catalog': 'postgresql',
+                                     headers={'X-Trino-User': 'petclinic-airflow', 'X-Trino-Catalog': 'clinic',
                                               'X-Trino-Schema': 'petclinic_analytics'})
     with urllib.request.urlopen(request, timeout=20) as response:
         page = json.loads(response.read())
@@ -571,17 +717,28 @@ def verify_trino_and_superset(snapshot, baseline):
         rows.extend(page.get('data', []))
     if not rows or int(rows[0][0]) != snapshot['input_rows']:
         raise ValueError('Trino result does not match the source snapshot')
+    if int(rows[0][1]) != baseline['window_visits']:
+        raise ValueError('Trino annual visits do not match the MySQL baseline')
     with urllib.request.urlopen('http' + '://superset.data-infra:8088/health', timeout=10) as response:
         health = response.read().decode().strip()
     if response.status != 200:
         raise RuntimeError('Superset health endpoint failed')
-    # Chart IDs are read from the existing Superset metadata without exposing credentials.
-    chart = _exec('ns-data', 'mysql', ['sh', '-lc',
-                  'MYSQL_PWD="$MYSQL_ROOT_PASSWORD" mysql -uroot --batch --raw --skip-column-names superset -e "SELECT id FROM slices WHERE slice_name LIKE \'Petclinic%\' ORDER BY id LIMIT 1"'])
-    chart_id = int([line for line in chart.splitlines() if line.strip().isdigit()][0])
+    # Run the existing chart's real API handler and Trino query in a bounded
+    # verification process. Authentication stays within the existing Superset pod.
+    chart = _exec('data-infra', 'superset', ['/app/.venv/bin/python', '-', 'airflow:' + snapshot['batch_id']],
+                  _code('verify_chart.py'), 90)
+    responses = [line[7:] for line in chart.splitlines() if line.startswith('RESULT:')]
+    if len(responses) != 1:
+        raise RuntimeError('Superset did not return one chart response')
+    chart_result = json.loads(responses[0])
+    chart_id = chart_result['chart_id']
+    if chart_result['annual_visits'] != baseline['window_visits']:
+        raise ValueError('Superset chart does not match the MySQL annual baseline')
     _execution(snapshot['batch_id'], 'verified', trino_query_id=query_id, superset_chart_id=chart_id)
     return {'trino_query_id': query_id, 'trino_visits': int(rows[0][0]),
+            'trino_window_visits': int(rows[0][1]),
             'superset_health': health, 'superset_chart_id': chart_id,
+            'superset_chart_response': chart_result,
             'mysql_window_visits': baseline['window_visits']}
 
 
@@ -599,32 +756,69 @@ def complete_execution(snapshot):
 
 def release_guard(guard, snapshot=None, failed=False, error=None):
     core, apps, custom, coordination = _kube()
+    current = coordination.read_namespaced_lease(LEASE_NAME, LEASE_NAMESPACE)
+    if current.metadata.uid != guard['lease_uid'] or current.spec.holder_identity != guard['holder']:
+        raise RuntimeError('Heavy resource Lease ownership changed; refusing unsafe cleanup')
+    from kubernetes.client.exceptions import ApiException
+
+    def ignore_missing(operation):
+        try:
+            return operation()
+        except ApiException as problem:
+            if problem.status != 404:
+                raise
+
+    owned_flink = []
+    status_error = None
     if snapshot:
         if failed:
-            _execution(snapshot['batch_id'], 'failed', 'failed', error=(error or 'Airflow task failed')[:2000])
-        try:
-            core.delete_namespaced_config_map(snapshot['config_map'], 'default')
-        except Exception:
-            pass
+            try:
+                _execution(snapshot['batch_id'], 'failed', 'failed', error=(error or 'Airflow task failed')[:2000])
+            except Exception as problem:
+                status_error = problem
         for app in custom.list_namespaced_custom_object('sparkoperator.k8s.io', 'v1beta2', 'default',
                                                         'sparkapplications',
                                                         label_selector='execution=' + snapshot['execution_id']).get('items', []):
-            try:
-                custom.delete_namespaced_custom_object('sparkoperator.k8s.io', 'v1beta2', 'default',
-                                                       'sparkapplications', app['metadata']['name'])
-            except Exception:
-                pass
-    for name in ('flink-jobmanager', 'flink-taskmanager'):
-        try:
-            apps.patch_namespaced_deployment_scale(name, 'ns-bigdata', {'spec': {'replicas': 0}})
-        except Exception:
-            pass
-    current = coordination.read_namespaced_lease(LEASE_NAME, LEASE_NAMESPACE)
-    if current.metadata.uid != guard['lease_uid'] or current.spec.holder_identity != guard['holder']:
-        raise RuntimeError('Heavy resource Lease ownership changed; refusing unsafe release')
+            ignore_missing(lambda: custom.delete_namespaced_custom_object(
+                'sparkoperator.k8s.io', 'v1beta2', 'default', 'sparkapplications', app['metadata']['name']))
+        for name in ('flink-jobmanager', 'flink-taskmanager'):
+            deployment = apps.read_namespaced_deployment(name, 'ns-bigdata')
+            if (deployment.metadata.annotations or {}).get(
+                    'petclinic.devops.local/analysis-execution') == snapshot['execution_id']:
+                apps.patch_namespaced_deployment_scale(name, 'ns-bigdata', {'spec': {'replicas': 0}})
+                owned_flink.append(name)
+        for pod in core.list_namespaced_pod('ns-bigdata', label_selector='execution=' + snapshot['execution_id']).items:
+            ignore_missing(lambda: core.delete_namespaced_pod(pod.metadata.name, 'ns-bigdata'))
+        for _ in range(60):
+            active = [pod.metadata.name for pod in core.list_namespaced_pod(
+                'default', label_selector='execution=' + snapshot['execution_id']).items
+                if pod.status.phase not in ('Succeeded', 'Failed')]
+            for name in owned_flink:
+                deployment = apps.read_namespaced_deployment(name, 'ns-bigdata')
+                selector = ','.join(f'{key}={value}' for key, value in deployment.spec.selector.match_labels.items())
+                active.extend(pod.metadata.name for pod in core.list_namespaced_pod(
+                    'ns-bigdata', label_selector=selector).items
+                    if pod.status.phase not in ('Succeeded', 'Failed'))
+            active.extend(pod.metadata.name for pod in core.list_namespaced_pod(
+                'ns-bigdata', label_selector='execution=' + snapshot['execution_id']).items
+                if pod.status.phase not in ('Succeeded', 'Failed'))
+            if not active:
+                break
+            time.sleep(2)
+        else:
+            raise RuntimeError(f'Compute did not exit: {active}; retaining Lease and Jenkins pause')
+        ignore_missing(lambda: core.delete_namespaced_config_map(snapshot['config_map'], 'default'))
+    else:
+        # Snapshot creation can fail after creating the ConfigMap but before
+        # returning its XCom. Its ownership label still permits precise cleanup.
+        for item in core.list_namespaced_config_map('default', label_selector=
+                'airflow-holder=' + guard['holder'].replace(':', '-')).items:
+            ignore_missing(lambda: core.delete_namespaced_config_map(item.metadata.name, 'default'))
     if guard.get('owned_quiet'):
         _jenkins('/cancelQuietDown', 'POST')
     coordination.delete_namespaced_lease(LEASE_NAME, LEASE_NAMESPACE)
+    if status_error:
+        raise RuntimeError('Compute released and Jenkins restored, but failure status could not be saved') from status_error
     return {'released': True, 'jenkins_resumed': guard.get('owned_quiet', False)}
 
 

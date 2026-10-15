@@ -1,5 +1,6 @@
 import unittest
-from clinic_task import quality, window
+from unittest.mock import MagicMock, patch
+from clinic_task import publish_orchestrated, quality, release_guard, window
 
 
 class QualityChecks(unittest.TestCase):
@@ -30,6 +31,26 @@ class QualityChecks(unittest.TestCase):
     def test_watermark(self):
         b = self.batch(); b['watermark'] = 1
         with self.assertRaises(ValueError): quality(b)
+
+    def test_changed_source_cannot_publish(self):
+        batch = self.batch()
+        batch['source_sha256'] = 'changed'
+        with patch('clinic_task.extract', return_value=batch), patch('clinic_task.publish') as writer:
+            with self.assertRaisesRegex(ValueError, 'Source changed'):
+                publish_orchestrated({'sha256': 'captured'}, '2026-01-01', '2026-12-31', 'run')
+            writer.assert_not_called()
+
+    def test_foreign_lease_prevents_cleanup(self):
+        core, apps, custom, coordination = [MagicMock() for _ in range(4)]
+        lease = coordination.read_namespaced_lease.return_value
+        lease.metadata.uid = 'foreign-uid'
+        lease.spec.holder_identity = 'another-run'
+        with patch('clinic_task._kube', return_value=(core, apps, custom, coordination)):
+            with self.assertRaisesRegex(RuntimeError, 'ownership changed'):
+                release_guard({'lease_uid': 'our-uid', 'holder': 'our-run'}, {'batch_id': 'batch'})
+        apps.patch_namespaced_deployment_scale.assert_not_called()
+        custom.delete_namespaced_custom_object.assert_not_called()
+        coordination.delete_namespaced_lease.assert_not_called()
 
 
 if __name__ == '__main__':

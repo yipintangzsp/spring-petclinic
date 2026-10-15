@@ -1,8 +1,11 @@
-"""Run and accept the real serial Petclinic Airflow workflow, then scale Airflow to zero."""
+"""Accept normal, failed, retried and replayed runs before enabling a weekly schedule."""
 import argparse
 import copy
 import datetime
+import hashlib
 import json
+import re
+import subprocess
 import time
 from pathlib import Path
 
@@ -16,9 +19,19 @@ def replicas(count):
     return [{'name': name, 'count': count if name in CORE else 0} for name in ALL]
 
 
-def switch(count, revision):
+def switch(count, revision, scheduled=False):
+    patches = []
+    for name in CORE[:3]:
+        patches.append({'target': {'kind': 'Deployment', 'name': name}, 'patch': json.dumps({
+            'apiVersion': 'apps/v1', 'kind': 'Deployment', 'metadata': {'name': name},
+            'spec': {'template': {'metadata': {'annotations': {'petclinic.devops.local/revision': revision}},
+                     'spec': {'containers': [{'name': 'api-server' if name == CORE[0] else
+                         'scheduler' if name == CORE[1] else 'dag-processor',
+                         'env': [{'name': 'PETCLINIC_ANALYTICS_SCHEDULE',
+                                  'value': '30 2 * * 1' if scheduled else ''}]}]}}}})})
     kube(['-n', 'argocd', 'patch', 'application', 'airflow', '--type=merge', '-p', json.dumps({
-        'spec': {'source': {'targetRevision': revision, 'kustomize': {'replicas': replicas(count)}}},
+        'spec': {'source': {'targetRevision': revision, 'kustomize': {'replicas': replicas(count),
+                                                                   'patches': patches}}},
         'metadata': {'annotations': {'argocd.argoproj.io/refresh': 'hard'}},
     })])
 
@@ -41,8 +54,33 @@ def wait_ready(record):
     raise RuntimeError('Airflow core did not become ready within seven minutes')
 
 
+def page(evidence, run_id, suffix):
+    result = subprocess.run(['curl', '--noproxy', '*', '-sS', '--max-time', '8',
+                             '-w', '\n%{http_code}', 'http' + '://petclinic.devops.local/insights'],
+                            capture_output=True, text=True, timeout=10)
+    html, _, status = result.stdout.rpartition('\n')
+    if result.returncode or status != '200':
+        raise RuntimeError('Business insights page failed during orchestration')
+    (evidence / f'{run_id}-{suffix}.html').write_text(html)
+    return {'http_status': int(status), 'states': re.findall(r'analysis-(running|success|failed)', html),
+            'sha256': hashlib.sha256(html.encode()).hexdigest()}
+
+
+def database(pod):
+    return python(pod, "import sys,json;sys.path.insert(0,'/opt/airflow/dags');from clinic_task import connect\n"
+                  "with connect() as db,db.cursor() as c:\n"
+                  " c.execute(\"SELECT run_id,generated_at::text FROM petclinic_analytics.runs WHERE status='success' ORDER BY generated_at DESC LIMIT 1\");latest=c.fetchone()\n"
+                  " c.execute('SELECT count(*),count(DISTINCT visit_id) FROM petclinic_analytics.visit_facts');facts=c.fetchone()\n"
+                  " c.execute('SELECT count(*) FROM petclinic_analytics.daily_visits');daily=c.fetchone()[0]\n"
+                  " c.execute('SELECT count(*) FROM petclinic_analytics.pet_types');types=c.fetchone()[0]\n"
+                  " c.execute('SELECT batch_id,dag_run_id,status,stage,attempt FROM petclinic_analytics.executions ORDER BY started_at DESC LIMIT 1');execution=c.fetchone()\n"
+                  " print('RESULT:'+json.dumps({'last_success':latest,'facts':facts,'daily_rows':daily,'type_rows':types,'execution':execution}))")
+
+
 def wait_run(pod, run_id, evidence, history, record):
-    for _ in range(300):
+    observed = set()
+    deadline = time.monotonic() + 1800
+    while time.monotonic() < deadline:
         record()
         code = ("import json;from airflow.models.dagrun import DagRun;from airflow.models.taskinstance import TaskInstance;"
                 "from airflow.utils.session import create_session\nwith create_session() as s:\n"
@@ -52,20 +90,94 @@ def wait_run(pod, run_id, evidence, history, record):
                 "'tasks':[{'task_id':t.task_id,'state':str(t.state),'try_number':t.try_number,"
                 "'start':str(t.start_date),'end':str(t.end_date)} for t in tasks]}))")
         result = python(pod, code)
+        details = python(pod, "import json;from airflow.models.xcom import XComModel;from airflow.utils.session import create_session\n"
+                         "with create_session() as s:\n"
+                         " rows=s.query(XComModel).filter_by(dag_id='petclinic_insights',run_id=" + repr(run_id) + ",key='return_value').all()\n"
+                         " print('RESULT:'+json.dumps({x.task_id:XComModel.deserialize_value(x) for x in rows}))")
+        result['xcom'] = details
+        result['page'] = page(evidence, run_id, 'current')
+        for state in result['page']['states']:
+            if state not in observed:
+                page(evidence, run_id, state)
+                observed.add(state)
+        result['observed_page_states'] = sorted(observed)
+        application = details.get('spark_submit')
+        if application and 'spark-captured' not in observed:
+            app = kube(['-n', 'default', 'get', 'sparkapplication', application, '-o', 'json'])
+            driver = app.get('status', {}).get('driverInfo', {}).get('podName')
+            if driver and app.get('status', {}).get('applicationState', {}).get('state') == 'COMPLETED':
+                (evidence / f'{run_id}-spark.json').write_text(json.dumps(app, indent=2))
+                logs = kube(['-n', 'default', 'logs', driver, '--tail=600'])
+                (evidence / f'{run_id}-spark.log').write_text(str(logs))
+                observed.add('spark-captured')
         history.append(result)
         (evidence / 'dag-history.json').write_text(json.dumps(history, indent=2))
         if result['state'] in ('success', 'failed'):
+            # The business page has a ten-second summary cache.
+            time.sleep(11)
+            result['page'] = page(evidence, run_id, 'terminal')
+            result['database'] = database(pod)
+            result['jenkins'] = jenkins('/api/json?tree=quietingDown,jobs[name,lastBuild[building]]')
+            (evidence / f'{run_id}.json').write_text(json.dumps(result, indent=2))
             return result
         time.sleep(6)
     raise RuntimeError('DAG run exceeded the 30 minute acceptance deadline')
 
 
-def run(revision, evidence_path):
+def abort_owned(run_ids, evidence):
+    """Stop only compute carrying this acceptance controller's run identities."""
+    actions = []
+    for run_id in run_ids:
+        execution = hashlib.sha256(run_id.encode()).hexdigest()[:12]
+        holder = 'airflow:' + hashlib.sha256(run_id.encode()).hexdigest()[:24]
+        for namespace in ('default', 'ns-bigdata'):
+            for item in kube(['-n', namespace, 'get', 'pods', '-l', 'execution=' + execution, '-o', 'json'])['items']:
+                kube(['-n', namespace, 'delete', 'pod', item['metadata']['name'], '--wait=false'])
+                actions.append(item['metadata']['name'])
+        for app in kube(['-n', 'default', 'get', 'sparkapplications', '-l', 'execution=' + execution, '-o', 'json'])['items']:
+            kube(['-n', 'default', 'delete', 'sparkapplication', app['metadata']['name'], '--wait=false'])
+        for name in ('flink-jobmanager', 'flink-taskmanager'):
+            deployment = kube(['-n', 'ns-bigdata', 'get', 'deployment', name, '-o', 'json'])
+            if deployment['metadata'].get('annotations', {}).get('petclinic.devops.local/analysis-execution') == execution:
+                kube(['-n', 'ns-bigdata', 'scale', 'deployment', name, '--replicas=0'])
+        # Worker ownership is recorded in KubernetesExecutor annotations.
+        for worker in kube(['-n', 'data-infra', 'get', 'pods', '-o', 'json'])['items']:
+            if worker['metadata'].get('annotations', {}).get('run_id') == run_id:
+                kube(['-n', 'data-infra', 'delete', 'pod', worker['metadata']['name'], '--wait=false'])
+        for _ in range(60):
+            active = []
+            for namespace in ('default', 'ns-bigdata'):
+                active += [p for p in kube(['-n', namespace, 'get', 'pods', '-l', 'execution=' + execution, '-o', 'json'])['items']
+                           if p['status']['phase'] not in ('Succeeded', 'Failed')]
+            for name in ('flink-jobmanager', 'flink-taskmanager'):
+                deployment = kube(['-n', 'ns-bigdata', 'get', 'deployment', name, '-o', 'json'])
+                if deployment['metadata'].get('annotations', {}).get('petclinic.devops.local/analysis-execution') == execution:
+                    selector = ','.join(k+'='+v for k,v in deployment['spec']['selector']['matchLabels'].items())
+                    active += [p for p in kube(['-n', 'ns-bigdata', 'get', 'pods', '-l', selector, '-o', 'json'])['items']
+                               if p['status']['phase'] not in ('Succeeded', 'Failed')]
+            if not active:
+                break
+            time.sleep(2)
+        else:
+            raise RuntimeError('Owned compute remains active; retain the shared Lease and Jenkins pause')
+        leases = kube(['-n', 'data-infra', 'get', 'leases', '-o', 'json'])['items']
+        for lease in leases:
+            if lease['metadata']['name'] == 'platform-heavy' and lease['spec'].get('holderIdentity') == holder:
+                kube(['-n', 'data-infra', 'delete', 'lease', 'platform-heavy', '--wait=false'])
+        for cm in kube(['-n', 'default', 'get', 'configmaps', '-l', 'airflow-holder=' + holder.replace(':', '-'), '-o', 'json'])['items']:
+            kube(['-n', 'default', 'delete', 'configmap', cm['metadata']['name']])
+    (evidence / 'abort-cleanup.json').write_text(json.dumps({'run_ids': run_ids, 'actions': actions}, indent=2))
+
+
+def run(revision, evidence_path, keep_running=False):
     evidence = Path(evidence_path)
     evidence.mkdir(parents=True, exist_ok=True)
     pod = 'petclinic-airflow-control-' + datetime.datetime.now().strftime('%H%M%S')
     history, samples = [], []
     owned_quiet = False
+    accepted = False
+    run_ids, results = [], []
+    initial_quiet = False
 
     def record():
         value = sample()
@@ -83,6 +195,7 @@ def run(revision, evidence_path):
         raise RuntimeError('Airflow orchestration requires at least 10240 MiB node MemAvailable')
     try:
         state = jenkins('/api/json?tree=quietingDown,jobs[name,lastBuild[building]]')
+        initial_quiet = state.get('quietingDown', False)
         if not state.get('quietingDown'):
             jenkins('/quietDown', 'POST')
             owned_quiet = True
@@ -101,14 +214,14 @@ def run(revision, evidence_path):
         container = spec['containers'][0]
         container['name'] = 'control'
         container['command'] = ['bash', '-c']
-        container['args'] = ['sleep 3600']
+        container['args'] = ['sleep 14400']
         container['resources'] = {'requests': {'memory': '512Mi', 'cpu': '100m'},
                                   'limits': {'memory': '512Mi', 'cpu': '500m'}}
         for key in ('livenessProbe', 'readinessProbe', 'startupProbe'):
             container.pop(key, None)
         spec['automountServiceAccountToken'] = False
         spec['restartPolicy'] = 'Never'
-        spec['activeDeadlineSeconds'] = 3600
+        spec['activeDeadlineSeconds'] = 14400
         kube(['create', '-f', '-'], {'apiVersion': 'v1', 'kind': 'Pod',
              'metadata': {'name': pod, 'namespace': 'data-infra',
                           'labels': {'app': 'petclinic-analysis', 'purpose': 'airflow-control'}},
@@ -133,7 +246,12 @@ def run(revision, evidence_path):
         else:
             raise RuntimeError('DAG was not parsed by the installed DAG processor')
 
-        for index, mode in enumerate(('none', 'retry', 'none'), 1):
+        # Allow each DAG's guard to pause and restore Jenkins itself. The host
+        # controller never acquires the same shared Lease a second time.
+        if owned_quiet:
+            jenkins('/cancelQuietDown', 'POST')
+            owned_quiet = False
+        for index, mode in enumerate(('none', 'fail', 'retry', 'none'), 1):
             stamp = datetime.datetime.now(datetime.timezone.utc).strftime('%Y%m%dT%H%M%S')
             run_id = f'manual__orchestration_{stamp}_{index}_{mode}'
             conf = {'from': '2026-01-01', 'to': '2026-12-31', 'verify_retry': mode}
@@ -145,13 +263,43 @@ def run(revision, evidence_path):
                     + "\nkwargs['triggered_by']=DagRunTriggeredByType.CLI\nr=trigger_dag(**kwargs);"
                     "print('RESULT:'+json.dumps({'run_id':r.run_id,'state':str(r.state)}))")
             python(pod, code)
+            run_ids.append(run_id)
             result = wait_run(pod, run_id, evidence, history, record)
-            if result['state'] != 'success':
-                raise RuntimeError('DAG run failed: ' + run_id)
+            expected = 'failed' if mode == 'fail' else 'success'
+            if result['state'] != expected:
+                raise RuntimeError(f'DAG run {run_id}: expected {expected}, observed {result["state"]}')
+            if result['jenkins'].get('quietingDown', False) != initial_quiet:
+                raise RuntimeError('The DAG did not restore the original Jenkins state')
+            if not result['xcom'].get('cleanup', {}).get('released'):
+                raise RuntimeError('DAG cleanup did not confirm resource and Lease release')
+            leases = kube(['-n', 'data-infra', 'get', 'leases', '-o', 'json'])['items']
+            if any(l['metadata']['name'] == 'platform-heavy' for l in leases):
+                raise RuntimeError('Shared heavy Lease remains after the DAG')
+            if mode == 'fail':
+                if result['database']['last_success'] != results[0]['database']['last_success']:
+                    raise RuntimeError('A failed batch replaced the last successful publication')
+                if 'failed' not in result['page']['states']:
+                    raise RuntimeError('The business page does not show the actual failed status')
+            else:
+                if 'success' not in result['page']['states']:
+                    raise RuntimeError('The business page does not show verified success')
+                if 'running' not in result['observed_page_states']:
+                    raise RuntimeError('No running business-page state was captured')
+                if results and result['xcom']['snapshot']['batch_id'] != results[0]['xcom']['snapshot']['batch_id']:
+                    raise RuntimeError('Replay did not use the same unchanged bounded batch')
+                if index > 1 and any(result['database'][key] != results[0]['database'][key]
+                                     for key in ('facts', 'daily_rows', 'type_rows')):
+                    raise RuntimeError('Replay added duplicate analytics facts or summaries')
             if mode == 'retry' and not any(task['task_id'] == 'validate' and task['try_number'] == 2
                                             for task in result['tasks']):
                 raise RuntimeError('Controlled failure did not produce a second validate attempt')
+            if mode == 'fail' and not any(t['task_id'] == 'validate' and t['try_number'] == 2 for t in result['tasks']):
+                raise RuntimeError('Terminal failure did not exhaust its bounded retry')
+            results.append(result)
+            (evidence / 'acceptance.json').write_text(json.dumps(results, indent=2))
+        accepted = True
     finally:
+        safe_to_resume = False
         for name in CORE:
             try:
                 logs = kube(['-n', 'data-infra', 'logs', 'deploy/' + name,
@@ -161,9 +309,26 @@ def run(revision, evidence_path):
                 (evidence / (name + '.log-error')).write_text(str(error))
         try:
             kube(['-n', 'data-infra', 'delete', 'pod', pod, '--ignore-not-found', '--wait=false'])
-            switch(0, revision)
+            if not accepted:
+                switch(0, revision)
+                # Stop dispatch before deleting only this controller's workers.
+                for _ in range(60):
+                    scheduler_state = kube(['-n', 'data-infra', 'get', 'deployment', 'airflow-scheduler', '-o', 'json'])
+                    if scheduler_state['status'].get('replicas', 0) == 0:
+                        break
+                    time.sleep(2)
+                else:
+                    raise RuntimeError('Scheduler has not stopped; preserve Jenkins pause and shared Lease')
+                abort_owned(run_ids, evidence)
+            else:
+                switch(1 if keep_running else 0, revision, scheduled=keep_running)
+                (evidence / 'desired-state.json').write_text(json.dumps({'revision': revision,
+                    'airflow_core_replicas': 1 if keep_running else 0,
+                    'schedule': '30 2 * * 1' if keep_running else None,
+                    'timezone': 'Asia/Shanghai', 'catchup': False, 'max_active_runs': 1}, indent=2))
+            safe_to_resume = True
         finally:
-            if owned_quiet:
+            if safe_to_resume and (owned_quiet or not initial_quiet):
                 jenkins('/cancelQuietDown', 'POST')
 
 
@@ -171,5 +336,6 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('--revision', required=True)
     parser.add_argument('--evidence', required=True)
+    parser.add_argument('--keep-running', action='store_true')
     arguments = parser.parse_args()
-    run(arguments.revision, arguments.evidence)
+    run(arguments.revision, arguments.evidence, arguments.keep_running)

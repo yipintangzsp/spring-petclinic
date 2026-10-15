@@ -212,6 +212,10 @@
                 "mountPath": "/opt/airflow/dags/clinic_task.py",
                 "subPath": "clinic_task.py",
                 "readOnly": true
+              },
+              {
+                "name": "logs",
+                "mountPath": "/opt/airflow/logs"
               }
             ],
             "envFrom": [
@@ -334,6 +338,12 @@
             "name": "analysis-code",
             "configMap": {
               "name": "petclinic-analysis-code"
+            }
+          },
+          {
+            "name": "logs",
+            "persistentVolumeClaim": {
+              "claimName": "logs-airflow-triggerer-0"
             }
           }
         ],

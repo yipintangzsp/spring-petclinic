@@ -381,8 +381,10 @@
             "name": "config"
           },
           {
-            "emptyDir": {},
-            "name": "logs"
+            "name": "logs",
+            "persistentVolumeClaim": {
+              "claimName": "logs-airflow-triggerer-0"
+            }
           },
           {
             "name": "analysis-code",

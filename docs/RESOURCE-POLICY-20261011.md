@@ -1,6 +1,27 @@
 # 实测资源与按需运行策略 · 2026-10-11
 
-> 2026-10-14 当前状态以 [恢复与发布验收](RECOVERY-20261014.md) 为准：生产 #134；#135 受控停止；联合编排未完成（宿主磁盘不足、Java DB 更新网络受阻）。以下旧数字与验收属于历史记录。Spark Operator/Webhook 当前常驻保留。
+> 2026-10-15 当前：磁盘修复及重启验证已完成，宿主机释放约 69.3 GiB；Alertmanager 已完成内部触发、接收、路由和恢复验收，外部送达未验证。Spark 两次新业务运行已通过。联合 DAG 正在验收，未宣称完成。下方旧基线为历史记录，恢复证据见 [恢复记录](RECOVERY-20261014.md)。
+
+
+## 2026-10-15 联合编排分阶段预算
+
+准入使用 Mac 与 VM 连续采样，不能用 Kubernetes allocatable 减 working set 冒充 MemAvailable。启动 Airflow 前要求 VM MemAvailable 至少 10240 MiB。已有业务、PostgreSQL、MySQL、Kafka、Trino 本地协调器、Superset Web、监控和系统的实际占用已体现在采样中；不额外开启云 Trino worker、Superset worker、MinIO 或 Spark/Flink 长期计算。
+
+|增量项目|内存上限预算 MiB|执行方式|
+|---|---:|---|
+|Airflow API / Scheduler / DAG Processor|2304|每个 768，CPU request 100m / limit 750m|
+|两个日志清理容器、StatsD|192|128+64；复用现有日志 PVC|
+|单个 KubernetesExecutor task|768|100m / 500m；同一时间最多一个|
+|验收控制 Pod|512|仅本轮手工验收，结束即删除|
+|Spark 或 Flink 完整计算过程|4096|串行；Flink JM 1024 + TM 1536 + 独立 SQL client 1024，另留 512|
+|安全储备|1250|不作为任务可消耗预算|
+|合计|9122|启动准入 10240，额外保留 1118 MiB 余量|
+
+Airflow 已启动后，核心占用已扣在 MemAvailable 中，任务准入检查剩余计算 4096 + worker 768 + 安全储备 1250 = 6114 MiB；不能重复计算 Airflow 核心并错误拒绝准入。共享 Lease 记录完整 Airflow 4096 + 计算 4096 = 8192 MiB。验收控制器不获取第二把 Lease，DAG 自己管理锁与 Jenkins 原始 quiet 状态。
+
+轻量 Mac LaunchAgent `local.petclinic.resources` 每 15 秒以上发布真实 Mac/VM 采样到 `data-infra/platform-host-resources`，不启动业务计算。样本超过 90 秒、宿主/VM 磁盘少于 8 GiB、Mac free 低于 10%、swap 增长超过 512 MiB、VM available 低于 1536 MiB、新 OOM/驱逐或既有 PSI/健康阈值触发，任务停止并仅清理本轮资源。等待 Spark 使用已装 provider 支持的 reschedule sensor，等待时任务 Pod 可释放；不额外常驻 triggerer。最终失败由独立失败任务保持 DAG 红色，清理成功不会掩盖失败。
+
+DAG 默认无定时；控制器完成正常、最终失败、重试、同批次复跑四轮后，才可用 `--keep-running` 将 GitOps Application 的核心副本设为 1，并开启 Asia/Shanghai 每周一 02:30，catchup=False、max_active_runs/tasks=1。所有计算仍按需回收。未经整体验收不得将该策略描述为已上线。
 
 ## 基线与准入
 
