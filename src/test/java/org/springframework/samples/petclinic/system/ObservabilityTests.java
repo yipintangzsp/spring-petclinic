@@ -45,6 +45,7 @@ class ObservabilityTests {
 		{
 			SimpleMeterRegistry registry = new SimpleMeterRegistry();
 			new ClinicBusinessMetrics(provider).bindTo(registry);
+			System.gc();
 			assertThat(registry.get("petclinic.business.records").tag("entity", "visits").gauge().value()).isEqualTo(5);
 			assertThat(registry.get("petclinic.business.records").tag("entity", "owners").gauge().value())
 				.isEqualTo(11);
@@ -55,6 +56,7 @@ class ObservabilityTests {
 		{
 			SimpleMeterRegistry registry = new SimpleMeterRegistry();
 			new ClinicBusinessMetrics(provider).bindTo(registry);
+			System.gc();
 			assertThat(registry.get("petclinic.business.records").tag("entity", "owners").gauge().value()).isNaN();
 			assertThat(registry.get("petclinic.business.database.available").gauge().value()).isZero();
 			registry.close();

@@ -44,9 +44,11 @@ class ClinicBusinessMetrics implements MeterBinder {
 			Gauge.builder("petclinic.business.records", this, metrics -> metrics.count(entity))
 				.tag("entity", entity)
 				.description("Database record counts; aggregate once across replicas")
+				.strongReference(true)
 				.register(registry);
 		}
 		Gauge.builder("petclinic.business.database.available", this, metrics -> metrics.databaseAvailable())
+			.strongReference(true)
 			.register(registry);
 	}
 

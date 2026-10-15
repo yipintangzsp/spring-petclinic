@@ -193,6 +193,9 @@ def run(revision, evidence_path, keep_running=False):
     before = record()
     if before['availableMiB'] < 10240:
         raise RuntimeError('Airflow orchestration requires at least 10240 MiB node MemAvailable')
+    if any(kube(['-n', 'data-infra', 'get', 'deployment', name, '-o', 'json'])['spec']['replicas']
+           for name in CORE):
+        raise RuntimeError('Acceptance expects idle Airflow core; do not take over an existing scheduler')
     try:
         state = jenkins('/api/json?tree=quietingDown,jobs[name,lastBuild[building]]')
         initial_quiet = state.get('quietingDown', False)
@@ -245,6 +248,11 @@ def run(revision, evidence_path, keep_running=False):
             time.sleep(5)
         else:
             raise RuntimeError('DAG was not parsed by the installed DAG processor')
+        active = python(pod, "import json;from airflow.models.dagrun import DagRun;from airflow.utils.session import create_session\n"
+                        "with create_session() as s:\n"
+                        " print('RESULT:'+json.dumps([r.run_id for r in s.query(DagRun).filter(DagRun.dag_id=='petclinic_insights',DagRun.state.in_(['queued','running'])).all()]))")
+        if active:
+            raise RuntimeError('Existing active DAG runs require inspection before acceptance: ' + str(active))
 
         # Allow each DAG's guard to pause and restore Jenkins itself. The host
         # controller never acquires the same shared Lease a second time.
@@ -308,7 +316,6 @@ def run(revision, evidence_path, keep_running=False):
             except Exception as error:
                 (evidence / (name + '.log-error')).write_text(str(error))
         try:
-            kube(['-n', 'data-infra', 'delete', 'pod', pod, '--ignore-not-found', '--wait=false'])
             if not accepted:
                 switch(0, revision)
                 # Stop dispatch before deleting only this controller's workers.
@@ -320,6 +327,20 @@ def run(revision, evidence_path, keep_running=False):
                 else:
                     raise RuntimeError('Scheduler has not stopped; preserve Jenkins pause and shared Lease')
                 abort_owned(run_ids, evidence)
+                if run_ids:
+                    code = ("import json;from airflow.models.dagrun import DagRun;from airflow.models.taskinstance import TaskInstance;"
+                            "from airflow.utils.session import create_session;from airflow.utils.state import DagRunState,TaskInstanceState\n"
+                            "with create_session() as s:\n"
+                            " for r in s.query(DagRun).filter(DagRun.dag_id=='petclinic_insights',DagRun.run_id.in_(" + repr(run_ids) + ")).all():\n"
+                            "  if r.state in ('queued','running'):r.set_state(DagRunState.FAILED)\n"
+                            " for t in s.query(TaskInstance).filter(TaskInstance.dag_id=='petclinic_insights',TaskInstance.run_id.in_(" + repr(run_ids) + ")).all():\n"
+                            "  if t.state in ('queued','running','scheduled','up_for_retry','up_for_reschedule'):t.set_state(TaskInstanceState.FAILED,session=s)\n"
+                            "print('RESULT:'+json.dumps({'marked_failed':True}))")
+                    python(pod, code)
+                    python(pod, "import sys,json;sys.path.insert(0,'/opt/airflow/dags');from clinic_task import connect\n"
+                           "with connect() as db,db.cursor() as c:\n"
+                           " c.execute(\"UPDATE petclinic_analytics.executions SET status='failed',stage='controller-abort',finished_at=now(),updated_at=now(),error='Acceptance controller stopped; inspect private evidence' WHERE dag_run_id=ANY(%s) AND status='running'\",(" + repr(run_ids) + ",))\n"
+                           "print('RESULT:'+json.dumps({'status_recorded':True}))")
             else:
                 switch(1 if keep_running else 0, revision, scheduled=keep_running)
                 (evidence / 'desired-state.json').write_text(json.dumps({'revision': revision,
@@ -328,6 +349,7 @@ def run(revision, evidence_path, keep_running=False):
                     'timezone': 'Asia/Shanghai', 'catchup': False, 'max_active_runs': 1}, indent=2))
             safe_to_resume = True
         finally:
+            kube(['-n', 'data-infra', 'delete', 'pod', pod, '--ignore-not-found', '--wait=false'])
             if safe_to_resume and (owned_quiet or not initial_quiet):
                 jenkins('/cancelQuietDown', 'POST')
 
