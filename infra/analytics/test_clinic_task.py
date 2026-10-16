@@ -2,7 +2,7 @@ import unittest
 import hashlib
 import subprocess
 from unittest.mock import MagicMock, patch
-from clinic_task import cpu_request_milli, pod_cpu_request_milli, restore_build_services, finite_input, publish_orchestrated, quality, release_guard, validate_snapshot, window
+from clinic_task import parse_spark_result, cpu_request_milli, pod_cpu_request_milli, restore_build_services, finite_input, publish_orchestrated, quality, release_guard, validate_snapshot, window
 
 
 class QualityChecks(unittest.TestCase):
@@ -38,6 +38,18 @@ class QualityChecks(unittest.TestCase):
             with self.assertRaisesRegex(RuntimeError, 'ownership changed'):
                 restore_build_services({'lease_uid': 'lease', 'holder': 'ours'})
         apps.patch_namespaced_stateful_set.assert_not_called()
+
+    def test_spark_json_frame_accepts_a_following_unseparated_log_record(self):
+        text = 'INFO start\nCLINIC_RESULT:{"event":"petclinic_spark_success","jobIds":[0,1],"inputRows":3}26/10/16 INFO shutdown\n'
+        self.assertEqual(parse_spark_result(text)['inputRows'], 3)
+
+    def test_spark_duplicate_business_frames_are_rejected(self):
+        with self.assertRaisesRegex(ValueError, 'exactly one'):
+            parse_spark_result('CLINIC_RESULT:{}\nCLINIC_RESULT:{}')
+
+    def test_spark_truncated_frame_cannot_be_accepted(self):
+        with self.assertRaises(ValueError):
+            parse_spark_result('CLINIC_RESULT:{"event":"petclinic_spark_success","jobIds":[0,')
 
     def batch(self):
         return {'window_start': '2026-01-01', 'window_end': '2026-12-31', 'watermark': 0,

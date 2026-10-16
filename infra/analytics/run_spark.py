@@ -9,6 +9,7 @@ import shlex
 import time
 from pathlib import Path
 
+from clinic_task import parse_spark_result
 from controlled import HeavyRun, kube, remote
 
 OP = ['spark-operator-controller', 'spark-operator-webhook']
@@ -164,11 +165,9 @@ def one_application(name, config_map, batch_id, start, end, evidence, guard):
         (evidence / 'driver.log').write_text(logs)
         if status != 'COMPLETED':
             raise RuntimeError('Spark application failed: ' + str(state.get('status', {}).get('applicationState')))
-        matches = [line.split('CLINIC_RESULT:', 1)[1] for line in logs.splitlines()
-                   if 'CLINIC_RESULT:' in line]
-        if len(matches) != 1 or ui is None:
-            raise RuntimeError('Spark result or live Driver UI evidence is missing')
-        result = json.loads(matches[0])
+        if ui is None:
+            raise RuntimeError('Live Driver UI evidence is missing')
+        result = parse_spark_result(logs)
         result['sparkApplication'] = name
         result['driverPod'] = pod
         result['driverUiVerified'] = True

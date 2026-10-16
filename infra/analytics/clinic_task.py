@@ -615,6 +615,20 @@ def submit_spark(snapshot, start, end):
     return name
 
 
+def parse_spark_result(logs):
+    # Container log transports may append another record without a line break.
+    # Decode one complete JSON frame rather than treating the whole log line as JSON.
+    parts = logs.split('CLINIC_RESULT:')
+    if len(parts) != 2:
+        raise ValueError('Spark must emit exactly one business result frame')
+    result, _ = json.JSONDecoder().raw_decode(parts[1].lstrip())
+    if not isinstance(result, dict) or result.get('event') != 'petclinic_spark_success':
+        raise ValueError('Spark business result frame has an invalid type or event')
+    if not isinstance(result.get('jobIds'), list) or not result['jobIds']:
+        raise ValueError('Spark business result contains no real Job IDs')
+    return result
+
+
 def verify_spark(snapshot, baseline, application):
     core, _, custom, _ = _kube()
     app = custom.get_namespaced_custom_object('sparkoperator.k8s.io', 'v1beta2', 'default',
@@ -624,10 +638,7 @@ def verify_spark(snapshot, baseline, application):
         raise RuntimeError(f'SparkApplication terminal state is {state}')
     pod = app.get('status', {}).get('driverInfo', {}).get('podName')
     logs = core.read_namespaced_pod_log(pod, 'default', tail_lines=500)
-    matches = [line.split('CLINIC_RESULT:', 1)[1] for line in logs.splitlines() if 'CLINIC_RESULT:' in line]
-    if len(matches) != 1:
-        raise RuntimeError('Spark driver did not emit one business result')
-    result = json.loads(matches[0])
+    result = parse_spark_result(logs)
     for source, target in [('inputRows', 'input_rows'), ('uniqueVisitIds', 'unique_visit_ids'),
                            ('windowVisits', 'window_visits')]:
         if result[source] != baseline[target]:
