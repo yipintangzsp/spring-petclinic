@@ -1,5 +1,12 @@
 import unittest
 import hashlib
+import ast
+import copy
+import json
+import sys
+import tempfile
+from pathlib import Path
+from types import SimpleNamespace
 import subprocess
 from unittest.mock import MagicMock, patch
 from clinic_task import parse_spark_result, cpu_request_milli, pod_cpu_request_milli, restore_build_services, finite_input, publish_orchestrated, quality, release_guard, validate_snapshot, window
@@ -120,6 +127,172 @@ class QualityChecks(unittest.TestCase):
             with self.assertRaisesRegex(ValueError, 'MySQL baseline mismatch'):
                 validate_snapshot(snapshot, '2026-01-01', '2026-12-31')
             status.assert_not_called()
+
+
+class SonarRestorationChecks(unittest.TestCase):
+    def setUp(self):
+        self.clock = 0
+        self.ready_at = 270
+        self.foreign_owner_at = None
+        self.foreign_uid_at = None
+        self.generation_at = 0
+        self.replicas = 0
+        self.owner = 'ours'
+        self.guard = {'lease_uid': 'lease', 'holder': 'ours', 'owned_quiet': True}
+        self.original = {'uid': 'sonar', 'replicas': 1}
+        self.core, self.apps, self.custom, self.coordination = [MagicMock() for _ in range(4)]
+        self.lease = {'metadata': {'uid': 'lease', 'annotations': {
+            'petclinic.devops.local/paused-sonar': json.dumps(self.original)}},
+            'spec': {'holderIdentity': 'ours'}}
+        self.coordination.read_namespaced_lease.return_value = SimpleNamespace(
+            metadata=SimpleNamespace(uid='lease', annotations=self.lease['metadata']['annotations']),
+            spec=SimpleNamespace(holder_identity='ours'))
+        self.core.list_namespaced_config_map.return_value.items = []
+        self.apps.read_namespaced_stateful_set.side_effect = self.read_item
+        self.apps.patch_namespaced_stateful_set.side_effect = self.patch_item
+        self.monotonic = patch('clinic_task.time.monotonic', side_effect=lambda: self.clock)
+        self.sleep = patch('clinic_task.time.sleep', side_effect=self.advance)
+        self.monotonic.start()
+        self.sleep.start()
+        self.addCleanup(self.monotonic.stop)
+        self.addCleanup(self.sleep.stop)
+
+    def advance(self, seconds):
+        self.clock += seconds
+
+    def state(self):
+        owner = 'foreign' if self.foreign_owner_at is not None and self.clock >= self.foreign_owner_at else self.owner
+        uid = 'foreign-uid' if self.foreign_uid_at is not None and self.clock >= self.foreign_uid_at else 'sonar'
+        return {'metadata': {'uid': uid, 'generation': 2,
+                             'annotations': {'petclinic.devops.local/analysis-holder': owner}},
+                'spec': {'replicas': self.replicas},
+                'status': {'readyReplicas': int(self.clock >= self.ready_at),
+                           'observedGeneration': 2 if self.clock >= self.generation_at else 1}}
+
+    def read_item(self, *args, **kwargs):
+        state = self.state()
+        return SimpleNamespace(metadata=SimpleNamespace(**state['metadata']),
+                               spec=SimpleNamespace(**state['spec']),
+                               status=SimpleNamespace(ready_replicas=state['status']['readyReplicas'],
+                                                      observed_generation=state['status']['observedGeneration']))
+
+    def patch_item(self, *args):
+        for operation in args[-1]:
+            if operation['op'] == 'replace' and operation['path'] == '/spec/replicas':
+                self.replicas = operation['value']
+            if operation['op'] == 'remove':
+                self.owner = None
+
+    def kube(self, command):
+        if command[2] == 'get':
+            return copy.deepcopy(self.state())
+        if command[2] == 'patch':
+            self.patch_item(json.loads(command[-1]))
+            return {}
+        raise AssertionError(command)
+
+    def release(self, jenkins):
+        # These tests need the exception type only; no Kubernetes client or network is used.
+        class ApiException(Exception):
+            pass
+        modules = {'kubernetes': MagicMock(), 'kubernetes.client': MagicMock(),
+                   'kubernetes.client.exceptions': SimpleNamespace(ApiException=ApiException)}
+        with patch('clinic_task._kube', return_value=(self.core, self.apps, self.custom, self.coordination)), \
+                patch('clinic_task._jenkins', jenkins), patch.dict(sys.modules, modules):
+            return release_guard(self.guard)
+
+    def test_slow_sonar_startup_releases_guards_only_after_ready(self):
+        def resumed(*args):
+            self.assertGreater(self.clock, 200)
+            self.assertGreaterEqual(self.clock, self.ready_at)
+        jenkins = MagicMock(side_effect=resumed)
+        result = self.release(jenkins)
+        self.assertTrue(result['released'])
+        self.assertEqual(result['sonar_restore']['elapsed_seconds'], 270)
+        self.assertEqual(result['sonar_restore']['last_state']['ready_replicas'], 1)
+        self.assertIsNone(self.owner)
+        jenkins.assert_called_once_with('/cancelQuietDown', 'POST')
+        self.coordination.delete_namespaced_lease.assert_called_once()
+
+    def test_never_ready_sonar_preserves_lease_and_jenkins_pause(self):
+        self.ready_at = float('inf')
+        jenkins = MagicMock()
+        with self.assertRaisesRegex(RuntimeError, 'readiness not restored.*elapsed_seconds=600.*last_state='):
+            self.release(jenkins)
+        self.assertEqual(self.clock, 600)
+        self.assertEqual(self.owner, 'ours')
+        jenkins.assert_not_called()
+        self.coordination.delete_namespaced_lease.assert_not_called()
+
+    def test_owner_change_while_waiting_preserves_guards(self):
+        self.foreign_owner_at = 6
+        jenkins = MagicMock()
+        with self.assertRaisesRegex(RuntimeError, 'ownership changed while restoring'):
+            self.release(jenkins)
+        self.assertEqual(self.clock, 6)
+        self.assertEqual(self.owner, 'ours')
+        jenkins.assert_not_called()
+        self.coordination.delete_namespaced_lease.assert_not_called()
+
+    def test_uid_change_while_waiting_preserves_guards(self):
+        self.foreign_uid_at = 6
+        jenkins = MagicMock()
+        with self.assertRaisesRegex(RuntimeError, 'UID changed while restoring'):
+            self.release(jenkins)
+        jenkins.assert_not_called()
+        self.coordination.delete_namespaced_lease.assert_not_called()
+
+    def test_stale_ready_status_waits_for_observed_generation(self):
+        self.ready_at = 0
+        self.generation_at = 270
+        result = self.release(MagicMock())
+        self.assertEqual(result['sonar_restore']['elapsed_seconds'], 270)
+        self.assertEqual(result['sonar_restore']['last_state']['observed_generation'], 2)
+
+    def test_abort_restoration_records_slow_startup_evidence(self):
+        from run_airflow import restore_owned_sonar
+        with tempfile.TemporaryDirectory() as directory, patch('run_airflow.kube', side_effect=self.kube):
+            evidence = Path(directory)
+            restore_owned_sonar(self.lease, evidence)
+            result = json.loads((evidence / 'abort-sonar-restored.json').read_text())
+        self.assertTrue(result['ready'])
+        self.assertEqual(result['restoration']['elapsed_seconds'], 270)
+        self.assertEqual(result['restoration']['last_state']['ready_replicas'], 1)
+        self.assertIsNone(self.owner)
+
+    def test_abort_timeout_cannot_clear_owner_or_claim_restoration(self):
+        from run_airflow import restore_owned_sonar
+        self.ready_at = float('inf')
+        with tempfile.TemporaryDirectory() as directory, patch('run_airflow.kube', side_effect=self.kube):
+            evidence = Path(directory)
+            with self.assertRaisesRegex(RuntimeError, 'readiness not restored'):
+                restore_owned_sonar(self.lease, evidence)
+            self.assertFalse((evidence / 'abort-sonar-restored.json').exists())
+        self.assertEqual(self.clock, 600)
+        self.assertEqual(self.owner, 'ours')
+
+    def test_abort_owner_change_cannot_clear_owner_or_claim_restoration(self):
+        from run_airflow import restore_owned_sonar
+        self.foreign_owner_at = 6
+        with tempfile.TemporaryDirectory() as directory, patch('run_airflow.kube', side_effect=self.kube):
+            evidence = Path(directory)
+            with self.assertRaisesRegex(RuntimeError, 'ownership changed while restoring'):
+                restore_owned_sonar(self.lease, evidence)
+            self.assertFalse((evidence / 'abort-sonar-restored.json').exists())
+        self.assertEqual(self.clock, 6)
+        self.assertEqual(self.owner, 'ours')
+
+    def test_worker_lifetime_covers_cleanup_with_startup_and_exit_margin(self):
+        root = Path(__file__).parent
+        dag = ast.parse((root / 'petclinic_dag.py').read_text())
+        cleanup = next(node for node in ast.walk(dag) if isinstance(node, ast.FunctionDef) and node.name == 'cleanup')
+        decorator = cleanup.decorator_list[0]
+        timeout = next(value.value for value in decorator.keywords if value.arg == 'execution_timeout')
+        cleanup_seconds = next(value.value.value for value in timeout.keywords if value.arg == 'minutes') * 60
+        config = json.loads((root / 'airflow' / 'config.json').read_text())
+        template = json.loads(config['data']['pod_template_file.yaml'])
+        self.assertGreaterEqual(template['spec']['activeDeadlineSeconds'], cleanup_seconds + 180,
+                                'Worker lifetime must cover cleanup plus startup and shutdown margin')
 
 
 if __name__ == '__main__':

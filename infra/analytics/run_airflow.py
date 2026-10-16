@@ -10,6 +10,7 @@ import time
 from pathlib import Path
 
 from controlled import HOST, blockers, http_bad, jenkins, kube, sample
+from clinic_task import wait_owned_sonar
 
 CORE = ['airflow-api-server', 'airflow-scheduler', 'airflow-dag-processor', 'airflow-statsd']
 ALL = CORE + ['airflow-triggerer']
@@ -82,7 +83,8 @@ def database(pod):
 
 def wait_run(pod, run_id, evidence, history, record):
     observed = set()
-    deadline = time.monotonic() + 1800
+    # Cover the 45-minute DAG timeout and allow terminal state/log collection.
+    deadline = time.monotonic() + 3000
     while time.monotonic() < deadline:
         record()
         code = ("import json;from airflow.models.dagrun import DagRun;from airflow.models.taskinstance import TaskInstance;"
@@ -135,7 +137,7 @@ def wait_run(pod, run_id, evidence, history, record):
             (evidence / f'{run_id}.json').write_text(json.dumps(result, indent=2))
             return result
         time.sleep(6)
-    raise RuntimeError('DAG run exceeded the 30 minute acceptance deadline')
+    raise RuntimeError('DAG run exceeded the 50 minute acceptance deadline')
 
 
 def restore_owned_sonar(lease, evidence):
@@ -156,22 +158,23 @@ def restore_owned_sonar(lease, evidence):
             {'op': 'test', 'path': '/metadata/uid', 'value': original['uid']},
             {'op': 'test', 'path': '/metadata/annotations/petclinic.devops.local~1analysis-holder', 'value': holder},
             {'op': 'replace', 'path': '/spec/replicas', 'value': original['replicas']}])])
-    for _ in range(100):
+    def read_state():
+        nonlocal item
         item = kube(['-n', namespace, 'get', 'statefulset', name, '-o', 'json'])
-        if item['metadata']['uid'] != original['uid']:
-            raise RuntimeError('Sonar UID changed during restoration')
-        if item['status'].get('readyReplicas', 0) == original['replicas']:
-            break
-        time.sleep(2)
-    else:
-        raise RuntimeError('Sonar did not recover readiness; retain Lease and Jenkins pause')
+        return {'uid': item['metadata']['uid'],
+                'owner': item['metadata'].get('annotations', {}).get('petclinic.devops.local/analysis-holder'),
+                'replicas': item['spec']['replicas'], 'ready_replicas': item['status'].get('readyReplicas', 0),
+                'generation': item['metadata'].get('generation'),
+                'observed_generation': item['status'].get('observedGeneration')}
+    restored = wait_owned_sonar(read_state, original, owner)
     if item['metadata'].get('annotations', {}).get('petclinic.devops.local/analysis-holder') == holder:
         kube(['-n', namespace, 'patch', 'statefulset', name, '--type=json', '-p', json.dumps([
             {'op': 'test', 'path': '/metadata/uid', 'value': original['uid']},
             {'op': 'test', 'path': '/metadata/annotations/petclinic.devops.local~1analysis-holder', 'value': holder},
             {'op': 'remove', 'path': '/metadata/annotations/petclinic.devops.local~1analysis-holder'}])])
     (evidence / 'abort-sonar-restored.json').write_text(json.dumps({
-        'holder': holder, 'uid': original['uid'], 'replicas': original['replicas'], 'ready': True}, indent=2))
+        'holder': holder, 'uid': original['uid'], 'replicas': original['replicas'],
+        'ready': True, 'restoration': restored}, indent=2))
 
 
 def abort_owned(run_ids, evidence):

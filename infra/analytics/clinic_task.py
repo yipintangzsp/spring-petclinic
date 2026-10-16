@@ -74,6 +74,32 @@ SONAR_PAUSE = 'petclinic.devops.local/paused-sonar'
 SONAR_OWNER = 'petclinic.devops.local/analysis-holder'
 
 
+def wait_owned_sonar(read_state, original, expected_owner, timeout_seconds=600):
+    """Wait for the owned StatefulSet; slow startup must not release build guards."""
+    started = time.monotonic()
+    deadline = started + timeout_seconds
+    while True:
+        state = read_state()
+        elapsed = time.monotonic() - started
+        if state['uid'] != original['uid']:
+            raise RuntimeError('Sonar UID changed while restoring; retain Lease and Jenkins pause')
+        if state['owner'] != expected_owner:
+            raise RuntimeError('Sonar ownership changed while restoring; retain Lease and Jenkins pause')
+        if state['replicas'] != original['replicas']:
+            raise RuntimeError('Sonar replica target changed while restoring; retain Lease and Jenkins pause')
+        generation = state.get('generation')
+        observed = state.get('observed_generation')
+        reconciled = generation is None or (observed is not None and observed >= generation)
+        if state['ready_replicas'] == original['replicas'] and reconciled and elapsed <= timeout_seconds:
+            return {'elapsed_seconds': round(elapsed, 3), 'timeout_seconds': timeout_seconds,
+                    'last_state': state}
+        remaining = deadline - time.monotonic()
+        if remaining <= 0:
+            raise RuntimeError('Sonar readiness not restored; retain Lease and Jenkins pause; '
+                               f'elapsed_seconds={elapsed:.3f}; last_state={json.dumps(state, sort_keys=True)}')
+        time.sleep(min(2, remaining))
+
+
 def restore_build_services(guard):
     _, apps, _, coordination = _kube()
     lease = coordination.read_namespaced_lease(LEASE_NAME, LEASE_NAMESPACE)
@@ -93,21 +119,20 @@ def restore_build_services(guard):
             {'op': 'test', 'path': '/metadata/uid', 'value': original['uid']},
             {'op': 'test', 'path': '/metadata/annotations/petclinic.devops.local~1analysis-holder', 'value': guard['holder']},
             {'op': 'replace', 'path': '/spec/replicas', 'value': original['replicas']}])
-    for _ in range(100):
-        item = apps.read_namespaced_stateful_set('sonarqube-sonarqube', 'sonarqube')
-        if item.metadata.uid != original['uid']:
-            raise RuntimeError('Sonar UID changed while restoring')
-        if item.status.ready_replicas == original['replicas']:
-            break
-        time.sleep(2)
-    else:
-        raise RuntimeError('Sonar readiness not restored; retain Lease and Jenkins pause')
+    def read_state():
+        nonlocal item
+        item = apps.read_namespaced_stateful_set('sonarqube-sonarqube', 'sonarqube', _request_timeout=10)
+        return {'uid': item.metadata.uid, 'owner': (item.metadata.annotations or {}).get(SONAR_OWNER),
+                'replicas': item.spec.replicas, 'ready_replicas': item.status.ready_replicas or 0,
+                'generation': item.metadata.generation, 'observed_generation': item.status.observed_generation}
+    restored = wait_owned_sonar(read_state, original, owner)
     if (item.metadata.annotations or {}).get(SONAR_OWNER) == guard['holder']:
         apps.patch_namespaced_stateful_set('sonarqube-sonarqube', 'sonarqube', [
             {'op': 'test', 'path': '/metadata/uid', 'value': original['uid']},
             {'op': 'test', 'path': '/metadata/annotations/petclinic.devops.local~1analysis-holder', 'value': guard['holder']},
             {'op': 'remove', 'path': '/metadata/annotations/petclinic.devops.local~1analysis-holder'}])
-    return {'sonar_restored': True, 'sonar_paused': True, 'sonar_replicas': original['replicas']}
+    return {'sonar_restored': True, 'sonar_paused': True, 'sonar_replicas': original['replicas'],
+            'sonar_restore': restored}
 
 
 def admit_compute_cpu(guard):

@@ -75,7 +75,8 @@ def insights():
             raise RuntimeError('Compute cleanup did not complete; keep results pending')
         return complete_execution(value)
 
-    @task(trigger_rule='all_done', retries=0, execution_timeout=dt.timedelta(minutes=7),
+    # Compute exit (up to two minutes), Sonar startup (ten), and API/exit margin.
+    @task(trigger_rule='all_done', retries=0, execution_timeout=dt.timedelta(minutes=15),
           show_return_value_in_logs=False)
     def cleanup():
         context = get_current_context()
