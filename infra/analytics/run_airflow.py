@@ -16,11 +16,14 @@ CORE = ['airflow-api-server', 'airflow-scheduler', 'airflow-dag-processor', 'air
 ALL = CORE + ['airflow-triggerer']
 
 
-def replicas(count):
-    return [{'name': name, 'count': count if name in CORE else 0} for name in ALL]
+def replicas(count, active=None):
+    enabled = set(CORE if active is None else active)
+    if count not in (0, 1) or enabled - set(CORE):
+        raise ValueError('Only the existing Airflow core may be enabled, at one replica')
+    return [{'name': name, 'count': count if name in enabled else 0} for name in ALL]
 
 
-def switch(count, revision, scheduled=False):
+def switch(count, revision, scheduled=False, active=None):
     patches = []
     for name in CORE[:3]:
         patches.append({'target': {'kind': 'Deployment', 'name': name}, 'patch': json.dumps({
@@ -31,7 +34,7 @@ def switch(count, revision, scheduled=False):
                          'env': [{'name': 'PETCLINIC_ANALYTICS_SCHEDULE',
                                   'value': '30 2 * * 1' if scheduled else ''}]}]}}}})})
     kube(['-n', 'argocd', 'patch', 'application', 'airflow', '--type=merge', '-p', json.dumps({
-        'spec': {'source': {'targetRevision': revision, 'kustomize': {'replicas': replicas(count),
+        'spec': {'source': {'targetRevision': revision, 'kustomize': {'replicas': replicas(count, active),
                                                                    'patches': patches}}},
         'metadata': {'annotations': {'argocd.argoproj.io/refresh': 'hard'}},
     })])
@@ -45,14 +48,35 @@ def python(pod, code):
     return json.loads(matches[0])
 
 
-def wait_ready(record):
-    for _ in range(70):
+def wait_ready(record, names=None, deadline=None):
+    names = tuple(CORE if names is None else names)
+    if not names or set(names) - set(CORE):
+        raise ValueError('Only existing Airflow core readiness may be checked')
+    deadline = time.monotonic() + 420 if deadline is None else deadline
+    def current_ready(name):
+        item = kube(['-n', 'data-infra', 'get', 'deployment', name, '-o', 'json'])
+        status = item.get('status', {})
+        return (item['spec'].get('replicas') == 1 and status.get('readyReplicas', 0) == 1
+                and status.get('observedGeneration', 0) >= item['metadata']['generation'])
+    while time.monotonic() < deadline:
         record()
-        if all(kube(['-n', 'data-infra', 'get', 'deployment', name, '-o', 'json'])
-               ['status'].get('readyReplicas', 0) == 1 for name in CORE):
+        if all(current_ready(name) for name in names):
             return
         time.sleep(6)
-    raise RuntimeError('Airflow core did not become ready within seven minutes')
+    raise RuntimeError('Airflow core did not become ready within the bounded startup deadline')
+
+
+def start_core_serially(revision, record):
+    # Keep the existing final capacity, but avoid three simultaneous cold starts.
+    # All phases share one deadline; a failure leaves later phases unstarted.
+    deadline = time.monotonic() + 600
+    enabled = (CORE[3],)
+    for component in (CORE[0], CORE[2], CORE[1]):
+        if time.monotonic() >= deadline:
+            raise TimeoutError('Airflow startup deadline exceeded before the next component')
+        enabled += (component,)
+        switch(1, revision, active=enabled)
+        wait_ready(record, names=enabled, deadline=deadline)
 
 
 def page(evidence, run_id, suffix):
@@ -270,8 +294,7 @@ def run(revision, evidence_path, keep_running=False):
         if active:
             raise RuntimeError('Jenkins still has active builds: ' + ','.join(active))
 
-        switch(1, revision)
-        wait_ready(record)
+        start_core_serially(revision, record)
         scheduler = kube(['-n', 'data-infra', 'get', 'deployment', 'airflow-scheduler', '-o', 'json'])
         spec = copy.deepcopy(scheduler['spec']['template']['spec'])
         spec.pop('initContainers', None)

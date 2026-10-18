@@ -317,5 +317,91 @@ class SonarRestorationChecks(unittest.TestCase):
                                 'Acceptance controller must outlive the DAG by five minutes')
 
 
+class AirflowSerialStartup(unittest.TestCase):
+    def test_scheduler_starts_only_after_api_and_processor_readiness(self):
+        import run_airflow as controller
+        events = []
+        record = MagicMock()
+        def switch(count, revision, active):
+            events.append(('switch', tuple(active), count, revision))
+        def ready(callback, names, deadline):
+            self.assertIs(callback, record)
+            self.assertEqual(deadline, 700)
+            events.append(('ready', tuple(names)))
+            callback()
+        with patch.object(controller, 'switch', side_effect=switch), \
+             patch.object(controller, 'wait_ready', side_effect=ready), \
+             patch.object(controller.time, 'monotonic', return_value=100):
+            controller.start_core_serially('released-source', record)
+        expected = [('airflow-statsd', 'airflow-api-server'),
+                    ('airflow-statsd', 'airflow-api-server', 'airflow-dag-processor'),
+                    ('airflow-statsd', 'airflow-api-server', 'airflow-dag-processor', 'airflow-scheduler')]
+        self.assertEqual([e[1] for e in events[::2]], expected)
+        self.assertEqual([e[1] for e in events[1::2]], expected)
+        self.assertTrue(all(e[2:] == (1, 'released-source') for e in events[::2]))
+        self.assertEqual(record.call_count, 3)
+
+    def test_failed_phase_cannot_enable_the_next_component(self):
+        import run_airflow as controller
+        with patch.object(controller, 'switch') as switch, \
+             patch.object(controller, 'wait_ready', side_effect=RuntimeError('Safety stop')), \
+             patch.object(controller.time, 'monotonic', return_value=100):
+            with self.assertRaisesRegex(RuntimeError, 'Safety stop'):
+                controller.start_core_serially('released-source', MagicMock())
+        self.assertEqual(switch.call_count, 1)
+        self.assertNotIn('airflow-scheduler', switch.call_args.kwargs['active'])
+
+    def test_startup_phases_share_deadline_without_starting_late_components(self):
+        import run_airflow as controller
+        with patch.object(controller, 'switch') as switch, \
+             patch.object(controller, 'wait_ready'), \
+             patch.object(controller.time, 'monotonic', side_effect=[100, 100, 701]):
+            with self.assertRaisesRegex(TimeoutError, 'deadline exceeded'):
+                controller.start_core_serially('released-source', MagicMock())
+        self.assertEqual(switch.call_count, 1)
+
+    def test_staging_never_enables_triggerer_or_adds_replicas(self):
+        from run_airflow import replicas
+        result = {v['name']: v['count'] for v in replicas(1, ['airflow-api-server', 'airflow-statsd'])}
+        self.assertEqual(result['airflow-api-server'], 1)
+        self.assertEqual(result['airflow-statsd'], 1)
+        self.assertEqual(result['airflow-scheduler'], 0)
+        self.assertEqual(result['airflow-dag-processor'], 0)
+        self.assertEqual(result['airflow-triggerer'], 0)
+        self.assertTrue(all(v['count'] == 0 for v in replicas(0)))
+        with self.assertRaises(ValueError):
+            replicas(2)
+        with self.assertRaises(ValueError):
+            replicas(1, ['airflow-triggerer'])
+
+    def test_expired_readiness_deadline_does_not_poll_or_hide_failure(self):
+        import run_airflow as controller
+        record = MagicMock()
+        with patch.object(controller, 'kube') as kube, \
+             patch.object(controller.time, 'monotonic', return_value=10):
+            with self.assertRaisesRegex(RuntimeError, 'bounded startup deadline'):
+                controller.wait_ready(record, names=['airflow-api-server'], deadline=9)
+        kube.assert_not_called()
+        record.assert_not_called()
+
+    def test_old_ready_count_cannot_pass_before_desired_generation_is_observed(self):
+        import run_airflow as controller
+        original = {'metadata': {'generation': 4}, 'spec': {'replicas': 0},
+                    'status': {'readyReplicas': 1, 'observedGeneration': 4}}
+        stale = copy.deepcopy(original)
+        stale['spec']['replicas'] = 1
+        stale['status']['observedGeneration'] = 3
+        current = copy.deepcopy(stale)
+        current['status']['observedGeneration'] = 4
+        record = MagicMock()
+        with patch.object(controller, 'kube', side_effect=[original, stale, current]) as kube, \
+             patch.object(controller.time, 'monotonic', return_value=100), \
+             patch.object(controller.time, 'sleep') as sleep:
+            controller.wait_ready(record, names=['airflow-api-server'], deadline=700)
+        self.assertEqual(kube.call_count, 3)
+        self.assertEqual(sleep.call_count, 2)
+        self.assertEqual(record.call_count, 3)
+
+
 if __name__ == '__main__':
     unittest.main()
