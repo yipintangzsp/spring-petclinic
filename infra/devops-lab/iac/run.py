@@ -38,20 +38,29 @@ def gate(build, revision):
     return value
 
 
-EXECUTOR = r'''import json,subprocess,sys,time
+EXECUTOR = r'''import json,subprocess,sys,time,pathlib,threading
 p=json.load(sys.stdin);unit=p["unit"]
 assert unit.startswith("petclinic-iac-") and all(c.isalnum() or c=="-" for c in unit)
 a=["systemd-run","--quiet","--wait","--pipe","--collect","--unit="+unit,
  "-p","MemoryMax=768M","-p","CPUQuota=100%","-p","TasksMax=128",
- "-p","RuntimeMaxSec=600","-p","TimeoutStopSec=15","-p","RemainAfterExit=yes",
+ "-p","RuntimeMaxSec=600","-p","TimeoutStopSec=15",
  "-p","WorkingDirectory="+p["workdir"],"/usr/bin/env","TF_IN_AUTOMATION=1","TF_INPUT=0",
  "ANSIBLE_NOCOLOR=1","ANSIBLE_STDOUT_CALLBACK=ansible.posix.json",*p["args"]]
-t=time.time()
+t=time.time();done=threading.Event();peak={"memoryPeakBytes":None,"cpuUsageUSec":None}
+def observe():
+ group=pathlib.Path("/sys/fs/cgroup/system.slice")/(unit+".service")
+ while not done.wait(0.05):
+  try:
+   value=int((group/"memory.peak").read_text());peak["memoryPeakBytes"]=max(peak["memoryPeakBytes"] or 0,value)
+   values=dict(line.split() for line in (group/"cpu.stat").read_text().splitlines());peak["cpuUsageUSec"]=int(values["usage_usec"])
+  except (FileNotFoundError,ValueError,KeyError):pass
+watcher=threading.Thread(target=observe,daemon=True);watcher.start()
 try:
  r=subprocess.run(a,capture_output=True,text=True,timeout=620)
  stats=subprocess.run(["systemctl","show",unit,"-p","MemoryPeak","-p","CPUUsageNSec","-p","TasksCurrent"],capture_output=True,text=True,timeout=10)
- result={"exit":r.returncode,"stdout":r.stdout,"stderr":r.stderr,"elapsed_seconds":time.time()-t,"systemd":stats.stdout}
+ result={"exit":r.returncode,"stdout":r.stdout,"stderr":r.stderr,"elapsed_seconds":time.time()-t,"systemd":stats.stdout,"cgroup_peak":peak}
 finally:
+ done.set();watcher.join(timeout=2)
  subprocess.run(["systemctl","stop",unit],capture_output=True,timeout=20)
  subprocess.run(["systemctl","reset-failed",unit],capture_output=True,timeout=10)
  check=subprocess.run(["systemctl","show",unit,"-p","MainPID","-p","TasksCurrent","-p","ActiveState"],capture_output=True,text=True,timeout=10)
