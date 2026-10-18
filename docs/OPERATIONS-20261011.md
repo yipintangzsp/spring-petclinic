@@ -65,3 +65,8 @@ Harbor的135字节AOF修复、Kafka数据迁移、Runner helper和Hello路由修
 ## 2026-10-19 新增证书学习入口
 
 独立入口为`https://tls-lab.devops.local`，使用内部学习CA；浏览器默认不信任，使用[学习手册](DEVOPS-LEARNING-20261019.md)中的显式CA校验命令。Argo应用为`platform-cert-manager`与`devops-tls-lab`。证书状态在devops-lab，控制器日志在cert-manager；可用服务器cmctl对tls-lab进行非删除式换发。#153完整成功后，10月18日验收通过；自动续期预定10月24日20:56:55上海时间，尚未观察到该时刻执行，公网ACME未验证。资源锁已释放、Jenkins恢复；现有业务入口和Spark Operator/Webhook保留。
+
+
+## 2026-10-19 Terraform/Ansible学习实验
+
+Jenkins #154完整成功后，已通过配置预览、两工具幂等、非法参数拒绝、ConfigMap漂移检测/原地修复及3个隔离对象回收。入口和重跑命令见[IaC实操](IAC-LAB-20261019.md)。状态及日志保留，无新增常驻Pod/PVC；证书实验保持独立。

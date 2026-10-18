@@ -92,3 +92,8 @@ Spark Operator与Webhook按用户要求常驻1副本，已纳入Argo spark-opera
 ## 2026-10-19 证书学习实验预算
 
 cert-manager三控制器和独立Web常驻requests CPU225m/内存344Mi，内存limits704Mi；临时API-check再加10m/32Mi请求及64Mi内存上限。无新增PVC，生成的证书Secret保留。10月18日恢复验收8个metrics-server样本合计内存最大187.27Mi、CPU最大16.12m；不是内核峰值。结束全机requests3805m/6000m，VM可用11142Mi、根盘20835Mi，Mac swap2550.5→2542.5Mi，无停止阈值触发。原分析预算5620m若加225m及250m储备将为6095m，后续须重新准入并释放足够余量，不降低安全储备或声称联合分析已经完成。不要在保留离线admission webhook时直接将证书控制器缩到0。详见[学习清单](DEVOPS-LEARNING-20261019.md)。
+
+
+## 2026-10-19 IaC步骤预算
+
+本轮不新增常驻Pod/PVC。Ansible/Terraform每步MemoryMax768MiB、CPUQuota100%、TasksMax128、RuntimeMaxSec600，外层1024MiB预算和原1250MiB储备，沿用原停止阈值及同一共享Lease。26个步骤的cgroup memory.peak采样最大99.22MiB，所有临时进程退出确认后恢复Jenkins/释放Lease；不得将缺失的峰值计数当作0。详见[IaC实操](IAC-LAB-20261019.md)。
