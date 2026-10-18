@@ -19,7 +19,7 @@ The learning endpoint is `https://tls-lab.devops.local`. It uses an internal lea
 Read the public CA certificate without exporting the private key:
 
 ```sh
-ssh 192.168.1.58 'sudo kubectl -n devops-lab get secret lab-root-ca -o jsonpath="{.data.tls\\.crt}"' | base64 -d > /tmp/petclinic-lab-ca.crt
+ssh 192.168.1.58 'sudo kubectl -n devops-lab get secret lab-root-ca -o jsonpath="{.data.tls\.crt}"' | base64 -d > /tmp/petclinic-lab-ca.crt
 curl --noproxy '*' --cacert /tmp/petclinic-lab-ca.crt \
   --resolve tls-lab.devops.local:443:192.168.1.58 https://tls-lab.devops.local/
 ```
