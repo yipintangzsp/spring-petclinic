@@ -4,5 +4,16 @@
   "resources": [
     "namespace.json",
     "upstream.yaml"
+  ],
+  "patches": [
+    {
+      "target": {
+        "group": "monitoring.coreos.com",
+        "version": "v1",
+        "kind": "ServiceMonitor",
+        "name": "cert-manager"
+      },
+      "patch": "[{\"op\": \"replace\", \"path\": \"/spec/selector/matchExpressions/1/values\", \"value\": [\"platform-cert-manager\"]}]"
+    }
   ]
 }

@@ -35,3 +35,5 @@ Submit source to private GitLab only. Use the existing full Jenkins checks once 
 Normal configuration rollback is a private Git revert. Pruning is disabled to protect generated CA/leaf Secrets and cluster-scoped CRDs. Removing cert-manager requires the upstream ordered uninstall procedure; never remove its CRDs as a casual rollback. Deleting a namespace deletes its generated keys, so any data deletion still requires the user's separate approval.
 
 Upstream references: https://cert-manager.io/docs/releases/ ; https://cert-manager.io/docs/usage/certificate/ ; https://cert-manager.io/docs/installation/best-practice/
+
+The Argo Application name `platform-cert-manager` differs from the rendered Helm release name `cert-manager`. Argo instance-label tracking rewrites Service metadata to the Application name. A scoped Kustomize patch makes only the ServiceMonitor match `platform-cert-manager`; Pod selectors retain the Helm release name. Do not change global Argo tracking settings for this lab.
