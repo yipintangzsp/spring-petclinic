@@ -282,7 +282,7 @@ class SonarRestorationChecks(unittest.TestCase):
         self.assertEqual(self.clock, 6)
         self.assertEqual(self.owner, 'ours')
 
-    def test_worker_lifetime_covers_cleanup_with_startup_and_exit_margin(self):
+    def test_deadlines_cover_serial_compute_retry_cleanup_and_worker_margin(self):
         root = Path(__file__).parent
         dag = ast.parse((root / 'petclinic_dag.py').read_text())
         cleanup = next(node for node in ast.walk(dag) if isinstance(node, ast.FunctionDef) and node.name == 'cleanup')
@@ -293,6 +293,28 @@ class SonarRestorationChecks(unittest.TestCase):
         template = json.loads(config['data']['pod_template_file.yaml'])
         self.assertGreaterEqual(template['spec']['activeDeadlineSeconds'], cleanup_seconds + 180,
                                 'Worker lifetime must cover cleanup plus startup and shutdown margin')
+
+        definition = next(node for node in dag.body if isinstance(node, ast.FunctionDef) and node.name == 'insights')
+        options = {value.arg: value.value for value in definition.decorator_list[0].keywords}
+        dag_seconds = next(value.value.value for value in options['dagrun_timeout'].keywords
+                           if value.arg == 'minutes') * 60
+        defaults = {key.value: value for key, value in zip(options['default_args'].keys,
+                                                          options['default_args'].values)}
+        attempts = defaults['retries'].value + 1
+        task_seconds = next(value.value.value for value in defaults['execution_timeout'].keywords
+                            if value.arg == 'minutes') * 60
+        spark_wait = next(node for node in ast.walk(definition) if isinstance(node, ast.Call)
+                          and isinstance(node.func, ast.Name) and node.func.id == 'GuardedSparkSensor')
+        spark_seconds = next(value.value.value for value in spark_wait.keywords if value.arg == 'timeout')
+        self.assertGreaterEqual(dag_seconds, spark_seconds + attempts * task_seconds + cleanup_seconds + 9 * 60,
+                                'DAG must cover Spark, both Flink attempts, cleanup and nine minutes overhead')
+        controller = ast.parse((root / 'run_airflow.py').read_text())
+        wait_run = next(node for node in controller.body if isinstance(node, ast.FunctionDef)
+                        and node.name == 'wait_run')
+        deadline = next(node.value for node in wait_run.body if isinstance(node, ast.Assign)
+                        and any(isinstance(target, ast.Name) and target.id == 'deadline' for target in node.targets))
+        self.assertGreaterEqual(deadline.right.value, dag_seconds + 5 * 60,
+                                'Acceptance controller must outlive the DAG by five minutes')
 
 
 if __name__ == '__main__':

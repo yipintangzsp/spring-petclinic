@@ -19,7 +19,7 @@ class GuardedSparkSensor(SparkKubernetesSensor):
 
 @dag(dag_id='petclinic_insights', schedule=os.environ.get('PETCLINIC_ANALYTICS_SCHEDULE') or None, catchup=False,
      start_date=pendulum.datetime(2026, 10, 12, tz='Asia/Shanghai'), max_active_runs=1,
-     max_active_tasks=1, dagrun_timeout=dt.timedelta(minutes=45),
+     max_active_tasks=1, dagrun_timeout=dt.timedelta(minutes=60),
      default_args={'retries': 1, 'retry_delay': dt.timedelta(seconds=20),
                    'execution_timeout': dt.timedelta(minutes=12)},
      params={'from': Param('2026-01-01', type='string', format='date'),

@@ -83,8 +83,8 @@ def database(pod):
 
 def wait_run(pod, run_id, evidence, history, record):
     observed = set()
-    # Cover the 45-minute DAG timeout and allow terminal state/log collection.
-    deadline = time.monotonic() + 3000
+    # Cover the 60-minute DAG timeout and allow terminal state/log collection.
+    deadline = time.monotonic() + 3900
     while time.monotonic() < deadline:
         record()
         code = ("import json;from airflow.models.dagrun import DagRun;from airflow.models.taskinstance import TaskInstance;"
@@ -137,7 +137,7 @@ def wait_run(pod, run_id, evidence, history, record):
             (evidence / f'{run_id}.json').write_text(json.dumps(result, indent=2))
             return result
         time.sleep(6)
-    raise RuntimeError('DAG run exceeded the 50 minute acceptance deadline')
+    raise RuntimeError('DAG run exceeded the 65 minute acceptance deadline')
 
 
 def restore_owned_sonar(lease, evidence):
