@@ -76,3 +76,7 @@ Chart来自官方v1.21.2，SHA256与官方索引一致，未验证Chart的GPG签
 - 私有证据：`/Users/zhangsir/code/evidence/platform-20261011/cert-lab-20261018-recovery`；前序失败保留于`cert-lab-20261018`。
 - 招聘样本（10月18日查阅，不作为岗位比例统计或仍在招聘的保证）：[ShyftLabs DevOps](https://jobs.lever.co/shyftlabs/477f2323-f909-4e59-8fd8-915932d67454)、[Zingtree Platform Reliability](https://jobs.lever.co/zingtree/8cae8c0a-2f42-472c-9707-e70a69f81f54)、[应用运维校招](https://career.hznu.edu.cn/job/view/id/1026876)。
 - [CNCF平台能力分类](https://tag-app-delivery.cncf.io/whitepapers/platforms/)、[cert-manager支持版本](https://cert-manager.io/docs/releases/)、[Certificate生命周期](https://cert-manager.io/docs/usage/certificate/)。
+
+## 10月19日重启后复核
+
+复核时节点uptime约3分钟，学习Web有一次SandboxChanged重建，lastState为Unknown/exit255，未记录OOM；节点重启根因未在本轮调查。随后使用原CA校验HTTPS返回200，站点证书仍revision3、根证书revision1，Prometheus Ready=1、Jenkins非quiet且无重任务Lease。两实验应用、Petclinic、Spark Operator均Synced/Healthy。该记录是重启后的功能复核，不是长期稳定性保证。原始证据为私有`cert-lab-20261018-recovery/post-reboot-20261019.json`。
