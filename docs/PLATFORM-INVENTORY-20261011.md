@@ -115,3 +115,8 @@ Portainer Kubernetes API真实版本2.39.5；宿主Docker另有Portainer2.39.0�
 |Flink|历史独立窗口/状态恢复验收通过；按需关闭|JM/TM0|本轮联合编排未完成|
 |Superset worker / Trino云worker|按需关闭|0|同步查询沿用本地模式|
 |Prometheus / Alertmanager|规则firing验收通过；接收/路由未完成|Prometheus561Mi；Alertmanager未部署|无外部通知送达证据|
+
+
+## 2026-10-19 学习平台交付更新
+
+10月18日新增cert-manager v1.21.2（cert-manager命名空间3个控制器）及devops-lab HTTPS实验Web，cmctl v2.6.1安装于VM。完整Jenkins #153 SUCCESS后完成签发、CA校验HTTPS、revision2→3及密钥轮换、无效请求拒绝、重复同步不重签和Prometheus三目标UP验收。原CA保留，Jenkins恢复且专属Lease释放。公网ACME与到时自动续期未实测。Terraform1.7.0/Ansible Core2.16.3为已有CLI，不重复安装；其工程实操仍待补。其他缺失组件按学习专题补齐，不全部常驻。详见[学习清单与实证](DEVOPS-LEARNING-20261019.md)。

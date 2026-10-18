@@ -60,3 +60,8 @@ Kafka数据现位于已有VM磁盘hostPath `/opt/petclinic-observability/state/k
 Filebeat数据流实际ILM为hot rollover 30d/50GB及delete min_age30d；旧filebeat-7.17.10索引未管理。Loki未配置自动retention，本轮未改变既有持久日志删除政策，后续清理需具体审查。分析告警只在期望副本大于0时评估计算不可用；快照7天时效仅info提示。告警规则已验证，通知送达未验证。
 
 Harbor的135字节AOF修复、Kafka数据迁移、Runner helper和Hello路由修复脚本属于一次性迁移记录；已保留原件/UID/备份，不应在正常发布时重复运行。
+
+
+## 2026-10-19 新增证书学习入口
+
+独立入口为`https://tls-lab.devops.local`，使用内部学习CA；浏览器默认不信任，使用[学习手册](DEVOPS-LEARNING-20261019.md)中的显式CA校验命令。Argo应用为`platform-cert-manager`与`devops-tls-lab`。证书状态在devops-lab，控制器日志在cert-manager；可用服务器cmctl对tls-lab进行非删除式换发。#153完整成功后，10月18日验收通过；自动续期预定10月24日20:56:55上海时间，尚未观察到该时刻执行，公网ACME未验证。资源锁已释放、Jenkins恢复；现有业务入口和Spark Operator/Webhook保留。

@@ -87,3 +87,8 @@ Trivy数据库大文件缓存准备曾触发memory full PSI12.74%的真实安全
 Mac数据卷最低5979MiB，低于8192MiB停止线2213MiB。已回收可重建缓存并fstrim；仍拒绝联合编排。后续须先稳定恢复至少12GiB宿主可用空间，为Java漏洞库/镜像/日志增长保留余量。未以降低requests/limits、放宽停止阈值或删除持久业务数据准入。详情及原始资源证据见RECOVERY-20261014.md。
 
 Spark Operator与Webhook按用户要求常驻1副本，已纳入Argo spark-operator应用；driver/executor、Flink及Airflow任务计算仍按需。旧表格中“完成后关闭Operator”的历史策略已被此期望状态替代。
+
+
+## 2026-10-19 证书学习实验预算
+
+cert-manager三控制器和独立Web常驻requests CPU225m/内存344Mi，内存limits704Mi；临时API-check再加10m/32Mi请求及64Mi内存上限。无新增PVC，生成的证书Secret保留。10月18日恢复验收8个metrics-server样本合计内存最大187.27Mi、CPU最大16.12m；不是内核峰值。结束全机requests3805m/6000m，VM可用11142Mi、根盘20835Mi，Mac swap2550.5→2542.5Mi，无停止阈值触发。原分析预算5620m若加225m及250m储备将为6095m，后续须重新准入并释放足够余量，不降低安全储备或声称联合分析已经完成。不要在保留离线admission webhook时直接将证书控制器缩到0。详见[学习清单](DEVOPS-LEARNING-20261019.md)。
