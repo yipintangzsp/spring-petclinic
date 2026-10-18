@@ -30,7 +30,7 @@ pipeline {
                     rm -f                       .deploy-started                                              .target-git-revision                                                                    .git-sha                       .git-sha-short                       .change-cause                       .new-revision                       .previous-image                       .previous-revision
 
                     echo "Pipeline state cleaned."
-                    rm -f .infra-preflight-before-build.json target/platform/*.json target/surefire-reports/*.xml
+                    rm -f .infra-preflight-before-build.json .sonar-runtime-maintenance.json target/platform/*.json target/surefire-reports/*.xml
 
                     echo
                     echo "===== GIT ====="
@@ -52,6 +52,7 @@ pipeline {
             steps {
                 // Maven clean removes target; retain the first gate's evidence outside it.
                 sh 'node infra/observability/heavy-lease.mjs acquire'
+                sh 'node infra/observability/ensure-sonar-runtime.mjs'
                 sh 'node infra/observability/release-preflight.mjs .infra-preflight-before-build.json'
             }
         }
@@ -303,7 +304,7 @@ pipeline {
                 sh 'node infra/observability/heavy-lease.mjs release'
             }
             junit testResults: 'target/surefire-reports/*.xml', allowEmptyResults: true
-            archiveArtifacts artifacts: '.infra-preflight-before-build.json,target/platform/*.json', allowEmptyArchive: true
+            archiveArtifacts artifacts: '.infra-preflight-before-build.json,.sonar-runtime-maintenance.json,target/platform/*.json', allowEmptyArchive: true
         }
         success {
             echo "CI/CD SUCCESS: ${K8S_IMAGE}"
