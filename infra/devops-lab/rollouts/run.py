@@ -67,6 +67,7 @@ def main():
                     pass
                 if predicate(value):
                     save(name, value)
+                    print('PASS', name, flush=True)
                     return value
                 time.sleep(4)
             save(name + '-timeout', value)
@@ -108,6 +109,13 @@ print(json.dumps(rows))'''
         try:
             # Bootstrap only after exact source passes the existing release pipeline.
             controller = source('applications/platform-rollouts.json')
+            for owned_app in [controller,app]:
+                old=kube(['-n','argocd','get','application',owned_app['metadata']['name'],'--ignore-not-found','-o','json'])
+                if old and old['metadata'].get('labels',{}).get('petclinic.devops.local/owner')!='rollouts-lab':
+                    raise RuntimeError('Foreign Application preserved')
+            ns=kube(['get','ns',NS,'--ignore-not-found','-o','json'])
+            if ns and ns['metadata'].get('labels',{}).get('petclinic.devops.local/owner')!='rollouts-lab':
+                raise RuntimeError('Foreign namespace preserved')
             kube(['apply','-f','-'],controller)
             wait('controller-ready', lambda:kube(['-n',NS,'get','deploy','argo-rollouts','--ignore-not-found','-o','json']),
                  lambda x:bool(x) and x.get('status',{}).get('availableReplicas',0)==1, 300)
@@ -156,6 +164,8 @@ print(json.dumps(rows))'''
             cli('promote','delivery')
             wait('retry-abort',lambda:get('delivery'),lambda x:x.get('status',{}).get('abort') is True)
             snapshot('retry-failed')
+            failed=kube(['-n',NS,'get','analysisruns','-o','json'])['items']
+            assert len([a for a in failed if a.get('status',{}).get('phase')=='Failed' and any(m.get('phase')=='Failed' for m in a['status'].get('metricResults',[]))])>=2
             scenario('delivery','v2',2);healthy('delivery','rollback-recovered')
             scenario('delivery','v2',0)
             wait('canary-stopped',lambda:kube(['-n',NS,'get','pods','-l','app=delivery','-o','json']),lambda x:not x['items'])
@@ -168,7 +178,7 @@ print(json.dumps(rows))'''
             cli('promote','blue');healthy('blue','blue-v2-promoted')
             rows=requests('blue-active');save('blue-after-switch',rows)
             assert all(x['code']==200 and json.loads(x['body'])['release']=='v2' for x in rows)
-            save('acceptance',{'success':True,'completed':dt.datetime.now(dt.timezone.utc).isoformat(),'build':args.build,'source':args.revision})
+            save('scenario-results',{'success':True,'completed':dt.datetime.now(dt.timezone.utc).isoformat(),'build':args.build,'source':args.revision})
         finally:
             if uids:
                 save('final-events',kube(['-n',NS,'get','events','-o','json']))
@@ -184,6 +194,7 @@ print(json.dumps(rows))'''
                     remote(shlex.join(['sudo','-n',CLI,'--kubeconfig','/etc/rancher/k3s/k3s.yaml','-n',NS,'promote',name,'--full']))  # Only after zero serving pods.
             if paused:kube(['apply','-f','-'],app)
     save('jenkins-restored',jenkins('/api/json?tree=quietingDown,jobs[name,lastBuild[building]]'))
+    save('acceptance',{'success':True,'cleanupConfirmed':True,'completed':dt.datetime.now(dt.timezone.utc).isoformat(),'build':args.build,'source':args.revision})
 
 
 if __name__=='__main__':

@@ -13,8 +13,8 @@
     <!-- Existing private GitLab SCM service has no TLS listener. -->
     <suppress files="k8s[\\/]production[\\/]alertmanager-application\.yaml$" checks="NoHttp" message=".*http://gitlab-service\.ns-devops\.svc\.cluster\.local/root/petclinic-platform\.git.*"/>
     <!-- The existing local egress proxy is HTTP; destination TLS remains verified. -->
-    <suppress files="Jenkinsfile$" checks="NoHttp" message=".*http://192\.168\.1\.236:10808.*"/>
-    <suppress files="infra[\\/]harbor[\\/]trivy-arm64-patch\.json$" checks="NoHttp" message=".*http://192\.168\.1\.236:10808.*"/>
+    <suppress files="Jenkinsfile$" checks="NoHttp" message=".*http://192\.168\.1\.238:10808.*"/>
+    <suppress files="infra[\\/]harbor[\\/]trivy-arm64-patch\.json$" checks="NoHttp" message=".*http://192\.168\.1\.238:10808.*"/>
     <!-- Recovery documentation records the same existing LAN listeners. -->
     <suppress files="docs[\\/]RECOVERY-20261014\.md$" checks="NoHttp" message=".*http://(petclinic|superset|jenkins)\.devops\.local/.*"/>
     <!-- These documented existing LAN listeners have no TLS endpoint. -->
