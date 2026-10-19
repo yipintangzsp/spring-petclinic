@@ -1,0 +1,444 @@
+{
+  "apiVersion": "v1",
+  "kind": "List",
+  "items": [
+    {
+      "apiVersion": "v1",
+      "kind": "ResourceQuota",
+      "metadata": {
+        "name": "delivery-budget",
+        "labels": {
+          "petclinic.devops.local/owner": "rollouts-lab"
+        },
+        "namespace": "rollouts-lab"
+      },
+      "spec": {
+        "hard": {
+          "pods": "6",
+          "requests.cpu": "300m",
+          "requests.memory": "512Mi",
+          "limits.cpu": "2",
+          "limits.memory": "768Mi",
+          "persistentvolumeclaims": "0",
+          "count/services": "8"
+        }
+      }
+    },
+    {
+      "apiVersion": "v1",
+      "kind": "ConfigMap",
+      "metadata": {
+        "name": "delivery-scenarios",
+        "labels": {
+          "petclinic.devops.local/owner": "rollouts-lab"
+        },
+        "namespace": "rollouts-lab"
+      },
+      "data": {
+        "v1.conf": "pid /tmp/nginx.pid;\nworker_processes 1;\nerror_log /dev/stderr warn;\nevents { worker_connections 64; }\nhttp { access_log /dev/stdout; client_body_temp_path /tmp/client; proxy_temp_path /tmp/proxy; fastcgi_temp_path /tmp/fastcgi; uwsgi_temp_path /tmp/uwsgi; scgi_temp_path /tmp/scgi;\nserver { listen 8080; default_type application/json;\nlocation = /healthz { return 200 'ready'; }\nlocation / { return 200 '{\"release\":\"v1\",\"experiment\":\"rollouts-lab\"}'; }\n} }\n",
+        "v2.conf": "pid /tmp/nginx.pid;\nworker_processes 1;\nerror_log /dev/stderr warn;\nevents { worker_connections 64; }\nhttp { access_log /dev/stdout; client_body_temp_path /tmp/client; proxy_temp_path /tmp/proxy; fastcgi_temp_path /tmp/fastcgi; uwsgi_temp_path /tmp/uwsgi; scgi_temp_path /tmp/scgi;\nserver { listen 8080; default_type application/json;\nlocation = /healthz { return 200 'ready'; }\nlocation / { return 200 '{\"release\":\"v2\",\"experiment\":\"rollouts-lab\"}'; }\n} }\n",
+        "bad.conf": "pid /tmp/nginx.pid;\nworker_processes 1;\nerror_log /dev/stderr warn;\nevents { worker_connections 64; }\nhttp { access_log /dev/stdout; client_body_temp_path /tmp/client; proxy_temp_path /tmp/proxy; fastcgi_temp_path /tmp/fastcgi; uwsgi_temp_path /tmp/uwsgi; scgi_temp_path /tmp/scgi;\nserver { listen 8080; default_type application/json;\nlocation = /healthz { return 200 'ready'; }\nlocation / { return 500 '{\"release\":\"bad\",\"experiment\":\"rollouts-lab\"}'; }\n} }\n"
+      }
+    },
+    {
+      "apiVersion": "v1",
+      "kind": "Service",
+      "metadata": {
+        "name": "delivery",
+        "labels": {
+          "petclinic.devops.local/owner": "rollouts-lab"
+        },
+        "namespace": "rollouts-lab"
+      },
+      "spec": {
+        "ports": [
+          {
+            "name": "http",
+            "port": 8080,
+            "targetPort": "http"
+          }
+        ],
+        "selector": {
+          "app": "delivery"
+        }
+      }
+    },
+    {
+      "apiVersion": "v1",
+      "kind": "Service",
+      "metadata": {
+        "name": "delivery-stable",
+        "labels": {
+          "petclinic.devops.local/owner": "rollouts-lab"
+        },
+        "namespace": "rollouts-lab"
+      },
+      "spec": {
+        "ports": [
+          {
+            "name": "http",
+            "port": 8080,
+            "targetPort": "http"
+          }
+        ],
+        "selector": {
+          "app": "delivery"
+        }
+      }
+    },
+    {
+      "apiVersion": "v1",
+      "kind": "Service",
+      "metadata": {
+        "name": "delivery-canary",
+        "labels": {
+          "petclinic.devops.local/owner": "rollouts-lab"
+        },
+        "namespace": "rollouts-lab"
+      },
+      "spec": {
+        "ports": [
+          {
+            "name": "http",
+            "port": 8080,
+            "targetPort": "http"
+          }
+        ],
+        "selector": {
+          "app": "delivery"
+        }
+      }
+    },
+    {
+      "apiVersion": "v1",
+      "kind": "Service",
+      "metadata": {
+        "name": "blue-active",
+        "labels": {
+          "petclinic.devops.local/owner": "rollouts-lab"
+        },
+        "namespace": "rollouts-lab"
+      },
+      "spec": {
+        "ports": [
+          {
+            "name": "http",
+            "port": 8080,
+            "targetPort": "http"
+          }
+        ],
+        "selector": {
+          "app": "blue"
+        }
+      }
+    },
+    {
+      "apiVersion": "v1",
+      "kind": "Service",
+      "metadata": {
+        "name": "blue-preview",
+        "labels": {
+          "petclinic.devops.local/owner": "rollouts-lab"
+        },
+        "namespace": "rollouts-lab"
+      },
+      "spec": {
+        "ports": [
+          {
+            "name": "http",
+            "port": 8080,
+            "targetPort": "http"
+          }
+        ],
+        "selector": {
+          "app": "blue"
+        }
+      }
+    },
+    {
+      "apiVersion": "argoproj.io/v1alpha1",
+      "kind": "Rollout",
+      "metadata": {
+        "name": "delivery",
+        "labels": {
+          "petclinic.devops.local/owner": "rollouts-lab"
+        },
+        "namespace": "rollouts-lab"
+      },
+      "spec": {
+        "replicas": 0,
+        "revisionHistoryLimit": 3,
+        "progressDeadlineSeconds": 240,
+        "progressDeadlineAbort": true,
+        "selector": {
+          "matchLabels": {
+            "app": "delivery"
+          }
+        },
+        "template": {
+          "metadata": {
+            "labels": {
+              "app": "delivery"
+            }
+          },
+          "spec": {
+            "nodeSelector": {
+              "kubernetes.io/hostname": "devops"
+            },
+            "automountServiceAccountToken": false,
+            "terminationGracePeriodSeconds": 5,
+            "containers": [
+              {
+                "name": "web",
+                "image": "core.harbor.domain/cook/cook@sha256:372e33fb6c3be30d263941a00f782df83c68b65b4267ceab32d0c390d855a780",
+                "command": [
+                  "/bin/sh",
+                  "-c",
+                  "exec nginx -c /lab/$SCENARIO.conf -g \"daemon off;\""
+                ],
+                "env": [
+                  {
+                    "name": "SCENARIO",
+                    "value": "v1"
+                  }
+                ],
+                "ports": [
+                  {
+                    "name": "http",
+                    "containerPort": 8080
+                  }
+                ],
+                "readinessProbe": {
+                  "httpGet": {
+                    "path": "/healthz",
+                    "port": "http"
+                  },
+                  "periodSeconds": 2
+                },
+                "resources": {
+                  "requests": {
+                    "cpu": "25m",
+                    "memory": "24Mi"
+                  },
+                  "limits": {
+                    "cpu": "200m",
+                    "memory": "64Mi",
+                    "ephemeral-storage": "64Mi"
+                  }
+                },
+                "volumeMounts": [
+                  {
+                    "name": "scenarios",
+                    "mountPath": "/lab",
+                    "readOnly": true
+                  }
+                ]
+              }
+            ],
+            "volumes": [
+              {
+                "name": "scenarios",
+                "configMap": {
+                  "name": "delivery-scenarios"
+                }
+              }
+            ]
+          }
+        },
+        "strategy": {
+          "canary": {
+            "stableService": "delivery-stable",
+            "canaryService": "delivery-canary",
+            "maxSurge": 1,
+            "maxUnavailable": 0,
+            "scaleDownDelaySeconds": 10,
+            "steps": [
+              {
+                "setWeight": 50
+              },
+              {
+                "pause": {}
+              },
+              {
+                "analysis": {
+                  "templates": [
+                    {
+                      "templateName": "canary-http"
+                    }
+                  ]
+                }
+              },
+              {
+                "setWeight": 100
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "apiVersion": "argoproj.io/v1alpha1",
+      "kind": "Rollout",
+      "metadata": {
+        "name": "blue",
+        "labels": {
+          "petclinic.devops.local/owner": "rollouts-lab"
+        },
+        "namespace": "rollouts-lab"
+      },
+      "spec": {
+        "replicas": 0,
+        "revisionHistoryLimit": 3,
+        "progressDeadlineSeconds": 240,
+        "progressDeadlineAbort": true,
+        "selector": {
+          "matchLabels": {
+            "app": "blue"
+          }
+        },
+        "template": {
+          "metadata": {
+            "labels": {
+              "app": "blue"
+            }
+          },
+          "spec": {
+            "nodeSelector": {
+              "kubernetes.io/hostname": "devops"
+            },
+            "automountServiceAccountToken": false,
+            "terminationGracePeriodSeconds": 5,
+            "containers": [
+              {
+                "name": "web",
+                "image": "core.harbor.domain/cook/cook@sha256:372e33fb6c3be30d263941a00f782df83c68b65b4267ceab32d0c390d855a780",
+                "command": [
+                  "/bin/sh",
+                  "-c",
+                  "exec nginx -c /lab/$SCENARIO.conf -g \"daemon off;\""
+                ],
+                "env": [
+                  {
+                    "name": "SCENARIO",
+                    "value": "v1"
+                  }
+                ],
+                "ports": [
+                  {
+                    "name": "http",
+                    "containerPort": 8080
+                  }
+                ],
+                "readinessProbe": {
+                  "httpGet": {
+                    "path": "/healthz",
+                    "port": "http"
+                  },
+                  "periodSeconds": 2
+                },
+                "resources": {
+                  "requests": {
+                    "cpu": "25m",
+                    "memory": "24Mi"
+                  },
+                  "limits": {
+                    "cpu": "200m",
+                    "memory": "64Mi",
+                    "ephemeral-storage": "64Mi"
+                  }
+                },
+                "volumeMounts": [
+                  {
+                    "name": "scenarios",
+                    "mountPath": "/lab",
+                    "readOnly": true
+                  }
+                ]
+              }
+            ],
+            "volumes": [
+              {
+                "name": "scenarios",
+                "configMap": {
+                  "name": "delivery-scenarios"
+                }
+              }
+            ]
+          }
+        },
+        "strategy": {
+          "blueGreen": {
+            "activeService": "blue-active",
+            "previewService": "blue-preview",
+            "autoPromotionEnabled": false,
+            "scaleDownDelaySeconds": 10,
+            "previewReplicaCount": 1
+          }
+        }
+      }
+    },
+    {
+      "apiVersion": "monitoring.coreos.com/v1",
+      "kind": "Probe",
+      "metadata": {
+        "name": "delivery-canary",
+        "labels": {
+          "petclinic.devops.local/owner": "rollouts-lab",
+          "release": "kube-stack"
+        },
+        "namespace": "rollouts-lab"
+      },
+      "spec": {
+        "interval": "10s",
+        "scrapeTimeout": "6s",
+        "jobName": "rollouts-canary",
+        "module": "cook_http",
+        "prober": {
+          "url": "cook-blackbox.cook.svc.cluster.local:9115"
+        },
+        "targets": {
+          "staticConfig": {
+            "static": [
+              "http://delivery-canary.rollouts-lab.svc.cluster.local:8080/"
+            ],
+            "labels": {
+              "delivery_lab": "rollouts",
+              "endpoint": "canary"
+            }
+          }
+        }
+      }
+    },
+    {
+      "apiVersion": "argoproj.io/v1alpha1",
+      "kind": "AnalysisTemplate",
+      "metadata": {
+        "name": "canary-http",
+        "labels": {
+          "petclinic.devops.local/owner": "rollouts-lab"
+        },
+        "namespace": "rollouts-lab"
+      },
+      "spec": {
+        "metrics": [
+          {
+            "name": "real-http-success",
+            "initialDelay": "25s",
+            "interval": "10s",
+            "count": 3,
+            "failureLimit": 0,
+            "consecutiveErrorLimit": 2,
+            "successCondition": "len(result) == 1 && result[0] == 1",
+            "failureCondition": "len(result) == 1 && result[0] < 1",
+            "provider": {
+              "prometheus": {
+                "address": "http://kube-stack-kube-prometheus-prometheus.monitoring.svc.cluster.local:9090",
+                "query": "min(min_over_time(probe_success{delivery_lab=\"rollouts\",endpoint=\"canary\"}[20s])) and on() (time() - max(timestamp(probe_success{delivery_lab=\"rollouts\",endpoint=\"canary\"})) < 20)"
+              }
+            }
+          }
+        ]
+      }
+    }
+  ]
+}
