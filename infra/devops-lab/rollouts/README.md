@@ -23,3 +23,5 @@ ssh zhang@192.168.1.58 'sudo kubectl -n rollouts-lab logs deploy/argo-rollouts -
 
 ## 配置语义门禁
 副本比例灰度不设置 `canary.scaleDownDelaySeconds`；该字段要求 trafficRouting，蓝绿保留自己的延迟缩容。现有 Jenkins tooling 测试覆盖此约束及错误负例；实验执行前还使用固定摘要的官方CLI逐个离线lint，随后才创建实验计算资源。服务器CLI读取 `/dev/stdin`（其lint不支持`-`文件名）。
+
+CRD中的Pod端口显式使用TCP，避免API默认补全与Argo客户端比较产生永久OutOfSync；不通过忽略整个模板掩盖差异。

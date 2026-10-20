@@ -14,3 +14,9 @@ test('delay without traffic routing is rejected; blue-green delay remains valid'
  assert.doesNotThrow(()=>validate({spec:{strategy:{blueGreen:{scaleDownDelaySeconds:10}}}}));
  assert.doesNotThrow(()=>validate({spec:{strategy:{canary:{scaleDownDelaySeconds:10,trafficRouting:{}}}}}));
 });
+
+test('CRD pod ports declare the API default to avoid perpetual GitOps drift',()=>{
+ for(const rollout of items.filter(x=>x.kind==='Rollout'))
+  for(const container of rollout.spec.template.spec.containers)
+   for(const port of container.ports??[])assert.equal(port.protocol,'TCP');
+});
