@@ -46,6 +46,11 @@ def main():
     save('jenkins-gate', gate(args.build, args.revision))
     if remote('sudo -n sha256sum ' + shlex.quote(CLI)).split()[0] != CLI_SHA:
         raise RuntimeError('Verified official CLI is required')
+    # Offline upstream validation catches semantic rules omitted by CRD schema.
+    for obj in source('rollouts/resources.json')['items']:
+        if obj['kind'] == 'Rollout':
+            command = ['sudo', '-n', CLI, 'lint', '-f', '/dev/stdin']
+            save('lint-' + obj['metadata']['name'], remote(shlex.join(command), json.dumps(obj)))
     save('admission', [sample(), sample(), sample()])
     lab = source('rollouts/resources.json')
     desired = {x['metadata']['name']: x for x in lab['items'] if x['kind'] == 'Rollout'}

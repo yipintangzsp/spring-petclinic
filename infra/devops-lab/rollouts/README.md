@@ -20,3 +20,6 @@ ssh zhang@192.168.1.58 'sudo kubectl -n rollouts-lab logs deploy/argo-rollouts -
 控制器 requests100m/128Mi，limits500m/256Mi；每个实验web requests25m/24Mi，limits200m/64Mi。灰度2副本、surge1，蓝绿1+1且串行；namespace硬配额6Pods/CPU requests300m/内存requests512Mi/limits768Mi、PVC0。完整控制过程预算1024Mi+1250Mi安全储备。CLI/宿主开销也需纳入实际观测，样本不等同于瞬时内核峰值。禁止自动清理既有资源；若资源锁/quiet未恢复，先核实本轮Pod确实回收，再按运行手册恢复，不抢占别人的Lease。
 
 控制器安装配置在 `../rollouts-controller`，bootstrap在 `../applications`，故不会被Petclinic父应用提前同步。后续改实验源码前应先暂停对应应用自动同步，CI成功后恢复；不要将未检查配置直接上线。
+
+## 配置语义门禁
+副本比例灰度不设置 `canary.scaleDownDelaySeconds`；该字段要求 trafficRouting，蓝绿保留自己的延迟缩容。现有 Jenkins tooling 测试覆盖此约束及错误负例；实验执行前还使用固定摘要的官方CLI逐个离线lint，随后才创建实验计算资源。服务器CLI读取 `/dev/stdin`（其lint不支持`-`文件名）。
