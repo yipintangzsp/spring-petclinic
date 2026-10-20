@@ -13,6 +13,21 @@ from clinic_task import parse_spark_result, cpu_request_milli, pod_cpu_request_m
 
 
 class QualityChecks(unittest.TestCase):
+    def test_spark_submits_both_roles_with_admitted_cpu_requests(self):
+        import clinic_task
+        custom = MagicMock()
+        with patch.object(clinic_task, '_kube', return_value=(None, None, custom, None)), \
+             patch.object(clinic_task, '_execution'):
+            clinic_task.submit_spark({'execution_id': 'budget-check', 'batch_id': 'bounded',
+                                     'config_map': 'snapshot'}, '2026-01-01', '2026-12-31')
+        body = custom.create_namespaced_custom_object.call_args.args[-1]
+        total = sum(cpu_request_milli(body['spec'][role]['coreRequest']) for role in ('driver', 'executor'))
+        self.assertEqual(total, 2 * clinic_task.SPARK_ROLE_CPU_MILLI)
+        self.assertEqual(total + clinic_task.COMPUTE_CPU_RESERVE_MILLI, 1750)
+        for role in ('driver', 'executor'):
+            self.assertEqual(body['spec'][role]['cores'], 1)
+            self.assertEqual(body['spec'][role]['coreLimit'], '1000m')
+
     def test_finite_remote_input_handles_a_real_batch_above_linux_single_argument_limit(self):
         body = ('{"snapshot_id":"bounded","visit_id":1234,"visit_date":"2026-10-11"}\n' * 2300)
         command = finite_input(['cat'], body)

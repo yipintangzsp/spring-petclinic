@@ -14,6 +14,8 @@ import time
 import urllib.request
 
 MAX_ROWS = 5000
+SPARK_ROLE_CPU_MILLI = 750
+COMPUTE_CPU_RESERVE_MILLI = 250
 SPARK_IMAGE = ('127.0.0.1:30050/platform-upgrade/spark-runtime@'
                'sha256:711ace285d47914adfeec1a4db16d30632cade0717c971e9049d4adf59dcb500')
 LEASE_NAMESPACE = 'data-infra'
@@ -138,7 +140,7 @@ def restore_build_services(guard):
 def admit_compute_cpu(guard):
     core, apps, _, coordination = _kube()
     measured = check_resources()
-    required = 2250  # Spark driver+executor 2000m plus 250m scheduling reserve.
+    required = 2 * SPARK_ROLE_CPU_MILLI + COMPUTE_CPU_RESERVE_MILLI
     available = measured['cpuAllocatableMilli'] - measured['cpuRequestedMilli']
     paused = False
     if available < required:
@@ -168,7 +170,7 @@ def admit_compute_cpu(guard):
         available = measured['cpuAllocatableMilli'] - measured['cpuRequestedMilli']
         sonar = apps.read_namespaced_stateful_set('sonarqube-sonarqube', 'sonarqube') if paused else None
         if available >= required and (not paused or (sonar.status.replicas or 0) == 0):
-            return {'compute_cpu_milli': 2000, 'cpu_reserve_milli': 250,
+            return {'compute_cpu_milli': 2 * SPARK_ROLE_CPU_MILLI, 'cpu_reserve_milli': COMPUTE_CPU_RESERVE_MILLI,
                     'cpu_available_milli': available, 'sonar_paused': paused}
         time.sleep(2)
     raise RuntimeError('CPU admission did not become available; do not submit compute')
@@ -607,7 +609,7 @@ GROUP BY pet_type ORDER BY pet_type;'''
 def submit_spark(snapshot, start, end):
     _, _, custom, _ = _kube()
     name = 'petclinic-airflow-' + snapshot['execution_id']
-    role = {'cores': 1, 'coreLimit': '1000m', 'memory': '512m', 'memoryOverhead': '512m',
+    role = {'cores': 1, 'coreRequest': f'{SPARK_ROLE_CPU_MILLI}m', 'coreLimit': '1000m', 'memory': '512m', 'memoryOverhead': '512m',
             'labels': {'app': 'petclinic-analysis', 'batch': snapshot['batch_id'],
                        'execution': snapshot['execution_id']},
             'volumeMounts': [{'name': 'snapshot', 'mountPath': '/opt/clinic', 'readOnly': True}],
