@@ -97,3 +97,8 @@ cert-manager三控制器和独立Web常驻requests CPU225m/内存344Mi，内存l
 ## 2026-10-19 IaC步骤预算
 
 本轮不新增常驻Pod/PVC。Ansible/Terraform每步MemoryMax768MiB、CPUQuota100%、TasksMax128、RuntimeMaxSec600，外层1024MiB预算和原1250MiB储备，沿用原停止阈值及同一共享Lease。26个步骤的cgroup memory.peak采样最大99.22MiB，所有临时进程退出确认后恢复Jenkins/释放Lease；不得将缺失的峰值计数当作0。详见[IaC实操](IAC-LAB-20261019.md)。
+
+
+## 2026-10-20 发布实验完成
+
+发布实验继续共用platform-heavy Lease，先Jenkins quiet后启动；1024Mi预算加1250Mi储备，灰度/蓝绿串行，结束确认web为0才释放。96Mi的Jenkins中继禁止并行Node exec；读取构建状态/归档同样必须持有petclinic-jenkins-relay.lock串行执行。本轮曾因未遵守串行约束触发OOM保护，已保留失败和恢复证据，未降低阈值或扩大中继限额。[详细资源采样](ROLLOUTS-LAB-20261020.md)。

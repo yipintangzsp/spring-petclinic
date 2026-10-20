@@ -125,3 +125,8 @@ Portainer Kubernetes API真实版本2.39.5；宿主Docker另有Portainer2.39.0�
 ## 2026-10-19 IaC功能验收补充
 
 Terraform1.7.0、Ansible Core2.16.3复用既有CLI，kubernetes provider2.38.0已签名校验并锁定；环境生命周期完整实操已通过。tf-devops-lab仅包含本轮命名空间/配额/ConfigMap三个对象，实验后已回收，状态证据保留，不新增常驻组件。Argo Rollouts及后续专题尚未安装。详见[IaC实操](IAC-LAB-20261019.md)。
+
+
+## 2026-10-20 发布实验完成
+
+Argo Rollouts v1.10.1现已完成独立功能验收：真实灰度分流、Prometheus晋升、HTTP500回退及重试、幂等、蓝绿预览/切换。控制器常驻，实验web按需且当前0；并未接管Petclinic Deployment。详见[验收记录](ROLLOUTS-LAB-20261020.md)。

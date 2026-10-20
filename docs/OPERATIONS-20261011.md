@@ -70,3 +70,8 @@ Harbor的135字节AOF修复、Kafka数据迁移、Runner helper和Hello路由修
 ## 2026-10-19 Terraform/Ansible学习实验
 
 Jenkins #154完整成功后，已通过配置预览、两工具幂等、非法参数拒绝、ConfigMap漂移检测/原地修复及3个隔离对象回收。入口和重跑命令见[IaC实操](IAC-LAB-20261019.md)。状态及日志保留，无新增常驻Pod/PVC；证书实验保持独立。
+
+
+## 2026-10-20 发布实验完成
+
+Jenkins #159及独立灰度/蓝绿完整验收已于2026-10-20 15:19通过。两个实验Rollout回到0、副本清理确认、自动同步恢复、共享Lease释放、Jenkins非quiet；Spark Operator/Webhook保留。重跑、AnalysisRun ID、失败证据和资源记录见[本轮发布实验](ROLLOUTS-LAB-20261020.md)。此处不改变既有Airflow四轮联合验收未完成结论。
