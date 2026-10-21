@@ -9,6 +9,14 @@ export function assessPreflight(s, now = Date.now()) {
  const blockers = [], nodes = [];
  const requiredNodes = s.targetNodes ?? productionNodes;
  if (!requiredNodes.length) blockers.push('NO_VERIFIED_TARGET_NODE');
+ if (requiredNodes.includes('devops')) {
+  const host = s.hostSample, age = now / 1000 - host?.at, mac = host?.mac;
+  if (!Number.isFinite(age) || age < -5 || age > 90) blockers.push('devops: FRESH_HOST_MEASUREMENT_REQUIRED');
+  if (!(mac?.diskFreeMiB >= 16384)) blockers.push('devops: MAC_DISK_BELOW_16_GIB');
+  if (!(mac?.freePercent >= 10)) blockers.push('devops: MAC_MEMORY_BELOW_10_PERCENT');
+  if (!Number.isFinite(mac?.efiAllocatedMiB) || mac.efiAllocatedMiB > 128)
+   blockers.push('devops: EFI_ALLOCATION_REQUIRES_MAINTENANCE');
+ }
  for (const name of requiredNodes) {
   const node = s.nodes.find(n => n.metadata.name === name);
   const lease = s.leases.find(l => l.metadata.name === name);
@@ -24,7 +32,17 @@ export function assessPreflight(s, now = Date.now()) {
   if (node?.spec.taints?.some(t => ['node.kubernetes.io/not-ready', 'node.kubernetes.io/unreachable'].includes(t.key)))
    blockers.push(`${name}: UNHEALTHY_NODE_TAINT`);
   if (leaseAgeSeconds === null || leaseAgeSeconds > 40 || leaseAgeSeconds < -5) blockers.push(`${name}: LEASE_NOT_FRESH`);
-  nodes.push({name, leaseAgeSeconds, renewTime: lease?.spec.renewTime, conditions,
+  const storage = s.storage?.[name];
+  for (const [kind, stats] of Object.entries({nodefs: storage?.fs, imagefs: storage?.runtime?.imageFs})) {
+   const age = (now - Date.parse(stats?.time)) / 1000;
+   const capacity = stats?.capacityBytes, available = stats?.availableBytes;
+   const required = capacity * 0.15 + 8 * 1024 ** 3;
+   if (!Number.isFinite(age) || age < -5 || age > 90 || !(capacity > 0) || !Number.isFinite(available))
+    blockers.push(`${name}: ${kind} FRESH_DISK_MEASUREMENT_REQUIRED`);
+   else if (available < required)
+    blockers.push(`${name}: ${kind} DISK_HEADROOM: available=${available}, required=${Math.ceil(required)}`);
+  }
+  nodes.push({name, storage, leaseAgeSeconds, renewTime: lease?.spec.renewTime, conditions,
    allocatable: node?.status.allocatable, taints: node?.spec.taints ?? []});
  }
  const ready = s.pods.filter(p => !p.metadata.deletionTimestamp &&
@@ -39,7 +57,7 @@ export function assessPreflight(s, now = Date.now()) {
  const endpointPods = new Set(endpoints.map(e => e.targetRef.uid));
  if (ready.length < desired || available < desired || endpointPods.size < desired)
   blockers.push(`BUSINESS_CAPACITY: desired=${desired}, ready=${ready.length}, available=${available}, endpointPods=${endpointPods.size}`);
- return {ok: blockers.length === 0, blockers, nodes, targetNodes: requiredNodes,
+ return {ok: blockers.length === 0, blockers, nodes, hostSample: s.hostSample, targetNodes: requiredNodes,
   excludedNodes: s.nodes.filter(n => !requiredNodes.includes(n.metadata.name)).map(n => ({name:n.metadata.name,conditions:n.status.conditions,renewTime:s.leases.find(l=>l.metadata.name===n.metadata.name)?.spec.renewTime})), desired, available,
   pods: s.pods.map(p => ({name: p.metadata.name, uid: p.metadata.uid, node: p.spec.nodeName,
    deletionTimestamp: p.metadata.deletionTimestamp, ready: ready.includes(p)})),
@@ -65,7 +83,16 @@ export async function preflight({output = 'target/platform/preflight.json', wind
   const selector=d.spec.template.spec.nodeSelector;
   if(!selector||!Object.keys(selector).length)throw Error('Explicit measured target selection required');
   const targetNodes=nodes.filter(n=>Object.entries(selector).every(([key,value])=>n.metadata.labels[key]===value)).map(n=>n.metadata.name);
-  return {nodes,targetNodes,
+  const storage = {};
+  for (const name of targetNodes) {
+   const result = spawnSync('kubectl', ['--request-timeout=5s', 'get', '--raw', `/api/v1/nodes/${name}/proxy/stats/summary`],
+    {encoding: 'utf8', timeout: 6000, maxBuffer: 4 * 1024 * 1024});
+   if (result.status !== 0) throw Error(`PREFLIGHT_DISK_API_ERROR: ${name}`);
+   const node = JSON.parse(result.stdout).node;
+   storage[name] = {fs: node.fs, runtime: node.runtime};
+  }
+  const hostSample = targetNodes.includes('devops') ? JSON.parse(kube(['-n','data-infra','get','configmap','platform-host-resources']).data['sample.json']) : undefined;
+  return {nodes,targetNodes,storage,hostSample,
    leases:kube(['-n','kube-node-lease','get','leases']).items,
    pods:kube(['-n','petclinic','get','pods','-l','app=petclinic']).items,
    slices:kube(['-n','petclinic','get','endpointslices','-l','kubernetes.io/service-name=petclinic']).items,

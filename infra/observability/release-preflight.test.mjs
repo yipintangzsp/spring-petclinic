@@ -5,7 +5,7 @@ import os from 'node:os';
 import path from 'node:path';
 import {assessPreflight, preflight, productionNodes} from './release-preflight.mjs';
 function snapshot(now = Date.now()) {
- return {nodes: productionNodes.map(name => ({metadata: {name}, spec: {}, status: {conditions:
+ return {hostSample: {at: now / 1000,mac: {diskFreeMiB: 30 * 1024,freePercent: 40,efiAllocatedMiB: 1.1}},storage: Object.fromEntries(productionNodes.map(name => [name, {fs: {time: new Date(now).toISOString(),capacityBytes: 250 * 1024 ** 3,availableBytes: 70 * 1024 ** 3},runtime: {imageFs: {time: new Date(now).toISOString(),capacityBytes: 250 * 1024 ** 3,availableBytes: 70 * 1024 ** 3}}}])), nodes: productionNodes.map(name => ({metadata: {name}, spec: {}, status: {conditions:
   ['Ready', 'MemoryPressure', 'DiskPressure', 'PIDPressure'].map(type => ({type, status: type === 'Ready' ? 'True' : 'False'}))}})),
   leases: productionNodes.map(name => ({metadata: {name}, spec: {renewTime: new Date(now).toISOString()}})),
   pods: productionNodes.map((name, i) => ({metadata: {name: `pod-${i}`, uid: `uid-${i}`}, spec: {nodeName: name}, status: {conditions: [{type: 'Ready', status: 'True'}]}})),
@@ -77,4 +77,29 @@ test('explicit local targets exclude an unhealthy cloud worker and report it', (
 test('a selector matching no target nodes blocks publishing', () => {
  const s = snapshot(); s.targetNodes = [];
  assert.equal(assessPreflight(s).ok, false);
+});
+
+test('disk pressure False cannot conceal insufficient future build headroom', () => {
+ for (const freeGiB of [14, 37]) {
+  const s = snapshot();s.storage.devops.fs.availableBytes = freeGiB * 1024 ** 3;
+  assert.match(assessPreflight(s).blockers.join(';'), /devops: nodefs DISK_HEADROOM/);
+ }
+});
+test('missing or stale image filesystem samples fail closed', () => {
+ const s = snapshot(); delete s.storage.devops.runtime.imageFs;
+ assert.match(assessPreflight(s).blockers.join(';'), /imagefs FRESH_DISK_MEASUREMENT_REQUIRED/);
+ s.storage.devops.runtime.imageFs = {...s.storage.devops.fs,time:new Date(Date.now()-91000).toISOString()};
+ assert.match(assessPreflight(s).blockers.join(';'), /imagefs FRESH_DISK_MEASUREMENT_REQUIRED/);
+});
+
+test('saved EFI memory state blocks new builds even before host disk fills', () => {
+ const s = snapshot();s.hostSample.mac.efiAllocatedMiB = 26 * 1024;
+ assert.match(assessPreflight(s).blockers.join(';'), /EFI_ALLOCATION_REQUIRES_MAINTENANCE/);
+});
+test('missing and stale host evidence and low host disk block release', () => {
+ const s = snapshot();s.hostSample.at -= 91;s.hostSample.mac.diskFreeMiB = 12000;
+ assert.match(assessPreflight(s).blockers.join(';'), /FRESH_HOST_MEASUREMENT_REQUIRED/);
+ assert.match(assessPreflight(s).blockers.join(';'), /MAC_DISK_BELOW_16_GIB/);
+ delete s.hostSample;
+ assert.equal(assessPreflight(s).ok,false);
 });

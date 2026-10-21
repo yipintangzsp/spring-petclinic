@@ -3,7 +3,7 @@ import datetime as dt
 import fcntl
 import json
 import inspect
-from clinic_task import cpu_request_milli, pod_cpu_request_milli
+from clinic_task import cpu_request_milli, pod_cpu_request_milli, disk_required_mib
 import re
 import shlex
 import subprocess
@@ -82,7 +82,7 @@ for pod in pods:
  if pod['status'].get('reason')=='Evicted':result['failures'].append([pod['metadata']['uid'],'pod',0,'Evicted'])
  if pod['metadata'].get('labels',{}).get('app')=='petclinic-analysis' or 'airflow' in pod['metadata']['name'] or 'spark' in pod['metadata']['name'] or 'flink' in pod['metadata']['name']:
   result['resources'].append({'name':pod['metadata']['name'],'namespace':pod['metadata']['namespace'],'phase':pod['status']['phase'],'containers':[{'name':c['name'],'resources':c.get('resources',{})} for c in pod['spec']['containers']]})
-p=subprocess.run(['df','-Pk','/'],capture_output=True,text=True,timeout=3);row=p.stdout.splitlines()[-1].split();result['diskFreeMiB']=int(row[3])/1024
+p=subprocess.run(['df','-Pk','/'],capture_output=True,text=True,timeout=3);row=p.stdout.splitlines()[-1].split();result['diskFreeMiB']=int(row[3])/1024;result['diskCapacityMiB']=int(row[1])/1024
 print(json.dumps(result))'''
 
 
@@ -95,6 +95,8 @@ def sample():
         value['mac'] = {'freePercent': int(re.search(r'free percentage: (\d+)%', pressure).group(1)),
                         'swapUsedMiB': float(re.search(r'used = ([0-9.]+)M', swap).group(1)),
                         'diskFreeMiB': int(disk.splitlines()[-1].split()[3]) / 1024}
+        efi = Path.home() / 'Library/Containers/com.utmapp.UTM/Data/Documents/devops.utm/Data/efi_vars.fd'
+        value['mac']['efiAllocatedMiB'] = efi.stat().st_blocks / 2048 if efi.exists() else None
     return value
 
 
@@ -102,12 +104,15 @@ def blockers(value, bad_http=0, previous_failures=()):
     reasons = []
     if value.get('mac', {}).get('freePercent', 100) < 10:
         reasons.append('Mac memory free percentage below 10')
-    if value.get('mac', {}).get('diskFreeMiB', 999999) < 8192:
-        reasons.append('Mac data filesystem has less than 8 GiB free')
+    if value.get('mac', {}).get('diskFreeMiB', 0) < 16384:
+        reasons.append('Mac data filesystem has less than 16 GiB free')
+    efi = value.get('mac', {}).get('efiAllocatedMiB')
+    if efi is None or efi > 128:
+        reasons.append('UTM EFI allocation missing or above 128 MiB; inspect saved memory snapshots')
     if value['availableMiB'] < 1536:
         reasons.append('MemAvailable below 1536 MiB')
-    if value['diskFreeMiB'] < 8192:
-        reasons.append('Root filesystem has less than 8 GiB free')
+    if value['diskFreeMiB'] < disk_required_mib(value.get('diskCapacityMiB')):
+        reasons.append('Root filesystem requires 15 percent free plus 8 GiB task allowance')
     if value['pressure']['memory']['full']['avg10'] > 5:
         reasons.append('Memory full PSI avg10 exceeds 5')
     if value['pressure']['io']['full']['avg10'] > 10:

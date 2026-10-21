@@ -13,6 +13,13 @@ from clinic_task import parse_spark_result, cpu_request_milli, pod_cpu_request_m
 
 
 class QualityChecks(unittest.TestCase):
+    def test_disk_budget_keeps_eviction_margin_and_task_allowance(self):
+        from clinic_task import disk_required_mib
+        self.assertEqual(disk_required_mib(250 * 1024), 45.5 * 1024)
+        for missing in (None, 0, -1):
+            with self.assertRaises(ValueError):
+                disk_required_mib(missing)
+
     def test_spark_submits_both_roles_with_admitted_cpu_requests(self):
         import clinic_task
         custom = MagicMock()

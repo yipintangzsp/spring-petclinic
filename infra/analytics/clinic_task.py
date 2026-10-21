@@ -299,6 +299,14 @@ def _kube():
     return client.CoreV1Api(), client.AppsV1Api(), client.CustomObjectsApi(), client.CoordinationV1Api()
 
 
+def disk_required_mib(capacity_mib):
+    if not isinstance(capacity_mib, (int, float)) or capacity_mib <= 0:
+        raise ValueError('Fresh filesystem capacity is required for disk admission')
+    # Preserve 15% filesystem headroom after an 8 GiB task allowance.
+    # The live node evicts at 5% and reclaims another 10%; do not admit near that boundary.
+    return capacity_mib * 0.15 + 8192
+
+
 def check_resources(baseline=None):
     core, _, _, coordination = _kube()
     measured = core.read_namespaced_config_map('platform-host-resources', 'data-infra')
@@ -311,8 +319,13 @@ def check_resources(baseline=None):
             'petclinic.devops.local/guard-baseline', '{}'))
     mac = value.get('mac') or {}
     reasons = []
-    if mac.get('diskFreeMiB', 0) < 8192 or value['diskFreeMiB'] < 8192:
-        reasons.append('host or VM disk below 8 GiB')
+    if mac.get('diskFreeMiB', 0) < 16384:
+        reasons.append('host disk below 16 GiB')
+    if mac.get('efiAllocatedMiB') is None or mac['efiAllocatedMiB'] > 128:
+        reasons.append('UTM EFI allocation missing or above 128 MiB; inspect saved memory snapshots')
+    required_disk = disk_required_mib(value.get('diskCapacityMiB'))
+    if value['diskFreeMiB'] < required_disk:
+        reasons.append(f'VM disk below 15 percent capacity plus 8 GiB task allowance ({required_disk:.0f} MiB)')
     if mac.get('freePercent', 0) < 10:
         reasons.append('Mac free memory below 10 percent')
     if mac.get('swapUsedMiB', 0) - baseline.get('macSwapMiB', mac.get('swapUsedMiB', 0)) > 512:
