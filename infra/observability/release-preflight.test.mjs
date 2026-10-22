@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
-import {assessPreflight, preflight, productionNodes, requireHarborRegistry} from './release-preflight.mjs';
+import {assessPreflight, preflight, productionNodes, requireHarborRegistry, requireFreshScannerMetadata} from './release-preflight.mjs';
 function snapshot(now = Date.now()) {
  return {hostSample: {at: now / 1000,mac: {diskFreeMiB: 30 * 1024,freePercent: 40,efiAllocatedMiB: 1.1}},storage: Object.fromEntries(productionNodes.map(name => [name, {fs: {time: new Date(now).toISOString(),capacityBytes: 250 * 1024 ** 3,availableBytes: 70 * 1024 ** 3},runtime: {imageFs: {time: new Date(now).toISOString(),capacityBytes: 250 * 1024 ** 3,availableBytes: 70 * 1024 ** 3}}}])), nodes: productionNodes.map(name => ({metadata: {name}, spec: {}, status: {conditions:
   ['Ready', 'MemoryPressure', 'DiskPressure', 'PIDPressure'].map(type => ({type, status: type === 'Ready' ? 'True' : 'False'}))}})),
@@ -116,4 +116,19 @@ test('Harbor requires both ready registry and controller ports before expensive 
  slices[0].endpoints[0].conditions.terminating = false;
  slices[0].ports.pop();
  assert.throws(() => requireHarborRegistry(slices), /http-controller/);
+});
+
+test('Both scanner databases must be fresh before costly build work', () => {
+ const now = Date.now();
+ const metadata = version => ({Version: version, UpdatedAt: new Date(now - 10000).toISOString(),
+  DownloadedAt: new Date(now - 5000).toISOString(), NextUpdate: new Date(now + 60000).toISOString()});
+ const good = {'db': metadata(2), 'java-db': metadata(1)};
+ assert.doesNotThrow(() => requireFreshScannerMetadata(good, now));
+ for (const kind of ['db', 'java-db']) {
+  const stale = structuredClone(good); stale[kind].NextUpdate = new Date(now).toISOString();
+  assert.throws(() => requireFreshScannerMetadata(stale, now), /REFRESH_REQUIRED/);
+  delete stale[kind]; assert.throws(() => requireFreshScannerMetadata(stale, now), /REFRESH_REQUIRED/);
+  stale[kind] = {...good[kind], Version: 99};
+  assert.throws(() => requireFreshScannerMetadata(stale, now), /REFRESH_REQUIRED/);
+ }
 });

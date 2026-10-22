@@ -57,7 +57,7 @@ export function assessPreflight(s, now = Date.now()) {
  const endpointPods = new Set(endpoints.map(e => e.targetRef.uid));
  if (ready.length < desired || available < desired || endpointPods.size < desired)
   blockers.push(`BUSINESS_CAPACITY: desired=${desired}, ready=${ready.length}, available=${available}, endpointPods=${endpointPods.size}`);
- return {ok: blockers.length === 0, blockers, nodes, hostSample: s.hostSample, targetNodes: requiredNodes,
+ return {ok: blockers.length === 0, blockers, nodes, hostSample: s.hostSample, scannerMetadata: s.scannerMetadata, targetNodes: requiredNodes,
   excludedNodes: s.nodes.filter(n => !requiredNodes.includes(n.metadata.name)).map(n => ({name:n.metadata.name,conditions:n.status.conditions,renewTime:s.leases.find(l=>l.metadata.name===n.metadata.name)?.spec.renewTime})), desired, available,
   pods: s.pods.map(p => ({name: p.metadata.name, uid: p.metadata.uid, node: p.spec.nodeName,
    deletionTimestamp: p.metadata.deletionTimestamp, ready: ready.includes(p)})),
@@ -73,6 +73,18 @@ export function requireHarborRegistry(slices) {
  }
 }
 
+export function requireFreshScannerMetadata(databases, now = Date.now()) {
+ for (const [kind, version] of [['db', 2], ['java-db', 1]]) {
+  const metadata = databases?.[kind];
+  const next = Date.parse(metadata?.NextUpdate), downloaded = Date.parse(metadata?.DownloadedAt);
+  const updated = Date.parse(metadata?.UpdatedAt);
+  if (metadata?.Version !== version || !Number.isFinite(next) || next <= now
+   || !Number.isFinite(downloaded) || downloaded <= 0 || downloaded > now + 300000
+   || !Number.isFinite(updated) || updated > now + 300000)
+   throw Error(`PREFLIGHT_SCANNER_DATABASE_REFRESH_REQUIRED: ${kind}`);
+ }
+}
+
 export async function preflight({output = 'target/platform/preflight.json', windowMs = 30000, pollMs = 5000, collect} = {}) {
  const samples = [], started = Date.now(); let failure;
  function kube(args, input) {
@@ -84,6 +96,15 @@ export async function preflight({output = 'target/platform/preflight.json', wind
  collect ??= () => {
   const nodes=kube(['get','nodes']).items;
   requireHarborRegistry(kube(['-n','harbor','get','endpointslices','-l','kubernetes.io/service-name=harbor-registry']).items);
+  const scannerMetadata = {};
+  for (const kind of ['db', 'java-db']) {
+   const result = spawnSync('kubectl', ['--request-timeout=5s', '-n', 'harbor', 'exec', 'harbor-trivy-0', '-c', 'trivy',
+    '--', 'cat', `/home/scanner/.cache/trivy/${kind}/metadata.json`], {encoding:'utf8',timeout:10000});
+   if (result.status !== 0) throw Error(`PREFLIGHT_SCANNER_DATABASE_UNAVAILABLE: ${kind}`);
+   scannerMetadata[kind] = JSON.parse(result.stdout);
+  }
+  requireFreshScannerMetadata(scannerMetadata);
+
   // kubectl create emits concatenated JSON for multi-document input. Parse only
   // the single Deployment document through kubectl's YAML decoder.
   const documents=fs.readFileSync('k8s/production/petclinic.yaml','utf8').split(/^---\s*$/m).filter(x=>/^kind:\s*Deployment\s*$/m.test(x));
@@ -102,7 +123,7 @@ export async function preflight({output = 'target/platform/preflight.json', wind
    storage[name] = {fs: node.fs, runtime: node.runtime};
   }
   const hostSample = targetNodes.includes('devops') ? JSON.parse(kube(['-n','data-infra','get','configmap','platform-host-resources']).data['sample.json']) : undefined;
-  return {nodes,targetNodes,storage,hostSample,
+  return {nodes,targetNodes,storage,hostSample,scannerMetadata,
    leases:kube(['-n','kube-node-lease','get','leases']).items,
    pods:kube(['-n','petclinic','get','pods','-l','app=petclinic']).items,
    slices:kube(['-n','petclinic','get','endpointslices','-l','kubernetes.io/service-name=petclinic']).items,
