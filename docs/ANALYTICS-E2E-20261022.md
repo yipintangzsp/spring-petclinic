@@ -41,8 +41,8 @@ Jenkins #165 SUCCESS，发布0.10.0-ci-165，源码ecbae16a42c26118630784d14a703
 
 四轮通过后启用Asia/Shanghai每周一02:30，catchup=False、max_active_runs=1。启用后Airflow执行最近一期scheduled__2026-10-18T18:30:00+00:00，于10月22日09:59:42–10:11:44 UTC成功；没有批量补跑更早历史期。第五个SparkApplication petclinic-airflow-9fb4e0496d33来自该轮。
 
-- 手动触发：http://airflow.devops.local ，打开petclinic_insights，Trigger DAG，沿用默认有界日期；Grid查看TI状态、attempt和日志。
-- 业务统计：http://petclinic.devops.local/insights ；看板：http://superset.devops.local/superset/dashboard/petclinic-analytics-20261011/ 。
+- 手动触发（HTTP入口）：airflow.devops.local ，打开petclinic_insights，Trigger DAG，沿用默认有界日期；Grid查看TI状态、attempt和日志。
+- 业务统计（HTTP入口）：petclinic.devops.local/insights ；看板（HTTP入口）：superset.devops.local/superset/dashboard/petclinic-analytics-20261011/ 。
 - Spark临时UI：`ssh -t -L4040:127.0.0.1:4040 zhang@192.168.1.58 "sudo kubectl -n default port-forward pod/<本轮driver-pod> 4040:4040"`，浏览器访问http://127.0.0.1:4040。Driver回收后失效，日志/Job ID/峰值保留在私有证据。Flink临时REST UI同样随计算回收关闭。
 - 失败先看失败Task日志及尝试次数，核对资源准入、Lease、Jenkins/Sonar恢复，修复原因后重触发同批次；保留失败Run，不删除锁或降低门槛。
 
