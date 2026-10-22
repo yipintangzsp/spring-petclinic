@@ -1,6 +1,8 @@
 # 全平台盘点 · 2026-10-12
 
-> 2026-10-14 当前状态以 [恢复与发布验收](RECOVERY-20261014.md) 为准：生产 #134；#135 受控停止；联合编排未完成（宿主磁盘不足、Java DB 更新网络受阻）。以下旧数字与验收属于历史记录。Spark Operator/Webhook 当前常驻保留。
+> 2026-10-23 核对：#165完整发布成功；Airflow四轮联合验收通过，周一02:30上海时间运行。证据、任务ID和操作见[最新验收](ANALYTICS-E2E-20261022.md)。后文较早状态按日期保留为历史。
+
+> 2026-10-22：主盘旧快照经单独授权删除，活动数据全量摘要前后一致，镜像回收约80.3GiB；Harbor控制器原生ARM64恢复、Loki/Grafana缓存重建及健康检查通过。最新完整发布与联合分析状态以 [本轮恢复记录](RECOVERY-20261021.md) 为准；以下较早数字均为历史阶段，不能代替现场。Spark Operator/Webhook常驻保留。
 
 已重新遍历全部命名空间工作负载、存储、Service/Ingress、Helm与Argo对象。功能状态依据真实输入/输出，版本与节点架构分列；镜像架构来自devops本地containerd OCI config，云节点从同名多架构索引选择的子镜像未逐一验证，不能由本地缓存架构推断；未缓存项明确记为未验证。Harbor portal和Trivy镜像为AMD64运行于ARM64节点，存在仿真开销。最终发布摘要另见交付文档。
 
@@ -29,7 +31,7 @@
 |harbor-jobservice / harbor|Helm harbor harbor-1.18.3; 127.0.0.1:30050/goharbor/harbor-jobservice:v2.14.3-arm64-native|arm64; 节点 devops; 本地缓存 arm64|1/1|[{"container": "jobservice", "resources": {}}]; emptyDir|harbor-jobservice:80|Redis精确修复、实际认证/镜像推送/双架构扫描/目标pull|运行且已验证；HARBOR-REPAIR-20261011.md；build-127及补丁发布归档；维持当前本职流程；证据有效范围见交付记录|
 |harbor-portal / harbor|Helm harbor harbor-1.18.3; goharbor/harbor-portal:v2.14.3|arm64; 节点 devops; 本地缓存 amd64|1/1|[{"container": "portal", "resources": {}}]; 无持久卷引用|harbor-portal:80; core.harbor.domain; harbor.devops.local|Redis精确修复、实际认证/镜像推送/双架构扫描/目标pull|运行且已验证；HARBOR-REPAIR-20261011.md；build-127及补丁发布归档；维持当前本职流程；证据有效范围见交付记录|
 |harbor-redis-arm64 / harbor|既有 Kubernetes 清单/运维部署; 127.0.0.1:30050/platform-upgrade/redis:8.8.1-alpine-arm64|arm64; 节点 devops; 本地缓存 arm64|1/1|[{"container": "redis", "resources": {}}]; PVC harbor-redis-arm64-data|harbor-redis-arm64:6379|Redis精确修复、实际认证/镜像推送/双架构扫描/目标pull|运行且已验证；HARBOR-REPAIR-20261011.md；build-127及补丁发布归档；维持当前本职流程；证据有效范围见交付记录|
-|harbor-registry / harbor|Helm harbor harbor-1.18.3; goharbor/registry-photon:2.14.2; goharbor/harbor-registryctl:2.14.2|arm64; 节点 devops; 本地缓存 arm64|1/1|[{"container": "registry", "resources": {}}, {"container": "registryctl", "resources": {}}]; PVC harbor-registry|harbor-registry:5000,8080|Redis精确修复、实际认证/镜像推送/双架构扫描/目标pull|运行且已验证；HARBOR-REPAIR-20261011.md；build-127及补丁发布归档；维持当前本职流程；证据有效范围见交付记录|
+|harbor-registry / harbor|既有Helm harbor-1.18.3；registry-photon:2.14.2缓存别名；registryctl使用仓库中固定摘要补丁|节点arm64；registry镜像amd64（已有仿真），registryctl原生arm64|1/1|registry requests50m/128Mi、limits500m/512Mi；controller requests50m/128Mi、limits500m/256Mi；原PVC保留|harbor-registry:5000,8080|隔离控制器health、真实双架构推送与扫描、#165完整发布|已接入发布流程；原生控制器及端点预检修复，见RECOVERY-20261021.md及infra/harbor/registryctl-arm64-patch.json；不代表所有Harbor组件零漏洞|
 |coredns / kube-system|既有 Kubernetes 清单/运维部署; rancher/mirrored-coredns-coredns:1.14.3|arm64; 节点 devops; 本地缓存 arm64|1/1|[{"container": "coredns", "resources": {"limits": {"memory": "170Mi"}, "requests": {"cpu": "100m", "memory": "70Mi"}}}]; 无持久卷引用|kube-dns:53,53,9153; kube-stack-kube-prometheus-coredns:9153|Runner容器实际解析PostgreSQL跨namespace服务名|运行且已验证；support-components-actual.json；维持当前本职流程；证据有效范围见交付记录|
 |local-path-provisioner / kube-system|既有 Kubernetes 清单/运维部署; rancher/local-path-provisioner:v0.0.36|arm64; 节点 devops; 本地缓存 arm64|1/1|[{"container": "local-path-provisioner", "resources": {}}]; 无持久卷引用|无独立入口|14个已有PVC，已绑定的数据卷支撑实际数据库/备份读写|运行且已验证；support-components-actual.json；业务/分析任务实际事务；维持当前本职流程；证据有效范围见交付记录|
 |metrics-server / kube-system|既有 Kubernetes 清单/运维部署; rancher/mirrored-metrics-server:v0.8.1|arm64; 节点 devops; 本地缓存 arm64|1/1|[{"container": "metrics-server", "resources": {"requests": {"cpu": "100m", "memory": "70Mi"}}}]; emptyDir|metrics-server:443|资源指标API实际返回3个节点数据|运行且已验证；support-components-actual.json；维持当前本职流程；证据有效范围见交付记录|
@@ -104,7 +106,9 @@ Portainer Kubernetes API真实版本2.39.5；宿主Docker另有Portainer2.39.0�
 
 详细requests/limits、init容器、PVC模板、hostPath、来源与镜像架构在同目录JSON；无资源限制的历史支持组件如实记录，不将它们伪装为已完成全平台容量治理。
 
-## 2026-10-14 当前关键组件分类
+## 2026-10-14 历史关键组件分类
+
+以下表格完整保留10月14日阶段记录，表内“最新”“本轮”及资源观测均指该历史时点，不代表10月16日或后续的当前状态；表中的#134、Trivy更新受阻、Alertmanager未部署及缺少Trino新查询证据已被下方后续记录更新。
 
 |组件|分类|当前副本/实际内存观测|限制|
 |---|---|---|---|
@@ -115,6 +119,14 @@ Portainer Kubernetes API真实版本2.39.5；宿主Docker另有Portainer2.39.0�
 |Flink|历史独立窗口/状态恢复验收通过；按需关闭|JM/TM0|本轮联合编排未完成|
 |Superset worker / Trino云worker|按需关闭|0|同步查询沿用本地模式|
 |Prometheus / Alertmanager|规则firing验收通过；接收/路由未完成|Prometheus561Mi；Alertmanager未部署|无外部通知送达证据|
+
+
+## 10月16日后续发布与功能证据（截至#147及reclaim验收目录）
+
+- 私有完整流水线#147已SUCCESS，源码04f86c9643d1a9aff1b236ef40bb590d002b628e、晋升c9d4ff6c8f9a170f2b71a5d236c49f76a75cc6ed；Petclinic双架构实际扫描Critical0/High0、Medium169/Low15，三副本、业务健康及Kafka发布通过。这只描述该发布镜像，不等于所有平台镜像无漏洞；后续发布以新的归档为准。
+- Trino/Superset已在第一轮完整正常DAG manual__orchestration_20261016T054902_1_none 中取得新业务证据：Trino Query ID20261016_055722_00000_nkm95，Superset chart3 HTTP200、年度923，与MySQL一致。第三轮也完成查询核对，但因cleanup恢复超时使整轮失败；不能把局部查询成功写成四轮联合验收完成。云worker仍按需关闭，注册/交换链路及阻塞根因未解决。
+- Alertmanager已部署并完成内部告警验收；10月16日测试ID20261016T060733，Prometheus三条规则health=ok/firing，monitoring、petclinic、ns-bigdata分别路由到platform-local、petclinic-local、analytics-local；条件恢复后规则inactive、测试活动告警为空，临时规则按UID清理。证据alertmanager-20261016；external_delivery_verified=false，无获授权外部渠道送达验收，既有K3s目标Down告警仍保留。
+- 联合分析仅接受正常成功与预期最终失败两项；第三轮业务通过但Sonar恢复等待超时，控制器已完成异常恢复，第四轮未执行、定时未开启。Airflow核心、Spark/Flink计算按需关闭，Spark Operator/Webhook按用户要求保留；完整记录见ANALYTICS-E2E-20261015.md。当前副本及资源须以新的现场采样为准，不能沿用上述历史内存值作准入。
 
 
 ## 2026-10-19 学习平台交付更新
@@ -130,3 +142,10 @@ Terraform1.7.0、Ansible Core2.16.3复用既有CLI，kubernetes provider2.38.0�
 ## 2026-10-20 发布实验完成
 
 Argo Rollouts v1.10.1现已完成独立功能验收：真实灰度分流、Prometheus晋升、HTTP500回退及重试、幂等、蓝绿预览/切换。控制器常驻，实验web按需且当前0；并未接管Petclinic Deployment。详见[验收记录](ROLLOUTS-LAB-20261020.md)。
+
+## 2026-10-22 已核实分类
+
+- 已接入发布流程：GitLab、Jenkins、Sonar、双架构构建、本地OCI/Harbor扫描、Argo CD、业务健康校验、Kafka发布事件，#165完整SUCCESS。
+- 已完成本轮独立恢复/功能检查：Prometheus查询及临时告警触发、Alertmanager三个内部路由与恢复；Loki原摘要缓存重建后ready；Grafana原摘要重建后数据库health=ok。外部告警送达未验证。
+- Spark Operator/Webhook维持常驻，Driver/Executor按任务创建回收。Airflow联合四轮已独立验收通过，核心常驻，周一02:30上海时间调度，计算按需回收。
+- 按需关闭或仍受条件限制：Superset worker、云端Trino worker以及其他非本轮必要重组件保持原策略；云端Trino阻塞原因没有宣称已解决。

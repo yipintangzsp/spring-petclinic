@@ -1,6 +1,8 @@
 # Petclinic 发布与按需分析操作
 
-> 2026-10-14 当前状态以 [恢复与发布验收](RECOVERY-20261014.md) 为准：生产 #134；#135 受控停止；联合编排未完成（宿主磁盘不足、Java DB 更新网络受阻）。以下旧数字与验收属于历史记录。Spark Operator/Webhook 当前常驻保留。
+> 2026-10-23 核对：#165完整发布成功；Airflow四轮联合验收通过，周一02:30上海时间运行。证据、任务ID和操作见[最新验收](ANALYTICS-E2E-20261022.md)。后文较早状态按日期保留为历史。
+
+> 2026-10-22：主盘旧快照经单独授权删除，活动数据全量摘要前后一致，镜像回收约80.3GiB；Harbor控制器原生ARM64恢复、Loki/Grafana缓存重建及健康检查通过。最新完整发布与联合分析状态以 [本轮恢复记录](RECOVERY-20261021.md) 为准；以下较早数字均为历史阶段，不能代替现场。Spark Operator/Webhook常驻保留。
 
 本轮内部源码仅推送私有 GitLab `root/petclinic-platform`。公开 GitHub 原仓库和 Cook 的审查后公开导出流程保留；内部配置、网络、数据库备份、原始日志不得直接公开同步。详细组件、资源和发布结果分别见本目录 inventory、RESOURCE-POLICY 和 UPGRADE 文件。
 
@@ -19,7 +21,7 @@
 
 ## 正常发布、回滚与恢复
 
-审查代码后在私有 GitLab main 普通推送，由实际 Push Webhook 触发 Jenkins。Runner 只执行有界源码审计，不重复部署；Jenkins 顺序执行资源准入、94项 Java/29项 Node 测试、Sonar、双架构镜像、Harbor扫描、私有GitOps晋升、Argo/Endpoint/业务健康验收及Kafka发布事件。独立分析计算不在业务发布的同步等待链。
+审查代码后在私有 GitLab main 普通推送，由实际 Push Webhook 触发 Jenkins。Runner 只执行有界源码审计，不重复部署；Jenkins 顺序执行资源准入、94项 Java/49项 Node 测试、Sonar、双架构镜像、Harbor扫描、私有GitOps晋升、Argo/Endpoint/业务健康验收及Kafka发布事件。独立分析计算不在业务发布的同步等待链。
 
 每次晋升提交同时使用 `[skip ci] [ci-skip]`，分别兼容 GitLab 和现有 Jenkins GitLab 插件；缺少第二个标记曾产生重复构建。本轮已实际阻止后续晋升再次构建。
 
@@ -29,11 +31,14 @@
 
 ## 分批分析
 
-从隔离工作树运行 Python 控制器，始终使用一份新的私有 evidence 子目录。控制器每次读取实时容量/健康，获取共享 `data-infra/platform-heavy` Lease，暂停 Jenkins 新调度并检查已有构建，启动一个有界任务；正常结束后确认计算退出，再按UID/holder释放Lease和自己设置的quiet模式。资源不足会拒绝准入。不要绕过Lease或将过期Lease直接删除。
+从隔离工作树运行 Python 控制器，始终使用一份新的私有 evidence 子目录。独立Spark/Flink控制器读取实时容量/健康并管理共享 `data-infra/platform-heavy` Lease及自己设置的Jenkins quiet状态。联合Airflow验收则由每轮DAG独占申请同一把Lease、确认Jenkins空闲并受控暂停新重任务；宿主run_airflow控制器不重复申请这把锁，避免等待自己。宿主控制器启动Airflow前的临时静默会在触发DAG前恢复。正常结束先确认本轮计算退出、Sonar原UID/副本恢复Ready，再恢复Jenkins原状态并释放Lease；恢复失败保留保护并保存证据。资源不足会拒绝准入，不要绕过Lease或将过期Lease直接删除。
+
+历史#147验收曾固定源码04f86c9643d1a9aff1b236ef40bb590d002b628e，其中Sonar恢复等待仅约200秒；该修订只供追溯，不应在本轮修复发布后重新用作触发目标。下方变量必须设置为本轮完整私有流水线成功发布且已审查的源码SHA；本轮已发布源码为ecbae16a42c26118630784d14a7031a460bb21cd（#165 SUCCESS）。
 
 ```bash
+: "${PETCLINIC_ANALYTICS_RELEASED_REVISION:?请先设置本轮完整流水线已发布源码SHA}"
 python3 infra/analytics/run_airflow.py \
-  --revision 77c676e32f0d81aa150ee18455ad99b724e6d44f \
+  --revision "$PETCLINIC_ANALYTICS_RELEASED_REVISION" \
   --evidence /Users/zhangsir/code/evidence/platform-20261011/airflow-new-run
 
 # 上一个控制器完全退出后，才执行下一个。
@@ -45,11 +50,11 @@ python3 infra/analytics/run_flink.py \
   --evidence /Users/zhangsir/code/evidence/platform-20261011/flink-new-run
 ```
 
-Airflow固定审查修订，DAG schedule=None，实际测试正常、重试、超时和重复执行。结果在隔离schema事务发布，访问超时3–5秒、有界5000行/366天；原事实按visit_id去重。当前源为append-only VisitController契约，不能将此增量方式冒称处理任意删除/更新的CDC。
+Airflow固定已发布且审查过的修订；DAG默认schedule=None，run_airflow控制器验证正常、最终失败、失败后重试和同批次重跑四轮，全部通过后才允许--keep-running开启低频定时。结果在隔离schema事务发布，访问超时3–5秒、有界5000行/366天；原事实按visit_id去重。当前源为append-only VisitController契约，不能将此增量方式冒称处理任意删除/更新的CDC。
 
-Spark读取只有visit_id/date的1200行快照，输出真实Job IDs、年度923和driver/executor内核峰值。Flink读取明确标记demo的快照重放，Kafka replay scope隔离；验证exactly-once最终窗口、消费位置、实际checkpoint/savepoint恢复。Flink SQL connector 5.0.0-2.2与2.3.0的本轮有界测试通过，仍需后续兼容性审查后才可扩为长期流任务。
+历史独立Spark快照为1200行、年度923，记录含真实Job IDs和driver/executor内核峰值；新批次必须重新生成快照与MySQL基准，不可把这两个历史数字写入判断条件。Flink读取明确标记demo的快照重放，Kafka replay scope隔离；验证本轮提交消息对应的已提交窗口、消费位置和实际checkpoint；旧独立验收还验证了savepoint恢复。每次尝试都会向既有Topic重新发送本批消息，不能宣称原始Topic跨尝试exactly-once；分析结果通过批次/主键与事务发布保证重复执行安全。Flink SQL connector 5.0.0-2.2与2.3.0的本轮有界测试通过，仍需后续兼容性审查后才可扩为长期流任务。
 
-当前 Airflow联合Spark/Flink完整准入需9442MiB，最近正常构建前可用内存8627–8832MiB，联合编排未准入。保留分批已验收方式，不创建长期重任务定时器。
+2026-10-16 当前采用启动前10240MiB内存准入、CPU计算2000m+250m储备；必要时仅在持有同一Lease且Jenkins空闲静默时暂停Sonar500m。结束或失败先回收本轮计算，恢复Sonar原UID/副本并等Ready，再恢复Jenkins。历史Spark结果读取失败尝试的清理和恢复已通过。后续reclaim目录第一轮完整正常DAG成功，第二轮完成预期最终失败验收；第三轮业务查询通过但cleanup因Sonar原200秒等待超时失败，宿主控制器finally已恢复Sonar/Jenkins并回收本轮资源。第四轮未执行，四轮联合验收未完成，定时尚未开启；不能将异常恢复成功代替该轮DAG成功。旧内存8627–8832MiB仅为10月12日历史测量，不能作当前拒绝依据。
 
 ## 存储、日志及关闭后的证据
 
@@ -57,9 +62,19 @@ Kafka数据现位于已有VM磁盘hostPath `/opt/petclinic-observability/state/k
 
 业务 Filebeat→ES 提供版本/Pod/时间/trace检索；Alloy→Loki用于Grafana运维关联，因此业务日志有重复采集与存储成本。Kafka Filebeat只采集Flink文件路径，Jenkins另有日志采集器；本轮有界消费者证明实际流入及消费，未宣称存在长期Kafka→ES消费者。正常关闭Flink后，该路径无新消息是预期状态。
 
-Filebeat数据流实际ILM为hot rollover 30d/50GB及delete min_age30d；旧filebeat-7.17.10索引未管理。Loki未配置自动retention，本轮未改变既有持久日志删除政策，后续清理需具体审查。分析告警只在期望副本大于0时评估计算不可用；快照7天时效仅info提示。告警规则已验证，通知送达未验证。
+Filebeat9.4.4已按单独授权删除两份旧日志索引并采用专用策略：每日或主分片1GB滚动、滚动后7天删除（文档时间约7–8天）；其他旧版本沿用原配置。历史策略为30d/50GB滚动及30d删除；旧filebeat-7.17.10索引未管理。Loki未配置自动retention，本轮未改变既有持久日志删除政策，后续清理需具体审查。分析告警只在期望副本大于0时评估计算不可用；快照7天时效仅info提示。2026-10-16复验三条真实Prometheus规则firing/health=ok，Alertmanager分别接收并按namespace路由至platform-local/petclinic-local/analytics-local，显式恢复后均inactive且Alertmanager不再有测试活动告警；临时规则按UID删除。证据alertmanager-20261016。外部通知送达未验证，未配置新外部接收器；既有K3s控制面目标Down噪声仍须单独治理，不能将测试通过写成所有告警清零。
 
 Harbor的135字节AOF修复、Kafka数据迁移、Runner helper和Hello路由修复脚本属于一次性迁移记录；已保留原件/UID/备份，不应在正常发布时重复运行。
+
+## Alertmanager 查看与告警验收
+
+Alertmanager沿用现有0.31.1原生ARM部署与1GiB PVC，常驻1个Pod、两个容器；不要再重复安装另一套。若本地未解析其主机名，可建立端口转发后在浏览器打开本机9093：
+
+```bash
+ssh -t -L9093:127.0.0.1:9093 192.168.1.58 'sudo kubectl -n monitoring port-forward svc/alertmanager-platform 9093:9093'
+```
+
+本轮内部测试ID为20261016T060733，保留了Prometheus规则健康/触发、Alertmanager指纹/路由/分组、规则恢复及UID清理记录。没有已获授权的外部通知渠道，本轮没有测试外发，故外部送达仍未完成。
 
 
 ## 2026-10-19 新增证书学习入口
@@ -75,3 +90,7 @@ Jenkins #154完整成功后，已通过配置预览、两工具幂等、非法�
 ## 2026-10-20 发布实验完成
 
 Jenkins #159及独立灰度/蓝绿完整验收已于2026-10-20 15:19通过。两个实验Rollout回到0、副本清理确认、自动同步恢复、共享Lease释放、Jenkins非quiet；Spark Operator/Webhook保留。重跑、AnalysisRun ID、失败证据和资源记录见[本轮发布实验](ROLLOUTS-LAB-20261020.md)。此处不改变既有Airflow四轮联合验收未完成结论。
+
+## 2026-10-22 新准入与扫描数据库维护
+
+发布前要求Mac新鲜采样可用空间>=16GiB，nodefs/imagefs保留15%容量加8GiB，Harbor注册表和控制器均须有ready端点。两类Trivy库的版本/NextUpdate/DownloadedAt必须有效，否则先维护库再构建。维护采用infra/harbor/warm_trivy_db.py，--database db或java-db，输入官方OCI清单与按其层摘要校验的归档，脚本沿用重任务Lease和Jenkins恢复保护，经本地OCI调用正常Trivy下载。不可跳过扫描、伪造元数据或使用未经官方摘要核对的镜像站标签。

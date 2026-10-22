@@ -1,7 +1,35 @@
 # 实测资源与按需运行策略 · 2026-10-11
 
-> 2026-10-15 当前：磁盘修复及重启验证已完成，宿主机释放约 69.3 GiB；Alertmanager 已完成内部触发、接收、路由和恢复验收，外部送达未验证。Spark 两次新业务运行已通过。联合 DAG 正在验收，未宣称完成。下方旧基线为历史记录，恢复证据见 [恢复记录](RECOVERY-20261014.md)。
+> 2026-10-23 核对：#165完整发布成功；Airflow四轮联合验收通过，周一02:30上海时间运行。证据、任务ID和操作见[最新验收](ANALYTICS-E2E-20261022.md)。后文较早状态按日期保留为历史。
 
+> 2026-10-22：主盘旧快照经单独授权删除，活动数据全量摘要前后一致，镜像回收约80.3GiB；Harbor控制器原生ARM64恢复、Loki/Grafana缓存重建及健康检查通过。最新完整发布与联合分析状态以 [本轮恢复记录](RECOVERY-20261021.md) 为准；以下较早数字均为历史阶段，不能代替现场。Spark Operator/Webhook常驻保留。
+
+
+## 2026-10-22 当前保护与预算
+
+VM保持原6CPU/约28GiB容量。当前根盘约60GiB空闲，主盘旧恢复点删除后Mac连续采样约90GiB以上空闲，VM可用约12GiB，实际以新鲜记录为准。任务不再沿用固定8GiB根盘门槛：nodefs/imagefs需15%容量加8GiB；Mac>=16GiB且内存余量>=10%，EFI占用有测量且<=128MiB。全程保留swap增长512MiB、内存/IO PSI、OOM/Eviction停止条件，不以关库或调整统计基线换取通过。
+
+Spark Driver与Executor各requests750m、limits1000m（引擎cores仍1），串行Flink；计算requests1500m外另留250m调度储备。Harbor新增明确requests合计100m。当前全恢复常驻CPU请求须重新采样，若联合任务预算不再满足6000m则拒绝，不根据上一次3905m估算硬启动；只在持同一Lease、Jenkins空闲时按既有UID/owner暂停Sonar500m，失败或完成先恢复Ready再释放保护。三次重启采样通过不代替Airflow五次启动前准入。
+
+## 当前等待机制与资源边界
+
+实际运行时Airflow3.3.0，cncf-kubernetes provider10.19.0，未安装apache-flink provider。Spark使用该已装provider的SparkKubernetesSensor，mode=reschedule，本轮真实记录up_for_reschedule；不虚构deferrable/triggerer能力。Flink在唯一KubernetesExecutor任务中进行有界API轮询/消息核对，保留768MiB请求与上限、100m请求/500m上限；已包含在完整预算，最多一项任务、12分钟超时、一次重试。Flink等待仍占用这一个任务Pod，不宣称等待完全无计算占用，也不为此开启新常驻provider服务。
+
+## 2026-10-16 宿主内存回收配置
+
+UTM客机容量维持28672MiB/6CPU，实际Linux约27994MiB；新增virtio-balloon-pci,free-page-reporting=on允许内核向宿主回报空闲页，不设置balloon target，不主动压低客机可用容量，不降低分析requests/limits或停止阈值。配置原件、变更比对、离线磁盘0错误、内核启用日志及冷启动预热采样均在私有balloon-recovery-20261016。实际运行仍需Mac/VM双重连续采样；原VM MemAvailable充足不能替代宿主换页检查。修改后的整轮效果尚在验收。
+
+## 2026-10-16 准入停止与重新评估
+
+保持Mac swap增长512MiB停止线。#147完整发布后，首次新验收在五次启动前采样阶段停止：swap2561.31→3198.38MiB（+637.07MiB），未开启Airflow或新计算。资源观察器保留触发时的真实样本，不能将其写成流程通过。随后七次约两分钟独立评估，swap3198.38→3182.38MiB且稳定，VM可用12090–12233MiB，全部健康/API通过且无新的资源故障，才用全新证据目录重新启动。此为前轮已经退出后的新准入，不是在运行中重设安全基线。
+
+## 2026-10-16 CPU 调度预算与构建服务互斥
+
+首次新联合运行实测暴露 CPU 调度缺口，不能由 MemAvailable 推断可运行：devops allocatable6000m；既有常驻 requests3580m；Airflow核心340m、控制Pod100m、单任务100m，加Spark Driver/Executor各1000m，共6120m，缺120m。计入250m调度储备后总需求6370m，缺370m。Executor真实FailedScheduling证据在私有 airflow-e2e-20261016；该轮已受控中断、计算清理、Jenkins恢复，不计联合通过。
+
+新策略不降低Driver/Executor或业务requests，不停止MySQL、Kafka、Trino、Superset等必要服务。DAG取得同一重任务Lease、确认Jenkins所有Job空闲且quiet后，若CPU不足，只暂停既有SonarQube单副本（释放500m request及至少1GiB内存请求）；保留PVC、原UID/副本数与本轮owner标记。受控Jenkins是现有扫描入口，最近发布已完成质量门，不宣称已取得Sonar全局CE管理员权限。暂停后总请求5620m，保留380m，其中250m为明确调度储备、额外130m余量。准入读取新鲜实际CPU requests，计入init峰值、原生sidecar及overhead；缺口即拒绝提交，不再让Executor无限Pending。
+
+结束/失败先清理本轮计算，再按UID与owner恢复Sonar到原副本并等待Ready，最后恢复Jenkins原quiet状态/释放Lease；控制器受控中断也执行同一恢复。恢复失败保留锁和静默状态以供排查，不能把未知资源批量删除。最终结果仅在业务核对与清理/构建服务恢复成功后转success，失败批次保留最近成功结果。CPU/恢复/提交顺序的新修订正在完整流水线和联合验收中，实际通过结果以本轮执行记录为准。
 
 ## 2026-10-15 联合编排分阶段预算
 
@@ -25,7 +53,7 @@ DAG 默认无定时；控制器完成正常、最终失败、重试、同批次�
 
 ## 基线与准入
 
-Mac M1 实测物理内存 32 GiB，保留现有 UTM 配置；不关机扩容。初始 devops 客机约 19.48 GiB，6 CPU，12 GiB swap；恢复工作时重新测得24.39 GiB（24976.76MiB），后续按这个实时环境验证。基线 11 次、约 324 秒，MemAvailable 最低 2.87 GiB，所有本地业务/数据库健康/API 检查成功；根盘 87%、剩余约 32 GiB。Mac、客机 CPU/内存/Swap/磁盘/inode/I/O/PSI、全部节点 allocatable/Pressure/Pod requests/limits 已单独取证。
+以下为历史分阶段测量，不能当作当前容量：Mac M1 实测物理内存 32 GiB。2026-10-15 现场 VM 总量27994MiB、6CPU，当前以重新采样为准。初始 devops 客机约 19.48 GiB，6 CPU，12 GiB swap；恢复工作时重新测得24.39 GiB（24976.76MiB），后续按这个实时环境验证。基线 11 次、约 324 秒，MemAvailable 最低 2.87 GiB，所有本地业务/数据库健康/API 检查成功；根盘 87%、剩余约 32 GiB。Mac、客机 CPU/内存/Swap/磁盘/inode/I/O/PSI、全部节点 allocatable/Pressure/Pod requests/limits 已单独取证。
 
 Superset worker 初始实测 856 MiB，Celery active/reserved 都为空、队列长度0；无 Argo Application 管理该 Deployment。备份其精确配置后，通过受控按需机制关闭，保留 Superset Web、内部数据库和 Redis。再次实测 MemAvailable 3880 MiB，使用后续实时指标准入，不能固定沿用这个数字。
 
@@ -40,10 +68,10 @@ Jenkins 每次构建先读取新鲜 node-exporter MemAvailable，要求至少 30
 |Petclinic|devops 常驻3副本；512Mi request/768Mi limit|滚动 maxSurge=0 / maxUnavailable=1，避免第四个 JVM|GitOps 回滚；保留共享 PostgreSQL和分析schema|
 |Cook|现有常驻单副本与 blackbox|保持现有小资源请求/限制|独立 Cook GitOps/Pages，代码不随本轮内部改动公开|
 |轻量统计|有界 Job，最多5000行、366天；数据库5秒 statement timeout|256Mi request/512Mi limit，100m/500m|Job完成即释放计算；结果留在隔离 schema，事实按主键去重、事务发布|
-|Airflow|沿用3.3.0/KubernetesExecutor；核心按需开启，DAG schedule=None|max_active_runs/tasks=1；完整核心/任务预算须实测后准入|不要求每次业务发布启动；状态留在既有元数据库/日志PVC|
+|Airflow|沿用3.3.0/KubernetesExecutor；核心当前1副本；源码默认无定时，验收后运行覆盖为周一02:30|max_active_runs/tasks=1；完整核心/任务预算须实测后准入|不要求每次业务发布启动；状态留在既有元数据库/日志PVC|
 |Superset Web/Redis|常驻看板|保留现有配置|同步查询继续；Celery后台worker仅有实际异步任务时启动|
 |Superset worker|受控按需|启动前重新核实Celery队列及资源预算|关闭前确认active/reserved/queue为空；`kubectl -n data-infra scale deploy/superset-worker --replicas=1`恢复；不删除数据|
-|Spark|既有Operator和原版本引擎，单次有界Job|driver/executor、Operator、堆外全部计入；本轮完整准入4096MiB+1250MiB储备；driver/executor各1Gi，controller1Gi/webhook256Mi|完成后正常删除本次计算对象/关闭Operator，保留配置和结果；无需Hadoop|
+|Spark|既有Operator和原版本引擎，单次有界Job|driver/executor、Operator、堆外全部计入；本轮完整准入4096MiB+1250MiB储备；driver/executor各1Gi，controller1Gi/webhook256Mi|完成后正常删除本次 Driver/Executor/SparkApplication；Operator 与 Webhook 各1副本常驻且纳入 GitOps，保留结果；无需Hadoop|
 |Flink|既有2.3.0普通Deployment，单个窗口任务|JobManager、TaskManager、堆/堆外/network/managed全部计入，JM1Gi、TM1.5Gi（一slot）、独立SQL客户端1Gi，完整准入4096MiB+1250MiB储备|验证checkpoint/savepoint恢复后正常停止，保留状态；不常驻|
 
 ## 节点边界
