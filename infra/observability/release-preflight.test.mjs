@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
-import {assessPreflight, preflight, productionNodes} from './release-preflight.mjs';
+import {assessPreflight, preflight, productionNodes, requireHarborRegistry} from './release-preflight.mjs';
 function snapshot(now = Date.now()) {
  return {hostSample: {at: now / 1000,mac: {diskFreeMiB: 30 * 1024,freePercent: 40,efiAllocatedMiB: 1.1}},storage: Object.fromEntries(productionNodes.map(name => [name, {fs: {time: new Date(now).toISOString(),capacityBytes: 250 * 1024 ** 3,availableBytes: 70 * 1024 ** 3},runtime: {imageFs: {time: new Date(now).toISOString(),capacityBytes: 250 * 1024 ** 3,availableBytes: 70 * 1024 ** 3}}}])), nodes: productionNodes.map(name => ({metadata: {name}, spec: {}, status: {conditions:
   ['Ready', 'MemoryPressure', 'DiskPressure', 'PIDPressure'].map(type => ({type, status: type === 'Ready' ? 'True' : 'False'}))}})),
@@ -102,4 +102,18 @@ test('missing and stale host evidence and low host disk block release', () => {
  assert.match(assessPreflight(s).blockers.join(';'), /MAC_DISK_BELOW_16_GIB/);
  delete s.hostSample;
  assert.equal(assessPreflight(s).ok,false);
+});
+
+test('Harbor requires both ready registry and controller ports before expensive build work', () => {
+ const slices = [{ports: [{name: 'http-registry'}, {name: 'http-controller'}],
+  endpoints: [{conditions: {ready: true, terminating: false}}]}];
+ assert.doesNotThrow(() => requireHarborRegistry(slices));
+ assert.throws(() => requireHarborRegistry([]), /HARBOR_REGISTRY_UNAVAILABLE/);
+ slices[0].endpoints[0].conditions.ready = false;
+ assert.throws(() => requireHarborRegistry(slices), /HARBOR_REGISTRY_UNAVAILABLE/);
+ slices[0].endpoints[0].conditions = {ready: true, terminating: true};
+ assert.throws(() => requireHarborRegistry(slices), /HARBOR_REGISTRY_UNAVAILABLE/);
+ slices[0].endpoints[0].conditions.terminating = false;
+ slices[0].ports.pop();
+ assert.throws(() => requireHarborRegistry(slices), /http-controller/);
 });

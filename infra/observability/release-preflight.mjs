@@ -64,6 +64,15 @@ export function assessPreflight(s, now = Date.now()) {
   readyEndpointPods: endpointPods.size};
 }
 
+export function requireHarborRegistry(slices) {
+ for (const name of ['http-registry', 'http-controller']) {
+  const healthy = slices.some(slice => slice.ports?.some(port => port.name === name)
+   && slice.endpoints?.some(endpoint => endpoint.conditions?.ready === true
+    && endpoint.conditions?.terminating !== true));
+  if (!healthy) throw Error(`PREFLIGHT_HARBOR_REGISTRY_UNAVAILABLE: ${name}`);
+ }
+}
+
 export async function preflight({output = 'target/platform/preflight.json', windowMs = 30000, pollMs = 5000, collect} = {}) {
  const samples = [], started = Date.now(); let failure;
  function kube(args, input) {
@@ -74,6 +83,7 @@ export async function preflight({output = 'target/platform/preflight.json', wind
  }
  collect ??= () => {
   const nodes=kube(['get','nodes']).items;
+  requireHarborRegistry(kube(['-n','harbor','get','endpointslices','-l','kubernetes.io/service-name=harbor-registry']).items);
   // kubectl create emits concatenated JSON for multi-document input. Parse only
   // the single Deployment document through kubectl's YAML decoder.
   const documents=fs.readFileSync('k8s/production/petclinic.yaml','utf8').split(/^---\s*$/m).filter(x=>/^kind:\s*Deployment\s*$/m.test(x));
