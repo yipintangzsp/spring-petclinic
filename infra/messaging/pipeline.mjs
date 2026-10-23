@@ -14,19 +14,22 @@ const codeHash=createHash('sha256').update(read('worker.py')).digest('hex');
 function artifact(name,data){fs.writeFileSync(`target/platform/messaging-${name}.json`,JSON.stringify(data,null,2));}
 const sleep=ms=>new Promise(r=>setTimeout(r,ms));
 if(mode==='test'){
- const args=['-fLsS','--retry','1','--connect-timeout','8','--max-time','60'];
- if(process.env.PACKAGE_HTTPS_PROXY)args.push('--proxy',process.env.PACKAGE_HTTPS_PROXY);
- const wheel=execFileSync('curl',[...args,lock.pika.url],{timeout:130000,maxBuffer:1048576});
- if(createHash('sha256').update(wheel).digest('hex')!==lock.pika.sha256)throw Error('Pika wheel digest mismatch');
- const dependency={apiVersion:'v1',kind:'ConfigMap',metadata:{name:'clinic-mq-pika-0779a7c1',namespace:'petclinic'},immutable:true,binaryData:{'pika.whl':wheel.toString('base64')}};
- const old=kube(['-n','petclinic','get','cm',dependency.metadata.name,'--ignore-not-found','-o','json']);
- if(old.trim()){
-  const bytes=Buffer.from(JSON.parse(old).binaryData['pika.whl'],'base64');
-  if(createHash('sha256').update(bytes).digest('hex')!==lock.pika.sha256)throw Error('Existing immutable runtime dependency differs');
- }else kube(['create','-f','-'],dependency);
+ const dependencyName='clinic-mq-pika-0779a7c1';
+ const old=kube(['-n','petclinic','get','cm',dependencyName,'--ignore-not-found','-o','json']);
+ const cacheHit=Boolean(old.trim());
+ let wheel;
+ if(cacheHit){
+  wheel=Buffer.from(JSON.parse(old).binaryData['pika.whl'],'base64');
+ }else{
+  const args=['-fLsS','--retry','1','--connect-timeout','8','--max-time','60'];
+  if(process.env.PACKAGE_HTTPS_PROXY)args.push('--proxy',process.env.PACKAGE_HTTPS_PROXY);
+  wheel=execFileSync('curl',[...args,lock.pika.url],{timeout:130000,maxBuffer:1048576});
+ }
+ if(createHash('sha256').update(wheel).digest('hex')!==lock.pika.sha256)throw Error('Pika dependency digest mismatch; preserve existing cache');
+ if(!cacheHit)kube(['create','-f','-'],{apiVersion:'v1',kind:'ConfigMap',metadata:{name:dependencyName,namespace:'petclinic'},immutable:true,binaryData:{'pika.whl':wheel.toString('base64')}});
  const name=`clinic-mq-unit-${build}`;
  kube(['create','-f','-'],{apiVersion:'v1',kind:'ConfigMap',metadata:{name,namespace:'petclinic'},data:{'worker.py':read('worker.py').toString(),'test_worker.py':read('test_worker.py').toString()}});
- const job={apiVersion:'batch/v1',kind:'Job',metadata:{name,namespace:'petclinic'},spec:{backoffLimit:0,activeDeadlineSeconds:120,ttlSecondsAfterFinished:86400,template:{spec:{restartPolicy:'Never',automountServiceAccountToken:false,nodeSelector:{'kubernetes.io/hostname':'devops'},securityContext:{runAsUser:50000,runAsNonRoot:true,seccompProfile:{type:'RuntimeDefault'}},containers:[{name:'tests',image:lock.runtime,imagePullPolicy:'IfNotPresent',command:['python','-m','unittest','discover','-s','/opt/clinic-mq','-p','test_*.py'],env:[{name:'PYTHONDONTWRITEBYTECODE',value:'1'}],resources:{requests:{cpu:'50m',memory:'64Mi'},limits:{cpu:'200m',memory:'128Mi'}},securityContext:{allowPrivilegeEscalation:false,capabilities:{drop:['ALL']}},volumeMounts:[{name:'code',mountPath:'/opt/clinic-mq',readOnly:true},{name:'pika',mountPath:'/opt/clinic-deps',readOnly:true}]}],volumes:[{name:'code',configMap:{name}},{name:'pika',configMap:{name:dependency.metadata.name}}]}}}};
+ const job={apiVersion:'batch/v1',kind:'Job',metadata:{name,namespace:'petclinic'},spec:{backoffLimit:0,activeDeadlineSeconds:120,ttlSecondsAfterFinished:86400,template:{spec:{restartPolicy:'Never',automountServiceAccountToken:false,nodeSelector:{'kubernetes.io/hostname':'devops'},securityContext:{runAsUser:50000,runAsNonRoot:true,seccompProfile:{type:'RuntimeDefault'}},containers:[{name:'tests',image:lock.runtime,imagePullPolicy:'IfNotPresent',command:['python','-m','unittest','discover','-s','/opt/clinic-mq','-p','test_*.py'],env:[{name:'PYTHONDONTWRITEBYTECODE',value:'1'}],resources:{requests:{cpu:'50m',memory:'64Mi'},limits:{cpu:'200m',memory:'128Mi'}},securityContext:{allowPrivilegeEscalation:false,capabilities:{drop:['ALL']}},volumeMounts:[{name:'code',mountPath:'/opt/clinic-mq',readOnly:true},{name:'pika',mountPath:'/opt/clinic-deps',readOnly:true}]}],volumes:[{name:'code',configMap:{name}},{name:'pika',configMap:{name:dependencyName}}]}}}};
  let created=false;
  try{
   kube(['create','-f','-'],job);created=true;let result;
@@ -36,7 +39,7 @@ if(mode==='test'){
    await sleep(4000);
   }
   const log=kube(['-n','petclinic','logs',`job/${name}`]);
-  artifact('python-tests',{build,worker_sha256:codeHash,status:result.status,log,pika_sha256:lock.pika.sha256});
+  artifact('python-tests',{build,worker_sha256:codeHash,status:result.status,log,pika_sha256:lock.pika.sha256,pika_cache_hit:cacheHit});
   if(result.status?.succeeded!==1)throw Error('Python message protocol tests failed');
  }finally{
   if(created)kube(['-n','petclinic','delete','job',name,'--wait=true','--timeout=40s'],undefined,50000);
