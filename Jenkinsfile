@@ -64,6 +64,7 @@ pipeline {
                     echo "===== MAVEN TEST ====="
                     node --test infra/observability/*.test.mjs
                     nice -n 10 ./mvnw -B clean test
+                    node infra/messaging/pipeline.mjs test
                 '''
             }
         }
@@ -198,6 +199,12 @@ pipeline {
             }
         }
 
+        stage('RabbitMQ Worker Deployment') {
+            steps {
+                sh 'node infra/messaging/pipeline.mjs deploy'
+            }
+        }
+
         stage('Git Promotion') {
             steps {
                 sh 'node infra/observability/release-preflight.mjs target/platform/preflight-before-promotion.json'
@@ -288,6 +295,12 @@ pipeline {
                         '''
                     }
                 }
+            }
+        }
+
+        stage('RabbitMQ Release Event') {
+            steps {
+                sh 'node infra/messaging/pipeline.mjs release'
             }
         }
 

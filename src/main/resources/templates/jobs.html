@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html xmlns:th="https://www.thymeleaf.org" th:replace="~{fragments/layout :: layout (~{::section},'jobs')}">
+<section class="clinic-workspace">
+  <header class="workspace-header"><p th:text="#{messaging.eyebrow}">RabbitMQ · task workspace</p><h1 th:text="#{messaging.title}">Tasks and follow-ups</h1><p th:text="#{messaging.intro}">New visits create manual follow-up tasks; reports run in the background. No SMS or email is sent.</p></header>
+  <div th:unless="${messaging.available}" class="alert alert-warning" th:text="#{messaging.unavailable}">Task storage is temporarily unavailable. Refresh later; business pages remain independent.</div>
+  <div th:if="${messaging.available}">
+    <section class="card p-3 mb-4"><h2 th:text="#{messaging.reports}">Background reports</h2><p th:text="#{messaging.reportHelp}">Query actual visits in a bounded date range. Reusing a request key creates one job; successful results remain in its history.</p>
+      <form method="post" th:action="@{/jobs/reports}" class="d-flex flex-wrap gap-3 align-items-end">
+        <input type="hidden" name="key" th:value="${requestKey}">
+        <label><span th:text="#{messaging.from}">Start date</span><input class="form-control" type="date" name="from" th:value="${reportFrom}" required></label>
+        <label><span th:text="#{messaging.to}">End date</span><input class="form-control" type="date" name="to" th:value="${reportTo}" required></label>
+        <button class="btn btn-primary" type="submit" th:text="#{messaging.submit}">Submit report</button><a class="btn btn-outline-secondary" th:href="@{/jobs}" th:text="#{messaging.refresh}">Refresh status</a>
+      </form>
+    </section>
+    <section class="card p-3 mb-4"><h2 th:text="#{messaging.followups}">Manual follow-ups</h2><p th:text="#{messaging.followupHelp}">Completion records a manual check and does not modify the visit.</p>
+      <div class="table-responsive"><table class="table"><thead><tr><th th:text="#{messaging.visit}">Visit</th><th th:text="#{messaging.petOwner}">Pet / owner</th><th th:text="#{messaging.state}">Status</th><th th:text="#{messaging.action}">Action</th></tr></thead><tbody>
+        <tr th:each="f:${messaging.followups}"><td th:text="${f.visit_id}"></td><td><a th:href="@{/owners/{owner}/pets/{pet}(owner=${f.owner_id},pet=${f.pet_id})}" th:text="${f.pet_id}+' / '+${f.owner_id}"></a></td><td th:text="${f.status == 'done' ? #messages.msg('messaging.done') : #messages.msg('messaging.todo')}"></td><td><form th:if="${f.status == 'todo'}" method="post" th:action="@{/jobs/followups/{id}/complete(id=${f.event_id})}"><button class="btn btn-sm btn-outline-primary" th:text="#{messaging.complete}">Mark complete</button></form></td></tr>
+      </tbody></table></div>
+    </section>
+    <section class="card p-3 mb-4"><h2 th:text="#{messaging.recent}">Recent jobs</h2><p th:text="#{messaging.statusHelp}">queued · running · retrying · success · failed (retry limit reached). Failed jobs do not replace other successful results.</p>
+      <div class="table-responsive"><table class="table"><thead><tr><th th:text="#{messaging.jobType}">Job / type</th><th th:text="#{messaging.state}">Status</th><th th:text="#{messaging.attempts}">Attempts</th><th th:text="#{messaging.updated}">Updated (UTC)</th><th th:text="#{messaging.result}">Result / error</th><th th:text="#{messaging.action}">Action</th></tr></thead><tbody>
+        <tr th:each="j:${messaging.jobs}"><td><code th:text="${j.id}"></code><br><span th:text="${j.kind}"></span></td><td th:text="${j.status}"></td><td th:text="${j.attempts}"></td><td th:text="${j.updatedAt}"></td><td><pre class="text-wrap" th:text="${j.result}"></pre><span th:text="${j.error}"></span></td><td><form th:if="${j.status == 'failed' and j.deliveryVersion == j.confirmedVersion}" method="post" th:action="@{/jobs/{id}/retry(id=${j.id})}"><button class="btn btn-sm btn-outline-primary" th:text="#{messaging.retry}">Retry</button></form></td></tr>
+      </tbody></table></div>
+    </section>
+    <section class="card p-3"><h2 th:text="#{messaging.releases}">Release audit</h2><div class="table-responsive"><table class="table"><thead><tr><th th:text="#{messaging.release}">Release</th><th th:text="#{messaging.build}">Build</th><th th:text="#{messaging.source}">Source</th><th th:text="#{messaging.received}">Received</th></tr></thead><tbody><tr th:each="r:${messaging.releases}"><td th:text="${r.release}"></td><td th:text="${r.build}"></td><td><code th:text="${r.source_commit}"></code></td><td th:text="${r.received_at}"></td></tr></tbody></table></div></section>
+  </div>
+</section>
+</html>

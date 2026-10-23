@@ -1,0 +1,270 @@
+{
+  "apiVersion": "v1",
+  "kind": "List",
+  "items": [
+    {
+      "apiVersion": "apps/v1",
+      "kind": "Deployment",
+      "metadata": {
+        "name": "clinic-message-worker",
+        "namespace": "petclinic"
+      },
+      "spec": {
+        "replicas": 1,
+        "strategy": {
+          "type": "Recreate"
+        },
+        "revisionHistoryLimit": 3,
+        "selector": {
+          "matchLabels": {
+            "app": "clinic-message-worker"
+          }
+        },
+        "template": {
+          "metadata": {
+            "labels": {
+              "app": "clinic-message-worker"
+            }
+          },
+          "spec": {
+            "automountServiceAccountToken": false,
+            "nodeSelector": {
+              "kubernetes.io/hostname": "devops"
+            },
+            "terminationGracePeriodSeconds": 30,
+            "securityContext": {
+              "runAsNonRoot": true,
+              "runAsUser": 50000,
+              "seccompProfile": {
+                "type": "RuntimeDefault"
+              }
+            },
+            "containers": [
+              {
+                "name": "worker",
+                "image": "192.168.1.58:30050/platform-upgrade/airflow@sha256:1803ed9d010ddcdc6e09e0052c179a72a99d8f3e2f909ff073d5e88f54fbdce8",
+                "imagePullPolicy": "IfNotPresent",
+                "command": [
+                  "python",
+                  "/opt/clinic-mq/worker.py",
+                  "daemon"
+                ],
+                "env": [
+                  {
+                    "name": "POSTGRES_URL",
+                    "valueFrom": {
+                      "configMapKeyRef": {
+                        "name": "petclinic-config",
+                        "key": "POSTGRES_URL"
+                      }
+                    }
+                  },
+                  {
+                    "name": "POSTGRES_USER",
+                    "valueFrom": {
+                      "secretKeyRef": {
+                        "name": "petclinic-db",
+                        "key": "POSTGRES_USER"
+                      }
+                    }
+                  },
+                  {
+                    "name": "POSTGRES_PASS",
+                    "valueFrom": {
+                      "secretKeyRef": {
+                        "name": "petclinic-db",
+                        "key": "POSTGRES_PASS"
+                      }
+                    }
+                  },
+                  {
+                    "name": "RABBITMQ_HOST",
+                    "value": "rabbitmq.data-infra.svc.cluster.local"
+                  },
+                  {
+                    "name": "RABBITMQ_USER",
+                    "valueFrom": {
+                      "secretKeyRef": {
+                        "name": "rabbitmq-client",
+                        "key": "username"
+                      }
+                    }
+                  },
+                  {
+                    "name": "RABBITMQ_PASS",
+                    "valueFrom": {
+                      "secretKeyRef": {
+                        "name": "rabbitmq-client",
+                        "key": "password"
+                      }
+                    }
+                  },
+                  {
+                    "name": "PYTHONDONTWRITEBYTECODE",
+                    "value": "1"
+                  }
+                ],
+                "resources": {
+                  "requests": {
+                    "cpu": "50m",
+                    "memory": "128Mi"
+                  },
+                  "limits": {
+                    "cpu": "500m",
+                    "memory": "256Mi"
+                  }
+                },
+                "securityContext": {
+                  "allowPrivilegeEscalation": false,
+                  "capabilities": {
+                    "drop": [
+                      "ALL"
+                    ]
+                  }
+                },
+                "volumeMounts": [
+                  {
+                    "name": "code",
+                    "mountPath": "/opt/clinic-mq",
+                    "readOnly": true
+                  },
+                  {
+                    "name": "pika",
+                    "mountPath": "/opt/clinic-deps",
+                    "readOnly": true
+                  }
+                ],
+                "readinessProbe": {
+                  "exec": {
+                    "command": [
+                      "python",
+                      "-c",
+                      "import os,time; p='/tmp/clinic-mq-ready'; assert os.path.exists(p) and time.time()-os.stat(p).st_mtime<30"
+                    ]
+                  },
+                  "initialDelaySeconds": 5,
+                  "periodSeconds": 15,
+                  "timeoutSeconds": 4,
+                  "failureThreshold": 3
+                },
+                "livenessProbe": {
+                  "exec": {
+                    "command": [
+                      "/bin/sh",
+                      "-c",
+                      "kill -0 1"
+                    ]
+                  },
+                  "periodSeconds": 30,
+                  "timeoutSeconds": 3,
+                  "failureThreshold": 3
+                }
+              }
+            ],
+            "volumes": [
+              {
+                "name": "code",
+                "configMap": {
+                  "name": "clinic-message-code"
+                }
+              },
+              {
+                "name": "pika",
+                "configMap": {
+                  "name": "clinic-mq-pika-0779a7c1"
+                }
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "apiVersion": "networking.k8s.io/v1",
+      "kind": "NetworkPolicy",
+      "metadata": {
+        "name": "clinic-message-worker",
+        "namespace": "petclinic"
+      },
+      "spec": {
+        "podSelector": {
+          "matchLabels": {
+            "app": "clinic-message-worker"
+          }
+        },
+        "policyTypes": [
+          "Ingress",
+          "Egress"
+        ],
+        "ingress": [],
+        "egress": [
+          {
+            "to": [
+              {
+                "namespaceSelector": {
+                  "matchLabels": {
+                    "kubernetes.io/metadata.name": "kube-system"
+                  }
+                },
+                "podSelector": {
+                  "matchLabels": {
+                    "k8s-app": "kube-dns"
+                  }
+                }
+              }
+            ],
+            "ports": [
+              {
+                "protocol": "UDP",
+                "port": 53
+              },
+              {
+                "protocol": "TCP",
+                "port": 53
+              }
+            ]
+          },
+          {
+            "to": [
+              {
+                "namespaceSelector": {
+                  "matchLabels": {
+                    "kubernetes.io/metadata.name": "ns-data"
+                  }
+                }
+              }
+            ],
+            "ports": [
+              {
+                "protocol": "TCP",
+                "port": 5432
+              }
+            ]
+          },
+          {
+            "to": [
+              {
+                "namespaceSelector": {
+                  "matchLabels": {
+                    "kubernetes.io/metadata.name": "data-infra"
+                  }
+                },
+                "podSelector": {
+                  "matchLabels": {
+                    "app.kubernetes.io/name": "rabbitmq"
+                  }
+                }
+              }
+            ],
+            "ports": [
+              {
+                "protocol": "TCP",
+                "port": 5672
+              }
+            ]
+          }
+        ]
+      }
+    }
+  ]
+}
