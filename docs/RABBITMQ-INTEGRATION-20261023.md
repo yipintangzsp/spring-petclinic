@@ -2,7 +2,9 @@
 
 ## 已完成的流程
 
-私有 GitLab 源码 `a27bb5f` 经 Jenkins #176 的测试、Sonar 质量门、双架构构建、Harbor 扫描、GitOps、Argo 同步、业务健康及 RabbitMQ/Kafka 发布事件阶段完成发布。新应用 `0.10.0-ci-176`；Worker 的 Argo Application `platform-messaging` 固定受检源码，不跟随未验证的 main。此前 #173/#174 在质量门被拦截；#175发布后端到端验收发现ORM先插入、后关联宠物导致漏发，#176修复并加入事务回滚回归验证。6条新增规范问题已修正，未放宽门槛。
+最新完整发布为 **Jenkins #183 SUCCESS / 0.10.0-ci-183**，源码`c17bedb835f644cbd856bd0ec64ef92862d772a2`，GitOps晋升`c59132ac90d080ef7bed186596e9eb874895b3ec`。测试、Sonar质量门、双架构构建、Harbor扫描、Worker部署、Argo同步、三个业务副本健康和RabbitMQ/Kafka发布事件全部通过。platform-messaging与bootstrap配置均固定该受检源码。下方#175/#176/#181失败修复过程按时间保留，最新交付证据见文末183复验。
+
+此前#173/#174被质量门拦截，修正6条规范问题后#175发布；真实验收发现ORM先插入后关联宠物造成漏发，#176补上关联更新触发与事务回滚验证。后续修复ECS日志对象、生成源码缓存的GitOps同步、换网后DNS和宿主采样，并在#183完整发布；未降低质量、资源或身份校验要求。
 
 |真实场景|输入、处理与结果|
 |---|---|
@@ -101,14 +103,31 @@ ssh -o HostName=192.168.64.11 -o HostKeyAlias=192.168.1.58 \
 再次联合运行应至少在停止线上额外预留2GiB写入空间（仍需连续监测完整Flink峰值）；若当前约46521MiB可用，则至少缺约1195MiB，发布后须重测。可行减负方向是迁移已核验的旧备份到外盘、证明旧临时卷无业务引用后另行授权清理，或扩容根盘；不要盲删匿名卷、日志、PVC或调低保护线。
 
 
-## 2026-10-24 最新现场结论（应用晋升尚未完成）
+## 2026-10-24 磁盘拦截阶段记录（#181）
 
 最新Jenkins #181源码`bfd2d8c8f04646d4e15528c570ed247a4e17ba9f`：104项Java、56项Node、5项Python通过；Sonar质量门OK（新增覆盖92%、新增重复0%、新增问题0）；双架构构建、Harbor扫描、Worker部署成功。两架构均0 Critical/0 High、53 Medium/4 Low、fixable=0；仅适用于PetClinic应用镜像，不代表平台所有镜像无漏洞。固定SHA的Pika缓存命中，未依赖外部重复下载。
 
 **#181整轮FAILURE**，原因是Git Promotion前磁盘不足：47610605568字节可用，门槛47886194893字节，差约263MiB；因此没有晋升应用、没有本轮RabbitMQ/Kafka发布事件。应用仍为最后成功版本`0.10.0-ci-176`，Worker代码已由#181前置部署至固定源码bfd2d8c，完成本节业务复验后bootstrap配置与现场固定源码保持一致。不能将Worker部署成功写成#181完整发布成功。
 
-定向清理JAR构建缓存和source.local又回收640.57MiB（APT安装缓存保留）。后续自动清理这些构建缓存的Jenkinsfile变更及只包含实际Docker COPY输入的.dockerignore已准备，尚待完整CI验证。未自动删除旧镜像：删除旧本地副本的动作被自动审批因先前“保留镜像”的范围限制拒绝，单独授权仍待处理；拟执行范围仅构建号≤172、无容器引用且原Registry摘要逐一校验一致的本地副本，保留175之后、基础镜像、Registry/Harbor原件及所有业务卷。
+定向清理JAR构建缓存和source.local又回收640.57MiB（APT安装缓存保留）。后续自动清理这些构建缓存的Jenkinsfile变更及只包含实际Docker COPY输入的.dockerignore已准备，尚待完整CI验证。未自动删除旧镜像：删除旧本地副本的动作被自动审批因先前“保留镜像”的范围限制拒绝，后续已取得单独授权并完成清理（见下文）；拟执行范围仅构建号≤172、无容器引用且原Registry摘要逐一校验一致的本地副本，保留175之后、基础镜像、Registry/Harbor原件及所有业务卷。
 
 当前真实Worker复验批次`mq-20261024T020439`（Web176+Worker181），正常报表`report-91e13709-de5d-30cd-b2c8-5d11c196070e`结果925，与SQL一致；2条重复AMQP消息之后jobs=1、results=1、attempts=1；自动重试第2次成功；`check-39d3e48c-c610-4696-a08c-30c1531d744c`第3次失败、实际死信持久化，修复本轮注入原因后人工第4次成功；阻断后恢复任务`report-d08ada13-e7ff-328c-9478-042b22b91dbe`第1次成功。复用已验收visit11检查回访完成幂等，未新增业务行，原始1202/年度925/event_id重复0。Jenkins原状态恢复、Lease释放、临时计算资源0，原网络策略和GitOps自动同步已恢复。证据位于`e2e-ecs/acceptance.json`。
 
 Elasticsearch已实际检索到该正常报表的publisher_confirmed、running、success及duplicate_or_obsolete_acked日志，共5份文档，service.name=clinic-message-worker，证据`observability/elasticsearch-ecs-acceptance.json`。之前错误service字符串被拒的历史日志没有宣称已补写。Loki实际Worker流、RabbitMQ确认/ACK计数和3个Web副本业务Gauge均已查到。Worker内核峰值25153536字节、上限268435456字节；采样VM可用内存9600.5MiB、根盘可用45918.2MiB、CPU requests 4495m/6000m，Mac内存可用比例40%。这些为现场采样，非保证常数。
+
+
+## 最终发布及清理验收 · 2026-10-24
+
+- #182被新手册中两个现有HTTP地址的NoHttp检查拦截；只为该文档的petclinic/rabbitmq.devops.local加入精确例外，本地validate及#183原检查均通过，未改写为不存在的HTTPS地址。
+- #183：104项Java、56项Node、5项Python通过；Sonar质量门OK；两架构应用镜像仍各53 Medium/4 Low、0 Critical/High、fixable=0，并非零漏洞。镜像OCI索引摘要`sha256:a102d6d46acacdf73f8bff6995da34ac7f0de12c614bdbf1dc07f07e395dd102`。
+- 经用户单独授权，清理26个构建号≤172的旧Docker本地镜像副本，执行前无容器引用、原Registry内容与本地摘要逐一一致，执行后逐一确认原件仍可获取，175及之后和基础镜像保留；实际净回收1936.35MiB。没有删除Registry/Harbor原件、业务卷、数据库或备份。证据`cache-reclaim/approved-images/`。
+- 构建结束时在已有CI资源锁内仅回收source.local及JAR COPY构建缓存；#183归档`build-context-prune.log`报告202.6MB、`build-jar-prune.log`报告899.3MB缓存记录。BuildKit统计可能含共享记录，不能与实际磁盘净回收相加。APT安装缓存、带标签镜像、容器和卷均不在自动清理范围；旧镜像清理仅本次授权范围，不自动扩大为未来清理。
+- `.dockerignore`仅允许实际Docker COPY所需的固定安全包与应用JAR，避免将其他工作区资料加入构建上下文。
+
+最终业务验收批次`mq-20261024T032811`，Web/Worker均为183受检版本。正常任务`report-29709a19-51b0-31a0-a717-20a46a1abf9a`结果925，与SQL一致；重复2条AMQP消息后仍只有1个job/1个result/1次处理，参数冲突409。自动重试任务`check-322e7ad1-ce95-4ca5-9224-87cebd9dfd51`第2次成功；`check-6c3bfb5e-dfd1-4960-a0e7-55689153ef22`第3次失败且持久死信已实查，修复本轮注入原因后第4次成功；断连恢复任务`report-fa2bd98d-1c5e-3d7e-a760-744b9598999b`第1次成功。复用visit11核对回访幂等，不新增业务行，仍为1202条来源/925条年度/event_id重复0。证据`e2e-release183/acceptance.json`及状态、失败/成功页面、日志、原网络策略和恢复记录。
+
+RabbitMQ发布事件`release-183-c17bedb835f644cbd856bd0ec64ef92862d772a2`已实际消费，audit=recorded、attempts=1；Kafka原Topic `petclinic-release-v09` 投递成功，证据分别为`ci-183/messaging-release.json`、`kafka.json`。不把Kafka生产确认写成新的分析消费验收。Elasticsearch实际检索到正常任务的5条日志，包括确认、运行、成功、重复ACK，service.name对象映射正确；见`observability/elasticsearch-release183-acceptance.json`。Prometheus、Loki及队列记录在`observability/`。
+
+最终12个Argo应用Synced/Healthy；platform-messaging固定受检SHA，Jenkins恢复原状态，platform-heavy Lease释放，临时计算资源0，Spark Operator/Webhook和Broker保留。Worker实测4m/18Mi，内核峰值25800704字节，requests50m/128Mi、limits500m/256Mi。最终采样VM可用内存9732.7MiB、根盘可用47731.7MiB（46.61GiB）、CPU requests4495m/6000m；Mac可用内存比例43%、磁盘可用60.58GiB。常驻与按需组件政策保持原配置：Worker/Broker及已要求的Operator常驻；Spark Driver/Executor、Flink计算及验证Job按需。最终资源与Application证据`finalize-release183/`。
+
+**仍未完成的独立遗留**：前述新Airflow联合批次在Flink阶段因磁盘安全停止，清理后本轮没有再次执行整条DAG；新增磁盘余量不能代替Trino/Superset业务复验。最近成功分析结果保留，RabbitMQ实时PG报表925不意味着Superset历史分析已更新。云端Trino阻塞根因及AMD64完全冷构建限制也未宣称修复。

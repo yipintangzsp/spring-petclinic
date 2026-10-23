@@ -48,3 +48,5 @@ The Application template is pinned to a validated source revision. Generated his
 References: https://www.rabbitmq.com/client-libraries/publisher-confirms ; https://www.rabbitmq.com/docs/consumers ; https://www.postgresql.org/docs/current/sql-createtrigger.html
 
 Accepted deployment and real business/failure/idempotency evidence: [2026-10-23 integration](../../docs/RABBITMQ-INTEGRATION-20261023.md).
+
+The accepted current release is CI183. CI prunes only source.local and application-JAR COPY build-cache records after the dual-architecture push, under its existing heavy-workload lease; apt-install cache, tagged images, containers and volumes are retained. The separate approved cleanup of old local image copies was a one-time operation, not a general retention policy.
