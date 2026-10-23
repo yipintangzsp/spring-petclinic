@@ -149,6 +149,14 @@ pipeline {
                       -t "${FULL_IMAGE}" \
                       --push \
                       .
+
+                    # Only rebuildable context/JAR build-cache records, under this CI lease.
+                    # Keep apt-install cache, tagged images, containers and volumes.
+                    docker buildx prune --force --filter type=source.local \
+                      > target/platform/build-context-prune.log
+                    docker buildx prune --force \
+                      --filter 'description~=COPY.target/spring-petclinic-4[.]0[.]0-SNAPSHOT[.]jar.app[.]jar' \
+                      > target/platform/build-jar-prune.log
                 '''
             }
         }
@@ -321,7 +329,7 @@ pipeline {
                 sh 'node infra/observability/heavy-lease.mjs release'
             }
             junit testResults: 'target/surefire-reports/*.xml', allowEmptyResults: true
-            archiveArtifacts artifacts: '.infra-preflight-before-build.json,.sonar-runtime-maintenance.json,target/platform/*.json', allowEmptyArchive: true
+            archiveArtifacts artifacts: '.infra-preflight-before-build.json,.sonar-runtime-maintenance.json,target/platform/*.json,target/platform/build-*-prune.log', allowEmptyArchive: true
         }
         success {
             echo "CI/CD SUCCESS: ${K8S_IMAGE}"
