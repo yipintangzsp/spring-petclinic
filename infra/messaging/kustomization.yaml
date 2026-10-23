@@ -7,3 +7,8 @@ configMapGenerator:
     namespace: petclinic
     files:
       - worker.py
+# Retained, Git-reconstructable code history must not block application sync.
+# Only generated ConfigMaps receive this annotation; Deployment/NetworkPolicy stay strict.
+generatorOptions:
+  annotations:
+    argocd.argoproj.io/compare-options: IgnoreExtraneous
