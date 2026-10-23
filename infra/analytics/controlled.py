@@ -3,6 +3,7 @@ import datetime as dt
 import fcntl
 import json
 import inspect
+import os
 from clinic_task import cpu_request_milli, pod_cpu_request_milli, disk_required_mib
 import re
 import shlex
@@ -18,8 +19,13 @@ RESERVE_MIB = 1250
 
 
 def remote(command, body=None, timeout=30):
-    result = subprocess.run(['ssh', '-o', 'BatchMode=yes', '-o', 'ConnectTimeout=8', HOST,
-                             command], input=body, text=True, capture_output=True, timeout=timeout)
+    options = []
+    address = os.environ.get('PETCLINIC_SSH_ADDRESS')
+    if address:
+        options = ['-o', f'HostName={address}', '-o', f'HostKeyAlias={HOST}']
+    result = subprocess.run(['ssh', '-o', 'BatchMode=yes', '-o', 'ConnectTimeout=8',
+                             *options, HOST, command], input=body, text=True,
+                            capture_output=True, timeout=timeout)
     if result.returncode:
         raise RuntimeError(result.stderr[-1000:])
     return result.stdout
