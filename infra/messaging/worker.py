@@ -23,7 +23,7 @@ STOP = False
 
 def log(action, **fields):
     print(json.dumps({'at': dt.datetime.now(dt.timezone.utc).isoformat(),
-                      'service': 'clinic-message-worker', 'action': action, **fields}), flush=True)
+                      'service': {'name': 'clinic-message-worker'}, 'action': action, **fields}), flush=True)
 
 
 def parse_window(payload):

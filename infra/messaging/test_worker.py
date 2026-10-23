@@ -1,4 +1,6 @@
 import datetime
+import io
+from contextlib import redirect_stdout
 import json
 import unittest
 from unittest.mock import Mock
@@ -6,6 +8,15 @@ import worker
 
 
 class ProtocolTests(unittest.TestCase):
+    def test_business_logs_preserve_the_existing_ecs_service_object_mapping(self):
+        output=io.StringIO()
+        with redirect_stdout(output):worker.log('success',event_id='visit-42',attempt=1)
+        event=json.loads(output.getvalue())
+        self.assertEqual(event['service'],{'name':'clinic-message-worker'})
+        self.assertEqual(event['event_id'],'visit-42')
+        self.assertEqual(event['action'],'success')
+        self.assertIsNotNone(datetime.datetime.fromisoformat(event['at']).tzinfo)
+
     def test_inclusive_window_is_bounded_and_reversed_rejected(self):
         self.assertEqual(worker.parse_window({'from':'2026-01-01','to':'2026-12-31'}),
                          (datetime.date(2026,1,1),datetime.date(2026,12,31)))
