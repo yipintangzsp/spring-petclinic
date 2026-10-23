@@ -4,7 +4,7 @@ This connects real use cases, rather than publishing artificial health events fo
 
 |Service path|Integration|
 |---|---|
-|PetClinic visits / PostgreSQL|An AFTER INSERT trigger writes a versioned outbox record in the visit transaction; no historical visits are replayed|
+|PetClinic visits / PostgreSQL|An INSERT / pet-link UPDATE trigger writes a versioned outbox record in the visit transaction; no historical visits are replayed|
 |RabbitMQ|Durable direct exchanges, three work queues and one dead-letter queue in vhost petclinic; persistent messages, mandatory routing, publisher confirms and manual ACK|
 |clinic-message-worker|One serial consumer creates a manual follow-up task, calculates a bounded statistics report, or records a release audit|
 |PetClinic Web|`/jobs` submits reports and displays queued/running/retrying/success/failed, attempts, UTC update time, results, follow-ups and release audit|
@@ -17,7 +17,7 @@ A follow-up is an internal manual checklist. No SMS, email or external notificat
 
 ## Source and runtime
 
-`schema.sql` is additive and versioned with the worker. PostgreSQL 18 supports the explicitly named trigger; the migration runs in one transaction with lock/statement timeouts. The existing application DB role receives SELECT/INSERT/UPDATE only on the new schema, not DDL. Public business data is not rewritten. The trigger executes under a fixed search_path and records only IDs, not owner names, phone numbers or descriptions.
+`schema.sql` is additive and versioned with the worker. PostgreSQL 18 supports the explicitly named trigger; the migration runs in one transaction with lock/statement timeouts. The existing application DB role receives SELECT/INSERT/UPDATE only on the new schema, not DDL. Public business data is not rewritten. Hibernate links pet_id after INSERT; the link UPDATE creates the outbox in that same transaction, once only. The trigger executes under a fixed search_path and records only IDs, not owner names, phone numbers or descriptions.
 
 The worker reuses the previously validated pinned ARM64 Airflow Python runtime as a generic Python process; it does not start another Airflow installation. psycopg2 is already present. The pure Python Pika wheel is fetched over HTTPS and checked against `dependencies.json`, then stored as a named immutable ConfigMap. No startup pip install or floating image tag is used. Code comes from Kustomize's hashed ConfigMap generator, causing a controlled Recreate rollout on source changes.
 

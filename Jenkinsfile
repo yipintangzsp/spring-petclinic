@@ -99,6 +99,7 @@ pipeline {
                                   -Dsonar.qualitygate.wait=true \
                                   -Dsonar.qualitygate.timeout=300 > target/sonar-scanner.log 2>&1; then
                                     cat target/sonar-scanner.log
+                                    node infra/messaging/sonar-diagnostics.mjs
                                     exit 0
                                 fi
                                 cat target/sonar-scanner.log

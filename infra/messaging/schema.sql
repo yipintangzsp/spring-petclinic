@@ -49,6 +49,8 @@ BEGIN
  RETURN NEW;
 END;
 $$;
+-- Hibernate links pet_id after INSERT; capture the link UPDATE in the same transaction.
+-- Idempotency prevents duplicate jobs when the link is written again.
 -- Recreate only this explicitly named trigger; existing triggers are untouched.
-CREATE OR REPLACE TRIGGER petclinic_visit_followup_outbox AFTER INSERT ON public.visits
-FOR EACH ROW EXECUTE FUNCTION clinic_messaging.visit_followup_outbox();
+CREATE OR REPLACE TRIGGER petclinic_visit_followup_outbox AFTER INSERT OR UPDATE OF pet_id ON public.visits
+FOR EACH ROW WHEN (NEW.pet_id IS NOT NULL) EXECUTE FUNCTION clinic_messaging.visit_followup_outbox();

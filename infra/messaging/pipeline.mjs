@@ -55,6 +55,24 @@ if(mode==='test'){
   fs.writeFileSync('target/platform/messaging-schema-before.sql',previous,{mode:0o600});
  }
  kube(['-n','ns-data','exec','-i','deploy/postgresql','--','psql','-U','postgres','-d','petclinic','--single-transaction','-v','ON_ERROR_STOP=1'],sql,50000);
+ const triggerCheck=kube(['-n','ns-data','exec','-i','deploy/postgresql','--','psql','-X','-U','postgres','-d','petclinic','-v','ON_ERROR_STOP=1'],read('trigger-test.sql').toString(),30000);
+ artifact('trigger-check',{passed:true,transaction_rolled_back:true,log:triggerCheck});
+ // Add only this worker's independent Alloy chain; keep existing log routing byte-for-byte.
+ const collector=get(['-n','monitoring','get','cm','alloy']);
+ const oldLogs=collector.data['config.alloy'], fragment=read('worker-logs.alloy').toString();
+ const marker=/\/\/ BEGIN clinic-message-worker owned log source v1[\s\S]*?\/\/ END clinic-message-worker owned log source v1\n?/g;
+ if([...oldLogs.matchAll(marker)].length>1)throw Error('Ambiguous worker log source; preserve collector');
+ const nextLogs=oldLogs.match(marker)?oldLogs.replace(marker,fragment):oldLogs+'\n'+fragment;
+ if(!oldLogs.includes('discovery.kubernetes "pods"')||!oldLogs.includes('loki.write "default"'))throw Error('Existing collector contract changed');
+ const validation=kube(['-n','monitoring','exec','-i','ds/alloy','-c','alloy','--','/bin/sh','-c',`set -eu; f=$(mktemp /tmp/clinic-mq-config.XXXXXX); trap 'rm -f "$f"' EXIT; cat >"$f"; /bin/alloy validate "$f"`],nextLogs,30000);
+ if(nextLogs!==oldLogs){
+  fs.writeFileSync('target/platform/alloy-before-messaging.txt',oldLogs,{mode:0o600});
+  kube(['-n','monitoring','patch','cm','alloy','--type=json','-p',JSON.stringify([
+   {op:'test',path:'/metadata/resourceVersion',value:collector.metadata.resourceVersion},
+   {op:'replace',path:'/data/config.alloy',value:nextLogs}
+  ])]);
+ }
+ artifact('log-source',{changed:nextLogs!==oldLogs,source_sha256:createHash('sha256').update(fragment).digest('hex'),preserved_existing_chains:true,validation});
  const revision=fs.readFileSync('.git-sha','utf8').trim();if(!/^[a-f0-9]{40}$/.test(revision))throw Error('Validated source SHA missing');
  const app=JSON.parse(fs.readFileSync('infra/devops-lab/applications/platform-messaging.json','utf8'));app.spec.source.targetRevision=revision;
  kube(['apply','-f','-'],app);
