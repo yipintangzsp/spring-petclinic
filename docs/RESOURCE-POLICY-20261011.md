@@ -1,5 +1,7 @@
 # 实测资源与按需运行策略 · 2026-10-11
 
+> 2026-10-23 RabbitMQ：data-infra 单副本持久化工作队列，独立 AMQP 确认/重投/死信、Pod 替换持久化、管理认证及 Prometheus 采集通过；尚未接入 PetClinic 业务。增加 requests100m/256Mi、limits500m/768Mi；入口、账号读取、证据、GitOps关闭方式与限制见 [RabbitMQ 验收及操作](RABBITMQ-20261023.md)。
+
 > 2026-10-23 后续：#167完整发布成功，三个K3s组件采集target及实际指标通过，三条发现缺失Critical告警已在Prometheus/Alertmanager恢复；历史失败Job及容灾容量告警保留。详见[监控修正记录](MONITORING-K3S-20261023.md)。
 
 > 2026-10-23 核对：#165完整发布成功；Airflow四轮联合验收通过，周一02:30上海时间运行。证据、任务ID和操作见[最新验收](ANALYTICS-E2E-20261022.md)。后文较早状态按日期保留为历史。
