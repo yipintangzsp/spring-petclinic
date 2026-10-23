@@ -1,5 +1,8 @@
 # 实测资源与按需运行策略 · 2026-10-11
 
+> 2026-10-24最新：换网后的DNS及宿主采样已恢复；Worker181+Web176真实业务/重复/重试/死信/断连及Elasticsearch日志验收通过。#181完整发布因磁盘门槛失败，应用仍176；新联合分析复验Flink阶段因磁盘停止，未发布新Trino/Superset结果。详见[最新结论](RABBITMQ-INTEGRATION-20261023.md)。
+> 2026-10-23 RabbitMQ业务接入：#176完整发布通过；就诊回访、后台报表、发布审计均完成真实消费、去重、失败重试/死信、断连恢复与Jenkins恢复验收。新增Worker requests50m/128Mi、limits500m/256Mi；Kafka及既有分析链保留。当前状态和操作见 [业务验收](RABBITMQ-INTEGRATION-20261023.md)。下文较早“尚未接入”为历史阶段。
+
 > 2026-10-23 RabbitMQ：data-infra 单副本持久化工作队列，独立 AMQP 确认/重投/死信、Pod 替换持久化、管理认证及 Prometheus 采集通过；尚未接入 PetClinic 业务。增加 requests100m/256Mi、limits500m/768Mi；入口、账号读取、证据、GitOps关闭方式与限制见 [RabbitMQ 验收及操作](RABBITMQ-20261023.md)。
 
 > 2026-10-23 后续：#167完整发布成功，三个K3s组件采集target及实际指标通过，三条发现缺失Critical告警已在Prometheus/Alertmanager恢复；历史失败Job及容灾容量告警保留。详见[监控修正记录](MONITORING-K3S-20261023.md)。

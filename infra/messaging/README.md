@@ -11,7 +11,7 @@ This connects real use cases, rather than publishing artificial health events fo
 |Jenkins / GitLab / Harbor / Argo|Existing source/quality/image checks remain; an additive migration and immutable GitOps worker promotion precede application promotion. After successful rollout a real release event must be consumed and audited|
 |Kafka / Airflow / Spark / Flink / Trino / Superset|Existing streams and analysis are preserved; reports here are small bounded PostgreSQL aggregates, not a replacement for the heavy analysis DAG|
 |Prometheus / Grafana|Existing RabbitMQ native scraping plus application storage-availability, job-status and pending-outbox gauges|
-|Filebeat / Elasticsearch / Loki|Worker structured stdout uses service, event_id, kind, attempt and action; existing collection paths remain|
+|Filebeat / Elasticsearch / Loki|Worker structured stdout uses ECS-compatible service.name, event_id, kind, attempt and action; existing collection paths remain|
 
 A follow-up is an internal manual checklist. No SMS, email or external notifications are sent.
 
@@ -19,9 +19,9 @@ A follow-up is an internal manual checklist. No SMS, email or external notificat
 
 `schema.sql` is additive and versioned with the worker. PostgreSQL 18 supports the explicitly named trigger; the migration runs in one transaction with lock/statement timeouts. The existing application DB role receives SELECT/INSERT/UPDATE only on the new schema, not DDL. Public business data is not rewritten. Hibernate links pet_id after INSERT; the link UPDATE creates the outbox in that same transaction, once only. The trigger executes under a fixed search_path and records only IDs, not owner names, phone numbers or descriptions.
 
-The worker reuses the previously validated pinned ARM64 Airflow Python runtime as a generic Python process; it does not start another Airflow installation. psycopg2 is already present. The pure Python Pika wheel is fetched over HTTPS and checked against `dependencies.json`, then stored as a named immutable ConfigMap. No startup pip install or floating image tag is used. Code comes from Kustomize's hashed ConfigMap generator, causing a controlled Recreate rollout on source changes.
+The worker reuses the previously validated pinned ARM64 Airflow Python runtime as a generic Python process; it does not start another Airflow installation. psycopg2 is already present. The pure Python Pika wheel is checked against `dependencies.json` and stored as a named immutable ConfigMap. CI reuses that exact SHA-verified cache; only an absent cache is fetched over HTTPS. A cache with a mismatched digest is rejected. No startup pip install or floating image tag is used. Code comes from Kustomize's hashed ConfigMap generator, causing a controlled Recreate rollout on source changes.
 
-Requests 50m/128Mi and limits 500m/256Mi, one replica, prefetch=1 and one serial callback. No Kubernetes API token is mounted. Egress is restricted to DNS, the existing PostgreSQL namespace/port and RabbitMQ. The separate `petclinic-app` RabbitMQ user has no management tags and permissions only on `clinic.*`; its random password lives in `petclinic/rabbitmq-client`. The requested admin management login remains unchanged.
+Requests 50m/128Mi and limits 500m/256Mi, one replica, prefetch=1 per consumer (three queues, at most three unacked deliveries) and one serial callback. No Kubernetes API token is mounted. Egress is restricted to DNS, the existing PostgreSQL namespace/port and RabbitMQ. The separate `petclinic-app` RabbitMQ user has no management tags and permissions only on `clinic.*`; its random password lives in `petclinic/rabbitmq-client`. The requested admin management login remains unchanged.
 
 ## Delivery and recovery
 
@@ -43,6 +43,8 @@ A worker/broker outage leaves jobs pending durably. Reconnect uses bounded socke
 
 The stages reuse Jenkins' platform-heavy Lease and never acquire a nested lock or quiet Jenkins themselves. Failed migrations roll back transactionally; failed worker deployment does not delete tables/queues or erase earlier results. Existing stages and failure evidence remain visible. Database backup, rollback and the final end-to-end acceptance evidence must be reviewed before declaring rollout complete.
 
-The Application template requires a validated source revision and is not applied directly with its placeholder. `pipeline.mjs deploy` supplies the checked `.git-sha`; future upgrades follow the same gate. Do not point it at unvalidated main. Broker topology is declared by the authorized worker; existing topics/queues outside clinic.* are untouched.
+The Application template is pinned to a validated source revision. Generated historical code ConfigMaps alone use IgnoreExtraneous so retained source caches do not keep the Application OutOfSync; the active Deployment, NetworkPolicy and code digest remain checked. `pipeline.mjs deploy` supplies the checked `.git-sha`; future upgrades follow the same gate. Do not point it at unvalidated main. Broker topology is declared by the authorized worker; existing topics/queues outside clinic.* are untouched.
 
 References: https://www.rabbitmq.com/client-libraries/publisher-confirms ; https://www.rabbitmq.com/docs/consumers ; https://www.postgresql.org/docs/current/sql-createtrigger.html
+
+Accepted deployment and real business/failure/idempotency evidence: [2026-10-23 integration](../../docs/RABBITMQ-INTEGRATION-20261023.md).
