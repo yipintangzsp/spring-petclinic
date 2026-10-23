@@ -89,6 +89,7 @@ pipeline {
                         sh '''
                             set -eu
                             node infra/observability/publish-artifacts.mjs sonar-ready
+                            node infra/messaging/sonar-diagnostics.mjs || true
                             for attempt in 1 2 3; do
                                 if nice -n 10 ./mvnw -B org.sonarsource.scanner.maven:sonar-maven-plugin:5.8.0.7211:sonar \
                                   -Dsonar.projectKey=petclinic \
@@ -101,6 +102,7 @@ pipeline {
                                     exit 0
                                 fi
                                 cat target/sonar-scanner.log
+                                node infra/messaging/sonar-diagnostics.mjs || true
                                 if grep -Eiq 'Not authorized|Unauthorized|Forbidden|QUALITY GATE STATUS: FAILED|HTTP[^0-9]*(401|403)' target/sonar-scanner.log; then
                                     exit 1
                                 fi
