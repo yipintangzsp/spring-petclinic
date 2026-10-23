@@ -19,6 +19,8 @@
     <suppress files="docs[\\/]RECOVERY-20261014\.md$" checks="NoHttp" message=".*http://(petclinic|superset|jenkins)\.devops\.local/.*"/>
     <!-- These documented existing LAN listeners have no TLS endpoint. -->
     <suppress files="docs[\\/]OPERATIONS-20261011\.md$" checks="NoHttp" message=".*http://([a-z-]+\.devops\.local|core\.harbor\.domain)/.*"/>
+    <!-- This runbook documents only the two existing private HTTP listeners. -->
+    <suppress files="docs[\\/]RABBITMQ-INTEGRATION-20261023\.md$" checks="NoHttp" message=".*http://(petclinic|rabbitmq)\.devops\.local(/.*)?'.*"/>
     <!-- Probe the existing LAN ingress through SSH; this listener has no TLS. -->
     <suppress files="infra[\\/]analytics[\\/]controlled\.py$" checks="NoHttp" message=".*http://192\.168\.1\.58.*"/>
     <!-- These two internal endpoints currently have no TLS listener; preserve their real URLs. -->
