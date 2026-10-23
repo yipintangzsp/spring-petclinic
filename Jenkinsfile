@@ -10,6 +10,7 @@ pipeline {
         MAVEN_OPTS = '-Xmx256m -XX:ActiveProcessorCount=1'
         DOCKER_REGISTRY = '127.0.0.1:13050'
         REGISTRY_API = '10.0.0.3:30050'
+        PACKAGE_HTTPS_PROXY = 'http://192.168.1.238:10808'
 
         IMAGE_REPO = 'petclinic/petclinic'
         IMAGE_TAG = "0.10.0-ci-${BUILD_NUMBER}"

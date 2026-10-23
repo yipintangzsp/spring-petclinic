@@ -1,3 +1,5 @@
+import {requireFreshScannerMetadata, ensureScannerDatabases, scannerRefreshIO} from './scanner-db-refresh.mjs';
+export {requireFreshScannerMetadata} from './scanner-db-refresh.mjs';
 import fs from 'node:fs';
 import path from 'node:path';
 import {spawnSync} from 'node:child_process';
@@ -73,20 +75,10 @@ export function requireHarborRegistry(slices) {
  }
 }
 
-export function requireFreshScannerMetadata(databases, now = Date.now()) {
- for (const [kind, version] of [['db', 2], ['java-db', 1]]) {
-  const metadata = databases?.[kind];
-  const next = Date.parse(metadata?.NextUpdate), downloaded = Date.parse(metadata?.DownloadedAt);
-  const updated = Date.parse(metadata?.UpdatedAt);
-  if (metadata?.Version !== version || !Number.isFinite(next) || next <= now
-   || !Number.isFinite(downloaded) || downloaded <= 0 || downloaded > now + 300000
-   || !Number.isFinite(updated) || updated > now + 300000)
-   throw Error(`PREFLIGHT_SCANNER_DATABASE_REFRESH_REQUIRED: ${kind}`);
- }
-}
 
 export async function preflight({output = 'target/platform/preflight.json', windowMs = 30000, pollMs = 5000, collect} = {}) {
- const samples = [], started = Date.now(); let failure;
+ const samples = [], started = Date.now(), maintenance = []; let failure, stableSince = started;
+ const productionCollection = !collect;
  function kube(args, input) {
   const r = spawnSync('kubectl', ['--request-timeout=5s', ...args, '-o', 'json'],
    {input, encoding: 'utf8', timeout: 6000, maxBuffer: 4 * 1024 * 1024});
@@ -103,7 +95,6 @@ export async function preflight({output = 'target/platform/preflight.json', wind
    if (result.status !== 0) throw Error(`PREFLIGHT_SCANNER_DATABASE_UNAVAILABLE: ${kind}`);
    scannerMetadata[kind] = JSON.parse(result.stdout);
   }
-  requireFreshScannerMetadata(scannerMetadata);
 
   // kubectl create emits concatenated JSON for multi-document input. Parse only
   // the single Deployment document through kubectl's YAML decoder.
@@ -132,23 +123,31 @@ export async function preflight({output = 'target/platform/preflight.json', wind
 
  try {
   while (true) {
-   const assessment = assessPreflight(await collect());
+   let snapshot = await collect(), assessment = assessPreflight(snapshot);
+   if (productionCollection && assessment.ok) {
+    const io = scannerRefreshIO(); io.record = action => maintenance.push(action);
+    const refreshed = await ensureScannerDatabases(snapshot.scannerMetadata, io);
+    if (refreshed.actions.length) {
+     snapshot = await collect(); assessment = assessPreflight(snapshot); stableSince = Date.now();
+    }
+    requireFreshScannerMetadata(snapshot.scannerMetadata);
+   }
    samples.push({time: new Date().toISOString(), assessment});
    console.log(`RELEASE_PREFLIGHT ${JSON.stringify(assessment)}`);
    if (!assessment.ok) throw Error(`INFRASTRUCTURE_NOT_READY: ${assessment.blockers.join('; ')}`);
-   if (Date.now() - started >= windowMs) {
+   if (Date.now() - stableSince >= windowMs) {
     if (windowMs > 0 && samples.at(-1).assessment.nodes.map(n=>n.name).some(name =>
      samples.at(-1).assessment.nodes.find(n => n.name === name).renewTime === samples[0].assessment.nodes.find(n => n.name === name).renewTime))
      throw Error('LEASE_NOT_PROGRESSING: fresh timestamp alone does not prove connectivity');
     return assessment;
    }
-   await new Promise(resolve => setTimeout(resolve, Math.min(pollMs, windowMs - (Date.now() - started))));
+   await new Promise(resolve => setTimeout(resolve, Math.min(pollMs, windowMs - (Date.now() - stableSince))));
   }
  } catch (error) { failure = error.message; throw error; }
  finally {
   // Only selected resource metadata/status; no environments, credentials or business data.
   fs.mkdirSync(path.dirname(output), {recursive: true});
-  fs.writeFileSync(output, JSON.stringify({started: new Date(started).toISOString(), finished: new Date().toISOString(), failure, samples}, null, 2));
+  fs.writeFileSync(output, JSON.stringify({started: new Date(started).toISOString(), finished: new Date().toISOString(), failure, scannerMaintenance: maintenance, samples}, null, 2));
  }
 }
 if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href)

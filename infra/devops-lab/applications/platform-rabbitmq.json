@@ -1,0 +1,33 @@
+{
+  "apiVersion": "argoproj.io/v1alpha1",
+  "kind": "Application",
+  "metadata": {
+    "name": "platform-rabbitmq",
+    "labels": {
+      "petclinic.devops.local/owner": "platform-rabbitmq"
+    },
+    "namespace": "argocd"
+  },
+  "spec": {
+    "project": "default",
+    "source": {
+      "repoURL": "http://gitlab-service.ns-devops.svc.cluster.local/root/petclinic-platform.git",
+      "targetRevision": "main",
+      "path": "infra/data/rabbitmq"
+    },
+    "destination": {
+      "server": "https://kubernetes.default.svc",
+      "namespace": "data-infra"
+    },
+    "syncPolicy": {
+      "automated": {
+        "prune": false,
+        "selfHeal": true
+      },
+      "syncOptions": [
+        "CreateNamespace=true",
+        "ServerSideApply=true"
+      ]
+    }
+  }
+}

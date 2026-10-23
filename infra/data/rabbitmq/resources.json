@@ -1,0 +1,521 @@
+{
+  "apiVersion": "v1",
+  "kind": "List",
+  "items": [
+    {
+      "apiVersion": "v1",
+      "kind": "ConfigMap",
+      "metadata": {
+        "name": "rabbitmq-config",
+        "namespace": "data-infra",
+        "labels": {
+          "app.kubernetes.io/name": "rabbitmq"
+        }
+      },
+      "data": {
+        "rabbitmq.conf": "listeners.tcp.default = 5672\nmanagement.tcp.port = 15672\nprometheus.tcp.port = 15692\nvm_memory_high_watermark.absolute = 384MiB\ndisk_free_limit.absolute = 1GB\ncollect_statistics_interval = 10000\nlog.console = true\nlog.console.level = info\nchannel_max = 256\nmax_message_size = 1048576\nconsumer_timeout = 1800000\n",
+        "enabled_plugins": "[rabbitmq_management,rabbitmq_prometheus].\n"
+      }
+    },
+    {
+      "apiVersion": "v1",
+      "kind": "Service",
+      "metadata": {
+        "name": "rabbitmq-headless",
+        "namespace": "data-infra",
+        "labels": {
+          "app.kubernetes.io/name": "rabbitmq"
+        }
+      },
+      "spec": {
+        "clusterIP": "None",
+        "publishNotReadyAddresses": true,
+        "selector": {
+          "app.kubernetes.io/name": "rabbitmq"
+        },
+        "ports": [
+          {
+            "name": "amqp",
+            "port": 5672
+          }
+        ]
+      }
+    },
+    {
+      "apiVersion": "v1",
+      "kind": "Service",
+      "metadata": {
+        "name": "rabbitmq",
+        "namespace": "data-infra",
+        "labels": {
+          "app.kubernetes.io/name": "rabbitmq"
+        }
+      },
+      "spec": {
+        "selector": {
+          "app.kubernetes.io/name": "rabbitmq"
+        },
+        "ports": [
+          {
+            "name": "amqp",
+            "port": 5672,
+            "targetPort": "amqp"
+          },
+          {
+            "name": "management",
+            "port": 15672,
+            "targetPort": "management"
+          },
+          {
+            "name": "metrics",
+            "port": 15692,
+            "targetPort": "metrics"
+          }
+        ]
+      }
+    },
+    {
+      "apiVersion": "apps/v1",
+      "kind": "StatefulSet",
+      "metadata": {
+        "name": "rabbitmq",
+        "namespace": "data-infra",
+        "labels": {
+          "app.kubernetes.io/name": "rabbitmq"
+        }
+      },
+      "spec": {
+        "serviceName": "rabbitmq-headless",
+        "replicas": 1,
+        "revisionHistoryLimit": 3,
+        "selector": {
+          "matchLabels": {
+            "app.kubernetes.io/name": "rabbitmq"
+          }
+        },
+        "persistentVolumeClaimRetentionPolicy": {
+          "whenDeleted": "Retain",
+          "whenScaled": "Retain"
+        },
+        "template": {
+          "metadata": {
+            "labels": {
+              "app.kubernetes.io/name": "rabbitmq"
+            }
+          },
+          "spec": {
+            "automountServiceAccountToken": false,
+            "nodeSelector": {
+              "kubernetes.io/hostname": "devops"
+            },
+            "securityContext": {
+              "runAsNonRoot": true,
+              "runAsUser": 999,
+              "runAsGroup": 999,
+              "fsGroup": 999,
+              "fsGroupChangePolicy": "OnRootMismatch",
+              "seccompProfile": {
+                "type": "RuntimeDefault"
+              }
+            },
+            "terminationGracePeriodSeconds": 120,
+            "containers": [
+              {
+                "name": "rabbitmq",
+                "image": "127.0.0.1:30050/platform-upgrade/rabbitmq@sha256:49ab000ee56c96f3872b77b48d658254248fa5e591b2fc7266a48b1a6bccd751",
+                "imagePullPolicy": "IfNotPresent",
+                "ports": [
+                  {
+                    "name": "amqp",
+                    "containerPort": 5672
+                  },
+                  {
+                    "name": "management",
+                    "containerPort": 15672
+                  },
+                  {
+                    "name": "metrics",
+                    "containerPort": 15692
+                  }
+                ],
+                "env": [
+                  {
+                    "name": "RABBITMQ_DEFAULT_USER",
+                    "valueFrom": {
+                      "secretKeyRef": {
+                        "name": "rabbitmq-auth",
+                        "key": "username"
+                      }
+                    }
+                  },
+                  {
+                    "name": "RABBITMQ_DEFAULT_PASS",
+                    "valueFrom": {
+                      "secretKeyRef": {
+                        "name": "rabbitmq-auth",
+                        "key": "password"
+                      }
+                    }
+                  },
+                  {
+                    "name": "RABBITMQ_DEFAULT_VHOST",
+                    "value": "petclinic"
+                  },
+                  {
+                    "name": "RABBITMQ_USE_LONGNAME",
+                    "value": "true"
+                  },
+                  {
+                    "name": "RABBITMQ_NODENAME",
+                    "value": "rabbit@rabbitmq-0.rabbitmq-headless.data-infra.svc.cluster.local"
+                  },
+                  {
+                    "name": "RABBITMQ_SERVER_ADDITIONAL_ERL_ARGS",
+                    "value": "+S 2:2 +A 4"
+                  },
+                  {
+                    "name": "HOME",
+                    "value": "/var/lib/rabbitmq"
+                  }
+                ],
+                "resources": {
+                  "requests": {
+                    "cpu": "100m",
+                    "memory": "256Mi"
+                  },
+                  "limits": {
+                    "cpu": "500m",
+                    "memory": "768Mi"
+                  }
+                },
+                "securityContext": {
+                  "allowPrivilegeEscalation": false,
+                  "capabilities": {
+                    "drop": [
+                      "ALL"
+                    ]
+                  }
+                },
+                "volumeMounts": [
+                  {
+                    "name": "data",
+                    "mountPath": "/var/lib/rabbitmq"
+                  },
+                  {
+                    "name": "config",
+                    "mountPath": "/etc/rabbitmq/rabbitmq.conf",
+                    "subPath": "rabbitmq.conf",
+                    "readOnly": true
+                  },
+                  {
+                    "name": "config",
+                    "mountPath": "/etc/rabbitmq/enabled_plugins",
+                    "subPath": "enabled_plugins",
+                    "readOnly": true
+                  }
+                ],
+                "startupProbe": {
+                  "exec": {
+                    "command": [
+                      "rabbitmq-diagnostics",
+                      "-q",
+                      "ping"
+                    ]
+                  },
+                  "periodSeconds": 10,
+                  "timeoutSeconds": 8,
+                  "failureThreshold": 30
+                },
+                "readinessProbe": {
+                  "tcpSocket": {
+                    "port": "amqp"
+                  },
+                  "periodSeconds": 10,
+                  "timeoutSeconds": 3
+                },
+                "livenessProbe": {
+                  "tcpSocket": {
+                    "port": "amqp"
+                  },
+                  "periodSeconds": 20,
+                  "timeoutSeconds": 3,
+                  "failureThreshold": 6
+                }
+              }
+            ],
+            "volumes": [
+              {
+                "name": "config",
+                "configMap": {
+                  "name": "rabbitmq-config"
+                }
+              }
+            ]
+          }
+        },
+        "volumeClaimTemplates": [
+          {
+            "metadata": {
+              "name": "data"
+            },
+            "spec": {
+              "accessModes": [
+                "ReadWriteOnce"
+              ],
+              "storageClassName": "local-path",
+              "resources": {
+                "requests": {
+                  "storage": "2Gi"
+                }
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "apiVersion": "networking.k8s.io/v1",
+      "kind": "Ingress",
+      "metadata": {
+        "name": "rabbitmq",
+        "namespace": "data-infra",
+        "labels": {
+          "app.kubernetes.io/name": "rabbitmq"
+        }
+      },
+      "spec": {
+        "ingressClassName": "traefik",
+        "rules": [
+          {
+            "host": "rabbitmq.devops.local",
+            "http": {
+              "paths": [
+                {
+                  "path": "/",
+                  "pathType": "Prefix",
+                  "backend": {
+                    "service": {
+                      "name": "rabbitmq",
+                      "port": {
+                        "name": "management"
+                      }
+                    }
+                  }
+                }
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "apiVersion": "networking.k8s.io/v1",
+      "kind": "NetworkPolicy",
+      "metadata": {
+        "name": "rabbitmq",
+        "namespace": "data-infra",
+        "labels": {
+          "app.kubernetes.io/name": "rabbitmq"
+        }
+      },
+      "spec": {
+        "podSelector": {
+          "matchLabels": {
+            "app.kubernetes.io/name": "rabbitmq"
+          }
+        },
+        "policyTypes": [
+          "Ingress",
+          "Egress"
+        ],
+        "ingress": [
+          {
+            "from": [
+              {
+                "namespaceSelector": {
+                  "matchLabels": {
+                    "kubernetes.io/metadata.name": "data-infra"
+                  }
+                }
+              },
+              {
+                "namespaceSelector": {
+                  "matchLabels": {
+                    "kubernetes.io/metadata.name": "petclinic"
+                  }
+                }
+              },
+              {
+                "namespaceSelector": {
+                  "matchLabels": {
+                    "kubernetes.io/metadata.name": "ns-apps"
+                  }
+                }
+              },
+              {
+                "namespaceSelector": {
+                  "matchLabels": {
+                    "kubernetes.io/metadata.name": "ns-devops"
+                  }
+                }
+              }
+            ],
+            "ports": [
+              {
+                "protocol": "TCP",
+                "port": 5672
+              }
+            ]
+          },
+          {
+            "from": [
+              {
+                "namespaceSelector": {
+                  "matchLabels": {
+                    "kubernetes.io/metadata.name": "kube-system"
+                  }
+                }
+              }
+            ],
+            "ports": [
+              {
+                "protocol": "TCP",
+                "port": 15672
+              }
+            ]
+          },
+          {
+            "from": [
+              {
+                "namespaceSelector": {
+                  "matchLabels": {
+                    "kubernetes.io/metadata.name": "monitoring"
+                  }
+                }
+              }
+            ],
+            "ports": [
+              {
+                "protocol": "TCP",
+                "port": 15692
+              }
+            ]
+          }
+        ],
+        "egress": [
+          {
+            "to": [
+              {
+                "namespaceSelector": {
+                  "matchLabels": {
+                    "kubernetes.io/metadata.name": "kube-system"
+                  }
+                },
+                "podSelector": {
+                  "matchLabels": {
+                    "k8s-app": "kube-dns"
+                  }
+                }
+              }
+            ],
+            "ports": [
+              {
+                "protocol": "UDP",
+                "port": 53
+              },
+              {
+                "protocol": "TCP",
+                "port": 53
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "apiVersion": "monitoring.coreos.com/v1",
+      "kind": "ServiceMonitor",
+      "metadata": {
+        "name": "rabbitmq",
+        "namespace": "data-infra",
+        "labels": {
+          "app.kubernetes.io/name": "rabbitmq",
+          "release": "kube-stack"
+        }
+      },
+      "spec": {
+        "selector": {
+          "matchLabels": {
+            "app.kubernetes.io/instance": "platform-rabbitmq"
+          }
+        },
+        "namespaceSelector": {
+          "matchNames": [
+            "data-infra"
+          ]
+        },
+        "endpoints": [
+          {
+            "port": "metrics",
+            "interval": "30s",
+            "scrapeTimeout": "10s"
+          }
+        ]
+      }
+    },
+    {
+      "apiVersion": "monitoring.coreos.com/v1",
+      "kind": "PrometheusRule",
+      "metadata": {
+        "name": "rabbitmq",
+        "namespace": "data-infra",
+        "labels": {
+          "app.kubernetes.io/name": "rabbitmq",
+          "release": "kube-stack"
+        }
+      },
+      "spec": {
+        "groups": [
+          {
+            "name": "rabbitmq.platform",
+            "rules": [
+              {
+                "alert": "RabbitMQUnavailable",
+                "expr": "up{namespace=\"data-infra\",service=\"rabbitmq\",job=\"rabbitmq\"} == 0",
+                "for": "3m",
+                "labels": {
+                  "severity": "warning"
+                },
+                "annotations": {
+                  "summary": "RabbitMQ metrics endpoint unavailable"
+                }
+              },
+              {
+                "alert": "RabbitMQMemoryAlarm",
+                "expr": "rabbitmq_alarms_memory_used_watermark{namespace=\"data-infra\"} > 0",
+                "for": "2m",
+                "labels": {
+                  "severity": "warning"
+                },
+                "annotations": {
+                  "summary": "RabbitMQ publishing blocked by memory alarm"
+                }
+              },
+              {
+                "alert": "RabbitMQDiskAlarm",
+                "expr": "rabbitmq_alarms_free_disk_space_watermark{namespace=\"data-infra\"} > 0",
+                "for": "2m",
+                "labels": {
+                  "severity": "warning"
+                },
+                "annotations": {
+                  "summary": "RabbitMQ publishing blocked by disk alarm"
+                }
+              }
+            ]
+          }
+        ]
+      }
+    }
+  ]
+}
