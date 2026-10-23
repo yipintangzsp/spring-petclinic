@@ -11,12 +11,15 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import javax.sql.DataSource;
+
 import org.jspecify.annotations.Nullable;
 import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.dao.DataAccessException;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.http.HttpStatus;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.RowCallbackHandler;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -27,11 +30,12 @@ class MessageJobs {
 
 	MessageJobs(ObjectProvider<JdbcTemplate> templates) {
 		JdbcTemplate source = templates.getIfAvailable();
-		if (source == null || source.getDataSource() == null) {
+		DataSource dataSource = source == null ? null : source.getDataSource();
+		if (dataSource == null) {
 			this.jdbc = null;
 		}
 		else {
-			this.jdbc = new JdbcTemplate(source.getDataSource());
+			this.jdbc = new JdbcTemplate(dataSource);
 			this.jdbc.setQueryTimeout(3);
 		}
 	}
@@ -65,9 +69,8 @@ class MessageJobs {
 					ORDER BY received_at DESC LIMIT 10
 					""");
 			Map<String, Long> counts = new java.util.HashMap<>();
-			this.jdbc.query("SELECT status,count(*) FROM clinic_messaging.jobs GROUP BY status", rs -> {
-				counts.put(rs.getString(1), rs.getLong(2));
-			});
+			this.jdbc.query("SELECT status,count(*) FROM clinic_messaging.jobs GROUP BY status",
+					(RowCallbackHandler) rs -> counts.put(rs.getString(1), rs.getLong(2)));
 			return new Snapshot(true, jobs, followups, releases, counts);
 		}
 		catch (DataAccessException ex) {
@@ -155,9 +158,8 @@ class MessageJobs {
 		this.measuredAt = System.nanoTime();
 		try {
 			Map<String, Long> counts = new java.util.HashMap<>();
-			this.jdbc.query("SELECT status,count(*) FROM clinic_messaging.jobs GROUP BY status", rs -> {
-				counts.put(rs.getString(1), rs.getLong(2));
-			});
+			this.jdbc.query("SELECT status,count(*) FROM clinic_messaging.jobs GROUP BY status",
+					(RowCallbackHandler) rs -> counts.put(rs.getString(1), rs.getLong(2)));
 			Long pending = this.jdbc.queryForObject(
 					"SELECT count(*) FROM clinic_messaging.jobs WHERE confirmed_version < delivery_version",
 					Long.class);

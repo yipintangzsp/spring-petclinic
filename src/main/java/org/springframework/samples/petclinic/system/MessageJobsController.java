@@ -21,6 +21,8 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 @Controller
 class MessageJobsController {
 
+	private static final String REDIRECT_JOBS = "redirect:/jobs";
+
 	private final MessageJobs jobs;
 
 	MessageJobsController(MessageJobs jobs) {
@@ -40,7 +42,7 @@ class MessageJobsController {
 	String report(@RequestParam String key, @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate from,
 			@RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate to) {
 		this.jobs.report(key, from, to);
-		return "redirect:/jobs";
+		return REDIRECT_JOBS;
 	}
 
 	@PostMapping("/api/messaging/reports")
@@ -61,13 +63,13 @@ class MessageJobsController {
 	@PostMapping("/jobs/{id}/retry")
 	String retry(@PathVariable String id) {
 		this.jobs.retry(id);
-		return "redirect:/jobs";
+		return REDIRECT_JOBS;
 	}
 
 	@PostMapping("/jobs/followups/{id}/complete")
 	String complete(@PathVariable String id) {
 		this.jobs.completeFollowup(id);
-		return "redirect:/jobs";
+		return REDIRECT_JOBS;
 	}
 
 }

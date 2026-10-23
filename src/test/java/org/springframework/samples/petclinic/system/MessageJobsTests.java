@@ -68,7 +68,8 @@ class MessageJobsTests {
 		String id = service.report("stable-key", this.from, this.to);
 		assertThat(service.report("stable-key", this.from, this.to)).isEqualTo(id);
 		assertThat(jdbc.queryForObject("SELECT count(*) FROM clinic_messaging.jobs", Long.class)).isEqualTo(1);
-		assertThatThrownBy(() -> service.report("stable-key", this.from.plusDays(1), this.to))
+		LocalDate conflictingStart = this.from.plusDays(1);
+		assertThatThrownBy(() -> service.report("stable-key", conflictingStart, this.to))
 			.isInstanceOf(ResponseStatusException.class);
 		assertThat(service.job(id).status()).isEqualTo("queued");
 		assertThat(service.snapshot().jobs()).hasSize(1);
@@ -80,7 +81,8 @@ class MessageJobsTests {
 		var jdbc = database();
 		var service = service(jdbc);
 		assertThatThrownBy(() -> service.report("key", this.to, this.from)).isInstanceOf(ResponseStatusException.class);
-		assertThatThrownBy(() -> service.report("key", this.from.minusYears(1), this.to))
+		LocalDate excessiveStart = this.from.minusYears(1);
+		assertThatThrownBy(() -> service.report("key", excessiveStart, this.to))
 			.isInstanceOf(ResponseStatusException.class);
 		assertThatThrownBy(() -> service.report("bad/key", this.from, this.to))
 			.isInstanceOf(ResponseStatusException.class);
