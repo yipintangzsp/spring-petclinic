@@ -1,5 +1,7 @@
 # Petclinic 发布与按需分析操作
 
+> Terraform接入：#189完整发布成功，新增Terraform Plan门禁，归档target/platform/terraform.json。CI只预览隔离实验；实际创建/漂移修复/清理已由受控入口通过，触发、状态与故障处理见[Terraform记录](TERRAFORM-20261024.md)。
+
 > 2026-10-24本轮完成：#188完整发布成功；1202条来源、年度925的Airflow正常/受控失败/自动重试成功/同批重跑四轮通过，Spark→Flink/Kafka→Trino/Superset真实对账。137旧卷已完整备份校验后按授权删除，指定旧镜像本地副本已核验清理。Spark Operator/Webhook保留，计算按需回收；外部通知送达与云Trino根因仍有限制。详见[本轮发布与验收](ANALYTICS-E2E-20261024.md)。
 
 > 2026-10-24较早阶段：#183完整发布成功（0.10.0-ci-183）；RabbitMQ业务、去重、重试/死信、断连及Elasticsearch真实日志复验通过。获授权清理26个≤172旧本地镜像副本，Registry原件保留；CI自动回收仅限构建上下文/JAR缓存。Jenkins与资源锁恢复。新Airflow联合复验仍未完成，不能用旧结果替代。详见[最终交付](RABBITMQ-INTEGRATION-20261023.md)。
