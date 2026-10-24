@@ -29,7 +29,7 @@ function call(bin,args,options={}) {
  if(r.error||!expected.includes(r.status))throw Error(`${path.basename(bin)} ${args[0]} failed: ${r.error?.message??r.stderr?.slice(-1500)??r.status}`);
  return r;
 }
-function cli(home){
+export function cli(home){
  if(process.platform!=='linux'||process.arch!=='arm64')throw Error('This installation is pinned to the existing Linux ARM64 Jenkins');
  const dir=path.join(home,'tools/terraform',version),bin=path.join(dir,'terraform');
  if(fs.existsSync(bin)){if(hash(bin)!==binarySha)throw Error('Cached Terraform digest mismatch; preserve for investigation');return bin;}
@@ -59,7 +59,8 @@ export function run(){
  const source='infra/devops-lab/iac/terraform';
  for(const name of ['main.tf','.terraform.lock.hcl'])fs.copyFileSync(path.join(source,name),path.join(work,name));
  fs.writeFileSync(path.join(work,'environment.auto.tfvars.json'),JSON.stringify({namespace_name:'tf-devops-lab',scenario:'petclinic-devops-study',config_revision:'v1',kubeconfig_path:''}));
- const env={...process.env,TF_IN_AUTOMATION:'1',TF_INPUT:'0',CHECKPOINT_DISABLE:'1',GOMAXPROCS:'1',GOMEMLIMIT:'384MiB'};
+ const cache=path.join(home,'tools/terraform/provider-cache');fs.mkdirSync(cache,{recursive:true,mode:0o700});
+ const env={...process.env,TF_PLUGIN_CACHE_DIR:cache,TF_IN_AUTOMATION:'1',TF_INPUT:'0',CHECKPOINT_DISABLE:'1',GOMAXPROCS:'1',GOMEMLIMIT:'384MiB'};
  // Provider authenticates with this Pod's existing service account; do not export tokens or kubeconfig.
  delete env.KUBE_CONFIG_PATH;delete env.KUBE_CONFIG_PATHS;delete env.TF_LOG;delete env.TF_LOG_PATH;
  const tf=(name,args,expected=[0])=>{const r=call(bin,args,{cwd:work,env,expected});fs.writeFileSync(path.join(work,name+'.log'),r.stdout+r.stderr);return r;};
