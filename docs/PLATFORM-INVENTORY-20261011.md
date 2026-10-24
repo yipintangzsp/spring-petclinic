@@ -255,3 +255,11 @@ Argo Rollouts v1.10.1现已完成独立功能验收：真实灰度分流、Prome
 - 已完成本轮独立恢复/功能检查：Prometheus查询及临时告警触发、Alertmanager三个内部路由与恢复；Loki原摘要缓存重建后ready；Grafana原摘要重建后数据库health=ok。外部告警送达未验证。
 - Spark Operator/Webhook维持常驻，Driver/Executor按任务创建回收。Airflow联合四轮已独立验收通过，核心常驻，周一02:30上海时间调度，计算按需回收。
 - 按需关闭或仍受条件限制：Superset worker、云端Trino worker以及其他非本轮必要重组件保持原策略；云端Trino阻塞原因没有宣称已解决。
+
+
+## 2026-10-25 Terraform隔离状态
+
+Terraform远端状态/锁保留#190独立验收；本轮独立Job执行隔离仍未通过最终验收。新增terraform-execution命名空间、受限SA/RBAC/Quota/NetworkPolicy及三组准入政策，当前计算Pod为0；不将这些配置安装视作业务成功。 详见[隔离进展及阻塞](TERRAFORM-ISOLATION-20261025.md)。
+
+
+2026-10-25 09:19更新：两个191本地镜像已按新增授权完成备份、恢复比对和清理（910.48MiB）；冗余公开工具下载包回收776.23MiB，安装内容不变。修正目录权限后的无网络受限容器init/validate实际通过（峰值97.21MiB）。完整隔离仍未完成，现阻塞于09:08已过期Java漏洞库的公共缓存维护授权；不降低扫描刷新4GiB余量。详见[TERRAFORM-ISOLATION-20261025.md](TERRAFORM-ISOLATION-20261025.md)最新节。

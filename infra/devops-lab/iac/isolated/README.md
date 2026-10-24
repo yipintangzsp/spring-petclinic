@@ -1,5 +1,7 @@
 # Terraform execution sandbox
 
+Status: implementation under acceptance; CI191 failed. See docs/TERRAFORM-ISOLATION-20261025.md before treating any contract below as verified. Full isolated plan/shared-state/failure acceptance remains pending.
+
 Terraform 1.17.0 and Kubernetes provider 2.38.0 execute only in ephemeral native ARM64 Kubernetes Jobs. Jenkins builds, scans and submits a digest-pinned runtime; it does not execute Terraform. Legacy Jenkins/host automation entrypoints reject execution and preserve prior state.
 
 The dedicated namespace has one Pod maximum, 100m/384Mi requests, 1 CPU/512Mi limits, bounded ephemeral storage and no PVCs or service secrets. Runtime identity is a projected 600-second token; orchestration identity cannot read state or exec into Pods. Runtime cannot create workloads. Existing remote state and ConfigMap retain their UIDs and lineage.

@@ -109,3 +109,11 @@ Jenkins #159及独立灰度/蓝绿完整验收已于2026-10-20 15:19通过。两
 ## 2026-10-22 新准入与扫描数据库维护
 
 发布前要求Mac新鲜采样可用空间>=16GiB，nodefs/imagefs保留15%容量加8GiB，Harbor注册表和控制器均须有ready端点。两类Trivy库的版本/NextUpdate/DownloadedAt必须有效，否则先维护库再构建。维护采用infra/harbor/warm_trivy_db.py，--database db或java-db，输入官方OCI清单与按其层摘要校验的归档，脚本沿用重任务Lease和Jenkins恢复保护，经本地OCI调用正常Trivy下载。不可跳过扫描、伪造元数据或使用未经官方摘要核对的镜像站标签。
+
+
+## 2026-10-25 Terraform执行隔离验收中
+
+新增受限Job编排与准入已做预检，但#191整体失败，尚未完成。旧宿主/Jenkins Terraform自动化入口停用，旧状态保留。当前Jenkins非quiet、无重任务锁、无遗留计算Pod。空间仅高于原停止线约258MiB，新增镜像清理授权前不重跑完整发布。 详见[隔离进展及阻塞](TERRAFORM-ISOLATION-20261025.md)。
+
+
+2026-10-25 09:19更新：两个191本地镜像已按新增授权完成备份、恢复比对和清理（910.48MiB）；冗余公开工具下载包回收776.23MiB，安装内容不变。修正目录权限后的无网络受限容器init/validate实际通过（峰值97.21MiB）。完整隔离仍未完成，现阻塞于09:08已过期Java漏洞库的公共缓存维护授权；不降低扫描刷新4GiB余量。详见[TERRAFORM-ISOLATION-20261025.md](TERRAFORM-ISOLATION-20261025.md)最新节。

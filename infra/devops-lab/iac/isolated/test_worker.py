@@ -30,3 +30,24 @@ class PlanGuards(unittest.TestCase):
         v=self.fixture();real=v['resource_changes'][2];real['change']['after']['metadata'][0].update(namespace='tf-remote-lab',labels={'petclinic.devops.local/owner':'terraform-remote-lab'});real['change']['actions']=['delete']
         v['resource_changes']=[real,{'address':PROBE,'change':{'actions':['delete'],'after':None}}]
         with self.assertRaises(RuntimeError): inspect_plan(v,True)
+
+import errno
+import socket
+import struct
+from worker import icmp_rejection
+
+class KernelRejectionProof(unittest.TestCase):
+    def entry(self, origin=2, kind=3, code=3):
+        return [(socket.SOL_IP, 11, struct.pack('=IBBBBII', errno.ECONNREFUSED, origin, kind, code, 0, 0, 0))]
+
+    def test_kernel_icmp_policy_reject(self):
+        self.assertEqual(icmp_rejection(self.entry())['origin'], 'kernel-ICMP')
+
+    def test_local_refusal_is_not_network_policy_proof(self):
+        with self.assertRaises(RuntimeError): icmp_rejection(self.entry(origin=1))
+
+    def test_plain_tcp_reset_has_no_icmp_proof(self):
+        with self.assertRaises(RuntimeError): icmp_rejection([])
+
+    def test_unrelated_icmp_cannot_pass(self):
+        with self.assertRaises(RuntimeError): icmp_rejection(self.entry(code=1))

@@ -10,6 +10,7 @@ from pathlib import Path
 import signal
 import socket
 import ssl
+import struct
 import subprocess
 import sys
 import time
@@ -96,6 +97,15 @@ def require_api(method, path, body=None, expected=200):
     return value
 
 
+def icmp_rejection(ancillary):
+    for level, kind, data in ancillary:
+        if level == socket.SOL_IP and kind == 11 and len(data) >= 16:
+            number, origin, icmp_type, code, _, info, extra = struct.unpack('=IBBBBII', data[:16])
+            if number == errno.ECONNREFUSED and origin == 2 and icmp_type == 3 and code == 3:
+                return {'errno': number, 'origin': 'kernel-ICMP', 'icmp_type': icmp_type, 'icmp_code': code}
+    raise RuntimeError('Connection refusal without kernel ICMP policy-rejection evidence')
+
+
 def probe_isolation(sandbox):
     status = dict(line.split(':', 1) for line in Path('/proc/self/status').read_text().splitlines())
     for key, expected in [('NoNewPrivs', '1'), ('Seccomp', '2')]:
@@ -146,20 +156,27 @@ def probe_isolation(sandbox):
         else:
             s.close()
             raise RuntimeError('Forbidden socket family/type allowed')
+    rejection = {'kind': 'timeout'}
     canary = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    canary.setsockopt(socket.SOL_IP, 11, 1)
     canary.settimeout(2)
     try:
         canary.connect((os.environ['CANARY_IP'], 6443))
     except (TimeoutError, socket.timeout):
         pass
     except OSError as error:
-        if error.errno not in [errno.ETIMEDOUT, errno.EHOSTUNREACH, errno.ENETUNREACH]:
-            raise RuntimeError('Canary not rejected by network policy') from error
+        if error.errno == errno.ECONNREFUSED:
+            _, ancillary, _, _ = canary.recvmsg(1, 256, socket.MSG_ERRQUEUE | socket.MSG_DONTWAIT)
+            rejection = icmp_rejection(ancillary)
+        elif error.errno in [errno.ETIMEDOUT, errno.EHOSTUNREACH, errno.ENETUNREACH]:
+            rejection = {'errno': error.errno}
+        else:
+            raise RuntimeError('Unexpected canary rejection errno=' + str(error.errno)) from error
     else:
         raise RuntimeError('Jenkins canary reachable through egress policy')
     finally:
         canary.close()
-    return {'network_policy_canary_blocked': True, 'uid': os.getuid(), 'gid': os.getgid(), 'root_read_only': True, 'admin_paths_absent': forbidden,
+    return {'network_policy_canary_blocked': True, 'canary_rejection': rejection, 'uid': os.getuid(), 'gid': os.getgid(), 'root_read_only': True, 'admin_paths_absent': forbidden,
             'no_new_privileges': True, 'effective_capabilities': 0, 'seccomp_mode': 2,
             'seccomp_filters': int(status['Seccomp_filters'].strip()), 'apparmor': profile,
             'sandbox': sandbox, 'network_denials': network, 'udp_raw_denied': True}
