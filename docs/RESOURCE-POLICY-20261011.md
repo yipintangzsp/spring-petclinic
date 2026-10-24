@@ -1,5 +1,7 @@
 # 实测资源与按需运行策略 · 2026-10-11
 
+> #190 Terraform远端状态验收通过。Terraform复用原CI重任务锁与Jenkins计算；provider共享缓存避免重复解包，元数据配额禁止Pod/PVC扩张。静态加密及完整管理员隔离未实现。见[记录](TERRAFORM-20261024.md)。
+
 > Terraform接入未新增常驻Pod。Jenkins计划阶段复用原锁和执行容器；受控实验按1024MiB准入，每步768MiB/1CPU/600秒，实际峰值129.89MiB，结束后进程、实验资源和锁均清理。私有plan/state目录保留，不作空间恒定承诺。详见[验收](TERRAFORM-20261024.md)。
 
 > 2026-10-24本轮完成：#188完整发布成功；1202条来源、年度925的Airflow正常/受控失败/自动重试成功/同批重跑四轮通过，Spark→Flink/Kafka→Trino/Superset真实对账。137旧卷已完整备份校验后按授权删除，指定旧镜像本地副本已核验清理。Spark Operator/Webhook保留，计算按需回收；外部通知送达与云Trino根因仍有限制。详见[本轮发布与验收](ANALYTICS-E2E-20261024.md)。

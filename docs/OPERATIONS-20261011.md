@@ -1,5 +1,7 @@
 # Petclinic 发布与按需分析操作
 
+> #190 Terraform远端状态验收通过。新增远端状态和权限操作见Terraform手册；CI在原完整发布后执行共享状态验收，Build Now可重复运行。见[记录](TERRAFORM-20261024.md)。
+
 > Terraform接入：#189完整发布成功，新增Terraform Plan门禁，归档target/platform/terraform.json。CI只预览隔离实验；实际创建/漂移修复/清理已由受控入口通过，触发、状态与故障处理见[Terraform记录](TERRAFORM-20261024.md)。
 
 > 2026-10-24本轮完成：#188完整发布成功；1202条来源、年度925的Airflow正常/受控失败/自动重试成功/同批重跑四轮通过，Spark→Flink/Kafka→Trino/Superset真实对账。137旧卷已完整备份校验后按授权删除，指定旧镜像本地副本已核验清理。Spark Operator/Webhook保留，计算按需回收；外部通知送达与云Trino根因仍有限制。详见[本轮发布与验收](ANALYTICS-E2E-20261024.md)。
