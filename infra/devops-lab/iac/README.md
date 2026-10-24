@@ -1,6 +1,6 @@
 # Terraform / Ansible isolated environment lab
 
-This exercise reuses the installed Terraform 1.7.0 and Ansible Core 2.16.3 on the existing server. The Kubernetes provider is pinned to 2.38.0 and its checked-in lock file. No new always-on service is installed.
+This exercise reuses the installed Terraform 1.17.0 and Ansible Core 2.16.3 on the existing server. The Kubernetes provider is pinned to 2.38.0 and its checked-in lock file. No new always-on service is installed.
 
 Ansible renders and validates deterministic public inputs. Terraform manages exactly three objects: namespace `tf-devops-lab`, a ResourceQuota preventing Pods/PVCs/Secrets/Services, and one ConfigMap. It uses the existing local K3s administrator kubeconfig, so this is not a demonstration of least-privilege provisioning or public-cloud IaC. Do not copy credentials into this directory.
 
@@ -29,3 +29,11 @@ Acceptance must record preview without mutation, first apply, second-run idempot
 Official references: https://registry.terraform.io/providers/hashicorp/kubernetes/2.38.0/docs ; https://docs.ansible.com/projects/ansible/latest/collections/ansible/builtin/template_module.html
 
 A normal plan after destroy intentionally proposes creation again. The final zero-change assertion is a **destroy** plan against empty state. The controller invokes Terraform with explicit flags and uses the server CLI; the Mac CLI is an older1.5.7 and is not used to validate/apply this1.7+ exercise. Provider2.38.0 signature/checksums were retrieved and locked by the server Terraform CLI from the official Registry for LinuxARM64.
+
+## Jenkins plan gate (2026-10-24)
+
+The existing petclinic-ci pipeline runs `Terraform Plan` after tests and before packaging, under its already-owned heavy Lease. It installs the pinned Linux ARM64 CLI into the persistent Jenkins tools directory and verifies both archive and binary SHA256. It uses the existing Pod service account for provider authentication; the original server controller retains its default kubeconfig path. No new credentials or permissions are created. The existing Jenkins service account is privileged; this does not demonstrate least-privilege provisioning.
+
+The stage runs fmt, init with the committed read-only provider lock, validate and a saved plan. It rejects an existing lab namespace, modifications/deletions/replacements, any additional resource, changed namespace/owner, or a quota allowing Pods/PVCs/Secrets/Services. It requires exactly the original namespace, quota and ConfigMap creates. It does not apply Kubernetes resources. The sanitized result is archived as target/platform/terraform.json; the full saved plan and logs remain private under JENKINS_HOME/terraform-runs/ci-<build>-<nonce> with owner-only access, outside source control. Existing pipeline timeout and concurrency guards apply, with an additional eight-minute stage limit.
+
+After a successful full source release, use the existing run.py controller for the real disposable lifecycle and drift-repair acceptance. Do not apply an old CI preview to a changed cluster: generate and inspect a fresh plan with that controller. This is a local-state learning workflow, not a shared remote backend or automatic production provisioning.

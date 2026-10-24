@@ -9,7 +9,13 @@ terraform {
 }
 
 provider "kubernetes" {
-  config_path = "/etc/rancher/k3s/k3s.yaml"
+  config_path = var.kubeconfig_path == "" ? null : var.kubeconfig_path
+}
+
+variable "kubeconfig_path" {
+  description = "Existing server kubeconfig; empty uses the Jenkins Pod service account."
+  type        = string
+  default     = "/etc/rancher/k3s/k3s.yaml"
 }
 
 variable "namespace_name" {

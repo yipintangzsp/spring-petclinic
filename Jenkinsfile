@@ -69,6 +69,13 @@ pipeline {
             }
         }
 
+        stage('Terraform Plan') {
+            options { timeout(time: 8, unit: 'MINUTES') }
+            steps {
+                sh 'node infra/observability/terraform-ci.mjs'
+            }
+        }
+
         stage('Package') {
             steps {
                 sh '''

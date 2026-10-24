@@ -24,3 +24,9 @@ terraform plan
 ```
 
 新增实验应在独立目录中，先plan审查。状态和保存计划不提交Git，凭据不写入配置；该示例为本地状态，无团队远端锁能力。现有Argo管理资源仍由Argo负责，不以Terraform重复接管。需要旧版时可显式执行/opt/terraform/1.7.0/terraform，不用旧版读取新版状态；本轮未进行状态降级测试。
+
+## Jenkins 接入实施
+
+新增Terraform Plan阶段，位于Test之后、Package之前，复用已持有的共享重任务Lease，不重复申请锁。固定1.17.0 CLI在Jenkins持久工具目录，校验安装包及二进制摘要；provider沿用已锁定2.38.0。服务端控制器沿用原kubeconfig路径，Jenkins使用既有Pod服务账号；未增加集群权限，现有账号权限较大，不宣称最小权限验收。
+
+CI只生成并检查隔离实验的3个create，不自动apply：命名空间tf-devops-lab、禁止Pod/PVC/Secret/Service的配额、无敏感数据的ConfigMap。已有命名空间、任何update/delete/replace、越界资源或放宽配额均拒绝。完整计划及日志在Jenkins私有目录，归档只保存target/platform/terraform.json的范围、摘要、源码与构建编号。新增6项越界/删除/配额保护测试，64项Node测试及本地格式检查通过；完整发布和新版真实生命周期验收以本轮最终证据为准。
