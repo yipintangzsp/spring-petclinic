@@ -1,7 +1,8 @@
 # Petclinic 发布与按需分析操作
 
-> 2026-10-24联合恢复进行中：低ID增量漏计已由#184完整发布修复；Flink临时库复制修复在#185通过测试/扫描，但发布因磁盘拦截。两轮真实失败与保护恢复均留证，137个未引用匿名卷尚未备份或删除，具体范围授权待确认。详见[当前恢复记录](ANALYTICS-E2E-20261024.md)。
-> 2026-10-24最终：#183完整发布成功（0.10.0-ci-183）；RabbitMQ业务、去重、重试/死信、断连及Elasticsearch真实日志复验通过。获授权清理26个≤172旧本地镜像副本，Registry原件保留；CI自动回收仅限构建上下文/JAR缓存。Jenkins与资源锁恢复。新Airflow联合复验仍未完成，不能用旧结果替代。详见[最终交付](RABBITMQ-INTEGRATION-20261023.md)。
+> 2026-10-24本轮完成：#188完整发布成功；1202条来源、年度925的Airflow正常/受控失败/自动重试成功/同批重跑四轮通过，Spark→Flink/Kafka→Trino/Superset真实对账。137旧卷已完整备份校验后按授权删除，指定旧镜像本地副本已核验清理。Spark Operator/Webhook保留，计算按需回收；外部通知送达与云Trino根因仍有限制。详见[本轮发布与验收](ANALYTICS-E2E-20261024.md)。
+
+> 2026-10-24较早阶段：#183完整发布成功（0.10.0-ci-183）；RabbitMQ业务、去重、重试/死信、断连及Elasticsearch真实日志复验通过。获授权清理26个≤172旧本地镜像副本，Registry原件保留；CI自动回收仅限构建上下文/JAR缓存。Jenkins与资源锁恢复。新Airflow联合复验仍未完成，不能用旧结果替代。详见[最终交付](RABBITMQ-INTEGRATION-20261023.md)。
 > 2026-10-23 RabbitMQ业务接入：#176完整发布通过；就诊回访、后台报表、发布审计均完成真实消费、去重、失败重试/死信、断连恢复与Jenkins恢复验收。新增Worker requests50m/128Mi、limits500m/256Mi；Kafka及既有分析链保留。当前状态和操作见 [业务验收](RABBITMQ-INTEGRATION-20261023.md)。下文较早“尚未接入”为历史阶段。
 
 > 2026-10-23 RabbitMQ：data-infra 单副本持久化工作队列，独立 AMQP 确认/重投/死信、Pod 替换持久化、管理认证及 Prometheus 采集通过；尚未接入 PetClinic 业务。增加 requests100m/256Mi、limits500m/768Mi；入口、账号读取、证据、GitOps关闭方式与限制见 [RabbitMQ 验收及操作](RABBITMQ-20261023.md)。
@@ -18,7 +19,7 @@
 
 ## 业务与发布入口
 
-- 业务统计：`http://petclinic.devops.local/insights`。输入日期为登记就诊日期，2026 年窗口923条；页面明确标记演示业务数据。总记录1200并非本年数量，未来预约不能当作已完成诊疗。
+- 业务统计：`http://petclinic.devops.local/insights`。输入日期为登记就诊日期，2026 年窗口925条（2026-10-24复验）；页面明确标记演示业务数据。本轮总记录1202并非本年数量，未来预约不能当作已完成诊疗。
 - Jenkins：`http://jenkins.devops.local/job/petclinic-ci/`，Petclinic视图可查看阶段、控制台、测试和归档。失败构建保留；测试/质量门失败时不会开始部署。
 - Harbor：`http://core.harbor.domain/harbor/projects`；真实扫描通过指扫描执行成功，漏洞数另查归档。
 - Argo：`http://argocd.devops.local/` 中 Petclinic Application。
@@ -31,7 +32,7 @@
 
 ## 正常发布、回滚与恢复
 
-审查代码后在私有 GitLab main 普通推送，由实际 Push Webhook 触发 Jenkins。Runner 只执行有界源码审计，不重复部署；Jenkins 顺序执行资源准入、94项 Java/49项 Node 测试、Sonar、双架构镜像、Harbor扫描、私有GitOps晋升、Argo/Endpoint/业务健康验收及Kafka发布事件。独立分析计算不在业务发布的同步等待链。
+审查代码后在私有 GitLab main 普通推送，由实际 Push Webhook 触发 Jenkins。Runner 只执行有界源码审计，不重复部署；Jenkins 顺序执行资源准入、104项 Java/58项 Node/41项 Python 测试、Sonar、双架构镜像、Harbor扫描、私有GitOps晋升、Argo/Endpoint/业务健康验收及Kafka发布事件。独立分析计算不在业务发布的同步等待链。
 
 每次晋升提交同时使用 `[skip ci] [ci-skip]`，分别兼容 GitLab 和现有 Jenkins GitLab 插件；缺少第二个标记曾产生重复构建。本轮已实际阻止后续晋升再次构建。
 

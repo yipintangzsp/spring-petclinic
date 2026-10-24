@@ -8,7 +8,7 @@
     <!-- Official vendored cert-manager CRD descriptions contain these two HTTP examples only. -->
     <suppress files="infra[\\/]devops-lab[\\/]cert-manager[\\/]upstream\.yaml$" checks="NoHttp" message=".*http://(ca\.domain\.com/ca\.crt|ocsp\.int-x3\.letsencrypt\.org).*"/>
     <!-- Existing cluster-private GitLab endpoint; bootstrap Applications do not expose it publicly. -->
-    <suppress files="infra[\\/]devops-lab[\\/]applications[\\/](platform-cert-manager|devops-tls-lab|platform-rollouts|rollouts-lab|platform-rabbitmq|platform-messaging)\.json$" checks="NoHttp" message=".*http://gitlab-service\.ns-devops\.svc\.cluster\.local/root/petclinic-platform\.git.*"/>
+    <suppress files="infra[\\/]devops-lab[\\/]applications[\\/](platform-cert-manager|devops-tls-lab|platform-rollouts|rollouts-lab|platform-rabbitmq|platform-messaging|platform-airflow)\.json$" checks="NoHttp" message=".*http://gitlab-service\.ns-devops\.svc\.cluster\.local/root/petclinic-platform\.git.*"/>
 
     <!-- Existing private GitLab SCM service has no TLS listener. -->
     <suppress files="k8s[\\/]production[\\/]alertmanager-application\.yaml$" checks="NoHttp" message=".*http://gitlab-service\.ns-devops\.svc\.cluster\.local/root/petclinic-platform\.git.*"/>
