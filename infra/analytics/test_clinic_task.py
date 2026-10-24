@@ -104,9 +104,14 @@ class QualityChecks(unittest.TestCase):
         b = self.batch(); b['counts']['pets'] = 2
         with self.assertRaises(ValueError): quality(b)
 
-    def test_watermark(self):
-        b = self.batch(); b['watermark'] = 1
-        with self.assertRaises(ValueError): quality(b)
+    def test_late_or_corrected_visit_below_watermark_is_valid(self):
+        b = self.batch(); b['watermark'] = 1001195
+        self.assertEqual(quality(b)['visits'][0]['id'], 1)
+
+    def test_nonpositive_or_noninteger_visit_id_is_rejected(self):
+        for invalid in (0, -1, True, '1'):
+            b = self.batch(); b['visits'][0]['id'] = invalid
+            with self.assertRaises(ValueError): quality(b)
 
     def test_changed_source_cannot_publish(self):
         batch = self.batch()

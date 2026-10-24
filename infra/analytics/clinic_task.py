@@ -191,7 +191,10 @@ def extract(start, end):
                     raise ValueError(f'{table} exceeds approved {MAX_ROWS}-row snapshot budget')
             cur.execute('''SELECT v.id,v.visit_date,v.pet_id,(p.id IS NOT NULL)
                            FROM public.visits v LEFT JOIN public.pets p ON p.id=v.pet_id
-                           WHERE v.id > %s ORDER BY v.id LIMIT %s''', (watermark, MAX_ROWS + 1))
+                           LEFT JOIN petclinic_analytics.visit_facts f ON f.visit_id=v.id
+                           WHERE f.visit_id IS NULL OR
+                                 (f.visit_date,f.pet_id) IS DISTINCT FROM (v.visit_date,v.pet_id)
+                           ORDER BY v.id LIMIT %s''', (MAX_ROWS + 1,))
             visits = [{'id': row[0], 'date': row[1].isoformat() if row[1] else None,
                        'pet_id': row[2], 'pet_exists': row[3]} for row in cur.fetchall()]
             cur.execute('''SELECT t.name,count(*) FROM public.pets p JOIN public.types t ON p.type_id=t.id
@@ -225,8 +228,8 @@ def quality(batch):
     if batch['missing_type'] or sum(t['pets'] for t in batch['types']) != batch['counts']['pets']:
         raise ValueError('Pet type dimensions do not reconcile')
     for v in visits:
-        if not v['date'] or not v['pet_exists'] or not v['pet_id'] or v['id'] <= batch['watermark']:
-            raise ValueError('Missing date, foreign key or invalid incremental watermark')
+        if not v['date'] or not v['pet_exists'] or not v['pet_id'] or type(v['id']) is not int or v['id'] <= 0:
+            raise ValueError('Missing date, foreign key or invalid visit ID')
         dt.date.fromisoformat(v['date'])
     return batch
 
@@ -260,7 +263,11 @@ def publish(batch, run_id, publication_status='success'):
                 return result
             if batch['visits']:
                 execute_values(cur, '''INSERT INTO petclinic_analytics.visit_facts (visit_id,visit_date,pet_id)
-                                      VALUES %s ON CONFLICT (visit_id) DO NOTHING''',
+                                      VALUES %s ON CONFLICT (visit_id) DO UPDATE
+                                      SET visit_date=EXCLUDED.visit_date,pet_id=EXCLUDED.pet_id
+                                      WHERE (petclinic_analytics.visit_facts.visit_date,
+                                             petclinic_analytics.visit_facts.pet_id)
+                                        IS DISTINCT FROM (EXCLUDED.visit_date,EXCLUDED.pet_id)''',
                                [(v['id'], v['date'], v['pet_id']) for v in batch['visits']], page_size=500)
             cur.execute('SELECT count(*),COALESCE(MAX(visit_id),0) FROM petclinic_analytics.visit_facts')
             facts, watermark = cur.fetchone()
