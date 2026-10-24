@@ -1,7 +1,7 @@
-"""Bounded, append-only visit analysis; no patient names, notes or addresses.
+"""Bounded visit reconciliation; no patient names, notes or addresses.
 
-The current Visit controller creates records; no update/delete watermark exists.
-If that contract changes, add CDC or updated_at before claiming incremental edits.
+Compare source keys and fields within the approved row bound, including late IDs.
+Source deletions are detected by reconciliation, never silently deleted from facts.
 """
 import argparse
 import csv
@@ -709,6 +709,36 @@ def _flink_api(path, method='GET', payload=None):
     return json.loads(text) if text else {}
 
 
+def flink_library_mount(spec):
+    """Reuse image libraries and bind the already installed connector read-only."""
+    result = json.loads(json.dumps(spec))
+    copies = {'copy-flink-libs': ['sh', '-c', 'cp -rn /opt/flink/lib/* /flink-lib/'],
+              'copy-kafka-jar': ['sh', '-c', 'cp /kafka/flink-sql-connector-kafka-5.0.0-2.2.jar /opt/flink/lib/flink-sql-connector-kafka.jar']}
+    found = {c['name']: c for c in result.get('initContainers', []) if c['name'] in copies}
+    if found and (set(found) != set(copies) or any(found[n].get('command') != copies[n] for n in found)):
+        raise ValueError('Unexpected Flink library initialization; preserve the template')
+    volumes = result.get('volumes', [])
+    connector = next((v for v in volumes if v['name'] == 'kafka-connector'), None)
+    if not connector or connector.get('hostPath') != {
+            'path': '/home/zhang/devops-bigdata/flink-sql-connector-kafka-5.0.0-2.2.jar', 'type': 'File'}:
+        raise ValueError('Expected existing Kafka connector file is required')
+    library = next((v for v in volumes if v['name'] == 'flink-lib'), None)
+    if library and (not found or library != {'name': 'flink-lib', 'emptyDir': {}}):
+        raise ValueError('Unexpected Flink library volume; preserve it')
+    result['initContainers'] = [c for c in result.get('initContainers', []) if c['name'] not in copies]
+    result['volumes'] = [v for v in volumes if v['name'] != 'flink-lib']
+    mount = {'name': 'kafka-connector', 'mountPath': '/opt/flink/lib/flink-sql-connector-kafka.jar', 'readOnly': True}
+    for container in result['containers']:
+        old = container.get('volumeMounts', [])
+        if any(m['name'] == 'flink-lib' and m.get('mountPath') != '/opt/flink/lib' for m in old):
+            raise ValueError('Unexpected Flink library mount')
+        if any(m['name'] == 'kafka-connector' and m != mount for m in old):
+            raise ValueError('Unexpected Kafka connector mount; preserve the template')
+        retained = [m for m in old if m['name'] not in ('flink-lib', 'kafka-connector')]
+        container['volumeMounts'] = retained + [mount]
+    return result
+
+
 def run_flink_bounded(snapshot, baseline, fail_probe='none', try_number=1):
     core, apps, _, _ = _kube()
     input_topic, output_topic, group = ('petclinic-window-092657-input',
@@ -731,6 +761,15 @@ def run_flink_bounded(snapshot, baseline, fail_probe='none', try_number=1):
             deployment = apps.read_namespaced_deployment(name, 'ns-bigdata')
             if deployment.spec.replicas != 0 or (deployment.status.replicas or 0) != 0:
                 raise RuntimeError(f'{name} is already enabled; refusing to take over existing compute')
+            # No active compute is taken over. Only normalize the known temporary library copy.
+            previous = core.api_client.sanitize_for_serialization(deployment.spec.template.spec)
+            optimized = flink_library_mount(previous)
+            if optimized != previous:
+                apps.patch_namespaced_deployment(name, 'ns-bigdata', [
+                    {'op': 'test', 'path': '/metadata/uid', 'value': deployment.metadata.uid},
+                    {'op': 'test', 'path': '/spec/replicas', 'value': 0},
+                    {'op': 'test', 'path': '/spec/template/spec', 'value': previous},
+                    {'op': 'replace', 'path': '/spec/template/spec', 'value': optimized}])
             apps.patch_namespaced_deployment(name, 'ns-bigdata', {'metadata': {'annotations': {
                 'petclinic.devops.local/analysis-execution': snapshot['execution_id']}}})
             owned.append(name)

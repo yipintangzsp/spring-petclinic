@@ -13,6 +13,28 @@ from clinic_task import parse_spark_result, cpu_request_milli, pod_cpu_request_m
 
 
 class QualityChecks(unittest.TestCase):
+    def test_flink_reuses_image_libraries_and_preserves_state(self):
+        from clinic_task import flink_library_mount
+        spec = {'containers': [{'name': 'jobmanager', 'volumeMounts': [
+            {'name': 'flink-lib', 'mountPath': '/opt/flink/lib'},
+            {'name': 'clinic-state', 'mountPath': '/opt/clinic-state'}]}],
+            'initContainers': [
+                {'name': 'copy-flink-libs', 'command': ['sh', '-c', 'cp -rn /opt/flink/lib/* /flink-lib/']},
+                {'name': 'copy-kafka-jar', 'command': ['sh', '-c', 'cp /kafka/flink-sql-connector-kafka-5.0.0-2.2.jar /opt/flink/lib/flink-sql-connector-kafka.jar']},
+                {'name': 'prepare-clinic-state', 'command': ['keep-state']}],
+            'volumes': [{'name': 'flink-lib', 'emptyDir': {}},
+                {'name': 'kafka-connector', 'hostPath': {'path': '/home/zhang/devops-bigdata/flink-sql-connector-kafka-5.0.0-2.2.jar', 'type': 'File'}},
+                {'name': 'clinic-state', 'hostPath': {'path': '/original-state'}}]}
+        original = copy.deepcopy(spec);result = flink_library_mount(spec)
+        self.assertEqual(spec, original)
+        self.assertEqual(result['initContainers'], [spec['initContainers'][2]])
+        self.assertEqual(result['volumes'], spec['volumes'][1:])
+        self.assertEqual(result['containers'][0]['volumeMounts'][0], spec['containers'][0]['volumeMounts'][1])
+        self.assertTrue(result['containers'][0]['volumeMounts'][1]['readOnly'])
+        self.assertEqual(flink_library_mount(result), result)
+        spec['volumes'][0]['hostPath'] = {'path': '/unexpected-data'}
+        with self.assertRaisesRegex(ValueError, 'preserve'): flink_library_mount(spec)
+
     def test_disk_budget_keeps_eviction_margin_and_task_allowance(self):
         from clinic_task import disk_required_mib
         self.assertEqual(disk_required_mib(250 * 1024), 45.5 * 1024)
