@@ -63,16 +63,10 @@ pipeline {
                 sh '''
                     echo "===== MAVEN TEST ====="
                     node --test infra/observability/*.test.mjs
+                    node infra/observability/terraform-sandbox-tests.mjs
                     node infra/observability/maven-test.mjs
                     node infra/messaging/pipeline.mjs test
                 '''
-            }
-        }
-
-        stage('Terraform Plan') {
-            options { timeout(time: 8, unit: 'MINUTES') }
-            steps {
-                sh 'node infra/observability/terraform-ci.mjs'
             }
         }
 
@@ -217,6 +211,15 @@ pipeline {
             }
         }
 
+        stage('Terraform Runtime Build & Scan') {
+            options { timeout(time: 12, unit: 'MINUTES') }
+            steps {
+                withCredentials([usernamePassword(credentialsId: 'harbor-creds', usernameVariable: 'HARBOR_USER', passwordVariable: 'HARBOR_PASS')]) {
+                    sh 'node infra/observability/terraform-runtime.mjs'
+                }
+            }
+        }
+
         stage('RabbitMQ Worker Deployment') {
             steps {
                 sh 'node infra/messaging/pipeline.mjs deploy'
@@ -328,11 +331,21 @@ pipeline {
             }
         }
 
+        stage('Terraform Isolated Plan') {
+            options { timeout(time: 8, unit: 'MINUTES') }
+            steps { sh 'node infra/observability/terraform-executor.mjs plan' }
+        }
+
         stage('Terraform Shared State') {
             options { timeout(time: 8, unit: 'MINUTES') }
             steps {
-                sh 'node infra/observability/terraform-remote.mjs'
+                sh 'node infra/observability/terraform-executor.mjs shared'
             }
+        }
+
+        stage('Terraform Failure Cleanup') {
+            options { timeout(time: 8, unit: 'MINUTES') }
+            steps { sh 'node infra/observability/terraform-executor.mjs recovery' }
         }
 
     }

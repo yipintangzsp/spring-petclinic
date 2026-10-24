@@ -235,4 +235,4 @@ print(str(w))'''
 
 
 if __name__ == "__main__":
-    main()
+    raise SystemExit("Legacy host-admin Terraform automation disabled. Run the accepted Jenkins isolated Job workflow; existing state is preserved.")
