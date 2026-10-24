@@ -63,7 +63,7 @@ pipeline {
                 sh '''
                     echo "===== MAVEN TEST ====="
                     node --test infra/observability/*.test.mjs
-                    python3 infra/observability/maven-test.py
+                    node infra/observability/maven-test.mjs
                     node infra/messaging/pipeline.mjs test
                 '''
             }
