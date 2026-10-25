@@ -144,3 +144,5 @@ test('two GiB build reserve is additional on local build node; ordinary promotio
  s.storage.devops.fs.availableBytes=old+2*1024**3+1;s.storage.devops.runtime.imageFs.availableBytes=old+2*1024**3+1;
  assert.equal(assessPreflight(s,Date.now(),2048).ok,true);assert.throws(()=>assessPreflight(s,Date.now(),1),/fixed 2048/);
 });
+
+test('security compiler reserve is four GiB above the unchanged stop line',()=>{const s=snapshot(),old=250*1024**3*0.15+8*1024**3;s.storage.devops.fs.availableBytes=old+3*1024**3;s.storage.devops.runtime.imageFs.availableBytes=old+3*1024**3;assert.equal(assessPreflight(s,Date.now(),2048).ok,true);assert.equal(assessPreflight(s,Date.now(),4096).ok,false);s.storage.devops.fs.availableBytes=old+4*1024**3+1;s.storage.devops.runtime.imageFs.availableBytes=old+4*1024**3+1;assert.equal(assessPreflight(s,Date.now(),4096).ok,true);assert.throws(()=>assessPreflight(s,Date.now(),4097));});

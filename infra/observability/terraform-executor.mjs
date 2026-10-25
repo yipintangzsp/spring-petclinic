@@ -6,6 +6,7 @@ import https from 'node:https';
 import net from 'node:net';
 import {spawnSync} from 'node:child_process';
 import {fileURLToPath} from 'node:url';
+import {requireRuntimeVulnerabilityAcceptance} from './terraform-vulnerability-gate.mjs';
 import {jobSpec,admissionPolicies,namespace} from './terraform-isolation-spec.mjs';
 const sleep=ms=>new Promise(r=>setTimeout(r,ms));
 const owner='terraform-isolation';
@@ -47,6 +48,7 @@ export async function run(mode){
  const build=process.env.BUILD_NUMBER,holder=process.env.HEAVY_HOLDER||`jenkins-petclinic-${build}`;if(!/^\d+$/.test(build??''))throw Error('Explicit build required');
  if(JSON.parse(kube(['-n','data-infra','get','lease','platform-heavy','-o','json'])).spec.holderIdentity!==holder)throw Error('Existing outer heavy Lease required');
  const runtime=JSON.parse(fs.readFileSync('target/platform/terraform-runtime.json')),source=fs.readFileSync('.git-sha','utf8').trim();if(runtime.status!=='success'||runtime.source!==source||runtime.scan.scan_status!=='Success')throw Error('Scanned matching runtime required');
+ requireRuntimeVulnerabilityAcceptance(runtime);
  const promotion=JSON.parse(fs.readFileSync('target/platform/promotion.json'));if(promotion.source!==source)throw Error('Original release gates must complete before execution bootstrap');
  const existing=kube(['get','ns',namespace,'--ignore-not-found','-o','json'])?kube(['-n',namespace,'get','jobs','-o','json']):'';if(existing&&JSON.parse(existing).items?.some(j=>j.status?.active))throw Error('Existing active Job preserved');
  const bootstrap=JSON.parse(fs.readFileSync('infra/devops-lab/iac/isolated/bootstrap.json'));applyOwned(bootstrap);

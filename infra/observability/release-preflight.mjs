@@ -8,7 +8,7 @@ import {pathToFileURL} from 'node:url';
 // These are the existing production nodes, not a cluster-wide scheduling policy.
 export const productionNodes = ['devops', 'aliyun-worker', 'ucloud-worker'];
 export function assessPreflight(s, now = Date.now(), buildGrowthMiB = 0) {
- if (![0,2048].includes(buildGrowthMiB)) throw Error('Build growth reservation must be the fixed 2048 MiB or the ordinary post-build gate');
+ if (![0,2048,4096].includes(buildGrowthMiB)) throw Error('Build growth reservation must be fixed 2048 or 4096 MiB, or the ordinary post-build gate');
  const blockers = [], nodes = [];
  const requiredNodes = s.targetNodes ?? productionNodes;
  if (!requiredNodes.length) blockers.push('NO_VERIFIED_TARGET_NODE');
@@ -153,4 +153,4 @@ export async function preflight({output = 'target/platform/preflight.json', wind
  }
 }
 if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href)
- preflight({output: process.argv[2] || undefined, buildGrowthMiB: process.argv[3] === '--reserve-build-growth' ? 2048 : 0}).catch(error => {console.error(error.message); process.exitCode = 1;});
+ preflight({output: process.argv[2] || undefined, buildGrowthMiB: process.argv[3] === '--reserve-security-build-growth' ? 4096 : process.argv[3] === '--reserve-build-growth' ? 2048 : 0}).catch(error => {console.error(error.message); process.exitCode = 1;});

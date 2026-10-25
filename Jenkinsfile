@@ -54,7 +54,7 @@ pipeline {
                 // Maven clean removes target; retain the first gate's evidence outside it.
                 sh 'node infra/observability/heavy-lease.mjs acquire'
                 sh 'node infra/observability/ensure-sonar-runtime.mjs'
-                sh 'node infra/observability/release-preflight.mjs .infra-preflight-before-build.json --reserve-build-growth'
+                sh 'node infra/observability/release-preflight.mjs .infra-preflight-before-build.json --reserve-security-build-growth'
             }
         }
 
@@ -127,6 +127,11 @@ pipeline {
                     sh 'node infra/observability/publish-artifacts.mjs gitlab'
                 }
             }
+        }
+
+        stage('Terraform Provider Native Build') {
+            options { timeout(time: 25, unit: 'MINUTES') }
+            steps { sh 'node --max-old-space-size=128 infra/observability/terraform-provider-build.mjs' }
         }
 
         stage('Multi-Arch Build & Push') {
@@ -353,10 +358,14 @@ pipeline {
     post {
         always {
             catchError(buildResult: 'FAILURE', stageResult: 'FAILURE') {
-                sh 'node infra/observability/heavy-lease.mjs release'
+                sh '''
+                    set -eu
+                    node --max-old-space-size=128 infra/observability/terraform-provider-build.mjs cleanup
+                    node infra/observability/heavy-lease.mjs release
+                '''
             }
             junit testResults: 'target/surefire-reports/*.xml', allowEmptyResults: true
-            archiveArtifacts artifacts: '.infra-preflight-before-build.json,.sonar-runtime-maintenance.json,target/platform/*.json,target/platform/build-*-prune.log', allowEmptyArchive: true
+            archiveArtifacts artifacts: '.infra-preflight-before-build.json,.sonar-runtime-maintenance.json,target/platform/*.json,target/platform/build-*-prune.log,target/platform/terraform-provider-build.log', allowEmptyArchive: true
         }
         success {
             echo "CI/CD SUCCESS: ${K8S_IMAGE}"
