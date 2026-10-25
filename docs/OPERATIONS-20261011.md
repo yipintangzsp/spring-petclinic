@@ -1,5 +1,7 @@
 # Petclinic 发布与按需分析操作
 
+> 2026-10-25最新：Terraform独立Job执行隔离已通过完整Jenkins #197及独立复验；真实锁竞争、重复执行、受控失败重试、60秒超时回收和状态保护均通过。旧Jenkins内执行入口已停用。当前操作及边界见[执行隔离验收](TERRAFORM-ISOLATION-20261025.md)。
+
 > #190 Terraform远端状态验收通过。新增远端状态和权限操作见Terraform手册；CI在原完整发布后执行共享状态验收，Build Now可重复运行。见[记录](TERRAFORM-20261024.md)。
 
 > Terraform接入：#189完整发布成功，新增Terraform Plan门禁，归档target/platform/terraform.json。CI只预览隔离实验；实际创建/漂移修复/清理已由受控入口通过，触发、状态与故障处理见[Terraform记录](TERRAFORM-20261024.md)。
@@ -111,9 +113,6 @@ Jenkins #159及独立灰度/蓝绿完整验收已于2026-10-20 15:19通过。两
 发布前要求Mac新鲜采样可用空间>=16GiB，nodefs/imagefs保留15%容量加8GiB，Harbor注册表和控制器均须有ready端点。两类Trivy库的版本/NextUpdate/DownloadedAt必须有效，否则先维护库再构建。维护采用infra/harbor/warm_trivy_db.py，--database db或java-db，输入官方OCI清单与按其层摘要校验的归档，脚本沿用重任务Lease和Jenkins恢复保护，经本地OCI调用正常Trivy下载。不可跳过扫描、伪造元数据或使用未经官方摘要核对的镜像站标签。
 
 
-## 2026-10-25 Terraform执行隔离验收中
+## 2026-10-25 Terraform执行隔离完成
 
-新增受限Job编排与准入已做预检，但#191整体失败，尚未完成。旧宿主/Jenkins Terraform自动化入口停用，旧状态保留。当前Jenkins非quiet、无重任务锁、无遗留计算Pod。空间仅高于原停止线约258MiB，新增镜像清理授权前不重跑完整发布。 详见[隔离进展及阻塞](TERRAFORM-ISOLATION-20261025.md)。
-
-
-2026-10-25 09:19更新：两个191本地镜像已按新增授权完成备份、恢复比对和清理（910.48MiB）；冗余公开工具下载包回收776.23MiB，安装内容不变。修正目录权限后的无网络受限容器init/validate实际通过（峰值97.21MiB）。完整隔离仍未完成，现阻塞于09:08已过期Java漏洞库的公共缓存维护授权；不降低扫描刷新4GiB余量。详见[TERRAFORM-ISOLATION-20261025.md](TERRAFORM-ISOLATION-20261025.md)最新节。
+详见[本轮验收、重跑与资源记录](TERRAFORM-ISOLATION-20261025.md)。计算按需串行1Pod，100m/384Mi请求、1CPU/512Mi上限，结束全部回收；现有状态与锁保留。构建准入保留原停止线加2GiB增长预算，扫描刷新另需4GiB。公开工具去重后路径共享inode，更新必须新文件加rename，禁止原地覆盖。扫描完成不等于零漏洞，K3s静态加密仍关闭。

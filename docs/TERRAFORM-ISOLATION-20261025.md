@@ -1,82 +1,78 @@
-# Terraform 执行隔离进展与阻塞 · 2026-10-25
+# Terraform 执行隔离验收 · 2026-10-25
 
-**尚未完成完整隔离验收。** Jenkins #191 应用发布及原有业务事件检查通过，但新增 Terraform Isolated Plan 阶段失败，整条构建为 FAILURE。当前修复已通过本地测试，尚未发布复验；不得将下列单项预检视作最终成功。
+**完整流水线 #197 SUCCESS，随后独立串行复验通过，执行隔离本轮已完成。** 此结论替代此前“验收中”记录。源码 `30e3b6ce242345246010b37bdb9e31c2fca4ecc3`；GitOps晋升 `acb658cfaf76c2a5b8b1d9669026f80b5cc7e09e`。不是只重跑末尾阶段：GitLab来源、86项Node、16项隔离Python、104项Java、41项消息Python、Sonar、双架构构建、Harbor、Argo、健康、RabbitMQ/Kafka及新增三个Terraform阶段均经过本轮完整流水线。
 
-## 10:47 真实回收链路已通过，待完整发布复验
+- [Jenkins #197](http://192.168.64.11:30659/job/petclinic-ci/197/)；在Artifacts查看 `target/platform/terraform-runtime.json`、`terraform-isolated-plan.json`、`terraform-isolated-shared.json`、`terraform-isolated-recovery.json`。
+- 应用镜像 `core.harbor.domain/petclinic/petclinic@sha256:78b4f07244b6ccccd44a79c850480e2eb2bb75805e04d5493b397ce40b82ad38`。
+- 隔离运行镜像 `127.0.0.1:30050/petclinic/terraform-runner@sha256:9906ee61cad5ffa96532e285b005397d4ad89b2a5e63011f9eebe2ac40ebf28e`，native ARM64、Terraform1.17.0、Kubernetes provider2.38.0，固定摘要、离线provider，不重复安装集群或工具。
+- 私有证据目录 `/Users/zhangsir/code/evidence/platform-20261011/terraform-isolation-20261025`；独立复验 `replay-20261025T112852`；最终状态审计 `final-audit.json`。私有完整日志保留在各报告的 `private_logs`，脱敏报告保存日志SHA256。
 
-#193应用发布、健康检查、RabbitMQ/Kafka事件、隔离计划及共享状态阶段全部通过，但Failure Cleanup最初仍失败：Kubernetes达到Job期限后正常删除Pod，控制器再读取终态Pod时集合已为空。不能将#193记为SUCCESS。
+## 已实际验证的行为
 
-已修正控制器在运行期间持续按Job/Pod UID采集日志和状态；只有明确Failed/DeadlineExceeded、此前确实观察到同一拥有者和Pod UID、并已保存HOLD_READY日志时，才允许使用超时控制器删除前的缓存证据。普通成功/失败、未观察过Pod、外来拥有者或替换UID均仍拒绝。启动/删除阶段的暂态日志HTTP失败有界重试并记录，401/403仍立即失败，最终无有效日志仍失败。
+Jenkins只构建、扫描、引导受控配置并通过受限编排身份提交Job。Terraform在 `terraform-execution` 临时Job内执行；旧宿主/Jenkins引擎入口拒绝执行，CI190私有重放入口亦已停用，原脚本及SHA保留。
 
-在已扫描193镜像上实际通过新的recovery预检（candidate-103923）：受控失败exit42→正常计划重试exit0→60秒Job DeadlineExceeded，三轮Job/Pod全部清理。超时Pod已被Kubernetes删除，容器退出码未观察到，记录null，不伪造143。随后独立审计确认活动状态及最近成功快照内容与共享状态成功报告完全一致，serial9、原state Secret UID及lineage未变；Jenkins恢复非quiet，共享锁不存在。
+运行用户65532:65532、只读根、无能力、禁止提权、AppArmor与两层seccomp、Landlock ABI8。没有Jenkins目录、Docker/containerd socket、hostPath、PVC、管理员kubeconfig、默认SA token或服务凭据环境。只读投射身份有效期600秒。网络仅允许API的10.0.0.3:6443，禁止DNS/UDP/raw/vsock/io_uring；22/8080/443/3306实际内核拒绝。访问Jenkins同端口canary需真实ICMP type3/code3拒绝，不能用服务未启动的TCP拒绝充数。读取令牌和启动Terraform前等待CNI拒绝屏障，最多15秒，未就绪则失败。
 
-最终修复的84项Node、16项Python与Maven validate通过。仍需把新采集逻辑走完整流水线至SUCCESS；当前根盘约46434MiB，未满足原停止线加2048MiB的新构建增长门槛。已向用户请求限定本轮192–196两个构建仓库本地副本的统一备份/校验/清理授权，当前已有192、193共四个；不涉及Registry/Harbor、Kubernetes镜像/缓存、190/189/183/184或持久业务数据。新范围尚未执行。
+编排身份不能读状态Secret或exec；运行身份只能管理演示ConfigMap及指定后端命名空间状态/锁，不能创建Pod/Job/Namespace。原运行身份读状态403；越界读真实403。10类非法Job（管理员身份、hostNetwork/hostPath、可写根、可变镜像、入口/lifecycle替换、token终止消息路径、特权、Secret环境）实际server dry-run403，合法请求201；旧RoleBinding恢复被准入拒绝。三组策略fail-closed且编译无警告。
 
-## 10:12 状态与最终发布准备
+共享状态真实执行A客户端持锁写入、B客户端锁竞争失败exit1、释放后B重试exit0、最终重复计划exit0；只增加/删除虚拟coordination_probe，真实ConfigMap不替换。第二轮重复执行后仍只有一个真实ConfigMap，无重复业务写入。
 
-#192的测试、Sonar、双架构镜像、Harbor扫描及GitOps晋升全部通过，但随后磁盘触发原停止线，已被资源守护中止；整轮结果为ABORTED，不能记为SUCCESS。运行镜像63f79225…及源代码bd18401…仍有完整前置检查证据。
+每轮recovery为受控失败exit42（状态写入前）→真实计划重试exit0→60秒Job期限超时。正常Job180秒、backoffLimit0；外层阶段8分钟。超时必须有实际Failed/DeadlineExceeded和HOLD_READY日志，不伪造退出码；Pod已被期限控制器删除时，只允许此前观察到同Job拥有者、同Pod UID、固定镜像及日志的缓存证据，未知退出码记null。日志接口204/启动暂态有界重试，401/403立即失败，最终缺日志或业务报告仍失败。删除Job带UID前提及Foreground，只清本轮拥有资源。
 
-用户另行授权后，仅清理两份旧公共库副本db-verified/trivy.db、java-db-verified/trivy-java.db；先逐字节确认与Mac已有官方归档完全相同，回收2876.48MiB。其余历史备份文件未变，当前公共扫描库未动，也没有新的数据外送。恢复这两份旧公共库需从Mac的trivy-db.tar.gz、trivy-java-db.tar.gz解压回传，原元数据仍保留。
+## 本轮Job及时间记录
 
-在已扫描的192固定镜像上做受控开发预检，真实独立Job计划和共享状态锁/幂等均通过；控制失败exit42与随后的正常计划重试亦通过。超时演练遇到CNI按Pod安装规则的启动竞态，固定探针曾在规则就绪前连通，因此按设计在读取令牌、执行Terraform前停止。源码现增加15秒有界拒绝屏障，必须等到真实网络拒绝才允许后续步骤；始终可达则失败。超时演练预算改为60秒，仍必须取得DeadlineExceeded与临时资源回收证据。新屏障尚待193镜像中实际验收。
+|轮次|Job|Job UID|开始 UTC|完成 UTC / 终态|退出码|回收|
+|---|---|---|---|---|---|---|
+|CI197|tf-197-plan-eda39bda|ee07b79f-9c85-4968-838c-4f82bf1fc71c|2026-10-25T11:25:16Z|2026-10-25T11:25:25Z|0|True|
+|CI197|tf-197-shared-1d8dc203|16486b60-6c60-4b68-82fd-5741f8e6d01a|2026-10-25T11:25:33Z|2026-10-25T11:25:58Z|0|True|
+|CI197|tf-197-failure-9e02f8af|b98093ee-e07c-4446-ba8b-f76f222ce31d|2026-10-25T11:26:11Z|2026-10-25T11:26:15Z BackoffLimitExceeded|42|True|
+|CI197|tf-197-plan-9e02f8af|d11e86d7-5c09-414f-a9e2-de514c2d51af|2026-10-25T11:26:17Z|2026-10-25T11:26:22Z|0|True|
+|CI197|tf-197-deadline-9e02f8af|978cef7b-d99d-497f-9c72-10e61a67db62|2026-10-25T11:26:23Z|2026-10-25T11:27:24Z DeadlineExceeded|None|True|
+|独立复验|tf-197-plan-7b47078c|319c096a-2e7b-48aa-8aff-57067f8a7c10|2026-10-25T11:29:05Z|2026-10-25T11:29:11Z|0|True|
+|独立复验|tf-197-shared-f6ec8e97|cdbdf9ee-9f60-4cac-971b-4ff9a06a02e7|2026-10-25T11:29:19Z|2026-10-25T11:29:42Z|0|True|
+|独立复验|tf-197-failure-5d370248|7518f5ec-9135-4021-a2d7-8657be7c6eaf|2026-10-25T11:29:50Z|2026-10-25T11:29:55Z BackoffLimitExceeded|42|True|
+|独立复验|tf-197-plan-5d370248|a807ccba-82c5-4803-9e2c-40a6b4ede68e|2026-10-25T11:29:56Z|2026-10-25T11:30:02Z|0|True|
+|独立复验|tf-197-deadline-5d370248|a3a24a75-b96e-4b56-ad06-3daeed29d7cb|2026-10-25T11:30:05Z|2026-10-25T11:31:06Z DeadlineExceeded|None|True|
 
-首次发布另增加原磁盘停止线之上的固定2048MiB构建增长预算，保持发布后门槛和所有运行停止阈值不变。针对192观测到的实际增长，避免再次只略过停止线即启动构建。80项Node、16项Python及Maven validate通过；最新三样本根盘48200–48208MiB，满足原门槛加2GiB；原状态/备份不迁移。
+全部Job/Pod已回收；最终审计确认Jenkins恢复非quiet、platform-heavy未持有、后端Lease holder为空。各Job的Pod UID、镜像ID、CPU计数、日志摘要、准入证据在上述JSON报告中。
 
-一次公开工具下载缓存清理的监控曾记录memory full PSI6.03%（原阈值5%），原始安全失败保留；不能宣称全部维护过程没有压力。该临时维护结束后已重新连续采样才准入后续任务。之后公共库刷新11个样本无安全失败、memory full PSI最大2.24%；192最终因磁盘停止线按记录中止。完整193仍需重新执行全部检查。
+## 状态与失败保护
 
-## 09:35 公共扫描库维护已完成
+状态Secret UID `fb5529e7-ee5b-48ce-a12f-5e54ca5996c6`，lineage `c7319894-9085-a3c1-a6f2-5cc641dfbf2c`；ConfigMap UID `b62c4251-3a1f-4d5f-9b8f-84bc365ecda4` 与原#190相同。最终serial `15`，只保留 `kubernetes_config_map_v1.environment`，原15份历史状态/计划/日志摘要未变。最近成功快照 `terraform-state/tfstate-latest-success-petclinic-remote-v1` 与活动状态一致；独立复验 `failed-batch-preserved-success.json` 核对失败、重试预览及期限超时前后两个Secret的数据摘要均未变。没有迁移旧state或销毁演示ConfigMap。
 
-用户对四个公共缓存文件的明确授权已执行：原文件完整备份并核对SHA256、大小、uid/gid及权限后临时移出；保留原15%+12GiB（含额外4GiB）的刷新准入，使用正常Trivy命令安装官方固定摘要Java库f702563b…，再逐字节恢复仍有效通用漏洞库。没有修改NextUpdate/DownloadedAt。新Java库NextUpdate为2026-10-28 08:59上海时间；通用库仍有效至10月25日15:11。两类实际磁盘元数据检查通过，维护结束恢复Jenkins、释放共享锁。完整Job隔离仍待本次流水线复验，下方待授权段落保留为历史记录。
+## 触发、查看与恢复
 
-## 09:19 最新进展
+普通源码提交或Jenkins petclinic-ci的Build Now运行完整发布，末尾串行执行 Isolated Plan → Shared State → Failure Cleanup。文档提交用 `[skip ci] [ci-skip]` 避免重复构建。只重放已验收隔离实验可在Mac执行：
 
-本轮两镜像新增授权已执行完成：完整归档609984000字节，SHA256 c8c7308c31da5f7e9e988a1e944869e790c46436f9ebaa167cc9356074c25a35；逐层核验和实际Docker恢复比对通过，仅删除获准的两个本地标签及其非共享构建缓存。实测回收910.48MiB，所有受保护镜像、卷、PVC未变。详细结果在approved-191-cleanup/result.json。
+```sh
+PETCLINIC_SSH_ADDRESS=192.168.64.11 /opt/homebrew/bin/python3 '/Users/zhangsir/code/evidence/platform-20261011/terraform-isolation-20261025/replay_isolated.py'
+```
 
-另清理18份可重建公开工具下载副本，先逐一比对包内程序与已安装程序SHA256，回收776.23MiB；所有已安装工具路径和内容未变。最新根盘约47209MiB，高于普通任务门槛，但仍低于扫描库刷新需要的原15%+12GiB门槛。
+该入口强制最新成功构建为197、精确源码及受检安全文件一致，否则拒绝，不能用旧配置覆盖后续版本。它沿用资源准入、外层共享锁、Jenkins暂停与恢复，不重建应用镜像；计算内部不重复申请platform-heavy。后续有新版本时，先更新绑定并完成完整验收。
 
-以修正权限的公开工具副本实际执行离线容器预检：无网络、无凭据、UID65532、只读根、Landlock ABI8及额外seccomp限制，Terraform1.17.0 version/init/validate全部通过，memory.peak 101928960字节。没有挂载Jenkins目录或集群管理凭据。此为开发预检，尚未证明新运行镜像或完整Job端到端成功。
+```sh
+ssh -o HostName=192.168.64.11 -o HostKeyAlias=192.168.1.58 192.168.1.58 \
+  'sudo kubectl -n terraform-execution get jobs,pods; sudo kubectl -n terraform-execution get events --sort-by=.metadata.creationTimestamp'
+```
 
-Java漏洞库在2026-10-25 09:08上海时间过期。新的明确阻塞是公共扫描缓存维护授权：拟备份核验四个公共数据库/metadata文件，临时移出以满足原4GiB刷新余量，正常刷新Java库，再精确恢复仍有效的通用漏洞库；失败恢复原缓存。自动审批拒绝了该PVC内公共缓存的备份与替换，已向用户单独请求授权，尚未执行。此前下文关于两个191镜像待授权的文字为早晨之前历史阶段，已被本节实际执行结果替代。
+临时Pod运行时可用 `kubectl -n terraform-execution logs <报告中的Pod名>`；结束后Pod被回收，应查Jenkins Artifacts和报告的private_logs，而不是把没有Pod当成没有执行。失败先看阶段报告error、每个Job conditions及私有日志；确认自身Job回收、后端锁无holder后，走受控入口重跑。不要删除他人Job/Lease，不直接force-unlock或手工改state；异常清理保持UID核对。
 
-当前工作负载准入和扫描刷新门槛均未降低。Jenkins非quiet、共享锁已释放、没有遗留计算Pod；完整隔离仍未验收完成。
+## 资源与空间
 
-## 已执行与修复
+没有新增常驻计算Pod或PVC；仅保留专用Namespace、SA/RBAC/Quota/NetworkPolicy/准入元数据与既有状态Secret/Lease。串行最多1Pod，requests100m/384Mi、limits1CPU/512Mi，临时存储128/384Mi、emptyDir256Mi。已报告任务memory.peak最大 `110.50 MiB`；超时前未报告完整峰值的任务不按0计算。
 
-- 源码78fd2fddd471052e9bdf49d4151d5d87c3234cc7按完整流水线执行。应用镜像34a52e2f…经GitOps提交ac2d17d…部署；Terraform专用镜像075eef58…构建及Harbor扫描成功，扫描成功不等于无漏洞。
-- 新命名空间terraform-execution、受限运行/编排身份、单Pod配额、NetworkPolicy及三组失败关闭的准入策略已在开发预检中落地。旧tf-remote-lab运行身份读状态403；编排身份读状态403。恢复旧RoleBinding的独立server dry-run被拒绝。
-- 合法Job server dry-run为201；错误身份、hostNetwork、hostPath、可写根、可变镜像、替换入口、lifecycle命令、token终止消息路径、特权模式、Secret环境变量十类请求均为403。明确设置Forbidden原因并对必需字段做存在性检查；未放宽seccomp/AppArmor要求。
-- 真实Pod tf-191-plan-12320123-jvq44（UID 2bb7a690-8e55-4565-b392-74e246d5d87a）以65532:65532启动，512Mi/1CPU上限。内核前置探针已到达网络检查，但该业务计划未通过。
-- 已修复控制器canary连接重置未处理，以及DELETE缺少Content-Length导致UID/级联参数未有效发送。真实本地HTTP回归测试验证DELETE正文完整。遗留自有Pod按UID正常删除，未删除finalizer；后续重放已验证Job与Pod正常回收。
-- 主机抓包证实10.42.0.154访问Jenkins canary 10.42.0.3:6443收到ICMP端口不可达，与CNI的icmp-port-unreachable拒绝规则一致。新源码要求IP_RECVERR内核错误队列明确给出ICMP origin/type3/code3，普通TCP RST或本地拒绝不通过；该新检查仍待新镜像实际验收。
-- 离线init实测发现provider目录继承700权限。新Dockerfile用COPY --chmod=0555固定公开工具目录权限，并避免chmod复制Terraform大文件层；新镜像离线init/validate仍待重新构建验证。
-- 当前本地78项Node、14项Python测试以及Maven validate通过。#191原Java与消息链路测试通过；这些不代替新增隔离任务端到端成功。
+#197资源采样38份，VM可用内存最低 `7.88 GiB`、根盘最低 `44.81 GiB`。最终根盘 `44.91 GiB`、VM可用内存 `9.13 GiB`；Mac可用盘 `43.86 GiB`。完整原始采样保留，不拿单点作准入。#196曾因Kubelet滞后样本拒绝启动；#197前连续同时核对df、Kubelet nodefs/imagefs均通过才重试。首次构建在原15%+8GiB停止线之上加2048MiB增长预算，扫描库刷新额外4GiB要求保留；未降低原阈值。
 
-## 数据及资源保护
+获授权清理均先完整归档、blob SHA及实际Docker恢复校验，只删除限定本地副本/非共享缓存。192/193本地副本回收980.56MiB；194副本489.82MiB及192–194剩余非共享缓存497.25MiB。195本地副本另回收649.46MiB，195临时JAR/.deb构建输入119.37MiB、其余未使用非共享BuildKit缓存233.90MiB；197临时JAR/.deb输入另回收119.78MiB；测试/发布报告保留。Registry/Harbor原件、所有Kubernetes镜像/缓存、190/189/183/184、业务库/卷/PVC保留。各archive-verification/result.json记录归档及保护对象核对。两份旧公共漏洞库副本另按单独授权回收2876.48MiB，可从既有Mac官方归档恢复；当前库正常刷新，不伪造NextUpdate。
 
-预检后已核对：Jobs/Pods为空、platform-heavy Lease不存在、Jenkins非quiet；远端状态Secret UID fb5529e7-ee5b-48ce-a12f-5e54ca5996c6、lineage c7319894-9085-a3c1-a6f2-5cc641dfbf2c、serial5，仅一个真实ConfigMap。原15份状态/计划/日志SHA256全部未变。没有迁移旧状态或删除业务对象。
+公开固定工具v20–v23的24个相同文件通过硬链接去重回收1716.82MiB，内容/版本/属主/权限未变。**这些路径现共享inode：升级必须新文件写好后逐路径rename，禁止原地truncate/覆盖共享inode。** 如需拆分，用copy到临时文件再rename并恢复记录的权限；详见identical-public-tools-dedup/result.json。
 
-按明确授权完成原五个镜像的完整归档、逐层校验、实际Docker恢复比对和最终本地副本清理，实测回收2581.25MiB。归档1567867392字节，SHA256 c03393b41a99ab18ae728c5e24610fa713f667b888f4a9672dc54c2123d07e33。MySQL只备份原本实际存在的ARM64平台内容，原Docker内容库缺失的两个AMD64描述符不虚称已备份。#191后来重新拉取的mysql:9.7内容与旧备份不同，未删除该新版本。
+## 保留的失败与边界
 
-另回收25条未使用、不与镜像共享的旧构建缓存，实测763.69MiB；全部Docker镜像ID和卷名不变。保留当前使用的安装缓存，没有运行全局prune。
+#191启动连接错误、#192磁盘保护ABORTED、#193期限控制器先删Pod导致采证失败、#194日志204误判、#195准入策略传播延迟、#196构建前Kubelet空间样本滞后拒绝均保留，不能写成成功。修复包括DELETE正文长度、provider目录权限、真实ICMP证据、CNI启动屏障、期限前采集、HTTP204暂态处理及合法dry-run的30秒有界生效等待。一项较早工具清理曾记录memory full PSI6.03%越过5%阈值，证据保留；随后重新连续采样才准入后续工作，不能声称整个维护过程无压力。
 
-截至01:58左右，根盘45926MiB（44.85GiB），原准入线45667.83MiB，仅余约258MiB增长空间；VM可用约9801MiB。禁止据此直接启动下一轮完整发布或降低停止线。已请求新增清理授权：完整备份校验本轮运行镜像191及应用191的Docker本地副本，再只清理这两个副本及其非共享构建缓存。Kubernetes运行镜像/缓存、Registry/Harbor原件、190/189/183/184、数据库、卷、PVC保留。自动审批拒绝了超出原五镜像范围的新增归档；当前尚未执行新增备份或删除。
+Harbor扫描Success表示完成扫描，**不代表无漏洞**。本轮Terraform运行镜像扫描：`{"fixable": 110, "summary": {"Critical": 4, "High": 94, "Low": 65, "Medium": 109, "Unknown": 3}, "total": 275}`。仍有漏洞项需另行修复，未篡改质量结论。此处不宣称Harbor全平台High清零。
 
-## 待完成的最终矩阵
+Jenkins引导/部署身份仍是可信管理员；本隔离不防集群管理员修改策略，也不是对内核漏洞的保证。K3s Secret静态加密仍关闭，示例状态只含公开ConfigMap，不应存放生产敏感状态。未新增跨机高可用/异地备份，其他专题结论沿用各自验收记录。
 
-1. 新镜像完成正常构建、Harbor扫描、离线init/validate及真实Job计划。
-2. 在Job内完成共享状态A/B真实锁冲突、等待后重试、幂等与最新成功快照读回。
-3. 控制失败exit42、真实Job deadline、全部UID回收、Jenkins/重任务锁恢复。
-4. 内核错误队列证据、前后健康canary、实际API越权拒绝及镜像摘要同时通过。
-5. 重新执行完整流水线至SUCCESS，再复核状态UID/lineage、历史摘要和最终资源，更新文档。
-
-运行资源：每次仅一个Pod，requests100m/384Mi、limits1CPU/512Mi，ephemeral-storage128/384Mi、emptyDir256Mi，Job deadline180s、重试0；失败演练deadline25s。沿用外层共享锁，不在Job里再次申请同一把锁。镜像内置provider离线镜像源，无DNS/包下载需求。
-
-## 后续入口与排查
-
-空间授权和准入通过后，继续现有petclinic-ci完整发布。新增阶段为Terraform Runtime Build & Scan、Terraform Isolated Plan、Terraform Shared State、Terraform Failure Cleanup。Jenkins只负责可信部署编排，Terraform引擎只在Job内执行；现有源码中的旧Jenkins/宿主自动化入口已拒绝执行，旧状态保留。
-
-查看Jenkins阶段控制台，以及target/platform/terraform-runtime.json、terraform-isolated-{plan,shared,recovery}.json。私有原日志位于Jenkins /var/jenkins_home/terraform-runs/isolated-*；异常记录保留Job/Pod UID、退出码、日志摘要和清理状态。Job/Pod回收后从归档排查，不假定临时Pod一直存在。失败时先核对UID/owner及真实状态锁；禁止对业务资源执行destroy或盲目强解锁。
-
-K3s Secret静态加密仍关闭；这是独立遗留，不把受限执行身份等同于节点静态数据加密。可信部署控制器仍具有管理权限，本轮隔离目标是Terraform代码不能获得Jenkins文件、宿主目录、Docker socket或管理凭据，不宣称能抵御集群管理员主动撤销政策。
-
-证据根目录：/Users/zhangsir/code/evidence/platform-20261011/terraform-isolation-20261025。原#190独立共享状态验收保留，但不能代替本轮Job隔离结果。
+下一次完整构建启动预算仍差约1728MiB；本轮197本地构建镜像不在192–196清理授权内，因此保留。现有应用与受检隔离重放可运行，后续完整构建须先恢复预算，不能降低停止线。

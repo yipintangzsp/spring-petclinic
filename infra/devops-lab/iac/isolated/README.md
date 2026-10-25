@@ -1,6 +1,6 @@
 # Terraform execution sandbox
 
-Status: implementation under acceptance; CI191 failed. See docs/TERRAFORM-ISOLATION-20261025.md before treating any contract below as verified. Full isolated plan/shared-state/failure acceptance remains pending.
+Status: full Jenkins CI197 SUCCESS plus independent plan/shared/recovery replay accepted. See docs/TERRAFORM-ISOLATION-20261025.md for exact Jobs, evidence, replay entrypoint and remaining security limitations.
 
 Terraform 1.17.0 and Kubernetes provider 2.38.0 execute only in ephemeral native ARM64 Kubernetes Jobs. Jenkins builds, scans and submits a digest-pinned runtime; it does not execute Terraform. Legacy Jenkins/host automation entrypoints reject execution and preserve prior state.
 

@@ -1,5 +1,7 @@
 # 实测资源与按需运行策略 · 2026-10-11
 
+> 2026-10-25最新：Terraform独立Job执行隔离已通过完整Jenkins #197及独立复验；真实锁竞争、重复执行、受控失败重试、60秒超时回收和状态保护均通过。旧Jenkins内执行入口已停用。当前操作及边界见[执行隔离验收](TERRAFORM-ISOLATION-20261025.md)。
+
 > #190 Terraform远端状态验收通过。Terraform复用原CI重任务锁与Jenkins计算；provider共享缓存避免重复解包，元数据配额禁止Pod/PVC扩张。静态加密及完整管理员隔离未实现。见[记录](TERRAFORM-20261024.md)。
 
 > Terraform接入未新增常驻Pod。Jenkins计划阶段复用原锁和执行容器；受控实验按1024MiB准入，每步768MiB/1CPU/600秒，实际峰值129.89MiB，结束后进程、实验资源和锁均清理。私有plan/state目录保留，不作空间恒定承诺。详见[验收](TERRAFORM-20261024.md)。
@@ -151,9 +153,6 @@ cert-manager三控制器和独立Web常驻requests CPU225m/内存344Mi，内存l
 发布实验继续共用platform-heavy Lease，先Jenkins quiet后启动；1024Mi预算加1250Mi储备，灰度/蓝绿串行，结束确认web为0才释放。96Mi的Jenkins中继禁止并行Node exec；读取构建状态/归档同样必须持有petclinic-jenkins-relay.lock串行执行。本轮曾因未遵守串行约束触发OOM保护，已保留失败和恢复证据，未降低阈值或扩大中继限额。[详细资源采样](ROLLOUTS-LAB-20261020.md)。
 
 
-## 2026-10-25 Terraform隔离任务预算及磁盘阻塞
+## 2026-10-25 Terraform执行隔离完成
 
-Job串行，requests100m/384Mi、limits1CPU/512Mi，临时存储128/384Mi、emptyDir256Mi。复用platform-heavy及原停止线。原五镜像清理回收2581.25MiB、旧非共享构建缓存回收763.69MiB；构建拉取新MySQL及专用运行镜像后，最新根盘45926MiB，距45667.83MiB门槛仅约258MiB，不能视为下一轮发布的足够增长预算。 详见[隔离进展及阻塞](TERRAFORM-ISOLATION-20261025.md)。
-
-
-2026-10-25 09:19更新：两个191本地镜像已按新增授权完成备份、恢复比对和清理（910.48MiB）；冗余公开工具下载包回收776.23MiB，安装内容不变。修正目录权限后的无网络受限容器init/validate实际通过（峰值97.21MiB）。完整隔离仍未完成，现阻塞于09:08已过期Java漏洞库的公共缓存维护授权；不降低扫描刷新4GiB余量。详见[TERRAFORM-ISOLATION-20261025.md](TERRAFORM-ISOLATION-20261025.md)最新节。
+详见[本轮验收、重跑与资源记录](TERRAFORM-ISOLATION-20261025.md)。计算按需串行1Pod，100m/384Mi请求、1CPU/512Mi上限，结束全部回收；现有状态与锁保留。构建准入保留原停止线加2GiB增长预算，扫描刷新另需4GiB。公开工具去重后路径共享inode，更新必须新文件加rename，禁止原地覆盖。扫描完成不等于零漏洞，K3s静态加密仍关闭。

@@ -1,5 +1,7 @@
 # 全平台盘点 · 2026-10-12
 
+> 2026-10-25最新：Terraform独立Job执行隔离已通过完整Jenkins #197及独立复验；真实锁竞争、重复执行、受控失败重试、60秒超时回收和状态保护均通过。旧Jenkins内执行入口已停用。当前操作及边界见[执行隔离验收](TERRAFORM-ISOLATION-20261025.md)。
+
 > #190 Terraform远端状态验收通过。Terraform新增2个专用命名空间的元数据/RBAC、1个演示ConfigMap及状态Secret/Lease；未新增工作负载Pod/PVC。见[记录](TERRAFORM-20261024.md)。
 
 > 2026-10-24 Terraform CLI：服务器已安装1.17.0 ARM64，保留1.7.0；官方摘要校验及本地初始化/执行/幂等验证通过，无新增常驻Pod。已通过Jenkins #189计划阶段及新版真实隔离生命周期验收；未接管生产资源，见[安装验收](TERRAFORM-20261024.md)。
@@ -257,9 +259,6 @@ Argo Rollouts v1.10.1现已完成独立功能验收：真实灰度分流、Prome
 - 按需关闭或仍受条件限制：Superset worker、云端Trino worker以及其他非本轮必要重组件保持原策略；云端Trino阻塞原因没有宣称已解决。
 
 
-## 2026-10-25 Terraform隔离状态
+## 2026-10-25 Terraform执行隔离完成
 
-Terraform远端状态/锁保留#190独立验收；本轮独立Job执行隔离仍未通过最终验收。新增terraform-execution命名空间、受限SA/RBAC/Quota/NetworkPolicy及三组准入政策，当前计算Pod为0；不将这些配置安装视作业务成功。 详见[隔离进展及阻塞](TERRAFORM-ISOLATION-20261025.md)。
-
-
-2026-10-25 09:19更新：两个191本地镜像已按新增授权完成备份、恢复比对和清理（910.48MiB）；冗余公开工具下载包回收776.23MiB，安装内容不变。修正目录权限后的无网络受限容器init/validate实际通过（峰值97.21MiB）。完整隔离仍未完成，现阻塞于09:08已过期Java漏洞库的公共缓存维护授权；不降低扫描刷新4GiB余量。详见[TERRAFORM-ISOLATION-20261025.md](TERRAFORM-ISOLATION-20261025.md)最新节。
+详见[本轮验收、重跑与资源记录](TERRAFORM-ISOLATION-20261025.md)。计算按需串行1Pod，100m/384Mi请求、1CPU/512Mi上限，结束全部回收；现有状态与锁保留。构建准入保留原停止线加2GiB增长预算，扫描刷新另需4GiB。公开工具去重后路径共享inode，更新必须新文件加rename，禁止原地覆盖。扫描完成不等于零漏洞，K3s静态加密仍关闭。

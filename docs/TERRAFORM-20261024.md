@@ -1,6 +1,6 @@
 # Terraform 平台接入与远端状态验收 · 2026-10-24
 
-> 2026-10-25更新：执行隔离改造正在验收，#191整体FAILURE，未完成；已修复项、真实证据与空间授权阻塞见[TERRAFORM-ISOLATION-20261025.md](TERRAFORM-ISOLATION-20261025.md)。下文#189/#190为历史验收，旧宿主自动化入口已停用。
+> 2026-10-25最新：Terraform独立Job执行隔离已通过完整Jenkins #197及独立复验；真实锁竞争、重复执行、受控失败重试、60秒超时回收和状态保护均通过。旧Jenkins内执行入口已停用。当前操作及边界见[执行隔离验收](TERRAFORM-ISOLATION-20261025.md)。
 
 > 历史：#190完整发布与Terraform Shared State验收成功；Kubernetes远端状态、真实写锁竞争、跨目录零变更、短期受限身份和越权403均通过。旧本地状态未迁移。K3s静态加密仍关闭，Jenkins引导身份仍具管理员权限；本轮不宣称完整执行隔离。
 
@@ -47,7 +47,7 @@ CI只生成并检查隔离实验的3个create，不自动apply：命名空间tf-
 
 最终核验：实验namespace和共享Lease不存在，所有瞬时进程已停止，Jenkins恢复原非quiet状态；Spark Operator/Webhook保持1/1，Flink维持按需0。26次工具调用最大观测cgroup内存峰值129.89MiB，每步硬上限768MiB、CPU100%、最多600秒；完整流程准入1024MiB加既有安全储备，未降低资源停止线。本轮最终VM可用9.78GiB、根盘空闲45.89GiB，仅代表记录时刻。
 
-使用入口：Jenkins的petclinic-ci普通提交/Build Now会运行完整流水线并显示Terraform Plan；查看该stage控制台和terraform.json。CI有意不自动apply Kubernetes。需要重复完整隔离实验时，从Mac现有仓库使用下列受控入口（证据路径每次换一个全新目录）：
+以下为已停用的历史入口，当前请使用2026-10-25隔离验收手册。历史使用入口：Jenkins的petclinic-ci普通提交/Build Now会运行完整流水线并显示Terraform Plan；查看该stage控制台和terraform.json。CI有意不自动apply Kubernetes。需要重复完整隔离实验时，从Mac现有仓库使用下列受控入口（证据路径每次换一个全新目录）：
 
 ```sh
 PETCLINIC_SSH_ADDRESS=192.168.64.11 python3 infra/devops-lab/iac/run.py \
