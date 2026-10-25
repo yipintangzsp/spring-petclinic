@@ -51,3 +51,16 @@ class KernelRejectionProof(unittest.TestCase):
 
     def test_unrelated_icmp_cannot_pass(self):
         with self.assertRaises(RuntimeError): icmp_rejection(self.entry(code=1))
+
+from worker import wait_for_canary_policy
+
+class PolicyReadiness(unittest.TestCase):
+    def test_reachable_canary_requires_later_kernel_rejection(self):
+        now=[0.0];responses=iter([None,None,{'origin':'kernel-ICMP','icmp_type':3,'icmp_code':3}])
+        r=wait_for_canary_policy('test',connect=lambda host:next(responses),clock=lambda:now[0],sleep=lambda seconds:now.__setitem__(0,now[0]+seconds))
+        self.assertEqual(r['origin'],'kernel-ICMP');self.assertEqual(r['readiness_attempts'],3);self.assertTrue(r['initially_reachable'])
+
+    def test_permanently_open_canary_never_authorizes_work(self):
+        now=[0.0]
+        with self.assertRaisesRegex(RuntimeError,'no token read or Terraform execution'):
+            wait_for_canary_policy('test',connect=lambda host:None,clock=lambda:now[0],sleep=lambda seconds:now.__setitem__(0,now[0]+seconds))

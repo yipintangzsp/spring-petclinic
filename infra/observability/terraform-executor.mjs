@@ -45,9 +45,9 @@ export async function run(mode){
  const requireStatus=(x,allowed)=>{if(!allowed.includes(x.status))throw Error('Scoped API HTTP '+x.status+': '+String(x.value?.message??'').slice(-1000));return x.value;};
  async function dryRun(job){return api('POST',route+'?dryRun=All',job);}
  async function execute(kind){
-  const job=structuredClone(base);job.metadata.name=`tf-${build}-${kind}-${nonce}`;job.metadata.labels['petclinic.devops.local/run']=job.metadata.name;job.spec.template.metadata.labels['petclinic.devops.local/run']=job.metadata.name;job.spec.template.spec.containers[0].env.find(x=>x.name==='EXECUTION_MODE').value=kind;if(kind==='deadline')job.spec.activeDeadlineSeconds=25;
+  const job=structuredClone(base);job.metadata.name=`tf-${build}-${kind}-${nonce}`;job.metadata.labels['petclinic.devops.local/run']=job.metadata.name;job.spec.template.metadata.labels['petclinic.devops.local/run']=job.metadata.name;job.spec.template.spec.containers[0].env.find(x=>x.name==='EXECUTION_MODE').value=kind;if(kind==='deadline')job.spec.activeDeadlineSeconds=60;
   const created=requireStatus(await api('POST',route,job),[201]),name=created.metadata.name,uid=created.metadata.uid;let terminal,pods,log='',result;
-  const record={name,uid,kind,cleanup_completed:false};evidence.jobs.push(record);
+  const record={name,uid,kind,active_deadline_seconds:job.spec.activeDeadlineSeconds,cleanup_completed:false};evidence.jobs.push(record);
   console.log('TF_ISOLATED_JOB '+name+' UID='+uid);
   try{
    for(let i=0;i<80;i++){

@@ -54,7 +54,7 @@ pipeline {
                 // Maven clean removes target; retain the first gate's evidence outside it.
                 sh 'node infra/observability/heavy-lease.mjs acquire'
                 sh 'node infra/observability/ensure-sonar-runtime.mjs'
-                sh 'node infra/observability/release-preflight.mjs .infra-preflight-before-build.json'
+                sh 'node infra/observability/release-preflight.mjs .infra-preflight-before-build.json --reserve-build-growth'
             }
         }
 

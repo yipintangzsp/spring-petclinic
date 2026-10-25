@@ -106,6 +106,40 @@ def icmp_rejection(ancillary):
     raise RuntimeError('Connection refusal without kernel ICMP policy-rejection evidence')
 
 
+def canary_attempt(host):
+    canary = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    canary.setsockopt(socket.SOL_IP, 11, 1)
+    canary.settimeout(0.5)
+    try:
+        canary.connect((host, 6443))
+        return None
+    except (TimeoutError, socket.timeout):
+        return {'kind': 'timeout'}
+    except OSError as error:
+        if error.errno == errno.ECONNREFUSED:
+            _, ancillary, _, _ = canary.recvmsg(1, 256, socket.MSG_ERRQUEUE | socket.MSG_DONTWAIT)
+            return icmp_rejection(ancillary)
+        if error.errno in [errno.ETIMEDOUT, errno.EHOSTUNREACH, errno.ENETUNREACH]:
+            return {'errno': error.errno}
+        raise RuntimeError('Unexpected canary rejection errno=' + str(error.errno)) from error
+    finally:
+        canary.close()
+
+
+def wait_for_canary_policy(host, connect=canary_attempt, clock=time.monotonic, sleep=time.sleep):
+    started = clock()
+    attempts = 0
+    while clock() - started < 15:
+        attempts += 1
+        proof = connect(host)
+        if proof is not None:
+            return {**proof, 'readiness_attempts': attempts, 'readiness_wait_seconds': round(clock() - started, 3), 'initially_reachable': attempts > 1}
+        # A reachable canary never authorizes token reads or Terraform startup.
+        # Wait for the CNI to install its per-Pod rules, then require real rejection.
+        sleep(0.25)
+    raise RuntimeError('Network policy readiness timed out; no token read or Terraform execution allowed')
+
+
 def probe_isolation(sandbox):
     status = dict(line.split(':', 1) for line in Path('/proc/self/status').read_text().splitlines())
     for key, expected in [('NoNewPrivs', '1'), ('Seccomp', '2')]:
@@ -156,26 +190,7 @@ def probe_isolation(sandbox):
         else:
             s.close()
             raise RuntimeError('Forbidden socket family/type allowed')
-    rejection = {'kind': 'timeout'}
-    canary = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    canary.setsockopt(socket.SOL_IP, 11, 1)
-    canary.settimeout(2)
-    try:
-        canary.connect((os.environ['CANARY_IP'], 6443))
-    except (TimeoutError, socket.timeout):
-        pass
-    except OSError as error:
-        if error.errno == errno.ECONNREFUSED:
-            _, ancillary, _, _ = canary.recvmsg(1, 256, socket.MSG_ERRQUEUE | socket.MSG_DONTWAIT)
-            rejection = icmp_rejection(ancillary)
-        elif error.errno in [errno.ETIMEDOUT, errno.EHOSTUNREACH, errno.ENETUNREACH]:
-            rejection = {'errno': error.errno}
-        else:
-            raise RuntimeError('Unexpected canary rejection errno=' + str(error.errno)) from error
-    else:
-        raise RuntimeError('Jenkins canary reachable through egress policy')
-    finally:
-        canary.close()
+    rejection = wait_for_canary_policy(os.environ['CANARY_IP'])
     return {'network_policy_canary_blocked': True, 'canary_rejection': rejection, 'uid': os.getuid(), 'gid': os.getgid(), 'root_read_only': True, 'admin_paths_absent': forbidden,
             'no_new_privileges': True, 'effective_capabilities': 0, 'seccomp_mode': 2,
             'seccomp_filters': int(status['Seccomp_filters'].strip()), 'apparmor': profile,

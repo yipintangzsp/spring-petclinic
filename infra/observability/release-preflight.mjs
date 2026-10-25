@@ -7,10 +7,12 @@ import {pathToFileURL} from 'node:url';
 
 // These are the existing production nodes, not a cluster-wide scheduling policy.
 export const productionNodes = ['devops', 'aliyun-worker', 'ucloud-worker'];
-export function assessPreflight(s, now = Date.now()) {
+export function assessPreflight(s, now = Date.now(), buildGrowthMiB = 0) {
+ if (![0,2048].includes(buildGrowthMiB)) throw Error('Build growth reservation must be the fixed 2048 MiB or the ordinary post-build gate');
  const blockers = [], nodes = [];
  const requiredNodes = s.targetNodes ?? productionNodes;
  if (!requiredNodes.length) blockers.push('NO_VERIFIED_TARGET_NODE');
+ if (buildGrowthMiB && !requiredNodes.includes('devops')) blockers.push('BUILD_NODE_DISK_MEASUREMENT_REQUIRED');
  if (requiredNodes.includes('devops')) {
   const host = s.hostSample, age = now / 1000 - host?.at, mac = host?.mac;
   if (!Number.isFinite(age) || age < -5 || age > 90) blockers.push('devops: FRESH_HOST_MEASUREMENT_REQUIRED');
@@ -38,7 +40,7 @@ export function assessPreflight(s, now = Date.now()) {
   for (const [kind, stats] of Object.entries({nodefs: storage?.fs, imagefs: storage?.runtime?.imageFs})) {
    const age = (now - Date.parse(stats?.time)) / 1000;
    const capacity = stats?.capacityBytes, available = stats?.availableBytes;
-   const required = capacity * 0.15 + 8 * 1024 ** 3;
+   const required = capacity * 0.15 + 8 * 1024 ** 3 + (name === 'devops' ? buildGrowthMiB * 1024 ** 2 : 0);
    if (!Number.isFinite(age) || age < -5 || age > 90 || !(capacity > 0) || !Number.isFinite(available))
     blockers.push(`${name}: ${kind} FRESH_DISK_MEASUREMENT_REQUIRED`);
    else if (available < required)
@@ -59,7 +61,7 @@ export function assessPreflight(s, now = Date.now()) {
  const endpointPods = new Set(endpoints.map(e => e.targetRef.uid));
  if (ready.length < desired || available < desired || endpointPods.size < desired)
   blockers.push(`BUSINESS_CAPACITY: desired=${desired}, ready=${ready.length}, available=${available}, endpointPods=${endpointPods.size}`);
- return {ok: blockers.length === 0, blockers, nodes, hostSample: s.hostSample, scannerMetadata: s.scannerMetadata, targetNodes: requiredNodes,
+ return {ok: blockers.length === 0, blockers, buildGrowthMiB, nodes, hostSample: s.hostSample, scannerMetadata: s.scannerMetadata, targetNodes: requiredNodes,
   excludedNodes: s.nodes.filter(n => !requiredNodes.includes(n.metadata.name)).map(n => ({name:n.metadata.name,conditions:n.status.conditions,renewTime:s.leases.find(l=>l.metadata.name===n.metadata.name)?.spec.renewTime})), desired, available,
   pods: s.pods.map(p => ({name: p.metadata.name, uid: p.metadata.uid, node: p.spec.nodeName,
    deletionTimestamp: p.metadata.deletionTimestamp, ready: ready.includes(p)})),
@@ -76,7 +78,7 @@ export function requireHarborRegistry(slices) {
 }
 
 
-export async function preflight({output = 'target/platform/preflight.json', windowMs = 30000, pollMs = 5000, collect} = {}) {
+export async function preflight({output = 'target/platform/preflight.json', windowMs = 30000, pollMs = 5000, collect, buildGrowthMiB = 0} = {}) {
  const samples = [], started = Date.now(), maintenance = []; let failure, stableSince = started;
  const productionCollection = !collect;
  function kube(args, input) {
@@ -123,12 +125,12 @@ export async function preflight({output = 'target/platform/preflight.json', wind
 
  try {
   while (true) {
-   let snapshot = await collect(), assessment = assessPreflight(snapshot);
+   let snapshot = await collect(), assessment = assessPreflight(snapshot, Date.now(), buildGrowthMiB);
    if (productionCollection && assessment.ok) {
     const io = scannerRefreshIO(); io.record = action => maintenance.push(action);
     const refreshed = await ensureScannerDatabases(snapshot.scannerMetadata, io);
     if (refreshed.actions.length) {
-     snapshot = await collect(); assessment = assessPreflight(snapshot); stableSince = Date.now();
+     snapshot = await collect(); assessment = assessPreflight(snapshot, Date.now(), buildGrowthMiB); stableSince = Date.now();
     }
     requireFreshScannerMetadata(snapshot.scannerMetadata);
    }
@@ -151,4 +153,4 @@ export async function preflight({output = 'target/platform/preflight.json', wind
  }
 }
 if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href)
- preflight({output: process.argv[2] || undefined}).catch(error => {console.error(error.message); process.exitCode = 1;});
+ preflight({output: process.argv[2] || undefined, buildGrowthMiB: process.argv[3] === '--reserve-build-growth' ? 2048 : 0}).catch(error => {console.error(error.message); process.exitCode = 1;});

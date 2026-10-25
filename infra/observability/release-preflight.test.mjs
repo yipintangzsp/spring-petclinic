@@ -132,3 +132,15 @@ test('Both scanner databases must be fresh before costly build work', () => {
   assert.throws(() => requireFreshScannerMetadata(stale, now), /REFRESH_REQUIRED/);
  }
 });
+
+test('initial release rejects space that passes the stop line but cannot cover measured build growth',()=>{
+ const s=snapshot(),old=250*1024**3*0.15+8*1024**3;
+ s.storage.devops.fs.availableBytes=old+1024**3;s.storage.devops.runtime.imageFs.availableBytes=old+1024**3;
+ assert.equal(assessPreflight(s).ok,true);
+ const initial=assessPreflight(s,Date.now(),2048);assert.equal(initial.ok,false);assert.match(initial.blockers.join(';'),/devops: .*DISK_HEADROOM/);assert.equal(initial.buildGrowthMiB,2048);
+});
+test('two GiB build reserve is additional on local build node; ordinary promotion gate stays unchanged',()=>{
+ const s=snapshot(),old=250*1024**3*0.15+8*1024**3;
+ s.storage.devops.fs.availableBytes=old+2*1024**3+1;s.storage.devops.runtime.imageFs.availableBytes=old+2*1024**3+1;
+ assert.equal(assessPreflight(s,Date.now(),2048).ok,true);assert.throws(()=>assessPreflight(s,Date.now(),1),/fixed 2048/);
+});
