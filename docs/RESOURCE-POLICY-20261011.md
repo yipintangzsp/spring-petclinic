@@ -163,4 +163,6 @@ cert-manager三控制器和独立Web常驻requests CPU225m/内存344Mi，内存l
 
 Provider原生编译CPU1、内存/含swap上限1536MiB、pids128、超时900秒、临时目录3GiB；Go并发1、目标堆768MiB，实际进程及cgroup峰值单独记录。源码、SDK只读，编译无网络，第二次编译使用空缓存。新增阶段使用已有Jenkins外层platform-heavy锁，不再申请第二把锁；受控清理成功后才释放。临时任务执行Pod继续按原请求100m/384Mi、限制1CPU/512Mi运行，不新增常驻计算组件。
 
-构建197–205本轮Docker本地副本的备份、逐层校验、实际恢复验证及无容器引用检查后清理已单独获准；不扩大至Kubernetes缓存、Registry/Harbor原件、PVC或其他版本。缓存和误报策略的证据保留参见[TERRAFORM漏洞治理](TERRAFORM-VULNERABILITY-ZERO-20261026.md)。Airflow联合业务验收仍是独立遗留，本轮不得代标完成。
+构建197–205本轮Docker本地副本的备份、逐层校验、实际恢复验证及无容器引用检查后清理已单独获准；不扩大至Kubernetes缓存、Registry/Harbor原件、PVC或其他版本。缓存和误报策略的证据保留参见[TERRAFORM漏洞治理](TERRAFORM-VULNERABILITY-ZERO-20261026.md)。Airflow既有验收结论沿用其独立记录；本轮不重新验收，也不代标完成。
+
+本轮最终实测：根盘可用50.99GiB、VM MemAvailable 9.92GiB、Mac数据盘56.75GiB；临时执行与编译资源均为0。CI199编译临时目录采样峰值2318MiB，3GiB上限已实测通过；CI200完整发布和独立复验通过，原始发现1/误报1/真实0，详见治理记录。

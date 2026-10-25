@@ -1,5 +1,7 @@
 # Terraform 执行隔离验收 · 2026-10-25
 
+> 以下为CI197历史验收。当前安全运行镜像已由完整CI200及独立复验接续，真实漏洞0、误报1、原始1；当前版本、摘要、资源政策及重跑方式见[2026-10-26记录](TERRAFORM-VULNERABILITY-ZERO-20261026.md)。
+
 **完整流水线 #197 SUCCESS，随后独立串行复验通过，执行隔离本轮已完成。** 此结论替代此前“验收中”记录。源码 `30e3b6ce242345246010b37bdb9e31c2fca4ecc3`；GitOps晋升 `acb658cfaf76c2a5b8b1d9669026f80b5cc7e09e`。不是只重跑末尾阶段：GitLab来源、86项Node、16项隔离Python、104项Java、41项消息Python、Sonar、双架构构建、Harbor、Argo、健康、RabbitMQ/Kafka及新增三个Terraform阶段均经过本轮完整流水线。
 
 - [Jenkins #197](http://192.168.64.11:30659/job/petclinic-ci/197/)；在Artifacts查看 `target/platform/terraform-runtime.json`、`terraform-isolated-plan.json`、`terraform-isolated-shared.json`、`terraform-isolated-recovery.json`。

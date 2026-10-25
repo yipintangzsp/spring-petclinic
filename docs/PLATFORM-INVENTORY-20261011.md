@@ -262,3 +262,10 @@ Argo Rollouts v1.10.1现已完成独立功能验收：真实灰度分流、Prome
 ## 2026-10-25 Terraform执行隔离完成
 
 详见[本轮验收、重跑与资源记录](TERRAFORM-ISOLATION-20261025.md)。计算按需串行1Pod，100m/384Mi请求、1CPU/512Mi上限，结束全部回收；现有状态与锁保留。构建准入保留原停止线加2GiB增长预算，扫描刷新另需4GiB。公开工具去重后路径共享inode，更新必须新文件加rename，禁止原地覆盖。扫描完成不等于零漏洞，K3s静态加密仍关闭。
+
+
+## 2026-10-26 Terraform运行镜像治理完成
+
+Terraform已接入完整发布、受限计划/共享远端状态/失败恢复流程；完整CI200和独立复验通过。执行运行镜像真实漏洞0、已核实误报1、原始Unknown1，30个Alpine包和117个provider Go模块0发现，Terraform唯一误报单列；不代表其他组件或全库清零。原生provider3.4.0-petclinic.1、Go1.27.3编译证明与固定摘要见[验收记录](TERRAFORM-VULNERABILITY-ZERO-20261026.md)。
+
+当前常驻Terraform计算=0、执行Pod/PVC=0；串行临时Pod100m/384Mi请求、1CPU/512Mi上限。编译容器和临时目录回收，持久工具缓存和后端状态/锁保留。主盘258GiB，资源采样与控制以最新治理/资源政策为准；其他业务、Spark Operator/Webhook及既有Airflow运行策略不因本轮被改写。
