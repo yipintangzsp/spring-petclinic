@@ -22,7 +22,7 @@ function call(bin,args,options={}) {
 export function validateRecipe(r) {
  if(r.schema_version!==1||!/^3\.4\.0-petclinic\.\d+$/.test(r.version)||r.go_version!=='go1.27.3')throw Error('Explicit supported custom provider recipe required');
  if(!/^python@sha256:[a-f0-9]{64}$/.test(r.builder_image))throw Error('Pinned builder required');
- const bounds={cpu:1,memory_mib:1536,pids:128,timeout_seconds:900,scratch_mib:2048};if(!r.limits||Object.keys(r.limits).length!==Object.keys(bounds).length||Object.entries(bounds).some(([k,v])=>r.limits[k]!==v))throw Error('Fixed builder resource bounds required');
+ const bounds={cpu:1,memory_mib:1536,pids:128,timeout_seconds:900,scratch_mib:3072};if(!r.limits||Object.keys(r.limits).length!==Object.keys(bounds).length||Object.entries(bounds).some(([k,v])=>r.limits[k]!==v))throw Error('Fixed builder resource bounds required');
  if(JSON.stringify(r.build_flags)!==JSON.stringify(['-mod=vendor','-trimpath','-buildvcs=false','-ldflags=-s -w -buildid=']))throw Error('Fixed reproducible build flags required');
  if(r.source_archive_root!=='terraform-provider-kubernetes-3.4.0'||r.upstream_version!=='3.4.0')throw Error('Fixed upstream source required');
  const names=Object.keys(r.inputs??{}).sort();
@@ -104,7 +104,7 @@ python3 -c 'import hashlib,json,pathlib; p=pathlib.Path("/work/result"); a=hashl
   report.observed_confinement={uid:observed.Config.User,network:hc.NetworkMode,read_only_root:hc.ReadonlyRootfs,cap_drop:hc.CapDrop,apparmor:observed.AppArmorProfile,no_new_privileges:true,memory_bytes:hc.Memory,memory_and_swap_bytes:hc.MemorySwap,nano_cpus:hc.NanoCpus,pids_limit:hc.PidsLimit};
 
   const fd=fs.openSync(logFile,'w');let timer,guard,error;
-  try{await new Promise((resolve,reject)=>{const child=spawn('docker',['start','-a',id],{stdio:['ignore',fd,fd]});timer=setTimeout(()=>{error=Error('Provider build timeout');try{stop();}catch(e){error=e;}},c.r.limits.timeout_seconds*1000);guard=setInterval(()=>{try{requireLease(build);const used=Number(call('du',['-sm',work]).split(/\s/)[0]);if(used>c.r.limits.scratch_mib)throw Error('Provider scratch budget exceeded');}catch(e){error=e;try{stop();}catch(e2){error=e2;}}},5000);child.once('error',reject);child.once('exit',code=>code===0&&!error?resolve():reject(error??Error('Native provider build failed: '+code)));});}finally{clearTimeout(timer);clearInterval(guard);fs.closeSync(fd);}
+  try{await new Promise((resolve,reject)=>{const child=spawn('docker',['start','-a',id],{stdio:['ignore',fd,fd]});timer=setTimeout(()=>{error=Error('Provider build timeout');try{stop();}catch(e){error=e;}},c.r.limits.timeout_seconds*1000);guard=setInterval(()=>{try{requireLease(build);const used=Number(call('du',['-sm',work]).split(/\s/)[0]);report.scratch_peak_mib=Math.max(report.scratch_peak_mib??0,used);if(used>c.r.limits.scratch_mib)throw Error('Provider scratch budget exceeded');}catch(e){error=e;try{stop();}catch(e2){error=e2;}}},5000);child.once('error',reject);child.once('exit',code=>code===0&&!error?resolve():reject(error??Error('Native provider build failed: '+code)));});}finally{clearTimeout(timer);clearInterval(guard);fs.closeSync(fd);}
   const x=ownedInspect();report.container={id,exit:x.State.ExitCode,oom_killed:x.State.OOMKilled,started_at:x.State.StartedAt,finished_at:x.State.FinishedAt,limits:c.r.limits};
   if(x.State.ExitCode!==0||x.State.OOMKilled)throw Error('Provider build did not complete normally');
   if(hasUnmaintainedOpenpgpPath(work+'/scratch/result/a'))throw Error('Unmaintained OpenPGP package present in rebuilt provider');
