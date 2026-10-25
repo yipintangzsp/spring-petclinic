@@ -20,6 +20,11 @@ export function client(token,options={}){
  return (method,url,body)=>new Promise((resolve,reject)=>{const payload=body===undefined?undefined:Buffer.from(JSON.stringify(body));const r=transport.request(origin+url,{method,ca,headers:{Authorization:'Bearer '+token,'Content-Type':'application/json',...(payload?{'Content-Length':payload.length}:{})},timeout:12000},res=>{let text='';res.on('data',c=>text+=c);res.on('end',()=>{let value;try{value=JSON.parse(text);}catch{value=text;}resolve({status:res.statusCode,value,text});});});r.on('error',reject);r.on('timeout',()=>r.destroy(Error('Scoped API timeout')));r.end(payload);});
 }
 export function createCanaryServer(){return net.createServer(socket=>{socket.on('error',()=>{});socket.end('terraform-isolation-canary');});}
+export function observedLog(previous,response){
+ if(response.status===200)return response.text||previous;
+ if([204,400,404,408,429,500,502,503,504].includes(response.status))return previous;
+ throw Error('Owned live logs unavailable: HTTP '+response.status);
+}
 export function selectOwnedPod(pods,previous,uid,allowRemoved=false){
  if(pods.length>1)throw Error('Unexpected owned Pod set');
  const pod=pods[0]??(allowRemoved?previous:null);
@@ -63,7 +68,7 @@ export async function run(mode){
     if(pods.length){
      observedPod=selectOwnedPod(pods,observedPod,uid);Object.assign(record,{pod:observedPod.metadata.name,pod_uid:observedPod.metadata.uid,last_pod_observed_at:new Date().toISOString()});
      const response=await api('GET',`/api/v1/namespaces/${namespace}/pods/${observedPod.metadata.name}/log?limitBytes=262144`);
-     if(response.status===200)log=response.text;else{record.log_poll_errors??=[];if(record.log_poll_errors.length<20)record.log_poll_errors.push({http:response.status,message:String(response.value?.message??'').slice(0,300),at:new Date().toISOString()});if(![400,404,408,429,500,502,503,504].includes(response.status))throw Error('Owned live logs unavailable: HTTP '+response.status);}
+     if(response.status!==200){record.log_poll_errors??=[];if(record.log_poll_errors.length<20)record.log_poll_errors.push({http:response.status,message:String(response.value?.message??'').slice(0,300),at:new Date().toISOString()});}log=observedLog(log,response);
     }
     if(current.status?.conditions?.some(x=>['Complete','Failed'].includes(x.type)&&x.status==='True')){terminal=current;break;}
     await sleep(2500);
