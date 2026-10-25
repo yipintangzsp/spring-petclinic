@@ -2,6 +2,16 @@
 
 **尚未完成完整隔离验收。** Jenkins #191 应用发布及原有业务事件检查通过，但新增 Terraform Isolated Plan 阶段失败，整条构建为 FAILURE。当前修复已通过本地测试，尚未发布复验；不得将下列单项预检视作最终成功。
 
+## 10:47 真实回收链路已通过，待完整发布复验
+
+#193应用发布、健康检查、RabbitMQ/Kafka事件、隔离计划及共享状态阶段全部通过，但Failure Cleanup最初仍失败：Kubernetes达到Job期限后正常删除Pod，控制器再读取终态Pod时集合已为空。不能将#193记为SUCCESS。
+
+已修正控制器在运行期间持续按Job/Pod UID采集日志和状态；只有明确Failed/DeadlineExceeded、此前确实观察到同一拥有者和Pod UID、并已保存HOLD_READY日志时，才允许使用超时控制器删除前的缓存证据。普通成功/失败、未观察过Pod、外来拥有者或替换UID均仍拒绝。启动/删除阶段的暂态日志HTTP失败有界重试并记录，401/403仍立即失败，最终无有效日志仍失败。
+
+在已扫描193镜像上实际通过新的recovery预检（candidate-103923）：受控失败exit42→正常计划重试exit0→60秒Job DeadlineExceeded，三轮Job/Pod全部清理。超时Pod已被Kubernetes删除，容器退出码未观察到，记录null，不伪造143。随后独立审计确认活动状态及最近成功快照内容与共享状态成功报告完全一致，serial9、原state Secret UID及lineage未变；Jenkins恢复非quiet，共享锁不存在。
+
+最终修复的84项Node、16项Python与Maven validate通过。仍需把新采集逻辑走完整流水线至SUCCESS；当前根盘约46434MiB，未满足原停止线加2048MiB的新构建增长门槛。已向用户请求限定本轮192–196两个构建仓库本地副本的统一备份/校验/清理授权，当前已有192、193共四个；不涉及Registry/Harbor、Kubernetes镜像/缓存、190/189/183/184或持久业务数据。新范围尚未执行。
+
 ## 10:12 状态与最终发布准备
 
 #192的测试、Sonar、双架构镜像、Harbor扫描及GitOps晋升全部通过，但随后磁盘触发原停止线，已被资源守护中止；整轮结果为ABORTED，不能记为SUCCESS。运行镜像63f79225…及源代码bd18401…仍有完整前置检查证据。

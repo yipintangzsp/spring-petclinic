@@ -20,6 +20,12 @@ export function client(token,options={}){
  return (method,url,body)=>new Promise((resolve,reject)=>{const payload=body===undefined?undefined:Buffer.from(JSON.stringify(body));const r=transport.request(origin+url,{method,ca,headers:{Authorization:'Bearer '+token,'Content-Type':'application/json',...(payload?{'Content-Length':payload.length}:{})},timeout:12000},res=>{let text='';res.on('data',c=>text+=c);res.on('end',()=>{let value;try{value=JSON.parse(text);}catch{value=text;}resolve({status:res.statusCode,value,text});});});r.on('error',reject);r.on('timeout',()=>r.destroy(Error('Scoped API timeout')));r.end(payload);});
 }
 export function createCanaryServer(){return net.createServer(socket=>{socket.on('error',()=>{});socket.end('terraform-isolation-canary');});}
+export function selectOwnedPod(pods,previous,uid,allowRemoved=false){
+ if(pods.length>1)throw Error('Unexpected owned Pod set');
+ const pod=pods[0]??(allowRemoved?previous:null);
+ if(!pod||!pod.metadata.ownerReferences?.some(o=>o.uid===uid)||previous&&pod.metadata.uid!==previous.metadata.uid)throw Error('Unexpected owned Pod set');
+ return pod;
+}
 export async function run(mode){
  if(!['plan','shared','recovery'].includes(mode))throw Error('Explicit isolated mode required');
  const build=process.env.BUILD_NUMBER,holder=process.env.HEAVY_HOLDER||`jenkins-petclinic-${build}`;if(!/^\d+$/.test(build??''))throw Error('Explicit build required');
@@ -46,24 +52,31 @@ export async function run(mode){
  async function dryRun(job){return api('POST',route+'?dryRun=All',job);}
  async function execute(kind){
   const job=structuredClone(base);job.metadata.name=`tf-${build}-${kind}-${nonce}`;job.metadata.labels['petclinic.devops.local/run']=job.metadata.name;job.spec.template.metadata.labels['petclinic.devops.local/run']=job.metadata.name;job.spec.template.spec.containers[0].env.find(x=>x.name==='EXECUTION_MODE').value=kind;if(kind==='deadline')job.spec.activeDeadlineSeconds=60;
-  const created=requireStatus(await api('POST',route,job),[201]),name=created.metadata.name,uid=created.metadata.uid;let terminal,pods,log='',result;
+  const created=requireStatus(await api('POST',route,job),[201]),name=created.metadata.name,uid=created.metadata.uid;let terminal,pods=[],observedPod,log='',result;
   const record={name,uid,kind,active_deadline_seconds:job.spec.activeDeadlineSeconds,cleanup_completed:false};evidence.jobs.push(record);
   console.log('TF_ISOLATED_JOB '+name+' UID='+uid);
   try{
    for(let i=0;i<80;i++){
-    const current=requireStatus(await api('GET',route+'/'+name),[200]);if(current.metadata.uid!==uid)throw Error('Job UID changed');
+    const [jobReply,podReply]=await Promise.all([api('GET',route+'/'+name),api('GET',`/api/v1/namespaces/${namespace}/pods?labelSelector=`+encodeURIComponent('batch.kubernetes.io/job-name='+name))]);
+    const current=requireStatus(jobReply,[200]);if(current.metadata.uid!==uid)throw Error('Job UID changed');
+    pods=requireStatus(podReply,[200]).items;
+    if(pods.length){
+     observedPod=selectOwnedPod(pods,observedPod,uid);Object.assign(record,{pod:observedPod.metadata.name,pod_uid:observedPod.metadata.uid,last_pod_observed_at:new Date().toISOString()});
+     const response=await api('GET',`/api/v1/namespaces/${namespace}/pods/${observedPod.metadata.name}/log?limitBytes=262144`);
+     if(response.status===200)log=response.text;else{record.log_poll_errors??=[];if(record.log_poll_errors.length<20)record.log_poll_errors.push({http:response.status,message:String(response.value?.message??'').slice(0,300),at:new Date().toISOString()});if(![400,404,408,429,500,502,503,504].includes(response.status))throw Error('Owned live logs unavailable: HTTP '+response.status);}
+    }
     if(current.status?.conditions?.some(x=>['Complete','Failed'].includes(x.type)&&x.status==='True')){terminal=current;break;}
     await sleep(2500);
    }
    if(!terminal)throw Error('Isolated Job deadline exceeded');
-   pods=requireStatus(await api('GET',`/api/v1/namespaces/${namespace}/pods?labelSelector=`+encodeURIComponent('batch.kubernetes.io/job-name='+name)),[200]).items;
-   if(pods.length!==1||!pods[0].metadata.ownerReferences?.some(o=>o.uid===uid))throw Error('Unexpected owned Pod set');
-   const p=pods[0];if(p.spec.serviceAccountName!=='terraform-runner'||p.spec.hostPID||p.spec.hostNetwork||p.spec.automountServiceAccountToken!==false||p.spec.volumes.some(v=>v.hostPath||v.persistentVolumeClaim||v.secret))throw Error('Observed Pod not isolated');
+   const deadlineRemoved=kind==='deadline'&&terminal.status.conditions.some(x=>x.type==='Failed'&&x.status==='True'&&x.reason==='DeadlineExceeded');
+   const p=selectOwnedPod(pods,observedPod,uid,deadlineRemoved);
+if(p.spec.serviceAccountName!=='terraform-runner'||p.spec.hostPID||p.spec.hostNetwork||p.spec.automountServiceAccountToken!==false||p.spec.volumes.some(v=>v.hostPath||v.persistentVolumeClaim||v.secret))throw Error('Observed Pod not isolated');
    const imageID=p.status.containerStatuses?.[0]?.imageID??'';if(!imageID.includes(runtime.digest))throw Error('Actual runtime image digest differs');
-   const response=await api('GET',`/api/v1/namespaces/${namespace}/pods/${p.metadata.name}/log`);if(response.status!==200)throw Error('Isolated logs unavailable');log=response.text;
+   if(!log)throw Error('Owned logs unavailable before Pod removal: '+JSON.stringify(record.log_poll_errors??[]));
    fs.writeFileSync(path.join(privateRoot,name+'.log'),log,{mode:0o600});
    const lines=log.split('\n').filter(x=>x.startsWith('TF_ISOLATION_REPORT:'));if(lines.length)result=JSON.parse(lines.at(-1).slice('TF_ISOLATION_REPORT:'.length));
-   Object.assign(record,{pod:p.metadata.name,pod_uid:p.metadata.uid,image_id:imageID,conditions:terminal.status.conditions,resources:p.spec.containers[0].resources,exit:p.status.containerStatuses[0].state.terminated?.exitCode,report:result??null,log_sha256:crypto.createHash('sha256').update(log).digest('hex')});
+   Object.assign(record,{pod:p.metadata.name,pod_uid:p.metadata.uid,image_id:imageID,conditions:terminal.status.conditions,resources:p.spec.containers[0].resources,exit:p.status.containerStatuses[0].state.terminated?.exitCode??null,pod_removed_by_deadline_controller:pods.length===0&&deadlineRemoved,job_created_at:created.metadata.creationTimestamp,job_started_at:terminal.status.startTime??null,job_completed_at:terminal.status.completionTime??null,report:result??null,log_sha256:crypto.createHash('sha256').update(log).digest('hex')});
    if(['plan','shared'].includes(kind)){
     if(!terminal.status.succeeded||result?.status!=='success'||result.source!==source||!result.isolation.network_policy_canary_blocked)throw Error('Isolated business workflow did not pass');
    }else if(kind==='failure'){
@@ -71,6 +84,7 @@ export async function run(mode){
    }else if(!terminal.status.conditions.some(x=>x.reason==='DeadlineExceeded')||!log.includes('TF_ISOLATION_HOLD_READY'))throw Error('Actual deadline cleanup not exercised');
 
   }finally{
+   if(log){fs.writeFileSync(path.join(privateRoot,name+'.log'),log,{mode:0o600});record.log_sha256=crypto.createHash('sha256').update(log).digest('hex');}
    const current=await api('GET',route+'/'+name);if(current.status===200){if(current.value.metadata.uid!==uid)throw Error('Refuse cleanup of replacement Job');requireStatus(await api('DELETE',route+'/'+name,{apiVersion:'v1',kind:'DeleteOptions',preconditions:{uid},propagationPolicy:'Foreground'}),[200,202]);}
    let cleaned=false;for(let i=0;i<40;i++){const j=await api('GET',route+'/'+name),p=await api('GET',`/api/v1/namespaces/${namespace}/pods?labelSelector=`+encodeURIComponent('batch.kubernetes.io/job-name='+name));if(j.status===404&&p.status===200&&p.value.items.length===0){cleaned=true;break;}await sleep(500);}record.cleanup_completed=cleaned;if(!cleaned)throw Error('Owned Job/Pod cleanup incomplete');
   }
