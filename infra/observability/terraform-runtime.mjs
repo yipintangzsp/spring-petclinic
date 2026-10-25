@@ -21,6 +21,11 @@ export function providerLock(version,h1){
  if(!/^3\.4\.0-petclinic\.\d+$/.test(version)||!/^h1:[A-Za-z0-9+/]{43}=$/.test(h1))throw Error('Exact custom package checksum required');
  return '# Locally rebuilt security provider; not an upstream-signed package.\nprovider "registry.terraform.io/hashicorp/kubernetes" {\n version = "'+version+'"\n constraints = "'+version+'"\n hashes = ["'+h1+'"]\n}\n';
 }
+export async function readOriginalVulnerabilityReport(fetcher,route,auth){
+ const raw=await fetcher(route+'/additions/vulnerabilities',{headers:{...auth,Accept:'application/json','X-Accept-Vulnerabilities':'application/vnd.security.vulnerability.report; version=1.1, application/vnd.scanner.adapter.vuln.report.harbor+json; version=1.0'}});
+ if(!raw.ok)throw Error('Original detailed vulnerability report HTTP '+raw.status);
+ return {report:await raw.json(),http_status:raw.status,request_url:route+'/additions/vulnerabilities'};
+}
 export async function buildRuntime(){
  owned();const n=process.env.BUILD_NUMBER,home=process.env.JENKINS_HOME;if(!/^\d+$/.test(n??'')||!home)throw Error('Explicit CI context required');
  const providerBuild=JSON.parse(fs.readFileSync('target/platform/terraform-provider-build.json'));
@@ -72,9 +77,9 @@ export async function buildRuntime(){
  const report={status:'success',source,tag,digest,terraform_binary_sha256:terraformBinarySha,image:'127.0.0.1:30050/'+repo+'@'+digest,harbor_image:'core.harbor.domain/'+repo+'@'+digest,architecture:'arm64',scan,source_labels:config.config.Labels,offline_provider:true,terraform_version:'1.17.0',provider_version:providerBuild.provider_version,provider_binary_sha256:providerBuild.binary_sha256,provider_build_recipe_sha256:providerBuild.recipe_sha256,provider_package_h1:providerBuild.package_h1};
  try{
   if(scan.summary?.total!==0){
-   const raw=await fetcher(route+'/additions/vulnerabilities',{headers:{...auth,Accept:'application/vnd.security.vulnerability.report; version=1.1, application/vnd.scanner.adapter.vuln.report.harbor+json; version=1.0'}});
-   if(!raw.ok)throw Error('Original detailed vulnerability report unavailable');
-   report.raw_vulnerability_report=await raw.json();
+   const received=await readOriginalVulnerabilityReport(fetcher,route,auth);
+   report.raw_vulnerability_report=received.report;
+   report.raw_report_binding={requested_artifact_digest:digest,scan_report_id:scan.report_id,http_status:received.http_status,request_url:received.request_url,normalized_json_sha256:crypto.createHash('sha256').update(JSON.stringify(received.report)).digest('hex')};
    fs.writeFileSync('target/platform/terraform-runtime-vulnerabilities-raw.json',JSON.stringify(report.raw_vulnerability_report,null,2));
   }
   report.vulnerability_assessment=assessRuntimeVulnerabilities(scan,report.raw_vulnerability_report,terraformBinarySha);
