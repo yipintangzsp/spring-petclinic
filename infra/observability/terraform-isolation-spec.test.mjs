@@ -8,7 +8,7 @@ test('mutable images, arbitrary endpoints and wrong node address rejected',()=>{
 test('admission denies both Pod and Job escape and fences former runtime identity',()=>{const x=admissionPolicies(args.image);assert.equal(x.items.length,6);for(const p of x.items.filter(x=>x.kind==='ValidatingAdmissionPolicy')){assert.equal(p.spec.failurePolicy,'Fail');assert.ok(p.spec.validations.length>0);assert.ok(p.spec.validations.every(v=>v.reason==='Forbidden'));}const pod=x.items[0];assert.equal(pod.spec.matchConstraints.namespaceSelector.matchLabels['petclinic.devops.local/execution-sandbox'],'true');assert.ok(pod.spec.validations.some(v=>v.expression.includes('readOnlyRootFilesystem')));assert.ok(pod.spec.validations.some(v=>v.expression.includes(args.image)));assert.ok(x.items.some(x=>x.spec?.validations?.some(v=>v.expression.includes('terraform-execution')&&v.expression.includes('subjects'))));});
 test('executor metadata forbids persistent storage, service secrets and extra compute',()=>{const b=JSON.parse(fs.readFileSync('infra/devops-lab/iac/isolated/bootstrap.json'));const q=b.items.find(x=>x.kind==='ResourceQuota');assert.equal(q.spec.hard.pods,'1');assert.equal(q.spec.hard.persistentvolumeclaims,'0');assert.equal(q.spec.hard.secrets,'0');const role=b.items.find(x=>x.kind==='Role');assert.ok(role.rules.every(r=>!r.resources.includes('secrets')&&!r.resources.includes('pods/exec')));const np=b.items.find(x=>x.kind==='NetworkPolicy');assert.deepEqual(np.spec.podSelector,{});assert.deepEqual(np.spec.egress[0].to,[{ipBlock:{cidr:'10.0.0.3/32'}}]);assert.deepEqual(np.spec.egress[0].ports,[{protocol:'TCP',port:6443}]);});
 
-import {createCanaryServer,client,selectOwnedPod,observedLog} from './terraform-executor.mjs';
+import {createCanaryServer,client,selectOwnedPod,observedLog,waitAcceptedAdmission} from './terraform-executor.mjs';
 import net from 'node:net';
 test('canary peer resets cannot crash the deployment controller',async()=>{
  const server=createCanaryServer();await new Promise(resolve=>server.listen(0,'127.0.0.1',resolve));
@@ -35,4 +35,11 @@ test('empty startup logs and transient responses preserve evidence without grant
  assert.equal(observedLog('partial',{status:200,text:'complete'}),'complete');
  for(const status of [400,404,408,429,500,502,503,504])assert.equal(observedLog('saved',{status}),'saved');
  for(const status of [201,401,403])assert.throws(()=>observedLog('saved',{status}));
+});
+
+test('admission readiness waits for serving policy after generation compilation',async()=>{
+ let calls=0;const old={status:403,value:{message:"ValidatingAdmissionPolicy 'terraform-isolation-jobs' denied request"}};
+ const x=await waitAcceptedAdmission(async()=>++calls<3?old:{status:201},async()=>{});assert.equal(x.attempts,3);assert.equal(x.errors.length,2);
+ await assert.rejects(waitAcceptedAdmission(async()=>({status:403,value:{message:'RBAC denied'}}),async()=>{}));
+ calls=0;await assert.rejects(waitAcceptedAdmission(async()=>{calls++;return old;},async()=>{}));assert.equal(calls,30);
 });

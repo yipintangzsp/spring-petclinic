@@ -20,6 +20,17 @@ export function client(token,options={}){
  return (method,url,body)=>new Promise((resolve,reject)=>{const payload=body===undefined?undefined:Buffer.from(JSON.stringify(body));const r=transport.request(origin+url,{method,ca,headers:{Authorization:'Bearer '+token,'Content-Type':'application/json',...(payload?{'Content-Length':payload.length}:{})},timeout:12000},res=>{let text='';res.on('data',c=>text+=c);res.on('end',()=>{let value;try{value=JSON.parse(text);}catch{value=text;}resolve({status:res.statusCode,value,text});});});r.on('error',reject);r.on('timeout',()=>r.destroy(Error('Scoped API timeout')));r.end(payload);});
 }
 export function createCanaryServer(){return net.createServer(socket=>{socket.on('error',()=>{});socket.end('terraform-isolation-canary');});}
+export async function waitAcceptedAdmission(probe,pause=sleep){
+ const errors=[];
+ for(let attempt=1;attempt<=30;attempt++){
+  const x=await probe();
+  if(x.status===201)return {attempts:attempt,errors};
+  if(x.status!==403||!String(x.value?.message??'').includes("ValidatingAdmissionPolicy 'terraform-isolation-jobs'"))throw Error('Valid Job dry-run rejected: HTTP '+x.status);
+  errors.push({http:x.status,message:String(x.value.message).slice(0,500)});
+  if(attempt<30)await pause(1000);
+ }
+ throw Error('Fixed runtime admission did not become ready within30 attempts');
+}
 export function observedLog(previous,response){
  if(response.status===200)return response.text||previous;
  if([204,400,404,408,429,500,502,503,504].includes(response.status))return previous;
@@ -95,7 +106,7 @@ if(p.spec.serviceAccountName!=='terraform-runner'||p.spec.hostPID||p.spec.hostNe
   }
  }
  try{
-  await baseline();requireStatus(await dryRun(base),[201]);
+  await baseline();evidence.valid_admission_wait=await waitAcceptedAdmission(()=>dryRun(base));
   const mutations={admin_identity:j=>j.spec.template.spec.serviceAccountName='default',host_network:j=>j.spec.template.spec.hostNetwork=true,host_path:j=>j.spec.template.spec.volumes.push({name:'escape',hostPath:{path:'/var/jenkins_home'}}),writable_root:j=>j.spec.template.spec.containers[0].securityContext.readOnlyRootFilesystem=false,mutable_image:j=>j.spec.template.spec.containers[0].image='python:latest',bypass_entrypoint:j=>j.spec.template.spec.containers[0].command=['sh','-c','id'],lifecycle_exec:j=>j.spec.template.spec.containers[0].lifecycle={postStart:{exec:{command:['sh','-c','id']}}},token_via_termination:j=>j.spec.template.spec.containers[0].terminationMessagePath='/var/run/terraform-identity/token',privileged:j=>{const c=j.spec.template.spec.containers[0];c.securityContext.privileged=true;c.securityContext.allowPrivilegeEscalation=true;delete c.securityContext.seccompProfile;delete c.securityContext.appArmorProfile;delete j.spec.template.spec.securityContext.seccompProfile;},secret_env:j=>j.spec.template.spec.containers[0].env.push({name:'GITLAB_TOKEN',valueFrom:{secretKeyRef:{name:'fake',key:'token'}}})};
   for(const [name,change] of Object.entries(mutations)){const j=structuredClone(base);change(j);const x=await dryRun(j);if(x.status!==403||!/(terraform-isolation|PodSecurity)/.test(x.value?.message??''))throw Error('Admission did not explicitly reject '+name+': HTTP '+x.status+' '+String(x.value?.message??'').slice(-1200));evidence.admission_denials.push({case:name,http_status:x.status,message:x.value.message});}
   if(mode==='plan'&&kube(['get','ns','tf-devops-lab','--ignore-not-found','-o','json']))throw Error('Existing v1 lab preserved; plan preview requires absent namespace');
