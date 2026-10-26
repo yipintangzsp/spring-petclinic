@@ -64,13 +64,17 @@ spec:
         runAsNonRoot: true
         runAsUser: 10001
         runAsGroup: 10001
+        fsGroup: 10001
+        seccompProfile:
+          type: RuntimeDefault
 
       containers:
         - name: petclinic
-          image: core.harbor.domain/petclinic/petclinic@sha256:a6cf4653c121314624c1e0f1aed512892f6932923801a2b01effb94b2adbcd72
+          image: core.harbor.domain/petclinic/petclinic@sha256:c8160221d55311268ae8654ffa7289ee9bffefea378dc8a0b43190e090c43ee1
           imagePullPolicy: IfNotPresent
 
           securityContext:
+            readOnlyRootFilesystem: true
             allowPrivilegeEscalation: false
             capabilities:
               drop:
@@ -114,13 +118,13 @@ spec:
               value: '1.0'
             # Updated together with the immutable image tag by Jenkins Git promotion.
             - name: APPLICATION_VERSION
-              value: '0.10.0-ci-200'
+              value: '0.10.0-ci-207'
             - name: BUILD_NUMBER
-              value: '200'
+              value: '207'
             - name: BUILD_GIT_COMMIT
-              value: 'dd3651367f9252fb058800740f572f7d7d3ac066'
+              value: 'c68a142a6135c818c42103651c55b65239e1922a'
             - name: BUILD_TIME
-              value: '2026-10-25T19:55:57.676Z'
+              value: '2026-10-26T09:59:45.725Z'
 
             - name: SPRING_PROFILES_ACTIVE
               valueFrom:
@@ -147,6 +151,8 @@ spec:
                   key: POSTGRES_PASS
 
           volumeMounts:
+            - name: runtime-tmp
+              mountPath: /tmp
             - name: platform-snapshot
               mountPath: /etc/petclinic-platform
               readOnly: true
@@ -189,6 +195,9 @@ spec:
               memory: 768Mi
 
       volumes:
+        - name: runtime-tmp
+          emptyDir:
+            sizeLimit: 128Mi
         - name: platform-snapshot
           configMap:
             name: petclinic-platform-snapshot
