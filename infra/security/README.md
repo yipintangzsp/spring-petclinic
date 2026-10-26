@@ -30,4 +30,6 @@ controller ServiceMonitor 接入既有Prometheus。实际采集、业务发布�
 
 Grafana看板UID `devsecops-control`，复用既有Prometheus数据源，不增加看板Pod。
 
-扫描Pod额外实测：Jenkins控制面TCP前后可达作为基线，扫描容器同一端口被阻断；读取实际有效UID、确认token文件缺失，并要求实际写根目录返回只读文件系统错误。运行时结果保存在source-gate.json的isolation字段。controller.json是最终GitOps期望，values是固定官方chart原始渲染输入；原摘要本地镜像与Recreate调整以已锁定SHA256的controller.json为准。
+扫描Pod额外实测：Jenkins临时Pod级canary前后可达作为基线，等待扫描容器连续两次无法连接该端口后才传输源码；读取实际有效UID、确认token文件缺失，并要求实际写根目录返回只读文件系统错误。运行时结果保存在source-gate.json的isolation字段。controller.json是最终GitOps期望，values是固定官方chart原始渲染输入；原摘要本地镜像与Recreate调整以已锁定SHA256的controller.json为准。
+
+节点边界：原生NetworkPolicy不能作为宿主/节点防火墙保证。实际节点API TCP可达性单列记录；不宣称其被可靠阻断。无token和无Secret RBAC权限仍独立验证。Pod-to-Pod探针保留策略收敛尝试次数，始终无法阻断则失败并且不传源码。

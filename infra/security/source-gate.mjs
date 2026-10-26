@@ -1,6 +1,7 @@
 import fs from 'node:fs';
 import crypto from 'node:crypto';
 import net from 'node:net';
+import os from 'node:os';
 import {spawnSync} from 'node:child_process';
 const ns='devsecops-execution';
 const out='.devsecops'; fs.mkdirSync(out,{recursive:true});
@@ -20,21 +21,31 @@ const name='source-'+String(process.env.BUILD_NUMBER||'manual')+'-'+crypto.rando
 const labels={'petclinic.devops.local/owner':'platform-devsecops','petclinic.devops.local/run':name};
 const pod={apiVersion:'v1',kind:'Pod',metadata:{name,namespace:ns,labels},spec:{automountServiceAccountToken:false,restartPolicy:'Never',activeDeadlineSeconds:600,nodeSelector:{'kubernetes.io/hostname':'devops','kubernetes.io/arch':'arm64'},securityContext:{runAsNonRoot:true,runAsUser:65532,runAsGroup:65532,fsGroup:65532,seccompProfile:{type:'RuntimeDefault'}},containers:[{name:'scanner',image:tool.image,command:['sh','-c','sleep 600'],resources:{requests:{cpu:'100m',memory:'256Mi','ephemeral-storage':'128Mi'},limits:{cpu:'1',memory:'512Mi','ephemeral-storage':'512Mi'}},securityContext:{allowPrivilegeEscalation:false,readOnlyRootFilesystem:true,capabilities:{drop:['ALL']}},volumeMounts:[{name:'work',mountPath:'/work'}]}],volumes:[{name:'work',emptyDir:{sizeLimit:'256Mi'}}]}};
 const report={status:'failed',source,tool,startedAt:new Date().toISOString(),pod:name,namespace:ns,tests:[],cleanup:false};
-let uid;
+let uid,canary;
 try{
  const created=JSON.parse(String(k(['create','-f','-','-o','json'],JSON.stringify(pod)).stdout));uid=created.metadata.uid;report.uid=uid;fs.writeFileSync(out+'/source-gate.json',JSON.stringify(report,null,2));
  k(['-n',ns,'wait','--for=condition=Ready','pod/'+name,'--timeout=180s'],undefined,[0],190000);
  const exec=(args,input,expected=[0])=>k(['-n',ns,'exec','-i',name,'--',...args],input,expected,90000);
- const reachable=()=>new Promise((resolve,reject)=>{const socket=net.connect({host:'10.0.0.3',port:6443,timeout:3000});socket.once('connect',()=>{socket.destroy();resolve(true);});socket.once('error',reject);socket.once('timeout',()=>{socket.destroy();reject(Error('Control-plane baseline unavailable'));});});
+ const canaryIp=os.networkInterfaces().eth0?.find(x=>x.family==='IPv4')?.address;if(!/^10\.42\.0\.\d+$/.test(canaryIp??''))throw Error('Trusted Jenkins Pod IP required');
+ canary=net.createServer(socket=>{socket.on('error',()=>{});socket.end('devsecops-policy-canary');});
+ await new Promise((resolve,reject)=>{canary.once('error',reject);canary.listen(0,canaryIp,resolve);});
+ const canaryPort=canary.address().port;
+ const reachable=()=>new Promise((resolve,reject)=>{const socket=net.connect({host:canaryIp,port:canaryPort,timeout:3000});socket.once('connect',()=>{socket.destroy();resolve(true);});socket.once('error',reject);socket.once('timeout',()=>{socket.destroy();reject(Error('Pod canary baseline unavailable'));});});
  await reachable();
  const help=exec(['nc','--help'],undefined,[0,1]);if(!String(help.stdout).concat(String(help.stderr)).includes('-z'))throw Error('Network probe binary lacks zero-I/O scan mode');
- const network=exec(['nc','-z','-v','-w','3','10.0.0.3','6443'],undefined,[0,1]);
- if(network.status!==1)throw Error('Scanner unexpectedly reached control-plane TCP endpoint');
- await reachable();
+ const attempts=[];let blocked=0;
+ for(let i=0;i<20;i++){
+  await reachable();const result=exec(['nc','-z','-v','-w','2',canaryIp,String(canaryPort)],undefined,[0,1]);await reachable();
+  attempts.push({attempt:i+1,exit:result.status});blocked=result.status===1?blocked+1:0;
+  if(blocked>=2)break;
+  await new Promise(r=>setTimeout(r,1000));
+ }
+ if(blocked<2)throw Error('Pod-to-Pod network policy did not converge; source not transferred');
+ const nodeNetwork=exec(['nc','-z','-w','1','10.0.0.3','6443'],undefined,[0,1]);
  exec(['sh','-c','test ! -e /var/run/secrets/kubernetes.io/serviceaccount/token']);
  if(String(exec(['id','-u']).stdout).trim()!=='65532')throw Error('Scanner effective UID differs');
  const rootWrite=exec(['touch','/devsecops-readonly-probe'],undefined,[0,1]);if(rootWrite.status!==1||!String(rootWrite.stderr).toLowerCase().includes('read-only file system'))throw Error('Actual read-only filesystem rejection required');
- report.isolation={controllerBaselineBeforeAndAfter:true,scannerControlPlaneTcpBlocked:true,networkDiagnostic:String(network.stderr).slice(0,500),serviceAccountTokenAbsent:true,effectiveUid:65532,readOnlyFilesystemVerified:true};
+ report.isolation={podCanaryIp:canaryIp,podCanaryPort:canaryPort,controllerBaselineBeforeAndAfter:true,networkPolicyPodToPodBlocked:true,networkPolicyAttempts:attempts,nodeApiTcpReachable:nodeNetwork.status===0,nodeBoundary:'NetworkPolicy is not a host/node firewall; token absent and RBAC denies secret reads',serviceAccountTokenAbsent:true,effectiveUid:65532,readOnlyFilesystemVerified:true};
  report.actualImageID=read(['-n',ns,'get','pod',name]).status.containerStatuses[0].imageID;
  if(!report.actualImageID.includes(tool.image.split('@')[1]))throw Error('Observed scanner image differs from pinned ARM64 digest');
  exec(['mkdir','-p','/work/source','/work/fixture','/work/clean']);
@@ -66,9 +77,11 @@ try{
  }
  report.sourceScan.rawCount=report.sourceScan.findings.length;
  if(report.sourceScan.blockingFindings.length)throw Error(`Secret gate blocked ${report.sourceScan.blockingFindings.length} unaccepted findings; review redacted locations`);
+ const peak=String(exec(['cat','/sys/fs/cgroup/memory.peak'],undefined,[0,1]).stdout).trim();report.memoryPeakBytes=/^\d+$/.test(peak)?Number(peak):null;report.resourceSpec=read(['-n',ns,'get','pod',name]).spec.containers[0].resources;
  report.status='success';
 }catch(e){report.error=e.message;throw e;}
 finally{
+ if(canary)canary.close();
  if(uid){
   const current=read(['-n',ns,'get','pod',name]);if(current.metadata.uid!==uid)throw Error('Refuse cleanup of replacement Pod');
   k(['-n',ns,'delete','pod',name,'--wait=true','--timeout=45s'],undefined,[0],55000);
