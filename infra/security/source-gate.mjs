@@ -1,5 +1,6 @@
 import fs from 'node:fs';
 import crypto from 'node:crypto';
+import net from 'node:net';
 import {spawnSync} from 'node:child_process';
 const ns='devsecops-execution';
 const out='.devsecops'; fs.mkdirSync(out,{recursive:true});
@@ -24,6 +25,16 @@ try{
  const created=JSON.parse(String(k(['create','-f','-','-o','json'],JSON.stringify(pod)).stdout));uid=created.metadata.uid;report.uid=uid;fs.writeFileSync(out+'/source-gate.json',JSON.stringify(report,null,2));
  k(['-n',ns,'wait','--for=condition=Ready','pod/'+name,'--timeout=180s'],undefined,[0],190000);
  const exec=(args,input,expected=[0])=>k(['-n',ns,'exec','-i',name,'--',...args],input,expected,90000);
+ const reachable=()=>new Promise((resolve,reject)=>{const socket=net.connect({host:'10.0.0.3',port:6443,timeout:3000});socket.once('connect',()=>{socket.destroy();resolve(true);});socket.once('error',reject);socket.once('timeout',()=>{socket.destroy();reject(Error('Control-plane baseline unavailable'));});});
+ await reachable();
+ const help=exec(['nc','--help'],undefined,[0,1]);if(!String(help.stdout).concat(String(help.stderr)).includes('-z'))throw Error('Network probe binary lacks zero-I/O scan mode');
+ const network=exec(['nc','-z','-v','-w','3','10.0.0.3','6443'],undefined,[0,1]);
+ if(network.status!==1)throw Error('Scanner unexpectedly reached control-plane TCP endpoint');
+ await reachable();
+ exec(['sh','-c','test ! -e /var/run/secrets/kubernetes.io/serviceaccount/token']);
+ if(String(exec(['id','-u']).stdout).trim()!=='65532')throw Error('Scanner effective UID differs');
+ const rootWrite=exec(['touch','/devsecops-readonly-probe'],undefined,[0,1]);if(rootWrite.status!==1||!String(rootWrite.stderr).toLowerCase().includes('read-only file system'))throw Error('Actual read-only filesystem rejection required');
+ report.isolation={controllerBaselineBeforeAndAfter:true,scannerControlPlaneTcpBlocked:true,networkDiagnostic:String(network.stderr).slice(0,500),serviceAccountTokenAbsent:true,effectiveUid:65532,readOnlyFilesystemVerified:true};
  report.actualImageID=read(['-n',ns,'get','pod',name]).status.containerStatuses[0].imageID;
  if(!report.actualImageID.includes(tool.image.split('@')[1]))throw Error('Observed scanner image differs from pinned ARM64 digest');
  exec(['mkdir','-p','/work/source','/work/fixture','/work/clean']);

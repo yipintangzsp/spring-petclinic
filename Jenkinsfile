@@ -97,7 +97,6 @@ pipeline {
             options { timeout(time: 5, unit: 'MINUTES') }
             steps {
                 sh '''
-                    nice -n 10 ./mvnw -B org.cyclonedx:cyclonedx-maven-plugin:2.9.1:makeAggregateBom -DoutputFormat=json -DschemaVersion=1.6 -DoutputDirectory=.devsecops -DoutputName=sbom -DincludeTestScope=false -DskipTests
                     node infra/security/sbom-verify.mjs
                 '''
             }

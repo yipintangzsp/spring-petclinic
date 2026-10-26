@@ -1,5 +1,7 @@
 import fs from 'node:fs';
+import crypto from 'node:crypto';
 import {spawnSync} from 'node:child_process';
+const lock=JSON.parse(fs.readFileSync('infra/security/tools-lock.json'));if(crypto.createHash('sha256').update(fs.readFileSync('infra/security/controller.json')).digest('hex')!==lock.kyverno.controller_manifest_sha256)throw Error('Reviewed controller manifest digest mismatch');
 const rev=fs.readFileSync('.git-sha','utf8').trim();if(!/^[a-f0-9]{40}$/.test(rev))throw Error('Exact reviewed source revision required');
 const repository=JSON.parse(fs.readFileSync('infra/devops-lab/applications/platform-rabbitmq.json')).spec.source.repoURL;
 const endpoint=new URL(repository);if(endpoint.hostname!=='gitlab-service.ns-devops.svc.cluster.local'||endpoint.pathname!=='/root/petclinic-platform.git')throw Error('Existing private repository endpoint changed; review required');

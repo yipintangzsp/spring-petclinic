@@ -6,7 +6,7 @@
 
 流水线先用真实server dry-run验证合规允许和7种违规拒绝，再真实扫描完整Git HEAD；每轮用随机合成GitHub token验证泄漏拦截，并验证空目录允许。仅归档脱敏规则/位置/指纹，不归档token或原始匹配文本。发现真实泄漏即失败，不自动建立忽略基线；95条已人工核对的Helm SHA256/公开Go h1校验值按文件路径与完整行SHA256精确识别，原始计数与逐条误报保留，新增或变更内容仍阻断。异常finally和Jenkins post只按本次UID清理。未知替换对象保留并使构建失败。
 
-CycloneDX2.9.1生成生产Maven依赖SBOM，验证1.6版本、非空组件、唯一bom-ref及依赖图；不把它当作整个镜像/平台的OS清单。release-evidence.json将SBOM SHA256、源码commit、双架构镜像摘要、Harbor结果和门禁结果绑定；目前为未签名证据，不声称实现Cosign签名验证。
+复用原Maven CycloneDX2.9.3已嵌入应用JAR的生产依赖SBOM，不额外生成第二份依赖图；逐字节核对JAR内外SBOM后归档，验证1.6版本、非空组件、唯一bom-ref及依赖图；不把它当作整个镜像/平台的OS清单。release-evidence.json将SBOM SHA256、源码commit、双架构镜像摘要、Harbor结果和门禁结果绑定；目前为未签名证据，不声称实现Cosign签名验证。
 
 PetClinic模板在隔离命名空间作同规则server dry-run审计，`business-template-audit.json`明确passed/findings；仅网络/API/结构错误使审计任务失败，审计发现不冒充阻断。生产命名空间暂未挂此Kyverno webhook，不影响生产API可用性。实际候选部署加入只读根、128Mi /tmp emptyDir、fsGroup10001及RuntimeDefault seccomp；必须经原GitLab/Jenkins/Sonar/Harbor/Argo完整发布与业务健康验收才生效。
 
@@ -29,3 +29,5 @@ controller ServiceMonitor 接入既有Prometheus。实际采集、业务发布�
 未覆盖：全平台运行时威胁检测、集中漏洞处置平台、专用密钥管理/静态加密、完整签名准入、认证业务DAST、外部通知送达。它们不因本轮Pod部署而被标为完成。
 
 Grafana看板UID `devsecops-control`，复用既有Prometheus数据源，不增加看板Pod。
+
+扫描Pod额外实测：Jenkins控制面TCP前后可达作为基线，扫描容器同一端口被阻断；读取实际有效UID、确认token文件缺失，并要求实际写根目录返回只读文件系统错误。运行时结果保存在source-gate.json的isolation字段。controller.json是最终GitOps期望，values是固定官方chart原始渲染输入；原摘要本地镜像与Recreate调整以已锁定SHA256的controller.json为准。
