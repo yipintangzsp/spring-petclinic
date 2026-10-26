@@ -1,0 +1,23 @@
+{
+  "chart": "falco",
+  "chartVersion": "9.2.1",
+  "falcoVersion": "0.45.1",
+  "chartSha256": "726c1fe08c3fd3e2789d4072b34f9eee94ecccad734fee471cc7546124570c6c",
+  "officialImage": "docker.io/falcosecurity/falco:0.45.1",
+  "arm64ManifestDigest": "sha256:3c5ccde1c8b50ccc8baf016090a5376d182e08dc8751df2b37d8ff2a13499558",
+  "manifestSha256": "3125208d33ef6618a7e31b96d7c038cdf96ef89b70882246da581c4908dd2b86",
+  "coverage": [
+    "devops"
+  ],
+  "notCovered": [
+    "aliyun-worker",
+    "ucloud-worker"
+  ],
+  "renderAdjustments": [
+    "Argo top-level tracking labels and ServiceMonitor selector",
+    "original ARM64 digest in existing Registry",
+    "remove unused kernel-module host mounts",
+    "hostPID for BPF iterators, no service-account token",
+    "read-only containerd socket directory; trusted collector still has socket API access"
+  ]
+}

@@ -153,6 +153,8 @@ pipeline {
             steps {
                 sh 'node infra/security/gitops.mjs'
                 sh 'node infra/security/admission-gate.mjs'
+                sh 'node infra/security/runtime/logging.mjs'
+                sh 'node infra/security/runtime/health.mjs'
             }
         }
 

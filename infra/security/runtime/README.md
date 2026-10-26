@@ -1,0 +1,21 @@
+# Phase 4 runtime security
+
+Final desired state is the reviewed `falco.json` rendered from official chart9.2.1 / Falco0.45.1 with `values.yaml`. `lock.json` pins chart SHA256, original ARM64 manifest and final manifest hash. The existing platform-devsecops Argo Application includes this file and test-boundary.json; no new Operator, Sidekick, metacollector, Elasticsearch or agent is deployed.
+
+Coverage is only local node devops, ARM64; both AMD64 workers are currently Ready but deliberately not covered. Kernel7.0 exposes BTF/BPF. The embedded modern eBPF driver avoids DKMS, module installation and runtime changes. The trusted sensor has hostPID, BPF/PERFMON/SYS_PTRACE/SYS_RESOURCE capabilities, unconfined seccomp/AppArmor and read-only proc/sys plus containerd socket mounts. It is not privileged=true and has no API token. Read-only socket mount does not make socket API operations read-only; trust in the fixed collector binary is a residual boundary. Unused /boot,/usr,/etc,/lib/modules host mounts were removed from the chart render.
+
+The CRI metadata engine uses the existing k3s socket. The native containerd-only engine failed the initial actual metadata test; it is disabled. No runtime was switched. The full official image already contains container plugin0.7.5; no falcoctl sidecar or online rule/plugin updates run. Eight local rules target only petclinic/devsecops-test. Exception conditions preserve detection elsewhere; all rules remain enabled. Observed runc bootstrap and worker `sh -c kill -0 1` probes are precisely scoped in the rules. Curl/wget is Notice visibility, not an attack verdict.
+
+`logging.mjs` validates and updates only its marked Alloy fragment, with resourceVersion compare-and-swap; existing PetClinic/Cook/worker chains stay intact. The Jenkins GitOps stage runs logging and short health checks; it never waits for attacks or fails because ordinary runtime events exist. JSON events continue via Alloy to existing Loki and the upgraded Grafana devsecops-control dashboard. Runtime namespace/pod/process/user fields are parsed from Falco output_fields, while Loki's namespace/pod labels identify the sensor itself.
+
+Reproduce safe tests on the admin Mac (existing Python and controlled resource helper):
+
+```sh
+PETCLINIC_SSH_ADDRESS=192.168.64.11 python3 infra/security/runtime/verify.py /absolute/private/new-evidence-directory
+```
+
+This is an explicit manual demonstration, not a schedule or part of every CI run. It owns the existing shared heavy Lease, preserves Jenkins quiet state, runs a single restricted, readonly, nonroot, network-denied Pod using the verified207 image from the original Registry and deletes only its owned UID in finally. The namespace/quota/default-deny policy remain intentionally as the durable zero-compute test boundary. Commands use --version, a nonexistent nsenter target and denied /etc write; no package install, external traffic or real escape exploit. Evidence requires matching rule, actual process and action time. No privileged test Pod is created.
+
+Look in `.devsecops/runtime-health.json` and runtime-logging.json in Jenkins artifacts. `health.mjs` verifies fixed manifest hash, desired/current singleton on devops, exact image, zero restarts and actual /healthz. Use `kubectl -n devsecops-system logs ds/platform-falco` and its ServiceMonitor metrics for driver/rule/drop diagnostics. Do not claim all event loss is zero from a single counter; retain kernel and iterator counters separately. Missing ARM64 legacy open/creat tracepoints can limit corresponding TOCTOU mitigation; actual openat tests and all detection acceptance remain required.
+
+Rollback is a reviewed revert of the Phase4 Git change and normal Argo synchronization. prune=false means reverting the resource list alone does not remove existing runtime resources: explicitly delete only reviewed platform-falco owned resources after the Git revert; remove only the marked Alloy fragment through the original deployment mechanism, preserving other sources. No database/PVC is part of this change. Test namespace deletion must first verify its owner and emptiness. Detailed actual acceptance and interview explanation are in docs/DEVSECOPS-20261026.md.

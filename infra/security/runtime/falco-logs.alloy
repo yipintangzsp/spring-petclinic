@@ -1,0 +1,35 @@
+// BEGIN platform-falco owned log source v1
+// Preserve all existing discovery and write chains. Parse runtime dimensions at query time.
+discovery.relabel "platform_falco" {
+  targets = discovery.kubernetes.pods.targets
+  rule {
+    source_labels = ["__meta_kubernetes_namespace", "__meta_kubernetes_pod_label_app_kubernetes_io_name"]
+    regex = "devsecops-system;falco"
+    action = "keep"
+  }
+  rule {
+    source_labels = ["__meta_kubernetes_namespace"]
+    target_label = "namespace"
+  }
+  rule {
+    source_labels = ["__meta_kubernetes_pod_name"]
+    target_label = "pod"
+  }
+  rule {
+    source_labels = ["__meta_kubernetes_pod_container_name"]
+    target_label = "container"
+  }
+  rule {
+    source_labels = ["__meta_kubernetes_pod_node_name"]
+    target_label = "node"
+  }
+  rule {
+    target_label = "app"
+    replacement = "platform-falco"
+  }
+}
+loki.source.kubernetes "platform_falco" {
+  targets = discovery.relabel.platform_falco.output
+  forward_to = [loki.write.default.receiver]
+}
+// END platform-falco owned log source v1

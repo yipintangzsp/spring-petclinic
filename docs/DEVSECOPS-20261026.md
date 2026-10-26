@@ -71,3 +71,12 @@ kubectl -n argocd get application platform-devsecops
 ## 未覆盖的能力
 
 生产全命名空间准入、宿主防火墙、运行时威胁检测、集中漏洞处置、专用密钥管理/静态加密、签名准入、认证业务DAST和外部通知送达未因本轮被标为完成。Harbor必须同时报告严重级别及原始数量，不将扫描成功写成漏洞清零。
+
+
+## Phase 4 - Runtime Security（部署与独立测试已通过，完整CI回归待执行）
+
+新增Falco0.45.1 / 官方chart9.2.1，仅覆盖devops ARM64节点。两个AMD64云worker实际均Ready，本轮主动保留为未覆盖，不强行全节点部署。modern eBPF、CRI元数据接口、现有Alloy→Loki→Grafana构成运行时链。此状态是本轮发布前的真实进度，不代替后续完整Jenkins回归。
+
+六类隔离测试均已命中实际进程/时间对应的规则：shell、passwd读取、apt-get --version、curl --version、只读/etc写入失败、nsenter不存在目标。未修改生产Deployment、未创建特权测试Pod，已自动回收。runc初始化和worker健康探针按实际证据建立窄例外，8条规则均保留。Loki已检索到真实事件；新版看板查询及完整流水线仍待本轮最终复验，不能仅用Ready宣称完成。
+
+实现、版本锁、限制、测试入口、资源和回滚细节见[Runtime配置说明](../infra/security/runtime/README.md)。本节将在最终回归后补入完整结果。

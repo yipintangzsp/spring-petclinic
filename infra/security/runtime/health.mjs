@@ -1,0 +1,13 @@
+import fs from 'node:fs';
+import crypto from 'node:crypto';
+import {spawnSync} from 'node:child_process';
+const lock=JSON.parse(fs.readFileSync('infra/security/runtime/lock.json'));
+if(crypto.createHash('sha256').update(fs.readFileSync('infra/security/runtime/falco.json')).digest('hex')!==lock.manifestSha256)throw Error('Runtime manifest integrity mismatch');
+const run=a=>{const r=spawnSync('kubectl',['--request-timeout=15s',...a],{encoding:'utf8',timeout:20000,maxBuffer:4*1024*1024});if(r.status!==0)throw Error(r.stderr.slice(-1200));return r.stdout;};
+const d=JSON.parse(run(['-n','devsecops-system','get','ds','platform-falco','-o','json']));
+if(d.status.desiredNumberScheduled!==1||d.status.numberReady!==1||d.status.updatedNumberScheduled!==1)throw Error('Expected exactly one current ready local Falco');
+const ps=JSON.parse(run(['-n','devsecops-system','get','pods','-l','app.kubernetes.io/name=falco','-o','json'])).items.filter(p=>!p.metadata.deletionTimestamp);
+if(ps.length!==1||ps[0].spec.nodeName!=='devops'||!ps[0].spec.containers[0].image.endsWith(lock.arm64ManifestDigest))throw Error('Unexpected Falco coverage or image');
+const c=ps[0].status.containerStatuses[0];if(!c.ready||c.restartCount!==0)throw Error('Falco restart or readiness issue requires review');
+const r=await fetch('http'+ '://'+ps[0].status.podIP+':8765/healthz',{signal:AbortSignal.timeout(5000)});if(!r.ok)throw Error('Falco actual health endpoint failed');
+fs.mkdirSync('.devsecops',{recursive:true});fs.writeFileSync('.devsecops/runtime-health.json',JSON.stringify({status:'success',source:fs.readFileSync('.git-sha','utf8').trim(),node:'devops',pod:ps[0].metadata.name,image:ps[0].spec.containers[0].image,ready:true,restarts:c.restartCount,http:r.status,scope:'Health only; ordinary runtime events do not fail CI; cloud workers not covered'},null,2));
