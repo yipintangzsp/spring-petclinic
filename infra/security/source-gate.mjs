@@ -2,6 +2,7 @@ import fs from 'node:fs';
 import crypto from 'node:crypto';
 import net from 'node:net';
 import os from 'node:os';
+import {syntheticCredential} from './synthetic-credential.mjs';
 import {spawnSync} from 'node:child_process';
 const ns='devsecops-execution';
 const out='.devsecops'; fs.mkdirSync(out,{recursive:true});
@@ -52,15 +53,14 @@ try{
  const archive=run('git',['archive','--format=tar','HEAD'],Buffer.alloc(0)).stdout;
  if(archive.length>128*1024*1024)throw Error('Source archive exceeds bounded scanner budget');
  exec(['tar','xf','-','-C','/work/source'],archive);report.archiveBytes=archive.length;
- const fake='ghp_'+crypto.randomBytes(18).toString('hex');
+ const fake=syntheticCredential();
  exec(['sh','-c','cat > /work/fixture/test.txt'],`github_token = "${fake}"\n`);
  function scan(path,file){
   const result=exec(['gitleaks','dir',path,'--redact=100','--no-banner','--log-level','error','--report-format','json','--report-path',file],undefined,[0,1]);
   const findings=JSON.parse(String(exec(['cat',file]).stdout)||'[]');
   return {exit:result.status,findings:findings.map(x=>({rule:x.RuleID,file:x.File,line:x.StartLine,fingerprint:x.Fingerprint}))};
  }
- const positive=scan('/work/fixture','/work/positive.json');if(positive.exit!==1||!positive.findings.some(x=>x.rule==='github-pat'))throw Error('Synthetic credential was not blocked');
- report.tests.push({case:'synthetic-secret-blocked',...positive});
+ const positive=scan('/work/fixture','/work/positive.json');report.tests.push({case:'synthetic-secret-blocked',...positive});if(positive.exit!==1||!positive.findings.some(x=>x.rule==='github-pat'))throw Error('Synthetic credential was not blocked');
  const clean=scan('/work/clean','/work/clean.json');if(clean.exit!==0||clean.findings.length)throw Error('Clean fixture was not accepted');report.tests.push({case:'clean-fixture-accepted',...clean});
  report.sourceScan=scan('/work/source','/work/source.json');
  const reviewed=JSON.parse(fs.readFileSync('infra/security/reviewed-false-positives.json')).entries;
