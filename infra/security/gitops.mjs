@@ -1,5 +1,6 @@
 import fs from 'node:fs';
 import crypto from 'node:crypto';
+import {isDeepStrictEqual} from 'node:util';
 import {spawnSync} from 'node:child_process';
 const lock=JSON.parse(fs.readFileSync('infra/security/tools-lock.json'));if(crypto.createHash('sha256').update(fs.readFileSync('infra/security/controller.json')).digest('hex')!==lock.kyverno.controller_manifest_sha256)throw Error('Reviewed controller manifest digest mismatch');
 const rev=fs.readFileSync('.git-sha','utf8').trim();if(!/^[a-f0-9]{40}$/.test(rev))throw Error('Exact reviewed source revision required');
@@ -16,5 +17,13 @@ for(let i=0;i<90;i++){
  if(i===89)throw Error('DevSecOps GitOps sync did not become healthy: '+JSON.stringify(last.status?.conditions??last.status?.operationState?.message));
  await new Promise(r=>setTimeout(r,3000));
 }
-fs.mkdirSync('.devsecops',{recursive:true});fs.writeFileSync('.devsecops/gitops.json',JSON.stringify({status:'success',source:rev,sync:last.status.sync,health:last.status.health},null,2));
+const desiredController=JSON.parse(fs.readFileSync('infra/security/controller.json'));
+const names=desiredController.items.filter(x=>x.kind==='CustomResourceDefinition').map(x=>x.metadata.name);
+const native=run(['get','crd',...names,'-o','jsonpath={range .items[*]}{.metadata.name}{" "}{range .status.conditions[*]}{.type}{"="}{.status}{","}{end}{"|"}{end}']);
+const crds=native.split('|').filter(Boolean).map(line=>{const [name,states]=line.split(' ');if(!names.includes(name)||!states?.includes('Established=True')||!states.includes('NamesAccepted=True'))throw Error('CRD native readiness failed: '+name);return {name,conditions:states};});
+if(crds.length!==names.length)throw Error('Missing CRD readiness evidence');
+const desiredPolicy=JSON.parse(fs.readFileSync('infra/security/policies.json'));
+const actualPolicy=JSON.parse(run(['get','clusterpolicy',desiredPolicy.metadata.name,'-o','json']));
+if(!isDeepStrictEqual(actualPolicy.spec,desiredPolicy.spec))throw Error('Live policy contract differs from reviewed source');
+fs.mkdirSync('.devsecops',{recursive:true});fs.writeFileSync('.devsecops/gitops.json',JSON.stringify({status:'success',source:rev,sync:last.status.sync,health:last.status.health,crds,livePolicySpecMatches:true},null,2));
 console.log('DevSecOps GitOps pinned source synchronized and healthy');

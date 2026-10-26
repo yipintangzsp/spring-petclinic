@@ -150,7 +150,10 @@ pipeline {
 
         stage('DevSecOps GitOps Sync') {
             options { timeout(time: 6, unit: 'MINUTES') }
-            steps { sh 'node infra/security/gitops.mjs' }
+            steps {
+                sh 'node infra/security/gitops.mjs'
+                sh 'node infra/security/admission-gate.mjs'
+            }
         }
 
         stage('Terraform Provider Native Build') {

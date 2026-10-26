@@ -33,3 +33,5 @@ Grafana看板UID `devsecops-control`，复用既有Prometheus数据源，不增�
 扫描Pod额外实测：Jenkins临时Pod级canary前后可达作为基线，等待扫描容器连续两次无法连接该端口后才传输源码；读取实际有效UID、确认token文件缺失，并要求实际写根目录返回只读文件系统错误。运行时结果保存在source-gate.json的isolation字段。controller.json是最终GitOps期望，values是固定官方chart原始渲染输入；原摘要本地镜像与Recreate调整以已锁定SHA256的controller.json为准。
 
 节点边界：原生NetworkPolicy不能作为宿主/节点防火墙保证。实际节点API TCP可达性单列记录；不宣称其被可靠阻断。无token和无Secret RBAC权限仍独立验证。Pod-to-Pod探针保留策略收敛尝试次数，始终无法阻断则失败并且不传源码。
+
+策略默认值在Git中显式声明，allowExistingViolations=false，不忽略任何策略spec差异。GitOps同步成功后还逐一验证22个CRD的原生Established/NamesAccepted条件、实际策略spec与源码深度一致，并重新执行真实准入负例。CRD的Argo实例标签显式归platform-devsecops，未修改全局Argo追踪或健康规则。
