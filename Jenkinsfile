@@ -152,6 +152,7 @@ pipeline {
             options { timeout(time: 6, unit: 'MINUTES') }
             steps {
                 sh 'node infra/security/gitops.mjs'
+                sh 'node infra/security/rbac-contract.mjs'
                 sh 'node infra/security/admission-gate.mjs'
                 sh 'node infra/security/runtime/logging.mjs'
                 sh 'node infra/security/runtime/health.mjs'
@@ -384,6 +385,15 @@ pipeline {
         stage('Terraform Failure Cleanup') {
             options { timeout(time: 8, unit: 'MINUTES') }
             steps { sh 'node infra/observability/terraform-executor.mjs recovery' }
+        }
+
+        stage('DevSecOps Final Health') {
+            options { timeout(time: 4, unit: 'MINUTES') }
+            steps {
+                sh 'node infra/security/rbac-contract.mjs'
+                sh 'node infra/security/admission-gate.mjs'
+                sh 'node infra/security/runtime/health.mjs'
+            }
         }
 
     }
