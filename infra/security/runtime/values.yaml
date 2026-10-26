@@ -69,10 +69,12 @@ customRules:
   platform-rules.yaml: "- list: platform_runtime_namespaces\n  items:\n  - petclinic\n\
     \  - devsecops-test\n- macro: platform_runtime_scope\n  condition: container.id\
     \ != host and k8s.ns.name in (platform_runtime_namespaces)\n- macro: platform_expected_runtime_bootstrap\n\
-    \  condition: proc.exepath contains runc and proc.name in (\"runc:[0:PARENT]\"\
-    , \"runc:[1:CHILD]\")\n    and proc.cmdline in (\"runc:[0:PARENT] init\", \"runc:[1:CHILD]\
-    \ init\", \"runc:[1:CHILD]\")\n    and ((k8s.ns.name=petclinic and container.name=worker\
-    \ and container.image.repository=\"192.168.1.58:30050/platform-upgrade/airflow\"\
+    \  condition: proc.exepath=\"/var/lib/rancher/k3s/data/876326f0487c64e27190fea8c8c5f54263aabc782061df6455fa54c0f7e2a1ad/bin/runc\"\
+    \n    and proc.name in (\"runc:[0:PARENT]\", \"runc:[1:CHILD]\") and proc.cmdline\
+    \ in (\"runc:[0:PARENT]\n    init\", \"runc:[1:CHILD] init\", \"runc:[1:CHILD]\"\
+    ) and ((k8s.ns.name=petclinic and\n    container.name in (worker, tests) and container.image.repository=\"\
+    192.168.1.58:30050/platform-upgrade/airflow\")\n    or (k8s.ns.name=petclinic\
+    \ and container.name=petclinic and container.image.repository=\"core.harbor.domain/petclinic/petclinic\"\
     )\n    or (k8s.ns.name=devsecops-test and container.name=test and container.image.repository=\"\
     127.0.0.1:30050/petclinic/petclinic\"))\n- rule: Platform Runtime Shell\n  desc:\
     \ Shell start in business or isolated security test namespace; an expected operator\n\
@@ -80,15 +82,18 @@ customRules:
     \ in (execve, execveat) and evt.failed=false\n    and proc.name in (sh, bash,\
     \ dash, ash)) and not (k8s.ns.name=petclinic and container.name=worker\n    and\
     \ container.image.repository=\"192.168.1.58:30050/platform-upgrade/airflow\" and\n\
-    \    proc.name=sh and proc.cmdline=\"sh -c kill -0 1\")\n  output: runtime_security\
-    \ node=%evt.hostname namespace=%k8s.ns.name pod=%k8s.pod.name\n    container=%container.name\
-    \ image=%container.image.repository process=%proc.name\n    command=%proc.cmdline\
-    \ user=%user.uid result=%evt.res executable=%proc.exepath\n    syscall=%evt.type\n\
-    \  priority: WARNING\n  tags:\n  - platform_runtime\n  - container\n- rule: Platform\
-    \ Runtime Sensitive Read\n  desc: Sensitive identity file read, including denied\
-    \ attempt; classify libc lookup\n    noise from observed evidence.\n  condition:\
-    \ (platform_runtime_scope and (evt.type in (open, openat, openat2) and\n    evt.is_open_read=true\
-    \ and evt.arg.name in (/etc/shadow, /etc/passwd))) and not\n    platform_expected_runtime_bootstrap\n\
+    \    proc.name=sh and proc.cmdline=\"sh -c kill -0 1\") and not (k8s.ns.name=petclinic\n\
+    \    and container.name=petclinic and container.image.repository=\"core.harbor.domain/petclinic/petclinic\"\
+    \n    and proc.exepath=\"/usr/bin/dash\" and proc.name=sh and proc.cmdline=\"\
+    sh -c sleep\n    5\")\n  output: runtime_security node=%evt.hostname namespace=%k8s.ns.name\
+    \ pod=%k8s.pod.name\n    container=%container.name image=%container.image.repository\
+    \ process=%proc.name\n    command=%proc.cmdline user=%user.uid result=%evt.res\
+    \ executable=%proc.exepath\n    syscall=%evt.type\n  priority: WARNING\n  tags:\n\
+    \  - platform_runtime\n  - container\n- rule: Platform Runtime Sensitive Read\n\
+    \  desc: Sensitive identity file read, including denied attempt; classify libc\
+    \ lookup\n    noise from observed evidence.\n  condition: (platform_runtime_scope\
+    \ and (evt.type in (open, openat, openat2) and\n    evt.is_open_read=true and\
+    \ evt.arg.name in (/etc/shadow, /etc/passwd))) and not\n    platform_expected_runtime_bootstrap\n\
     \  output: runtime_security node=%evt.hostname namespace=%k8s.ns.name pod=%k8s.pod.name\n\
     \    container=%container.name image=%container.image.repository process=%proc.name\n\
     \    command=%proc.cmdline user=%user.uid result=%evt.res executable=%proc.exepath\n\
@@ -166,3 +171,5 @@ serviceMonitor:
   create: true
   labels:
     release: kube-stack
+podLabels:
+  petclinic.devops.local/runtime-ruleset: c785e0dbbe9c

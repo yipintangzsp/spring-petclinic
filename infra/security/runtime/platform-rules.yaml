@@ -5,9 +5,11 @@
 - macro: platform_runtime_scope
   condition: container.id != host and k8s.ns.name in (platform_runtime_namespaces)
 - macro: platform_expected_runtime_bootstrap
-  condition: proc.exepath contains runc and proc.name in ("runc:[0:PARENT]", "runc:[1:CHILD]")
-    and proc.cmdline in ("runc:[0:PARENT] init", "runc:[1:CHILD] init", "runc:[1:CHILD]")
-    and ((k8s.ns.name=petclinic and container.name=worker and container.image.repository="192.168.1.58:30050/platform-upgrade/airflow")
+  condition: proc.exepath="/var/lib/rancher/k3s/data/876326f0487c64e27190fea8c8c5f54263aabc782061df6455fa54c0f7e2a1ad/bin/runc"
+    and proc.name in ("runc:[0:PARENT]", "runc:[1:CHILD]") and proc.cmdline in ("runc:[0:PARENT]
+    init", "runc:[1:CHILD] init", "runc:[1:CHILD]") and ((k8s.ns.name=petclinic and
+    container.name in (worker, tests) and container.image.repository="192.168.1.58:30050/platform-upgrade/airflow")
+    or (k8s.ns.name=petclinic and container.name=petclinic and container.image.repository="core.harbor.domain/petclinic/petclinic")
     or (k8s.ns.name=devsecops-test and container.name=test and container.image.repository="127.0.0.1:30050/petclinic/petclinic"))
 - rule: Platform Runtime Shell
   desc: Shell start in business or isolated security test namespace; an expected operator
@@ -15,7 +17,10 @@
   condition: platform_runtime_scope and (evt.type in (execve, execveat) and evt.failed=false
     and proc.name in (sh, bash, dash, ash)) and not (k8s.ns.name=petclinic and container.name=worker
     and container.image.repository="192.168.1.58:30050/platform-upgrade/airflow" and
-    proc.name=sh and proc.cmdline="sh -c kill -0 1")
+    proc.name=sh and proc.cmdline="sh -c kill -0 1") and not (k8s.ns.name=petclinic
+    and container.name=petclinic and container.image.repository="core.harbor.domain/petclinic/petclinic"
+    and proc.exepath="/usr/bin/dash" and proc.name=sh and proc.cmdline="sh -c sleep
+    5")
   output: runtime_security node=%evt.hostname namespace=%k8s.ns.name pod=%k8s.pod.name
     container=%container.name image=%container.image.repository process=%proc.name
     command=%proc.cmdline user=%user.uid result=%evt.res executable=%proc.exepath

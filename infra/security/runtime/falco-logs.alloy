@@ -24,6 +24,10 @@ discovery.relabel "platform_falco" {
     target_label = "node"
   }
   rule {
+    source_labels = ["__meta_kubernetes_pod_label_petclinic_devops_local_runtime_ruleset"]
+    target_label = "runtime_ruleset"
+  }
+  rule {
     target_label = "app"
     replacement = "platform-falco"
   }

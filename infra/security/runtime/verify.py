@@ -41,6 +41,7 @@ with HeavyRun('falco-runtime-acceptance',1024,E/('tests-'+batch)) as run:
   (E/'runtime-test-events.json').write_text(json.dumps(events,indent=2));(E/'runtime-tests.json').write_text(json.dumps({'batch':batch,'pod':name,'uid':uid,'namespace':'devsecops-test','results':results},indent=2))
   assert all(r['status']=='PASS' for r in results),[(r['case'],r['result']) for r in results if r['status']!='PASS']
   assert next(r for r in results if r['case']=='readonly-write')['preventedByHardening']
+  assert not any(e.get('output_fields',{}).get('proc.name','').startswith('runc:') for e in events),'Reviewed bootstrap still emitted business alerts'
   print('SIX_RUNTIME_CASES_PASS',flush=True)
  finally:
   if uid:
