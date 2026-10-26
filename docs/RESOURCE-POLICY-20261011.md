@@ -1,5 +1,7 @@
 # 实测资源与按需运行策略 · 2026-10-11
 
+> 2026-10-26最新：DevSecOps完整Jenkins #207 SUCCESS及独立复验通过。新增Kyverno单副本、按需Gitleaks扫描，原始95项均有逐项误报证据、真实泄漏0；SBOM143组件、7种违规拦截、业务3/3只读根及监控查询通过。Harbor双架构各Critical0/High0，仍各有53 Medium/4 Low。范围、资源与操作见[DevSecOps验收](DEVSECOPS-20261026.md)。
+
 > 2026-10-25最新：Terraform独立Job执行隔离已通过完整Jenkins #197及独立复验；真实锁竞争、重复执行、受控失败重试、60秒超时回收和状态保护均通过。旧Jenkins内执行入口已停用。当前操作及边界见[执行隔离验收](TERRAFORM-ISOLATION-20261025.md)。
 
 > #190 Terraform远端状态验收通过。Terraform复用原CI重任务锁与Jenkins计算；provider共享缓存避免重复解包，元数据配额禁止Pod/PVC扩张。静态加密及完整管理员隔离未实现。见[记录](TERRAFORM-20261024.md)。
@@ -18,6 +20,13 @@
 > 2026-10-23 核对：#165完整发布成功；Airflow四轮联合验收通过，周一02:30上海时间运行。证据、任务ID和操作见[最新验收](ANALYTICS-E2E-20261022.md)。后文较早状态按日期保留为历史。
 
 > 2026-10-22：主盘旧快照经单独授权删除，活动数据全量摘要前后一致，镜像回收约80.3GiB；Harbor控制器原生ARM64恢复、Loki/Grafana缓存重建及健康检查通过。最新完整发布与联合分析状态以 [本轮恢复记录](RECOVERY-20261021.md) 为准；以下较早数字均为历史阶段，不能代替现场。Spark Operator/Webhook常驻保留。
+
+
+## 2026-10-26 安全门禁资源增量
+
+常驻只新增Kyverno requests100m/192Mi、limits500m/512Mi；实际本轮top15m/112MiB，CPU总请求4645m/6000m。源码扫描按需1Pod、requests100m/256Mi、limits1CPU/512Mi、600秒截止、emptyDir256Mi、无PVC；单轮峰值132.42MiB。SBOM复用Maven产物，无新常驻Pod。继续复用platform-heavy外层锁，不嵌套申请。Spark Operator/Webhook保留，不与分析重任务并行。
+
+#205因Mac swap增长约642MiB触发512MiB原停止线而中止，原证据保留。结束后仅一次干净页缓存回收、再连续五次准入后重跑；不定时清缓存，不把逻辑缓存量当成净释放。#206按用户暂停要求中止。#207完整成功，42样本最大swap增长283.44MiB，VM可用最低7678MiB；结束根盘55.61GiB、Mac数据盘56.73GiB、VM可用8.77GiB均为测量时刻值。资源停止线与启动增长余量保持，不因一次成功下调。详细记录见[本轮验收](DEVSECOPS-20261026.md)。
 
 
 ## 2026-10-24 清理后实测与预算

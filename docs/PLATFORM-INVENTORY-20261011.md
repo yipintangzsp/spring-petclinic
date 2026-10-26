@@ -1,5 +1,7 @@
 # 全平台盘点 · 2026-10-12
 
+> 2026-10-26最新：DevSecOps完整Jenkins #207 SUCCESS及独立复验通过。新增Kyverno单副本、按需Gitleaks扫描，原始95项均有逐项误报证据、真实泄漏0；SBOM143组件、7种违规拦截、业务3/3只读根及监控查询通过。Harbor双架构各Critical0/High0，仍各有53 Medium/4 Low。范围、资源与操作见[DevSecOps验收](DEVSECOPS-20261026.md)。
+
 > 2026-10-25最新：Terraform独立Job执行隔离已通过完整Jenkins #197及独立复验；真实锁竞争、重复执行、受控失败重试、60秒超时回收和状态保护均通过。旧Jenkins内执行入口已停用。当前操作及边界见[执行隔离验收](TERRAFORM-ISOLATION-20261025.md)。
 
 > #190 Terraform远端状态验收通过。Terraform新增2个专用命名空间的元数据/RBAC、1个演示ConfigMap及状态Secret/Lease；未新增工作负载Pod/PVC。见[记录](TERRAFORM-20261024.md)。
@@ -20,6 +22,17 @@
 > 2026-10-23 核对：#165完整发布成功；Airflow四轮联合验收通过，周一02:30上海时间运行。证据、任务ID和操作见[最新验收](ANALYTICS-E2E-20261022.md)。后文较早状态按日期保留为历史。
 
 > 2026-10-22：主盘旧快照经单独授权删除，活动数据全量摘要前后一致，镜像回收约80.3GiB；Harbor控制器原生ARM64恢复、Loki/Grafana缓存重建及健康检查通过。最新完整发布与联合分析状态以 [本轮恢复记录](RECOVERY-20261021.md) 为准；以下较早数字均为历史阶段，不能代替现场。Spark Operator/Webhook常驻保留。
+
+## 2026-10-26 DevSecOps增量分类
+
+|组件|运行方式|分类与证据|
+|---|---|---|
+|Kyverno admission controller|常驻1副本；100m/192Mi请求，500m/512Mi上限|已接入安全任务准入、GitOps及监控；22 CRD与7负例通过，实际15m/112MiB|
+|Gitleaks8.30.1|单轮1个按需Pod，100m/256Mi请求，1CPU/512Mi上限，600秒截止|已接入发布门禁；真实HEAD扫描及正负样本通过，内存峰值132.42MiB，结束Pod0|
+|CycloneDX2.9.3|复用Maven打包，无新增Pod|已接入发布证据；JAR内外一致、143组件/144依赖节点|
+|SonarQube、Harbor/Trivy、Terraform隔离|沿用既有服务及按需Job|#207原质量门、双架构扫描、plan/共享状态/失败清理通过，不新增同类常驻组件|
+|签名准入、运行时威胁检测、集中漏洞处置、密钥管理、业务DAST|本轮未新增|尚未完成；生产Webhook仅候选审计，不标全平台Enforce|
+
 
 ## 2026-10-24 当前逐项分类
 
