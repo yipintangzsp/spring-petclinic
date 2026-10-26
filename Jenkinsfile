@@ -31,6 +31,7 @@ pipeline {
                     rm -f                       .deploy-started                                              .target-git-revision                                                                    .git-sha                       .git-sha-short                       .change-cause                       .new-revision                       .previous-image                       .previous-revision
 
                     echo "Pipeline state cleaned."
+                    rm -rf .devsecops
                     rm -f .infra-preflight-before-build.json .sonar-runtime-maintenance.json target/platform/*.json target/surefire-reports/*.xml
 
                     echo
@@ -62,7 +63,7 @@ pipeline {
             steps {
                 sh '''
                     echo "===== MAVEN TEST ====="
-                    node --test infra/observability/*.test.mjs
+                    node --test infra/observability/*.test.mjs infra/security/*.test.mjs
                     node infra/observability/terraform-sandbox-tests.mjs
                     node infra/observability/maven-test.mjs
                     node infra/messaging/pipeline.mjs test
@@ -79,6 +80,25 @@ pipeline {
                     echo
                     echo "===== JAR ====="
                     ls -lh target/spring-petclinic-4.0.0-SNAPSHOT.jar
+                '''
+            }
+        }
+
+        stage('DevSecOps Source & Admission') {
+            options { timeout(time: 10, unit: 'MINUTES') }
+            steps {
+                sh 'node infra/security/admission-gate.mjs'
+                sh 'node infra/security/source-gate.mjs'
+                sh 'node infra/security/business-audit.mjs'
+            }
+        }
+
+        stage('DevSecOps SBOM') {
+            options { timeout(time: 5, unit: 'MINUTES') }
+            steps {
+                sh '''
+                    nice -n 10 ./mvnw -B org.cyclonedx:cyclonedx-maven-plugin:2.9.1:makeAggregateBom -DoutputFormat=json -DschemaVersion=1.6 -DoutputDirectory=.devsecops -DoutputName=sbom -DincludeTestScope=false -DskipTests
+                    node infra/security/sbom-verify.mjs
                 '''
             }
         }
@@ -127,6 +147,11 @@ pipeline {
                     sh 'node infra/observability/publish-artifacts.mjs gitlab'
                 }
             }
+        }
+
+        stage('DevSecOps GitOps Sync') {
+            options { timeout(time: 6, unit: 'MINUTES') }
+            steps { sh 'node infra/security/gitops.mjs' }
         }
 
         stage('Terraform Provider Native Build') {
@@ -223,6 +248,10 @@ pipeline {
                     sh 'node infra/observability/terraform-runtime.mjs'
                 }
             }
+        }
+
+        stage('DevSecOps Release Evidence') {
+            steps { sh 'node infra/security/release-evidence.mjs' }
         }
 
         stage('RabbitMQ Worker Deployment') {
@@ -360,12 +389,13 @@ pipeline {
             catchError(buildResult: 'FAILURE', stageResult: 'FAILURE') {
                 sh '''
                     set -eu
+                    node infra/security/cleanup.mjs
                     node --max-old-space-size=128 infra/observability/terraform-provider-build.mjs cleanup
                     node infra/observability/heavy-lease.mjs release
                 '''
             }
             junit testResults: 'target/surefire-reports/*.xml', allowEmptyResults: true
-            archiveArtifacts artifacts: '.infra-preflight-before-build.json,.sonar-runtime-maintenance.json,target/platform/*.json,target/platform/build-*-prune.log,target/platform/terraform-provider-build.log', allowEmptyArchive: true
+            archiveArtifacts artifacts: '.devsecops/*.json,.infra-preflight-before-build.json,.sonar-runtime-maintenance.json,target/platform/*.json,target/platform/build-*-prune.log,target/platform/terraform-provider-build.log', allowEmptyArchive: true
         }
         success {
             echo "CI/CD SUCCESS: ${K8S_IMAGE}"

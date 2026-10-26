@@ -1,0 +1,15 @@
+{
+  "apiVersion": "v1",
+  "kind": "ConfigMap",
+  "metadata": {
+    "name": "devsecops-dashboard",
+    "namespace": "monitoring",
+    "labels": {
+      "grafana_dashboard": "1",
+      "petclinic.devops.local/owner": "platform-devsecops"
+    }
+  },
+  "data": {
+    "devsecops-control.json": "{\"uid\": \"devsecops-control\", \"title\": \"DevSecOps \\u2014 admission and scan evidence\", \"schemaVersion\": 39, \"version\": 1, \"refresh\": \"30s\", \"time\": {\"from\": \"now-1h\", \"to\": \"now\"}, \"tags\": [\"devsecops\", \"kyverno\"], \"panels\": [{\"id\": 1, \"title\": \"Kyverno scrape UP\", \"type\": \"stat\", \"datasource\": {\"type\": \"prometheus\", \"uid\": \"prometheus\"}, \"gridPos\": {\"x\": 0, \"y\": 0, \"w\": 12, \"h\": 8}, \"targets\": [{\"refId\": \"A\", \"expr\": \"up{namespace=\\\"devsecops-system\\\"}\", \"legendFormat\": \"{{policy_result}} {{pod}}\"}]}, {\"id\": 2, \"title\": \"Policy outcomes (last hour)\", \"type\": \"timeseries\", \"datasource\": {\"type\": \"prometheus\", \"uid\": \"prometheus\"}, \"gridPos\": {\"x\": 12, \"y\": 0, \"w\": 12, \"h\": 8}, \"targets\": [{\"refId\": \"A\", \"expr\": \"sum by (policy_name,policy_result) (increase(kyverno_policy_results_total{policy_name=\\\"devsecops-workload-contract\\\"}[1h]))\", \"legendFormat\": \"{{policy_result}} {{pod}}\"}]}, {\"id\": 3, \"title\": \"Controller working set MiB\", \"type\": \"timeseries\", \"datasource\": {\"type\": \"prometheus\", \"uid\": \"prometheus\"}, \"gridPos\": {\"x\": 0, \"y\": 8, \"w\": 12, \"h\": 8}, \"targets\": [{\"refId\": \"A\", \"expr\": \"container_memory_working_set_bytes{namespace=\\\"devsecops-system\\\",container=\\\"kyverno\\\"}/1048576\", \"legendFormat\": \"{{policy_result}} {{pod}}\"}]}, {\"id\": 4, \"title\": \"Scanner CPU (transient Pods)\", \"type\": \"timeseries\", \"datasource\": {\"type\": \"prometheus\", \"uid\": \"prometheus\"}, \"gridPos\": {\"x\": 12, \"y\": 8, \"w\": 12, \"h\": 8}, \"targets\": [{\"refId\": \"A\", \"expr\": \"sum(rate(container_cpu_usage_seconds_total{namespace=\\\"devsecops-execution\\\",container=\\\"scanner\\\"}[2m]))\", \"legendFormat\": \"{{policy_result}} {{pod}}\"}]}, {\"id\": 5, \"type\": \"text\", \"title\": \"Scope and release records\", \"gridPos\": {\"x\": 0, \"y\": 16, \"w\": 24, \"h\": 5}, \"options\": {\"mode\": \"markdown\", \"content\": \"Enforcement is limited to devsecops-execution. PetClinic promotion candidates are audited by CI; production has no new blocking webhook.\\n\\nJenkins petclinic-ci \\u2192 DevSecOps stages \\u2192 artifacts .devsecops/*.json: source gate, reviewed false positives, CycloneDX SBOM, admission probes, GitOps sync and unsigned release evidence.\\n\\nEmpty scanner charts after cleanup are expected. No claim of platform-wide vulnerability zero or signed supply-chain attestation.\"}}]}"
+  }
+}

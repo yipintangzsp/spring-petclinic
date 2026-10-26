@@ -1,0 +1,11 @@
+import fs from 'node:fs';
+import {hardenManifest} from './hardening.mjs';
+import {spawnSync} from 'node:child_process';
+const run=(args,input)=>spawnSync('kubectl',['--request-timeout=20s',...args],{input,encoding:'utf8',timeout:30000,maxBuffer:4*1024*1024});
+const rendered=run(['create','--dry-run=client','--validate=strict','-f','-','-o','json'],hardenManifest(fs.readFileSync('k8s/production/petclinic.yaml','utf8')));if(rendered.status!==0)throw Error('Production manifest validation failed: '+rendered.stderr.slice(-1000));
+const objects=JSON.parse(rendered.stdout),deploy=(objects.items??[objects]).find(x=>x.kind==='Deployment'&&x.metadata.name==='petclinic');if(!deploy)throw Error('Expected production Deployment missing');
+const pod={apiVersion:'v1',kind:'Pod',metadata:{name:'petclinic-template-audit',namespace:'devsecops-execution'},spec:deploy.spec.template.spec};
+const result=run(['create','--dry-run=server','-f','-','-o','json'],JSON.stringify(pod));
+if(result.error||result.status!==0&&!/devsecops-workload-contract/.test(result.stderr))throw Error('Business audit unavailable: '+result.stderr.slice(-1500));
+const report={status:result.status===0?'passed':'findings',mode:'audit',source:fs.readFileSync('.git-sha','utf8').trim(),scope:'Exact promotion-candidate PetClinic Pod template evaluated in isolated namespace, server dry-run only; no production admission webhook',diagnostic:result.stderr.slice(-5000),createdAt:new Date().toISOString(),productionResourcesCreated:false};
+fs.mkdirSync('.devsecops',{recursive:true});fs.writeFileSync('.devsecops/business-template-audit.json',JSON.stringify(report,null,2));console.log(JSON.stringify(report));

@@ -1,3 +1,4 @@
+import {hardenManifest} from '../security/hardening.mjs';
 import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
@@ -15,7 +16,7 @@ export function promoteManifest(original,{image,tag,number,source,time}) {
   if([...result.matchAll(p)].length!==1)throw Error('Release metadata field missing: '+name);
   result=result.replace(p,(_,prefix)=>`${prefix} '${value}'`);
  }
- return result;
+ return hardenManifest(result);
 }
 
 if(process.argv[1]&&import.meta.url===pathToFileURL(process.argv[1]).href){
