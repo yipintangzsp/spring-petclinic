@@ -38,7 +38,7 @@
   output: runtime_security node=%evt.hostname namespace=%k8s.ns.name pod=%k8s.pod.name
     container=%container.name image=%container.image.repository process=%proc.name
     command=%proc.cmdline user=%user.uid result=%evt.res executable=%proc.exepath
-    syscall=%evt.type
+    syscall=%evt.type path=%evt.arg.name
   priority: WARNING
   tags:
   - platform_runtime
@@ -118,7 +118,7 @@
   output: runtime_security node=%evt.hostname namespace=%k8s.ns.name pod=%k8s.pod.name
     container=%container.name image=%container.image.repository process=%proc.name
     command=%proc.cmdline user=%user.uid result=%evt.res executable=%proc.exepath
-    syscall=%evt.type
+    syscall=%evt.type path=%evt.arg.name
   priority: ERROR
   tags:
   - platform_runtime

@@ -97,8 +97,8 @@ customRules:
     \  output: runtime_security node=%evt.hostname namespace=%k8s.ns.name pod=%k8s.pod.name\n\
     \    container=%container.name image=%container.image.repository process=%proc.name\n\
     \    command=%proc.cmdline user=%user.uid result=%evt.res executable=%proc.exepath\n\
-    \    syscall=%evt.type\n  priority: WARNING\n  tags:\n  - platform_runtime\n \
-    \ - container\n- rule: Platform Runtime Package Manager\n  desc: Package manager\
+    \    syscall=%evt.type path=%evt.arg.name\n  priority: WARNING\n  tags:\n  - platform_runtime\n\
+    \  - container\n- rule: Platform Runtime Package Manager\n  desc: Package manager\
     \ execution; tests use --version, never install software.\n  condition: platform_runtime_scope\
     \ and (evt.type in (execve, execveat) and evt.failed=false\n    and proc.name\
     \ in (apt, apt-get, yum, dnf, apk))\n  output: runtime_security node=%evt.hostname\
@@ -148,8 +148,8 @@ customRules:
     \ evt.arg.name startswith /sbin/))\n  output: runtime_security node=%evt.hostname\
     \ namespace=%k8s.ns.name pod=%k8s.pod.name\n    container=%container.name image=%container.image.repository\
     \ process=%proc.name\n    command=%proc.cmdline user=%user.uid result=%evt.res\
-    \ executable=%proc.exepath\n    syscall=%evt.type\n  priority: ERROR\n  tags:\n\
-    \  - platform_runtime\n  - container\n"
+    \ executable=%proc.exepath\n    syscall=%evt.type path=%evt.arg.name\n  priority:\
+    \ ERROR\n  tags:\n  - platform_runtime\n  - container\n"
 falco:
   json_output: true
   json_include_output_property: true
@@ -172,4 +172,4 @@ serviceMonitor:
   labels:
     release: kube-stack
 podLabels:
-  petclinic.devops.local/runtime-ruleset: c785e0dbbe9c
+  petclinic.devops.local/runtime-ruleset: 59752c1132f0
