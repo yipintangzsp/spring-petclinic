@@ -140,6 +140,17 @@ pipeline {
             }
         }
 
+        stage('Release Idle Scanner Memory') {
+            options { timeout(time: 4, unit: 'MINUTES') }
+            steps {
+                withCredentials([string(credentialsId: 'sonar-token', variable: 'SONAR_TOKEN')]) {
+                    withEnv(['SONAR_HOST_URL=http://sonarqube-sonarqube.sonarqube.svc.cluster.local:9000']) {
+                        sh 'node infra/observability/sonar-resource-slot.mjs pause'
+                    }
+                }
+            }
+        }
+
         stage('GitLab Source Audit') {
             steps {
                 withCredentials([usernamePassword(credentialsId: 'gitlab-creds', usernameVariable: 'GITLAB_USER', passwordVariable: 'GITLAB_TOKEN')]) {
@@ -387,6 +398,19 @@ pipeline {
             steps { sh 'node infra/observability/terraform-executor.mjs recovery' }
         }
 
+        stage('Restore Build Services') {
+            options { timeout(time: 12, unit: 'MINUTES') }
+            steps {
+                sh 'node infra/observability/sonar-resource-slot.mjs restore'
+                withCredentials([string(credentialsId: 'sonar-token', variable: 'SONAR_TOKEN')]) {
+                    withEnv(['SONAR_HOST_URL=http://sonarqube-sonarqube.sonarqube.svc.cluster.local:9000']) {
+                        sh 'node infra/messaging/sonar-diagnostics.mjs'
+                        sh '''node -e 'const fs=require("fs");const q=JSON.parse(fs.readFileSync("target/platform/sonar-quality.json"));if(q.gate.status!=="OK")throw Error("Restored quality result differs");fs.writeFileSync(".devsecops/sonar-restored-quality.json",JSON.stringify({status:"success",gate:q.gate,totalIssues:q.totalIssues},null,2))' '''
+                    }
+                }
+            }
+        }
+
         stage('DevSecOps Final Health') {
             options { timeout(time: 4, unit: 'MINUTES') }
             steps {
@@ -405,7 +429,9 @@ pipeline {
                     set -eu
                     node infra/security/cleanup.mjs
                     node --max-old-space-size=128 infra/observability/terraform-provider-build.mjs cleanup
+                    node infra/observability/sonar-resource-slot.mjs restore
                     node infra/observability/heavy-lease.mjs release
+                    node infra/observability/sonar-resource-slot.mjs resume
                 '''
             }
             junit testResults: 'target/surefire-reports/*.xml', allowEmptyResults: true
