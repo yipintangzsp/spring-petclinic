@@ -1,5 +1,6 @@
 // Borrow the existing CI Lease; never acquire a second lock or remove Sonar data.
 import fs from 'node:fs';
+import {scannerQueue} from './scanner-queue-reservation.mjs';
 import {spawnSync} from 'node:child_process';
 import {fileURLToPath} from 'node:url';
 const ns='data-infra',leaseName='platform-heavy',ownerKey='petclinic.devops.local/analysis-holder',stateKey='petclinic.devops.local/paused-sonar';
@@ -31,8 +32,8 @@ async function main(){
   if(!fs.existsSync(file))return;
   const s=JSON.parse(fs.readFileSync(file));if(!s.restored||s.holder!==holder)throw Error('Restoration not proven; retain quiet state');
   if(kube(['-n',ns,'get','lease',leaseName,'--ignore-not-found','-o','json']).trim())throw Error('Release owned Lease before resuming Jenkins');
-  if(!s.originalQuiet)jenkins('/cancelQuietDown','POST');
-  s.jenkinsQuietRestored=true;save(s);console.log('Original Jenkins dispatch state restored');return;
+  if(s.queueReservationRequested)s.queueReleased=scannerQueue('release',holder);
+  s.jenkinsQuietRestored=true;save(s);console.log('Owned queue reservation removed; original Jenkins dispatch state preserved');return;
  }
  if(mode==='restore'&&!fs.existsSync(file)){const raw=kube(['-n',ns,'get','lease',leaseName,'--ignore-not-found','-o','json']);if(!raw.trim()||!JSON.parse(raw).metadata.annotations?.[stateKey]||JSON.parse(JSON.parse(raw).metadata.annotations[stateKey]).holder!==holder){console.log('No owned scanner resource slot');return;}}
  const lease=get(['-n',ns,'get','lease',leaseName]);
@@ -54,10 +55,10 @@ async function main(){
   const r=await fetch(host+'/api/monitoring/metrics',{headers:{'X-Sonar-Passcode':pass},signal:AbortSignal.timeout(10000)});if(!r.ok)throw Error('Existing monitoring identity cannot verify pending queue');
   const pending=(await r.text()).match(/^sonarqube_compute_engine_pending_tasks_total\s+([\d.]+)$/m);if(!pending||Number(pending[1])!==0)throw Error('Global pending queue is not empty');
   const j=jenkins(statePath);if(otherBuilds(j.jobs,process.env.JOB_NAME,process.env.BUILD_NUMBER))throw Error('Another Jenkins build is active');
-  s.originalQuiet=j.quietingDown;s.queueProof={submittedTask:report.ceTaskId,submittedTaskStatus:'SUCCESS',globalPending:0,scope:'Known platform scans serialized through Jenkins; unregistered external in-progress scans are not globally proven'};s.paused=false;s.restored=false;s.startedAt=new Date().toISOString();save(s);
+  s.originalQuiet=j.quietingDown;s.queueProof={submittedTask:report.ceTaskId,submittedTaskStatus:'SUCCESS',globalPending:0,scope:'Known platform scans serialized through Jenkins; unregistered external in-progress scans are not globally proven'};s.queueReservationRequested=true;s.paused=false;s.restored=false;s.startedAt=new Date().toISOString();save(s);
   kube(['-n',ns,'patch','lease',leaseName,'--type=json','-p',JSON.stringify([{op:'test',path:'/metadata/uid',value:s.leaseUid},{op:'add',path:'/metadata/annotations',value:{...(lease.metadata.annotations??{}),[stateKey]:JSON.stringify(s)}}])]);
-  if(!j.quietingDown)jenkins('/quietDown?block=false','POST');
-  const quiet=jenkins(statePath);if(!quiet.quietingDown||otherBuilds(quiet.jobs,process.env.JOB_NAME,process.env.BUILD_NUMBER))throw Error('Exclusive known scanner dispatch not confirmed');
+  s.queueReservationRequested=true;save(s);s.queueReservation=scannerQueue('reserve',holder);save(s);
+  const exclusive=jenkins(statePath);if(exclusive.quietingDown||otherBuilds(exclusive.jobs,process.env.JOB_NAME,process.env.BUILD_NUMBER))throw Error('Exclusive known scanner dispatch not confirmed');
   const patch=[{op:'test',path:'/metadata/uid',value:s.uid},{op:'test',path:'/metadata/resourceVersion',value:sts.metadata.resourceVersion}];
   if(!sts.metadata.annotations)patch.push({op:'add',path:'/metadata/annotations',value:{}});
   patch.push({op:'add',path:'/metadata/annotations/'+escape(ownerKey),value:holder},{op:'replace',path:'/spec/replicas',value:0});
