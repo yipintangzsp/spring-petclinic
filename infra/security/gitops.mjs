@@ -1,7 +1,9 @@
 import fs from 'node:fs';
 import {spawnSync} from 'node:child_process';
 const rev=fs.readFileSync('.git-sha','utf8').trim();if(!/^[a-f0-9]{40}$/.test(rev))throw Error('Exact reviewed source revision required');
-const app={apiVersion:'argoproj.io/v1alpha1',kind:'Application',metadata:{name:'platform-devsecops',namespace:'argocd',labels:{'petclinic.devops.local/owner':'platform-devsecops'}},spec:{project:'default',source:{repoURL:'http://gitlab-service.ns-devops.svc.cluster.local/root/petclinic-platform.git',targetRevision:rev,path:'infra/security'},destination:{server:'https://kubernetes.default.svc',namespace:'devsecops-system'},syncPolicy:{automated:{prune:false,selfHeal:true},syncOptions:['CreateNamespace=true','ServerSideApply=true']}}};
+const repository=JSON.parse(fs.readFileSync('infra/devops-lab/applications/platform-rabbitmq.json')).spec.source.repoURL;
+const endpoint=new URL(repository);if(endpoint.hostname!=='gitlab-service.ns-devops.svc.cluster.local'||endpoint.pathname!=='/root/petclinic-platform.git')throw Error('Existing private repository endpoint changed; review required');
+const app={apiVersion:'argoproj.io/v1alpha1',kind:'Application',metadata:{name:'platform-devsecops',namespace:'argocd',labels:{'petclinic.devops.local/owner':'platform-devsecops'}},spec:{project:'default',source:{repoURL:repository,targetRevision:rev,path:'infra/security'},destination:{server:'https://kubernetes.default.svc',namespace:'devsecops-system'},syncPolicy:{automated:{prune:false,selfHeal:true},syncOptions:['CreateNamespace=true','ServerSideApply=true']}}};
 const run=(args,input)=>{const x=spawnSync('kubectl',['--request-timeout=20s',...args],{input,encoding:'utf8',timeout:30000,maxBuffer:4*1024*1024});if(x.status!==0)throw Error(x.stderr.slice(-1200));return x.stdout;};
 const old=run(['-n','argocd','get','application',app.metadata.name,'--ignore-not-found','-o','json']);if(old&&JSON.parse(old).metadata.labels?.['petclinic.devops.local/owner']!=='platform-devsecops')throw Error('Foreign GitOps application preserved');
 run(['apply','-f','-'],JSON.stringify(app));
