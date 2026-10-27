@@ -180,6 +180,7 @@ pipeline {
         stage('Sign Existing Release Baselines') {
             options { timeout(time: 5, unit: 'MINUTES') }
             steps {
+                sh 'node infra/security/registry-dns.mjs'
                 withCredentials([file(credentialsId: 'platform-signing-age', variable: 'SIGNING_AGE_FILE'), usernamePassword(credentialsId: 'harbor-creds', usernameVariable: 'HARBOR_USER', passwordVariable: 'HARBOR_PASS')]) {
                     sh 'node --max-old-space-size=128 infra/security/signing.mjs bootstrap'
                 }
