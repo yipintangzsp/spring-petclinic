@@ -60,6 +60,17 @@ pipeline {
             }
         }
 
+        stage('Pretest Idle Scanner Slot') {
+            options { timeout(time: 4, unit: 'MINUTES') }
+            steps {
+                withCredentials([string(credentialsId: 'sonar-token', variable: 'SONAR_TOKEN')]) {
+                    withEnv(['SONAR_HOST_URL=http://sonarqube-sonarqube.sonarqube.svc.cluster.local:9000']) {
+                        sh 'node infra/observability/sonar-resource-slot.mjs pretest-pause'
+                    }
+                }
+            }
+        }
+
         stage('Test') {
             steps {
                 sh '''
@@ -102,6 +113,11 @@ pipeline {
                     node infra/security/sbom-verify.mjs
                 '''
             }
+        }
+
+        stage('Restore Scanner Before Analysis') {
+            options { timeout(time: 12, unit: 'MINUTES') }
+            steps { sh 'node infra/observability/sonar-resource-slot.mjs pretest-restore' }
         }
 
         stage('SonarQube Analysis') {
@@ -467,6 +483,7 @@ pipeline {
                 sh '''
                     set -eu
                     node infra/security/cleanup.mjs
+                    node infra/observability/sonar-resource-slot.mjs pretest-restore
                     node --max-old-space-size=128 infra/observability/terraform-provider-build.mjs cleanup
                     node infra/observability/sonar-resource-slot.mjs restore
                     node infra/observability/heavy-lease.mjs release
