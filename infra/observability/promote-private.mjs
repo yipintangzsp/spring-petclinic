@@ -1,3 +1,4 @@
+import {requireSignedRelease} from '../security/gate-contract.mjs';
 import {hardenManifest} from '../security/hardening.mjs';
 import fs from 'node:fs';
 import os from 'node:os';
@@ -37,6 +38,7 @@ if(process.argv[1]&&import.meta.url===pathToFileURL(process.argv[1]).href){
   const scanned=JSON.parse(fs.readFileSync('target/platform/harbor.json','utf8'));
   if(scanned.digest!==built||scanned.scan_status!=='Success'||scanned.scans?.length!==2)throw Error('Completed runtime scan evidence required');
   if(process.env.K8S_IMAGE!=='core.harbor.domain/petclinic/petclinic@'+built)throw Error('Release image must match verified scan evidence');
+  requireSignedRelease({signing:JSON.parse(fs.readFileSync('.devsecops/signing-release.json')),proof:JSON.parse(fs.readFileSync('.devsecops/release-evidence.json')),image:built,source});
   const file='k8s/production/petclinic.yaml';
   const original=fs.readFileSync(file,'utf8');
   const changed=promoteManifest(original,{image:process.env.K8S_IMAGE,tag:process.env.IMAGE_TAG,number:process.env.BUILD_NUMBER,source,time:new Date().toISOString()});

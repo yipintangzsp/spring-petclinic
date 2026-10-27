@@ -89,6 +89,7 @@ pipeline {
             steps {
                 sh 'node infra/security/admission-gate.mjs'
                 sh 'node infra/security/source-gate.mjs'
+                sh 'node --max-old-space-size=128 infra/security/semgrep-gate.mjs'
                 sh 'node infra/security/business-audit.mjs'
             }
         }
@@ -159,6 +160,15 @@ pipeline {
             }
         }
 
+        stage('Sign Existing Release Baselines') {
+            options { timeout(time: 5, unit: 'MINUTES') }
+            steps {
+                withCredentials([file(credentialsId: 'platform-signing-age', variable: 'SIGNING_AGE_FILE'), usernamePassword(credentialsId: 'harbor-creds', usernameVariable: 'HARBOR_USER', passwordVariable: 'HARBOR_PASS')]) {
+                    sh 'node --max-old-space-size=128 infra/security/signing.mjs bootstrap'
+                }
+            }
+        }
+
         stage('DevSecOps GitOps Sync') {
             options { timeout(time: 6, unit: 'MINUTES') }
             steps {
@@ -167,6 +177,24 @@ pipeline {
                 sh 'node infra/security/admission-gate.mjs'
                 sh 'node infra/security/runtime/logging.mjs'
                 sh 'node infra/security/runtime/health.mjs'
+            }
+        }
+
+        stage('Encrypted Business Credentials') {
+            options { timeout(time: 3, unit: 'MINUTES') }
+            steps {
+                withCredentials([file(credentialsId: 'platform-business-age', variable: 'BUSINESS_AGE_FILE')]) {
+                    sh 'node --max-old-space-size=128 infra/security/secrets-gate.mjs'
+                }
+            }
+        }
+
+        stage('Signature Admission Gate') {
+            options { timeout(time: 6, unit: 'MINUTES') }
+            steps {
+                withCredentials([file(credentialsId: 'platform-signing-age', variable: 'SIGNING_AGE_FILE'), usernamePassword(credentialsId: 'harbor-creds', usernameVariable: 'HARBOR_USER', passwordVariable: 'HARBOR_PASS')]) {
+                    sh 'node --max-old-space-size=128 infra/security/signing.mjs admission'
+                }
             }
         }
 
@@ -267,7 +295,12 @@ pipeline {
         }
 
         stage('DevSecOps Release Evidence') {
-            steps { sh 'node infra/security/release-evidence.mjs' }
+            steps {
+                sh 'node infra/security/release-evidence.mjs'
+                withCredentials([file(credentialsId: 'platform-signing-age', variable: 'SIGNING_AGE_FILE'), usernamePassword(credentialsId: 'harbor-creds', usernameVariable: 'HARBOR_USER', passwordVariable: 'HARBOR_PASS')]) {
+                    sh 'node --max-old-space-size=128 infra/security/signing.mjs release'
+                }
+            }
         }
 
         stage('RabbitMQ Worker Deployment') {
@@ -369,6 +402,11 @@ pipeline {
             }
         }
 
+        stage('DAST Read-only Gate') {
+            options { timeout(time: 8, unit: 'MINUTES') }
+            steps { sh 'node --max-old-space-size=128 infra/security/zap-gate.mjs' }
+        }
+
         stage('RabbitMQ Release Event') {
             steps {
                 sh 'node infra/messaging/pipeline.mjs release'
@@ -435,7 +473,7 @@ pipeline {
                 '''
             }
             junit testResults: 'target/surefire-reports/*.xml', allowEmptyResults: true
-            archiveArtifacts artifacts: '.devsecops/*.json,.infra-preflight-before-build.json,.sonar-runtime-maintenance.json,target/platform/*.json,target/platform/build-*-prune.log,target/platform/terraform-provider-build.log', allowEmptyArchive: true
+            archiveArtifacts artifacts: '.devsecops/*.json,.devsecops/*.sig,.devsecops/*.log,.infra-preflight-before-build.json,.sonar-runtime-maintenance.json,target/platform/*.json,target/platform/build-*-prune.log,target/platform/terraform-provider-build.log', allowEmptyArchive: true
         }
         success {
             echo "CI/CD SUCCESS: ${K8S_IMAGE}"

@@ -26,4 +26,13 @@ const desiredPolicy=JSON.parse(fs.readFileSync('infra/security/policies.json'));
 const actualPolicy=JSON.parse(run(['get','clusterpolicy',desiredPolicy.metadata.name,'-o','json']));
 if(!isDeepStrictEqual(actualPolicy.spec,desiredPolicy.spec))throw Error('Live policy contract differs from reviewed source');
 fs.mkdirSync('.devsecops',{recursive:true});fs.writeFileSync('.devsecops/gitops.json',JSON.stringify({status:'success',source:rev,sync:last.status.sync,health:last.status.health,crds,livePolicySpecMatches:true},null,2));
+const signaturePolicy=JSON.parse(fs.readFileSync('infra/security/integration-resources.json')).items.find(x=>x.kind==='ClusterPolicy');
+let signatureReady=false;
+for(let i=0;i<30;i++){
+ const actual=JSON.parse(run(['get','clusterpolicy',signaturePolicy.metadata.name,'-o','json']));
+ if(!isDeepStrictEqual(actual.spec,signaturePolicy.spec))throw Error('Live signature policy differs from reviewed source');
+ if(actual.status?.ready===true||actual.status?.conditions?.some(c=>c.type==='Ready'&&c.status==='True')){signatureReady=true;break;}
+ await new Promise(r=>setTimeout(r,2000));
+}
+if(!signatureReady)throw Error('Signature policy native Ready condition not proven');
 console.log('DevSecOps GitOps pinned source synchronized and healthy');

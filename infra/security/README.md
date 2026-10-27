@@ -35,3 +35,13 @@ Grafana看板UID `devsecops-control`，复用既有Prometheus与Loki数据源，
 节点边界：原生NetworkPolicy不能作为宿主/节点防火墙保证。实际节点API TCP可达性单列记录；不宣称其被可靠阻断。无token和无Secret RBAC权限仍独立验证。Pod-to-Pod探针保留策略收敛尝试次数，始终无法阻断则失败并且不传源码。
 
 策略默认值在Git中显式声明，allowExistingViolations=false，不忽略任何策略spec差异。GitOps同步成功后还逐一验证22个CRD的原生Established/NamesAccepted条件、实际策略spec与源码深度一致，并重新执行真实准入负例。所有资源顶层Argo实例标签显式归platform-devsecops，聚合ClusterRole选择器与之对齐；Pod模板及Service选择器仍保持kyverno。独立回归曾发现顶层标签被Argo覆盖后core角色未聚合、CRD读取403，已修复并新增标签模拟测试、实际SA CRD读取权限及13条core规则检查。未增加原权限，未修改全局Argo追踪或健康规则。
+
+## 2026-10-27 接入候选（完整发布验收前不标完成）
+
+新增 Cosign 私有仓库签名、三个 PetClinic Secret 的 SOPS 密文来源、六条 Java Semgrep 规则及 GET 白名单 ZAP 被动门禁。扫描复用已运行镜像的相同摘要本地 Registry 别名，不新建基础运行镜像；工具只以版本化硬链接目录复用，运行前逐文件核对锁定摘要。扫描在 devsecops-execution 串行运行，无 token、只读根、非 root；实际验证到 Jenkins canary 的阻断后才传工具/源码。ZAP 仅向 PetClinic Pod 的8080端口放行，禁止 spider、表单提交和主动扫描。
+
+验签新增范围仅 petclinic 与 devsecops-supply-chain，匹配 core.harbor.domain/petclinic/*；其他命名空间/仓库不据此声称已保护。先签当前部署和214回滚基线，再经原GitOps流程注册策略；CI验证正确签名允许、未签名和错误密钥拒绝，随后签双架构候选和发布证据，promotion额外要求签名证据与源码/镜像一致。使用私有受控公钥信任，未上传公共透明日志，不声称具备Rekor透明性。
+
+解密密钥分为业务与签名两份 Jenkins 文件凭据，恢复原件位于服务器root私有目录及Mac本轮私有证据目录。Git只保存公钥、age公有recipient和密文；签名私钥只在签名阶段临时解密，finally回收，不归档。业务迁移仅 petclinic-db、rabbitmq-client、petclinic-harbor-pull，不改变现有密码。CI用限定三个资源名称的身份进行get/patch/update，读取其他Secret、列举、创建或跨命名空间均应拒绝；Jenkins既有管理员能力未由此消除。现存值与密文不一致时拒绝覆盖，防止回滚外部轮换。
+
+Semgrep ERROR发现阻断，扫描错误/空目标也阻断；六条规则不是全量SAST覆盖。ZAP通过本地合成测试卡号页面验证High检测，再GET首页、owners/find、vets和health；High阻断，其余发现保留报告，未覆盖认证与浏览器攻击。签名测试使用几KB的独立Harbor测试制品，不启动攻击Pod。所有成功结论以完整CI和独立记录为准；已有214不替代新门禁验收。
