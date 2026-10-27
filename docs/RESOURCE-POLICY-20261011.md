@@ -1,5 +1,17 @@
 # 实测资源与按需运行策略 · 2026-10-11
 
+## 2026-10-27 Phase4当前容量与准入
+
+当前Mac物理32GiB，VM已正常关机后仅将内存28672→24576MiB，仍为6CPU；原配置、前后SHA及单字段比对在私有vm-memory-24g证据。Linux实际MemTotal24546064KiB。旧28GiB容量仅作历史参考，后续分析必须重新预算。
+
+Falco只覆盖本地一个节点：requests100m/256Mi、limits500m/512Mi；既有relay增加32Mi内存request，常驻净增100m/288Mi。#214负载46个有效Falco样本CPU54–150m、working set73–95Mi；受控滚动时3次top未发布单列，不填0。交付时105Mi为另一个时刻，不能当作CI峰值。
+
+#214全程61个资源样本，VM可用最低4803Mi、Mac最大swap增长0Mi，完整CI成功。当前交付三次采样VM约5.49GiB可用、根盘48.66GiB、Mac数据盘43.50GiB、CPU请求4745m/6000m，均为时刻值。下一轮安全重构建启动要求49.778671GiB，当前约差1.12GiB，应保留原门禁拒绝新重构建；不得为通过而减少15%+8GiB停止余量或4GiB增长预留，不扩大未授权镜像/卷/备份删除范围。
+
+VM可用1536Mi、Mac内存余量10%/磁盘16GiB、swap增长512Mi、memory/IO full PSI5/10及新OOM/Eviction停止线保持。CI临时释放Sonar只允许在真实质量门完成后，以同一外层Lease和临时队列veto保护，结束或失败先恢复原副本Ready/HTTP UP及质量结果再释放；不嵌套申请同一锁、不用全局quietDown暂停活动Pipeline。手动分析仅在Jenkins空闲时使用原HeavyRun。Driver/Executor、Flink与安全测试计算仍按需串行回收。
+
+> 2026-10-27 Phase4：Falco modern eBPF仅覆盖本地devops节点，6类隔离检测、Loki/7个Grafana Runtime面板、完整Jenkins #214及独立业务复验通过。新增请求100m/288Mi（含控制relay）；VM现为24GiB/6CPU，旧28GiB记录仅为历史；云节点不覆盖；非零入口事件关联计数与ARM64 TOCTOU限制保留。见[Phase4运行时验收](DEVSECOPS-20261026.md#phase-4---runtime-security完整验收通过)。
+
 > 2026-10-26最新：DevSecOps完整Jenkins #207 SUCCESS及独立复验通过。新增Kyverno单副本、按需Gitleaks扫描，原始95项均有逐项误报证据、真实泄漏0；SBOM143组件、7种违规拦截、业务3/3只读根及监控查询通过。Harbor双架构各Critical0/High0，仍各有53 Medium/4 Low。范围、资源与操作见[DevSecOps验收](DEVSECOPS-20261026.md)。
 
 > 2026-10-25最新：Terraform独立Job执行隔离已通过完整Jenkins #197及独立复验；真实锁竞争、重复执行、受控失败重试、60秒超时回收和状态保护均通过。旧Jenkins内执行入口已停用。当前操作及边界见[执行隔离验收](TERRAFORM-ISOLATION-20261025.md)。

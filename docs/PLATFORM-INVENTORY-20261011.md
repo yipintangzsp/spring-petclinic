@@ -1,5 +1,18 @@
 # 全平台盘点 · 2026-10-12
 
+## 2026-10-27 Phase4组件分类（补充当前清单）
+
+|对象|分类|当前真实验收|资源与入口|
+|---|---|---|---|
+|Falco0.45.1 / modern eBPF|已接入运行时业务安全流程，常驻|本地devops一个实例；6类隔离测试、文件路径与无启动噪音通过；云节点未覆盖|requests100m/256Mi，limits500m/512Mi；devsecops-system/platform-falco|
+|既有Alloy→Loki→Grafana|复用并已接入运行时日志|7个业务Runtime面板与独立内部丢弃诊断；规则哈希区分版本|未新增采集/看板Pod；grafana.devops.local/d/devsecops-control/|
+|devsecops-test测试Pod|按需运行，验收后0|非root/只读根/无token/默认拒绝网络；6类演示后UID清理|requests50m/128Mi，limits250m/256Mi，600秒；空namespace/quota/policy为重跑边界|
+|既有github-webhook-relay|常驻，控制预算修复|原OOM已取证；当前新实例及完整CI正常|CPU5m不变，内存request32→64Mi、limit96→192Mi；无新控制组件|
+
+Kubernetes资源请求净新增100m/288Mi（含relay32Mi），VM当前24GiB/6CPU。Spark Operator/Webhook保持Ready；分析Driver/Executor与Flink计算不因此常驻，联合分析本阶段未重跑。旧组件清单及旧容量数据保留为历史，不将组件安装数等同业务验收。
+
+> 2026-10-27 Phase4：Falco modern eBPF仅覆盖本地devops节点，6类隔离检测、Loki/7个Grafana Runtime面板、完整Jenkins #214及独立业务复验通过。新增请求100m/288Mi（含控制relay）；VM现为24GiB/6CPU，旧28GiB记录仅为历史；云节点不覆盖；非零入口事件关联计数与ARM64 TOCTOU限制保留。见[Phase4运行时验收](DEVSECOPS-20261026.md#phase-4---runtime-security完整验收通过)。
+
 > 2026-10-26最新：DevSecOps完整Jenkins #207 SUCCESS及独立复验通过。新增Kyverno单副本、按需Gitleaks扫描，原始95项均有逐项误报证据、真实泄漏0；SBOM143组件、7种违规拦截、业务3/3只读根及监控查询通过。Harbor双架构各Critical0/High0，仍各有53 Medium/4 Low。范围、资源与操作见[DevSecOps验收](DEVSECOPS-20261026.md)。
 
 > 2026-10-25最新：Terraform独立Job执行隔离已通过完整Jenkins #197及独立复验；真实锁竞争、重复执行、受控失败重试、60秒超时回收和状态保护均通过。旧Jenkins内执行入口已停用。当前操作及边界见[执行隔离验收](TERRAFORM-ISOLATION-20261025.md)。

@@ -1,5 +1,22 @@
 # Petclinic 发布与按需分析操作
 
+## 2026-10-27 Runtime Security操作入口
+
+正常发布继续使用Jenkins petclinic-ci → Build Now，经完整源码/质量/镜像/GitOps门禁；原磁盘和内存新鲜准入仍生效。运行记录查看build214的.devsecops/runtime-health.json、runtime-logging.json、source-gate.json、kyverno-rbac.json及sonar-resource-slot.json。普通Falco事件不作为CI失败条件。
+
+```sh
+kubectl -n devsecops-system get ds,pods,servicemonitor
+kubectl -n devsecops-system logs ds/platform-falco --since=10m
+kubectl -n argocd get applications platform-devsecops petclinic
+PETCLINIC_SSH_ADDRESS=192.168.64.11 python3 infra/security/runtime/verify.py /absolute/private/new-evidence-directory
+```
+
+手动演示须在管理Mac的仓库目录运行；脚本自行持已有共享Lease、保护Jenkins调度、核对6类动作与真实路径、按UID回收测试Pod。看板为http://grafana.devops.local/d/devsecops-control/，业务为http://petclinic.devops.local/。默认业务统计窗口为当前规则版本的一小时；旧事件过期不是采集故障，历史与内部诊断可用Loki查询{app="platform-falco"}回溯。
+
+Sonar恢复失败先保留Lease和队列保护，核对原StatefulSet UID、PVC、holder与原副本，恢复Ready/HTTP UP后再解除本轮保护；不删除未知资源或状态。完整排障/回滚、实际测试时间及INFO/丢弃限制见DEVSECOPS-20261026.md Phase4。
+
+> 2026-10-27 Phase4：Falco modern eBPF仅覆盖本地devops节点，6类隔离检测、Loki/7个Grafana Runtime面板、完整Jenkins #214及独立业务复验通过。新增请求100m/288Mi（含控制relay）；VM现为24GiB/6CPU，旧28GiB记录仅为历史；云节点不覆盖；非零入口事件关联计数与ARM64 TOCTOU限制保留。见[Phase4运行时验收](DEVSECOPS-20261026.md#phase-4---runtime-security完整验收通过)。
+
 > 2026-10-26最新：DevSecOps完整Jenkins #207 SUCCESS及独立复验通过。新增Kyverno单副本、按需Gitleaks扫描，原始95项均有逐项误报证据、真实泄漏0；SBOM143组件、7种违规拦截、业务3/3只读根及监控查询通过。Harbor双架构各Critical0/High0，仍各有53 Medium/4 Low。范围、资源与操作见[DevSecOps验收](DEVSECOPS-20261026.md)。
 
 > 2026-10-25最新：Terraform独立Job执行隔离已通过完整Jenkins #197及独立复验；真实锁竞争、重复执行、受控失败重试、60秒超时回收和状态保护均通过。旧Jenkins内执行入口已停用。当前操作及边界见[执行隔离验收](TERRAFORM-ISOLATION-20261025.md)。
