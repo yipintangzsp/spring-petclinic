@@ -45,3 +45,7 @@ Grafana看板UID `devsecops-control`，复用既有Prometheus与Loki数据源，
 解密密钥分为业务与签名两份 Jenkins 文件凭据，恢复原件位于服务器root私有目录及Mac本轮私有证据目录。Git只保存公钥、age公有recipient和密文；签名私钥只在签名阶段临时解密，finally回收，不归档。业务迁移仅 petclinic-db、rabbitmq-client、petclinic-harbor-pull，不改变现有密码。CI用限定三个资源名称的身份进行get/patch/update，读取其他Secret、列举、创建或跨命名空间均应拒绝；Jenkins既有管理员能力未由此消除。现存值与密文不一致时拒绝覆盖，防止回滚外部轮换。
 
 Semgrep ERROR发现阻断，扫描错误/空目标也阻断；六条规则不是全量SAST覆盖。ZAP通过本地合成测试卡号页面验证High检测，再GET首页、owners/find、vets和health；High阻断，其余发现保留报告，未覆盖认证与浏览器攻击。签名测试使用几KB的独立Harbor测试制品，不启动攻击Pod。所有成功结论以完整CI和独立记录为准；已有214不替代新门禁验收。
+
+2026-10-27 接入复验进度：#220 在 NoHttp 校验处失败，增加了仅限 signing.mjs 与既有 Harbor 私有监听器的精确说明/例外；#221在Maven集成测试阶段触发原 full PSI>5 停止线而ABORTED，未发布。单独提前恢复原固定摘要MySQL后，完整Maven104项通过（0失败/错误/跳过），8次资源样本中full PSI最大1.44、最低可用2826MiB，未降低阈值。原生Semgrep隔离实扫44个Java文件、发现0项，正负重跑1/0/1；源码扫描原95条已审核公开校验值单列，新增阻断0；ZAP回环标准测试卡号样例已真实触发10062 High。新提交将Node测试并发设为1，并在测试JVM之前准备、核验MySQL原摘要；所有测试保留。
+
+这些独立验证不能替代尚未通过的完整新CI。签名策略、真实Secret对账、候选镜像签名、发布后业务DAST仍须经完整CI实跑与独立复核。本轮新建测试容器/卷与候选源码副本已按所有权核对后回收，密钥恢复原件和执行证据保留；旧apt缓存仍未获得新增清理授权，因此未删除。

@@ -56,6 +56,7 @@ pipeline {
                 sh 'node infra/observability/heavy-lease.mjs acquire'
                 sh 'node infra/observability/ensure-sonar-runtime.mjs'
                 sh 'node infra/observability/release-preflight.mjs .infra-preflight-before-build.json --reserve-security-build-growth'
+                sh 'node infra/security/test-runtime-preflight.mjs'
             }
         }
 
@@ -63,7 +64,7 @@ pipeline {
             steps {
                 sh '''
                     echo "===== MAVEN TEST ====="
-                    node --test infra/observability/*.test.mjs infra/security/*.test.mjs
+                    node --test --test-concurrency=1 infra/observability/*.test.mjs infra/security/*.test.mjs
                     node infra/observability/terraform-sandbox-tests.mjs
                     node infra/observability/maven-test.mjs
                     node infra/messaging/pipeline.mjs test
