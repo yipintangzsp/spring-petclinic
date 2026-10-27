@@ -3,6 +3,8 @@
 		"-//Checkstyle//DTD SuppressionFilter Configuration 1.2//EN"
 		"https://checkstyle.org/dtds/suppressions_1_2.dtd">
 <suppressions>
+    <!-- Existing private Harbor service has no TLS listener; exact signing client and existing service only. -->
+    <suppress files="infra[\\/]security[\\/]signing\.mjs$" checks="NoHttp" message=".*http://harbor-core\.harbor\.svc\.cluster\.local.*"/>
     <!-- Existing cluster-local monitoring and canary HTTP listeners used for real probes. -->
     <suppress files="infra[\\/]devops-lab[\\/]rollouts[\\/]resources\.json$" checks="NoHttp" message=".*http://(delivery-canary\.rollouts-lab\.svc\.cluster\.local:8080/|kube-stack-kube-prometheus-prometheus\.monitoring\.svc\.cluster\.local:9090).*"/>
     <!-- Official vendored cert-manager CRD descriptions contain these two HTTP examples only. -->
