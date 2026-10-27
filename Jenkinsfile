@@ -57,6 +57,7 @@ pipeline {
                 sh 'node infra/observability/ensure-sonar-runtime.mjs'
                 sh 'node infra/observability/release-preflight.mjs .infra-preflight-before-build.json --reserve-security-build-growth'
                 sh 'node infra/security/test-runtime-preflight.mjs'
+                sh 'node infra/security/runtime/health.mjs baseline'
             }
         }
 
