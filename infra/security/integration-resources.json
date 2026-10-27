@@ -126,13 +126,7 @@
         "kind": "Role",
         "name": "platform-signature-pull"
       },
-      "subjects": [
-        {
-          "kind": "ServiceAccount",
-          "name": "kyverno-admission-controller",
-          "namespace": "devsecops-system"
-        }
-      ]
+      "subjects": []
     },
     {
       "apiVersion": "networking.k8s.io/v1",
@@ -262,7 +256,7 @@
                 "imageRegistryCredentials": {
                   "allowInsecureRegistry": true,
                   "secrets": [
-                    "petclinic/petclinic-harbor-pull"
+                    "kyverno-registry-pull"
                   ]
                 },
                 "mutateDigest": true,
@@ -280,6 +274,60 @@
           "timeoutSeconds": 20
         }
       }
+    },
+    {
+      "apiVersion": "rbac.authorization.k8s.io/v1",
+      "kind": "Role",
+      "metadata": {
+        "name": "platform-registry-secret-reconciler",
+        "namespace": "devsecops-system",
+        "labels": {
+          "petclinic.devops.local/owner": "platform-devsecops",
+          "app.kubernetes.io/instance": "platform-devsecops"
+        }
+      },
+      "rules": [
+        {
+          "apiGroups": [
+            ""
+          ],
+          "resources": [
+            "secrets"
+          ],
+          "resourceNames": [
+            "kyverno-registry-pull"
+          ],
+          "verbs": [
+            "get",
+            "patch",
+            "update"
+          ]
+        }
+      ]
+    },
+    {
+      "apiVersion": "rbac.authorization.k8s.io/v1",
+      "kind": "RoleBinding",
+      "metadata": {
+        "name": "platform-registry-secret-reconciler",
+        "namespace": "devsecops-system",
+        "labels": {
+          "petclinic.devops.local/owner": "platform-devsecops",
+          "app.kubernetes.io/instance": "platform-devsecops"
+        }
+      },
+      "roleRef": {
+        "apiGroup": "rbac.authorization.k8s.io",
+        "kind": "Role",
+        "name": "platform-registry-secret-reconciler"
+      },
+      "subjects": [
+        {
+          "kind": "ServiceAccount",
+          "name": "platform-secret-reconciler",
+          "namespace": "devsecops-system"
+        }
+      ]
     }
   ]
 }
