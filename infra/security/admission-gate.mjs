@@ -1,4 +1,5 @@
 import fs from 'node:fs';
+import {isDeepStrictEqual} from 'node:util';
 import {spawnSync} from 'node:child_process';
 const namespace='devsecops-execution', tool=JSON.parse(fs.readFileSync('infra/security/tools-lock.json')).gitleaks;
 const pod={apiVersion:'v1',kind:'Pod',metadata:{name:'devsecops-contract-probe',namespace},spec:{automountServiceAccountToken:false,restartPolicy:'Never',securityContext:{runAsNonRoot:true,runAsUser:65532,seccompProfile:{type:'RuntimeDefault'}},containers:[{name:'probe',image:tool.image,command:['gitleaks','version'],securityContext:{allowPrivilegeEscalation:false,readOnlyRootFilesystem:true,capabilities:{drop:['ALL']}},resources:{requests:{cpu:'100m',memory:'256Mi'},limits:{cpu:'1',memory:'512Mi'}}}]}};
@@ -6,7 +7,7 @@ const evidence={source:fs.readFileSync('.git-sha','utf8').trim(),startedAt:new D
 function probe(spec,denied){
  const r=spawnSync('kubectl',['--request-timeout=20s','create','--dry-run=server','-f','-','-o','json'],{input:JSON.stringify(spec),encoding:'utf8',timeout:25000,maxBuffer:1024*1024});
  if(r.error)throw r.error;
- if(denied ? r.status===0||!/devsecops-workload-contract/.test(r.stderr) : r.status!==0)throw Error('Admission mismatch: '+r.stderr.slice(-1500));
+ if(denied ? r.status===0||!/devsecops-workload-contract|devsecops-production-baseline/.test(r.stderr) : r.status!==0)throw Error('Admission mismatch: '+r.stderr.slice(-1500));
  return {allowed:r.status===0,diagnostic:denied?r.stderr.slice(-1800):'server dry-run accepted; no Pod created'};
 }
 try{
@@ -27,21 +28,39 @@ try{
  missing_seccomp:p=>delete p.spec.securityContext.seccompProfile
  };
  for(const [name,change] of Object.entries(mutations)){const p=structuredClone(pod);change(p);evidence.cases.push({case:name,mode:'FAIL',...probe(p,true)});}
- // Deliberately unproven gaps stay WARN; do not claim the existing policy blocks them.
- const defaulted=structuredClone(pod);defaulted.spec.containers[0].resources.limits={cpu:'100m',memory:'256Mi'};delete defaulted.spec.containers[0].resources.requests;
- evidence.cases.push({case:'requests-defaulted-from-explicit-limits',mode:'PASS',...probe(defaulted,false)});
- evidence.warningProbes=[];
- const gaps={
+ // Probe the supplemental live policy independently of the scanner-only contract.
+ const contract=JSON.parse(fs.readFileSync('infra/security/production-baseline.json'));
+ const actual=spawnSync('kubectl',['--request-timeout=20s','get','clusterpolicy',contract.metadata.name,'-o','json'],{encoding:'utf8',timeout:25000});
+ if(actual.status!==0)throw Error('Production baseline policy unavailable');
+ const liveSpec=JSON.parse(actual.stdout).spec;
+ for(const desiredRule of contract.spec.rules){const liveRule=liveSpec.rules.find(x=>x.name===desiredRule.name);if(!isDeepStrictEqual(liveRule?.validate?.cel,desiredRule.validate.cel))throw Error('Live baseline expressions differ: '+desiredRule.name);}
+ if(liveSpec.validationFailureAction!=='Enforce')throw Error('Production baseline must enforce');
+ const productionProbe=structuredClone(pod);productionProbe.metadata.namespace='petclinic';productionProbe.spec.containers[0].image=JSON.parse(fs.readFileSync('infra/messaging/dependencies.json')).runtime;
+ evidence.cases.push({case:'production-compliant-worker-image',mode:'PASS',...probe(productionProbe,false)});
+ const closing={
  added_dangerous_capability:p=>p.spec.containers[0].securityContext.capabilities.add=['SYS_ADMIN'],
  unauthorized_registry:p=>p.spec.containers[0].image='unapproved.invalid/security/probe@sha256:'+'1'.repeat(64),
  container_uid_zero:p=>p.spec.containers[0].securityContext.runAsUser=0,
- unrestricted_init_container:p=>p.spec.initContainers=[{...structuredClone(p.spec.containers[0]),name:'init',securityContext:{runAsNonRoot:false,runAsUser:0,allowPrivilegeEscalation:true,readOnlyRootFilesystem:false,capabilities:{add:['SYS_ADMIN']}}}]
+ pod_uid_zero:p=>{p.spec.securityContext.runAsUser=0;},
+ unrestricted_init_container:p=>p.spec.initContainers=[{...structuredClone(p.spec.containers[0]),name:'init',securityContext:{runAsNonRoot:false,runAsUser:0,allowPrivilegeEscalation:true,readOnlyRootFilesystem:false,capabilities:{add:['SYS_ADMIN']}}}],
+ privileged_init_container:p=>{delete p.spec.securityContext.seccompProfile;p.spec.initContainers=[{...structuredClone(p.spec.containers[0]),name:'init',securityContext:{privileged:true,allowPrivilegeEscalation:true}}];},
+ init_registry:p=>p.spec.initContainers=[{...structuredClone(p.spec.containers[0]),name:'init',image:'unapproved.invalid/security/init@sha256:'+'2'.repeat(64)}]
  };
- for(const [name,change] of Object.entries(gaps)){
-  const p=structuredClone(pod);change(p);
-  const r=spawnSync('kubectl',['--request-timeout=20s','create','--dry-run=server','-f','-','-o','json'],{input:JSON.stringify(p),encoding:'utf8',timeout:25000,maxBuffer:1024*1024});
-  if(r.error||r.status!==0&&!/devsecops-workload-contract/.test(r.stderr))throw Error('WARN probe unavailable: '+name+': '+r.stderr.slice(-1000));
-  evidence.warningProbes.push({case:name,mode:'WARN',allowed:r.status===0,diagnostic:r.status===0?'Existing contract does not reject this case; no workload created':r.stderr.slice(-1800)});
+ for(const [name,change] of Object.entries(closing)){const p=structuredClone(productionProbe);change(p);evidence.cases.push({case:name,mode:'FAIL',...probe(p,true)});}
+ evidence.warningProbes=[];evidence.exceptions=[];
+ const exceptions=JSON.parse(fs.readFileSync('infra/security/production-exceptions.json'));
+ for(const ex of exceptions.exceptions){
+  const r=spawnSync('kubectl',['--request-timeout=20s','get','pods','-n',ex.namespace,'-o','json'],{encoding:'utf8',timeout:25000,maxBuffer:8*1024*1024});
+  if(r.status!==0)throw Error('Exception workload read failed');
+  const source=JSON.parse(r.stdout).items.find(p=>p.metadata.ownerReferences?.some(o=>o.uid===ex.owner.uid));if(!source)throw Error('Approved exception owner absent: '+ex.id);
+  const spec={apiVersion:'v1',kind:'Pod',metadata:{name:'baseline-exception-'+ex.id.toLowerCase(),namespace:ex.namespace,ownerReferences:source.metadata.ownerReferences},spec:source.spec};
+  evidence.exceptions.push({id:ex.id,mode:'precise-exception',...probe(spec,false)});
+  const wrongOwner=structuredClone(spec);wrongOwner.metadata.ownerReferences[0].uid='00000000-0000-0000-0000-000000000000';evidence.cases.push({case:ex.id+'-wrong-owner-denied',mode:'FAIL',...probe(wrongOwner,true)});
+  const extra=structuredClone(spec);
+  if(ex.id==='falco')extra.spec.containers[0].securityContext.capabilities.add.push('SYS_ADMIN');
+  else if(ex.id==='nodeExporter')extra.spec.hostIPC=true;
+  else extra.spec.containers[0].securityContext={privileged:true,allowPrivilegeEscalation:true};
+  evidence.cases.push({case:ex.id+'-extra-permission-denied',mode:'FAIL',...probe(extra,true)});
  }
  // Observe current templates without applying scanner restrictions to production/system namespaces.
  const live=spawnSync('kubectl',['--request-timeout=20s','get','deploy,ds,sts','-A','-o','json'],{encoding:'utf8',timeout:25000,maxBuffer:16*1024*1024});
@@ -66,7 +85,7 @@ try{
   }
   return {namespace:o.metadata.namespace,kind:o.kind,name:o.metadata.name,mode:'WARN',findings};
  });
- evidence.scope={enforcedNamespaces:['devsecops-execution'],productionExpansion:false,registryAllowlist:'WARN: not yet reviewed',exceptions:'No broad namespace or policy exceptions added. Special workload needs recorded as audit observations; production admission scope unchanged.'};
+ evidence.scope={enforcedNamespaces:exceptions.scopeNamespaces,productionExpansion:true,registryAllowlist:'Reviewed namespace-specific repository prefixes enforced',exceptions:exceptions.exceptions,remainingWarn:'Missing nonroot/readonly/resources, legacy tags outside scanner namespace; other namespaces remain inventory WARN'};
  evidence.status='success';
 }finally{fs.mkdirSync('.devsecops',{recursive:true});fs.writeFileSync('.devsecops/admission-gate.json',JSON.stringify(evidence,null,2));}
 console.log('Kyverno server dry-run: '+evidence.cases.length+' enforced cases passed; '+evidence.warningProbes.length+' gaps audited WARN; no workloads created');

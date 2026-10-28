@@ -1,0 +1,321 @@
+{
+  "apiVersion": "kyverno.io/v1",
+  "kind": "ClusterPolicy",
+  "metadata": {
+    "name": "devsecops-production-baseline",
+    "labels": {
+      "petclinic.devops.local/owner": "platform-devsecops"
+    },
+    "annotations": {
+      "pod-policies.kyverno.io/autogen-controllers": "none",
+      "policies.kyverno.io/title": "Reviewed production and security namespace high-risk baseline"
+    }
+  },
+  "spec": {
+    "validationFailureAction": "Enforce",
+    "background": false,
+    "failurePolicy": "Fail",
+    "rules": [
+      {
+        "name": "no-privileged-containers",
+        "match": {
+          "any": [
+            {
+              "resources": {
+                "kinds": [
+                  "Pod"
+                ],
+                "namespaces": [
+                  "devsecops-execution",
+                  "petclinic",
+                  "devsecops-system",
+                  "monitoring",
+                  "sonarqube"
+                ]
+              }
+            }
+          ]
+        },
+        "validate": {
+          "allowExistingViolations": false,
+          "cel": {
+            "variables": [
+              {
+                "name": "containers",
+                "expression": "object.spec.containers + (has(object.spec.initContainers) ? object.spec.initContainers : []) + (has(object.spec.ephemeralContainers) ? object.spec.ephemeralContainers : [])"
+              },
+              {
+                "name": "falco",
+                "expression": "object.metadata.namespace == \"devsecops-system\" && has(object.metadata.ownerReferences) && object.metadata.ownerReferences.exists(o, o.kind == \"DaemonSet\" && o.name == \"platform-falco\" && o.uid == \"c33ae390-de88-4fc2-bce4-b19c5b828a9c\") && object.spec.serviceAccountName == \"platform-falco\" && object.spec.containers.size() == 1 && (!has(object.spec.initContainers) || object.spec.initContainers.size() == 0) && (!has(object.spec.ephemeralContainers) || object.spec.ephemeralContainers.size() == 0) && object.spec.containers.all(c, c.name == \"falco\" && c.image == \"127.0.0.1:30050/platform-security/falco@sha256:3c5ccde1c8b50ccc8baf016090a5376d182e08dc8751df2b37d8ff2a13499558\" && (!has(c.command) || c.command.size() == 0) && has(c.args) && c.args == [\"/usr/bin/falco\"])"
+              },
+              {
+                "name": "nodeExporter",
+                "expression": "object.metadata.namespace == \"monitoring\" && has(object.metadata.ownerReferences) && object.metadata.ownerReferences.exists(o, o.kind == \"DaemonSet\" && o.name == \"kube-stack-prometheus-node-exporter\" && o.uid == \"d63a0442-dbc1-4021-9fdf-f374bf67825a\") && object.spec.serviceAccountName == \"kube-stack-prometheus-node-exporter\" && object.spec.containers.size() == 1 && (!has(object.spec.initContainers) || object.spec.initContainers.size() == 0) && (!has(object.spec.ephemeralContainers) || object.spec.ephemeralContainers.size() == 0) && object.spec.containers.all(c, c.name == \"node-exporter\" && c.image == \"quay.io/prometheus/node-exporter:v1.12.1\" && (!has(c.command) || c.command.size() == 0) && has(c.args) && c.args == [\"--path.procfs=/host/proc\",\"--path.sysfs=/host/sys\",\"--path.rootfs=/host/root\",\"--path.udev.data=/host/root/run/udev/data\",\"--web.listen-address=[\" + \"$\" + \"(\" + \"HOST_IP)]:9100\",\"--collector.filesystem.mount-points-exclude=^/(dev|proc|sys|run/containerd/.+|var/lib/docker/.+|var/lib/kubelet/.+)($|/)\",\"--collector.filesystem.fs-types-exclude=^(autofs|binfmt_misc|bpf|cgroup2?|configfs|debugfs|devpts|devtmpfs|fusectl|hugetlbfs|iso9660|mqueue|nsfs|overlay|proc|procfs|pstore|rpc_pipefs|securityfs|selinuxfs|squashfs|sysfs|tracefs|erofs)$\"])"
+              },
+              {
+                "name": "sonar",
+                "expression": "object.metadata.namespace == \"sonarqube\" && has(object.metadata.ownerReferences) && object.metadata.ownerReferences.exists(o, o.kind == \"StatefulSet\" && o.name == \"sonarqube-sonarqube\" && o.uid == \"12f0c30f-732f-4db1-9efe-6e811ab7d6c4\") && object.spec.serviceAccountName == \"default\""
+              }
+            ],
+            "expressions": [
+              {
+                "expression": "variables.containers.all(c, !has(c.securityContext) || !has(c.securityContext.privileged) || !c.securityContext.privileged || (variables.sonar && has(object.spec.initContainers) && object.spec.initContainers.exists(i, i.name == c.name) && has(c.securityContext) && has(c.securityContext.readOnlyRootFilesystem) && c.securityContext.readOnlyRootFilesystem && c.name == \"init-sysctl\" && c.image == \"192.168.1.58:30050/platform-cache/sonarqube@sha256:f5593e4a6fe6f3d93e8d4d398b7bb6ba6fb3fe93b0a6b760d5ddaa24b8533cf2\" && has(c.command) && c.command == [\"/bin/bash\",\"-e\",\"/tmp/scripts/init_sysctl.sh\"] && (!has(c.args) || c.args.size() == 0)))",
+                "message": "DevSecOps production baseline: no-privileged-containers"
+              }
+            ]
+          }
+        }
+      },
+      {
+        "name": "no-explicit-uid-zero",
+        "match": {
+          "any": [
+            {
+              "resources": {
+                "kinds": [
+                  "Pod"
+                ],
+                "namespaces": [
+                  "devsecops-execution",
+                  "petclinic",
+                  "devsecops-system",
+                  "monitoring",
+                  "sonarqube"
+                ]
+              }
+            }
+          ]
+        },
+        "validate": {
+          "allowExistingViolations": false,
+          "cel": {
+            "variables": [
+              {
+                "name": "containers",
+                "expression": "object.spec.containers + (has(object.spec.initContainers) ? object.spec.initContainers : []) + (has(object.spec.ephemeralContainers) ? object.spec.ephemeralContainers : [])"
+              },
+              {
+                "name": "falco",
+                "expression": "object.metadata.namespace == \"devsecops-system\" && has(object.metadata.ownerReferences) && object.metadata.ownerReferences.exists(o, o.kind == \"DaemonSet\" && o.name == \"platform-falco\" && o.uid == \"c33ae390-de88-4fc2-bce4-b19c5b828a9c\") && object.spec.serviceAccountName == \"platform-falco\" && object.spec.containers.size() == 1 && (!has(object.spec.initContainers) || object.spec.initContainers.size() == 0) && (!has(object.spec.ephemeralContainers) || object.spec.ephemeralContainers.size() == 0) && object.spec.containers.all(c, c.name == \"falco\" && c.image == \"127.0.0.1:30050/platform-security/falco@sha256:3c5ccde1c8b50ccc8baf016090a5376d182e08dc8751df2b37d8ff2a13499558\" && (!has(c.command) || c.command.size() == 0) && has(c.args) && c.args == [\"/usr/bin/falco\"])"
+              },
+              {
+                "name": "nodeExporter",
+                "expression": "object.metadata.namespace == \"monitoring\" && has(object.metadata.ownerReferences) && object.metadata.ownerReferences.exists(o, o.kind == \"DaemonSet\" && o.name == \"kube-stack-prometheus-node-exporter\" && o.uid == \"d63a0442-dbc1-4021-9fdf-f374bf67825a\") && object.spec.serviceAccountName == \"kube-stack-prometheus-node-exporter\" && object.spec.containers.size() == 1 && (!has(object.spec.initContainers) || object.spec.initContainers.size() == 0) && (!has(object.spec.ephemeralContainers) || object.spec.ephemeralContainers.size() == 0) && object.spec.containers.all(c, c.name == \"node-exporter\" && c.image == \"quay.io/prometheus/node-exporter:v1.12.1\" && (!has(c.command) || c.command.size() == 0) && has(c.args) && c.args == [\"--path.procfs=/host/proc\",\"--path.sysfs=/host/sys\",\"--path.rootfs=/host/root\",\"--path.udev.data=/host/root/run/udev/data\",\"--web.listen-address=[\" + \"$\" + \"(\" + \"HOST_IP)]:9100\",\"--collector.filesystem.mount-points-exclude=^/(dev|proc|sys|run/containerd/.+|var/lib/docker/.+|var/lib/kubelet/.+)($|/)\",\"--collector.filesystem.fs-types-exclude=^(autofs|binfmt_misc|bpf|cgroup2?|configfs|debugfs|devpts|devtmpfs|fusectl|hugetlbfs|iso9660|mqueue|nsfs|overlay|proc|procfs|pstore|rpc_pipefs|securityfs|selinuxfs|squashfs|sysfs|tracefs|erofs)$\"])"
+              },
+              {
+                "name": "sonar",
+                "expression": "object.metadata.namespace == \"sonarqube\" && has(object.metadata.ownerReferences) && object.metadata.ownerReferences.exists(o, o.kind == \"StatefulSet\" && o.name == \"sonarqube-sonarqube\" && o.uid == \"12f0c30f-732f-4db1-9efe-6e811ab7d6c4\") && object.spec.serviceAccountName == \"default\""
+              }
+            ],
+            "expressions": [
+              {
+                "expression": "variables.containers.all(c, ((has(c.securityContext) && has(c.securityContext.runAsUser)) ? c.securityContext.runAsUser != 0 : (!has(object.spec.securityContext) || !has(object.spec.securityContext.runAsUser) || object.spec.securityContext.runAsUser != 0)) || (variables.sonar && has(object.spec.initContainers) && object.spec.initContainers.exists(i, i.name == c.name) && has(c.securityContext) && has(c.securityContext.readOnlyRootFilesystem) && c.securityContext.readOnlyRootFilesystem && c.name == \"init-sysctl\" && c.image == \"192.168.1.58:30050/platform-cache/sonarqube@sha256:f5593e4a6fe6f3d93e8d4d398b7bb6ba6fb3fe93b0a6b760d5ddaa24b8533cf2\" && has(c.command) && c.command == [\"/bin/bash\",\"-e\",\"/tmp/scripts/init_sysctl.sh\"] && (!has(c.args) || c.args.size() == 0)))",
+                "message": "DevSecOps production baseline: no-explicit-uid-zero"
+              }
+            ]
+          }
+        }
+      },
+      {
+        "name": "restricted-added-capabilities",
+        "match": {
+          "any": [
+            {
+              "resources": {
+                "kinds": [
+                  "Pod"
+                ],
+                "namespaces": [
+                  "devsecops-execution",
+                  "petclinic",
+                  "devsecops-system",
+                  "monitoring",
+                  "sonarqube"
+                ]
+              }
+            }
+          ]
+        },
+        "validate": {
+          "allowExistingViolations": false,
+          "cel": {
+            "variables": [
+              {
+                "name": "containers",
+                "expression": "object.spec.containers + (has(object.spec.initContainers) ? object.spec.initContainers : []) + (has(object.spec.ephemeralContainers) ? object.spec.ephemeralContainers : [])"
+              },
+              {
+                "name": "falco",
+                "expression": "object.metadata.namespace == \"devsecops-system\" && has(object.metadata.ownerReferences) && object.metadata.ownerReferences.exists(o, o.kind == \"DaemonSet\" && o.name == \"platform-falco\" && o.uid == \"c33ae390-de88-4fc2-bce4-b19c5b828a9c\") && object.spec.serviceAccountName == \"platform-falco\" && object.spec.containers.size() == 1 && (!has(object.spec.initContainers) || object.spec.initContainers.size() == 0) && (!has(object.spec.ephemeralContainers) || object.spec.ephemeralContainers.size() == 0) && object.spec.containers.all(c, c.name == \"falco\" && c.image == \"127.0.0.1:30050/platform-security/falco@sha256:3c5ccde1c8b50ccc8baf016090a5376d182e08dc8751df2b37d8ff2a13499558\" && (!has(c.command) || c.command.size() == 0) && has(c.args) && c.args == [\"/usr/bin/falco\"])"
+              },
+              {
+                "name": "nodeExporter",
+                "expression": "object.metadata.namespace == \"monitoring\" && has(object.metadata.ownerReferences) && object.metadata.ownerReferences.exists(o, o.kind == \"DaemonSet\" && o.name == \"kube-stack-prometheus-node-exporter\" && o.uid == \"d63a0442-dbc1-4021-9fdf-f374bf67825a\") && object.spec.serviceAccountName == \"kube-stack-prometheus-node-exporter\" && object.spec.containers.size() == 1 && (!has(object.spec.initContainers) || object.spec.initContainers.size() == 0) && (!has(object.spec.ephemeralContainers) || object.spec.ephemeralContainers.size() == 0) && object.spec.containers.all(c, c.name == \"node-exporter\" && c.image == \"quay.io/prometheus/node-exporter:v1.12.1\" && (!has(c.command) || c.command.size() == 0) && has(c.args) && c.args == [\"--path.procfs=/host/proc\",\"--path.sysfs=/host/sys\",\"--path.rootfs=/host/root\",\"--path.udev.data=/host/root/run/udev/data\",\"--web.listen-address=[\" + \"$\" + \"(\" + \"HOST_IP)]:9100\",\"--collector.filesystem.mount-points-exclude=^/(dev|proc|sys|run/containerd/.+|var/lib/docker/.+|var/lib/kubelet/.+)($|/)\",\"--collector.filesystem.fs-types-exclude=^(autofs|binfmt_misc|bpf|cgroup2?|configfs|debugfs|devpts|devtmpfs|fusectl|hugetlbfs|iso9660|mqueue|nsfs|overlay|proc|procfs|pstore|rpc_pipefs|securityfs|selinuxfs|squashfs|sysfs|tracefs|erofs)$\"])"
+              },
+              {
+                "name": "sonar",
+                "expression": "object.metadata.namespace == \"sonarqube\" && has(object.metadata.ownerReferences) && object.metadata.ownerReferences.exists(o, o.kind == \"StatefulSet\" && o.name == \"sonarqube-sonarqube\" && o.uid == \"12f0c30f-732f-4db1-9efe-6e811ab7d6c4\") && object.spec.serviceAccountName == \"default\""
+              }
+            ],
+            "expressions": [
+              {
+                "expression": "variables.containers.all(c, !has(c.securityContext) || !has(c.securityContext.capabilities) || !has(c.securityContext.capabilities.add) || c.securityContext.capabilities.add.all(cap, cap == 'NET_BIND_SERVICE' || (variables.falco && c.name == 'falco' && cap in ['BPF','PERFMON','SYS_PTRACE','SYS_RESOURCE'])))",
+                "message": "DevSecOps production baseline: restricted-added-capabilities"
+              }
+            ]
+          }
+        }
+      },
+      {
+        "name": "no-host-namespaces",
+        "match": {
+          "any": [
+            {
+              "resources": {
+                "kinds": [
+                  "Pod"
+                ],
+                "namespaces": [
+                  "devsecops-execution",
+                  "petclinic",
+                  "devsecops-system",
+                  "monitoring",
+                  "sonarqube"
+                ]
+              }
+            }
+          ]
+        },
+        "validate": {
+          "allowExistingViolations": false,
+          "cel": {
+            "variables": [
+              {
+                "name": "containers",
+                "expression": "object.spec.containers + (has(object.spec.initContainers) ? object.spec.initContainers : []) + (has(object.spec.ephemeralContainers) ? object.spec.ephemeralContainers : [])"
+              },
+              {
+                "name": "falco",
+                "expression": "object.metadata.namespace == \"devsecops-system\" && has(object.metadata.ownerReferences) && object.metadata.ownerReferences.exists(o, o.kind == \"DaemonSet\" && o.name == \"platform-falco\" && o.uid == \"c33ae390-de88-4fc2-bce4-b19c5b828a9c\") && object.spec.serviceAccountName == \"platform-falco\" && object.spec.containers.size() == 1 && (!has(object.spec.initContainers) || object.spec.initContainers.size() == 0) && (!has(object.spec.ephemeralContainers) || object.spec.ephemeralContainers.size() == 0) && object.spec.containers.all(c, c.name == \"falco\" && c.image == \"127.0.0.1:30050/platform-security/falco@sha256:3c5ccde1c8b50ccc8baf016090a5376d182e08dc8751df2b37d8ff2a13499558\" && (!has(c.command) || c.command.size() == 0) && has(c.args) && c.args == [\"/usr/bin/falco\"])"
+              },
+              {
+                "name": "nodeExporter",
+                "expression": "object.metadata.namespace == \"monitoring\" && has(object.metadata.ownerReferences) && object.metadata.ownerReferences.exists(o, o.kind == \"DaemonSet\" && o.name == \"kube-stack-prometheus-node-exporter\" && o.uid == \"d63a0442-dbc1-4021-9fdf-f374bf67825a\") && object.spec.serviceAccountName == \"kube-stack-prometheus-node-exporter\" && object.spec.containers.size() == 1 && (!has(object.spec.initContainers) || object.spec.initContainers.size() == 0) && (!has(object.spec.ephemeralContainers) || object.spec.ephemeralContainers.size() == 0) && object.spec.containers.all(c, c.name == \"node-exporter\" && c.image == \"quay.io/prometheus/node-exporter:v1.12.1\" && (!has(c.command) || c.command.size() == 0) && has(c.args) && c.args == [\"--path.procfs=/host/proc\",\"--path.sysfs=/host/sys\",\"--path.rootfs=/host/root\",\"--path.udev.data=/host/root/run/udev/data\",\"--web.listen-address=[\" + \"$\" + \"(\" + \"HOST_IP)]:9100\",\"--collector.filesystem.mount-points-exclude=^/(dev|proc|sys|run/containerd/.+|var/lib/docker/.+|var/lib/kubelet/.+)($|/)\",\"--collector.filesystem.fs-types-exclude=^(autofs|binfmt_misc|bpf|cgroup2?|configfs|debugfs|devpts|devtmpfs|fusectl|hugetlbfs|iso9660|mqueue|nsfs|overlay|proc|procfs|pstore|rpc_pipefs|securityfs|selinuxfs|squashfs|sysfs|tracefs|erofs)$\"])"
+              },
+              {
+                "name": "sonar",
+                "expression": "object.metadata.namespace == \"sonarqube\" && has(object.metadata.ownerReferences) && object.metadata.ownerReferences.exists(o, o.kind == \"StatefulSet\" && o.name == \"sonarqube-sonarqube\" && o.uid == \"12f0c30f-732f-4db1-9efe-6e811ab7d6c4\") && object.spec.serviceAccountName == \"default\""
+              }
+            ],
+            "expressions": [
+              {
+                "expression": "(!has(object.spec.hostIPC) || !object.spec.hostIPC) && (!has(object.spec.hostPID) || !object.spec.hostPID || variables.falco || variables.nodeExporter) && (!has(object.spec.hostNetwork) || !object.spec.hostNetwork || variables.nodeExporter)",
+                "message": "DevSecOps production baseline: no-host-namespaces"
+              }
+            ]
+          }
+        }
+      },
+      {
+        "name": "restricted-hostpath",
+        "match": {
+          "any": [
+            {
+              "resources": {
+                "kinds": [
+                  "Pod"
+                ],
+                "namespaces": [
+                  "devsecops-execution",
+                  "petclinic",
+                  "devsecops-system",
+                  "monitoring",
+                  "sonarqube"
+                ]
+              }
+            }
+          ]
+        },
+        "validate": {
+          "allowExistingViolations": false,
+          "cel": {
+            "variables": [
+              {
+                "name": "containers",
+                "expression": "object.spec.containers + (has(object.spec.initContainers) ? object.spec.initContainers : []) + (has(object.spec.ephemeralContainers) ? object.spec.ephemeralContainers : [])"
+              },
+              {
+                "name": "falco",
+                "expression": "object.metadata.namespace == \"devsecops-system\" && has(object.metadata.ownerReferences) && object.metadata.ownerReferences.exists(o, o.kind == \"DaemonSet\" && o.name == \"platform-falco\" && o.uid == \"c33ae390-de88-4fc2-bce4-b19c5b828a9c\") && object.spec.serviceAccountName == \"platform-falco\" && object.spec.containers.size() == 1 && (!has(object.spec.initContainers) || object.spec.initContainers.size() == 0) && (!has(object.spec.ephemeralContainers) || object.spec.ephemeralContainers.size() == 0) && object.spec.containers.all(c, c.name == \"falco\" && c.image == \"127.0.0.1:30050/platform-security/falco@sha256:3c5ccde1c8b50ccc8baf016090a5376d182e08dc8751df2b37d8ff2a13499558\" && (!has(c.command) || c.command.size() == 0) && has(c.args) && c.args == [\"/usr/bin/falco\"])"
+              },
+              {
+                "name": "nodeExporter",
+                "expression": "object.metadata.namespace == \"monitoring\" && has(object.metadata.ownerReferences) && object.metadata.ownerReferences.exists(o, o.kind == \"DaemonSet\" && o.name == \"kube-stack-prometheus-node-exporter\" && o.uid == \"d63a0442-dbc1-4021-9fdf-f374bf67825a\") && object.spec.serviceAccountName == \"kube-stack-prometheus-node-exporter\" && object.spec.containers.size() == 1 && (!has(object.spec.initContainers) || object.spec.initContainers.size() == 0) && (!has(object.spec.ephemeralContainers) || object.spec.ephemeralContainers.size() == 0) && object.spec.containers.all(c, c.name == \"node-exporter\" && c.image == \"quay.io/prometheus/node-exporter:v1.12.1\" && (!has(c.command) || c.command.size() == 0) && has(c.args) && c.args == [\"--path.procfs=/host/proc\",\"--path.sysfs=/host/sys\",\"--path.rootfs=/host/root\",\"--path.udev.data=/host/root/run/udev/data\",\"--web.listen-address=[\" + \"$\" + \"(\" + \"HOST_IP)]:9100\",\"--collector.filesystem.mount-points-exclude=^/(dev|proc|sys|run/containerd/.+|var/lib/docker/.+|var/lib/kubelet/.+)($|/)\",\"--collector.filesystem.fs-types-exclude=^(autofs|binfmt_misc|bpf|cgroup2?|configfs|debugfs|devpts|devtmpfs|fusectl|hugetlbfs|iso9660|mqueue|nsfs|overlay|proc|procfs|pstore|rpc_pipefs|securityfs|selinuxfs|squashfs|sysfs|tracefs|erofs)$\"])"
+              },
+              {
+                "name": "sonar",
+                "expression": "object.metadata.namespace == \"sonarqube\" && has(object.metadata.ownerReferences) && object.metadata.ownerReferences.exists(o, o.kind == \"StatefulSet\" && o.name == \"sonarqube-sonarqube\" && o.uid == \"12f0c30f-732f-4db1-9efe-6e811ab7d6c4\") && object.spec.serviceAccountName == \"default\""
+              }
+            ],
+            "expressions": [
+              {
+                "expression": "!has(object.spec.volumes) || object.spec.volumes.all(v, !has(v.hostPath) || ((variables.falco && v.hostPath.path in ['/run/k3s/containerd','/sys/kernel','/proc'] || variables.nodeExporter && v.hostPath.path in ['/proc','/sys','/']) && variables.containers.all(c, !has(c.volumeMounts) || c.volumeMounts.all(m, m.name != v.name || (has(m.readOnly) && m.readOnly)))))",
+                "message": "DevSecOps production baseline: restricted-hostpath"
+              }
+            ]
+          }
+        }
+      },
+      {
+        "name": "authorized-image-repositories",
+        "match": {
+          "any": [
+            {
+              "resources": {
+                "kinds": [
+                  "Pod"
+                ],
+                "namespaces": [
+                  "devsecops-execution",
+                  "petclinic",
+                  "devsecops-system",
+                  "monitoring",
+                  "sonarqube"
+                ]
+              }
+            }
+          ]
+        },
+        "validate": {
+          "allowExistingViolations": false,
+          "cel": {
+            "variables": [
+              {
+                "name": "containers",
+                "expression": "object.spec.containers + (has(object.spec.initContainers) ? object.spec.initContainers : []) + (has(object.spec.ephemeralContainers) ? object.spec.ephemeralContainers : [])"
+              },
+              {
+                "name": "falco",
+                "expression": "object.metadata.namespace == \"devsecops-system\" && has(object.metadata.ownerReferences) && object.metadata.ownerReferences.exists(o, o.kind == \"DaemonSet\" && o.name == \"platform-falco\" && o.uid == \"c33ae390-de88-4fc2-bce4-b19c5b828a9c\") && object.spec.serviceAccountName == \"platform-falco\" && object.spec.containers.size() == 1 && (!has(object.spec.initContainers) || object.spec.initContainers.size() == 0) && (!has(object.spec.ephemeralContainers) || object.spec.ephemeralContainers.size() == 0) && object.spec.containers.all(c, c.name == \"falco\" && c.image == \"127.0.0.1:30050/platform-security/falco@sha256:3c5ccde1c8b50ccc8baf016090a5376d182e08dc8751df2b37d8ff2a13499558\" && (!has(c.command) || c.command.size() == 0) && has(c.args) && c.args == [\"/usr/bin/falco\"])"
+              },
+              {
+                "name": "nodeExporter",
+                "expression": "object.metadata.namespace == \"monitoring\" && has(object.metadata.ownerReferences) && object.metadata.ownerReferences.exists(o, o.kind == \"DaemonSet\" && o.name == \"kube-stack-prometheus-node-exporter\" && o.uid == \"d63a0442-dbc1-4021-9fdf-f374bf67825a\") && object.spec.serviceAccountName == \"kube-stack-prometheus-node-exporter\" && object.spec.containers.size() == 1 && (!has(object.spec.initContainers) || object.spec.initContainers.size() == 0) && (!has(object.spec.ephemeralContainers) || object.spec.ephemeralContainers.size() == 0) && object.spec.containers.all(c, c.name == \"node-exporter\" && c.image == \"quay.io/prometheus/node-exporter:v1.12.1\" && (!has(c.command) || c.command.size() == 0) && has(c.args) && c.args == [\"--path.procfs=/host/proc\",\"--path.sysfs=/host/sys\",\"--path.rootfs=/host/root\",\"--path.udev.data=/host/root/run/udev/data\",\"--web.listen-address=[\" + \"$\" + \"(\" + \"HOST_IP)]:9100\",\"--collector.filesystem.mount-points-exclude=^/(dev|proc|sys|run/containerd/.+|var/lib/docker/.+|var/lib/kubelet/.+)($|/)\",\"--collector.filesystem.fs-types-exclude=^(autofs|binfmt_misc|bpf|cgroup2?|configfs|debugfs|devpts|devtmpfs|fusectl|hugetlbfs|iso9660|mqueue|nsfs|overlay|proc|procfs|pstore|rpc_pipefs|securityfs|selinuxfs|squashfs|sysfs|tracefs|erofs)$\"])"
+              },
+              {
+                "name": "sonar",
+                "expression": "object.metadata.namespace == \"sonarqube\" && has(object.metadata.ownerReferences) && object.metadata.ownerReferences.exists(o, o.kind == \"StatefulSet\" && o.name == \"sonarqube-sonarqube\" && o.uid == \"12f0c30f-732f-4db1-9efe-6e811ab7d6c4\") && object.spec.serviceAccountName == \"default\""
+              }
+            ],
+            "expressions": [
+              {
+                "expression": "variables.containers.all(c, (object.metadata.namespace == \"devsecops-execution\" && (c.image.startsWith(\"127.0.0.1:30050/platform-security/\") || c.image.startsWith(\"192.168.1.58:30050/platform-upgrade/airflow@sha256:\"))) || (object.metadata.namespace == \"petclinic\" && (c.image.startsWith(\"core.harbor.domain/petclinic/\") || c.image.startsWith(\"192.168.1.58:30050/platform-upgrade/airflow@sha256:\"))) || (object.metadata.namespace == \"devsecops-system\" && (c.image.startsWith(\"127.0.0.1:30050/platform-security/\"))) || (object.metadata.namespace == \"monitoring\" && (c.image.startsWith(\"127.0.0.1:30050/platform-upgrade/\") || c.image.startsWith(\"192.168.1.58:30050/platform-upgrade/\") || c.image.startsWith(\"docker.io/grafana/alloy:\") || c.image.startsWith(\"quay.io/prometheus/node-exporter:\") || c.image.startsWith(\"quay.io/prometheus-operator/prometheus-config-reloader:\"))) || (object.metadata.namespace == \"sonarqube\" && (c.image.startsWith(\"192.168.1.58:30050/platform-cache/sonarqube@sha256:\"))))",
+                "message": "DevSecOps production baseline: authorized-image-repositories"
+              }
+            ]
+          }
+        }
+      }
+    ]
+  }
+}
