@@ -73,7 +73,7 @@ gate Secret-Source enforce "$rc" "Secret Source"
 stage('Semgrep') { steps { script { catchError(buildResult: 'FAILURE', stageResult: 'FAILURE') { sh '''set -eu
 mkdir -p .devsecops/gates
 set +e
-node --max-old-space-size=128 infra/security/semgrep-gate.mjs > .devsecops/gates/Semgrep.log 2>&1
+( python3 infra/security/command-audit.py && node --max-old-space-size=128 infra/security/semgrep-gate.mjs ) > .devsecops/gates/Semgrep.log 2>&1
 rc=$?
 cat .devsecops/gates/Semgrep.log
 . infra/security/gate.sh

@@ -1,10 +1,151 @@
 {
   "rules": [
-    {"id":"java-runtime-exec","languages":["java"],"severity":"ERROR","message":"Unreviewed OS command execution","pattern":"Runtime.getRuntime().exec(...)"},
-    {"id":"java-process-builder","languages":["java"],"severity":"ERROR","message":"Unreviewed process construction","pattern":"new ProcessBuilder(...)"},
-    {"id":"java-sql-concatenation","languages":["java"],"severity":"ERROR","message":"Concatenated SQL passed to Statement","pattern-either":[{"pattern":"$S.executeQuery($A + $B)"},{"pattern":"$S.executeUpdate($A + $B)"},{"pattern":"$S.execute($A + $B)"}]},
-    {"id":"java-weak-digest","languages":["java"],"severity":"ERROR","message":"Weak cryptographic digest","pattern-either":[{"pattern":"MessageDigest.getInstance(\"MD5\")"},{"pattern":"MessageDigest.getInstance(\"SHA-1\")"}]},
-    {"id":"java-weak-cipher","languages":["java"],"severity":"ERROR","message":"Weak cipher or ECB mode","pattern-either":[{"pattern":"Cipher.getInstance(\"DES\")"},{"pattern":"Cipher.getInstance(\"AES/ECB/PKCS5Padding\")"}]},
-    {"id":"java-disabled-tls-hostname-check","languages":["java"],"severity":"ERROR","message":"Globally disabled HTTPS hostname verification","pattern":"HttpsURLConnection.setDefaultHostnameVerifier(...)"}
+    {
+      "id": "java-runtime-exec",
+      "languages": [
+        "java"
+      ],
+      "severity": "ERROR",
+      "message": "Unreviewed OS command execution",
+      "patterns": [
+        {
+          "pattern": "Runtime.getRuntime().exec(...)"
+        },
+        {
+          "pattern-not": "Runtime.getRuntime().exec(\"...\")"
+        }
+      ]
+    },
+    {
+      "id": "java-process-builder",
+      "languages": [
+        "java"
+      ],
+      "severity": "ERROR",
+      "message": "Unreviewed process construction",
+      "patterns": [
+        {
+          "pattern": "new ProcessBuilder(...)"
+        },
+        {
+          "pattern-not": "new ProcessBuilder(\"...\")"
+        },
+        {
+          "pattern-not": "new ProcessBuilder(\"...\", \"...\")"
+        }
+      ]
+    },
+    {
+      "id": "java-sql-concatenation",
+      "languages": [
+        "java"
+      ],
+      "severity": "ERROR",
+      "message": "Concatenated SQL passed to Statement",
+      "pattern-either": [
+        {
+          "pattern": "$S.executeQuery($A + $B)"
+        },
+        {
+          "pattern": "$S.executeUpdate($A + $B)"
+        },
+        {
+          "pattern": "$S.execute($A + $B)"
+        }
+      ]
+    },
+    {
+      "id": "java-weak-digest",
+      "languages": [
+        "java"
+      ],
+      "severity": "ERROR",
+      "message": "Weak cryptographic digest",
+      "pattern-either": [
+        {
+          "pattern": "MessageDigest.getInstance(\"MD5\")"
+        },
+        {
+          "pattern": "MessageDigest.getInstance(\"SHA-1\")"
+        }
+      ]
+    },
+    {
+      "id": "java-weak-cipher",
+      "languages": [
+        "java"
+      ],
+      "severity": "ERROR",
+      "message": "Weak cipher or ECB mode",
+      "pattern-either": [
+        {
+          "pattern": "Cipher.getInstance(\"DES\")"
+        },
+        {
+          "pattern": "Cipher.getInstance(\"AES/ECB/PKCS5Padding\")"
+        }
+      ]
+    },
+    {
+      "id": "java-disabled-tls-hostname-check",
+      "languages": [
+        "java"
+      ],
+      "severity": "ERROR",
+      "message": "Globally disabled HTTPS hostname verification",
+      "pattern": "HttpsURLConnection.setDefaultHostnameVerifier(...)"
+    },
+    {
+      "id": "java-http-runtime-exec",
+      "languages": [
+        "java"
+      ],
+      "severity": "ERROR",
+      "message": "HTTP parameter reaches executable command without validation",
+      "mode": "taint",
+      "pattern-sources": [
+        {
+          "pattern": "$REQ.getParameter(...)"
+        }
+      ],
+      "pattern-sinks": [
+        {
+          "patterns": [
+            {
+              "pattern": "Runtime.getRuntime().exec($CMD)"
+            },
+            {
+              "focus-metavariable": "$CMD"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "java-http-process-builder",
+      "languages": [
+        "java"
+      ],
+      "severity": "ERROR",
+      "message": "HTTP parameter reaches executable command without validation",
+      "mode": "taint",
+      "pattern-sources": [
+        {
+          "pattern": "$REQ.getParameter(...)"
+        }
+      ],
+      "pattern-sinks": [
+        {
+          "patterns": [
+            {
+              "pattern": "new ProcessBuilder($CMD)"
+            },
+            {
+              "focus-metavariable": "$CMD"
+            }
+          ]
+        }
+      ]
+    }
   ]
 }

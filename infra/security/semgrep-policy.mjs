@@ -1,4 +1,4 @@
-export const enforcedRules=['java-weak-cipher'];
+export const enforcedRules=['java-weak-cipher','java-http-runtime-exec','java-http-process-builder'];
 export function classifySemgrep(findings){
  const blocking=[],warnings=[];
  for(const f of findings){const id=f.check_id??f.rule_id;const severity=String(f.extra?.severity??f.severity??'').toUpperCase();
