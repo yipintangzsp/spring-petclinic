@@ -4,6 +4,7 @@ import path from 'node:path';
 import crypto from 'node:crypto';
 import {spawnSync} from 'node:child_process';
 import {read,kube,requireLease,verifyTools,toolchain} from './scanner-runtime.mjs';
+import {checkCosignVerification} from './cosign-verification.mjs';
 
 requireLease();verifyTools(['cosign','sops']);
 const mode=process.argv[2];if(!['bootstrap','release','admission'].includes(mode))throw Error('Explicit signing mode required');
@@ -81,8 +82,8 @@ try{
   await signImage(references['wrong-key'],dir+'/wrong.key');
   report.cases=[];
   for(const [kind,image] of Object.entries(references)){
-   const verification=cosign(['verify',...verifyFlags,image],[0,1]);
-   if((verification.status===0)!==(kind==='signed'))throw Error('CLI signature negative case failed: '+kind);
+   const verification=cosign(['verify',...verifyFlags,image],Array.from({length:256},(_,i)=>i));
+   checkCosignVerification(kind,verification.status,verification.stderr);
    const pod={apiVersion:'v1',kind:'Pod',metadata:{name:'signature-'+kind,namespace:'devsecops-supply-chain'},spec:{automountServiceAccountToken:false,restartPolicy:'Never',containers:[{name:'probe',image,command:['/never-executed']} ]}};
    const result=kube(['create','--dry-run=server','-f','-','-o','json'],JSON.stringify(pod),[0,1],40000);
    const allowed=result.status===0;
