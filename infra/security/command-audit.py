@@ -1,5 +1,5 @@
 """Conservative static inventory; never executes inspected scripts or shell commands."""
-import ast,json,pathlib,re,subprocess
+import ast,json,pathlib,re,subprocess,hashlib
 
 def classify(node):
  name=ast.unparse(node.func)
@@ -13,7 +13,7 @@ def classify(node):
  if fixed and name not in ('eval','exec'):return {'classification':'safe','reason':'fixed command and literal arguments; scoped to this call only','sink':name}
  return {'classification':'unknown','reason':'dynamic arguments, environment, wrapper or remote-shell trust needs manual review; argument-list calls are not proof of injection','sink':name}
 
-def analyze(files):
+def analyze(files,policy=None,review=None):
  items=[];errors=[]
  for f,source in files.items():
   suffix=pathlib.PurePosixPath(f).suffix
@@ -27,7 +27,19 @@ def analyze(files):
   elif suffix=='.sh':
    for i,line in enumerate(source.splitlines(),1):
     if re.search(r'\b(eval|exec|bash|sh|python3?)\b|\$\(',line) and not line.lstrip().startswith('#'):items.append({'path':f,'line':i,'classification':'unknown','reason':'shell expansion inventory; no data-flow proof'})
- return {'status':'failed' if errors else 'success','scope':'tracked Python/Shell; conservative local AST, no interprocedural or remote exploit proof','items':items,'errors':errors,'counts':{k:sum(x['classification']==k for x in items) for k in ('safe','dangerous','unknown')},'policy':'script candidates WARN pending manual trust-boundary review'}
+ blocking=[];tests=None
+ if policy:
+  tests=policy['self_test']()
+  for f,source in files.items():
+   if pathlib.PurePosixPath(f).suffix=='.py':
+    try:blocking.extend(policy['inspect_python'](source,f))
+    except SyntaxError:pass
+ reviews=[]
+ for entry in (review or {}).get('items',[]):
+  row=dict(entry);raw=files.get(row['path']);row['review_binding']=bool(raw is not None and hashlib.sha256(raw.encode()).hexdigest()==row.get('reviewed_source_sha256',row['source_file_sha256']))
+  if not row['review_binding']:row['classification']='unknown';row['action']='WARN';row['evidence']='Reviewed source changed or absent; prior classification is not a bypass'
+  reviews.append(row)
+ return {'status':'failed' if errors or blocking else 'success','scope':'tracked Python/Shell conservative local analysis; no arbitrary wrappers, shell parser, message/file provenance or interprocedural exploit proof','items':items,'errors':errors,'counts':{k:sum(x['classification']==k for x in items) for k in ('safe','dangerous','unknown')},'round3_review':{'baseline_build':238,'total':len(reviews),'items':reviews,'counts':{k:sum(x['classification']==k for x in reviews) for k in ('fixed_trusted','dynamic_controlled','external_controllable','unknown')}},'blockingFindings':blocking,'policyTests':tests,'policy':'FAIL only proven direct external shell path; reviewed script trust boundaries and uncertain cases WARN'}
 
 def main():
  names=subprocess.check_output(['git','ls-files','src/main','infra'],text=True).splitlines()
