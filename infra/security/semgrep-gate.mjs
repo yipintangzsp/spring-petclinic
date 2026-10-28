@@ -1,4 +1,5 @@
 import fs from 'node:fs';
+import {classifySemgrep,enforcedRules} from './semgrep-policy.mjs';
 import {withScanner,transfer} from './scanner-runtime.mjs';
 
 await withScanner('semgrep',['semgrep'],async({exec,report,pod,namespace})=>{
@@ -11,7 +12,7 @@ await withScanner('semgrep',['semgrep'],async({exec,report,pod,namespace})=>{
  const timer=setTimeout(()=>{archive.kill();sink.kill();},60000);
  try{await Promise.all([archive,sink].map(p=>new Promise((resolve,reject)=>{p.once('error',reject);p.once('close',c=>c===0?resolve():reject(Error('Exact-source transfer failed')));})) );}finally{clearTimeout(timer);}
  exec(['sh','-c','cat > /work/rules.json'],fs.readFileSync('infra/security/scan-rules.json'));
- exec(['sh','-c','cat > /work/positive/Unsafe.java'],'class Unsafe { void run(String input) throws Exception { Runtime.getRuntime().exec(input); } }');
+ exec(['sh','-c','cat > /work/positive/Unsafe.java'],'class Unsafe { void run(String input) throws Exception { Runtime.getRuntime().exec(input); javax.crypto.Cipher.getInstance("DES"); } }');
  exec(['sh','-c','cat > /work/negative/Safe.java'],'class Safe { void run() { System.out.println("synthetic"); } }');
  const scan=path=>{
   const files=String(exec(['find',path,'-type','f','-name','*.java']).stdout).trim().split('\n').filter(Boolean).sort();
@@ -25,13 +26,14 @@ await withScanner('semgrep',['semgrep'],async({exec,report,pod,namespace})=>{
   return result;
  };
  const positive=scan('/work/positive'),negative=scan('/work/negative'),repeat=scan('/work/positive');
- if(positive.results.length!==1||negative.results.length!==0||repeat.results.length!==1)throw Error('Semgrep detection/allow/repeat contract failed');
- report.tests={positive:1,negative:0,repeat:1};
+ if(positive.results.length!==2||negative.results.length!==0||repeat.results.length!==2)throw Error('Semgrep detection/allow/repeat contract failed');
+ const fixture=classifySemgrep(positive.results);if(fixture.blocking.length!==1||fixture.warnings.length!==1)throw Error('Semgrep FAIL/WARN fixture classification failed');
+ report.tests={positive:2,negative:0,repeat:2,highConfidenceRejected:1,ordinaryWarn:1};
  const result=scan('/work/source/src/main/java');report.sourceScan={findings:result.results,filesScanned:result.filesScanned,errors:result.errors};
  report.findingMode=process.env.GATE_SEMGREP??'enforce';
  if(!['warn','enforce'].includes(report.findingMode))throw Error('Invalid Semgrep finding mode');
- report.warnings=result.results.length&&report.findingMode==='warn'?['SAST application findings require review']:[];
- if(result.results.length&&report.findingMode==='enforce')throw Error('SAST gate blocked '+result.results.length+' application findings');
+ const classification=classifySemgrep(result.results);report.enforcedRules=enforcedRules;report.blockingFindings=classification.blocking;report.warningFindings=classification.warnings;report.warnings=classification.warnings.length?['Unreviewed or lower-severity SAST findings require review']:[];
+ if(classification.blocking.length)throw Error('Reviewed high-confidence SAST findings: '+classification.blocking.length);
  report.rules=JSON.parse(fs.readFileSync('infra/security/scan-rules.json')).rules.map(x=>x.id);
  report.engine='Semgrep CE 1.182.1 native core; six project-specific Java rules, not a full SAST guarantee';
 });

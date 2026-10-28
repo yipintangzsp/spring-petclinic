@@ -1,0 +1,2 @@
+import test from 'node:test';import assert from 'node:assert/strict';import {classifySemgrep} from './semgrep-policy.mjs';
+test('only reviewed high severity fixed weak cipher findings block',()=>{const d=classifySemgrep([{check_id:'java-weak-cipher',extra:{severity:'ERROR'}},{check_id:'java-runtime-exec',extra:{severity:'ERROR'}},{check_id:'java-weak-cipher',extra:{severity:'WARNING'}},{check_id:'unknown',extra:{severity:'ERROR'}}]);assert.equal(d.blocking.length,1);assert.equal(d.warnings.length,3);assert.deepEqual(classifySemgrep([]),{blocking:[],warnings:[]});});
