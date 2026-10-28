@@ -1,4 +1,6 @@
 import fs from 'node:fs';
+import crypto from 'node:crypto';
+import {classifyZap} from './zap-policy.mjs';
 import os from 'node:os';
 import path from 'node:path';
 import {withScanner,read,run} from './scanner-runtime.mjs';
@@ -7,7 +9,7 @@ import {highAlerts} from './gate-contract.mjs';
 await withScanner('zap',['zap'],async({exec,report})=>{
  const temp=fs.mkdtempSync(path.join(os.tmpdir(),'zap-fixture-'));
  try{
-  fs.writeFileSync(temp+'/Synthetic.java',`import com.sun.net.httpserver.HttpServer;import java.net.InetSocketAddress;public class Synthetic{public static void main(String[]a)throws Exception{var s=HttpServer.create(new InetSocketAddress("127.0.0.1",18083),0);s.createContext("/",e->{byte[]b="<html><head><title>Synthetic test</title></head><body>Test credit card: 4111 1111 1111 1111</body></html>".getBytes();e.getResponseHeaders().set("Content-Type","text/html");e.sendResponseHeaders(200,b.length);e.getResponseBody().write(b);e.close();});s.start();}}`);
+  fs.writeFileSync(temp+'/Synthetic.java',`import com.sun.net.httpserver.HttpServer;import java.net.InetSocketAddress;public class Synthetic{public static void main(String[]a)throws Exception{var s=HttpServer.create(new InetSocketAddress("127.0.0.1",18083),0);s.createContext("/",e->{byte[]b=(e.getRequestURI().getPath().equals("/clean")?"<html><head><title>Clean synthetic test</title></head><body>Fixed public fixture</body></html>":"<html><head><title>Synthetic test</title></head><body>Test credit card: 4111 1111 1111 1111</body></html>").getBytes();e.getResponseHeaders().set("Content-Type","text/html");e.sendResponseHeaders(200,b.length);e.getResponseBody().write(b);e.close();});s.start();}}`);
   run('javac',['--release','21',temp+'/Synthetic.java']);
   exec(['mkdir','-p','/work/fixture']);exec(['sh','-c','cat > /work/fixture/Synthetic.class'],fs.readFileSync(temp+'/Synthetic.class'));
   exec(['sh','-c','java -Xmx32m -cp /work/fixture Synthetic >/work/fixture-server.log 2>&1 </dev/null & echo $! >/work/fixture.pid']);
@@ -23,7 +25,21 @@ await withScanner('zap',['zap'],async({exec,report})=>{
   };
   const positive=scan('fixture',['http://127.0.0.1:18083/']);
   const found=highAlerts(positive);if(!found.length)throw Error('High-severity synthetic PII finding was not detected; gate negative case unproven');
-  report.tests={syntheticHighDetected:found.map(a=>({pluginid:a.pluginid,riskcode:a.riskcode})),highFindingRejected:true};
+  const approved=JSON.parse(fs.readFileSync('infra/security/zap-confirmations.json'));
+  for(const proof of approved.confirmations??[]){
+   proof.evidenceVerified=false;
+   if(!/^infra\/security\/dast-evidence\/[a-zA-Z0-9_-]+\.json$/.test(proof.evidencePath??''))throw Error('DAST proof must reference a reviewed evidence file');
+   const bytes=fs.readFileSync(proof.evidencePath);if(crypto.createHash('sha256').update(bytes).digest('hex')!==proof.evidenceSha256)throw Error('DAST evidence digest mismatch');
+   const evidence=JSON.parse(bytes);if(!['pluginid','targetImage','reportSha256','uri','category'].every(k=>evidence[k]===proof[k])||evidence.positiveValidated!==true||evidence.negativeValidated!==true||evidence.exploitConfirmed!==true)throw Error('DAST exploit evidence binding invalid');
+   proof.evidenceVerified=true;
+  }
+
+  const fixtureGate=classifyZap(positive,{targetImage:'loopback-fixture',reportSha256:'synthetic-fixture'},approved);
+  if(fixtureGate.blocking.length||fixtureGate.unconfirmedHigh<1)throw Error('Unconfirmed synthetic information finding must remain WARN');
+  const clean=scan('fixture-negative',['http://127.0.0.1:18083/clean']);
+  if(highAlerts(clean).some(x=>String(x.pluginid)==='10062'))throw Error('Clean fixture triggered synthetic PII false positive');
+  fs.writeFileSync('.devsecops/zap-fixture-negative-report.json',JSON.stringify(clean,null,2));
+  report.tests={syntheticHighDetected:found.map(a=>({pluginid:a.pluginid,riskcode:a.riskcode})),unconfirmedInformationHighWarn:true,cleanFixtureNoPiiHigh:true,exploitValidationNotClaimed:true};
   fs.writeFileSync('.devsecops/zap-fixture-report.json',JSON.stringify(positive,null,2));
   exec(['sh','-c','kill "$(cat /work/fixture.pid)"']);
   const deployment=read(['-n','petclinic','get','deploy','petclinic']);
@@ -31,12 +47,12 @@ await withScanner('zap',['zap'],async({exec,report})=>{
   const service=read(['-n','petclinic','get','service','petclinic']);
   const base='http://'+service.spec.clusterIP+':'+service.spec.ports[0].port;
   const urls=['/','/owners/find','/vets.html','/actuator/health'].map(p=>base+p);
-  const result=scan('business',urls);const blocking=highAlerts(result);
+  const result=scan('business',urls);const reportSha256=crypto.createHash('sha256').update(JSON.stringify(result)).digest('hex');const classification=classifyZap(result,{targetImage:deployment.spec.template.spec.containers[0].image,reportSha256},approved);const blocking=classification.blocking;
   report.targetImage=deployment.spec.template.spec.containers[0].image;report.targetUrls=urls;report.method='GET only; no spider, forms, or activeScan';
   report.findingMode=process.env.GATE_ZAP??'enforce';
   if(!['warn','enforce'].includes(report.findingMode))throw Error('Invalid ZAP finding mode');
-  report.blockingHigh=blocking.length;report.findings=result.site.flatMap(s=>(s.alerts??[]).map(a=>({pluginid:a.pluginid,name:a.name,riskcode:a.riskcode,count:a.count})));
-  report.warnings=report.findings.some(x=>Number(x.riskcode)<3)&&report.findingMode==='warn'?['Non-high passive DAST findings require review']:[];
+  report.reportSha256=reportSha256;report.rawHigh=classification.rawHigh;report.unconfirmedHigh=classification.unconfirmedHigh;report.confirmedHigh=blocking;report.coverage={sqlInjection:'not confirmed by passive GET',commandInjection:'not confirmed by passive GET',xss:'not confirmed exploitable',pathTraversal:'not confirmed by passive GET',ssrf:'not confirmed by passive GET',authBypass:'no authenticated differential testing; not confirmed'};report.blockingHigh=blocking.length;report.findings=result.site.flatMap(s=>(s.alerts??[]).map(a=>({pluginid:a.pluginid,name:a.name,riskcode:a.riskcode,count:a.count})));
+  report.warningFindings=classification.warnings.map(x=>({pluginid:x.pluginid,riskcode:x.riskcode,reason:x.gateReason}));report.warnings=classification.warnings.length?['Unconfirmed High and ordinary passive DAST findings remain WARN']:[];
   fs.writeFileSync('.devsecops/zap-business-report.json',JSON.stringify(result,null,2));
   if(blocking.length)throw Error('DAST blocked '+blocking.length+' high-severity findings');
  }finally{fs.rmSync(temp,{recursive:true,force:true});}
