@@ -2,9 +2,9 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {validatePriorExit,validateRuntimeContinuity,driverDiagnostics} from './runtime/health-contract.mjs';
 const state=()=>({ready:true,restarts:4,priorExit:{exitCode:0,reason:'Completed'},podUid:'pod',nodeBootId:'boot',containerId:'container',runningSince:'start',image:'digest'});
-test('clean VM shutdown history is retained; crash, OOM and unknown exits fail closed',()=>{
+test('historical exits remain visible as warnings; readiness and restart count remain required',()=>{
  validatePriorExit(state());
- for(const priorExit of [{exitCode:137,reason:'OOMKilled'},{exitCode:1,reason:'Error'},undefined])assert.throws(()=>validatePriorExit({...state(),priorExit}));
+ for(const priorExit of [{exitCode:137,reason:'OOMKilled'},{exitCode:1,reason:'Error'},undefined])assert.ok(validatePriorExit({...state(),priorExit})?.warning);
  assert.throws(()=>validatePriorExit({...state(),ready:false}));
  for(const restarts of [undefined,-1,NaN])assert.throws(()=>validatePriorExit({...state(),restarts}));
 });

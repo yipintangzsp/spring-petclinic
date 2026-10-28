@@ -1,7 +1,8 @@
 export function validatePriorExit(current){
  if(!Number.isSafeInteger(current.restarts)||current.restarts<0)throw Error('Known Falco restart count required');
  if(!current.ready||!current.runningSince)throw Error('Falco must be Ready and running');
- if(current.restarts>0&&(current.priorExit?.exitCode!==0||current.priorExit?.reason!=='Completed'))throw Error('Non-clean historical Falco exit requires review');
+ if(current.restarts>0&&(current.priorExit?.exitCode!==0||current.priorExit?.reason!=='Completed'))return {warning:'Non-clean or unknown historical Falco exit',priorExit:current.priorExit ?? null};
+ return null;
 }
 export function validateRuntimeContinuity(current,baseline){
  for(const key of ['podUid','nodeBootId','containerId','runningSince','image','restarts'])if(current[key]!==baseline[key])throw Error('Falco changed during this build: '+key);

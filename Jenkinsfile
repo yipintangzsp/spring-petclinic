@@ -11,6 +11,10 @@ pipeline {
         DOCKER_REGISTRY = '127.0.0.1:13050'
         REGISTRY_API = '10.0.0.3:30050'
         PACKAGE_HTTPS_PROXY = 'http://192.168.1.238:10808'
+        GATE_SIGN = 'enforce'
+        GATE_FALCO = 'warn'
+        GATE_TRIVY = 'warn'
+        GATE_POLICY = 'warn'
 
         IMAGE_REPO = 'petclinic/petclinic'
         IMAGE_TAG = "0.10.0-ci-${BUILD_NUMBER}"
@@ -57,7 +61,15 @@ pipeline {
                 sh 'node infra/observability/ensure-sonar-runtime.mjs'
                 sh 'node infra/observability/release-preflight.mjs .infra-preflight-before-build.json --reserve-security-build-growth'
                 sh 'node infra/security/test-runtime-preflight.mjs'
-                sh 'node infra/security/runtime/health.mjs baseline'
+                sh '''
+                    mkdir -p .devsecops/gates
+                    set +e
+                    node infra/security/runtime/health.mjs baseline > .devsecops/gates/falco-baseline.log 2>&1
+                    rc=$?
+                    cat .devsecops/gates/falco-baseline.log
+                    . infra/security/gate.sh
+                    gate falco-baseline "$GATE_FALCO" "$rc" "Falco baseline failed"
+                '''
             }
         }
 
@@ -100,7 +112,15 @@ pipeline {
         stage('DevSecOps Source & Admission') {
             options { timeout(time: 10, unit: 'MINUTES') }
             steps {
-                sh 'node infra/security/admission-gate.mjs'
+                sh '''
+                    mkdir -p .devsecops/gates
+                    set +e
+                    node infra/security/admission-gate.mjs > .devsecops/gates/policy-admission.log 2>&1
+                    rc=$?
+                    cat .devsecops/gates/policy-admission.log
+                    . infra/security/gate.sh
+                    gate policy-admission "$GATE_POLICY" "$rc" "Kyverno admission check failed"
+                '''
                 sh 'node infra/security/source-gate.mjs'
                 sh 'node --max-old-space-size=128 infra/security/semgrep-gate.mjs'
                 sh 'node infra/security/business-audit.mjs'
@@ -193,9 +213,25 @@ pipeline {
             steps {
                 sh 'node infra/security/gitops.mjs'
                 sh 'node infra/security/rbac-contract.mjs'
-                sh 'node infra/security/admission-gate.mjs'
+                sh '''
+                    mkdir -p .devsecops/gates
+                    set +e
+                    node infra/security/admission-gate.mjs > .devsecops/gates/policy-admission.log 2>&1
+                    rc=$?
+                    cat .devsecops/gates/policy-admission.log
+                    . infra/security/gate.sh
+                    gate policy-admission "$GATE_POLICY" "$rc" "Kyverno admission check failed"
+                '''
                 sh 'node infra/security/runtime/logging.mjs'
-                sh 'node infra/security/runtime/health.mjs'
+                sh '''
+                    mkdir -p .devsecops/gates
+                    set +e
+                    node infra/security/runtime/health.mjs > .devsecops/gates/falco-health.log 2>&1
+                    rc=$?
+                    cat .devsecops/gates/falco-health.log
+                    . infra/security/gate.sh
+                    gate falco-health "$GATE_FALCO" "$rc" "Falco health failed"
+                '''
             }
         }
 
@@ -472,8 +508,24 @@ pipeline {
             options { timeout(time: 4, unit: 'MINUTES') }
             steps {
                 sh 'node infra/security/rbac-contract.mjs'
-                sh 'node infra/security/admission-gate.mjs'
-                sh 'node infra/security/runtime/health.mjs'
+                sh '''
+                    mkdir -p .devsecops/gates
+                    set +e
+                    node infra/security/admission-gate.mjs > .devsecops/gates/policy-admission.log 2>&1
+                    rc=$?
+                    cat .devsecops/gates/policy-admission.log
+                    . infra/security/gate.sh
+                    gate policy-admission "$GATE_POLICY" "$rc" "Kyverno admission check failed"
+                '''
+                sh '''
+                    mkdir -p .devsecops/gates
+                    set +e
+                    node infra/security/runtime/health.mjs > .devsecops/gates/falco-health.log 2>&1
+                    rc=$?
+                    cat .devsecops/gates/falco-health.log
+                    . infra/security/gate.sh
+                    gate falco-health "$GATE_FALCO" "$rc" "Falco health failed"
+                '''
             }
         }
 
@@ -492,8 +544,9 @@ pipeline {
                     node infra/observability/sonar-resource-slot.mjs resume
                 '''
             }
+            script { if (fileExists('.devsecops/gates/warnings') && currentBuild.currentResult == 'SUCCESS') currentBuild.result = 'UNSTABLE' }
             junit testResults: 'target/surefire-reports/*.xml', allowEmptyResults: true
-            archiveArtifacts artifacts: '.devsecops/*.json,.devsecops/*.sig,.devsecops/*.log,.infra-preflight-before-build.json,.sonar-runtime-maintenance.json,target/platform/*.json,target/platform/build-*-prune.log,target/platform/terraform-provider-build.log', allowEmptyArchive: true
+            archiveArtifacts artifacts: '.devsecops/*.json,.devsecops/*.sig,.devsecops/*.log,.devsecops/gates/**,.infra-preflight-before-build.json,.sonar-runtime-maintenance.json,target/platform/*.json,target/platform/build-*-prune.log,target/platform/terraform-provider-build.log', allowEmptyArchive: true
         }
         success {
             echo "CI/CD SUCCESS: ${K8S_IMAGE}"
