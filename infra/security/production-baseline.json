@@ -62,9 +62,11 @@
                 "expression": "variables.containers.all(c, !has(c.securityContext) || !has(c.securityContext.privileged) || !c.securityContext.privileged || (variables.sonar && has(object.spec.initContainers) && object.spec.initContainers.exists(i, i.name == c.name) && has(c.securityContext) && has(c.securityContext.readOnlyRootFilesystem) && c.securityContext.readOnlyRootFilesystem && c.name == \"init-sysctl\" && c.image == \"192.168.1.58:30050/platform-cache/sonarqube@sha256:f5593e4a6fe6f3d93e8d4d398b7bb6ba6fb3fe93b0a6b760d5ddaa24b8533cf2\" && has(c.command) && c.command == [\"/bin/bash\",\"-e\",\"/tmp/scripts/init_sysctl.sh\"] && (!has(c.args) || c.args.size() == 0)))",
                 "message": "DevSecOps production baseline: no-privileged-containers"
               }
-            ]
+            ],
+            "generate": false
           }
-        }
+        },
+        "skipBackgroundRequests": true
       },
       {
         "name": "no-explicit-uid-zero",
@@ -112,9 +114,11 @@
                 "expression": "variables.containers.all(c, ((has(c.securityContext) && has(c.securityContext.runAsUser)) ? c.securityContext.runAsUser != 0 : (!has(object.spec.securityContext) || !has(object.spec.securityContext.runAsUser) || object.spec.securityContext.runAsUser != 0)) || (variables.sonar && has(object.spec.initContainers) && object.spec.initContainers.exists(i, i.name == c.name) && has(c.securityContext) && has(c.securityContext.readOnlyRootFilesystem) && c.securityContext.readOnlyRootFilesystem && c.name == \"init-sysctl\" && c.image == \"192.168.1.58:30050/platform-cache/sonarqube@sha256:f5593e4a6fe6f3d93e8d4d398b7bb6ba6fb3fe93b0a6b760d5ddaa24b8533cf2\" && has(c.command) && c.command == [\"/bin/bash\",\"-e\",\"/tmp/scripts/init_sysctl.sh\"] && (!has(c.args) || c.args.size() == 0)))",
                 "message": "DevSecOps production baseline: no-explicit-uid-zero"
               }
-            ]
+            ],
+            "generate": false
           }
-        }
+        },
+        "skipBackgroundRequests": true
       },
       {
         "name": "restricted-added-capabilities",
@@ -162,9 +166,11 @@
                 "expression": "variables.containers.all(c, !has(c.securityContext) || !has(c.securityContext.capabilities) || !has(c.securityContext.capabilities.add) || c.securityContext.capabilities.add.all(cap, cap == 'NET_BIND_SERVICE' || (variables.falco && c.name == 'falco' && cap in ['BPF','PERFMON','SYS_PTRACE','SYS_RESOURCE'])))",
                 "message": "DevSecOps production baseline: restricted-added-capabilities"
               }
-            ]
+            ],
+            "generate": false
           }
-        }
+        },
+        "skipBackgroundRequests": true
       },
       {
         "name": "no-host-namespaces",
@@ -212,9 +218,11 @@
                 "expression": "(!has(object.spec.hostIPC) || !object.spec.hostIPC) && (!has(object.spec.hostPID) || !object.spec.hostPID || variables.falco || variables.nodeExporter) && (!has(object.spec.hostNetwork) || !object.spec.hostNetwork || variables.nodeExporter)",
                 "message": "DevSecOps production baseline: no-host-namespaces"
               }
-            ]
+            ],
+            "generate": false
           }
-        }
+        },
+        "skipBackgroundRequests": true
       },
       {
         "name": "restricted-hostpath",
@@ -262,9 +270,11 @@
                 "expression": "!has(object.spec.volumes) || object.spec.volumes.all(v, !has(v.hostPath) || ((variables.falco && v.hostPath.path in ['/run/k3s/containerd','/sys/kernel','/proc'] || variables.nodeExporter && v.hostPath.path in ['/proc','/sys','/']) && variables.containers.all(c, !has(c.volumeMounts) || c.volumeMounts.all(m, m.name != v.name || (has(m.readOnly) && m.readOnly)))))",
                 "message": "DevSecOps production baseline: restricted-hostpath"
               }
-            ]
+            ],
+            "generate": false
           }
-        }
+        },
+        "skipBackgroundRequests": true
       },
       {
         "name": "authorized-image-repositories",
@@ -312,10 +322,14 @@
                 "expression": "variables.containers.all(c, (object.metadata.namespace == \"devsecops-execution\" && (c.image.startsWith(\"127.0.0.1:30050/platform-security/\") || c.image.startsWith(\"192.168.1.58:30050/platform-upgrade/airflow@sha256:\"))) || (object.metadata.namespace == \"petclinic\" && (c.image.startsWith(\"core.harbor.domain/petclinic/\") || c.image.startsWith(\"192.168.1.58:30050/platform-upgrade/airflow@sha256:\"))) || (object.metadata.namespace == \"devsecops-system\" && (c.image.startsWith(\"127.0.0.1:30050/platform-security/\"))) || (object.metadata.namespace == \"monitoring\" && (c.image.startsWith(\"127.0.0.1:30050/platform-upgrade/\") || c.image.startsWith(\"192.168.1.58:30050/platform-upgrade/\") || c.image.startsWith(\"docker.io/grafana/alloy:\") || c.image.startsWith(\"quay.io/prometheus/node-exporter:\") || c.image.startsWith(\"quay.io/prometheus-operator/prometheus-config-reloader:\"))) || (object.metadata.namespace == \"sonarqube\" && (c.image.startsWith(\"192.168.1.58:30050/platform-cache/sonarqube@sha256:\"))))",
                 "message": "DevSecOps production baseline: authorized-image-repositories"
               }
-            ]
+            ],
+            "generate": false
           }
-        }
+        },
+        "skipBackgroundRequests": true
       }
-    ]
+    ],
+    "admission": true,
+    "emitWarning": false
   }
 }
