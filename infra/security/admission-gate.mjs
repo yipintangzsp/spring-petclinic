@@ -28,7 +28,7 @@ try{
  };
  for(const [name,change] of Object.entries(mutations)){const p=structuredClone(pod);change(p);evidence.cases.push({case:name,mode:'FAIL',...probe(p,true)});}
  // Deliberately unproven gaps stay WARN; do not claim the existing policy blocks them.
- const defaulted=structuredClone(pod);delete defaulted.spec.containers[0].resources.requests;
+ const defaulted=structuredClone(pod);defaulted.spec.containers[0].resources.limits={cpu:'100m',memory:'256Mi'};delete defaulted.spec.containers[0].resources.requests;
  evidence.cases.push({case:'requests-defaulted-from-explicit-limits',mode:'PASS',...probe(defaulted,false)});
  evidence.warningProbes=[];
  const gaps={
