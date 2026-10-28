@@ -12,7 +12,7 @@ await withScanner('semgrep',['semgrep'],async({exec,report,pod,namespace})=>{
  const timer=setTimeout(()=>{archive.kill();sink.kill();},60000);
  try{await Promise.all([archive,sink].map(p=>new Promise((resolve,reject)=>{p.once('error',reject);p.once('close',c=>c===0?resolve():reject(Error('Exact-source transfer failed')));})) );}finally{clearTimeout(timer);}
  exec(['sh','-c','cat > /work/rules.json'],fs.readFileSync('infra/security/scan-rules.json'));
- exec(['sh','-c','cat > /work/positive/Unsafe.java'],'class Unsafe { void run(String input) throws Exception { Runtime.getRuntime().exec(input); javax.crypto.Cipher.getInstance("DES"); } }');
+ exec(['sh','-c','cat > /work/positive/Unsafe.java'],'import javax.crypto.Cipher; class Unsafe { void run(String input) throws Exception { Runtime.getRuntime().exec(input); Cipher.getInstance("DES"); } }');
  exec(['sh','-c','cat > /work/negative/Safe.java'],'class Safe { void run() { System.out.println("synthetic"); } }');
  const scan=path=>{
   const files=String(exec(['find',path,'-type','f','-name','*.java']).stdout).trim().split('\n').filter(Boolean).sort();
@@ -26,6 +26,7 @@ await withScanner('semgrep',['semgrep'],async({exec,report,pod,namespace})=>{
   return result;
  };
  const positive=scan('/work/positive'),negative=scan('/work/negative'),repeat=scan('/work/positive');
+ report.fixtureResults={positive:positive.results,negative:negative.results,repeat:repeat.results};
  if(positive.results.length!==2||negative.results.length!==0||repeat.results.length!==2)throw Error('Semgrep detection/allow/repeat contract failed');
  const fixture=classifySemgrep(positive.results);if(fixture.blocking.length!==1||fixture.warnings.length!==1)throw Error('Semgrep FAIL/WARN fixture classification failed');
  report.tests={positive:2,negative:0,repeat:2,highConfidenceRejected:1,ordinaryWarn:1};
