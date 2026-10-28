@@ -6,7 +6,7 @@ requireLease();verifyTools(['sops']);
 if(!process.env.BUSINESS_AGE_FILE)throw Error('Scoped business age file credential required');
 const identity='system:serviceaccount:devsecops-system:platform-secret-reconciler';
 const targets=[['petclinic','petclinic-db'],['petclinic','rabbitmq-client'],['petclinic','petclinic-harbor-pull'],['devsecops-system','kyverno-registry-pull']];
-const report={status:'failed',source:fs.readFileSync('.git-sha','utf8').trim(),secrets:[],startedAt:new Date().toISOString()};
+const report={readOnly:process.env.DEVSECOPS_READ_ONLY==='true',status:'failed',source:fs.readFileSync('.git-sha','utf8').trim(),secrets:[],startedAt:new Date().toISOString()};
 try{
  const env={...process.env,SOPS_AGE_KEY_FILE:process.env.BUSINESS_AGE_FILE};
  const {spawnSync}=await import('node:child_process');
@@ -18,7 +18,7 @@ try{
   const actual=read(['--as='+identity,'-n',namespace,'get','secret',name]);
   if(!isDeepStrictEqual(actual.data,desired.data)||actual.type!==desired.type)throw Error('Live credential changed; refuse stale ciphertext overwrite: '+name);
   // Values are held in memory and passed over stdin; never written to workspace or reports.
-  kube(['--as='+identity,'apply','--server-side','--field-manager=platform-secret-reconciler','-f','-'],JSON.stringify(desired));
+  if(process.env.DEVSECOPS_READ_ONLY!=='true')kube(['--as='+identity,'apply','--server-side','--field-manager=platform-secret-reconciler','-f','-'],JSON.stringify(desired));
   const after=read(['--as='+identity,'-n',namespace,'get','secret',name]);
   if(after.metadata.uid!==actual.metadata.uid||!isDeepStrictEqual(after.data,actual.data))throw Error('Unexpected Secret identity/value change');
   report.secrets.push({name,namespace,uid:after.metadata.uid,valuesPreserved:true,encryptedSource:true});

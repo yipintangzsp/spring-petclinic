@@ -28,7 +28,10 @@ await withScanner('semgrep',['semgrep'],async({exec,report,pod,namespace})=>{
  if(positive.results.length!==1||negative.results.length!==0||repeat.results.length!==1)throw Error('Semgrep detection/allow/repeat contract failed');
  report.tests={positive:1,negative:0,repeat:1};
  const result=scan('/work/source/src/main/java');report.sourceScan={findings:result.results,filesScanned:result.filesScanned,errors:result.errors};
- if(result.results.length)throw Error('SAST gate blocked '+result.results.length+' application findings');
+ report.findingMode=process.env.GATE_SEMGREP??'enforce';
+ if(!['warn','enforce'].includes(report.findingMode))throw Error('Invalid Semgrep finding mode');
+ report.warnings=result.results.length&&report.findingMode==='warn'?['SAST application findings require review']:[];
+ if(result.results.length&&report.findingMode==='enforce')throw Error('SAST gate blocked '+result.results.length+' application findings');
  report.rules=JSON.parse(fs.readFileSync('infra/security/scan-rules.json')).rules.map(x=>x.id);
  report.engine='Semgrep CE 1.182.1 native core; six project-specific Java rules, not a full SAST guarantee';
 });

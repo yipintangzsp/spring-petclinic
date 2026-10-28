@@ -33,7 +33,10 @@ await withScanner('zap',['zap'],async({exec,report})=>{
   const urls=['/','/owners/find','/vets.html','/actuator/health'].map(p=>base+p);
   const result=scan('business',urls);const blocking=highAlerts(result);
   report.targetImage=deployment.spec.template.spec.containers[0].image;report.targetUrls=urls;report.method='GET only; no spider, forms, or activeScan';
+  report.findingMode=process.env.GATE_ZAP??'enforce';
+  if(!['warn','enforce'].includes(report.findingMode))throw Error('Invalid ZAP finding mode');
   report.blockingHigh=blocking.length;report.findings=result.site.flatMap(s=>(s.alerts??[]).map(a=>({pluginid:a.pluginid,name:a.name,riskcode:a.riskcode,count:a.count})));
+  report.warnings=report.findings.some(x=>Number(x.riskcode)<3)&&report.findingMode==='warn'?['Non-high passive DAST findings require review']:[];
   fs.writeFileSync('.devsecops/zap-business-report.json',JSON.stringify(result,null,2));
   if(blocking.length)throw Error('DAST blocked '+blocking.length+' high-severity findings');
  }finally{fs.rmSync(temp,{recursive:true,force:true});}
