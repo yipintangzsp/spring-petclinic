@@ -47,6 +47,15 @@ export async function ensureScannerDatabases(metadata, io, now = Date.now()) {
 function kube(args, timeout = 12000) {
  return execFileSync('kubectl', ['--request-timeout=10s', ...args], {encoding:'utf8',timeout,maxBuffer:2097152});
 }
+export function fetchOfficialCurl(args, url, config, proxy, runner = execFileSync) {
+ const options = {input:config,timeout:50000,maxBuffer:1048576};
+ const routes = proxy ? [['--proxy',proxy],['--noproxy','*']] : [['--noproxy','*']];
+ for (const route of routes) {
+  try { return runner('curl',[...args,...route,url],options); }
+  catch { /* A route failure is not a successful fetch. */ }
+ }
+ throw Error('OFFICIAL_SCANNER_MANIFEST_FETCH_FAILED');
+}
 export function scannerRefreshIO({cacheDir = '/home/scanner/.cache/trivy'} = {}) {
  if (!/^\/(home\/scanner\/\.cache\/trivy|tmp\/petclinic-db-check-[a-f0-9]+)$/.test(cacheDir)) throw Error('Unsafe scanner cache path');
  const cli = args => kube(['-n','harbor','exec','harbor-trivy-0','-c','trivy','--',...args]);
@@ -69,11 +78,9 @@ export function scannerRefreshIO({cacheDir = '/home/scanner/.cache/trivy'} = {})
    const repo = `aquasecurity/trivy-${kind}`, dir = fs.mkdtempSync(path.join(os.tmpdir(),'clinic-db-manifest-'));
    function curl(url, config = '', headers) {
     const args = ['-fLsS','--retry','1','--connect-timeout','8','--max-time','20'];
-    if (process.env.PACKAGE_HTTPS_PROXY) args.push('--proxy',process.env.PACKAGE_HTTPS_PROXY);
     if (headers) args.push('--dump-header',headers);
     if (config) args.push('--config','-');
-    try {return execFileSync('curl',[...args,url],{input:config,timeout:50000,maxBuffer:1048576});}
-    catch {throw Error('OFFICIAL_SCANNER_MANIFEST_FETCH_FAILED');}
+    return fetchOfficialCurl(args,url,config,process.env.PACKAGE_HTTPS_PROXY);
    }
    try {
     const token = JSON.parse(curl(`https://ghcr.io/token?service=ghcr.io&scope=repository:${repo}:pull`)).token;

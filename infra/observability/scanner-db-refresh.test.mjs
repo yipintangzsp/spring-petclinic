@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {createHash} from 'node:crypto';
-import {ensureScannerDatabases,verifyManifest,requireFreshScannerMetadata} from './scanner-db-refresh.mjs';
+import {ensureScannerDatabases,verifyManifest,requireFreshScannerMetadata,fetchOfficialCurl} from './scanner-db-refresh.mjs';
 const stamp = ms => new Date(ms).toISOString();
 function metadata(expired = []) {
  const now = Date.now();
@@ -50,4 +50,11 @@ test('official manifest hash and exact layer type are mandatory before using a m
 test('corrupt metadata does not trigger an uncontrolled cache replacement',async()=>{
  const f=fake([]);f.before.db.Version=99;
  await assert.rejects(ensureScannerDatabases(f.before,f.io),/METADATA_INVALID/);assert.deepEqual(f.calls,[]);
+});
+
+test('official manifest falls back from unavailable proxy to direct TLS without bypassing failures',()=>{
+ const calls=[];const run=(cmd,args)=>{calls.push(args);if(calls.length===1)throw Error('proxy unreachable');return Buffer.from('official');};
+ assert.equal(fetchOfficialCurl(['-fLsS'],'https://ghcr.io/token','','http://proxy:10808',run).toString(),'official');
+ assert.deepEqual(calls.map(a=>a.slice(1,3)),[['--proxy','http://proxy:10808'],['--noproxy','*']]);
+ assert.throws(()=>fetchOfficialCurl([],'https://ghcr.io/token','','http://proxy',()=>{throw Error('down')}),/OFFICIAL_SCANNER_MANIFEST_FETCH_FAILED/);
 });
