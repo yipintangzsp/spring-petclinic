@@ -25,6 +25,15 @@ cat .devsecops/gates/Snapshot-Before.log
 gate Snapshot-Before enforce "$rc" "Snapshot Before"
 ''' } } } }
 stage('Admission Resources') { steps { sh 'node infra/observability/heavy-lease.mjs acquire' } }
+stage('Package SBOM') { steps { script { catchError(buildResult: 'FAILURE', stageResult: 'FAILURE') { sh '''set -eu
+mkdir -p .devsecops/gates
+set +e
+( nice -n 10 ./mvnw -B package -DskipTests && node infra/security/sbom-verify.mjs ) > .devsecops/gates/Package-SBOM.log 2>&1
+rc=$?
+cat .devsecops/gates/Package-SBOM.log
+. infra/security/gate.sh
+gate Package-SBOM enforce "$rc" "Package SBOM"
+''' } } } }
 stage('Regression') { steps { script { catchError(buildResult: 'FAILURE', stageResult: 'FAILURE') { sh '''set -eu
 mkdir -p .devsecops/gates
 set +e
@@ -46,7 +55,7 @@ gate Falco-Baseline enforce "$rc" "Falco Baseline"
 stage('Kyverno') { steps { script { catchError(buildResult: 'FAILURE', stageResult: 'FAILURE') { sh '''set -eu
 mkdir -p .devsecops/gates
 set +e
-node infra/security/rbac-contract.mjs && node infra/security/admission-gate.mjs > .devsecops/gates/Kyverno.log 2>&1
+( node infra/security/rbac-contract.mjs && node infra/security/admission-gate.mjs ) > .devsecops/gates/Kyverno.log 2>&1
 rc=$?
 cat .devsecops/gates/Kyverno.log
 . infra/security/gate.sh
@@ -69,15 +78,6 @@ rc=$?
 cat .devsecops/gates/Semgrep.log
 . infra/security/gate.sh
 gate Semgrep enforce "$rc" "Semgrep"
-''' } } } }
-stage('Package SBOM') { steps { script { catchError(buildResult: 'FAILURE', stageResult: 'FAILURE') { sh '''set -eu
-mkdir -p .devsecops/gates
-set +e
-nice -n 10 ./mvnw -B package -DskipTests && node infra/security/sbom-verify.mjs > .devsecops/gates/Package-SBOM.log 2>&1
-rc=$?
-cat .devsecops/gates/Package-SBOM.log
-. infra/security/gate.sh
-gate Package-SBOM enforce "$rc" "Package SBOM"
 ''' } } } }
 stage('Encrypted Credentials') { steps { withCredentials([file(credentialsId: 'platform-business-age', variable: 'BUSINESS_AGE_FILE')]) { script { catchError(buildResult: 'FAILURE', stageResult: 'FAILURE') { sh '''set -eu
 mkdir -p .devsecops/gates
