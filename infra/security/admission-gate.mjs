@@ -33,7 +33,7 @@ try{
  const actual=spawnSync('kubectl',['--request-timeout=20s','get','clusterpolicy',contract.metadata.name,'-o','json'],{encoding:'utf8',timeout:25000});
  if(actual.status!==0)throw Error('Production baseline policy unavailable');
  const liveSpec=JSON.parse(actual.stdout).spec;
- for(const desiredRule of contract.spec.rules){const liveRule=liveSpec.rules.find(x=>x.name===desiredRule.name);if(!isDeepStrictEqual(liveRule?.validate?.cel,desiredRule.validate.cel))throw Error('Live baseline expressions differ: '+desiredRule.name);}
+ for(const desiredRule of contract.spec.rules){const liveRule=liveSpec.rules.find(x=>x.name===desiredRule.name);if(!isDeepStrictEqual(liveRule?.validate?.cel,desiredRule.validate.cel)||!isDeepStrictEqual(liveRule?.preconditions,desiredRule.preconditions)||!isDeepStrictEqual(liveRule?.match,desiredRule.match))throw Error('Live baseline expressions differ: '+desiredRule.name);}
  if(liveSpec.validationFailureAction!=='Enforce')throw Error('Production baseline must enforce');
  const productionProbe=structuredClone(pod);productionProbe.metadata.namespace='petclinic';productionProbe.spec.containers[0].image=JSON.parse(fs.readFileSync('infra/messaging/dependencies.json')).runtime;
  evidence.cases.push({case:'production-compliant-worker-image',mode:'PASS',...probe(productionProbe,false)});
