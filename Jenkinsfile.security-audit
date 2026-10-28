@@ -147,5 +147,7 @@ post { always {
 catchError(buildResult: 'FAILURE', stageResult: 'FAILURE') { sh 'node infra/security/cleanup.mjs' }
 catchError(buildResult: 'FAILURE', stageResult: 'FAILURE') { sh 'node infra/observability/heavy-lease.mjs release' }
 archiveArtifacts artifacts: '.devsecops/**,target/sonar/**', allowEmptyArchive: true
+script { withEnv(['SECURITY_BUILD_RESULT=' + currentBuild.currentResult]) { withCredentials([string(credentialsId: 'sonar-token', variable: 'SONAR_TOKEN')]) { sh 'node infra/security/security-summary.mjs' } } }
+archiveArtifacts artifacts: '.devsecops/security-summary.json', allowEmptyArchive: true
 } }
 }
