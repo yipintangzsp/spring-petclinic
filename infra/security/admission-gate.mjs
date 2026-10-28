@@ -15,7 +15,7 @@ try{
  mutable_image:p=>p.spec.containers[0].image='alpine:latest',
  host_network:p=>p.spec.hostNetwork=true,host_pid:p=>p.spec.hostPID=true,host_ipc:p=>p.spec.hostIPC=true,
  host_path:p=>p.spec.volumes=[{name:'escape',hostPath:{path:'/etc'}}],
- privileged:p=>p.spec.containers[0].securityContext.privileged=true,
+ privileged:p=>{p.spec.containers[0].securityContext.privileged=true;p.spec.containers[0].securityContext.allowPrivilegeEscalation=true;delete p.spec.securityContext.seccompProfile;},
  escalation:p=>p.spec.containers[0].securityContext.allowPrivilegeEscalation=true,
  writable_root:p=>p.spec.containers[0].securityContext.readOnlyRootFilesystem=false,
  missing_drop_all:p=>delete p.spec.containers[0].securityContext.capabilities,
@@ -35,7 +35,7 @@ try{
  added_dangerous_capability:p=>p.spec.containers[0].securityContext.capabilities.add=['SYS_ADMIN'],
  unauthorized_registry:p=>p.spec.containers[0].image='unapproved.invalid/security/probe@sha256:'+'1'.repeat(64),
  container_uid_zero:p=>p.spec.containers[0].securityContext.runAsUser=0,
- privileged_init_container:p=>p.spec.initContainers=[{...structuredClone(p.spec.containers[0]),name:'init',securityContext:{privileged:true}}]
+ unrestricted_init_container:p=>p.spec.initContainers=[{...structuredClone(p.spec.containers[0]),name:'init',securityContext:{runAsNonRoot:false,runAsUser:0,allowPrivilegeEscalation:true,readOnlyRootFilesystem:false,capabilities:{add:['SYS_ADMIN']}}}]
  };
  for(const [name,change] of Object.entries(gaps)){
   const p=structuredClone(pod);change(p);
