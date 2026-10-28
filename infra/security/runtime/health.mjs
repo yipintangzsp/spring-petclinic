@@ -1,11 +1,16 @@
 import fs from 'node:fs';
+import {runtimeWindow,persistentRuntime} from './event-policy.mjs';
 import crypto from 'node:crypto';
 import {spawnSync} from 'node:child_process';
 import {requireLease} from '../scanner-runtime.mjs';
 import {validatePriorExit,validateRuntimeContinuity,driverDiagnostics} from './health-contract.mjs';
 requireLease();
+let runtimeAssessment=null;
+try{
+const sensorProof=JSON.parse(fs.readFileSync('infra/security/runtime/isolated-sensor-proof.json'));
 const mode=process.argv[2]??'check';if(!['baseline','check'].includes(mode))throw Error('Use baseline/check');
 const lock=JSON.parse(fs.readFileSync('infra/security/runtime/lock.json'));
+if(sensorProof.rulesetLabel!==lock.rulesetLabel||!sensorProof.cleanup.removed)throw Error('Matching isolated Falco proof and cleanup required');
 if(crypto.createHash('sha256').update(fs.readFileSync('infra/security/runtime/falco.json')).digest('hex')!==lock.manifestSha256)throw Error('Runtime manifest integrity mismatch');
 const run=a=>{const r=spawnSync('kubectl',['--request-timeout=15s',...a],{encoding:'utf8',timeout:20000,maxBuffer:4*1024*1024});if(r.status!==0)throw Error(r.stderr.slice(-1200));return r.stdout;};
 const d=JSON.parse(run(['-n','devsecops-system','get','ds','platform-falco','-o','json']));
@@ -31,10 +36,28 @@ if(mode==='baseline'){
 }
 const log=run(['-n','devsecops-system','logs',ps[0].metadata.name,'-c','falco',mode==='baseline'?'--since=10m':'--since-time='+baseline.capturedAt,'--tail=500']);
 const diagnostics=driverDiagnostics(log);
-const liveSample=()=>{const live=run(['-n','devsecops-system','logs',ps[0].metadata.name,'-c','falco','--since=15s','--tail=500']);let serious=0;for(const line of live.split('\n')){try{const e=JSON.parse(line);if(e.rule&&['Emergency','Alert','Critical'].includes(e.priority))serious++;}catch{}}return {...driverDiagnostics(live),seriousRuntimeAlerts:serious,at:new Date().toISOString()};};
-const liveChecks=[liveSample()];if(liveChecks[0].fatalDriverLines||liveChecks[0].seriousRuntimeAlerts){await new Promise(r=>setTimeout(r,16000));liveChecks.push(liveSample());}
-if(liveChecks.length===2&&liveChecks.every(x=>x.fatalDriverLines||x.seriousRuntimeAlerts))throw Error('Persistent current severe Falco anomaly across two disjoint 15s windows');
+const workloads=()=>{
+ const pods=JSON.parse(run(['-n','petclinic','get','pods','-o','json'])).items;const map={};
+ for(const p of pods)for(const c of p.status.containerStatuses??[])map[`petclinic/${p.metadata.name}/${c.name}`]={podUid:p.metadata.uid,containerId:c.containerID,node:p.spec.nodeName,ready:c.ready,startedAt:c.state?.running?.startedAt};return map;
+};
+const liveSample=()=>{
+ const end=Date.now(),start=end-15000;
+ const live=run(['-n','devsecops-system','logs',ps[0].metadata.name,'-c','falco','--since-time='+new Date(start).toISOString(),'--tail=1000']);
+ const events=[];let malformed=0;for(const line of live.split('\n')){try{const e=JSON.parse(line);if(e.rule)events.push(e);}catch{if(line.trim().startsWith('{'))malformed++;}}
+ return {...driverDiagnostics(live),at:new Date(end).toISOString(),malformedJsonLines:malformed,window:runtimeWindow(events,workloads(),start,end)};
+};
+const liveChecks=[liveSample()];
+runtimeAssessment={status:'success',blocking:[],first:liveChecks[0].window,criteria:'Point-in-time local Falco gate, not continuous or cloud coverage'};
+if(liveChecks[0].fatalDriverLines)throw Error('Current Falco driver fatal requires review');
+if(liveChecks[0].window.candidates.some(x=>x.count>=2)){
+ await new Promise(r=>setTimeout(r,16000));liveChecks.push(liveSample());
+ runtimeAssessment=persistentRuntime(liveChecks[0].window,liveChecks[1].window);
+ if(liveChecks[1].fatalDriverLines)throw Error('Current Falco driver fatal requires review');
+ if(runtimeAssessment.blocking.length)throw Error('Persistent confirmed high-risk runtime behavior; see redacted event assessment');
+}
 if(diagnostics.fatalDriverLines)console.warn('WARN Historical or transient Falco operational errors retained');
 
 const r=await fetch('http'+ '://'+ps[0].status.podIP+':8765/healthz',{signal:AbortSignal.timeout(5000)});if(!r.ok)throw Error('Falco actual health endpoint failed');
-fs.mkdirSync('.devsecops',{recursive:true});if(mode==='baseline')fs.writeFileSync(baselineFile,JSON.stringify(baseline,null,2),{mode:0o600});fs.writeFileSync('.devsecops/runtime-health.json',JSON.stringify({status:'success',source:fs.readFileSync('.git-sha','utf8').trim(),node:'devops',pod:ps[0].metadata.name,image:ps[0].spec.containers[0].image,ready:true,ruleset:lock.rulesetLabel,restarts:c.restartCount,baselineRestarts:baseline.restarts,newRestarts:c.restartCount-baseline.restarts,nodeBootId:current.nodeBootId,podUid:current.podUid,mode,historicalWarning,liveChecks,diagnostics,diagnosticWindow:{since:mode==='baseline'?'last-10-minutes':baseline.capturedAt,tail:500},http:r.status,scope:'Health only; ordinary runtime events do not fail CI; cloud workers not covered'},null,2));
+fs.mkdirSync('.devsecops',{recursive:true});if(mode==='baseline')fs.writeFileSync(baselineFile,JSON.stringify(baseline,null,2),{mode:0o600});fs.writeFileSync('.devsecops/runtime-health.json',JSON.stringify({status:'success',source:fs.readFileSync('.git-sha','utf8').trim(),node:'devops',pod:ps[0].metadata.name,image:ps[0].spec.containers[0].image,ready:true,ruleset:lock.rulesetLabel,restarts:c.restartCount,baselineRestarts:baseline.restarts,newRestarts:c.restartCount-baseline.restarts,nodeBootId:current.nodeBootId,podUid:current.podUid,mode,historicalWarning,validationEvidence:{kind:sensorProof.kind,rulesetLabel:sensorProof.rulesetLabel,isolatedCases:sensorProof.cases.map(x=>({case:x.case,status:x.status})),testPodRemoved:sensorProof.cleanup.removed,syntheticPolicyTests:'runtime-event-policy.test.mjs; not real business attacks'},runtimeAssessment,liveChecks,diagnostics,diagnosticWindow:{since:mode==='baseline'?'last-10-minutes':baseline.capturedAt,tail:500},http:r.status,scope:'Local health plus reviewed two-window runtime events; ordinary/isolated/denied/transient events WARN; no continuous or cloud coverage'},null,2));
+
+}catch(error){fs.mkdirSync('.devsecops',{recursive:true});fs.writeFileSync('.devsecops/runtime-health.json',JSON.stringify({status:'failed',error:error.message,runtimeAssessment,recordedAt:new Date().toISOString(),scope:'Falco gate failure; no raw command or file content recorded'},null,2));throw error;}
