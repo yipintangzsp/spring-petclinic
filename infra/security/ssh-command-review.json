@@ -1,0 +1,82 @@
+{
+  "baseline_build": 239,
+  "source_binding": {
+    "infra/analytics/controlled.py": "79af08148cbe73e03e14d0c69a4222f1d3ef1b0d0d279ec8264f3e8f4b030998",
+    "infra/observability/audit-production.py": "89f61cad1358bd0d556e7cf801ae3b9ade94fbaa5244d36343581dc3cbdc16fe",
+    "infra/analytics/run_trino.py": "93b5dceb2c2202a651b143be983c1f426e396dfda6e58116557233800b8ab4e0",
+    "infra/analytics/trino_local.py": "f220467210cd789ef071f9635a1edbae283acdd2be45183f1a7cbd6e623aed64",
+    "infra/analytics/run_superset.py": "4059f7f90b18bd8a843dba435257d5ebe6885649ac1dcc9eebdf40a72151d1e5",
+    "infra/analytics/run_flink.py": "89f5830883fa300a17dea34206395a957069fd54a66e3c5833a3209e16e2ab6d",
+    "infra/devops-lab/iac/run.py": "471e951d4db9288167d8e9b3cb3ff08c22a6b9a7b31188bbc0109c2778c4d638",
+    "infra/devops-lab/rollouts/run.py": "c31450f63d851ffeaa1bf9621a0ee7cc978d8f4846589160df06b4f161161295",
+    "Jenkinsfile": "c46ac48976d581890592968272ed664e93bf4de9f86beab13c2144d67ef67b9b",
+    "Jenkinsfile.security-audit": "7ac51fba49b2a12045433c6ae817116e0c946026328a7cfab59abfcf1c0878c7"
+  },
+  "wrappers": [
+    {
+      "path": "infra/analytics/controlled.py",
+      "classification": "dynamic_controlled",
+      "sources": [
+        "trusted local admin scripts",
+        "fixed commands",
+        "shlex-serialized argv",
+        "local repo script via stdin"
+      ],
+      "environment": {
+        "PETCLINIC_SSH_ADDRESS": "SSH HostName option only, separate argv; no command string interpolation",
+        "other_environment": "not proven untrusted at command sink; keep WARN"
+      },
+      "jenkins": "No parameters block or params.* command path in current Jenkinsfiles; security-audit does not call this wrapper for deployment",
+      "http_file_message": "Kubernetes/HTTP results are data; local script files require repository/workstation trust. stdin itself is not a universal sanitizer when receiving interpreter code. No demonstrated untrusted HTTP/message-to-command path.",
+      "remaining_warn": "Generic remote(command) has no intrinsic validation; unknown callers and nested interpreter semantics remain WARN."
+    },
+    {
+      "path": "infra/observability/audit-production.py",
+      "classification": "dynamic_controlled",
+      "sources": [
+        "fixed collect() probes",
+        "local kube(args) fixed callsites",
+        "query() builds curl argv using shlex.join",
+        "watchers use fixed HTTP curl commands",
+        "audit-postgres fixed query/log probes"
+      ],
+      "environment": "No direct environment substitution in SSH command sink",
+      "jenkins": "No direct Jenkins parameter path found",
+      "http_file_message": "Prometheus/Loki/HTTP/database responses are parsed as data; output file path is local only",
+      "remaining_warn": "kube(args) concatenates command text; current callers fixed, future arbitrary caller parameters not automatically trusted"
+    }
+  ],
+  "callsite_reviews": [
+    {
+      "path": "infra/analytics/run_trino.py",
+      "classification": "dynamic_controlled",
+      "evidence": "Concatenated address is Kubernetes Service clusterIP; output path fixed; script from tracked local repository passed over stdin. Cluster API and local repository are trust boundaries, not proof of arbitrary user control."
+    },
+    {
+      "path": "infra/analytics/trino_local.py",
+      "classification": "dynamic_controlled",
+      "evidence": "Same reviewed Service clusterIP and fixed output path; no direct HTTP/message field in shell string."
+    },
+    {
+      "path": "infra/analytics/run_superset.py",
+      "classification": "dynamic_controlled",
+      "evidence": "Backup path fixed prefix plus timestamp; command serialized with shlex; nested bash script built locally. Local code and image inputs trusted by operator; generic nested-shell bypass not granted."
+    },
+    {
+      "path": "infra/analytics/run_flink.py",
+      "classification": "dynamic_controlled",
+      "evidence": "curl argv then shlex.join; JSON request body is one quoted argument, not an evaluated shell program."
+    },
+    {
+      "path": "infra/devops-lab/iac/run.py",
+      "classification": "dynamic_controlled",
+      "evidence": "Known relay command argv serialized by shlex.join; request path/method encoded JSON via stdin; source revision checked as exact hex before reading files."
+    },
+    {
+      "path": "infra/devops-lab/rollouts/run.py",
+      "classification": "dynamic_controlled",
+      "evidence": "Pinned source CLI/script; shlex-serialized argv. Python -c body is local tracked code; address/count transmitted as separate argv."
+    }
+  ],
+  "policy": "Review is evidence only; it never suppresses a scanner finding. Source drift marks review stale. Unknown wrappers, alias resolution, env/file/message origin and nested interpreter flows remain WARN."
+}
