@@ -13,21 +13,25 @@ def classify(node):
  if fixed and name not in ('eval','exec'):return {'classification':'safe','reason':'fixed command and literal arguments; scoped to this call only','sink':name}
  return {'classification':'unknown','reason':'dynamic arguments, environment, wrapper or remote-shell trust needs manual review; argument-list calls are not proof of injection','sink':name}
 
-def main():
- files=subprocess.check_output(['git','ls-files','src/main','infra'],text=True).splitlines();items=[];errors=[]
- for f in files:
-  p=pathlib.Path(f)
-  if p.suffix=='.py':
-   try: tree=ast.parse(p.read_text())
+def analyze(files):
+ items=[];errors=[]
+ for f,source in files.items():
+  suffix=pathlib.PurePosixPath(f).suffix
+  if suffix=='.py':
+   try: tree=ast.parse(source)
    except (SyntaxError,UnicodeError) as e:errors.append({'path':f,'error':type(e).__name__});continue
    for node in ast.walk(tree):
     if isinstance(node,ast.Call):
      value=classify(node)
      if value:items.append({'path':f,'line':node.lineno,**value})
-  elif p.suffix=='.sh':
-   for i,line in enumerate(p.read_text().splitlines(),1):
-    if re.search(r'\b(eval|exec|bash|sh|python3?)\b|\$\(',line) and not line.lstrip().startswith('#'):items.append({'path':f,'line':i,'classification':'unknown','reason':'shell execution/expansion inventory; no shell data-flow proof'})
- result={'status':'success' if not errors else 'failed','scope':'tracked Python and Shell scripts; conservative local AST/inventory, no interprocedural or remote-shell exploit proof','items':items,'errors':errors,'counts':{k:sum(x['classification']==k for x in items) for k in ('safe','dangerous','unknown')},'policy':'all script candidates remain WARN until reviewed and Semgrep positive/negative validation; no script rule promoted in this round'}
+  elif suffix=='.sh':
+   for i,line in enumerate(source.splitlines(),1):
+    if re.search(r'\b(eval|exec|bash|sh|python3?)\b|\$\(',line) and not line.lstrip().startswith('#'):items.append({'path':f,'line':i,'classification':'unknown','reason':'shell expansion inventory; no data-flow proof'})
+ return {'status':'failed' if errors else 'success','scope':'tracked Python/Shell; conservative local AST, no interprocedural or remote exploit proof','items':items,'errors':errors,'counts':{k:sum(x['classification']==k for x in items) for k in ('safe','dangerous','unknown')},'policy':'script candidates WARN pending manual trust-boundary review'}
+
+def main():
+ names=subprocess.check_output(['git','ls-files','src/main','infra'],text=True).splitlines()
+ result=analyze({f:pathlib.Path(f).read_text() for f in names if pathlib.Path(f).suffix in ('.py','.sh')})
  pathlib.Path('.devsecops').mkdir(exist_ok=True);pathlib.Path('.devsecops/command-audit.json').write_text(json.dumps(result,indent=2));print(json.dumps(result['counts']))
- if errors:raise SystemExit('Command inventory parse errors; inspect report')
+ if result['errors']:raise SystemExit(1)
 if __name__=='__main__':main()
