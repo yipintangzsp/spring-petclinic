@@ -57,6 +57,8 @@ try{
   const spec={apiVersion:'v1',kind:'Pod',metadata:{name:'baseline-exception-'+ex.id.toLowerCase(),namespace:ex.namespace,ownerReferences:source.metadata.ownerReferences},spec:source.spec};
   evidence.exceptions.push({id:ex.id,mode:'precise-exception',...probe(spec,false)});
   const wrongOwner=structuredClone(spec);wrongOwner.metadata.ownerReferences[0].uid='00000000-0000-0000-0000-000000000000';evidence.cases.push({case:ex.id+'-wrong-owner-denied',mode:'FAIL',...probe(wrongOwner,true)});
+  const changedEnv=structuredClone(spec);const special=[...(changedEnv.spec.initContainers??[]),...changedEnv.spec.containers].find(c=>c.name===ex.container);special.env=[...(special.env??[]),{name:'BASELINE_UNTRUSTED_INPUT',value:'synthetic-test'}];evidence.cases.push({case:ex.id+'-modified-env-denied',mode:'FAIL',...probe(changedEnv,true)});
+  if(ex.id==='sonarInit'){const script=structuredClone(spec);script.spec.volumes.find(v=>v.name==='init-sysctl').configMap.name='untrusted-script-fixture';evidence.cases.push({case:'sonarInit-script-source-denied',mode:'FAIL',...probe(script,true)});}
   const extra=structuredClone(spec);
   if(ex.id==='falco')extra.spec.containers[0].securityContext.capabilities.add.push('SYS_ADMIN');
   else if(ex.id==='nodeExporter')extra.spec.hostIPC=true;

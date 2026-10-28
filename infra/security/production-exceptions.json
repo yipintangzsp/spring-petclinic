@@ -32,7 +32,116 @@
         "no-host-namespaces",
         "restricted-hostpath"
       ],
-      "notes": "Per-expression exception only; other rules still enforced. Owner UID changes require review."
+      "notes": "Per-expression exception only; other rules still enforced. Owner UID changes require review.",
+      "environment": [
+        {
+          "name": "HOST_ROOT",
+          "value": "/host"
+        },
+        {
+          "name": "FALCO_HOSTNAME",
+          "valueFrom": {
+            "fieldRef": {
+              "apiVersion": "v1",
+              "fieldPath": "spec.nodeName"
+            }
+          }
+        },
+        {
+          "name": "FALCO_K8S_NODE_NAME",
+          "valueFrom": {
+            "fieldRef": {
+              "apiVersion": "v1",
+              "fieldPath": "spec.nodeName"
+            }
+          }
+        }
+      ],
+      "volumeMounts": [
+        {
+          "mountPath": "/host/run/k3s/containerd",
+          "name": "container-engine-socket-0",
+          "readOnly": true
+        },
+        {
+          "mountPath": "/etc/falco/config.d",
+          "name": "specialized-falco-configs"
+        },
+        {
+          "mountPath": "/root/.falco",
+          "name": "root-falco-fs"
+        },
+        {
+          "mountPath": "/host/proc",
+          "name": "proc-fs",
+          "readOnly": true
+        },
+        {
+          "mountPath": "/sys/kernel",
+          "name": "sys-fs",
+          "readOnly": true
+        },
+        {
+          "mountPath": "/etc/falco/falco.yaml",
+          "name": "falco-yaml",
+          "subPath": "falco.yaml"
+        },
+        {
+          "mountPath": "/etc/falco/rules.d",
+          "name": "rules-volume"
+        }
+      ],
+      "volumeSources": [
+        {
+          "hostPath": {
+            "path": "/run/k3s/containerd",
+            "type": ""
+          },
+          "name": "container-engine-socket-0"
+        },
+        {
+          "emptyDir": {},
+          "name": "specialized-falco-configs"
+        },
+        {
+          "emptyDir": {},
+          "name": "root-falco-fs"
+        },
+        {
+          "hostPath": {
+            "path": "/sys/kernel",
+            "type": ""
+          },
+          "name": "sys-fs"
+        },
+        {
+          "hostPath": {
+            "path": "/proc",
+            "type": ""
+          },
+          "name": "proc-fs"
+        },
+        {
+          "configMap": {
+            "defaultMode": 420,
+            "items": [
+              {
+                "key": "falco.yaml",
+                "path": "falco.yaml"
+              }
+            ],
+            "name": "platform-falco"
+          },
+          "name": "falco-yaml"
+        },
+        {
+          "configMap": {
+            "defaultMode": 420,
+            "name": "platform-falco-rules"
+          },
+          "name": "rules-volume"
+        }
+      ]
     },
     {
       "id": "nodeExporter",
@@ -62,7 +171,54 @@
         "no-host-namespaces",
         "restricted-hostpath"
       ],
-      "notes": "Per-expression exception only; other rules still enforced. Owner UID changes require review."
+      "notes": "Per-expression exception only; other rules still enforced. Owner UID changes require review.",
+      "environment": [
+        {
+          "name": "HOST_IP",
+          "value": "0.0.0.0"
+        }
+      ],
+      "volumeMounts": [
+        {
+          "mountPath": "/host/proc",
+          "name": "proc",
+          "readOnly": true
+        },
+        {
+          "mountPath": "/host/sys",
+          "name": "sys",
+          "readOnly": true
+        },
+        {
+          "mountPath": "/host/root",
+          "mountPropagation": "HostToContainer",
+          "name": "root",
+          "readOnly": true
+        }
+      ],
+      "volumeSources": [
+        {
+          "hostPath": {
+            "path": "/proc",
+            "type": ""
+          },
+          "name": "proc"
+        },
+        {
+          "hostPath": {
+            "path": "/sys",
+            "type": ""
+          },
+          "name": "sys"
+        },
+        {
+          "hostPath": {
+            "path": "/",
+            "type": ""
+          },
+          "name": "root"
+        }
+      ]
     },
     {
       "id": "sonarInit",
@@ -88,7 +244,41 @@
         "no-privileged-containers",
         "no-explicit-uid-zero"
       ],
-      "notes": "Per-expression exception only; other rules still enforced. Owner UID changes require review."
+      "notes": "Per-expression exception only; other rules still enforced. Owner UID changes require review.",
+      "environment": [
+        {
+          "name": "SONAR_WEB_CONTEXT",
+          "value": "/"
+        },
+        {
+          "name": "SONAR_WEB_JAVAOPTS",
+          "value": "-Xmx768m -Xms768m -XX:MaxMetaspaceSize=256m"
+        },
+        {
+          "name": "SONAR_CE_JAVAOPTS"
+        }
+      ],
+      "volumeMounts": [
+        {
+          "mountPath": "/tmp/scripts/",
+          "name": "init-sysctl"
+        }
+      ],
+      "volumeSources": [
+        {
+          "configMap": {
+            "defaultMode": 420,
+            "items": [
+              {
+                "key": "init_sysctl.sh",
+                "path": "init_sysctl.sh"
+              }
+            ],
+            "name": "sonarqube-sonarqube-init-sysctl"
+          },
+          "name": "init-sysctl"
+        }
+      ]
     }
   ],
   "authorizedScannerRuntimeImages": [
