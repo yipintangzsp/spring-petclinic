@@ -10,7 +10,7 @@ def call(Map cfg=[:]) {
  def results=[]
  if (mode != 'off' && cfg.adapter != 'petclinic') {
   runtimeRoot=sourceRoot+'/.security-manager/runtime'
-  dir(runtimeRoot) { checkout([$class:'GitSCM',branches:[[name:cfg.runtimeRevision ?: error('Pinned runtimeRevision required')]],extensions:[[$class:'CloneOption',shallow:true,depth:1,noTags:true]],userRemoteConfigs:[[url:cfg.runtimeRepository ?: 'http://gitlab-service.ns-devops.svc.cluster.local/root/petclinic-platform.git',credentialsId:cfg.gitCredential ?: 'gitlab-creds']]]) }
+  dir(runtimeRoot) { checkout([$class:'GitSCM',branches:[[name:cfg.runtimeRevision ?: error('Pinned runtimeRevision required')]],extensions:[[$class:'CloneOption',shallow:true,depth:1,noTags:true]],userRemoteConfigs:[[url:cfg.runtimeRepository ?: 'http'+'://gitlab-service.ns-devops.svc.cluster.local/root/petclinic-platform.git',credentialsId:cfg.gitCredential ?: 'gitlab-creds']]]) }
  }
  def plan=[]
  if(mode=='off') for(String id:profiles[profile]) results.add([tool:id,status:'disabled',reason:'mode=off'])

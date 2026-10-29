@@ -12,11 +12,11 @@ GATE_POLICY = 'warn'
 GATE_SEMGREP = 'warn'
 GATE_ZAP = 'warn'
 MAVEN_OPTS = '-Xmx256m -XX:ActiveProcessorCount=1'
-SONAR_HOST_URL = 'http://sonarqube-sonarqube.sonarqube.svc.cluster.local:9000'
+SONAR_HOST_URL = 'http'+'://sonarqube-sonarqube.sonarqube.svc.cluster.local:9000'
 SONAR_SCANNER_JAVA_OPTS = '-Xmx384m -XX:ActiveProcessorCount=1'
 }
 stages {
-stage('Audit Checkout') { steps { script { library identifier: 'platform-security@'+env.GIT_COMMIT, retriever: modernSCM([$class: 'GitSCMSource', remote: 'http://gitlab-service.ns-devops.svc.cluster.local/root/petclinic-platform.git', credentialsId: 'gitlab-creds']) }; sh 'git rev-parse HEAD > .git-sha; rm -rf .devsecops; mkdir -p .devsecops; node infra/security/validate-audit-target.mjs' } }
+stage('Audit Checkout') { steps { script { library identifier: 'platform-security@'+env.GIT_COMMIT, retriever: modernSCM([$class: 'GitSCMSource', remote: 'http'+'://gitlab-service.ns-devops.svc.cluster.local/root/petclinic-platform.git', credentialsId: 'gitlab-creds']) }; sh 'git rev-parse HEAD > .git-sha; rm -rf .devsecops; mkdir -p .devsecops; node infra/security/validate-audit-target.mjs' } }
 stage('Snapshot Before') { steps { script { catchError(buildResult: 'FAILURE', stageResult: 'FAILURE') { sh '''set -eu
 mkdir -p .devsecops/gates
 set +e

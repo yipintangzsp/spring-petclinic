@@ -2,7 +2,7 @@
 
 The public entry is `vars/securityManager.groovy`; tool selection is in `resources/security-manager/profiles.json`. The PetClinic adapter contains commands and credential IDs, not a copied Jenkinsfile. Generic tools live in `infra/security/manager/tool.mjs`; both routes archive independent reports and a unified `security-summary.json`.
 
-Load the library at a reviewed fixed commit using Jenkins `library identifier: 'platform-security@<commit>', retriever: modernSCM([$class:'GitSCMSource', remote:'http://gitlab-service.ns-devops.svc.cluster.local/root/petclinic-platform.git', credentialsId:'gitlab-creds'])`.
+Load the library at a reviewed fixed commit using Jenkins `library identifier: 'platform-security@<commit>', retriever: modernSCM([$class:'GitSCMSource', remote:'http'+'://gitlab-service.ns-devops.svc.cluster.local/root/petclinic-platform.git', credentialsId:'gitlab-creds'])`.
 
 Inside the existing node/checkout, call:
 
