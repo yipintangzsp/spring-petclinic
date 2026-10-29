@@ -4,7 +4,7 @@ try{
  if(!process.env.DEFECTDOJO_TOKEN||!process.env.SONAR_TOKEN)throw Error('Bound governance and Sonar credentials required');
  const target=JSON.parse(fs.readFileSync('infra/security/governance/dojo-target.json')),client=new DojoClient(target.baseUrl,process.env.DEFECTDOJO_TOKEN);report.product=target.product;report.engagement=target.engagement;report.baseUrl=target.baseUrl;
  await client.request('/api/v2/products/'+target.product+'/');
- const tasks=[{title:'Gitleaks exact source',scanType:'Gitleaks Scan',file:'.devsecops/gitleaks-native.json'},{title:'Semgrep Java source',scanType:'Semgrep JSON Report',file:'.devsecops/semgrep-native.json'},{title:'ZAP business passive',scanType:'ZAP Scan',file:'.devsecops/zap-business-report.json'}];
+ const tasks=[{title:'Gitleaks exact source',scanType:'Gitleaks Scan',file:'.devsecops/gitleaks-native.json'},{title:'Semgrep Java source',scanType:'Semgrep JSON Report',file:'.devsecops/semgrep-native.json'},{title:'ZAP business passive',scanType:'ZAP Scan',file:'.devsecops/zap-business-report.xml'}];
  const trivy=JSON.parse(fs.readFileSync('.devsecops/trivy-audit.json'));if(!trivy.scans?.length||trivy.scans.some(s=>s.scan?.scan_status!=='Success'||!s.raw)||(trivy.status!=='success'&&!trivy.failures?.length))throw Error('Complete actual Trivy reports required');
  for(const s of trivy.scans){const file=root+'/trivy-'+s.digest.split(':')[1]+'.json';fs.writeFileSync(file,JSON.stringify(s.raw));tasks.push({title:'Trivy '+s.digest,scanType:'Harbor Vulnerability Scan',file});}
  const ks=JSON.parse(fs.readFileSync('.devsecops/kubescape-gate.json'));if(ks.status!=='success'||ks.source!==report.source||ks.scans.length!==4)throw Error('Four complete real Kubescape scans required');
