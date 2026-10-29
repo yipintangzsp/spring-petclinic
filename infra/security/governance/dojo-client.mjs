@@ -1,7 +1,15 @@
 import fs from 'node:fs';import crypto from 'node:crypto';
 export class DojoClient{
- constructor(base,token){this.base=base.replace(/\/$/,'');this.token=token;}
- async request(p,{method='GET',body}={}){if(!p.startsWith('/api/v2/'))throw Error('Unexpected governance endpoint');const form=body instanceof FormData;const r=await fetch(this.base+p,{method,headers:{Authorization:'Token '+this.token,...(body&&!form?{'Content-Type':'application/json'}:{})},body:body?(form?body:JSON.stringify(body)):undefined,signal:AbortSignal.timeout(195000)});if(!r.ok)throw Error('DefectDojo '+method+' '+p.split('?')[0]+' HTTP '+r.status);if(r.status===204)return null;return r.json();}
+ constructor(base,token,{fetchImpl=globalThis.fetch,sleep=ms=>new Promise(r=>setTimeout(r,ms))}={}){this.base=base.replace(/\/$/,'');this.token=token;this.fetchImpl=fetchImpl;this.sleep=sleep;}
+ async request(p,{method='GET',body}={}){
+  if(!p.startsWith('/api/v2/'))throw Error('Unexpected governance endpoint');const form=body instanceof FormData;
+  for(let attempt=0;attempt<6;attempt++){
+   const r=await this.fetchImpl(this.base+p,{method,headers:{Authorization:'Token '+this.token,...(body&&!form?{'Content-Type':'application/json'}:{})},body:body?(form?body:JSON.stringify(body)):undefined,signal:AbortSignal.timeout(195000)});
+   if([502,503,504].includes(r.status)&&['GET','PATCH'].includes(method)&&attempt<5){await r.arrayBuffer();await this.sleep((attempt+1)*2000);continue;}
+   if(!r.ok)throw Error('DefectDojo '+method+' '+p.split('?')[0]+' HTTP '+r.status);if(r.status===204)return null;return r.json();
+  }
+ }
+
  async list(p){let rows=[],next=p;for(let i=0;next&&i<100;i++){const r=await this.request(next);if(!Array.isArray(r.results))throw Error('Invalid DefectDojo collection');rows.push(...r.results);if(r.next){const n=new URL(r.next,this.base);if(n.origin!==new URL(this.base).origin)throw Error('External pagination refused');next=n.pathname+n.search;}else next=null;}if(next)throw Error('Bounded governance pagination exceeded');return rows;}
  async findings(test){return this.list('/api/v2/findings/?limit=200&test='+test);}
  async importNative({engagement,title,scanType,file,build,source}){

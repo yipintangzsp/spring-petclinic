@@ -10,3 +10,10 @@ test('a completed Trivy policy failure reports actual severity while engine fail
  assert.equal(trivyCounts({...complete,scans:[{scan:{scan_status:'Error'}}]}),null);
  assert.equal(trivyCounts({...complete,scans:[{scan:{scan_status:'Success'},raw:{}}]}),null);
 });
+
+import {DojoClient} from './governance/dojo-client.mjs';
+test('only idempotent governance reads and assignments retry transient gateway failures',async()=>{
+ let calls=0,waits=[];const client=new DojoClient('https://fixture.invalid','fixture',{fetchImpl:async()=>new Response(++calls<3?'temporary':'{"ok":true}',{status:calls<3?502:200}),sleep:async ms=>waits.push(ms)});
+ assert.deepEqual(await client.request('/api/v2/findings/1/',{method:'PATCH',body:{false_p:true}}),{ok:true});assert.equal(calls,3);assert.deepEqual(waits,[2000,4000]);
+ calls=0;await assert.rejects(client.request('/api/v2/import-scan/',{method:'POST',body:{}}),/HTTP 502/);assert.equal(calls,1);
+});
