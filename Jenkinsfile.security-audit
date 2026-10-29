@@ -1,6 +1,7 @@
 pipeline {
 agent any
-parameters { string(name: 'AUDIT_CANDIDATE_IMAGE', defaultValue: '', description: 'Optional fixed Harbor PetClinic SHA256 digest; empty audits live image. Never deploys.') }
+parameters { choice(name: 'PROMOTION_ACTION', choices: ['audit-only','dry-run','deploy'], description: 'Default does not approve or deploy; deploy requires a successful signed approval.')
+string(name: 'AUDIT_CANDIDATE_IMAGE', defaultValue: '', description: 'Optional fixed Harbor PetClinic SHA256 digest; empty audits live image. Never deploys.') }
 options { disableConcurrentBuilds(); timeout(time: 45, unit: 'MINUTES') }
 environment {
 DEVSECOPS_READ_ONLY = 'true'
@@ -159,6 +160,33 @@ cat .devsecops/gates/Read-Only-Release-Verification.log
 . infra/security/gate.sh
 gate Read-Only-Release-Verification enforce "$rc" "Read Only Release Verification"
 ''' } } } }
+
+stage('Candidate Approval Evidence') {
+ when { expression { params.PROMOTION_ACTION != 'audit-only' && currentBuild.currentResult == 'SUCCESS' } }
+ steps {
+  withCredentials([string(credentialsId: 'sonar-token', variable: 'SONAR_TOKEN')]) {
+   withEnv(['SECURITY_BUILD_RESULT=SUCCESS']) { sh 'node infra/security/security-summary.mjs; node infra/security/promotion/evidence.mjs sbom' }
+  }
+ }
+}
+stage('Candidate Sign and Approve') {
+ when { expression { params.PROMOTION_ACTION != 'audit-only' && currentBuild.currentResult == 'SUCCESS' } }
+ steps {
+  withCredentials([file(credentialsId: 'platform-signing-age', variable: 'SIGNING_AGE_FILE'), usernamePassword(credentialsId: 'harbor-creds', usernameVariable: 'HARBOR_USER', passwordVariable: 'HARBOR_PASS')]) {
+   withEnv(['SECURITY_GATE_RESULT=SUCCESS']) { sh 'node infra/security/promotion/sign-approve.mjs' }
+  }
+  script { env.APPROVED_DIGEST = sh(script: "node -p \"require('./.devsecops/approved-release.json').approvedDigest\"", returnStdout: true).trim() }
+ }
+}
+stage('Approved Promotion') {
+ when { expression { params.PROMOTION_ACTION != 'audit-only' && currentBuild.currentResult == 'SUCCESS' } }
+ steps {
+  withCredentials([usernamePassword(credentialsId: 'gitlab-creds', usernameVariable: 'GITLAB_USER', passwordVariable: 'GITLAB_TOKEN')]) {
+   withEnv(['SECURITY_GATE_RESULT=SUCCESS']) { sh 'node infra/security/promotion/promote.mjs "$PROMOTION_ACTION"' }
+  }
+ }
+}
+
 }
 post { always {
 catchError(buildResult: 'FAILURE', stageResult: 'FAILURE') { sh 'node infra/security/cleanup.mjs' }
