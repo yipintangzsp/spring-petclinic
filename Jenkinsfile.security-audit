@@ -165,7 +165,7 @@ stage('Candidate Approval Evidence') {
  when { expression { params.PROMOTION_ACTION != 'audit-only' && currentBuild.currentResult == 'SUCCESS' } }
  steps {
   withCredentials([string(credentialsId: 'sonar-token', variable: 'SONAR_TOKEN')]) {
-   withEnv(['SECURITY_BUILD_RESULT=SUCCESS']) { sh 'node infra/security/security-summary.mjs; node infra/security/promotion/evidence.mjs sbom' }
+   withEnv(['SECURITY_BUILD_RESULT=SUCCESS','SECURITY_SUMMARY_WRITE_ONLY=true']) { sh 'node infra/security/security-summary.mjs; node infra/security/promotion/evidence.mjs sbom' }
   }
  }
 }
