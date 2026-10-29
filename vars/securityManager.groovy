@@ -28,7 +28,7 @@ def call(Map cfg=[:]) {
   if(cfg.adapter!='petclinic') {
    sh 'mkdir -p .devsecops/gates'
    withEnv(['MANAGER_SOURCE_ROOT='+sourceRoot]) { writeFile(file:'.git-sha',text:cfg.sourceCommit ?: sh(script:'git -C "$MANAGER_SOURCE_ROOT" rev-parse HEAD',returnStdout:true).trim()) }
-   writeJSON(file:'.devsecops/manager-config.json',json:cfg+[sourceRoot:sourceRoot,profile:profile,mode:mode,project:cfg.project ?: env.JOB_NAME,build:env.BUILD_NUMBER])
+   writeJSON(file:'.devsecops/manager-config.json',json:cfg+[enabledModules:plan.collect{it.id},sourceRoot:sourceRoot,profile:profile,mode:mode,project:cfg.project ?: env.JOB_NAME,build:env.BUILD_NUMBER])
   }
   if(mode!='off' && cfg.adapter!='petclinic') { sh 'node infra/observability/heavy-lease.mjs acquire'; ownsLease=true }
   for (def module : plan) {
@@ -54,6 +54,7 @@ def call(Map cfg=[:]) {
    }
   }
   stage('Security Gate') {
+   if(mode=='enforce' && cfg.adapter!='petclinic' && results.any{it.status=='not_configured'}) catchError(buildResult:'FAILURE',stageResult:'FAILURE') { error('Enforce requires settings for every selected profile module') }
    writeJSON(file:'.devsecops/security-manager.json',json:[schema:1,mode:mode,profile:profile,adapter:cfg.adapter ?: 'generic',project:cfg.project ?: env.JOB_NAME,modules:results,optionalScansExecuted:plan.size(),promotionAllowed:cfg.adapter=='petclinic' && mode=='enforce' && !results.any{it.status=='failed'}])
    if(cfg.adapter!='petclinic') {
     writeFile(file:'.security-manager-summary.mjs',text:libraryResource('security-manager/summary.mjs'))
