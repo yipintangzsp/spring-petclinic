@@ -16,7 +16,7 @@ SONAR_HOST_URL = 'http://sonarqube-sonarqube.sonarqube.svc.cluster.local:9000'
 SONAR_SCANNER_JAVA_OPTS = '-Xmx384m -XX:ActiveProcessorCount=1'
 }
 stages {
-stage('Audit Checkout') { steps { sh 'git rev-parse HEAD > .git-sha; rm -rf .devsecops; mkdir -p .devsecops; node infra/security/validate-audit-target.mjs' } }
+stage('Audit Checkout') { steps { script { library identifier: 'platform-security@'+env.GIT_COMMIT, retriever: modernSCM([$class: 'GitSCMSource', remote: 'http://gitlab-service.ns-devops.svc.cluster.local/root/petclinic-platform.git', credentialsId: 'gitlab-creds']) }; sh 'git rev-parse HEAD > .git-sha; rm -rf .devsecops; mkdir -p .devsecops; node infra/security/validate-audit-target.mjs' } }
 stage('Snapshot Before') { steps { script { catchError(buildResult: 'FAILURE', stageResult: 'FAILURE') { sh '''set -eu
 mkdir -p .devsecops/gates
 set +e
@@ -27,130 +27,7 @@ cat .devsecops/gates/Snapshot-Before.log
 gate Snapshot-Before enforce "$rc" "Snapshot Before"
 ''' } } } }
 stage('Admission Resources') { steps { sh 'node infra/observability/heavy-lease.mjs acquire' } }
-stage('Package SBOM') { steps { script { catchError(buildResult: 'FAILURE', stageResult: 'FAILURE') { sh '''set -eu
-mkdir -p .devsecops/gates
-set +e
-( nice -n 10 ./mvnw -B package -DskipTests && node infra/security/sbom-verify.mjs ) > .devsecops/gates/Package-SBOM.log 2>&1
-rc=$?
-cat .devsecops/gates/Package-SBOM.log
-. infra/security/gate.sh
-gate Package-SBOM enforce "$rc" "Package SBOM"
-''' } } } }
-stage('Regression') { steps { script { catchError(buildResult: 'FAILURE', stageResult: 'FAILURE') { sh '''set -eu
-mkdir -p .devsecops/gates
-set +e
-node --test --test-concurrency=1 infra/observability/*.test.mjs infra/security/*.test.mjs > .devsecops/gates/Regression.log 2>&1
-rc=$?
-cat .devsecops/gates/Regression.log
-. infra/security/gate.sh
-gate Regression enforce "$rc" "Regression"
-''' } } } }
-stage('Falco Baseline') { steps { script { catchError(buildResult: 'FAILURE', stageResult: 'FAILURE') { sh '''set -eu
-mkdir -p .devsecops/gates
-set +e
-node infra/security/runtime/health.mjs baseline > .devsecops/gates/Falco-Baseline.log 2>&1
-rc=$?
-cat .devsecops/gates/Falco-Baseline.log
-. infra/security/gate.sh
-gate Falco-Baseline enforce "$rc" "Falco Baseline"
-''' } } } }
-stage('Kyverno') { steps { script { catchError(buildResult: 'FAILURE', stageResult: 'FAILURE') { sh '''set -eu
-mkdir -p .devsecops/gates
-set +e
-( node infra/security/rbac-contract.mjs && node infra/security/admission-gate.mjs ) > .devsecops/gates/Kyverno.log 2>&1
-rc=$?
-cat .devsecops/gates/Kyverno.log
-. infra/security/gate.sh
-gate Kyverno enforce "$rc" "Kyverno"
-''' } } } }
-stage('Kubescape Audit') { steps { script { catchError(buildResult: 'FAILURE', stageResult: 'FAILURE') { sh '''set -eu
-mkdir -p .devsecops/gates
-set +e
-node --max-old-space-size=128 infra/security/governance/kubescape.mjs > .devsecops/gates/Kubescape-Audit.log 2>&1
-rc=$?
-cat .devsecops/gates/Kubescape-Audit.log
-exit "$rc"
-''' } } } }
-stage('Secret Source') { steps { script { catchError(buildResult: 'FAILURE', stageResult: 'FAILURE') { sh '''set -eu
-mkdir -p .devsecops/gates
-set +e
-node infra/security/source-gate.mjs > .devsecops/gates/Secret-Source.log 2>&1
-rc=$?
-cat .devsecops/gates/Secret-Source.log
-. infra/security/gate.sh
-gate Secret-Source enforce "$rc" "Secret Source"
-''' } } } }
-stage('Semgrep') { steps { script { catchError(buildResult: 'FAILURE', stageResult: 'FAILURE') { sh '''set -eu
-mkdir -p .devsecops/gates
-set +e
-( node infra/security/command-audit.mjs && node --max-old-space-size=128 infra/security/semgrep-gate.mjs ) > .devsecops/gates/Semgrep.log 2>&1
-rc=$?
-cat .devsecops/gates/Semgrep.log
-. infra/security/gate.sh
-gate Semgrep enforce "$rc" "Semgrep"
-''' } } } }
-stage('Encrypted Credentials') { steps { withCredentials([file(credentialsId: 'platform-business-age', variable: 'BUSINESS_AGE_FILE')]) { script { catchError(buildResult: 'FAILURE', stageResult: 'FAILURE') { sh '''set -eu
-mkdir -p .devsecops/gates
-set +e
-node infra/security/secrets-gate.mjs > .devsecops/gates/Encrypted-Credentials.log 2>&1
-rc=$?
-cat .devsecops/gates/Encrypted-Credentials.log
-. infra/security/gate.sh
-gate Encrypted-Credentials enforce "$rc" "Encrypted Credentials"
-''' } } } } }
-stage('Trivy') { steps { withCredentials([usernamePassword(credentialsId: 'harbor-creds', usernameVariable: 'HARBOR_USER', passwordVariable: 'HARBOR_PASS')]) { script { catchError(buildResult: 'FAILURE', stageResult: 'FAILURE') { sh '''set -eu
-mkdir -p .devsecops/gates
-set +e
-( node infra/security/ensure-audit-candidate.mjs && node infra/security/audit-trivy.mjs ) > .devsecops/gates/Trivy.log 2>&1
-rc=$?
-cat .devsecops/gates/Trivy.log
-. infra/security/gate.sh
-gate Trivy enforce "$rc" "Trivy"
-''' } } } } }
-stage('Cosign Admission') { steps { withCredentials([file(credentialsId: 'platform-signing-age', variable: 'SIGNING_AGE_FILE'), usernamePassword(credentialsId: 'harbor-creds', usernameVariable: 'HARBOR_USER', passwordVariable: 'HARBOR_PASS')]) { script { catchError(buildResult: 'FAILURE', stageResult: 'FAILURE') { sh '''set -eu
-mkdir -p .devsecops/gates
-set +e
-node infra/security/signing.mjs admission > .devsecops/gates/Cosign-Admission.log 2>&1
-rc=$?
-cat .devsecops/gates/Cosign-Admission.log
-. infra/security/gate.sh
-gate Cosign-Admission enforce "$rc" "Cosign Admission"
-''' } } } } }
-stage('SonarQube') { steps { withCredentials([string(credentialsId: 'sonar-token', variable: 'SONAR_TOKEN')]) { script { catchError(buildResult: 'FAILURE', stageResult: 'FAILURE') { sh '''set -eu
-mkdir -p .devsecops/gates
-set +e
-nice -n 10 ./mvnw -B org.sonarsource.scanner.maven:sonar-maven-plugin:5.8.0.7211:sonar -Dsonar.projectKey=petclinic -Dsonar.qualitygate.wait=true -Dsonar.qualitygate.timeout=300 > .devsecops/gates/SonarQube.log 2>&1
-rc=$?
-cat .devsecops/gates/SonarQube.log
-. infra/security/gate.sh
-gate SonarQube enforce "$rc" "SonarQube"
-''' } } } } }
-stage('ZAP Passive') { steps { script { catchError(buildResult: 'FAILURE', stageResult: 'FAILURE') { sh '''set -eu
-mkdir -p .devsecops/gates
-set +e
-node infra/security/zap-gate.mjs > .devsecops/gates/ZAP-Passive.log 2>&1
-rc=$?
-cat .devsecops/gates/ZAP-Passive.log
-. infra/security/gate.sh
-gate ZAP-Passive enforce "$rc" "ZAP Passive"
-''' } } } }
-stage('Falco Final') { steps { script { catchError(buildResult: 'FAILURE', stageResult: 'FAILURE') { sh '''set -eu
-mkdir -p .devsecops/gates
-set +e
-node infra/security/runtime/health.mjs > .devsecops/gates/Falco-Final.log 2>&1
-rc=$?
-cat .devsecops/gates/Falco-Final.log
-. infra/security/gate.sh
-gate Falco-Final enforce "$rc" "Falco Final"
-''' } } } }
-stage('DefectDojo Governance') { steps { withCredentials([string(credentialsId: 'defectdojo-api-token', variable: 'DEFECTDOJO_TOKEN'), string(credentialsId: 'sonar-token', variable: 'SONAR_TOKEN')]) { script { catchError(buildResult: 'FAILURE', stageResult: 'FAILURE') { sh '''set -eu
-mkdir -p .devsecops/gates
-set +e
-node --max-old-space-size=192 infra/security/governance/defectdojo.mjs > .devsecops/gates/DefectDojo-Governance.log 2>&1
-rc=$?
-cat .devsecops/gates/DefectDojo-Governance.log
-exit "$rc"
-''' } } } } }
+stage('Security Manager') { steps { script { securityManager(mode: 'enforce', profile: 'java-web', adapter: 'petclinic', project: 'petclinic') } } }
 stage('Read Only Release Verification') { steps { script { catchError(buildResult: 'FAILURE', stageResult: 'FAILURE') { sh '''set -eu
 mkdir -p .devsecops/gates
 set +e
