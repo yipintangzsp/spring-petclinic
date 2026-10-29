@@ -8,7 +8,7 @@ import {waitGitLabReady} from './service-readiness.mjs';
 async function resilientFetch(url, options = {}) {
  const {timeoutMs = 30000, ...requestOptions} = options;
  const replayable = !requestOptions.body?.getReader;
- const attempts = replayable ? 6 : 1;
+ const attempts = replayable ? (process.env.TRANSPORT_MAX_RETRIES==='2'?3:6) : 1;
  for (let attempt = 0; attempt < attempts; attempt++) {
   try {
    const response = await fetch(url, {...requestOptions, signal: AbortSignal.timeout(timeoutMs)});

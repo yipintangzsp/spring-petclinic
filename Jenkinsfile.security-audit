@@ -1,5 +1,6 @@
 pipeline {
 agent any
+parameters { string(name: 'AUDIT_CANDIDATE_IMAGE', defaultValue: '', description: 'Optional fixed Harbor PetClinic SHA256 digest; empty audits live image. Never deploys.') }
 options { disableConcurrentBuilds(); timeout(time: 45, unit: 'MINUTES') }
 environment {
 DEVSECOPS_READ_ONLY = 'true'
@@ -14,7 +15,7 @@ SONAR_HOST_URL = 'http://sonarqube-sonarqube.sonarqube.svc.cluster.local:9000'
 SONAR_SCANNER_JAVA_OPTS = '-Xmx384m -XX:ActiveProcessorCount=1'
 }
 stages {
-stage('Audit Checkout') { steps { sh 'git rev-parse HEAD > .git-sha; rm -rf .devsecops; mkdir -p .devsecops' } }
+stage('Audit Checkout') { steps { sh 'git rev-parse HEAD > .git-sha; rm -rf .devsecops; mkdir -p .devsecops; node --input-type=module -e \"import {resolveAuditTarget} from './infra/security/audit-target.mjs'; resolveAuditTarget('',process.env.AUDIT_CANDIDATE_IMAGE)\"' } }
 stage('Snapshot Before') { steps { script { catchError(buildResult: 'FAILURE', stageResult: 'FAILURE') { sh '''set -eu
 mkdir -p .devsecops/gates
 set +e
@@ -99,7 +100,7 @@ gate Encrypted-Credentials enforce "$rc" "Encrypted Credentials"
 stage('Trivy') { steps { withCredentials([usernamePassword(credentialsId: 'harbor-creds', usernameVariable: 'HARBOR_USER', passwordVariable: 'HARBOR_PASS')]) { script { catchError(buildResult: 'FAILURE', stageResult: 'FAILURE') { sh '''set -eu
 mkdir -p .devsecops/gates
 set +e
-node infra/security/audit-trivy.mjs > .devsecops/gates/Trivy.log 2>&1
+( node infra/security/ensure-audit-candidate.mjs && node infra/security/audit-trivy.mjs ) > .devsecops/gates/Trivy.log 2>&1
 rc=$?
 cat .devsecops/gates/Trivy.log
 . infra/security/gate.sh

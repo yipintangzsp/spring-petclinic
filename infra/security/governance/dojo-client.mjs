@@ -3,19 +3,19 @@ export class DojoClient{
  constructor(base,token,{fetchImpl=globalThis.fetch,sleep=ms=>new Promise(r=>setTimeout(r,ms))}={}){this.base=base.replace(/\/$/,'');this.token=token;this.fetchImpl=fetchImpl;this.sleep=sleep;}
  async request(p,{method='GET',body}={}){
   if(!p.startsWith('/api/v2/'))throw Error('Unexpected governance endpoint');const form=body instanceof FormData;
-  for(let attempt=0;attempt<6;attempt++){
-   const r=await this.fetchImpl(this.base+p,{method,headers:{Authorization:'Token '+this.token,...(body&&!form?{'Content-Type':'application/json'}:{})},body:body?(form?body:JSON.stringify(body)):undefined,signal:AbortSignal.timeout(195000)});
-   if([502,503,504].includes(r.status)&&['GET','PATCH'].includes(method)&&attempt<5){await r.arrayBuffer();await this.sleep((attempt+1)*2000);continue;}
+  for(let attempt=0;attempt<3;attempt++){
+   let r;try{r=await this.fetchImpl(this.base+p,{method,headers:{Authorization:'Token '+this.token,...(body&&!form?{'Content-Type':'application/json'}:{})},body:body?(form?body:JSON.stringify(body)):undefined,signal:AbortSignal.timeout(195000)});}catch(e){if(!['GET','PATCH'].includes(method)||attempt>=2||!['TypeError','TimeoutError','AbortError'].includes(e.name))throw e;await this.sleep((attempt+1)*2000);continue;}
+   if([502,503,504].includes(r.status)&&['GET','PATCH'].includes(method)&&attempt<2){await r.arrayBuffer();await this.sleep((attempt+1)*2000);continue;}
    if(!r.ok)throw Error('DefectDojo '+method+' '+p.split('?')[0]+' HTTP '+r.status);if(r.status===204)return null;return r.json();
   }
  }
 
  async list(p){let rows=[],next=p;for(let i=0;next&&i<100;i++){const r=await this.request(next);if(!Array.isArray(r.results))throw Error('Invalid DefectDojo collection');rows.push(...r.results);if(r.next){const n=new URL(r.next,this.base);if(n.origin!==new URL(this.base).origin)throw Error('External pagination refused');next=n.pathname+n.search;}else next=null;}if(next)throw Error('Bounded governance pagination exceeded');return rows;}
  async findings(test){return this.list('/api/v2/findings/?limit=200&test='+test);}
- async importNative({engagement,title,scanType,file,build,source}){
+ async importNative({engagement,title,scanType,file,build,source,auditContext}){
   const tests=await this.list('/api/v2/tests/?limit=100&engagement='+engagement),matches=tests.filter(t=>t.title===title);if(matches.length>1)throw Error('Ambiguous existing DefectDojo Test: '+title);let id=matches[0]?.id;
   const bytes=fs.readFileSync(file);if(bytes.length>100*1024*1024)throw Error('Bounded native report exceeded');
-  const upload=async(reimport)=>{const f=new FormData();for(const [k,v]of Object.entries({scan_type:scanType,test_title:title,minimum_severity:'Info',verified:'false',close_old_findings:'false',close_old_findings_product_scope:'false',auto_create_context:'false',deduplication_execution_mode:'sync',push_to_jira:'false',build_id:String(build),branch_tag:'feat/dojo-kubescape',commit_hash:source,...(reimport?{test:String(id),do_not_reactivate:'true'}:{engagement:String(engagement),active:'true'})}))f.set(k,v);f.set('file',new Blob([bytes],{type:file.endsWith('.xml')?'application/xml':'application/json'}),file.split('/').at(-1));return this.request('/api/v2/'+(reimport?'reimport-scan':'import-scan')+'/',{method:'POST',body:f});};
+  const upload=async(reimport)=>{const f=new FormData();for(const [k,v]of Object.entries({scan_type:scanType,test_title:title,minimum_severity:'Info',verified:'false',close_old_findings:'false',close_old_findings_product_scope:'false',auto_create_context:'false',deduplication_execution_mode:'sync',push_to_jira:'false',build_id:String(build),branch_tag:'feat/dojo-kubescape',commit_hash:source,description:JSON.stringify(auditContext??{}),...(reimport?{test:String(id),do_not_reactivate:'true'}:{engagement:String(engagement),active:'true'})}))f.set(k,v);f.set('file',new Blob([bytes],{type:file.endsWith('.xml')?'application/xml':'application/json'}),file.split('/').at(-1));return this.request('/api/v2/'+(reimport?'reimport-scan':'import-scan')+'/',{method:'POST',body:f});};
   const first=await upload(Boolean(id));id=typeof first.test==='object'?first.test.id:first.test??id;
   if(!id){const now=await this.list('/api/v2/tests/?limit=100&engagement='+engagement);id=now.find(t=>t.title===title)?.id;}if(!id)throw Error('Import returned no real Test');
   const before=await this.findings(id);await upload(true);const after=await this.findings(id);const ids=xs=>xs.map(x=>x.id).sort((a,b)=>a-b);if(JSON.stringify(ids(before))!==JSON.stringify(ids(after)))throw Error('Same-report reimport changed Finding IDs: '+title);
