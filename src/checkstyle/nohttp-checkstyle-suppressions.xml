@@ -3,6 +3,9 @@
 		"-//Checkstyle//DTD SuppressionFilter Configuration 1.2//EN"
 		"https://checkstyle.org/dtds/suppressions_1_2.dtd">
 <suppressions>
+    <!-- Governance uses existing private HTTP listeners; scope to exact endpoints and new integration files. -->
+    <suppress files="infra[\\/]security[\\/]governance[\\/](dojo-target\.json|defectdojo-compose\.json|README\.md)$" checks="NoHttp" message=".*http://(192\.168\.(64\.11|1\.58):18095|defectdojo\.devops\.local).*"/>
+    <suppress files="infra[\\/]security[\\/]governance[\\/]defectdojo\.mjs$" checks="NoHttp" message=".*http://sonarqube-sonarqube\.sonarqube\.svc\.cluster\.local:9000/api/issues/search.*"/>
     <!-- Existing private Harbor service has no TLS listener; exact signing client and existing service only. -->
     <suppress files="infra[\\/]security[\\/]signing\.mjs$" checks="NoHttp" message=".*http://harbor-core\.harbor\.svc\.cluster\.local.*"/>
     <!-- Existing cluster-local monitoring and canary HTTP listeners used for real probes. -->
