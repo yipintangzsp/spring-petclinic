@@ -1,0 +1,188 @@
+{
+  "apiVersion": "v1",
+  "kind": "List",
+  "items": [
+    {
+      "apiVersion": "v1",
+      "kind": "ServiceAccount",
+      "metadata": {
+        "name": "kubescape-readonly",
+        "namespace": "devsecops-system"
+      },
+      "automountServiceAccountToken": false
+    },
+    {
+      "apiVersion": "rbac.authorization.k8s.io/v1",
+      "kind": "ClusterRole",
+      "metadata": {
+        "name": "kubescape-readonly"
+      },
+      "rules": [
+        {
+          "apiGroups": [
+            ""
+          ],
+          "resources": [
+            "pods",
+            "services",
+            "endpoints",
+            "nodes",
+            "namespaces",
+            "configmaps",
+            "serviceaccounts",
+            "persistentvolumes",
+            "persistentvolumeclaims",
+            "replicationcontrollers",
+            "limitranges",
+            "resourcequotas"
+          ],
+          "verbs": [
+            "get",
+            "list"
+          ]
+        },
+        {
+          "apiGroups": [
+            "apps"
+          ],
+          "resources": [
+            "deployments",
+            "daemonsets",
+            "statefulsets",
+            "replicasets",
+            "controllerrevisions"
+          ],
+          "verbs": [
+            "get",
+            "list"
+          ]
+        },
+        {
+          "apiGroups": [
+            "batch"
+          ],
+          "resources": [
+            "jobs",
+            "cronjobs"
+          ],
+          "verbs": [
+            "get",
+            "list"
+          ]
+        },
+        {
+          "apiGroups": [
+            "networking.k8s.io"
+          ],
+          "resources": [
+            "ingresses",
+            "ingressclasses",
+            "networkpolicies"
+          ],
+          "verbs": [
+            "get",
+            "list"
+          ]
+        },
+        {
+          "apiGroups": [
+            "rbac.authorization.k8s.io"
+          ],
+          "resources": [
+            "roles",
+            "rolebindings",
+            "clusterroles",
+            "clusterrolebindings"
+          ],
+          "verbs": [
+            "get",
+            "list"
+          ]
+        },
+        {
+          "apiGroups": [
+            "storage.k8s.io"
+          ],
+          "resources": [
+            "storageclasses",
+            "csidrivers",
+            "csinodes",
+            "volumeattachments"
+          ],
+          "verbs": [
+            "get",
+            "list"
+          ]
+        },
+        {
+          "apiGroups": [
+            "policy"
+          ],
+          "resources": [
+            "poddisruptionbudgets"
+          ],
+          "verbs": [
+            "get",
+            "list"
+          ]
+        },
+        {
+          "apiGroups": [
+            "apiextensions.k8s.io"
+          ],
+          "resources": [
+            "customresourcedefinitions"
+          ],
+          "verbs": [
+            "get",
+            "list"
+          ]
+        },
+        {
+          "apiGroups": [
+            "scheduling.k8s.io"
+          ],
+          "resources": [
+            "priorityclasses"
+          ],
+          "verbs": [
+            "get",
+            "list"
+          ]
+        },
+        {
+          "nonResourceURLs": [
+            "/version",
+            "/api",
+            "/api/*",
+            "/apis",
+            "/apis/*",
+            "/openapi/*"
+          ],
+          "verbs": [
+            "get"
+          ]
+        }
+      ]
+    },
+    {
+      "apiVersion": "rbac.authorization.k8s.io/v1",
+      "kind": "ClusterRoleBinding",
+      "metadata": {
+        "name": "kubescape-readonly"
+      },
+      "roleRef": {
+        "apiGroup": "rbac.authorization.k8s.io",
+        "kind": "ClusterRole",
+        "name": "kubescape-readonly"
+      },
+      "subjects": [
+        {
+          "kind": "ServiceAccount",
+          "name": "kubescape-readonly",
+          "namespace": "devsecops-system"
+        }
+      ]
+    }
+  ]
+}

@@ -58,6 +58,7 @@ try{
  function scan(path,file){
   const result=exec(['gitleaks','dir',path,'--redact=100','--no-banner','--log-level','error','--report-format','json','--report-path',file],undefined,[0,1]);
   const findings=JSON.parse(String(exec(['cat',file]).stdout)||'[]');
+  if(path==='/work/source')fs.writeFileSync(out+'/gitleaks-native.json',JSON.stringify(findings,null,2));
   return {exit:result.status,findings:findings.map(x=>({rule:x.RuleID,file:x.File,line:x.StartLine,fingerprint:x.Fingerprint}))};
  }
  const positive=scan('/work/fixture','/work/positive.json');report.tests.push({case:'synthetic-secret-blocked',...positive});if(positive.exit!==1||!positive.findings.some(x=>x.rule==='github-pat'))throw Error('Synthetic credential was not blocked');

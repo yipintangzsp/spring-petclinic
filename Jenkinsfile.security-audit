@@ -61,6 +61,14 @@ cat .devsecops/gates/Kyverno.log
 . infra/security/gate.sh
 gate Kyverno enforce "$rc" "Kyverno"
 ''' } } } }
+stage('Kubescape Audit') { steps { script { catchError(buildResult: 'FAILURE', stageResult: 'FAILURE') { sh '''set -eu
+mkdir -p .devsecops/gates
+set +e
+node --max-old-space-size=128 infra/security/governance/kubescape.mjs > .devsecops/gates/Kubescape-Audit.log 2>&1
+rc=$?
+cat .devsecops/gates/Kubescape-Audit.log
+exit "$rc"
+''' } } } }
 stage('Secret Source') { steps { script { catchError(buildResult: 'FAILURE', stageResult: 'FAILURE') { sh '''set -eu
 mkdir -p .devsecops/gates
 set +e
@@ -133,6 +141,14 @@ cat .devsecops/gates/Falco-Final.log
 . infra/security/gate.sh
 gate Falco-Final enforce "$rc" "Falco Final"
 ''' } } } }
+stage('DefectDojo Governance') { steps { withCredentials([string(credentialsId: 'defectdojo-api-token', variable: 'DEFECTDOJO_TOKEN'), string(credentialsId: 'sonar-token', variable: 'SONAR_TOKEN')]) { script { catchError(buildResult: 'FAILURE', stageResult: 'FAILURE') { sh '''set -eu
+mkdir -p .devsecops/gates
+set +e
+node --max-old-space-size=192 infra/security/governance/defectdojo.mjs > .devsecops/gates/DefectDojo-Governance.log 2>&1
+rc=$?
+cat .devsecops/gates/DefectDojo-Governance.log
+exit "$rc"
+''' } } } } }
 stage('Read Only Release Verification') { steps { script { catchError(buildResult: 'FAILURE', stageResult: 'FAILURE') { sh '''set -eu
 mkdir -p .devsecops/gates
 set +e

@@ -37,7 +37,7 @@ await withScanner('semgrep',['semgrep'],async({exec,report,pod,namespace})=>{
  report.commandTests={positive:cp.results,negative:cn.results,repeat:cr.results,scope:'HTTP getParameter intraprocedural flow to entire executable; environment, shell arguments and wrappers remain WARN'};
  if(ids(cp.results).length!==2||cn.results.length!==0||ids(cr.results).length!==2)throw Error('HTTP command taint positive/negative/repeat contract failed');
 
- const result=scan('/work/source/src/main/java');report.sourceScan={findings:result.results,filesScanned:result.filesScanned,errors:result.errors};
+ const result=scan('/work/source/src/main/java');fs.writeFileSync('.devsecops/semgrep-native.json',JSON.stringify(result,null,2));report.sourceScan={findings:result.results,filesScanned:result.filesScanned,errors:result.errors};
  report.findingMode=process.env.GATE_SEMGREP??'enforce';
  if(!['warn','enforce'].includes(report.findingMode))throw Error('Invalid Semgrep finding mode');
  const classification=classifySemgrep(result.results);report.enforcedRules=enforcedRules;report.blockingFindings=classification.blocking;report.warningFindings=classification.warnings;report.warnings=classification.warnings.length?['Unreviewed or lower-severity SAST findings require review']:[];

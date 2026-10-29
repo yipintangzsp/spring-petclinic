@@ -1,0 +1,716 @@
+[
+  {
+    "id": 13,
+    "title": "Kubescape - scan status",
+    "type": "stat",
+    "description": "[governance-addon:v1] Real native results / DefectDojo API snapshot at latest Jenkins governance sync. No zero-fill. Runtime panels remain independent.",
+    "datasource": {
+      "type": "loki",
+      "uid": "loki"
+    },
+    "gridPos": {
+      "x": 0,
+      "y": 30,
+      "w": 6,
+      "h": 4
+    },
+    "targets": [
+      {
+        "refId": "A",
+        "expr": "last_over_time({job=\"devsecops-security\",project=\"petclinic\"} | json value=\"kubescape_scan_success\" | value!=\"\" | unwrap value | __error__=\"\" [24h])",
+        "legendFormat": "Engine status",
+        "queryType": "instant",
+        "datasource": {
+          "type": "loki",
+          "uid": "loki"
+        }
+      }
+    ],
+    "options": {
+      "reduceOptions": {
+        "calcs": [
+          "lastNotNull"
+        ],
+        "fields": "",
+        "values": false
+      },
+      "orientation": "auto",
+      "textMode": "auto",
+      "colorMode": "value"
+    },
+    "fieldConfig": {
+      "defaults": {
+        "unit": "short",
+        "thresholds": {
+          "mode": "absolute",
+          "steps": [
+            {
+              "color": "red",
+              "value": null
+            },
+            {
+              "color": "green",
+              "value": 1
+            }
+          ]
+        },
+        "mappings": [
+          {
+            "type": "value",
+            "options": {
+              "0": {
+                "text": "FAILED",
+                "color": "red"
+              },
+              "1": {
+                "text": "SUCCESS",
+                "color": "green"
+              }
+            }
+          }
+        ]
+      },
+      "overrides": []
+    }
+  },
+  {
+    "id": 14,
+    "title": "Kubescape - failed controls AUDIT",
+    "type": "stat",
+    "description": "[governance-addon:v1] Real native results / DefectDojo API snapshot at latest Jenkins governance sync. No zero-fill. Runtime panels remain independent.",
+    "datasource": {
+      "type": "loki",
+      "uid": "loki"
+    },
+    "gridPos": {
+      "x": 6,
+      "y": 30,
+      "w": 6,
+      "h": 4
+    },
+    "targets": [
+      {
+        "refId": "A",
+        "expr": "last_over_time({job=\"devsecops-security\",project=\"petclinic\"} | json value=\"kubescape_failed_controls\" | value!=\"\" | unwrap value | __error__=\"\" [24h])",
+        "legendFormat": "Scope/control pairs",
+        "queryType": "instant",
+        "datasource": {
+          "type": "loki",
+          "uid": "loki"
+        }
+      }
+    ],
+    "options": {
+      "reduceOptions": {
+        "calcs": [
+          "lastNotNull"
+        ],
+        "fields": "",
+        "values": false
+      },
+      "orientation": "auto",
+      "textMode": "auto",
+      "colorMode": "value"
+    },
+    "fieldConfig": {
+      "defaults": {
+        "unit": "short",
+        "thresholds": {
+          "mode": "absolute",
+          "steps": [
+            {
+              "color": "green",
+              "value": null
+            },
+            {
+              "color": "orange",
+              "value": 1
+            },
+            {
+              "color": "red",
+              "value": 50
+            }
+          ]
+        }
+      },
+      "overrides": []
+    }
+  },
+  {
+    "id": 15,
+    "title": "Kubescape - high-risk findings AUDIT",
+    "type": "stat",
+    "description": "[governance-addon:v1] Real native results / DefectDojo API snapshot at latest Jenkins governance sync. No zero-fill. Runtime panels remain independent.",
+    "datasource": {
+      "type": "loki",
+      "uid": "loki"
+    },
+    "gridPos": {
+      "x": 12,
+      "y": 30,
+      "w": 6,
+      "h": 4
+    },
+    "targets": [
+      {
+        "refId": "A",
+        "expr": "last_over_time({job=\"devsecops-security\",project=\"petclinic\"} | json value=\"kubescape_high_risk_findings\" | value!=\"\" | unwrap value | __error__=\"\" [24h])",
+        "legendFormat": "High/Critical resource-control pairs",
+        "queryType": "instant",
+        "datasource": {
+          "type": "loki",
+          "uid": "loki"
+        }
+      }
+    ],
+    "options": {
+      "reduceOptions": {
+        "calcs": [
+          "lastNotNull"
+        ],
+        "fields": "",
+        "values": false
+      },
+      "orientation": "auto",
+      "textMode": "auto",
+      "colorMode": "value"
+    },
+    "fieldConfig": {
+      "defaults": {
+        "unit": "short",
+        "thresholds": {
+          "mode": "absolute",
+          "steps": [
+            {
+              "color": "green",
+              "value": null
+            },
+            {
+              "color": "orange",
+              "value": 1
+            },
+            {
+              "color": "red",
+              "value": 50
+            }
+          ]
+        }
+      },
+      "overrides": []
+    }
+  },
+  {
+    "id": 16,
+    "title": "DefectDojo - import status",
+    "type": "stat",
+    "description": "[governance-addon:v1] Real native results / DefectDojo API snapshot at latest Jenkins governance sync. No zero-fill. Runtime panels remain independent.",
+    "datasource": {
+      "type": "loki",
+      "uid": "loki"
+    },
+    "gridPos": {
+      "x": 18,
+      "y": 30,
+      "w": 6,
+      "h": 4
+    },
+    "targets": [
+      {
+        "refId": "A",
+        "expr": "last_over_time({job=\"devsecops-security\",project=\"petclinic\"} | json value=\"defectdojo_import_success\" | value!=\"\" | unwrap value | __error__=\"\" [24h])",
+        "legendFormat": "Import / reimport",
+        "queryType": "instant",
+        "datasource": {
+          "type": "loki",
+          "uid": "loki"
+        }
+      }
+    ],
+    "options": {
+      "reduceOptions": {
+        "calcs": [
+          "lastNotNull"
+        ],
+        "fields": "",
+        "values": false
+      },
+      "orientation": "auto",
+      "textMode": "auto",
+      "colorMode": "value"
+    },
+    "fieldConfig": {
+      "defaults": {
+        "unit": "short",
+        "thresholds": {
+          "mode": "absolute",
+          "steps": [
+            {
+              "color": "red",
+              "value": null
+            },
+            {
+              "color": "green",
+              "value": 1
+            }
+          ]
+        },
+        "mappings": [
+          {
+            "type": "value",
+            "options": {
+              "0": {
+                "text": "FAILED",
+                "color": "red"
+              },
+              "1": {
+                "text": "SUCCESS",
+                "color": "green"
+              }
+            }
+          }
+        ]
+      },
+      "overrides": []
+    }
+  },
+  {
+    "id": 17,
+    "title": "Kubescape - framework / compliance summary",
+    "type": "logs",
+    "description": "[governance-addon:v1] Native NSA/CIS compliance values, cluster and production YAML separately. Host scan disabled: not full node CIS certification.",
+    "datasource": {
+      "type": "loki",
+      "uid": "loki"
+    },
+    "gridPos": {
+      "x": 0,
+      "y": 34,
+      "w": 24,
+      "h": 5
+    },
+    "targets": [
+      {
+        "refId": "A",
+        "expr": "{job=\"devsecops-security\",project=\"petclinic\"} | json summary=\"kubescape_framework_summary\" | summary!=\"\" | line_format \"{{.summary}}\"",
+        "queryType": "range",
+        "datasource": {
+          "type": "loki",
+          "uid": "loki"
+        }
+      }
+    ],
+    "options": {
+      "showTime": true,
+      "wrapLogMessage": true,
+      "sortOrder": "Descending"
+    }
+  },
+  {
+    "id": 18,
+    "title": "DefectDojo - open findings",
+    "type": "stat",
+    "description": "[governance-addon:v1] Real native results / DefectDojo API snapshot at latest Jenkins governance sync. No zero-fill. Runtime panels remain independent.",
+    "datasource": {
+      "type": "loki",
+      "uid": "loki"
+    },
+    "gridPos": {
+      "x": 0,
+      "y": 39,
+      "w": 6,
+      "h": 4
+    },
+    "targets": [
+      {
+        "refId": "A",
+        "expr": "last_over_time({job=\"devsecops-security\",project=\"petclinic\"} | json value=\"defectdojo_open_findings\" | value!=\"\" | unwrap value | __error__=\"\" [24h])",
+        "legendFormat": "Open, non-duplicate",
+        "queryType": "instant",
+        "datasource": {
+          "type": "loki",
+          "uid": "loki"
+        }
+      }
+    ],
+    "options": {
+      "reduceOptions": {
+        "calcs": [
+          "lastNotNull"
+        ],
+        "fields": "",
+        "values": false
+      },
+      "orientation": "auto",
+      "textMode": "auto",
+      "colorMode": "value"
+    },
+    "fieldConfig": {
+      "defaults": {
+        "unit": "short",
+        "thresholds": {
+          "mode": "absolute",
+          "steps": [
+            {
+              "color": "green",
+              "value": null
+            },
+            {
+              "color": "orange",
+              "value": 1
+            },
+            {
+              "color": "red",
+              "value": 50
+            }
+          ]
+        }
+      },
+      "overrides": []
+    }
+  },
+  {
+    "id": 19,
+    "title": "DefectDojo - open severity",
+    "type": "stat",
+    "description": "[governance-addon:v1] Real native results / DefectDojo API snapshot at latest Jenkins governance sync. No zero-fill. Runtime panels remain independent.",
+    "datasource": {
+      "type": "loki",
+      "uid": "loki"
+    },
+    "gridPos": {
+      "x": 6,
+      "y": 39,
+      "w": 18,
+      "h": 4
+    },
+    "targets": [
+      {
+        "refId": "A",
+        "expr": "last_over_time({job=\"devsecops-security\",project=\"petclinic\"} | json value=\"defectdojo_critical\" | value!=\"\" | unwrap value | __error__=\"\" [24h])",
+        "legendFormat": "Critical",
+        "queryType": "instant",
+        "datasource": {
+          "type": "loki",
+          "uid": "loki"
+        }
+      },
+      {
+        "refId": "B",
+        "expr": "last_over_time({job=\"devsecops-security\",project=\"petclinic\"} | json value=\"defectdojo_high\" | value!=\"\" | unwrap value | __error__=\"\" [24h])",
+        "legendFormat": "High",
+        "queryType": "instant",
+        "datasource": {
+          "type": "loki",
+          "uid": "loki"
+        }
+      },
+      {
+        "refId": "C",
+        "expr": "last_over_time({job=\"devsecops-security\",project=\"petclinic\"} | json value=\"defectdojo_medium\" | value!=\"\" | unwrap value | __error__=\"\" [24h])",
+        "legendFormat": "Medium",
+        "queryType": "instant",
+        "datasource": {
+          "type": "loki",
+          "uid": "loki"
+        }
+      },
+      {
+        "refId": "D",
+        "expr": "last_over_time({job=\"devsecops-security\",project=\"petclinic\"} | json value=\"defectdojo_low\" | value!=\"\" | unwrap value | __error__=\"\" [24h])",
+        "legendFormat": "Low",
+        "queryType": "instant",
+        "datasource": {
+          "type": "loki",
+          "uid": "loki"
+        }
+      }
+    ],
+    "options": {
+      "reduceOptions": {
+        "calcs": [
+          "lastNotNull"
+        ],
+        "fields": "",
+        "values": false
+      },
+      "orientation": "auto",
+      "textMode": "auto",
+      "colorMode": "value"
+    },
+    "fieldConfig": {
+      "defaults": {
+        "unit": "short",
+        "thresholds": {
+          "mode": "absolute",
+          "steps": [
+            {
+              "color": "green",
+              "value": null
+            },
+            {
+              "color": "orange",
+              "value": 1
+            },
+            {
+              "color": "red",
+              "value": 50
+            }
+          ]
+        }
+      },
+      "overrides": []
+    }
+  },
+  {
+    "id": 20,
+    "title": "DefectDojo - accepted risk",
+    "type": "stat",
+    "description": "[governance-addon:v1] Real native results / DefectDojo API snapshot at latest Jenkins governance sync. No zero-fill. Runtime panels remain independent.",
+    "datasource": {
+      "type": "loki",
+      "uid": "loki"
+    },
+    "gridPos": {
+      "x": 0,
+      "y": 43,
+      "w": 6,
+      "h": 4
+    },
+    "targets": [
+      {
+        "refId": "A",
+        "expr": "last_over_time({job=\"devsecops-security\",project=\"petclinic\"} | json value=\"defectdojo_accepted_risk\" | value!=\"\" | unwrap value | __error__=\"\" [24h])",
+        "legendFormat": "Accepted",
+        "queryType": "instant",
+        "datasource": {
+          "type": "loki",
+          "uid": "loki"
+        }
+      }
+    ],
+    "options": {
+      "reduceOptions": {
+        "calcs": [
+          "lastNotNull"
+        ],
+        "fields": "",
+        "values": false
+      },
+      "orientation": "auto",
+      "textMode": "auto",
+      "colorMode": "value"
+    },
+    "fieldConfig": {
+      "defaults": {
+        "unit": "short",
+        "thresholds": {
+          "mode": "absolute",
+          "steps": [
+            {
+              "color": "green",
+              "value": null
+            },
+            {
+              "color": "orange",
+              "value": 1
+            },
+            {
+              "color": "red",
+              "value": 50
+            }
+          ]
+        }
+      },
+      "overrides": []
+    }
+  },
+  {
+    "id": 21,
+    "title": "DefectDojo - mitigated / closed",
+    "type": "stat",
+    "description": "[governance-addon:v1] Real native results / DefectDojo API snapshot at latest Jenkins governance sync. No zero-fill. Runtime panels remain independent.",
+    "datasource": {
+      "type": "loki",
+      "uid": "loki"
+    },
+    "gridPos": {
+      "x": 6,
+      "y": 43,
+      "w": 6,
+      "h": 4
+    },
+    "targets": [
+      {
+        "refId": "A",
+        "expr": "last_over_time({job=\"devsecops-security\",project=\"petclinic\"} | json value=\"defectdojo_mitigated_closed\" | value!=\"\" | unwrap value | __error__=\"\" [24h])",
+        "legendFormat": "Mitigated / closed",
+        "queryType": "instant",
+        "datasource": {
+          "type": "loki",
+          "uid": "loki"
+        }
+      }
+    ],
+    "options": {
+      "reduceOptions": {
+        "calcs": [
+          "lastNotNull"
+        ],
+        "fields": "",
+        "values": false
+      },
+      "orientation": "auto",
+      "textMode": "auto",
+      "colorMode": "value"
+    },
+    "fieldConfig": {
+      "defaults": {
+        "unit": "short",
+        "thresholds": {
+          "mode": "absolute",
+          "steps": [
+            {
+              "color": "green",
+              "value": null
+            },
+            {
+              "color": "orange",
+              "value": 1
+            },
+            {
+              "color": "red",
+              "value": 50
+            }
+          ]
+        }
+      },
+      "overrides": []
+    }
+  },
+  {
+    "id": 22,
+    "title": "DefectDojo - reviewed false positives",
+    "type": "stat",
+    "description": "[governance-addon:v1] Real native results / DefectDojo API snapshot at latest Jenkins governance sync. No zero-fill. Runtime panels remain independent.",
+    "datasource": {
+      "type": "loki",
+      "uid": "loki"
+    },
+    "gridPos": {
+      "x": 12,
+      "y": 43,
+      "w": 6,
+      "h": 4
+    },
+    "targets": [
+      {
+        "refId": "A",
+        "expr": "last_over_time({job=\"devsecops-security\",project=\"petclinic\"} | json value=\"defectdojo_false_positives\" | value!=\"\" | unwrap value | __error__=\"\" [24h])",
+        "legendFormat": "False positives",
+        "queryType": "instant",
+        "datasource": {
+          "type": "loki",
+          "uid": "loki"
+        }
+      }
+    ],
+    "options": {
+      "reduceOptions": {
+        "calcs": [
+          "lastNotNull"
+        ],
+        "fields": "",
+        "values": false
+      },
+      "orientation": "auto",
+      "textMode": "auto",
+      "colorMode": "value"
+    },
+    "fieldConfig": {
+      "defaults": {
+        "unit": "short",
+        "thresholds": {
+          "mode": "absolute",
+          "steps": [
+            {
+              "color": "green",
+              "value": null
+            },
+            {
+              "color": "orange",
+              "value": 1
+            },
+            {
+              "color": "red",
+              "value": 50
+            }
+          ]
+        }
+      },
+      "overrides": []
+    }
+  },
+  {
+    "id": 23,
+    "title": "DefectDojo - duplicate records",
+    "type": "stat",
+    "description": "[governance-addon:v1] Real native results / DefectDojo API snapshot at latest Jenkins governance sync. No zero-fill. Runtime panels remain independent.",
+    "datasource": {
+      "type": "loki",
+      "uid": "loki"
+    },
+    "gridPos": {
+      "x": 18,
+      "y": 43,
+      "w": 6,
+      "h": 4
+    },
+    "targets": [
+      {
+        "refId": "A",
+        "expr": "last_over_time({job=\"devsecops-security\",project=\"petclinic\"} | json value=\"defectdojo_duplicates\" | value!=\"\" | unwrap value | __error__=\"\" [24h])",
+        "legendFormat": "Duplicates, excluded from open count",
+        "queryType": "instant",
+        "datasource": {
+          "type": "loki",
+          "uid": "loki"
+        }
+      }
+    ],
+    "options": {
+      "reduceOptions": {
+        "calcs": [
+          "lastNotNull"
+        ],
+        "fields": "",
+        "values": false
+      },
+      "orientation": "auto",
+      "textMode": "auto",
+      "colorMode": "value"
+    },
+    "fieldConfig": {
+      "defaults": {
+        "unit": "short",
+        "thresholds": {
+          "mode": "absolute",
+          "steps": [
+            {
+              "color": "green",
+              "value": null
+            },
+            {
+              "color": "orange",
+              "value": 1
+            },
+            {
+              "color": "red",
+              "value": 50
+            }
+          ]
+        }
+      },
+      "overrides": []
+    }
+  }
+]
