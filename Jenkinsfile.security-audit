@@ -1,6 +1,7 @@
 pipeline {
 agent any
-parameters { choice(name: 'PROMOTION_ACTION', choices: ['audit-only','dry-run','deploy'], description: 'Default does not approve or deploy; deploy requires a successful signed approval.')
+parameters { booleanParam(name: 'ENABLE_PROVENANCE', defaultValue: false, description: 'Optional candidate validation attestation; no deployment')
+choice(name: 'PROMOTION_ACTION', choices: ['audit-only','dry-run','deploy'], description: 'Default does not approve or deploy; deploy requires a successful signed approval.')
 string(name: 'AUDIT_CANDIDATE_IMAGE', defaultValue: '', description: 'Optional fixed Harbor PetClinic SHA256 digest; empty audits live image. Never deploys.') }
 options { disableConcurrentBuilds(); timeout(time: 45, unit: 'MINUTES') }
 environment {

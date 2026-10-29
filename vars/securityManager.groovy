@@ -53,6 +53,8 @@ def call(Map cfg=[:]) {
     } }
    }
   }
+  def provenance=securityProvenance(cfg)
+  if(provenance.status!='skipped') results.add(provenance)
   stage('Security Gate') {
    if(mode=='enforce' && cfg.adapter!='petclinic' && results.any{it.status=='not_configured'}) catchError(buildResult:'FAILURE',stageResult:'FAILURE') { error('Enforce requires settings for every selected profile module') }
    writeJSON(file:'.devsecops/security-manager.json',json:[schema:1,mode:mode,profile:profile,adapter:cfg.adapter ?: 'generic',project:cfg.project ?: env.JOB_NAME,modules:results,optionalScansExecuted:plan.size(),promotionAllowed:cfg.adapter=='petclinic' && mode=='enforce' && !results.any{it.status=='failed'}])
