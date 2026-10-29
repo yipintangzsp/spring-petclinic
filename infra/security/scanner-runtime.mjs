@@ -38,7 +38,12 @@ export async function withScanner(kind,payload,action){
  requireLease();verifyTools(payload);
  const ns='devsecops-execution',name=kind+'-'+String(process.env.BUILD_NUMBER||'manual')+'-'+crypto.randomBytes(3).toString('hex');
  const pod={apiVersion:'v1',kind:'Pod',metadata:{name,namespace:ns,labels:{'petclinic.devops.local/owner':'platform-devsecops','petclinic.devops.local/scan-kind':kind}},spec:{automountServiceAccountToken:false,restartPolicy:'Never',activeDeadlineSeconds:600,nodeSelector:{'kubernetes.io/hostname':'devops','kubernetes.io/arch':'arm64'},securityContext:{runAsNonRoot:true,runAsUser:10001,runAsGroup:10001,fsGroup:10001,seccompProfile:{type:'RuntimeDefault'}},containers:[{name:'scanner',image:toolchain.baseImage,command:['sh','-c','sleep 600'],resources:{requests:{cpu:'100m',memory:'256Mi','ephemeral-storage':'512Mi'},limits:{cpu:'1',memory:'768Mi','ephemeral-storage':'1536Mi'}},securityContext:{allowPrivilegeEscalation:false,readOnlyRootFilesystem:true,capabilities:{drop:['ALL']}},volumeMounts:[{name:'work',mountPath:'/work'},{name:'tmp',mountPath:'/tmp'}]}],volumes:[{name:'work',emptyDir:{sizeLimit:'1024Mi'}},{name:'tmp',emptyDir:{sizeLimit:'128Mi'}}]}};
- const report={status:'failed',source:fs.readFileSync('.git-sha','utf8').trim(),pod:name,namespace:ns,startedAt:new Date().toISOString(),cleanup:false};let uid,canary;
+ // Optional execution backend only; fixed scanners, network policy and gates are unchanged.
+ const scratch=process.env.SECURITY_ZAP_SCRATCH??'disk';
+ if(!['disk','memory'].includes(scratch))throw Error('Invalid temporary scratch backend');
+ const memoryScratch=scratch==='memory'&&['zap','manager-zap'].includes(kind);
+ if(memoryScratch){pod.spec.volumes.find(v=>v.name==='work').emptyDir.medium='Memory';pod.spec.containers[0].resources.requests.memory='1536Mi';pod.spec.containers[0].resources.limits.memory='1792Mi';}
+ const report={status:'failed',source:fs.readFileSync('.git-sha','utf8').trim(),pod:name,namespace:ns,executionBackend:memoryScratch?'memory-scratch':'disk-scratch',resourceSpec:pod.spec.containers[0].resources,startedAt:new Date().toISOString(),cleanup:false};let uid,canary;
  try{
   uid=JSON.parse(kube(['create','-f','-','-o','json'],JSON.stringify(pod)).stdout).metadata.uid;report.uid=uid;
   fs.mkdirSync('.devsecops',{recursive:true});fs.writeFileSync('.devsecops/'+kind+'-gate.json',JSON.stringify(report,null,2));
