@@ -21,3 +21,5 @@ Execution uses the existing Jenkins agent, fixed tool manifests, isolated execut
 Generic reports go to Loki under `pipeline=security-manager`, with project/mode/profile. PetClinic's original summary, Dojo imports, Grafana and digest/promotion chain remain intact. Dojo uses native parsers and stable Test titles for deduplication. Do not put credentials in the configuration map: only existing Jenkins credential IDs.
 
 DefectDojo domain route uses the existing Traefik Service plus selectorless Service/EndpointSlice to the Compose host's 18095 listener. Compose, data and backup port remain unchanged. Mac domain publication follows the existing Peach mDNS LaunchAgent method.
+
+The PetClinic adapter enables cleanup of each owned ZAP scan home only after its synchronous JVM exits and native report, plan and stdout/stderr are saved. Detection, tool hashes and 768 MiB namespace quota remain unchanged. This prevents sequential fixture/business scratch copies from accumulating; no persistent cache or business data is removed.

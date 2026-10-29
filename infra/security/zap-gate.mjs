@@ -16,6 +16,7 @@ await withScanner('zap',['zap'],async({exec,report})=>{
   exec(['sh','-c','java -Xmx32m -cp /work/fixture Synthetic >/work/fixture-server.log 2>&1 </dev/null & echo $! >/work/fixture.pid']);
   for(let i=0;i<20;i++){if(exec(['timeout','1','bash','-c','echo >/dev/tcp/127.0.0.1/18083'],undefined,[0,1,124]).status===0)break;if(i===19)throw Error('Loopback fixture did not start');await new Promise(r=>setTimeout(r,500));}
   const scan=(label,urls)=>{
+   if(!['fixture','fixture-negative','business'].includes(label))throw Error('Only owned ZAP scratch labels allowed');
    const plan={env:{contexts:[{name:label,urls}],parameters:{failOnError:true,failOnWarning:false}},jobs:[{type:'requestor',requests:urls.map(url=>({url,method:'GET',responseCode:200}))},{type:'passiveScan-wait',parameters:{maxDuration:1}},{type:'report',parameters:{template:'traditional-json',reportDir:'/work',reportFile:label,displayReport:false}},...(label==='business'?[{type:'report',parameters:{template:'traditional-xml',reportDir:'/work',reportFile:label,displayReport:false}}]:[])]};
    exec(['sh','-c',`cat > /work/${label}.yaml`],JSON.stringify(plan));
    const result=exec(['java','-Xmx384m','-Djava.awt.headless=true','-Djava.util.prefs.userRoot=/work/prefs','-jar','/work/tools/zap/zap-2.17.0.jar','-cmd','-silent','-host','127.0.0.1','-port','18084','-dir','/work/'+label+'-home','-autorun','/work/'+label+'.yaml'],undefined,[0],150000);
@@ -23,6 +24,14 @@ await withScanner('zap',['zap'],async({exec,report})=>{
    const data=JSON.parse(String(exec(['cat','/work/'+label+'.json']).stdout));
    if(label==='business')fs.writeFileSync('.devsecops/zap-business-report.xml',String(exec(['cat','/work/'+label+'.xml']).stdout));
    if(data.site.some(s=>!urls.some(url=>new URL(url).hostname===s['@host'])))throw Error('DAST visited a non-whitelisted target');
+   if(process.env.SECURITY_CLEANUP_SCAN_HOMES==='true'){
+    const native='.devsecops/zap-'+label+'-native.json';fs.writeFileSync(native,JSON.stringify(data,null,2));
+    fs.writeFileSync('.devsecops/zap-'+label+'-plan.json',JSON.stringify(plan,null,2));
+    const home='/work/'+label+'-home';const before=String(exec(['du','-sk',home]).stdout).trim();
+    // The synchronous JVM has exited; native reports, plans and stdout/stderr are retained above.
+    exec(['rm','-rf','--',home]);
+    report.sessionCleanup??=[];report.sessionCleanup.push({label,jvmExited:true,nativeReport:native,reportSha256:crypto.createHash('sha256').update(fs.readFileSync(native)).digest('hex'),scratchBefore:before,removedHome:home});
+   }
    return data;
   };
   const positive=scan('fixture',['http://127.0.0.1:18083/']);
