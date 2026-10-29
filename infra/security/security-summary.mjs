@@ -1,10 +1,11 @@
 import fs from 'node:fs';
+import {trivyCounts} from './governance/scan-counts.mjs';
 const read=n=>{try{return JSON.parse(fs.readFileSync('.devsecops/'+n));}catch{return null;}};
 const record={schema:1,project:'petclinic',pipeline:'security-audit',build:Number(process.env.BUILD_NUMBER),build_result:process.env.SECURITY_BUILD_RESULT??'UNKNOWN',source:fs.readFileSync('.git-sha','utf8').trim(),recorded_at:new Date().toISOString(),missing:[]};
 const tool=(key,file,fn)=>{const d=read(file);if(!d){record.missing.push(key);return;}record[key+'_status']=d.status??'unknown';if(d.status==='success')Object.assign(record,fn(d));};
 tool('gitleaks','source-gate.json',d=>({gitleaks_findings:d.sourceScan.blockingFindings.length,gitleaks_raw:d.sourceScan.rawCount}));
 tool('semgrep','semgrep-gate.json',d=>({semgrep_findings:d.sourceScan.findings.length,semgrep_blocking:d.blockingFindings?.length??null,semgrep_warn:d.warningFindings?.length??null}));
-tool('trivy','trivy-audit.json',d=>{const counts={Critical:0,High:0,Medium:0,Low:0};for(const s of d.scans)for(const r of Object.values(s.raw))for(const v of r.vulnerabilities??[]){const k=Object.keys(counts).find(k=>k.toUpperCase()===String(v.severity).toUpperCase());if(k)counts[k]++;}return Object.fromEntries(Object.entries(counts).map(([k,v])=>['trivy_'+k.toLowerCase(),v]));});
+const trivyResult=read('trivy-audit.json');if(trivyResult){record.trivy_status=trivyResult.status??'unknown';const counts=trivyCounts(trivyResult);if(counts)Object.assign(record,counts);}else record.missing.push('trivy');
 tool('sbom','sbom-summary.json',d=>({sbom_generated:1,sbom_components:d.components}));
 tool('cosign','signing-admission.json',d=>({cosign_verified:d.cases?.some(x=>x.case==='signed'&&x.allowed)&&d.cases?.filter(x=>['unsigned','wrong-key'].includes(x.case)&&!x.allowed).length===2?1:0}));
 tool('zap','zap-gate.json',d=>({zap_findings:d.findings.length,zap_high:d.rawHigh??d.blockingHigh,zap_confirmed_high:d.blockingHigh,zap_unconfirmed_high:d.unconfirmedHigh??0,zap_auth_status:d.authentication?.status??null,zap_auth_fixture_cases:d.authentication?.fixtureCases??null,zap_auth_public_observations:d.authentication?.publicGetObservations??null}));
