@@ -7,7 +7,7 @@ def call(Map cfg=[:]) {
  def repository
  def commit
  withEnv(['PROVENANCE_SOURCE_ROOT='+sourceRoot]) { repository=cfg.repository ?: sh(script:'git -C "$PROVENANCE_SOURCE_ROOT" config --get remote.origin.url',returnStdout:true).trim(); commit=sh(script:'git -C "$PROVENANCE_SOURCE_ROOT" rev-parse HEAD',returnStdout:true).trim() }
- def result=[tool:'provenance',status:'success',build:Number(env.BUILD_NUMBER),mode:mode];boolean failed=false
+ def result=[tool:'provenance',status:'success',build:env.BUILD_NUMBER.toInteger(),mode:mode];boolean failed=false
  withEnv(['PROVENANCE_CANDIDATE='+(cfg.candidateImage ?: params.get('AUDIT_CANDIDATE_IMAGE','') ?: cfg.image ?: ''),'PROVENANCE_REPOSITORY='+repository,'PROVENANCE_COMMIT='+commit]) {
   for(def action:['generate','create','verify']) {
    stage(['generate':'Generate Provenance','create':'Create Attestation','verify':'Verify Attestation'][action]) {
