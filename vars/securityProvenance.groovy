@@ -7,7 +7,7 @@ def call(Map cfg=[:]) {
  def repository
  def commit
  withEnv(['PROVENANCE_SOURCE_ROOT='+sourceRoot]) { repository=cfg.repository ?: sh(script:'git -C "$PROVENANCE_SOURCE_ROOT" config --get remote.origin.url',returnStdout:true).trim(); commit=sh(script:'git -C "$PROVENANCE_SOURCE_ROOT" rev-parse HEAD',returnStdout:true).trim() }
- def result=[tool:'provenance',status:'success'];boolean failed=false
+ def result=[tool:'provenance',status:'success',build:Number(env.BUILD_NUMBER),mode:mode];boolean failed=false
  withEnv(['PROVENANCE_CANDIDATE='+(cfg.candidateImage ?: params.get('AUDIT_CANDIDATE_IMAGE','') ?: cfg.image ?: ''),'PROVENANCE_REPOSITORY='+repository,'PROVENANCE_COMMIT='+commit]) {
   for(def action:['generate','create','verify']) {
    stage(['generate':'Generate Provenance','create':'Create Attestation','verify':'Verify Attestation'][action]) {
@@ -15,6 +15,7 @@ def call(Map cfg=[:]) {
     else {
      def code
      if(action=='create') withCredentials([file(credentialsId:'platform-signing-age',variable:'SIGNING_AGE_FILE'),usernamePassword(credentialsId:'harbor-creds',usernameVariable:'HARBOR_USER',passwordVariable:'HARBOR_PASS')]) { code=sh(script:'node infra/security/provenance/plugin.mjs '+action,returnStatus:true) }
+     else if(action=='verify') withCredentials([usernamePassword(credentialsId:'harbor-creds',usernameVariable:'HARBOR_USER',passwordVariable:'HARBOR_PASS')]) { code=sh(script:'node infra/security/provenance/plugin.mjs '+action,returnStatus:true) }
      else code=sh(script:'node infra/security/provenance/plugin.mjs '+action,returnStatus:true)
      if(code!=0) { failed=true;result.status=mode=='audit'?'warn':'failed';if(mode=='enforce')catchError(buildResult:'FAILURE',stageResult:'FAILURE'){error('Provenance validation failed; approval blocked')}else echo 'WARN: provenance validation failed' }
     }
