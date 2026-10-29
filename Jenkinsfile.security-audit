@@ -15,7 +15,7 @@ SONAR_HOST_URL = 'http://sonarqube-sonarqube.sonarqube.svc.cluster.local:9000'
 SONAR_SCANNER_JAVA_OPTS = '-Xmx384m -XX:ActiveProcessorCount=1'
 }
 stages {
-stage('Audit Checkout') { steps { sh 'git rev-parse HEAD > .git-sha; rm -rf .devsecops; mkdir -p .devsecops; node --input-type=module -e \"import {resolveAuditTarget} from './infra/security/audit-target.mjs'; resolveAuditTarget('',process.env.AUDIT_CANDIDATE_IMAGE)\"' } }
+stage('Audit Checkout') { steps { sh 'git rev-parse HEAD > .git-sha; rm -rf .devsecops; mkdir -p .devsecops; node infra/security/validate-audit-target.mjs' } }
 stage('Snapshot Before') { steps { script { catchError(buildResult: 'FAILURE', stageResult: 'FAILURE') { sh '''set -eu
 mkdir -p .devsecops/gates
 set +e
