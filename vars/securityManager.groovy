@@ -44,13 +44,13 @@ def call(Map cfg=[:]) {
      if(module.id=='sonarqube') bindings.add(string(credentialsId:cfg.sonarCredential ?: 'sonar-token',variable:'SONAR_TOKEN'))
      if(module.id=='defectdojo') bindings.add(string(credentialsId:cfg.dojoCredential ?: 'defectdojo-api-token',variable:'DEFECTDOJO_TOKEN'))
     }
-    withCredentials(bindings) { withEnv((module.environment ?: [:]).collect { k,v -> k+'='+v }) {
+    withCredentials(bindings) {
      int code=sh(script:'set +e\n'+module.command+' > .devsecops/gates/'+module.id+'.log 2>&1\nrc=$?\ncat .devsecops/gates/'+module.id+'.log\nexit "$rc"',returnStatus:true)
      boolean warning=code==10 && mode=='audit' && cfg.adapter!='petclinic'
      results.add([tool:module.id,stage:module.stage,exitCode:code,status:code==0?'success':warning?'warn':'failed',platform:module.platform ?: false])
      if(code!=0 && !warning) catchError(buildResult:'FAILURE',stageResult:'FAILURE') { error('Security module '+module.id+' failed; report archived; exit '+code) }
      if(warning) echo('AUDIT finding retained: '+module.id)
-    } }
+    }
    }
   }
   stage('Security Gate') {
