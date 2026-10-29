@@ -53,7 +53,7 @@ def call(Map cfg=[:]) {
     } }
    }
   }
-  def provenance=securityProvenance(cfg)
+  def provenance=securityProvenance(cfg+[sourceRoot:sourceRoot])
   if(provenance.status!='skipped') results.add(provenance)
   stage('Security Gate') {
    if(mode=='enforce' && cfg.adapter!='petclinic' && results.any{it.status=='not_configured'}) catchError(buildResult:'FAILURE',stageResult:'FAILURE') { error('Enforce requires settings for every selected profile module') }

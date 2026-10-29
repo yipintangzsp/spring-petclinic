@@ -1,10 +1,14 @@
 def call(Map cfg=[:]) {
  String mode=cfg.mode ?: 'enforce'
  if(!(mode in ['off','audit','enforce']))error('Invalid provenance mode')
- def enabled=cfg.enableProvenance == true || params.get('ENABLE_PROVENANCE',false) == true || env.ENABLE_PROVENANCE == 'true'
+ def enabled=params.containsKey('ENABLE_PROVENANCE') ? params.ENABLE_PROVENANCE == true : env.ENABLE_PROVENANCE != null ? env.ENABLE_PROVENANCE == 'true' : cfg.enableProvenance == true
  if(!enabled || mode=='off') return [tool:'provenance',status:'skipped']
+ String sourceRoot=cfg.sourceRoot ?: pwd()
+ def repository
+ def commit
+ withEnv(['PROVENANCE_SOURCE_ROOT='+sourceRoot]) { repository=cfg.repository ?: sh(script:'git -C "$PROVENANCE_SOURCE_ROOT" config --get remote.origin.url',returnStdout:true).trim(); commit=sh(script:'git -C "$PROVENANCE_SOURCE_ROOT" rev-parse HEAD',returnStdout:true).trim() }
  def result=[tool:'provenance',status:'success'];boolean failed=false
- withEnv(['PROVENANCE_CANDIDATE='+(cfg.candidateImage ?: params.get('AUDIT_CANDIDATE_IMAGE','') ?: cfg.image ?: ''),'PROVENANCE_REPOSITORY='+(cfg.repository ?: sh(script:'git config --get remote.origin.url',returnStdout:true).trim())]) {
+ withEnv(['PROVENANCE_CANDIDATE='+(cfg.candidateImage ?: params.get('AUDIT_CANDIDATE_IMAGE','') ?: cfg.image ?: ''),'PROVENANCE_REPOSITORY='+repository,'PROVENANCE_COMMIT='+commit]) {
   for(def action:['generate','create','verify']) {
    stage(['generate':'Generate Provenance','create':'Create Attestation','verify':'Verify Attestation'][action]) {
     if(failed) { echo 'SKIPPED: earlier provenance operation failed' }
