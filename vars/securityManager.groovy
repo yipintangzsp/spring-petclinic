@@ -2,7 +2,7 @@
 def call(Map cfg=[:]) {
  String mode=cfg.mode ?: 'enforce'; String profile=cfg.profile ?: 'java-web'
  if (!(mode in ['off','audit','enforce'])) error('Invalid security mode')
- def profiles=new groovy.json.JsonSlurperClassic().parseText(libraryResource('security-manager/profiles.json'))
+ def profiles=readJSON(text:libraryResource('security-manager/profiles.json'),returnPojo:true)
  if (!profiles.containsKey(profile)) error('Unknown security profile')
  if (cfg.adapter == 'petclinic' && mode != 'enforce') error('PetClinic production adapter remains enforce')
  String sourceRoot=pwd(); String runtimeRoot=sourceRoot
@@ -15,7 +15,7 @@ def call(Map cfg=[:]) {
  def plan=[]
  if(mode=='off') for(String id:profiles[profile]) results.add([tool:id,status:'disabled',reason:'mode=off'])
  if(mode!='off') {
-  if(cfg.adapter=='petclinic') plan=new groovy.json.JsonSlurperClassic().parseText(libraryResource('security-manager/petclinic-adapter.json'))
+  if(cfg.adapter=='petclinic') plan=readJSON(text:libraryResource('security-manager/petclinic-adapter.json'),returnPojo:true)
   else for (String id : profiles[profile]) {
    boolean ready=id in ['gitleaks','semgrep'] || (id=='sbom' && cfg.sbomFile) || (id in ['trivy','cosign'] && cfg.image) || (id=='sonarqube' && cfg.sonarProject && cfg.sonarCommand) || (id=='zap' && cfg.readOnlyUrls) || (id=='kubescape' && cfg.yamlPath) || (id=='defectdojo' && cfg.dojoEngagement)
    if(ready) plan.add([id:id,stage:id,command:'node infra/security/manager/tool.mjs '+id,credentials:[]])
@@ -28,7 +28,7 @@ def call(Map cfg=[:]) {
   if(cfg.adapter!='petclinic') {
    sh 'mkdir -p .devsecops/gates'
    withEnv(['MANAGER_SOURCE_ROOT='+sourceRoot]) { writeFile(file:'.git-sha',text:cfg.sourceCommit ?: sh(script:'git -C "$MANAGER_SOURCE_ROOT" rev-parse HEAD',returnStdout:true).trim()) }
-   writeFile(file:'.devsecops/manager-config.json',text:groovy.json.JsonOutput.toJson(cfg+[sourceRoot:sourceRoot,profile:profile,mode:mode,project:cfg.project ?: env.JOB_NAME,build:env.BUILD_NUMBER]))
+   writeJSON(file:'.devsecops/manager-config.json',json:cfg+[sourceRoot:sourceRoot,profile:profile,mode:mode,project:cfg.project ?: env.JOB_NAME,build:env.BUILD_NUMBER])
   }
   if(mode!='off' && cfg.adapter!='petclinic') { sh 'node infra/observability/heavy-lease.mjs acquire'; ownsLease=true }
   for (def module : plan) {
@@ -54,7 +54,7 @@ def call(Map cfg=[:]) {
    }
   }
   stage('Security Gate') {
-   writeFile(file:'.devsecops/security-manager.json',text:groovy.json.JsonOutput.toJson([schema:1,mode:mode,profile:profile,adapter:cfg.adapter ?: 'generic',project:cfg.project ?: env.JOB_NAME,modules:results,optionalScansExecuted:plan.size(),promotionAllowed:cfg.adapter=='petclinic' && mode=='enforce' && !results.any{it.status=='failed'}]))
+   writeJSON(file:'.devsecops/security-manager.json',json:[schema:1,mode:mode,profile:profile,adapter:cfg.adapter ?: 'generic',project:cfg.project ?: env.JOB_NAME,modules:results,optionalScansExecuted:plan.size(),promotionAllowed:cfg.adapter=='petclinic' && mode=='enforce' && !results.any{it.status=='failed'}])
    if(cfg.adapter!='petclinic') {
     writeFile(file:'.security-manager-summary.mjs',text:libraryResource('security-manager/summary.mjs'))
     withEnv(['SECURITY_BUILD_RESULT='+currentBuild.currentResult]) { sh 'node .security-manager-summary.mjs' }
