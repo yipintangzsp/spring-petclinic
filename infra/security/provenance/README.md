@@ -23,6 +23,12 @@ This is a custom image-build predicate, not SLSA certification. The current Jenk
 
 ## Verification status (2026-10-30)
 
-Local contract/cryptographic positive and negative tests: 14 PASS. Both Jenkinsfiles pass the Jenkins native model validator. Actual new image compilation, Harbor attestation and full CI remain pending: available server disk is below the unchanged production reserve; no old Candidate has been relabelled as a real build.
+Local contract/cryptographic positive and negative tests: 14 PASS. Both Jenkinsfiles pass the Jenkins native model validator.
+
+Actual producer `petclinic-candidate-build #2` SUCCESS; full read-only consumer `petclinic-ci #270` SUCCESS, source `9a78cc89f22fa98fb1ffcc43e2ae279299471793`. Candidate: `core.harbor.domain/petclinic/petclinic@sha256:2fbaea65ab030c56c60c62e3ee9fbe362deb8bbbb8216a891ef4c7bbbcea6d55`. The compilation receipt, 81 input-file checksums, both native BuildKit platform provenance entries and immutable index digest were archived. Real signed-envelope checks rejected changed digest, source, builder and tampered payload. Trivy C/H/M/L: 0/0/108/8; existing WARN semantics unchanged. DefectDojo/Kubescape and original Grafana metrics remained available.
+
+The existing overview adds an independent Image Build Provenance / Attestation panel. `security-summary.json` and Loki record both proof types separately. Production remains digest `489cb821573ff1f98edd846d5949d74bf3391b24e2f1fe5bcfb71c6be0793137`, 3/3 Ready and HTTP 200; GitOps revision unchanged, promotion stages not executed, Lease released and Jenkins quiet=false.
+
+Producer #1 failed before signing: the host had reverted to QEMU 8.2.2 and crashed during amd64 libc6 unpack. The already-verified QEMU 10.2.3 binary was re-registered without restarting VM/K3s/containers; #2 then succeeded. No new boot service was installed; recheck binfmt after future reboot. This is a host prerequisite, not an exception to any security gate.
 
 References: https://docs.docker.com/build/metadata/attestations/slsa-provenance/ and https://slsa.dev/spec/v1.0/provenance
