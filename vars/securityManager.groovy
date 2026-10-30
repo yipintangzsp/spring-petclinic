@@ -5,6 +5,15 @@ def call(Map cfg=[:]) {
  def profiles=readJSON(text:libraryResource('security-manager/profiles.json'),returnPojo:true)
  if (!profiles.containsKey(profile)) error('Unknown security profile')
  if (cfg.adapter == 'petclinic' && mode != 'enforce') error('PetClinic production adapter remains enforce')
+ // Switches only select optional generic modules; frozen production adapter cannot be weakened.
+ def known=['gitleaks','semgrep','sonarqube','sbom','trivy','cosign','kubescape','zap','defectdojo','provenance','build-provenance']
+ if(cfg.disabledModules!=null && !(cfg.disabledModules instanceof List)) error('disabledModules must be a list')
+ if(cfg.moduleEnabled!=null && !(cfg.moduleEnabled instanceof Map)) error('moduleEnabled must be a boolean map')
+ def disabled=cfg.disabledModules ?: [];def switches=cfg.moduleEnabled ?: [:]
+ if(disabled.any{!(it in known)} || switches.any{k,v -> !(k in known) || !(v instanceof Boolean)}) error('Unknown module or nonboolean module switch')
+ def isDisabled={ id -> id in disabled || switches[id]==false }
+ if(cfg.adapter=='petclinic' && known.any{isDisabled(it)}) error('Frozen PetClinic adapter does not permit disabling gates')
+ def skipped={id -> [tool:id,status:'skipped',displayStatus:'SKIPPED',reason:'DISABLED',enabled:false]}
  String sourceRoot=pwd(); String runtimeRoot=sourceRoot
  if(cfg.sourceCommit && !(cfg.sourceCommit ==~ /[a-f0-9]{40}/)) error('Fixed project source commit required')
  def results=[]
@@ -17,7 +26,8 @@ def call(Map cfg=[:]) {
  if(mode!='off') {
   if(cfg.adapter=='petclinic') plan=readJSON(text:libraryResource('security-manager/petclinic-adapter.json'),returnPojo:true)
   else for (String id : profiles[profile]) {
-   boolean ready=id in ['gitleaks','semgrep'] || (id=='sbom' && cfg.sbomFile) || (id in ['trivy','cosign'] && cfg.image) || (id=='sonarqube' && cfg.sonarProject && cfg.sonarCommand) || (id=='zap' && cfg.readOnlyUrls) || (id=='kubescape' && cfg.yamlPath) || (id=='defectdojo' && cfg.dojoEngagement)
+   if(isDisabled(id)) { results.add(skipped(id));continue }
+   boolean ready=id in ['gitleaks','semgrep'] || (id=='sbom' && cfg.sbomFile) || (id=='trivy' && cfg.image) || (id=='cosign' && cfg.image && cfg.cosignPublicKey) || (id=='sonarqube' && cfg.sonarProject && cfg.sonarCommand) || (id=='zap' && cfg.readOnlyUrls) || (id=='kubescape' && cfg.yamlPath) || (id=='defectdojo' && cfg.dojoEngagement)
    if(ready) plan.add([id:id,stage:id,command:'node infra/security/manager/tool.mjs '+id,credentials:[]])
    else results.add([tool:id,status:'not_configured',reason:'Required project target/credential settings absent; no fabricated result'])
   }
@@ -53,10 +63,10 @@ def call(Map cfg=[:]) {
     } }
    }
   }
-  def provenance=securityProvenance(cfg+[sourceRoot:sourceRoot])
-  if(provenance.status!='skipped') results.add(provenance)
-  def buildProvenance=securityBuildProvenance((cfg.buildProvenance ?: [:])+[mode:mode])
-  if(buildProvenance.status!='skipped') results.add(buildProvenance)
+  if(mode!='off' && isDisabled('provenance')) results.add(skipped('provenance'))
+  else { def provenance=securityProvenance(cfg+[sourceRoot:sourceRoot]);if(provenance.status!='skipped') results.add(provenance) }
+  if(mode!='off' && isDisabled('build-provenance')) results.add(skipped('build-provenance'))
+  else { def buildProvenance=securityBuildProvenance((cfg.buildProvenance ?: [:])+[mode:mode]);if(buildProvenance.status!='skipped') results.add(buildProvenance) }
   stage('Security Gate') {
    if(mode=='enforce' && cfg.adapter!='petclinic' && results.any{it.status=='not_configured'}) catchError(buildResult:'FAILURE',stageResult:'FAILURE') { error('Enforce requires settings for every selected profile module') }
    writeJSON(file:'.devsecops/security-manager.json',json:[schema:1,mode:mode,profile:profile,adapter:cfg.adapter ?: 'generic',project:cfg.project ?: env.JOB_NAME,modules:results,optionalScansExecuted:plan.size(),promotionAllowed:cfg.adapter=='petclinic' && mode=='enforce' && !results.any{it.status=='failed'}])
