@@ -1,6 +1,8 @@
 pipeline {
 agent any
-parameters { booleanParam(name: 'ENABLE_PROVENANCE', defaultValue: false, description: 'Optional candidate validation attestation; no deployment')
+parameters { booleanParam(name:'ENABLE_IMAGE_BUILD_PROVENANCE',defaultValue:false,description:'Verify actual build attestation; requires fixed expected build identity')
+string(name:'BUILD_PROVENANCE_EXPECTATION',defaultValue:'',description:'JSON: commit, repository, builder, buildNumber of the actual candidate build')
+booleanParam(name: 'ENABLE_PROVENANCE', defaultValue: false, description: 'Optional candidate validation attestation; no deployment')
 choice(name: 'PROMOTION_ACTION', choices: ['audit-only','dry-run','deploy'], description: 'Default does not approve or deploy; deploy requires a successful signed approval.')
 string(name: 'AUDIT_CANDIDATE_IMAGE', defaultValue: '', description: 'Optional fixed Harbor PetClinic SHA256 digest; empty audits live image. Never deploys.') }
 options { disableConcurrentBuilds(); timeout(time: 45, unit: 'MINUTES') }
@@ -28,7 +30,7 @@ cat .devsecops/gates/Snapshot-Before.log
 gate Snapshot-Before enforce "$rc" "Snapshot Before"
 ''' } } } }
 stage('Admission Resources') { steps { sh 'node infra/observability/heavy-lease.mjs acquire' } }
-stage('Security Manager') { steps { script { securityManager(mode: 'enforce', profile: 'java-web', adapter: 'petclinic', project: 'petclinic') } } }
+stage('Security Manager') { steps { script { def expectedBuild=[:];if(params.ENABLE_IMAGE_BUILD_PROVENANCE){ expectedBuild=readJSON(text:params.BUILD_PROVENANCE_EXPECTATION,returnPojo:true);if(expectedBuild.keySet().sort()!=['buildNumber','builder','commit','repository'])error('Explicit build identity required') };securityManager(mode: 'enforce', profile: 'java-web', adapter: 'petclinic', project: 'petclinic', buildProvenance:expectedBuild+[enabled:params.ENABLE_IMAGE_BUILD_PROVENANCE,image:params.AUDIT_CANDIDATE_IMAGE]) } } }
 stage('Read Only Release Verification') { steps { script { catchError(buildResult: 'FAILURE', stageResult: 'FAILURE') { sh '''set -eu
 mkdir -p .devsecops/gates
 set +e

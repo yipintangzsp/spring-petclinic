@@ -1,0 +1,24 @@
+// Produces and attests an artifact only. No Deployment, GitOps or Argo CD operations.
+pipeline {
+ agent any
+ options { disableConcurrentBuilds(); timeout(time:35,unit:'MINUTES') }
+ environment {
+  MAVEN_OPTS='-Xmx256m -XX:ActiveProcessorCount=1'
+  REGISTRY_API='10.0.0.3:30050'
+  HEAVY_HOLDER="candidate-build-${BUILD_NUMBER}"
+ }
+ stages {
+  stage('Source') { steps { script { env.IMAGE_TAG='0.10.0-ci-'+(1000000+env.BUILD_NUMBER.toInteger());env.FULL_IMAGE='127.0.0.1:13050/petclinic/petclinic:'+env.IMAGE_TAG }; sh 'git rev-parse HEAD > .git-sha; mkdir -p .devsecops' } }
+  stage('Admission') { steps { sh 'node infra/observability/release-preflight.mjs .candidate-preflight.json --reserve-security-build-growth; node infra/observability/heavy-lease.mjs acquire' } }
+  stage('Compile Candidate') { steps { sh 'node infra/security/provenance/build-record.mjs package' } }
+  stage('Build Dual Architecture Candidate') { steps { sh 'node infra/runtime/prepare-security-packages.mjs; node infra/security/provenance/build-record.mjs image' } }
+  stage('Preserve Candidate in Harbor') { steps { withCredentials([usernamePassword(credentialsId:'harbor-creds',usernameVariable:'HARBOR_USER',passwordVariable:'HARBOR_PASS')]) { sh 'node infra/observability/publish-artifacts.mjs harbor-copy' } } }
+  stage('Attest Actual Image Build') { steps { script {
+   def p=readJSON(file:'.devsecops/build-provenance.json',returnPojo:true)
+   withEnv(['BUILD_PROVENANCE_IMAGE='+p.candidateImage,'BUILD_SOURCE_COMMIT='+p.source.commit,'BUILD_SOURCE_REPOSITORY='+p.source.repository,'BUILD_BUILDER_IDENTITY='+p.builder.identity,'BUILD_SOURCE_NUMBER='+p.builder.buildNumber]) {
+    withCredentials([file(credentialsId:'platform-signing-age',variable:'SIGNING_AGE_FILE'),usernamePassword(credentialsId:'harbor-creds',usernameVariable:'HARBOR_USER',passwordVariable:'HARBOR_PASS')]) { sh 'node infra/security/provenance/build-attestation.mjs create' }
+   }
+  } } }
+ }
+ post { always { sh 'node infra/observability/heavy-lease.mjs release';archiveArtifacts(artifacts:'.devsecops/**,target/platform/image-build-metadata.json,.candidate-preflight.json',allowEmptyArchive:true) } }
+}
