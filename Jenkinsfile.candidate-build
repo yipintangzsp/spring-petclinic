@@ -9,7 +9,7 @@ pipeline {
  }
  stages {
   stage('Source') { steps { script { env.IMAGE_TAG='0.10.0-ci-'+(1000000+env.BUILD_NUMBER.toInteger());env.FULL_IMAGE='127.0.0.1:13050/petclinic/petclinic:'+env.IMAGE_TAG }; sh 'git rev-parse HEAD > .git-sha; mkdir -p .devsecops' } }
-  stage('Admission') { steps { sh 'node infra/observability/release-preflight.mjs .candidate-preflight.json --reserve-security-build-growth; node infra/observability/heavy-lease.mjs acquire' } }
+  stage('Admission') { steps { sh 'node infra/observability/heavy-lease.mjs acquire; node infra/observability/release-preflight.mjs .candidate-preflight.json --reserve-security-build-growth' } }
   stage('Compile Candidate') { steps { sh 'node infra/security/provenance/build-record.mjs package' } }
   stage('Build Dual Architecture Candidate') { steps { sh 'node infra/runtime/prepare-security-packages.mjs; node infra/security/provenance/build-record.mjs image' } }
   stage('Preserve Candidate in Harbor') { steps { withCredentials([usernamePassword(credentialsId:'harbor-creds',usernameVariable:'HARBOR_USER',passwordVariable:'HARBOR_PASS')]) { sh 'node infra/observability/publish-artifacts.mjs harbor-copy' } } }
