@@ -1,0 +1,26 @@
+// Dedicated non-release job; uses uploaded review bundle, never checks out or modifies production GitOps.
+pipeline {
+    agent any
+    options { disableConcurrentBuilds(); timeout(time: 15, unit: 'MINUTES'); skipDefaultCheckout(true) }
+    parameters {
+        booleanParam(name: 'HELM_ENABLED', defaultValue: false, description: 'Run isolated Helm shadow validation only')
+        choice(name: 'PROMOTION_ACTION', choices: ['audit-only'], description: 'No promotion route in this job')
+    }
+    stages {
+        stage('Review Bundle Identity') { steps { sh 'node infra/helm/verify-review-bundle.mjs' } }
+        stage('HELM_ENABLED=false Compatibility') { steps { script { def h = load 'vars/helmShadow.groovy'; if (!params.HELM_ENABLED) { def result=h.call(phase:'prepare'); if(result.executed || result.status != 'DISABLED') error('Disabled helper performed work') }; sh 'node --test infra/helm/pipeline-contract.test.mjs' } } }
+        stage('Helm Validation Preparation') { when { expression { params.HELM_ENABLED } }
+ steps { script { def h=load 'vars/helmShadow.groovy'; h.call(phase:'prepare') } } }
+        stage('Helm Lint') { when { expression { params.HELM_ENABLED } }
+ steps { script { def h=load 'vars/helmShadow.groovy'; h.call(phase:'lint') } } }
+        stage('Helm Render') { when { expression { params.HELM_ENABLED } }
+ steps { script { def h=load 'vars/helmShadow.groovy'; h.call(phase:'render') } } }
+        stage('Rendered Manifest Validation') { when { expression { params.HELM_ENABLED } }
+ steps { script { def h=load 'vars/helmShadow.groovy'; h.call(phase:'validate') } } }
+        stage('Helm Policy Validation') { when { expression { params.HELM_ENABLED } }
+ steps { script { def h=load 'vars/helmShadow.groovy'; h.call(phase:'policy') } } }
+        stage('GitOps Candidate Validation') { when { expression { params.HELM_ENABLED } }
+ steps { script { def h=load 'vars/helmShadow.groovy'; h.call(phase:'candidate') } } }
+    }
+    post { always { script { if (params.HELM_ENABLED) { archiveArtifacts artifacts: '.helm-shadow/**,.helm-review-manifest.json', allowEmptyArchive: false } else { archiveArtifacts artifacts: '.helm-review-manifest.json', allowEmptyArchive: false } } } }
+}

@@ -1,0 +1,3 @@
+import fs from 'node:fs';
+export function assertNoDirectDeploy(text){const uncommented=text.replace(/^\s*(?:#|\/\/).*$/gm,'');if(/\bhelm\s+(?:upgrade|install|rollback)\b|(?:\$HELM_BIN|"\$HELM_BIN")\s+(?:upgrade|install|rollback)\b|\bkubectl(?:\s+(?:--?[^\s]+|[A-Za-z0-9_.:/=-]+)){0,8}\s+(?:apply|patch|create|delete|replace)\b/.test(uncommented))throw Error('Direct Kubernetes deployment command forbidden');return true;}
+if(process.argv[1]?.endsWith('/direct-deploy-guard.mjs')){const files=process.argv.slice(2);for(const file of files)assertNoDirectDeploy(fs.readFileSync(file,'utf8'));console.log(JSON.stringify({status:'VERIFIED',files,scope:'CI/shadow entrypoints only; frozen scanner diagnostic implementations unchanged'}));}

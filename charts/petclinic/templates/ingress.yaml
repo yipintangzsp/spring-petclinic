@@ -1,0 +1,3 @@
+{{- if .Values.ingress.enabled -}}
+{{ dict "apiVersion" "networking.k8s.io/v1" "kind" "Ingress" "metadata" (dict "name" .Values.name "namespace" .Release.Namespace) "spec" .Values.ingress.spec | toPrettyJson }}
+{{- end }}

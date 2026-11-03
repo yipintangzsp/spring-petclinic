@@ -1,0 +1,39 @@
+{
+  "apiVersion": "argoproj.io/v1alpha1",
+  "kind": "Application",
+  "metadata": {
+    "name": "petclinic-helm-candidate",
+    "namespace": "argocd",
+    "labels": {
+      "petclinic.devops.local/status": "NOT_ACTIVE",
+      "petclinic.devops.local/scope": "VALIDATION_ONLY"
+    }
+  },
+  "spec": {
+    "destination": {
+      "namespace": "petclinic",
+      "server": "https://kubernetes.default.svc"
+    },
+    "project": "default",
+    "source": {
+      "path": "charts/petclinic",
+      "repoURL": "http://gitlab-service.ns-devops.svc.cluster.local/root/petclinic-platform.git",
+      "targetRevision": "main",
+      "helm": {
+        "valueFiles": [
+          "values-prod.yaml"
+        ],
+        "releaseName": "petclinic"
+      }
+    },
+    "syncPolicy": {
+      "automated": {
+        "prune": false,
+        "selfHeal": true
+      },
+      "syncOptions": [
+        "CreateNamespace=false"
+      ]
+    }
+  }
+}

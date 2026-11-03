@@ -1,6 +1,13 @@
 pipeline {
 agent any
-parameters { booleanParam(name:'ENABLE_IMAGE_BUILD_PROVENANCE',defaultValue:false,description:'Verify actual build attestation; requires fixed expected build identity')
+parameters { // HELM_SHADOW_PARAMETERS_BEGIN
+booleanParam(name: 'HELM_ENABLED', defaultValue: false, description: 'Opt-in Helm validation only; never activates production deployment')
+string(name: 'HELM_CHART_PATH', defaultValue: 'charts/petclinic', description: 'Shadow chart path')
+string(name: 'HELM_VALUES_FILE', defaultValue: 'charts/petclinic/values-prod.yaml', description: 'Shadow current-production values')
+string(name: 'HELM_RELEASE_NAME', defaultValue: 'petclinic', description: 'Render release name only')
+string(name: 'HELM_NAMESPACE', defaultValue: 'petclinic', description: 'Render namespace only')
+// HELM_SHADOW_PARAMETERS_END
+booleanParam(name:'ENABLE_IMAGE_BUILD_PROVENANCE',defaultValue:false,description:'Verify actual build attestation; requires fixed expected build identity')
 string(name:'BUILD_PROVENANCE_EXPECTATION',defaultValue:'',description:'JSON: commit, repository, builder, buildNumber of the actual candidate build')
 booleanParam(name: 'ENABLE_PROVENANCE', defaultValue: false, description: 'Optional candidate validation attestation; no deployment')
 choice(name: 'PROMOTION_ACTION', choices: ['audit-only','dry-run','deploy'], description: 'Default does not approve or deploy; deploy requires a successful signed approval.')
@@ -20,6 +27,10 @@ SONAR_SCANNER_JAVA_OPTS = '-Xmx384m -XX:ActiveProcessorCount=1'
 }
 stages {
 stage('Audit Checkout') { steps { script { library identifier: 'platform-security@'+env.GIT_COMMIT, retriever: modernSCM([$class: 'GitSCMSource', remote: 'http'+'://gitlab-service.ns-devops.svc.cluster.local/root/petclinic-platform.git', credentialsId: 'gitlab-creds']) }; sh 'git rev-parse HEAD > .git-sha; rm -rf .devsecops; mkdir -p .devsecops; node infra/security/validate-audit-target.mjs' } }
+// HELM_SHADOW_PRECONDITIONS_BEGIN
+stage('Helm Shadow Preconditions') { when { expression { params.HELM_ENABLED == true } }
+ steps { script { if (params.PROMOTION_ACTION != 'audit-only') error('Helm Phase1 denies promotion') } } }
+// HELM_SHADOW_PRECONDITIONS_END
 stage('Snapshot Before') { steps { script { catchError(buildResult: 'FAILURE', stageResult: 'FAILURE') { sh '''set -eu
 mkdir -p .devsecops/gates
 set +e
@@ -40,6 +51,21 @@ cat .devsecops/gates/Read-Only-Release-Verification.log
 . infra/security/gate.sh
 gate Read-Only-Release-Verification enforce "$rc" "Read Only Release Verification"
 ''' } } } }
+
+// HELM_SHADOW_STAGES_BEGIN
+stage('Helm Validation Preparation') { when { expression { params.HELM_ENABLED == true } }
+ steps { script { helmShadow(phase: 'prepare') } } }
+stage('Helm Lint') { when { expression { params.HELM_ENABLED == true } }
+ steps { script { helmShadow(phase: 'lint') } } }
+stage('Helm Render') { when { expression { params.HELM_ENABLED == true } }
+ steps { script { helmShadow(phase: 'render') } } }
+stage('Rendered Manifest Validation') { when { expression { params.HELM_ENABLED == true } }
+ steps { script { helmShadow(phase: 'validate') } } }
+stage('Helm Policy Validation') { when { expression { params.HELM_ENABLED == true } }
+ steps { script { helmShadow(phase: 'policy') } } }
+stage('GitOps Candidate Validation') { when { expression { params.HELM_ENABLED == true } }
+ steps { script { helmShadow(phase: 'candidate') } } }
+// HELM_SHADOW_STAGES_END
 
 stage('Candidate Approval Evidence') {
  when { expression { params.PROMOTION_ACTION != 'audit-only' && currentBuild.currentResult == 'SUCCESS' } }
@@ -69,6 +95,9 @@ stage('Approved Promotion') {
 
 }
 post { always {
+// HELM_SHADOW_ARCHIVE_BEGIN
+script { if (params.HELM_ENABLED == true) { archiveArtifacts artifacts: '.helm-shadow/**', allowEmptyArchive: true } }
+// HELM_SHADOW_ARCHIVE_END
 catchError(buildResult: 'FAILURE', stageResult: 'FAILURE') { sh 'node infra/security/cleanup.mjs' }
 catchError(buildResult: 'FAILURE', stageResult: 'FAILURE') { sh 'node infra/observability/heavy-lease.mjs release' }
 archiveArtifacts artifacts: '.devsecops/**,target/sonar/**', allowEmptyArchive: true

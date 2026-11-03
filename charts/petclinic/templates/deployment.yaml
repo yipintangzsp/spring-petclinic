@@ -1,0 +1,16 @@
+{{- $v := .Values -}}
+{{- $meta := dict "name" $v.name "namespace" .Release.Namespace -}}
+{{- if $v.deploymentAnnotations }}{{ $_ := set $meta "annotations" $v.deploymentAnnotations }}{{ end -}}
+{{- $podmeta := dict "labels" $v.podLabels -}}
+{{- if $v.podAnnotations }}{{ $_ := set $podmeta "annotations" $v.podAnnotations }}{{ end -}}
+{{- $container := dict "name" "petclinic" "image" (include "petclinic.image" .) "imagePullPolicy" $v.image.pullPolicy "securityContext" $v.securityContext "ports" $v.ports "env" $v.env "volumeMounts" $v.volumeMounts "lifecycle" $v.lifecycle "startupProbe" $v.startupProbe "readinessProbe" $v.readinessProbe "livenessProbe" $v.livenessProbe "resources" $v.resources -}}
+{{- if $v.envFrom }}{{ $_ := set $container "envFrom" $v.envFrom }}{{ end -}}
+{{- $pod := dict "containers" (list $container) "securityContext" $v.podSecurityContext "automountServiceAccountToken" $v.automountServiceAccountToken "terminationGracePeriodSeconds" $v.terminationGracePeriodSeconds "volumes" $v.volumes -}}
+{{- range $key := list "nodeSelector" "tolerations" "topologySpreadConstraints" "affinity" "imagePullSecrets" }}{{- if index $v $key }}{{ $_ := set $pod $key (index $v $key) }}{{ end }}{{ end -}}
+{{- if $v.serviceAccount.name }}{{ $_ := set $pod "serviceAccountName" $v.serviceAccount.name }}{{ end -}}
+{{- $spec := deepCopy $v.deployment -}}
+{{- $_ := set $spec "replicas" $v.replicaCount -}}
+{{- $_ := set $spec "selector" (dict "matchLabels" $v.selector) -}}
+{{- $_ := set $spec "strategy" $v.strategy -}}
+{{- $_ := set $spec "template" (dict "metadata" $podmeta "spec" $pod) -}}
+{{ dict "apiVersion" "apps/v1" "kind" "Deployment" "metadata" $meta "spec" $spec | toPrettyJson }}

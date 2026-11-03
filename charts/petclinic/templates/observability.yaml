@@ -1,0 +1,7 @@
+{{- if .Values.monitoring.enabled -}}
+{{- range $o := (.Files.Get "files/observability.json" | fromJsonArray) }}
+---
+{{- $_ := set $o.metadata "namespace" $.Release.Namespace }}
+{{ $o | toPrettyJson }}
+{{- end }}
+{{- end }}
