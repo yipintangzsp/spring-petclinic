@@ -1,0 +1,98 @@
+[
+  {
+    "command": [
+      "sudo",
+      "-n",
+      "cat",
+      "/etc/systemd/system/docker.service.d/override.conf"
+    ],
+    "exit": 0,
+    "stdout": "[Service]\nExecStartPost=/bin/chmod 666 /var/run/docker.sock\n",
+    "stderr": "",
+    "stdoutSha256": "ab806ac13ce92bcc87c29d57befe985ff826c35db7fffa96b71277c3c740c8b3"
+  },
+  {
+    "command": [
+      "sudo",
+      "-n",
+      "cat",
+      "/etc/systemd/system/docker.service.d/limits.conf"
+    ],
+    "exit": 0,
+    "stdout": "[Service]\n# \u9650\u5236 docker \u53ca\u5176\u6240\u6709\u5b50\u8fdb\u7a0b\uff08\u5bb9\u5668\uff09\u6700\u591a\u4f7f\u7528 6GB \u5185\u5b58\nMemoryMax=6G\nMemoryHigh=5G\n",
+    "stderr": "",
+    "stdoutSha256": "48f794a8f78486485c4d8d20cdd1e0fbaf4b88a210741046e4b8b54b3e785782"
+  },
+  {
+    "command": [
+      "getent",
+      "passwd",
+      "zhang",
+      "gitlab-runner"
+    ],
+    "exit": 0,
+    "stdout": "zhang:x:1000:1000:zhang:/home/zhang:/bin/bash\ngitlab-runner:x:1001:1001:GitLab Runner:/home/gitlab-runner:/bin/bash\n",
+    "stderr": "",
+    "stdoutSha256": "d73c45de09352e470093c83a5bfb7fb55fe6f6ec51d976b31476388dc9f9db76"
+  },
+  {
+    "command": [
+      "getent",
+      "group",
+      "docker"
+    ],
+    "exit": 0,
+    "stdout": "docker:x:988:gitlab-runner,zhang\n",
+    "stderr": "",
+    "stdoutSha256": "caa9e841a6a9e3c70586da4f092903f42da98b59bf4be8aa6aa78e3b4222be84"
+  },
+  {
+    "command": [
+      "sudo",
+      "-n",
+      "systemctl",
+      "show",
+      "docker.socket",
+      "-p",
+      "Requires",
+      "-p",
+      "PartOf",
+      "-p",
+      "BindsTo"
+    ],
+    "exit": 0,
+    "stdout": "Requires=system.slice -.mount sysinit.target\nBindsTo=\nPartOf=\n",
+    "stderr": "",
+    "stdoutSha256": "9f71b41eba8faf4422c6a98723f4212d60e357ae945785f9b5aea9e52ba88d09"
+  },
+  {
+    "command": [
+      "sudo",
+      "-n",
+      "kubectl",
+      "exec",
+      "-n",
+      "ns-devops",
+      "deploy/jenkins",
+      "--",
+      "id"
+    ],
+    "exit": 0,
+    "stdout": "uid=1000(jenkins) gid=1000(jenkins) groups=1000(jenkins)\n",
+    "stderr": "Defaulted container \"jenkins\" out of: jenkins, fix-permissions (init)\n",
+    "stdoutSha256": "14aa9b799546a132ff49c616aa1c2d4ca56342a8ce58f5639f565420bea6a601"
+  },
+  {
+    "command": [
+      "docker",
+      "inspect",
+      "portainer",
+      "--format",
+      "{{.Config.User}} {{json .HostConfig.GroupAdd}} {{json .HostConfig.SecurityOpt}}"
+    ],
+    "exit": 0,
+    "stdout": " null null\n",
+    "stderr": "",
+    "stdoutSha256": "ad180de2c4da187bf120b4c0b17af98799f99ae840d1f73cefa887fb413832ac"
+  }
+]

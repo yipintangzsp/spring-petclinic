@@ -1,0 +1,236 @@
+[
+  {
+    "realPath": "/run/docker.sock",
+    "uid": 0,
+    "gid": 988,
+    "mode": "0o666",
+    "inode": 1405,
+    "ctime": 1793500011.028,
+    "dockerGroup": "docker",
+    "groupExplicitMembers": [
+      "gitlab-runner",
+      "zhang"
+    ]
+  },
+  {
+    "command": [
+      "systemctl",
+      "cat",
+      "docker.socket"
+    ],
+    "exit": 0,
+    "stdout": "# /usr/lib/systemd/system/docker.socket\n[Unit]\nDescription=Docker Socket for the API\n\n[Socket]\n# If /var/run is not implemented as a symlink to /run, you may need to\n# specify ListenStream=/var/run/docker.sock instead.\nListenStream=/run/docker.sock\nSocketMode=0660\nSocketUser=root\nSocketGroup=docker\n\n[Install]\nWantedBy=sockets.target\n",
+    "stderr": ""
+  },
+  {
+    "command": [
+      "systemctl",
+      "show",
+      "docker.socket",
+      "-p",
+      "FragmentPath",
+      "-p",
+      "DropInPaths",
+      "-p",
+      "ActiveState",
+      "-p",
+      "SocketMode",
+      "-p",
+      "SocketUser",
+      "-p",
+      "SocketGroup",
+      "-p",
+      "Listen"
+    ],
+    "exit": 0,
+    "stdout": "SocketUser=root\nSocketGroup=docker\nSocketMode=0660\nListen=/run/docker.sock (Stream)\nActiveState=active\nFragmentPath=/usr/lib/systemd/system/docker.socket\nDropInPaths=\n",
+    "stderr": ""
+  },
+  {
+    "command": [
+      "systemctl",
+      "show",
+      "docker.service",
+      "-p",
+      "FragmentPath",
+      "-p",
+      "DropInPaths",
+      "-p",
+      "ExecStart",
+      "-p",
+      "ExecStartPost",
+      "-p",
+      "ActiveState"
+    ],
+    "exit": 0,
+    "stdout": "ExecStart={ path=/usr/bin/dockerd ; argv[]=/usr/bin/dockerd -H fd:// --containerd=/run/containerd/containerd.sock ; ignore_errors=no ; start_time=[Sun 2026-11-01 10:26:47 CST] ; stop_time=[n/a] ; pid=983 ; code=(null) ; status=0/0 }\nExecStartPost={ path=/bin/chmod ; argv[]=/bin/chmod 666 /var/run/docker.sock ; ignore_errors=no ; start_time=[Sun 2026-11-01 10:26:51 CST] ; stop_time=[Sun 2026-11-01 10:26:51 CST] ; pid=2704 ; code=exited ; status=0 }\nActiveState=active\nFragmentPath=/usr/lib/systemd/system/docker.service\nDropInPaths=/etc/systemd/system/docker.service.d/limits.conf /etc/systemd/system/docker.service.d/override.conf\n",
+    "stderr": ""
+  },
+  {
+    "command": [
+      "sudo",
+      "-n",
+      "rg",
+      "-n",
+      "--no-heading",
+      "docker\\.sock|SocketMode|chmod.*(666|0666)",
+      "/etc/systemd/system",
+      "/etc/tmpfiles.d",
+      "/usr/local/bin",
+      "/usr/local/sbin",
+      "/etc/rc.local",
+      "/etc/cron.d"
+    ],
+    "exit": 2,
+    "stderr": "rg: /etc/rc.local: No such file or directory (os error 2)\n",
+    "matches": [
+      {
+        "file": "/etc/systemd/system/docker.service.d/override.conf",
+        "line": "2",
+        "relevantCommand": "chmod 666 /var/run/docker.sock"
+      }
+    ]
+  },
+  {
+    "command": [
+      "sudo",
+      "-n",
+      "kubectl",
+      "get",
+      "pods",
+      "-A",
+      "-o",
+      "json"
+    ],
+    "exit": 0,
+    "stderr": "",
+    "socketConsumers": [
+      {
+        "namespace": "ns-devops",
+        "name": "jenkins-6955bc6b65-nq8mh",
+        "node": "devops",
+        "sa": "jenkins-admin",
+        "volumes": [
+          {
+            "hostPath": {
+              "path": "/var/run/docker.sock",
+              "type": ""
+            },
+            "name": "docker-sock"
+          }
+        ],
+        "containers": [
+          {
+            "name": "jenkins",
+            "securityContext": null,
+            "mounts": [
+              {
+                "mountPath": "/var/run/docker.sock",
+                "name": "docker-sock"
+              }
+            ],
+            "socketCommands": []
+          },
+          {
+            "name": "fix-permissions",
+            "securityContext": null,
+            "mounts": [],
+            "socketCommands": []
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "command": [
+      "docker",
+      "ps",
+      "-aq"
+    ],
+    "exit": 0,
+    "stderr": "",
+    "containerCount": 13
+  },
+  {
+    "command": [
+      "docker",
+      "inspect",
+      "9054ea3560b1",
+      "3108147db2ed",
+      "3f77088081e8",
+      "304dae775d0e",
+      "a14ad0dc5fe9",
+      "ad9de1a0854e",
+      "89801ecda41b",
+      "cc3efe7be07b",
+      "e59440708107",
+      "ef61c419177c",
+      "c7abe6942396",
+      "2c997f04bab8",
+      "0f8a5b423aa0"
+    ],
+    "exit": 0,
+    "stderr": "",
+    "socketConsumers": [
+      {
+        "name": "/portainer",
+        "id": "ef61c419177c9642a9ccb37016ea6c3473ae2eab96f98cdc79377cb91bc0058f",
+        "running": true,
+        "user": "",
+        "mounts": [
+          {
+            "Type": "bind",
+            "Source": "/var/run/docker.sock",
+            "Destination": "/var/run/docker.sock",
+            "Mode": "rw",
+            "RW": true,
+            "Propagation": "rprivate"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "command": [
+      "sudo",
+      "-n",
+      "ss",
+      "-ltnp"
+    ],
+    "exit": 0,
+    "stderr": "",
+    "dockerListeners": []
+  },
+  {
+    "command": [
+      "sudo",
+      "-n",
+      "ss",
+      "-xapn"
+    ],
+    "exit": 0,
+    "stderr": "",
+    "socketConnections": [
+      "u_str ESTAB  0      0                                                                                       * 13490               * 14373    users:((\"dockerd\",pid=983,fd=2),(\"dockerd\",pid=983,fd=1))                                                      ",
+      "u_str LISTEN 0      4096                                         /var/run/docker/libnetwork/ddbc7679fdb2.sock 13125               * 0        users:((\"dockerd\",pid=983,fd=18))                                                                              ",
+      "u_str LISTEN 0      4096                                                         /var/run/docker/metrics.sock 15446               * 0        users:((\"dockerd\",pid=983,fd=8))                                                                               ",
+      "u_str LISTEN 0      4096                                                                     /run/docker.sock 10896               * 0        users:((\"dockerd\",pid=983,fd=5),(\"systemd\",pid=1,fd=77))                                                       ",
+      "u_str ESTAB  0      0                                                                                       * 12507               * 12508    users:((\"dockerd\",pid=983,fd=11))                                                                              ",
+      "u_str ESTAB  0      0                                                                                       * 13542               * 12500    users:((\"dockerd\",pid=983,fd=9))                                                                               "
+    ]
+  },
+  {
+    "command": [
+      "sudo",
+      "-n",
+      "lsof",
+      "-n",
+      "-a",
+      "-U",
+      "/var/run/docker.sock"
+    ],
+    "exit": 1,
+    "stdout": "",
+    "stderr": ""
+  }
+]
