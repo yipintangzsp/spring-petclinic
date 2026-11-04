@@ -1,0 +1,72 @@
+{
+  "schemaVersion": 1,
+  "baselineId": "helm-shadow-integration-v1",
+  "parentBaselineId": "frozen-baseline-v1",
+  "parentManifestSha256": "dc3b95d577707b9d9137663bd88a8034f5ce75f87a377a3504c83afd941a6f8f",
+  "policyVersion": "baseline-v1",
+  "command": "( node infra/security/ensure-audit-candidate.mjs && node infra/security/audit-trivy.mjs )",
+  "integrationCommits": [
+    "90b4fcaaa2dce362049dc8bac2cfa4ad7e817a1e",
+    "c2338e00e07d5b028b1bb331bbc06885af433ee0"
+  ],
+  "changedSourceFiles": [
+    {
+      "path": "Jenkinsfile.security-audit",
+      "before": "e6e7c1b8f838e42e8bc9b3aa35e731515e2e05feb300bd1833d64aa921c54ed2",
+      "after": "6179859f70c1d6fec2560621ec1ae71dba20514de4ff430d84b7d60a1c319b3c",
+      "reason": "Pinned additive non-release Helm shadow parameters, preconditions, validation and archive blocks only"
+    }
+  ],
+  "sourceHashes": {
+    "infra/security/ensure-audit-candidate.mjs": "2757bf7b3b1a8612481f17542ad045bc1dbf424766e7b3cdbc47b2e3a2d51027",
+    "infra/security/audit-trivy.mjs": "7c36099392e5b90ae5d0d20150e693f2250429c7939fcfd606cf9658c37c5741",
+    "infra/security/audit-target.mjs": "143d62c2ded087aa837084ef38db45cfa646bce644e161bf4d33aa677f5d90da",
+    "infra/security/trivy-medium-policy.mjs": "b46ab32c7e456574c12dbd5b5637fc031f319cbf3345fa87f01007ded32d43bd",
+    "infra/security/trivy-medium-review.json": "c2d65514ad524478a1728b0b020df641e8a59078aa510d3fa4495988dac7dd20",
+    "infra/security/governance/scan-counts.mjs": "4a60c60444c6760c3cb462300330486f811f826b9d5c9fe12faf8326b452fd5f",
+    "infra/observability/scanner-db-refresh.mjs": "6e49e8e3d79264e916f0c3c424181ab6e8d15342fcca24a811e3f78de89f306a",
+    "infra/observability/release-preflight.mjs": "ed7fd6439bba1036937024c98228c61c6e1c088eceb9e12ae3543e946cbaefb7",
+    "infra/observability/publish-artifacts.mjs": "6dac524335127357959174d55ea720c962f0c5e3c1b224bdae4f152cd01d3ffd",
+    "vars/securityManager.groovy": "ae297e7313cbf9bdde9e38acb32a3ee3310c571f2d70e289783c5c1c448811af",
+    "resources/security-manager/petclinic-adapter.json": "b7ffcdcb7466e679ad8739d1d910343b8ccab7217ba24a3d2e3f1f363215fc57",
+    "Jenkinsfile": "c46ac48976d581890592968272ed664e93bf4de9f86beab13c2144d67ef67b9b",
+    "Jenkinsfile.security-audit": "6179859f70c1d6fec2560621ec1ae71dba20514de4ff430d84b7d60a1c319b3c"
+  },
+  "helmSourceHashes": {
+    "Jenkinsfile": "c46ac48976d581890592968272ed664e93bf4de9f86beab13c2144d67ef67b9b",
+    "Jenkinsfile.candidate-build": "728823efbed710a1aae2ad8ca80a9162020e8fa8393fd905981699b3b2cbe2b8",
+    "Jenkinsfile.helm-shadow": "8528b182877b1bbae9d58bab6ef4227865296f5cde50e86ba717a7db92bcdc61",
+    "Jenkinsfile.security-audit": "6179859f70c1d6fec2560621ec1ae71dba20514de4ff430d84b7d60a1c319b3c",
+    "charts/petclinic/.helmignore": "3be9b7a5ae53c21fcae2b576c6e50e797ff32925e0670999bee5a6ccc9ce874b",
+    "charts/petclinic/Chart.yaml": "214a03ea4694d0af78dd21f3575b1249125d05e529ffdd457a39c4baffa737e1",
+    "charts/petclinic/files/observability.json": "cbf7576e36afe4f189ffc0736157229dc4dc1a307c7284e8b760dafdeee4c064",
+    "charts/petclinic/templates/_helpers.tpl": "58e5130046e5282bb80ca1f28e9c570556de21f2efc7c5dada580b576e46c669",
+    "charts/petclinic/templates/configmap.yaml": "51f80d63489c39c2d360671ef3a2d24025ce967def71d94d4832a1bbed4bb172",
+    "charts/petclinic/templates/deployment.yaml": "aaad1b292cd6517a4a136a34a77c9ccb4f08ecba78191b29ef462da39ef95b6a",
+    "charts/petclinic/templates/ingress.yaml": "77c44439010b920f74a60744d84d8bd7077fd5f45bb0fb03692477bb3c69263d",
+    "charts/petclinic/templates/observability.yaml": "055f43e8e61fac24e6012ed7e0e73345033e737b7487aa2e830594b979082d32",
+    "charts/petclinic/templates/pdb.yaml": "0d33524ef5002cf7cb1488f434f14a8550b56f7d90a307f84655219ce3b4c7fb",
+    "charts/petclinic/templates/service.yaml": "9d747dc1384cbed649af144a44085949f945100921f7e9c2f5534436ac8e2d35",
+    "charts/petclinic/values-prod.yaml": "91f1e6f1cb71fa2ccae34a6d992b5815d8cd1c3396dc96bcdbb29893445884b9",
+    "charts/petclinic/values.schema.json": "39c3227bae8b863419e2c0b7cfac39e0c2c225a7433a5c958fe5503e3f88862b",
+    "charts/petclinic/values.yaml": "1aed2a25429e783ccd17afdc9a63c9c355702c5ea6da1ddf3d6bbda72feca2a3",
+    "infra/argocd/petclinic-helm-candidate.yaml": "1b690c21a981ce7dd6ccf9d8f6ca3935fc724d0c7869b16fa2b081c8ec787bfb",
+    "infra/helm/baseline/Jenkinsfile.security-audit.v1.txt": "e6e7c1b8f838e42e8bc9b3aa35e731515e2e05feb300bd1833d64aa921c54ed2",
+    "infra/helm/baseline/current-desired.json": "2868b879162a8311a4d36fcc704b23c1048d5f4541bad43c4e45c9875881ce38",
+    "infra/helm/baseline/identity.json": "a0678589146d9d9c4037c592fb4f07d98ddca13b17c5f052affc72c0e73564c0",
+    "infra/helm/chart.test.mjs": "dd8870a54784fec1f468315aee912d160a9f5147af766c4298de1f1125eb1105",
+    "infra/helm/direct-deploy-guard.mjs": "9c3083fa586cf648017aa883e535598acc396cf9da92bf225eb0c8aebcacab19",
+    "infra/helm/pipeline-contract.test.mjs": "014914f4adfd81beb73b11440add4a20a7bdb962da0b32b27c7df3fe683db1f0",
+    "infra/helm/pipeline.mjs": "db41ab04d600b95ad823ace4d7600d083bff80badc47a40d55e439220b1bd23c",
+    "infra/helm/shadow.mjs": "80573c2e0340f2c655bc8c79617ed984a22a8dcdbcb9d2313cdb1dbc4e3790b1",
+    "infra/helm/tool.mjs": "8b6b9902620aecf1045359f045e4fd6655af2265d6bc807916e85268b1192d01",
+    "infra/helm/tools-lock.json": "95d341fc651d4e43af30804d87164ff2eaf70d160afde0edfa881af43a4679d4",
+    "infra/helm/update-image-digest.mjs": "7f22d30c9e14f626349e1d7cbd7f91f6779727f8a38086cf722c66c1f881ebaf",
+    "infra/helm/verify-review-bundle.mjs": "77799ef1f270e2f04f029e65dbebccec22ea8f31a3f2b1096618c489921bcea4",
+    "infra/security/production-baseline.json": "e17cd584ba5ac715071e3901c5cca2bccf1b596f032df047edd2bf28b062f5dd",
+    "infra/security/promotion/contract.mjs": "109410034fd99c131ed88ae0b9f1b001e52ac3e948396587eed7a3f554d094bc",
+    "vars/helmShadow.groovy": "c392582ead091db82446085c1bc0163af1ab42c0e87f7bdbab9b125daf698bec"
+  },
+  "productionActivation": false,
+  "rollback": "Restore byte-exact frozen-v1 adapter and original matching Jenkinsfile source in a separate local revision; do not weaken source checks or alter production."
+}
