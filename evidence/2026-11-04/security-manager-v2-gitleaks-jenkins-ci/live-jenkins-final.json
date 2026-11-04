@@ -1,0 +1,689 @@
+{
+  "collectedAt": "2026-11-04T16:48:51+08:00",
+  "jobs": [
+    {
+      "job": "petclinic-ci",
+      "disabled": false,
+      "building": false,
+      "definitionClass": "org.jenkinsci.plugins.workflow.cps.CpsScmFlowDefinition",
+      "scriptSha256": null,
+      "scriptPath": "Jenkinsfile.security-audit",
+      "scmBranches": [
+        "9a78cc89f22fa98fb1ffcc43e2ae279299471793"
+      ],
+      "stages": [],
+      "latestBuild": 270,
+      "result": "SUCCESS",
+      "timestamp": 1793330238417,
+      "artifactCount": 74,
+      "summarySha256": "ec9ee51a06d4b9f61c6c0eaf50b374d1e25e6d3ca687908b7596d3a2c794f5d8",
+      "summary": {
+        "interpreter_counts": {
+          "external_controllable": 0,
+          "fixed_trusted": 7,
+          "dynamic_controlled": 0,
+          "unknown": 35
+        },
+        "zap_auth_public_observations": 16,
+        "defectdojo_url": "http://192.168.64.11:18095",
+        "build_provenance_status": "success",
+        "zap_findings": 3,
+        "defectdojo_duplicates": 5209,
+        "trivy_critical": 0,
+        "kyverno_scope": {
+          "productionExpansion": true,
+          "remainingWarn": "Missing nonroot/readonly/resources, legacy tags outside scanner namespace; other namespaces remain inventory WARN",
+          "registryAllowlist": "Reviewed namespace-specific repository prefixes enforced",
+          "enforcedNamespaces": [
+            "devsecops-execution",
+            "petclinic",
+            "devsecops-system",
+            "monitoring",
+            "sonarqube"
+          ],
+          "exceptions": [
+            {
+              "owner": {
+                "uid": "c33ae390-de88-4fc2-bce4-b19c5b828a9c",
+                "controller": true,
+                "apiVersion": "apps/v1",
+                "kind": "DaemonSet",
+                "name": "platform-falco",
+                "blockOwnerDeletion": true
+              },
+              "container": "falco",
+              "image": "127.0.0.1:30050/platform-security/falco@sha256:3c5ccde1c8b50ccc8baf016090a5376d182e08dc8751df2b37d8ff2a13499558",
+              "controls": [
+                "restricted-added-capabilities",
+                "no-host-namespaces",
+                "restricted-hostpath"
+              ],
+              "notes": "Per-expression exception only; other rules still enforced. Owner UID changes require review.",
+              "serviceAccount": "platform-falco",
+              "command": [],
+              "volumeMounts": [
+                {
+                  "mountPath": "/host/run/k3s/containerd",
+                  "name": "container-engine-socket-0",
+                  "readOnly": true
+                },
+                {
+                  "mountPath": "/etc/falco/config.d",
+                  "name": "specialized-falco-configs"
+                },
+                {
+                  "mountPath": "/root/.falco",
+                  "name": "root-falco-fs"
+                },
+                {
+                  "mountPath": "/host/proc",
+                  "name": "proc-fs",
+                  "readOnly": true
+                },
+                {
+                  "mountPath": "/sys/kernel",
+                  "name": "sys-fs",
+                  "readOnly": true
+                },
+                {
+                  "mountPath": "/etc/falco/falco.yaml",
+                  "name": "falco-yaml",
+                  "subPath": "falco.yaml"
+                },
+                {
+                  "mountPath": "/etc/falco/rules.d",
+                  "name": "rules-volume"
+                }
+              ],
+              "args": [
+                "/usr/bin/falco"
+              ],
+              "environment": [
+                {
+                  "name": "HOST_ROOT",
+                  "value": "/host"
+                },
+                {
+                  "name": "FALCO_HOSTNAME",
+                  "valueFrom": {
+                    "fieldRef": {
+                      "apiVersion": "v1",
+                      "fieldPath": "spec.nodeName"
+                    }
+                  }
+                },
+                {
+                  "name": "FALCO_K8S_NODE_NAME",
+                  "valueFrom": {
+                    "fieldRef": {
+                      "apiVersion": "v1",
+                      "fieldPath": "spec.nodeName"
+                    }
+                  }
+                }
+              ],
+              "namespace": "devsecops-system",
+              "volumeSources": [
+                {
+                  "name": "container-engine-socket-0",
+                  "hostPath": {
+                    "path": "/run/k3s/containerd",
+                    "type": ""
+                  }
+                },
+                {
+                  "emptyDir": {},
+                  "name": "specialized-falco-configs"
+                },
+                {
+                  "emptyDir": {},
+                  "name": "root-falco-fs"
+                },
+                {
+                  "name": "sys-fs",
+                  "hostPath": {
+                    "path": "/sys/kernel",
+                    "type": ""
+                  }
+                },
+                {
+                  "name": "proc-fs",
+                  "hostPath": {
+                    "path": "/proc",
+                    "type": ""
+                  }
+                },
+                {
+                  "configMap": {
+                    "defaultMode": 420,
+                    "name": "platform-falco",
+                    "items": [
+                      {
+                        "path": "falco.yaml",
+                        "key": "falco.yaml"
+                      }
+                    ]
+                  },
+                  "name": "falco-yaml"
+                },
+                {
+                  "configMap": {
+                    "defaultMode": 420,
+                    "name": "platform-falco-rules"
+                  },
+                  "name": "rules-volume"
+                }
+              ],
+              "id": "falco"
+            },
+            {
+              "owner": {
+                "uid": "d63a0442-dbc1-4021-9fdf-f374bf67825a",
+                "controller": true,
+                "apiVersion": "apps/v1",
+                "kind": "DaemonSet",
+                "name": "kube-stack-prometheus-node-exporter",
+                "blockOwnerDeletion": true
+              },
+              "container": "node-exporter",
+              "image": "quay.io/prometheus/node-exporter:v1.12.1",
+              "controls": [
+                "no-host-namespaces",
+                "restricted-hostpath"
+              ],
+              "notes": "Per-expression exception only; other rules still enforced. Owner UID changes require review.",
+              "serviceAccount": "kube-stack-prometheus-node-exporter",
+              "command": [],
+              "volumeMounts": [
+                {
+                  "mountPath": "/host/proc",
+                  "name": "proc",
+                  "readOnly": true
+                },
+                {
+                  "mountPath": "/host/sys",
+                  "name": "sys",
+                  "readOnly": true
+                },
+                {
+                  "mountPath": "/host/root",
+                  "mountPropagation": "HostToContainer",
+                  "name": "root",
+                  "readOnly": true
+                }
+              ],
+              "args": [
+                "--path.procfs=/host/proc",
+                "--path.sysfs=/host/sys",
+                "--path.rootfs=/host/root",
+                "--path.udev.data=/host/root/run/udev/data",
+                "--web.listen-address=[$(HOST_IP)]:9100",
+                "--collector.filesystem.mount-points-exclude=^/(dev|proc|sys|run/containerd/.+|var/lib/docker/.+|var/lib/kubelet/.+)($|/)",
+                "--collector.filesystem.fs-types-exclude=^(autofs|binfmt_misc|bpf|cgroup2?|configfs|debugfs|devpts|devtmpfs|fusectl|hugetlbfs|iso9660|mqueue|nsfs|overlay|proc|procfs|pstore|rpc_pipefs|securityfs|selinuxfs|squashfs|sysfs|tracefs|erofs)$"
+              ],
+              "environment": [
+                {
+                  "name": "HOST_IP",
+                  "value": "0.0.0.0"
+                }
+              ],
+              "namespace": "monitoring",
+              "volumeSources": [
+                {
+                  "name": "proc",
+                  "hostPath": {
+                    "path": "/proc",
+                    "type": ""
+                  }
+                },
+                {
+                  "name": "sys",
+                  "hostPath": {
+                    "path": "/sys",
+                    "type": ""
+                  }
+                },
+                {
+                  "name": "root",
+                  "hostPath": {
+                    "path": "/",
+                    "type": ""
+                  }
+                }
+              ],
+              "id": "nodeExporter"
+            },
+            {
+              "owner": {
+                "uid": "12f0c30f-732f-4db1-9efe-6e811ab7d6c4",
+                "controller": true,
+                "apiVersion": "apps/v1",
+                "kind": "StatefulSet",
+                "name": "sonarqube-sonarqube",
+                "blockOwnerDeletion": true
+              },
+              "container": "init-sysctl",
+              "image": "192.168.1.58:30050/platform-cache/sonarqube@sha256:f5593e4a6fe6f3d93e8d4d398b7bb6ba6fb3fe93b0a6b760d5ddaa24b8533cf2",
+              "controls": [
+                "no-privileged-containers",
+                "no-explicit-uid-zero"
+              ],
+              "notes": "Per-expression exception only; other rules still enforced. Owner UID changes require review.",
+              "serviceAccount": "default",
+              "command": [
+                "/bin/bash",
+                "-e",
+                "/tmp/scripts/init_sysctl.sh"
+              ],
+              "volumeMounts": [
+                {
+                  "mountPath": "/tmp/scripts/",
+                  "name": "init-sysctl"
+                }
+              ],
+              "args": [],
+              "environment": [
+                {
+                  "name": "SONAR_WEB_CONTEXT",
+                  "value": "/"
+                },
+                {
+                  "name": "SONAR_WEB_JAVAOPTS",
+                  "value": "-Xmx768m -Xms768m -XX:MaxMetaspaceSize=256m"
+                },
+                {
+                  "name": "SONAR_CE_JAVAOPTS"
+                }
+              ],
+              "namespace": "sonarqube",
+              "volumeSources": [
+                {
+                  "configMap": {
+                    "defaultMode": 420,
+                    "name": "sonarqube-sonarqube-init-sysctl",
+                    "items": [
+                      {
+                        "path": "init_sysctl.sh",
+                        "key": "init_sysctl.sh"
+                      }
+                    ]
+                  },
+                  "name": "init-sysctl"
+                }
+              ],
+              "id": "sonarInit"
+            }
+          ]
+        },
+        "sonar_security_hotspots": 0,
+        "project": "petclinic",
+        "defectdojo_mitigated_closed": 95,
+        "source": "9a78cc89f22fa98fb1ffcc43e2ae279299471793",
+        "defectdojo_import_success": 1,
+        "trivy_status": "success",
+        "trivy_medium_governance": {
+          "reviewAfter": "2026-11-28",
+          "counts": {
+            "unreviewed-medium": 108
+          },
+          "blocking": 0,
+          "unique": 54,
+          "reviewExpired": false,
+          "limitations": [
+            "Native process mappings are a bounded observation, not proof of permanent unreachability.",
+            "No destructive exploit test against the running business. No findings suppressed."
+          ]
+        },
+        "interpreter_blocking": 0,
+        "defectdojo_accepted_risk": 0,
+        "securityModules": [
+          {
+            "stage": "Package SBOM",
+            "exitCode": 0,
+            "tool": "sbom",
+            "platform": false,
+            "status": "success"
+          },
+          {
+            "stage": "Regression",
+            "exitCode": 0,
+            "tool": "regression",
+            "platform": true,
+            "status": "success"
+          },
+          {
+            "stage": "Falco Baseline",
+            "exitCode": 0,
+            "tool": "falco-baseline",
+            "platform": true,
+            "status": "success"
+          },
+          {
+            "stage": "Kyverno",
+            "exitCode": 0,
+            "tool": "kyverno",
+            "platform": true,
+            "status": "success"
+          },
+          {
+            "stage": "Kubescape Audit",
+            "exitCode": 0,
+            "tool": "kubescape",
+            "platform": false,
+            "status": "success"
+          },
+          {
+            "stage": "Secret Source",
+            "exitCode": 0,
+            "tool": "gitleaks",
+            "platform": false,
+            "status": "success"
+          },
+          {
+            "stage": "Semgrep",
+            "exitCode": 0,
+            "tool": "semgrep",
+            "platform": false,
+            "status": "success"
+          },
+          {
+            "stage": "Encrypted Credentials",
+            "exitCode": 0,
+            "tool": "sops",
+            "platform": true,
+            "status": "success"
+          },
+          {
+            "stage": "Trivy",
+            "exitCode": 0,
+            "tool": "trivy",
+            "platform": false,
+            "status": "success"
+          },
+          {
+            "stage": "Cosign Admission",
+            "exitCode": 0,
+            "tool": "cosign",
+            "platform": false,
+            "status": "success"
+          },
+          {
+            "stage": "SonarQube",
+            "exitCode": 0,
+            "tool": "sonarqube",
+            "platform": false,
+            "status": "success"
+          },
+          {
+            "stage": "ZAP Passive",
+            "exitCode": 0,
+            "tool": "zap",
+            "platform": false,
+            "status": "success"
+          },
+          {
+            "stage": "Falco Final",
+            "exitCode": 0,
+            "tool": "falco-final",
+            "platform": true,
+            "status": "success"
+          },
+          {
+            "stage": "DefectDojo Governance",
+            "exitCode": 0,
+            "tool": "defectdojo",
+            "platform": false,
+            "status": "success"
+          },
+          {
+            "mode": "enforce",
+            "build": 270,
+            "tool": "provenance",
+            "status": "success"
+          },
+          {
+            "mode": "enforce",
+            "build": 270,
+            "tool": "build-provenance",
+            "status": "success"
+          }
+        ],
+        "defectdojo_total_findings": 6625,
+        "defectdojo_status": "success",
+        "command_audit_counts": {
+          "safe": 11,
+          "dangerous": 0,
+          "unknown": 43
+        },
+        "sonar_vulnerabilities": 0,
+        "sonar_status": "queried_current_project",
+        "zap_auth_status": "WARN-production-identity-model-unavailable",
+        "script_command_review": {
+          "external_controllable": 1,
+          "fixed_trusted": 6,
+          "dynamic_controlled": 34,
+          "unknown": 2
+        },
+        "defectdojo_medium": 772,
+        "defectdojo_product": 1,
+        "defectdojo_low": 339,
+        "sbom_status": "success",
+        "securityMode": "enforce",
+        "interpreter_tests": {
+          "external_program_detected": 7,
+          "safe_or_unproven_not_blocked": 7,
+          "executed_commands": 0,
+          "repeat_consistent": true
+        },
+        "trivy_low": 8,
+        "defectdojo_engagement": 1,
+        "defectdojo_critical": 0,
+        "semgrep_status": "success",
+        "sbom_generated": 1,
+        "trivy_high": 0,
+        "auditTargetImage": "core.harbor.domain/petclinic/petclinic@sha256:2fbaea65ab030c56c60c62e3ee9fbe362deb8bbbb8216a891ef4c7bbbcea6d55",
+        "build_attestation_verification": {
+          "temporaryPrivateFilesRemoved": true,
+          "tests": [
+            {
+              "result": "PASS",
+              "case": "correct"
+            },
+            {
+              "result": "REJECTED",
+              "case": "digest"
+            },
+            {
+              "result": "REJECTED",
+              "case": "source"
+            },
+            {
+              "result": "REJECTED",
+              "case": "builder"
+            },
+            {
+              "result": "REJECTED",
+              "case": "tampered"
+            }
+          ],
+          "expected": {
+            "image": "core.harbor.domain/petclinic/petclinic@sha256:2fbaea65ab030c56c60c62e3ee9fbe362deb8bbbb8216a891ef4c7bbbcea6d55",
+            "commit": "9a78cc89f22fa98fb1ffcc43e2ae279299471793",
+            "builder": "http://jenkins.devops.local/job/petclinic-candidate-build",
+            "repository": "http://gitlab-service.ns-devops.svc.cluster.local/root/petclinic-platform.git",
+            "buildNumber": "2"
+          },
+          "candidateImage": "core.harbor.domain/petclinic/petclinic@sha256:2fbaea65ab030c56c60c62e3ee9fbe362deb8bbbb8216a891ef4c7bbbcea6d55",
+          "status": "success"
+        },
+        "sbom_components": 143,
+        "falco_historical_exit": 255,
+        "build_result": "SUCCESS",
+        "kubescape_frameworks": [
+          {
+            "framework": "nsa",
+            "controls": 26,
+            "complianceScore": 59.755867,
+            "scope": "cluster",
+            "resources": 541,
+            "failedControlCount": 17
+          },
+          {
+            "framework": "nsa",
+            "controls": 20,
+            "complianceScore": 95,
+            "scope": "yaml",
+            "resources": 6,
+            "failedControlCount": 1
+          },
+          {
+            "framework": "cis-v1.12.0",
+            "controls": 131,
+            "complianceScore": 47.6659,
+            "scope": "cluster",
+            "resources": 855,
+            "failedControlCount": 29
+          },
+          {
+            "framework": "cis-v1.12.0",
+            "controls": 32,
+            "complianceScore": 78.125,
+            "scope": "yaml",
+            "resources": 1,
+            "failedControlCount": 2
+          }
+        ],
+        "attestation_verification": {
+          "tests": [
+            {
+              "result": "PASS",
+              "case": "correct"
+            },
+            {
+              "result": "REJECTED",
+              "case": "digest"
+            },
+            {
+              "result": "REJECTED",
+              "case": "commit"
+            },
+            {
+              "result": "REJECTED",
+              "case": "tampered"
+            }
+          ],
+          "commit": "9a78cc89f22fa98fb1ffcc43e2ae279299471793",
+          "buildNumber": 270,
+          "candidateImage": "core.harbor.domain/petclinic/petclinic@sha256:2fbaea65ab030c56c60c62e3ee9fbe362deb8bbbb8216a891ef4c7bbbcea6d55",
+          "status": "success"
+        },
+        "trivy_medium": 108,
+        "provenance_status": "success",
+        "kubescape_high_risk_findings": 248,
+        "schema": 1,
+        "runtimeImage": "core.harbor.domain/petclinic/petclinic@sha256:489cb821573ff1f98edd846d5949d74bf3391b24e2f1fe5bcfb71c6be0793137",
+        "kyverno_warning_probes": 0,
+        "cosign_verified": 1,
+        "kubescape_findings": 1258,
+        "targetScope": "candidate",
+        "ssh_command_counts": {
+          "external_controllable": 0,
+          "fixed_trusted": 17,
+          "dynamic_controlled": 14,
+          "unknown": 18
+        },
+        "script_command_tests": {
+          "external_shell_detected": 4,
+          "safe_or_unproven_not_blocked": 5,
+          "executed_commands": 0
+        },
+        "kubescape_scan_success": 1,
+        "zap_unconfirmed_high": 0,
+        "securityProfile": "java-web",
+        "semgrep_warn": 0,
+        "kubescape_failed_controls": 48,
+        "falco_live_checks": [
+          {
+            "at": "2026-10-30T03:25:35.840Z",
+            "fatalDriverLines": 0,
+            "malformedJsonLines": 0,
+            "procFdWarnings": 4,
+            "window": {
+              "candidates": [],
+              "warnings": {},
+              "scope": "Bounded local sensor window; raw commands and sensitive file contents are not included",
+              "start": "2026-10-30T03:25:20.840Z",
+              "end": "2026-10-30T03:25:35.840Z"
+            }
+          }
+        ],
+        "falco_runtime_assessment": {
+          "blocking": [],
+          "criteria": "Point-in-time local Falco gate, not continuous or cloud coverage",
+          "first": {
+            "candidates": [],
+            "warnings": {},
+            "scope": "Bounded local sensor window; raw commands and sensitive file contents are not included",
+            "start": "2026-10-30T03:25:20.840Z",
+            "end": "2026-10-30T03:25:35.840Z"
+          },
+          "status": "success"
+        },
+        "kubescape_status": "success",
+        "missing": [],
+        "command_audit_status": "success",
+        "zap_auth_fixture_cases": 20,
+        "ssh_command_blocking": 0,
+        "cosign_status": "success",
+        "ssh_command_tests": {
+          "external_ssh_detected": 4,
+          "safe_or_unproven_not_blocked": 7,
+          "executed_commands": 0
+        },
+        "gitleaks_raw": 95,
+        "zap_confirmed_high": 0,
+        "kyverno_enforced_cases": 35,
+        "script_command_blocking": 0,
+        "kyverno_status": "success",
+        "defectdojo_high": 210,
+        "interpreter_status": "success",
+        "zap_status": "success",
+        "falco_runtime_blocking": 0,
+        "kubescape_framework_summary": "cluster/nsa: 59.755867% (17/26 controls failed); yaml/nsa: 95% (1/20 controls failed); cluster/cis-v1.12.0: 47.6659% (29/131 controls failed); yaml/cis-v1.12.0: 78.125% (2/32 controls failed)",
+        "defectdojo_tests": 10,
+        "kyverno_audit_workloads": 77,
+        "scannerScopes": {
+          "kyverno": "live admission and dry-run",
+          "trivy": "selected image",
+          "falco": "live runtime",
+          "semgrep": "checked-out source",
+          "zap": "live read-only GET",
+          "kubescape": "live cluster and repository YAML"
+        },
+        "gitleaks_status": "success",
+        "zap_high": 0,
+        "pipeline": "security-audit",
+        "semgrep_findings": 0,
+        "ssh_command_status": "success",
+        "recorded_at": "2026-10-30T03:27:41.202Z",
+        "build": 270,
+        "defectdojo_open_findings": 1321,
+        "falco_status": "success",
+        "defectdojo_false_positives": 95,
+        "gitleaks_findings": 0,
+        "semgrep_blocking": 0,
+        "sonar_security_rating": 1
+      },
+      "resultArtifactPaths": [
+        ".devsecops/security-manager.json",
+        ".devsecops/security-summary.json"
+      ],
+      "checkoutRevisions": [
+        "9a78cc89f22fa98fb1ffcc43e2ae279299471793",
+        "e8173b4fa10c96f82ca272a486d9bd4a8b7c1816",
+        "5e301a369a57cb7b492f4ffcd8ae5ea4fa5900f6",
+        "5e7d2002e5081d4914e41d56a46df2bb65c28db3"
+      ]
+    }
+  ]
+}

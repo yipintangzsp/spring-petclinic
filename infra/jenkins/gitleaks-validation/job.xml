@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<flow-definition plugin="workflow-job"><description>OFFLINE CANDIDATE: restricted Agent unavailable; do not enable. No production promotion.</description><keepDependencies>false</keepDependencies><properties/><definition class="org.jenkinsci.plugins.workflow.cps.CpsFlowDefinition" plugin="workflow-cps"><script>// DISABLED job definition. No built-in fallback; no SCM/credentials/publication.
+pipeline {
+ agent none
+ options { skipDefaultCheckout(true); disableConcurrentBuilds(); timeout(time:8, unit:'MINUTES') }
+ parameters {
+  booleanParam(name:'SECURITY_ENABLED', defaultValue:true)
+  choice(name:'GLOBAL_MODE', choices:['audit'])
+  choice(name:'SECURITY_LEVEL', choices:['standard'])
+  choice(name:'PROFILE', choices:['java-web','python-api'])
+  choice(name:'POLICY_VERSION', choices:['baseline-v1'])
+  booleanParam(name:'GITLEAKS_ENABLED', defaultValue:true)
+  choice(name:'VALIDATION_PROJECT', choices:['java-fixture','python-fixture'])
+  string(name:'VALIDATION_RUN_ID', defaultValue:'', description:'Empty derives a bound identity; arbitrary IDs rejected')
+  choice(name:'VALIDATION_CASE', choices:["master-off","plugin-off","clean","secret","missing-capability","runner-error","policy-error"])
+ }
+ stages {
+  stage('Restricted Validation Agent') {
+   agent { label 'gitleaks-validation-restricted' }
+   stages {
+    stage('Prepare Private Workspace') { steps { sh 'umask 077; chmod 700 .; test ! -e ci-evidence; test ! -e ci-request.json' } }
+    stage('Resolve Fixed Parameters') { steps { script {
+     def request=[:]
+     ['SECURITY_ENABLED','GLOBAL_MODE','SECURITY_LEVEL','PROFILE','POLICY_VERSION','GITLEAKS_ENABLED','VALIDATION_PROJECT','VALIDATION_RUN_ID','VALIDATION_CASE'].each { key -&gt; request[key]=params[key] }
+     writeJSON(file:'ci-request.json', json:request)
+    } } }
+    stage('Verify Trusted Release and Execute Manager') { steps {
+     sh '''#!/bin/sh
+set -eu
+umask 077
+/usr/bin/node --input-type=module &lt;&lt;'NODE'
+import fs from 'node:fs';import crypto from 'node:crypto';import {pathToFileURL} from 'node:url';
+const base='/opt/security-manager-v2-validation/releases/gitleaks-ci-v1', expected='e8677d348192d378de0314c4ce5edc102514dbf0ec28c13aa850d510bf514b5a';
+const stat=p=&gt;{const s=fs.lstatSync(p);if(fs.realpathSync(p)!==p||s.uid!==0||(s.mode&amp;0o022))throw Error('untrusted release boundary');return s;};
+for(const p of ['/opt','/opt/security-manager-v2-validation','/opt/security-manager-v2-validation/releases',base])if(!stat(p).isDirectory())throw Error('release directory');
+const read=p=&gt;{if(!stat(p).isFile())throw Error('release file');return fs.readFileSync(p);};
+const hash=b=&gt;crypto.createHash('sha256').update(b).digest('hex');
+const bytes=read(base+'/manifest.json');if(hash(bytes)!==expected)throw Error('pinned manifest changed');
+const manifest=JSON.parse(bytes);
+for(const [p,h]of Object.entries(manifest.files)){if(p.startsWith('/')||p.split('/').some(x=&gt;['..','.',''].includes(x))||hash(read(base+'/'+p))!==h)throw Error('release source changed');}
+const {spawnSync}=await import('node:child_process');
+const result=spawnSync('/usr/bin/node',[base+'/infra/security/manager-v2/ci/entry.mjs'],{stdio:'inherit',env:process.env,timeout:120000});
+if(result.status!==0)throw Error('CI validation failed');
+NODE
+'''
+    } }
+   }
+   post { always { script {
+    try { archiveArtifacts(artifacts:'ci-evidence/**', allowEmptyArchive:false, fingerprint:true) }
+    finally { deleteDir() }
+   } } }
+  }
+ }
+}
+</script><sandbox>true</sandbox></definition><triggers/><disabled>true</disabled></flow-definition>
