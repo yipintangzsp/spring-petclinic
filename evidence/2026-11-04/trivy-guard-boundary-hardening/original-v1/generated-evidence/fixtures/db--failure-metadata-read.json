@@ -1,0 +1,304 @@
+{
+  "input": {
+    "metadata": {
+      "db": {
+        "Version": 2,
+        "UpdatedAt": "2026-10-31T23:00:00Z",
+        "DownloadedAt": "2026-10-31T23:30:00Z",
+        "NextUpdate": "2026-10-31T23:59:00Z"
+      },
+      "java-db": {
+        "Version": 1,
+        "UpdatedAt": "2026-10-31T23:00:00Z",
+        "DownloadedAt": "2026-10-31T23:30:00Z",
+        "NextUpdate": "2026-11-02T00:00:00Z"
+      }
+    },
+    "after": {
+      "db": {
+        "Version": 2,
+        "UpdatedAt": "2026-10-31T23:00:00Z",
+        "DownloadedAt": "2026-10-31T23:30:00Z",
+        "NextUpdate": "2026-11-02T00:00:00Z"
+      },
+      "java-db": {
+        "Version": 1,
+        "UpdatedAt": "2026-10-31T23:00:00Z",
+        "DownloadedAt": "2026-10-31T23:30:00Z",
+        "NextUpdate": "2026-11-02T00:00:00Z"
+      }
+    },
+    "env": {
+      "BUILD_NUMBER": "270",
+      "HEAVY_HOLDER": "fixture-holder",
+      "PACKAGE_HTTPS_PROXY": "http://synthetic-proxy.invalid:1"
+    },
+    "lease": {
+      "spec": {
+        "holderIdentity": "fixture-holder"
+      }
+    },
+    "disk": {
+      "time": "2026-11-01T00:00:00Z",
+      "capacityBytes": 107374182400,
+      "availableBytes": 68719476736
+    },
+    "ps": "sh",
+    "faults": {
+      "metadata-read": "controlled metadata-read failure"
+    },
+    "io": {},
+    "cacheDir": "/home/scanner/.cache/trivy"
+  },
+  "facts": {
+    "schema": 1,
+    "stage": "database-prerequisite",
+    "complete": true,
+    "classification": "CONTROLLED_REPLAY",
+    "execution": {
+      "exitStatus": 1,
+      "diagnostic": "controlled metadata-read failure"
+    },
+    "observations": [
+      {
+        "type": "command",
+        "key": "lease",
+        "occurrence": "lease#1",
+        "kind": "db",
+        "bin": "kubectl",
+        "args": [
+          "--request-timeout=10s",
+          "-n",
+          "data-infra",
+          "get",
+          "lease",
+          "platform-heavy",
+          "-o",
+          "json"
+        ],
+        "timeout": 12000,
+        "ok": true
+      },
+      {
+        "type": "command",
+        "key": "disk",
+        "occurrence": "disk#1",
+        "kind": "db",
+        "bin": "kubectl",
+        "args": [
+          "--request-timeout=10s",
+          "get",
+          "--raw",
+          "/api/v1/nodes/devops/proxy/stats/summary"
+        ],
+        "timeout": 12000,
+        "ok": true
+      },
+      {
+        "type": "command",
+        "key": "ps",
+        "occurrence": "ps#1",
+        "kind": "db",
+        "bin": "kubectl",
+        "args": [
+          "--request-timeout=10s",
+          "-n",
+          "harbor",
+          "exec",
+          "harbor-trivy-0",
+          "-c",
+          "trivy",
+          "--",
+          "ps",
+          "-o",
+          "comm"
+        ],
+        "timeout": 12000,
+        "ok": true
+      },
+      {
+        "type": "io",
+        "key": "mkdtemp"
+      },
+      {
+        "type": "command",
+        "key": "curl-token",
+        "occurrence": "curl-token#1",
+        "route": "proxy",
+        "kind": "db",
+        "bin": "curl",
+        "args": [
+          "-fLsS",
+          "--retry",
+          "1",
+          "--connect-timeout",
+          "8",
+          "--max-time",
+          "20",
+          "--proxy",
+          "http://synthetic-proxy.invalid:1",
+          "https://ghcr.io/token?service=ghcr.io&scope=repository:aquasecurity/trivy-db:pull"
+        ],
+        "timeout": 50000,
+        "ok": true
+      },
+      {
+        "type": "command",
+        "key": "curl-manifest",
+        "occurrence": "curl-manifest#1",
+        "route": "proxy",
+        "kind": "db",
+        "bin": "curl",
+        "args": [
+          "-fLsS",
+          "--retry",
+          "1",
+          "--connect-timeout",
+          "8",
+          "--max-time",
+          "20",
+          "--dump-header",
+          "/tmp/controlled-db-manifest/headers",
+          "--config",
+          "-",
+          "--proxy",
+          "http://synthetic-proxy.invalid:1",
+          "https://ghcr.io/v2/aquasecurity/trivy-db/manifests/2"
+        ],
+        "timeout": 50000,
+        "ok": true
+      },
+      {
+        "type": "io",
+        "key": "read-manifest-headers"
+      },
+      {
+        "type": "io",
+        "key": "rm-manifest-temp"
+      },
+      {
+        "type": "command",
+        "key": "download",
+        "occurrence": "download#1",
+        "kind": "db",
+        "bin": "kubectl",
+        "args": [
+          "--request-timeout=10s",
+          "-n",
+          "harbor",
+          "exec",
+          "harbor-trivy-0",
+          "-c",
+          "trivy",
+          "--",
+          "sh",
+          "-c",
+          "set -eu; umask 077; test ! -e /tmp/petclinic-db-refresh-010101010101010101010101.pid; echo $$ >/tmp/petclinic-db-refresh-010101010101010101010101.pid; exec 'env' 'HTTP_PROXY=' 'HTTPS_PROXY=' 'ALL_PROXY=' 'NO_PROXY=ghcr.nju.edu.cn' 'PETCLINIC_DB_REFRESH_OWNER=010101010101010101010101' 'trivy' 'image' '--download-db-only' '--db-repository' 'ghcr.nju.edu.cn/aquasecurity/trivy-db@sha256:8cf0d78e5e13a9f0d6a378dafa95d5eb23883840e200313dfad5d4e087d9752c' '--cache-dir' '/home/scanner/.cache/trivy' '--timeout' '3m' '--no-progress'"
+        ],
+        "timeout": 210000,
+        "ok": true
+      },
+      {
+        "type": "command",
+        "key": "cleanup-stop",
+        "occurrence": "cleanup-stop#1",
+        "kind": "db",
+        "bin": "kubectl",
+        "args": [
+          "--request-timeout=10s",
+          "-n",
+          "harbor",
+          "exec",
+          "harbor-trivy-0",
+          "-c",
+          "trivy",
+          "--",
+          "sh",
+          "-c",
+          "if [ -f /tmp/petclinic-db-refresh-010101010101010101010101.pid ]; then p=$(cat /tmp/petclinic-db-refresh-010101010101010101010101.pid); if [ -r /proc/$p/environ ] && tr '\\000' '\\n' </proc/$p/environ | grep -Fxq PETCLINIC_DB_REFRESH_OWNER=010101010101010101010101; then kill -TERM \"$p\"; fi; fi"
+        ],
+        "timeout": 12000,
+        "ok": true
+      },
+      {
+        "type": "command",
+        "key": "cleanup-check",
+        "occurrence": "cleanup-check#1",
+        "kind": "db",
+        "bin": "kubectl",
+        "args": [
+          "--request-timeout=10s",
+          "-n",
+          "harbor",
+          "exec",
+          "harbor-trivy-0",
+          "-c",
+          "trivy",
+          "--",
+          "sh",
+          "-c",
+          "if [ -f /tmp/petclinic-db-refresh-010101010101010101010101.pid ]; then p=$(cat /tmp/petclinic-db-refresh-010101010101010101010101.pid); test ! -r /proc/$p/environ || ! tr '\\000' '\\n' </proc/$p/environ | grep -Fxq PETCLINIC_DB_REFRESH_OWNER=010101010101010101010101; fi"
+        ],
+        "timeout": 12000,
+        "ok": true
+      },
+      {
+        "type": "command",
+        "key": "cleanup-pidfile",
+        "occurrence": "cleanup-pidfile#1",
+        "kind": "db",
+        "bin": "kubectl",
+        "args": [
+          "--request-timeout=10s",
+          "-n",
+          "harbor",
+          "exec",
+          "harbor-trivy-0",
+          "-c",
+          "trivy",
+          "--",
+          "rm",
+          "-f",
+          "/tmp/petclinic-db-refresh-010101010101010101010101.pid"
+        ],
+        "timeout": 12000,
+        "ok": true
+      },
+      {
+        "type": "command",
+        "key": "metadata-read",
+        "occurrence": "metadata-read#1",
+        "kind": "db",
+        "bin": "kubectl",
+        "args": [
+          "--request-timeout=10s",
+          "-n",
+          "harbor",
+          "exec",
+          "harbor-trivy-0",
+          "-c",
+          "trivy",
+          "--",
+          "cat",
+          "/home/scanner/.cache/trivy/db/metadata.json"
+        ],
+        "timeout": 12000,
+        "ok": false
+      }
+    ],
+    "metadataBefore": {
+      "db": {
+        "Version": 2,
+        "UpdatedAt": "2026-10-31T23:00:00Z",
+        "DownloadedAt": "2026-10-31T23:30:00Z",
+        "NextUpdate": "2026-10-31T23:59:00Z"
+      },
+      "java-db": {
+        "Version": 1,
+        "UpdatedAt": "2026-10-31T23:00:00Z",
+        "DownloadedAt": "2026-10-31T23:30:00Z",
+        "NextUpdate": "2026-11-02T00:00:00Z"
+      }
+    }
+  }
+}

@@ -1,0 +1,71 @@
+{
+  "receiptVersion": "independent-replay-recovery-v2",
+  "classification": "CONTROLLED_REPLAY_PRODUCTION_LOGIC_COMPATIBILITY_ONLY",
+  "originalEvidenceIntegrity": "FAILED",
+  "historicalChainContinuity": "FAILED",
+  "originalManifestUnmodified": "dc3b95d577707b9d9137663bd88a8034f5ce75f87a377a3504c83afd941a6f8f",
+  "originalAdapterSha256": "b0b6b034228e26ec8c9b4d052202505999ac9e5534f8106713e55eb6a4f167c6",
+  "records": [
+    {
+      "path": "evidence/2026-11-01/trivy-parent/db-differential.json",
+      "expected": "5abbe4c9d8ab11d45c1e47b1945b967a1d8d903450a2e89bbd3e02e6405bbf45",
+      "actual": "a4e17ae4dae862aae9f36cf63d5e892e9bfb67264b917b1febd1c786ddedef7b",
+      "actualAtCloseout": "a4e17ae4dae862aae9f36cf63d5e892e9bfb67264b917b1febd1c786ddedef7b",
+      "newIndependentReplay": "evidence/2026-11-04/trivy-guard-boundary-hardening/original-v1/generated-evidence/db-differential.json",
+      "newReplaySha256": "5abbe4c9d8ab11d45c1e47b1945b967a1d8d903450a2e89bbd3e02e6405bbf45",
+      "versionedReplay": "evidence/2026-11-04/trivy-guard-boundary-hardening/helm-versioned/generated-evidence/db-differential.json",
+      "versionedReplaySha256": "5abbe4c9d8ab11d45c1e47b1945b967a1d8d903450a2e89bbd3e02e6405bbf45",
+      "sampleCount": 41,
+      "oldStandardDecisionsIdentical": true,
+      "rawFactsPreserved": true,
+      "versionedReplayByteIdentical": true
+    },
+    {
+      "path": "evidence/2026-11-01/trivy-parent/differential.json",
+      "expected": "6fa1901129f256f4a4260e8f91b20fb409ae80122df565ef657125c452ba2a8c",
+      "actual": "a4e17ae4dae862aae9f36cf63d5e892e9bfb67264b917b1febd1c786ddedef7b",
+      "actualAtCloseout": "a4e17ae4dae862aae9f36cf63d5e892e9bfb67264b917b1febd1c786ddedef7b",
+      "newIndependentReplay": "evidence/2026-11-04/trivy-guard-boundary-hardening/original-v1/generated-evidence/differential.json",
+      "newReplaySha256": "6fa1901129f256f4a4260e8f91b20fb409ae80122df565ef657125c452ba2a8c",
+      "versionedReplay": "evidence/2026-11-04/trivy-guard-boundary-hardening/helm-versioned/generated-evidence/differential.json",
+      "versionedReplaySha256": "6fa1901129f256f4a4260e8f91b20fb409ae80122df565ef657125c452ba2a8c",
+      "sampleCount": 123,
+      "oldStandardDecisionsIdentical": true,
+      "rawFactsPreserved": true,
+      "versionedReplayByteIdentical": true
+    },
+    {
+      "path": "evidence/2026-11-01/trivy-parent/workflow-differential.json",
+      "expected": "bed4a4d27424eb06d497ec7a663a04b69acf513f8e1162e9074d1b46c11706c8",
+      "actual": "fd5ec53fd118476f70f4393e855f2e2bc486236902c2e57e57a53abc4bb8363d",
+      "actualAtCloseout": "fd5ec53fd118476f70f4393e855f2e2bc486236902c2e57e57a53abc4bb8363d",
+      "newIndependentReplay": "evidence/2026-11-04/trivy-guard-boundary-hardening/original-v1/generated-evidence/workflow-differential.json",
+      "newReplaySha256": "bed4a4d27424eb06d497ec7a663a04b69acf513f8e1162e9074d1b46c11706c8",
+      "versionedReplay": "evidence/2026-11-04/trivy-guard-boundary-hardening/helm-versioned/generated-evidence/workflow-differential.json",
+      "versionedReplaySha256": "bed4a4d27424eb06d497ec7a663a04b69acf513f8e1162e9074d1b46c11706c8",
+      "sampleCount": 20,
+      "oldStandardDecisionsIdentical": true,
+      "rawFactsPreserved": true,
+      "versionedReplayByteIdentical": true
+    }
+  ],
+  "differentialSamples": 184,
+  "replayCommands": [
+    "python3 -B infra/observability/testing/trivy-frozen-replay.py original-v1",
+    "python3 -B infra/observability/testing/trivy-frozen-replay.py helm-versioned"
+  ],
+  "executionReceipts": [
+    "original-v1/execution.json",
+    "helm-versioned/execution.json"
+  ],
+  "writeProtection": "private cloned tree + trusted Node API write interception + before/after protected hashes; NOT an OS sandbox",
+  "permittedUse": "New independently versioned frozen compatibility proof for pinned code and fixtures. No original file replacement.",
+  "excludedClaims": [
+    "historical chain restored",
+    "historical production incident proof",
+    "real Trivy execution",
+    "same-run 16/16",
+    "immutable runtime artifact complete"
+  ],
+  "status": "VERIFIED"
+}

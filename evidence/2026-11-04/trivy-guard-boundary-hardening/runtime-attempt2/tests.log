@@ -1,0 +1,287 @@
+✔ test-only signing signed (1.304083ms)
+✔ test-only signing wrong-key (0.255292ms)
+✔ reject signing foreign/unsigned core.harbor.domain/petclinic/petclinic@sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa (0.195334ms)
+✔ reject signing foreign/unsigned core.harbor.domain/petclinic/signature-fixtures@sha256:448c96bf4c80dd9f73818892140ba329c6bdf127197dfcf28f073e11b03329a9 (0.109584ms)
+✔ reject signing foreign/unsigned core.harbor.domain/petclinic/signature-fixtures@sha256:342d11b9f61fc50edf6e9e1df1cd52bf4140e45d0f7f856077875c92b620cc2f (0.100917ms)
+✔ registry deny release (0.211292ms)
+✔ registry deny delete (0.112458ms)
+✔ registry deny wrongbuild (0.120208ms)
+✔ registry deny admin (0.117625ms)
+✔ no external host (0.141333ms)
+✔ scoped token request (0.310958ms)
+✔ real dry-run namespace boundary (0.237083ms)
+✔ kube side effect rejected create -f - (0.071458ms)
+✔ kube side effect rejected get secrets (0.043833ms)
+✔ kube side effect rejected delete pod x (0.048291ms)
+✔ kube side effect rejected exec prod -- env (0.040917ms)
+✔ no shell escape (0.05775ms)
+✔ default helper return maps to exactly one explicit SKIPPED: provenance (11.857958ms)
+✔ default helper return maps to exactly one explicit SKIPPED: build-provenance (6.96675ms)
+✔ missing helper return is not an invented SKIPPED (0.237417ms)
+✔ helper observation rejects wrong-build (1.720792ms)
+✔ helper observation rejects wrong-source-hash (1.749041ms)
+✔ helper observation rejects unobserved-enabled-branch (1.936875ms)
+✔ helper observation rejects unexpected-return (1.490875ms)
+✔ function envelope requires actual return semantics, never an invented process exit (0.248875ms)
+✔ SOPS production invocation and synthetic guard flag both reject before executing any command (133.61125ms)
+{"sourceId":"sops","status":"AWAITING_APPROVED_ISOLATED_FACTS","build":1}
+✔ isolated transport keeps envelope unchanged (2.689958ms)
+✔ isolated transport rejects wrong nonce (0.264917ms)
+✔ isolated transport rejects live scope (0.295875ms)
+✔ isolated transport rejects negative scenario (0.118792ms)
+✔ isolated transport rejects admin identity (0.121583ms)
+✔ isolated transport rejects wrong cluster (0.106917ms)
+✔ isolated transport rejects unclean guard (0.112375ms)
+✔ isolated transport rejects stale build binding (0.250542ms)
+{"sourceId":"sops","status":"AWAITING_APPROVED_ISOLATED_FACTS","build":1}
+✔ FIFO timeout cleans private channel and request without worker leak (43.587042ms)
+✔ one-shot FIFO delivers exact packet and cleans up (57.49575ms)
+✔ fact envelope binds same payload/command, never adds a decision (3.0885ms)
+✔ missing execution status and unknown/alias/post sources reject (0.327083ms)
+✔ stale binding rejects before owner invocation (0.21975ms)
+✔ tampered facts reject even if envelope digest alone is recalculated (0.258ms)
+✖ real owner claims once and Gate reuses result identity without evaluation (17.066042ms)
+✖ concurrent duplicate rejected before second Engine invocation (16.782292ms)
+✔ second owner/process claim and incomplete owner restart fail closed (0.912792ms)
+✔ success native report without source-specific facts cannot become Gate PASS (2.860666ms)
+✔ shell success is never synthesized into complete scanner parent facts (8.221458ms)
+✖ missing canonical sources cannot produce immutable complete artifact (14.382666ms)
+✔ observed presence preserved: skipped (2.763667ms)
+✔ observed presence preserved: not_configured (1.899625ms)
+✔ observed presence preserved: error (2.215084ms)
+✔ POLICY_ERROR preserved and Gate refuses using it as legacy success (1.789292ms)
+✖ raw source payload is never written in owner capture/receipt files (11.999583ms)
+✔ collector graph has no Policy evaluator or decision classification (0.350416ms)
+✖ Regression result identity is deterministic for equivalent facts and binding in isolated replays (18.665ms)
+✔ Kyverno two-command collection preserves original observations without a decision (0.468333ms)
+✔ Kyverno failed first command cannot be followed by invented admission observations (0.096708ms)
+✔ passive Kyverno observer reads original tools-lock, preserving process exit and bytes (98.72375ms)
+✔ Falco first baseline prerequisite clock is never replaced by later query clocks (104.011416ms)
+✔ clean build root preserves verifier/commit and removes disposable checkout (23.897959ms)
+✔ clean build root rejects altered archive or unsafe manifest before extraction (13.14625ms)
+✖ SBOM original parent capture / positive-native (4593.23975ms)
+✖ SBOM original parent capture / generator-failure (1037.235625ms)
+✖ SBOM original parent capture / jar-maven-byte-mismatch (1594.216041ms)
+✔ SBOM success stdout without original native observations is FACT_CONTRACT_INCOMPLETE (923.493166ms)
+✔ minimal exact validation Pod allowed (1.275458ms)
+✔ side-effect guard rejects production namespace (0.254084ms)
+✔ side-effect guard rejects wrong run (0.087083ms)
+✔ side-effect guard rejects service token (0.112667ms)
+✔ side-effect guard rejects host network (0.186708ms)
+✔ side-effect guard rejects host path (0.089917ms)
+✔ side-effect guard rejects privileged (0.095083ms)
+✔ side-effect guard rejects unapproved image (0.083083ms)
+✔ release/Kubernetes action rejected: apply -f petclinic.yaml (0.236958ms)
+✔ release/Kubernetes action rejected: rollout restart deployment/petclinic (0.116833ms)
+✔ release/Kubernetes action rejected: -n petclinic delete pod petclinic (0.093167ms)
+✔ release/Kubernetes action rejected: get secrets -A (0.079792ms)
+✔ release/Kubernetes action rejected: delete namespace petclinic (0.03725ms)
+✔ release/Kubernetes action rejected: patch deployment petclinic (0.040916ms)
+✔ foreign Pod exec/delete rejected before invoking kubectl (0.097458ms)
+✔ cleanup requires exact UID, rejects replaced Pod (0.124959ms)
+✔ release process rejected: git (0.14475ms)
+✔ release process rejected: argocd (0.043917ms)
+✔ release process rejected: cosign (0.045083ms)
+✔ release process rejected: curl (0.032833ms)
+✔ release process rejected: node (0.033375ms)
+✔ release process rejected: /usr/bin/kubectl (0.04ms)
+✔ guard has no default endpoint or production identity fallback (0.096917ms)
+✔ actual preload fails before forbidden execution: absolute kubectl bypass (107.108583ms)
+✔ actual preload fails before forbidden execution: Git push (100.553458ms)
+✔ actual preload fails before forbidden execution: execFile API bypass (101.033708ms)
+✔ actual preload fails before forbidden execution: external HTTP (95.485167ms)
+✔ fresh Sonar lineage preserves server facts and exact current validation binding (2.5185ms)
+✔ Sonar lineage rejects old report (0.272042ms)
+✔ Sonar lineage rejects old task (0.072041ms)
+✔ Sonar lineage rejects wrong source (0.120667ms)
+✔ Sonar lineage rejects wrong task (0.098333ms)
+✔ Sonar lineage rejects Gate/process drift (0.074083ms)
+✔ natural ERROR is retained, never downgraded (0.081667ms)
+✔ fresh task properties require unique identity fields (0.166667ms)
+✔ Sonar missing credentials blocks without a request or invented skip (1.018667ms)
+✔ Sonar observations use two GETs, preserve facts and never rebind existing analysis (0.6115ms)
+✔ Sonar API denial or analysis mismatch cannot become Policy PASS (0.183917ms)
+✔ actual frozen target queries map only to explicit validation namespace (1.230875ms)
+✔ scanner Pod namespace override retains all source fields and records physical run identity (0.18125ms)
+✔ ZAP boundary rejects production fallback/action: -n petclinic get secret db -o json (0.28125ms)
+✔ ZAP boundary rejects production fallback/action: -n petclinic get service other -o json (0.077542ms)
+✔ ZAP boundary rejects production fallback/action: -n other get service petclinic -o json (0.103ms)
+✔ ZAP boundary rejects production fallback/action: apply -f production.yaml (0.059708ms)
+✔ ZAP boundary rejects production fallback/action: rollout restart deployment/petclinic (0.052042ms)
+✔ ZAP boundary rejects production fallback/action: get secrets -A (0.057209ms)
+✔ unknown/foreign scanner Pod cannot be exec target (0.114791ms)
+✔ UID delete keeps precondition and maps physical namespace (0.201083ms)
+✔ ZAP scanner security contract rejects privileged host (0.12225ms)
+✔ ZAP scanner security contract rejects mounted host data (0.076708ms)
+✔ ZAP scanner security contract rejects unexpected image (0.057625ms)
+✔ ZAP scanner security contract rejects service token (0.064875ms)
+✔ ZAP scanner security contract rejects production namespace (0.091042ms)
+✔ incomplete/unsafe target contract fails closed {"sourceId":"zap","validationRunId":"rf4-20261103-abcdef","namespace":"rf4-20261103-abcdef","build":18,"kubeconfig":"/tmp/runtime-four-credentials-rf4-20261103-abcdef/executor.kubeconfig","server":"https://kubernetes.default.svc","allowedImage":"registry.invalid/scanner@sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa","targetImage":"registry.invalid/app@sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb","targetServiceIP":"10.43.1.2","productionServiceIP":"10.43.3.4","productionDatabaseAllowed":false,"productionTargetAllowed":true} (0.108417ms)
+✔ incomplete/unsafe target contract fails closed {"sourceId":"zap","validationRunId":"rf4-20261103-abcdef","namespace":"rf4-20261103-abcdef","build":18,"kubeconfig":"/tmp/runtime-four-credentials-rf4-20261103-abcdef/executor.kubeconfig","server":"https://kubernetes.default.svc","allowedImage":"registry.invalid/scanner@sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa","targetImage":"registry.invalid/app@sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb","targetServiceIP":"10.43.1.2","productionServiceIP":"10.43.3.4","productionDatabaseAllowed":true,"productionTargetAllowed":false} (0.0445ms)
+✔ incomplete/unsafe target contract fails closed {"sourceId":"zap","validationRunId":"rf4-20261103-abcdef","namespace":"rf4-20261103-abcdef","build":18,"kubeconfig":"/tmp/runtime-four-credentials-rf4-20261103-abcdef/executor.kubeconfig","server":"https://kubernetes.default.svc","allowedImage":"registry.invalid/scanner@sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa","targetImage":"registry.invalid/app@sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb","targetServiceIP":"10.43.3.4","productionServiceIP":"10.43.3.4","productionDatabaseAllowed":false,"productionTargetAllowed":false} (0.0465ms)
+✔ incomplete/unsafe target contract fails closed {"sourceId":"zap","validationRunId":"rf4-20261103-abcdef","namespace":"petclinic","build":18,"kubeconfig":"/tmp/runtime-four-credentials-rf4-20261103-abcdef/executor.kubeconfig","server":"https://kubernetes.default.svc","allowedImage":"registry.invalid/scanner@sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa","targetImage":"registry.invalid/app@sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb","targetServiceIP":"10.43.1.2","productionServiceIP":"10.43.3.4","productionDatabaseAllowed":false,"productionTargetAllowed":false} (0.045541ms)
+✔ incomplete/unsafe target contract fails closed {"sourceId":"zap","validationRunId":"rf4-20261103-abcdef","namespace":"rf4-20261103-abcdef","build":18,"kubeconfig":"/root/.kube/config","server":"https://kubernetes.default.svc","allowedImage":"registry.invalid/scanner@sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa","targetImage":"registry.invalid/app@sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb","targetServiceIP":"10.43.1.2","productionServiceIP":"10.43.3.4","productionDatabaseAllowed":false,"productionTargetAllowed":false} (0.054667ms)
+✔ actual guarded kubectl cleanup accepts already-deleted owned Pod (2906.216417ms)
+✔ actual guarded kubectl cleanup rejects replacement UID (2235.874083ms)
+ℹ tests 123
+ℹ suites 0
+ℹ pass 115
+ℹ fail 8
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 15564.761958
+
+✖ failing tests:
+
+test at infra/security/runtime-facts/runtime-facts.test.mjs:22:1
+✖ real owner claims once and Gate reuses result identity without evaluation (17.066042ms)
+  Error: ENOENT: no such file or directory, open '/private/var/folders/jc/_2vrrrl544v3287_9gs3ngxh0000gn/T/trivy-frozen-guard-replay-oi992bp5/infra/devops-lab/cert-manager/kustomization.yaml'
+      at Object.openSync (node:fs:556:18)
+      at api.<computed> [as openSync] (file:///private/var/folders/jc/_2vrrrl544v3287_9gs3ngxh0000gn/T/trivy-frozen-guard-replay-oi992bp5/infra/observability/testing/frozen-evidence-writes.mjs:48:39)
+      at Object.readFileSync (node:fs:440:35)
+      at regressionEvidence (file:///private/var/folders/jc/_2vrrrl544v3287_9gs3ngxh0000gn/T/trivy-frozen-guard-replay-oi992bp5/infra/security/policy/regression-evidence.mjs:6:99)
+      at evaluate (file:///private/var/folders/jc/_2vrrrl544v3287_9gs3ngxh0000gn/T/trivy-frozen-guard-replay-oi992bp5/infra/security/policy/engine.mjs:81:58)
+      at evaluateAsync (file:///private/var/folders/jc/_2vrrrl544v3287_9gs3ngxh0000gn/T/trivy-frozen-guard-replay-oi992bp5/infra/security/policy/engine.mjs:141:91)
+      at Object.evaluateOnce (file:///private/var/folders/jc/_2vrrrl544v3287_9gs3ngxh0000gn/T/trivy-frozen-guard-replay-oi992bp5/infra/security/summary-v2/owner.mjs:22:33)
+      at Object.accept (file:///private/var/folders/jc/_2vrrrl544v3287_9gs3ngxh0000gn/T/trivy-frozen-guard-replay-oi992bp5/infra/security/runtime-facts/owner.mjs:25:27)
+      at TestContext.<anonymous> (file:///private/var/folders/jc/_2vrrrl544v3287_9gs3ngxh0000gn/T/trivy-frozen-guard-replay-oi992bp5/infra/security/runtime-facts/runtime-facts.test.mjs:23:110)
+      at Test.runInAsyncScope (node:async_hooks:226:14) {
+    errno: -2,
+    code: 'ENOENT',
+    syscall: 'open',
+    path: '/private/var/folders/jc/_2vrrrl544v3287_9gs3ngxh0000gn/T/trivy-frozen-guard-replay-oi992bp5/infra/devops-lab/cert-manager/kustomization.yaml'
+  }
+
+test at infra/security/runtime-facts/runtime-facts.test.mjs:27:1
+✖ concurrent duplicate rejected before second Engine invocation (16.782292ms)
+  Error: ENOENT: no such file or directory, open '/private/var/folders/jc/_2vrrrl544v3287_9gs3ngxh0000gn/T/trivy-frozen-guard-replay-oi992bp5/infra/devops-lab/cert-manager/kustomization.yaml'
+      at Object.openSync (node:fs:556:18)
+      at api.<computed> [as openSync] (file:///private/var/folders/jc/_2vrrrl544v3287_9gs3ngxh0000gn/T/trivy-frozen-guard-replay-oi992bp5/infra/observability/testing/frozen-evidence-writes.mjs:48:39)
+      at Object.readFileSync (node:fs:440:35)
+      at regressionEvidence (file:///private/var/folders/jc/_2vrrrl544v3287_9gs3ngxh0000gn/T/trivy-frozen-guard-replay-oi992bp5/infra/security/policy/regression-evidence.mjs:6:99)
+      at evaluate (file:///private/var/folders/jc/_2vrrrl544v3287_9gs3ngxh0000gn/T/trivy-frozen-guard-replay-oi992bp5/infra/security/policy/engine.mjs:81:58)
+      at evaluateAsync (file:///private/var/folders/jc/_2vrrrl544v3287_9gs3ngxh0000gn/T/trivy-frozen-guard-replay-oi992bp5/infra/security/policy/engine.mjs:141:91)
+      at Object.evaluateOnce (file:///private/var/folders/jc/_2vrrrl544v3287_9gs3ngxh0000gn/T/trivy-frozen-guard-replay-oi992bp5/infra/security/summary-v2/owner.mjs:22:33)
+      at Object.accept (file:///private/var/folders/jc/_2vrrrl544v3287_9gs3ngxh0000gn/T/trivy-frozen-guard-replay-oi992bp5/infra/security/runtime-facts/owner.mjs:25:27)
+      at TestContext.<anonymous> (file:///private/var/folders/jc/_2vrrrl544v3287_9gs3ngxh0000gn/T/trivy-frozen-guard-replay-oi992bp5/infra/security/runtime-facts/runtime-facts.test.mjs:27:173)
+      at Test.runInAsyncScope (node:async_hooks:226:14) {
+    errno: -2,
+    code: 'ENOENT',
+    syscall: 'open',
+    path: '/private/var/folders/jc/_2vrrrl544v3287_9gs3ngxh0000gn/T/trivy-frozen-guard-replay-oi992bp5/infra/devops-lab/cert-manager/kustomization.yaml'
+  }
+
+test at infra/security/runtime-facts/runtime-facts.test.mjs:39:1
+✖ missing canonical sources cannot produce immutable complete artifact (14.382666ms)
+  Error: ENOENT: no such file or directory, open '/private/var/folders/jc/_2vrrrl544v3287_9gs3ngxh0000gn/T/trivy-frozen-guard-replay-oi992bp5/infra/devops-lab/cert-manager/kustomization.yaml'
+      at Object.openSync (node:fs:556:18)
+      at api.<computed> [as openSync] (file:///private/var/folders/jc/_2vrrrl544v3287_9gs3ngxh0000gn/T/trivy-frozen-guard-replay-oi992bp5/infra/observability/testing/frozen-evidence-writes.mjs:48:39)
+      at Object.readFileSync (node:fs:440:35)
+      at regressionEvidence (file:///private/var/folders/jc/_2vrrrl544v3287_9gs3ngxh0000gn/T/trivy-frozen-guard-replay-oi992bp5/infra/security/policy/regression-evidence.mjs:6:99)
+      at evaluate (file:///private/var/folders/jc/_2vrrrl544v3287_9gs3ngxh0000gn/T/trivy-frozen-guard-replay-oi992bp5/infra/security/policy/engine.mjs:81:58)
+      at evaluateAsync (file:///private/var/folders/jc/_2vrrrl544v3287_9gs3ngxh0000gn/T/trivy-frozen-guard-replay-oi992bp5/infra/security/policy/engine.mjs:141:91)
+      at Object.evaluateOnce (file:///private/var/folders/jc/_2vrrrl544v3287_9gs3ngxh0000gn/T/trivy-frozen-guard-replay-oi992bp5/infra/security/summary-v2/owner.mjs:22:33)
+      at Object.accept (file:///private/var/folders/jc/_2vrrrl544v3287_9gs3ngxh0000gn/T/trivy-frozen-guard-replay-oi992bp5/infra/security/runtime-facts/owner.mjs:25:27)
+      at TestContext.<anonymous> (file:///private/var/folders/jc/_2vrrrl544v3287_9gs3ngxh0000gn/T/trivy-frozen-guard-replay-oi992bp5/infra/security/runtime-facts/runtime-facts.test.mjs:39:174)
+      at Test.runInAsyncScope (node:async_hooks:226:14) {
+    errno: -2,
+    code: 'ENOENT',
+    syscall: 'open',
+    path: '/private/var/folders/jc/_2vrrrl544v3287_9gs3ngxh0000gn/T/trivy-frozen-guard-replay-oi992bp5/infra/devops-lab/cert-manager/kustomization.yaml'
+  }
+
+test at infra/security/runtime-facts/runtime-facts.test.mjs:42:1
+✖ raw source payload is never written in owner capture/receipt files (11.999583ms)
+  Error: ENOENT: no such file or directory, open '/private/var/folders/jc/_2vrrrl544v3287_9gs3ngxh0000gn/T/trivy-frozen-guard-replay-oi992bp5/infra/devops-lab/cert-manager/kustomization.yaml'
+      at Object.openSync (node:fs:556:18)
+      at api.<computed> [as openSync] (file:///private/var/folders/jc/_2vrrrl544v3287_9gs3ngxh0000gn/T/trivy-frozen-guard-replay-oi992bp5/infra/observability/testing/frozen-evidence-writes.mjs:48:39)
+      at Object.readFileSync (node:fs:440:35)
+      at regressionEvidence (file:///private/var/folders/jc/_2vrrrl544v3287_9gs3ngxh0000gn/T/trivy-frozen-guard-replay-oi992bp5/infra/security/policy/regression-evidence.mjs:6:99)
+      at evaluate (file:///private/var/folders/jc/_2vrrrl544v3287_9gs3ngxh0000gn/T/trivy-frozen-guard-replay-oi992bp5/infra/security/policy/engine.mjs:81:58)
+      at evaluateAsync (file:///private/var/folders/jc/_2vrrrl544v3287_9gs3ngxh0000gn/T/trivy-frozen-guard-replay-oi992bp5/infra/security/policy/engine.mjs:141:91)
+      at Object.evaluateOnce (file:///private/var/folders/jc/_2vrrrl544v3287_9gs3ngxh0000gn/T/trivy-frozen-guard-replay-oi992bp5/infra/security/summary-v2/owner.mjs:22:33)
+      at Object.accept (file:///private/var/folders/jc/_2vrrrl544v3287_9gs3ngxh0000gn/T/trivy-frozen-guard-replay-oi992bp5/infra/security/runtime-facts/owner.mjs:25:27)
+      at TestContext.<anonymous> (file:///private/var/folders/jc/_2vrrrl544v3287_9gs3ngxh0000gn/T/trivy-frozen-guard-replay-oi992bp5/infra/security/runtime-facts/runtime-facts.test.mjs:42:243)
+      at Test.runInAsyncScope (node:async_hooks:226:14) {
+    errno: -2,
+    code: 'ENOENT',
+    syscall: 'open',
+    path: '/private/var/folders/jc/_2vrrrl544v3287_9gs3ngxh0000gn/T/trivy-frozen-guard-replay-oi992bp5/infra/devops-lab/cert-manager/kustomization.yaml'
+  }
+
+test at infra/security/runtime-facts/runtime-facts.test.mjs:44:1
+✖ Regression result identity is deterministic for equivalent facts and binding in isolated replays (18.665ms)
+  Error: ENOENT: no such file or directory, open '/private/var/folders/jc/_2vrrrl544v3287_9gs3ngxh0000gn/T/trivy-frozen-guard-replay-oi992bp5/infra/devops-lab/cert-manager/kustomization.yaml'
+      at Object.openSync (node:fs:556:18)
+      at api.<computed> [as openSync] (file:///private/var/folders/jc/_2vrrrl544v3287_9gs3ngxh0000gn/T/trivy-frozen-guard-replay-oi992bp5/infra/observability/testing/frozen-evidence-writes.mjs:48:39)
+      at Object.readFileSync (node:fs:440:35)
+      at regressionEvidence (file:///private/var/folders/jc/_2vrrrl544v3287_9gs3ngxh0000gn/T/trivy-frozen-guard-replay-oi992bp5/infra/security/policy/regression-evidence.mjs:6:99)
+      at evaluate (file:///private/var/folders/jc/_2vrrrl544v3287_9gs3ngxh0000gn/T/trivy-frozen-guard-replay-oi992bp5/infra/security/policy/engine.mjs:81:58)
+      at evaluateAsync (file:///private/var/folders/jc/_2vrrrl544v3287_9gs3ngxh0000gn/T/trivy-frozen-guard-replay-oi992bp5/infra/security/policy/engine.mjs:141:91)
+      at Object.evaluateOnce (file:///private/var/folders/jc/_2vrrrl544v3287_9gs3ngxh0000gn/T/trivy-frozen-guard-replay-oi992bp5/infra/security/summary-v2/owner.mjs:22:33)
+      at Object.accept (file:///private/var/folders/jc/_2vrrrl544v3287_9gs3ngxh0000gn/T/trivy-frozen-guard-replay-oi992bp5/infra/security/runtime-facts/owner.mjs:25:27)
+      at TestContext.<anonymous> (file:///private/var/folders/jc/_2vrrrl544v3287_9gs3ngxh0000gn/T/trivy-frozen-guard-replay-oi992bp5/infra/security/runtime-facts/runtime-facts.test.mjs:47:23)
+      at Test.runInAsyncScope (node:async_hooks:226:14) {
+    errno: -2,
+    code: 'ENOENT',
+    syscall: 'open',
+    path: '/private/var/folders/jc/_2vrrrl544v3287_9gs3ngxh0000gn/T/trivy-frozen-guard-replay-oi992bp5/infra/devops-lab/cert-manager/kustomization.yaml'
+  }
+
+test at infra/security/runtime-facts/sbom-capture.test.mjs:16:160
+✖ SBOM original parent capture / positive-native (4593.23975ms)
+  Error: ENOENT: no such file or directory, open '/private/var/folders/jc/_2vrrrl544v3287_9gs3ngxh0000gn/T/trivy-frozen-guard-replay-oi992bp5/pom.xml'
+      at Object.openSync (node:fs:556:18)
+      at api.<computed> [as openSync] (file:///private/var/folders/jc/_2vrrrl544v3287_9gs3ngxh0000gn/T/trivy-frozen-guard-replay-oi992bp5/infra/observability/testing/frozen-evidence-writes.mjs:48:39)
+      at Object.readFileSync (node:fs:440:35)
+      at sbomParent (file:///private/var/folders/jc/_2vrrrl544v3287_9gs3ngxh0000gn/T/trivy-frozen-guard-replay-oi992bp5/infra/security/policy/sbom-parent.mjs:6:64)
+      at evaluate (file:///private/var/folders/jc/_2vrrrl544v3287_9gs3ngxh0000gn/T/trivy-frozen-guard-replay-oi992bp5/infra/security/policy/engine.mjs:100:70)
+      at evaluateAsync (file:///private/var/folders/jc/_2vrrrl544v3287_9gs3ngxh0000gn/T/trivy-frozen-guard-replay-oi992bp5/infra/security/policy/engine.mjs:141:91)
+      at Object.evaluateOnce (file:///private/var/folders/jc/_2vrrrl544v3287_9gs3ngxh0000gn/T/trivy-frozen-guard-replay-oi992bp5/infra/security/summary-v2/owner.mjs:22:33)
+      at Object.accept (file:///private/var/folders/jc/_2vrrrl544v3287_9gs3ngxh0000gn/T/trivy-frozen-guard-replay-oi992bp5/infra/security/runtime-facts/owner.mjs:25:27)
+      at TestContext.<anonymous> (file:///private/var/folders/jc/_2vrrrl544v3287_9gs3ngxh0000gn/T/trivy-frozen-guard-replay-oi992bp5/infra/security/runtime-facts/sbom-capture.test.mjs:21:127)
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5) {
+    errno: -2,
+    code: 'ENOENT',
+    syscall: 'open',
+    path: '/private/var/folders/jc/_2vrrrl544v3287_9gs3ngxh0000gn/T/trivy-frozen-guard-replay-oi992bp5/pom.xml'
+  }
+
+test at infra/security/runtime-facts/sbom-capture.test.mjs:16:160
+✖ SBOM original parent capture / generator-failure (1037.235625ms)
+  Error: ENOENT: no such file or directory, open '/private/var/folders/jc/_2vrrrl544v3287_9gs3ngxh0000gn/T/trivy-frozen-guard-replay-oi992bp5/pom.xml'
+      at Object.openSync (node:fs:556:18)
+      at api.<computed> [as openSync] (file:///private/var/folders/jc/_2vrrrl544v3287_9gs3ngxh0000gn/T/trivy-frozen-guard-replay-oi992bp5/infra/observability/testing/frozen-evidence-writes.mjs:48:39)
+      at Object.readFileSync (node:fs:440:35)
+      at sbomParent (file:///private/var/folders/jc/_2vrrrl544v3287_9gs3ngxh0000gn/T/trivy-frozen-guard-replay-oi992bp5/infra/security/policy/sbom-parent.mjs:6:64)
+      at evaluate (file:///private/var/folders/jc/_2vrrrl544v3287_9gs3ngxh0000gn/T/trivy-frozen-guard-replay-oi992bp5/infra/security/policy/engine.mjs:100:70)
+      at evaluateAsync (file:///private/var/folders/jc/_2vrrrl544v3287_9gs3ngxh0000gn/T/trivy-frozen-guard-replay-oi992bp5/infra/security/policy/engine.mjs:141:91)
+      at Object.evaluateOnce (file:///private/var/folders/jc/_2vrrrl544v3287_9gs3ngxh0000gn/T/trivy-frozen-guard-replay-oi992bp5/infra/security/summary-v2/owner.mjs:22:33)
+      at Object.accept (file:///private/var/folders/jc/_2vrrrl544v3287_9gs3ngxh0000gn/T/trivy-frozen-guard-replay-oi992bp5/infra/security/runtime-facts/owner.mjs:25:27)
+      at TestContext.<anonymous> (file:///private/var/folders/jc/_2vrrrl544v3287_9gs3ngxh0000gn/T/trivy-frozen-guard-replay-oi992bp5/infra/security/runtime-facts/sbom-capture.test.mjs:21:127)
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5) {
+    errno: -2,
+    code: 'ENOENT',
+    syscall: 'open',
+    path: '/private/var/folders/jc/_2vrrrl544v3287_9gs3ngxh0000gn/T/trivy-frozen-guard-replay-oi992bp5/pom.xml'
+  }
+
+test at infra/security/runtime-facts/sbom-capture.test.mjs:16:160
+✖ SBOM original parent capture / jar-maven-byte-mismatch (1594.216041ms)
+  Error: ENOENT: no such file or directory, open '/private/var/folders/jc/_2vrrrl544v3287_9gs3ngxh0000gn/T/trivy-frozen-guard-replay-oi992bp5/pom.xml'
+      at Object.openSync (node:fs:556:18)
+      at api.<computed> [as openSync] (file:///private/var/folders/jc/_2vrrrl544v3287_9gs3ngxh0000gn/T/trivy-frozen-guard-replay-oi992bp5/infra/observability/testing/frozen-evidence-writes.mjs:48:39)
+      at Object.readFileSync (node:fs:440:35)
+      at sbomParent (file:///private/var/folders/jc/_2vrrrl544v3287_9gs3ngxh0000gn/T/trivy-frozen-guard-replay-oi992bp5/infra/security/policy/sbom-parent.mjs:6:64)
+      at evaluate (file:///private/var/folders/jc/_2vrrrl544v3287_9gs3ngxh0000gn/T/trivy-frozen-guard-replay-oi992bp5/infra/security/policy/engine.mjs:100:70)
+      at evaluateAsync (file:///private/var/folders/jc/_2vrrrl544v3287_9gs3ngxh0000gn/T/trivy-frozen-guard-replay-oi992bp5/infra/security/policy/engine.mjs:141:91)
+      at Object.evaluateOnce (file:///private/var/folders/jc/_2vrrrl544v3287_9gs3ngxh0000gn/T/trivy-frozen-guard-replay-oi992bp5/infra/security/summary-v2/owner.mjs:22:33)
+      at Object.accept (file:///private/var/folders/jc/_2vrrrl544v3287_9gs3ngxh0000gn/T/trivy-frozen-guard-replay-oi992bp5/infra/security/runtime-facts/owner.mjs:25:27)
+      at TestContext.<anonymous> (file:///private/var/folders/jc/_2vrrrl544v3287_9gs3ngxh0000gn/T/trivy-frozen-guard-replay-oi992bp5/infra/security/runtime-facts/sbom-capture.test.mjs:21:127)
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5) {
+    errno: -2,
+    code: 'ENOENT',
+    syscall: 'open',
+    path: '/private/var/folders/jc/_2vrrrl544v3287_9gs3ngxh0000gn/T/trivy-frozen-guard-replay-oi992bp5/pom.xml'
+  }

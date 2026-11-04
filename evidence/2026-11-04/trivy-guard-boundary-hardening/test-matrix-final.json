@@ -1,0 +1,376 @@
+{
+  "suites": [
+    {
+      "suite": "original-v1",
+      "command": [
+        "node",
+        "--import",
+        "./infra/observability/testing/frozen-evidence-writes.mjs",
+        "--test",
+        "--test-concurrency=1",
+        "infra/security/policy/trivy-db.test.mjs",
+        "infra/security/policy/trivy-parent.test.mjs",
+        "infra/security/policy/trivy-parent-workflow.test.mjs"
+      ],
+      "platform": "macOS-27.2-arm64-arm-64bit-Mach-O",
+      "exit": 0,
+      "total": 190,
+      "pass": 190,
+      "fail": 0,
+      "skip": 0,
+      "executionReceipt": "original-v1/execution.json",
+      "classification": "CONTROLLED_REPLAY_NO_SCANNER"
+    },
+    {
+      "suite": "helm-versioned",
+      "command": [
+        "node",
+        "--import",
+        "./infra/observability/testing/frozen-evidence-writes.mjs",
+        "--test",
+        "--test-concurrency=1",
+        "infra/security/policy/trivy-db.test.mjs",
+        "infra/security/policy/trivy-parent.test.mjs",
+        "infra/security/policy/trivy-parent-workflow.test.mjs"
+      ],
+      "platform": "macOS-27.2-arm64-arm-64bit-Mach-O",
+      "exit": 0,
+      "total": 190,
+      "pass": 190,
+      "fail": 0,
+      "skip": 0,
+      "executionReceipt": "helm-versioned/execution.json",
+      "classification": "CONTROLLED_REPLAY_NO_SCANNER"
+    },
+    {
+      "suite": "legacy-guard",
+      "command": [
+        "node",
+        "--import",
+        "./infra/observability/testing/frozen-evidence-writes.mjs",
+        "--test",
+        "--test-concurrency=1",
+        "infra/observability/testing/scanner-validation-guard.test.mjs",
+        "infra/observability/testing/scanner-validation-review.test.mjs"
+      ],
+      "platform": "macOS-27.2-arm64-arm-64bit-Mach-O",
+      "exit": 0,
+      "total": 80,
+      "pass": 80,
+      "fail": 0,
+      "skip": 0,
+      "executionReceipt": "legacy-guard/execution.json",
+      "classification": "CONTROLLED_REPLAY_NO_SCANNER"
+    },
+    {
+      "suite": "source-lock",
+      "command": [
+        "node",
+        "--import",
+        "./infra/observability/testing/frozen-evidence-writes.mjs",
+        "--test",
+        "--test-concurrency=1",
+        "infra/security/policy/trivy-source-lock.test.mjs"
+      ],
+      "platform": "macOS-27.2-arm64-arm-64bit-Mach-O",
+      "exit": 0,
+      "total": 54,
+      "pass": 54,
+      "fail": 0,
+      "skip": 0,
+      "executionReceipt": "source-lock/execution.json",
+      "classification": "CONTROLLED_REPLAY_NO_SCANNER"
+    },
+    {
+      "suite": "helm-shadow",
+      "command": [
+        "node",
+        "--import",
+        "./infra/observability/testing/frozen-evidence-writes.mjs",
+        "--test",
+        "--test-concurrency=1",
+        "infra/helm/chart.test.mjs",
+        "infra/helm/pipeline-contract.test.mjs"
+      ],
+      "platform": "macOS-27.2-arm64-arm-64bit-Mach-O",
+      "exit": 0,
+      "total": 43,
+      "pass": 43,
+      "fail": 0,
+      "skip": 0,
+      "executionReceipt": "helm-shadow/execution.json",
+      "classification": "CONTROLLED_REPLAY_NO_SCANNER"
+    },
+    {
+      "suite": "runtime",
+      "command": [
+        "node",
+        "--import",
+        "./infra/observability/testing/frozen-evidence-writes.mjs",
+        "--test",
+        "--test-concurrency=1",
+        "infra/security/runtime-facts/trivy-boundary.test.mjs",
+        "infra/security/runtime-facts/sbom-capture.test.mjs",
+        "infra/security/runtime-facts/isolated-channel.test.mjs",
+        "infra/security/runtime-facts/sbom-build-root.test.mjs",
+        "infra/security/runtime-facts/cosign-boundary.test.mjs",
+        "infra/security/runtime-facts/sonar-readonly-observation.test.mjs",
+        "infra/security/runtime-facts/helper-return.test.mjs",
+        "infra/security/runtime-facts/sonar-execute.test.mjs",
+        "infra/security/runtime-facts/zap-boundary.test.mjs",
+        "infra/security/runtime-facts/side-effect-contract.test.mjs",
+        "infra/security/runtime-facts/runtime-facts.test.mjs"
+      ],
+      "platform": "macOS-27.2-arm64-arm-64bit-Mach-O",
+      "exit": 0,
+      "total": 143,
+      "pass": 143,
+      "fail": 0,
+      "skip": 0,
+      "executionReceipt": "runtime/execution.json",
+      "classification": "CONTROLLED_REPLAY_NO_SCANNER"
+    },
+    {
+      "suite": "regression",
+      "command": [
+        "node",
+        "--import",
+        "./infra/observability/testing/frozen-evidence-writes.mjs",
+        "--test",
+        "--test-concurrency=1",
+        "infra/observability/ensure-sonar-runtime.test.mjs",
+        "infra/observability/gitops-wait.test.mjs",
+        "infra/observability/maven-test.test.mjs",
+        "infra/observability/promote-private.test.mjs",
+        "infra/observability/release-preflight.test.mjs",
+        "infra/observability/rollouts-spec.test.mjs",
+        "infra/observability/scanner-db-refresh.test.mjs",
+        "infra/observability/scanner-queue-reservation.test.mjs",
+        "infra/observability/security-package-cache.test.mjs",
+        "infra/observability/service-readiness.test.mjs",
+        "infra/observability/sonar-resource-slot.test.mjs",
+        "infra/observability/terraform-ci.test.mjs",
+        "infra/observability/terraform-isolation-spec.test.mjs",
+        "infra/observability/terraform-provider-build.test.mjs",
+        "infra/observability/terraform-remote.test.mjs",
+        "infra/observability/terraform-runtime.test.mjs",
+        "infra/observability/verify-rollout.test.mjs",
+        "infra/security/audit-target.test.mjs",
+        "infra/security/cosign-verification.test.mjs",
+        "infra/security/credential-scope.test.mjs",
+        "infra/security/gate-contract.test.mjs",
+        "infra/security/governance.test.mjs",
+        "infra/security/hardening.test.mjs",
+        "infra/security/production-baseline.test.mjs",
+        "infra/security/promotion.test.mjs",
+        "infra/security/rbac-contract.test.mjs",
+        "infra/security/registry-dns.test.mjs",
+        "infra/security/runtime-contract.test.mjs",
+        "infra/security/runtime-event-policy.test.mjs",
+        "infra/security/runtime-health.test.mjs",
+        "infra/security/semgrep-policy.test.mjs",
+        "infra/security/synthetic-credential.test.mjs",
+        "infra/security/test-runtime-preflight.test.mjs",
+        "infra/security/trivy-medium-policy.test.mjs",
+        "infra/security/zap-policy.test.mjs"
+      ],
+      "platform": "macOS-27.2-arm64-arm-64bit-Mach-O",
+      "exit": 0,
+      "total": 147,
+      "pass": 147,
+      "fail": 0,
+      "skip": 0,
+      "executionReceipt": "regression/execution.json",
+      "classification": "CONTROLLED_REPLAY_NO_SCANNER"
+    },
+    {
+      "suite": "policy-core",
+      "command": [
+        "node",
+        "--import",
+        "./infra/observability/testing/frozen-evidence-writes.mjs",
+        "--test",
+        "--test-concurrency=1",
+        "infra/security/policy/engine.test.mjs"
+      ],
+      "platform": "macOS-27.2-arm64-arm-64bit-Mach-O",
+      "exit": 0,
+      "total": 5,
+      "pass": 5,
+      "fail": 0,
+      "skip": 0,
+      "executionReceipt": "policy-core/execution.json",
+      "classification": "CONTROLLED_REPLAY_NO_SCANNER"
+    },
+    {
+      "suite": "contract",
+      "command": [
+        "node",
+        "--import",
+        "./infra/observability/testing/frozen-evidence-writes.mjs",
+        "policy-contract-check.mjs"
+      ],
+      "platform": "macOS-27.2-arm64-arm-64bit-Mach-O",
+      "exit": 0,
+      "total": 10,
+      "pass": 10,
+      "fail": 0,
+      "skip": 0,
+      "executionReceipt": "contract/execution.json",
+      "classification": "CONTROLLED_REPLAY_NO_SCANNER"
+    },
+    {
+      "suite": "guard-darwin",
+      "command": [
+        "node",
+        "--test",
+        "--test-concurrency=1",
+        "infra/observability/testing/scanner-validation-guard.test.mjs",
+        "infra/observability/testing/scanner-validation-review.test.mjs",
+        "infra/observability/testing/scanner-validation-boundary.test.mjs"
+      ],
+      "platform": "macOS-27.2-arm64-arm-64bit-Mach-O",
+      "arch": "arm64",
+      "exit": 0,
+      "environment": {
+        "TMPDIR": "/tmp",
+        "TMP": "/tmp",
+        "TEMP": "/tmp"
+      },
+      "sourceHashes": {
+        "infra/observability/scanner-validation-guard.mjs": "fba88dbd90222a98993a2f580f5beb1c95411756c4ba35875e27e1e393feea61",
+        "infra/observability/scanner-validation-paths.py": "cc8d2f13c76c7ee4c668bbf79fdfd8184140372d4eefb6c669efa36935ebd9dd"
+      },
+      "classification": "CONTROLLED_FIXTURES_NO_TRIVY",
+      "total": 110,
+      "pass": 106,
+      "fail": 0,
+      "skip": 4,
+      "log": "guard-darwin.log"
+    },
+    {
+      "suite": "path-races-darwin",
+      "command": [
+        "python3",
+        "-B",
+        "infra/observability/testing/scanner-validation-path-races.test.py"
+      ],
+      "platform": "macOS-27.2-arm64-arm-64bit-Mach-O",
+      "arch": "arm64",
+      "exit": 0,
+      "environment": {
+        "TMPDIR": "/tmp",
+        "TMP": "/tmp",
+        "TEMP": "/tmp"
+      },
+      "sourceHashes": {
+        "infra/observability/scanner-validation-guard.mjs": "fba88dbd90222a98993a2f580f5beb1c95411756c4ba35875e27e1e393feea61",
+        "infra/observability/scanner-validation-paths.py": "cc8d2f13c76c7ee4c668bbf79fdfd8184140372d4eefb6c669efa36935ebd9dd"
+      },
+      "classification": "CONTROLLED_FIXTURES_NO_TRIVY",
+      "total": 9,
+      "pass": 9,
+      "fail": 0,
+      "skip": 0,
+      "log": "path-races-darwin.log"
+    },
+    {
+      "suite": "evidence-protection-darwin",
+      "command": [
+        "python3",
+        "-B",
+        "infra/observability/testing/frozen-evidence-writes.test.py"
+      ],
+      "platform": "macOS-27.2-arm64-arm-64bit-Mach-O",
+      "arch": "arm64",
+      "exit": 0,
+      "total": 15,
+      "pass": 15,
+      "fail": 0,
+      "skip": 0,
+      "log": "evidence-protection-darwin.log"
+    },
+    {
+      "suite": "guard-linux",
+      "name": "guard-linux",
+      "command": [
+        "node",
+        "--test",
+        "--test-concurrency=1",
+        "infra/observability/testing/scanner-validation-guard.test.mjs",
+        "infra/observability/testing/scanner-validation-review.test.mjs",
+        "infra/observability/testing/scanner-validation-boundary.test.mjs"
+      ],
+      "exit": 0,
+      "sourceTree": "current",
+      "total": 110,
+      "pass": 106,
+      "fail": 0,
+      "skip": 4,
+      "platform": "Linux-7.0.0-38-generic-aarch64-with-glibc2.39",
+      "arch": "aarch64",
+      "uid": 1000
+    },
+    {
+      "suite": "path-races-linux",
+      "name": "path-races-linux",
+      "command": [
+        "python3",
+        "-B",
+        "infra/observability/testing/scanner-validation-path-races.test.py"
+      ],
+      "exit": 0,
+      "sourceTree": "current",
+      "total": 9,
+      "pass": 9,
+      "fail": 0,
+      "skip": 0,
+      "platform": "Linux-7.0.0-38-generic-aarch64-with-glibc2.39",
+      "arch": "aarch64",
+      "uid": 1000
+    },
+    {
+      "suite": "evidence-protection-linux",
+      "name": "evidence-protection-linux",
+      "command": [
+        "python3",
+        "-B",
+        "infra/observability/testing/frozen-evidence-writes.test.py"
+      ],
+      "exit": 0,
+      "sourceTree": "current",
+      "total": 15,
+      "pass": 15,
+      "fail": 0,
+      "skip": 0,
+      "platform": "Linux-7.0.0-38-generic-aarch64-with-glibc2.39",
+      "arch": "aarch64",
+      "uid": 1000
+    },
+    {
+      "suite": "legacy-guard-linux",
+      "name": "legacy-guard-linux",
+      "command": [
+        "node",
+        "--test",
+        "--test-concurrency=1",
+        "infra/observability/testing/scanner-validation-guard.test.mjs",
+        "infra/observability/testing/scanner-validation-review.test.mjs"
+      ],
+      "exit": 0,
+      "sourceTree": "legacy",
+      "total": 80,
+      "pass": 80,
+      "fail": 0,
+      "skip": 0,
+      "platform": "Linux-7.0.0-38-generic-aarch64-with-glibc2.39",
+      "arch": "aarch64",
+      "uid": 1000
+    }
+  ],
+  "countsArePerSuiteNotUniqueCapabilities": true,
+  "skippedAreNotVerified": true,
+  "finalFailures": 0,
+  "priorAttemptFailuresRetained": true,
+  "skipReason": "No verified kernel process/descendant and filesystem execution isolation. Four lifecycle tests skipped per platform."
+}

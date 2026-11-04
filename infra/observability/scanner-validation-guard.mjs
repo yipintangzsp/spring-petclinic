@@ -3,7 +3,8 @@ import fs from 'node:fs';
 import path from 'node:path';
 import os from 'node:os';
 import {createHash, randomBytes} from 'node:crypto';
-import {spawn} from 'node:child_process';
+import {execFileSync} from 'node:child_process';
+import {fileURLToPath} from 'node:url';
 import {scannerRefreshIO,verifyManifest} from './scanner-db-refresh.mjs';
 
 export const GiB = 1024 ** 3;
@@ -57,26 +58,47 @@ export function assessValidationBudget(sample, budget, now = Date.now(), monitor
    cleanupBytes:b.cleanupBytes, otherWriterBytes:b.otherWriterBytes, requiredBytes});
  }
  return {mode:'validation-only', allowed:blockers.length === 0, blockers, domains,
-  productionGuardChanged:false, monitoredPeakIsNotABudget:true};
+  productionGuardChanged:false, monitoredPeakIsNotABudget:true, executionAuthorized:false};
 }
 
 // A hash-bound, reviewed proof is a prerequisite. This loader does not certify its scientific validity.
+const pathHelper=fileURLToPath(new URL('./scanner-validation-paths.py',import.meta.url));
+// Native roots, never HOME/TMPDIR selected by the validation caller.
+const nativeTempRoots=(()=>{
+ const candidates=['/tmp',...(process.platform==='linux'?['/var/tmp']:[])];
+ if(process.platform==='darwin'){
+  try{candidates.push(execFileSync('/usr/bin/getconf',['DARWIN_USER_TEMP_DIR'],{
+   encoding:'utf8',timeout:5000,env:{PATH:'/usr/bin:/bin',LANG:'C'}}).trim());}catch{/* /tmp remains available; never fall back to caller HOME. */}
+ }
+ return candidates.flatMap(p=>{try{return [fs.realpathSync(p)];}catch{return [];}});
+})();
+function pathOperation(request) {
+ let result;
+ try {result=JSON.parse(execFileSync('/usr/bin/python3',['-I',pathHelper],{
+  input:JSON.stringify(request),encoding:'utf8',timeout:5000,maxBuffer:1048576,
+  env:{PATH:'/usr/bin:/bin',LANG:'C',PYTHONDONTWRITEBYTECODE:'1'},stdio:['pipe','pipe','pipe']}));}
+ catch(e){try{result=JSON.parse(e.stdout);}catch{throw Error('UNSUPPORTED_OR_FAILED_DESCRIPTOR_PATH_HELPER');}}
+ if(result?.ok!==true)throw Error('VALIDATION_PATH_REJECTED:'+result?.error);
+ return result.result;
+}
 export function loadValidationBudget(file, expectedSha256) {
  if (!/^[a-f0-9]{64}$/.test(expectedSha256 ?? '')) throw Error('REVIEWED_BUDGET_HASH_REQUIRED');
- const st=fs.lstatSync(file); if (!st.isFile() || st.isSymbolicLink() || st.size > 1024 ** 2) throw Error('INVALID_BUDGET_FILE');
- const bytes=fs.readFileSync(file);if (sha(bytes)!==expectedSha256) throw Error('REVIEWED_BUDGET_HASH_MISMATCH');
- const b=JSON.parse(bytes);return {...b,evidenceSha256:expectedSha256,evidenceIdentity:path.basename(file)};
+ const bytes=pathOperation({operation:'read-budget',file:path.resolve(file)}).text;
+ if(sha(bytes)!==expectedSha256)throw Error('REVIEWED_BUDGET_HASH_MISMATCH');
+ return {...JSON.parse(bytes),evidenceSha256:expectedSha256,evidenceIdentity:path.basename(file)};
 }
 
 export async function boundedSample(sample) {
- let timer;
- try {return await Promise.race([Promise.resolve().then(sample),new Promise((_,reject)=>{
+ let timer;const started=performance.now();
+ try {const result=await Promise.race([Promise.resolve().then(sample),new Promise((_,reject)=>{
   timer=setTimeout(()=>reject(Error('MONITOR_TIMEOUT')),validationLimits.sampleTimeoutMs);
- })]);} finally {clearTimeout(timer);}
+ })]);if(performance.now()-started>validationLimits.sampleTimeoutMs)throw Error('MONITOR_TIMEOUT');return result;
+ } finally {clearTimeout(timer);}
 }
 
 // Reads actual local allocation, never du/apparent-size or a synthetic quota. VM backing
-// domains must additionally be supplied by their real observer; omitted domains block.
+// domains are observational only. This caller-supplied observer cannot authorize
+// execution; the workspace independently inventories its own descriptor-bound paths.
 export function createLocalStorageSampler({domains,readState,readBacking=async()=>[]}) {
  if(!Array.isArray(domains)||!domains.length||typeof readState!=='function')throw Error('EXPLICIT_STORAGE_OBSERVER_REQUIRED');
  return async()=>{
@@ -87,101 +109,85 @@ export function createLocalStorageSampler({domains,readState,readBacking=async()
    const n=x=>{const value=Number(x);if(!Number.isSafeInteger(value))throw Error('UNSAFE_STORAGE_COUNTER');return value;};
    rows.push({id:d.id,identity:'dev:'+s.dev,capacityBytes:n(f.blocks*f.bsize),availableBytes:n(f.bavail*f.bsize),inodesFree:n(f.ffree)});
   }
-  return {...state,at:Date.now(),domains:[...rows,...await readBacking()]};
+  return {...state,at:Date.now(),domains:[...rows,...await readBacking()],observationOnly:true,executionAuthorized:false};
  };
 }
 
+// No cgroup/filesystem sandbox has been implemented or authenticated in the current
+// Darwin/Linux environment. A process group does NOT authorize scanner execution.
+// Fail closed before spawn, rather than return a false process-tree cleanup receipt.
+const workspaces=new WeakSet();
+export function validationCapabilities() {
+ return {platform:process.platform,arch:process.arch,processIsolation:'UNSUPPORTED',
+  descendantContainment:'UNSUPPORTED',writeConfinement:'UNSUPPORTED',
+  mountIdentity:process.platform==='linux'?'PROC_MOUNTINFO':'INCOMPLETE',
+  reason:process.platform==='darwin'?'NO_VERIFIED_DARWIN_EXECUTION_SANDBOX':'NO_VERIFIED_DELEGATED_CGROUP_AND_FILESYSTEM_SANDBOX',
+  executionReady:false};
+}
 export async function createValidationWorkspace({parent, runId, sample, budget}) {
  if (!/^trivy-validation-[a-f0-9]{16}$/.test(runId ?? '')) throw Error('EXPLICIT_VALIDATION_RUN_ID_REQUIRED');
  const root=fs.realpathSync(parent), st=fs.lstatSync(parent);
- // No production cache, arbitrary existing directory, shared world-writable parent, or symlink cleanup.
- if (st.isSymbolicLink() || !st.isDirectory() || st.uid !== process.getuid() || (st.mode & 0o077)
-  || !root.startsWith(fs.realpathSync(os.tmpdir()) + path.sep)) throw Error('PRIVATE_TEMP_PARENT_REQUIRED');
- budget=structuredClone(budget);
- const freeze=x=>{if(x&&typeof x==='object'){Object.values(x).forEach(freeze);Object.freeze(x);}return x;};freeze(budget);
+ const nativeRoot=nativeTempRoots.some(tempRoot=>{const relative=path.relative(tempRoot,root);
+  return relative&&relative!=='..'&&!relative.startsWith('..'+path.sep)&&!path.isAbsolute(relative);});
+ if(st.isSymbolicLink() || !st.isDirectory() || st.uid!==process.getuid() || (st.mode & 0o077)
+  || !nativeRoot)
+  throw Error('PRIVATE_TEMP_PARENT_REQUIRED');
+ const freeze=x=>{if(x&&typeof x==='object'){Object.values(x).forEach(freeze);Object.freeze(x);}return x;};
+ budget=freeze(structuredClone(budget));
  const assessment=assessValidationBudget(await boundedSample(sample),budget);
- if (!assessment.allowed) throw Error('VALIDATION_PREFLIGHT_BLOCKED:' + assessment.blockers.join(','));
- const directory=fs.mkdtempSync(path.join(root,runId+'-'));fs.chmodSync(directory,0o700);
- const identity=fs.statSync(directory), owner=randomBytes(24).toString('hex');
- const cacheDir=path.join(directory,'cache'),tempDir=path.join(directory,'tmp');
- fs.mkdirSync(cacheDir,0o700);fs.mkdirSync(tempDir,0o700);
- fs.writeFileSync(path.join(directory,'.owner'),owner,{mode:0o600,flag:'wx'});
- let active=false,cleanupUncertain=false;
- function assertOwned() {
-  const st=fs.lstatSync(directory);
-  const marker=fs.lstatSync(path.join(directory,'.owner'));
-  if (st.isSymbolicLink() || st.dev!==identity.dev || st.ino!==identity.ino
-   || !marker.isFile() || marker.isSymbolicLink()
-   || fs.readFileSync(path.join(directory,'.owner'),'utf8')!==owner) throw Error('WORKSPACE_OWNERSHIP_LOST');
- }
- return {directory,cacheDir,tempDir,runId,budget,sample,assertOwned,
-  begin(){assertOwned();if(active || cleanupUncertain)throw Error('VALIDATION_PROCESS_OR_CLEANUP_UNCERTAIN');active=true;},
+ if(!assessment.allowed)throw Error('VALIDATION_PREFLIGHT_BLOCKED:'+assessment.blockers.join(','));
+ const name=runId+'-'+randomBytes(8).toString('hex'),owner=randomBytes(24).toString('hex');
+ const parentIdentity={dev:st.dev,ino:st.ino};
+ const created=pathOperation({operation:'create',parent:root,parentIdentity,name,owner});
+ const directory=path.join(root,name),cacheDir=path.join(directory,'cache'),tempDir=path.join(directory,'tmp');
+ const request={root:directory,identity:created.identity,parentIdentity,owner,directories:created.directories};
+ const operate=(operation,extra={})=>pathOperation({...request,...extra,operation});
+ const initial=operate('inspect');let active=false,cleanupUncertain=false,consumed=false;
+ const storageKey=x=>JSON.stringify(x.domains.map(d=>({identity:d.identity,mounts:d.mounts,capacityBytes:d.capacityBytes})));
+ function inspect(){const state=operate('inspect');if(storageKey(state)!==storageKey(initial))throw Error('STORAGE_DOMAIN_CHANGED');return state;}
+ const workspace={directory,cacheDir,tempDir,runId,budget,sample,
+  reportDir:path.join(directory,'report'),evidenceDir:path.join(directory,'evidence'),logDir:path.join(directory,'logs'),manifestDir:path.join(directory,'manifests'),
+  assertOwned(){inspect();},
+  observeStorage(){return inspect();},
+  preflight(){const storage=inspect(),storageBlockers=[];
+   for(const d of storage.domains){
+    const matches=budget.domains.filter(b=>b.identity===d.identity&&b.capacityBytes===d.capacityBytes);
+    if(matches.length!==1)storageBlockers.push('UNREGISTERED_ACTUAL_STORAGE_DOMAIN:'+d.identity);
+    if(d.availableBytes<validationHardFloor(d.capacityBytes))storageBlockers.push('BELOW_HARD_FLOOR:'+d.identity);
+    if(d.inodesFree<validationLimits.minimumInodes)storageBlockers.push('INSUFFICIENT_ACTUAL_INODES:'+d.identity);
+   }
+   return {status:'NOT_READY',capabilities:validationCapabilities(),
+   actualStorage:storage,callerDeclaredDomainsAreAuthorization:false,
+   blockers:['PROCESS_ISOLATION_UNSUPPORTED','DESCENDANT_CLEANUP_UNPROVEN','FILESYSTEM_WRITE_CONFINEMENT_UNSUPPORTED',
+    ...(storage.mountIdentitySupported?[]:['MOUNT_IDENTITY_INCOMPLETE']),
+    ...storageBlockers,'PHYSICAL_BACKING_AND_PEAK_BUDGET_NOT_AUTHENTICATED'],executionAuthorized:false};},
+  readMetadata(kind){if(!['db','java-db'].includes(kind))throw Error('INVALID_DATABASE_KIND');inspect();
+   return JSON.parse(operate('read',{relative:'cache/'+kind+'/metadata.json'}).text);},
+  readRelative(relative){inspect();return operate('read',{relative}).text;},
+  consume(){if(consumed)throw Error('VALIDATION_SINGLE_RUN_ALREADY_CONSUMED');consumed=true;},
+  begin(){inspect();if(active||cleanupUncertain)throw Error('VALIDATION_PROCESS_OR_CLEANUP_UNCERTAIN');active=true;},
   end(stopped){active=false;cleanupUncertain ||= !stopped;},
-  cleanup(){assertOwned();if(active || cleanupUncertain)throw Error('CLEANUP_NOT_PROVEN_SAFE');
-   fs.rmSync(directory,{recursive:true});if(fs.existsSync(directory))throw Error('WORKSPACE_CLEANUP_FAILED');
-   return {ownedWorkspaceRemoved:true,productionCacheTouched:false};}
+  cleanup(){inspect();if(active||cleanupUncertain)throw Error('CLEANUP_NOT_PROVEN_SAFE');
+   const result=operate('cleanup');return {ownedWorkspaceRemoved:result.ownedWorkspaceRemoved,productionCacheTouched:false};}
  };
+ workspaces.add(workspace);return Object.freeze(workspace);
 }
 
-const sleep = ms => new Promise(resolve=>setTimeout(resolve,ms));
-function groupAlive(pid) {try{process.kill(-pid,0);return true;}catch(e){if(e.code==='ESRCH')return false;throw e;}}
-async function stopGroup(pid) {
- for (const [signal,grace] of [['SIGTERM',validationLimits.termGraceMs],['SIGKILL',validationLimits.killGraceMs]]) {
-  if (!groupAlive(pid)) return true;
-  try{process.kill(-pid,signal);}catch(e){if(e.code!=='ESRCH')throw e;}
-  const end=Date.now()+grace;while(groupAlive(pid)&&Date.now()<end)await sleep(25);
- }
- return !groupAlive(pid);
-}
-
-// Owned process group only, never `pkill trivy` or deletion in a production cache.
-export async function runOwnedValidationCommand(workspace, {binary,args,env={},signal,timeoutMs=validationLimits.maxRunMs}) {
- if (!path.isAbsolute(binary) || !Array.isArray(args) || !positive(timeoutMs) || timeoutMs>validationLimits.maxRunMs)
+export async function runOwnedValidationCommand(workspace, {binary,args,env={},signal,timeoutMs=validationLimits.maxRunMs,purpose='validation-only'}) {
+ if(!workspaces.has(workspace))throw Error('AUTHENTIC_GUARD_WORKSPACE_REQUIRED');
+ if(!path.isAbsolute(binary)||!Array.isArray(args)||!positive(timeoutMs)||timeoutMs>validationLimits.maxRunMs)
   throw Error('INVALID_VALIDATION_COMMAND');
- if (Object.keys(env).some(k=>!['HTTP_PROXY','HTTPS_PROXY','ALL_PROXY','NO_PROXY','PATH'].includes(k)))
+ if(Object.keys(env).some(k=>!['HTTP_PROXY','HTTPS_PROXY','ALL_PROXY','NO_PROXY','PATH'].includes(k)))
   throw Error('VALIDATION_ENVIRONMENT_OVERRIDE_DENIED');
- workspace.assertOwned();
- const before=await boundedSample(()=>workspace.sample({phase:'preflight'})),assessment=assessValidationBudget(before,workspace.budget);
- if (!assessment.allowed) throw Error('VALIDATION_PREFLIGHT_BLOCKED:' + assessment.blockers.join(','));
- if (signal?.aborted) throw Error('VALIDATION_CANCELLED');
- workspace.begin();
- let child,closed=false,exitStatus=null,commandSignal=null,error=null,stopped=false,logBytes=0;
- const chunks=[],samples=[before],started=Date.now();let lastSample=Date.now();
- try {
-  child=spawn(binary,args,{cwd:workspace.directory,detached:true,stdio:['ignore','pipe','pipe'],
-   env:{PATH:env.PATH ?? process.env.PATH,LANG:'C',...env,HOME:workspace.directory,TMPDIR:workspace.tempDir,
-    TMP:workspace.tempDir,TEMP:workspace.tempDir,TRIVY_CACHE_DIR:workspace.cacheDir}});
-  child.on('error',e=>{error='VALIDATION_SPAWN_FAILED:'+e.code;closed=true;});
-  child.on('close',(code,s)=>{exitStatus=code;commandSignal=s;closed=true;});
-  for (const stream of [child.stdout,child.stderr]) stream.on('data',b=>{
-   logBytes+=b.length;if(logBytes<=validationLimits.maxLogBytes)chunks.push(b);else error='VALIDATION_LOG_LIMIT';
-  });
-  while (!closed && !error) {
-   if(signal?.aborted){error='VALIDATION_CANCELLED';break;}
-   if(Date.now()-started>timeoutMs){error='VALIDATION_TIMEOUT';break;}
-   let current;try{current=await boundedSample(()=>workspace.sample({phase:'monitor'}));}catch{error='MONITOR_FAILED';break;}
-   const at=Date.now();if(at-lastSample>validationLimits.maxSampleGapMs){error='MONITOR_SAMPLE_GAP';break;}lastSample=at;
-   const a=assessValidationBudget(current,workspace.budget,at,true);samples.push(current);
-   if(!a.allowed){error='MONITOR_UNSAFE:'+a.blockers.join(',');break;}
-   for(const b of workspace.budget.domains){const initial=before.domains.find(d=>d.id===b.id),cur=current.domains.find(d=>d.id===b.id);
-    if(initial.availableBytes-cur.availableBytes>b.peakAdditionalBytes+b.otherWriterBytes)error='REVIEWED_WRITE_BOUND_EXCEEDED';}
-   await sleep(validationLimits.pollMs);
-  }
- } catch(e){error=e.message;}
- finally {
-  try{stopped=child?.pid ? await stopGroup(child.pid) : true;}catch{stopped=false;}
-  // Reap the child before declaring cleanup safe. Descendants surviving the group check block deletion.
-  const until=Date.now()+validationLimits.killGraceMs;while(child?.pid&&!closed&&Date.now()<until)await sleep(10);
-  stopped=stopped&&(!child?.pid||closed);workspace.end(stopped);
- }
- let after;try{after=await boundedSample(()=>workspace.sample({phase:'final'}));}catch{error ||= 'FINAL_STORAGE_STATE_UNKNOWN';}
- if(after){const a=assessValidationBudget(after,workspace.budget,Date.now(),true);samples.push(after);if(!a.allowed)error ||= 'FINAL_STORAGE_UNSAFE';
-  if(a.allowed)for(const b of workspace.budget.domains){const initial=before.domains.find(d=>d.id===b.id),cur=after.domains.find(d=>d.id===b.id);
-   if(initial.availableBytes-cur.availableBytes>b.peakAdditionalBytes+b.otherWriterBytes)error ||= 'FINAL_REVIEWED_WRITE_BOUND_EXCEEDED';}}
- const receipt={mode:'validation-only',exitStatus,commandSignal,error,processGroupStopped:stopped,logBytes,
-  samples,monitorIsPeakProof:false,release:0,rollout:0};
- if(!stopped)receipt.error='OWNED_PROCESS_CLEANUP_NOT_PROVEN';
- return {...receipt,log:Buffer.concat(chunks).toString('utf8')};
+ if(purpose!=='validation-only')throw Error('RELEASE_PROMOTION_ROLLOUT_DENIED');
+ workspace.assertOwned();workspace.consume();
+ const preflight=workspace.preflight();
+ return {mode:'validation-only',status:'NOT_READY',exitStatus:null,commandSignal:null,
+  error:signal?.aborted?'VALIDATION_CANCELLED':'UNSUPPORTED_PROCESS_AND_FILESYSTEM_ISOLATION',
+  commandStarted:false,processGroupStopped:null,descendantsStopped:null,
+  residualProcessRisk:'NO_CHILD_STARTED_BY_THIS_ATTEMPT; EXISTING_OR_FOREIGN_PROCESSES_NOT_CLAIMED_STOPPED',
+  capabilities:preflight.capabilities,preflight,samples:[],logBytes:0,log:'',monitorIsPeakProof:false,
+  release:0,rollout:0};
 }
 
 export function scannerDatabaseIO({mode='production',validation,...productionOptions}={}) {
@@ -189,22 +195,24 @@ export function scannerDatabaseIO({mode='production',validation,...productionOpt
   if(validation!==undefined)throw Error('VALIDATION_CONFIG_IN_PRODUCTION_DENIED');
   return scannerRefreshIO(productionOptions);
  }
- if(mode!=='validation-only' || Object.keys(productionOptions).length)throw Error('EXPLICIT_VALIDATION_CONFIG_REQUIRED');
+ if(!['validation-only','validation'].includes(mode) || Object.keys(productionOptions).length)throw Error('EXPLICIT_VALIDATION_CONFIG_REQUIRED');
  if(!validation)throw Error('EXPLICIT_VALIDATION_CONFIG_REQUIRED');
  return createValidationRefreshIO(validation);
 }
 
 export function createValidationRefreshIO({workspace,binary,binarySha256,assertOwner,manifestProvider}) {
- if(!workspace || typeof assertOwner!=='function' || !/^[a-f0-9]{64}$/.test(binarySha256 ?? '')
+ if(!workspaces.has(workspace) || typeof assertOwner!=='function' || !/^[a-f0-9]{64}$/.test(binarySha256 ?? '')
   || !path.isAbsolute(binary) || sha(fs.readFileSync(binary))!==binarySha256)throw Error('VALIDATION_TOOL_OR_OWNER_NOT_PROVEN');
  // Explicit provider only: never inherit PACKAGE_HTTPS_PROXY or production transport configuration.
  const upstream=async kind=>{
   if(typeof manifestProvider!=='function')throw Error('EXPLICIT_VALIDATION_MANIFEST_PROVIDER_REQUIRED');
+  if(workspace.preflight().status!=='READY')throw Error('VALIDATION_PREFLIGHT_NOT_READY');
   const raw=await manifestProvider(kind),artifact=verifyManifest(kind,raw.bytes,raw.digest);
   if(artifact.digest!==workspace.budget.artifactDigests[kind])throw Error('REVIEWED_ARTIFACT_BINDING_MISMATCH');
   return artifact;
  };let lastReceipt;
  return {assertOwner:async()=>{workspace.assertOwned();await assertOwner();
+   if(workspace.preflight().status!=='READY')throw Error('VALIDATION_PREFLIGHT_NOT_READY');
    const a=assessValidationBudget(await boundedSample(workspace.sample),workspace.budget);
    if(!a.allowed)throw Error('VALIDATION_PREFLIGHT_BLOCKED:'+a.blockers.join(','));},
   upstream,
@@ -223,7 +231,7 @@ export function createValidationRefreshIO({workspace,binary,binarySha256,assertO
    return lastReceipt.log;
   },
   read(kind){if(!['db','java-db'].includes(kind))throw Error('INVALID_DATABASE_KIND');workspace.assertOwned();
-   return JSON.parse(fs.readFileSync(path.join(workspace.cacheDir,kind,'metadata.json')));},
+   return workspace.readMetadata(kind);},
   receipt(){return lastReceipt;}
  };
 }

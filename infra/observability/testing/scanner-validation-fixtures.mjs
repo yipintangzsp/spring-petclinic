@@ -1,0 +1,7 @@
+// Disposable synthetic facts for path/unit tests. Never an authorized storage budget.
+import fs from 'node:fs';import os from 'node:os';import path from 'node:path';
+import {GiB,createValidationWorkspace} from '../scanner-validation-guard.mjs';
+export const proof=()=>({status:'PROVEN_CONSERVATIVE_UPPER_BOUND',artifactDigests:{db:'sha256:'+'a'.repeat(64),'java-db':'sha256:'+'b'.repeat(64)},evidenceSha256:'c'.repeat(64),evidenceIdentity:'SYNTHETIC_UNIT_ONLY_NOT_EXECUTION_AUTHORIZATION',domains:[{id:'synthetic',identity:'synthetic',capacityBytes:100*GiB,peakAdditionalBytes:4*GiB,instantaneousWriteBytes:GiB,cleanupBytes:GiB,otherWriterBytes:GiB,peakAdditionalInodes:100,instantaneousWindowMs:4000,boundIncludesDownloadExtractionOldNewTemp:true,boundIncludesScanAndReports:true,cleanupProven:true,backingAllocationProven:true}]});
+export const sample=()=>({at:Date.now(),diskPressure:false,unownedWriter:false,ownerValid:true,domains:[{id:'synthetic',identity:'synthetic',capacityBytes:100*GiB,availableBytes:64*GiB,inodesFree:100000}]});
+export function temp(){const p=fs.realpathSync(fs.mkdtempSync(path.join(os.tmpdir(),'trivy-boundary-fixture-')));fs.chmodSync(p,0o700);return p;}
+export async function fixture(){const parent=temp();let w;try{w=await createValidationWorkspace({parent,runId:'trivy-validation-'+'e'.repeat(16),sample,budget:proof()});}catch(e){try{fs.rmdirSync(parent);}catch{}throw e;}return {parent,w,done(){if(fs.existsSync(w.directory))w.cleanup();fs.rmdirSync(parent);}};}

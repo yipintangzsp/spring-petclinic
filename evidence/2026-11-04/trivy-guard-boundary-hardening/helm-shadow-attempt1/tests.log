@@ -1,0 +1,40 @@
+file:///private/var/folders/jc/_2vrrrl544v3287_9gs3ngxh0000gn/T/trivy-frozen-guard-replay-sn7h62sk/infra/helm/tool.mjs:7
+ if(!fs.existsSync(archive)){const args=['-fLsS','--connect-timeout','8','--max-time','180'];if(process.env.HELM_DOWNLOAD_PROXY)args.push('--proxy',process.env.HELM_DOWNLOAD_PROXY);else args.push('--noproxy','*');args.push(entry.url,'-o',archive);const r=spawnSync('curl',args,{encoding:'utf8',timeout:190000});if(r.status!==0)throw Error('Pinned Helm download failed');}
+                                                                                                                                                                                                                                                                                                                                             ^
+
+Error: Pinned Helm download failed
+    at ensureHelm (file:///private/var/folders/jc/_2vrrrl544v3287_9gs3ngxh0000gn/T/trivy-frozen-guard-replay-sn7h62sk/infra/helm/tool.mjs:7:334)
+    at file:///private/var/folders/jc/_2vrrrl544v3287_9gs3ngxh0000gn/T/trivy-frozen-guard-replay-sn7h62sk/infra/helm/chart.test.mjs:2:14
+    at ModuleJob.run (node:internal/modules/esm/module_job:437:25)
+    at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:639:26)
+    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:101:5)
+
+Node.js v25.9.0
+✖ infra/helm/chart.test.mjs (180134.216917ms)
+✔ disabled integration preserves exact original production pipeline text (1.721209ms)
+✔ flag defaults false and helper disabled returns before any step (0.479292ms)
+✔ shadow mode denies promotion before frozen stage execution (0.14575ms)
+✔ Helm validates after frozen manager and before approval; no gate stage reorder (0.558708ms)
+✔ active and shadow CI entrypoints contain no direct deployment (1.252125ms)
+✔ direct deploy denied: helm upgrade x (0.143375ms)
+✔ direct deploy denied: helm install x (0.048416ms)
+✔ direct deploy denied: helm rollback x (0.059209ms)
+✔ direct deploy denied: $HELM_BIN upgrade x (0.07775ms)
+✔ direct deploy denied: kubectl apply -f x (0.094333ms)
+✔ direct deploy denied: kubectl -n petclinic patch deploy petclinic (0.057625ms)
+✔ non-mutating deployment diagnostics allowed (0.047458ms)
+✔ shadow metadata never writes actual security summary or invokes promotion (0.193292ms)
+ℹ tests 14
+ℹ suites 0
+ℹ pass 13
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 180254.08325
+
+✖ failing tests:
+
+test at infra/helm/chart.test.mjs:1:1
+✖ infra/helm/chart.test.mjs (180134.216917ms)
+  'test failed'
