@@ -4,10 +4,7 @@ import {evaluateAsync} from '../policy/engine.mjs';import {canonical,sha} from '
 for(const [id,e]of Object.entries(CATALOG))test('D independent immutable archive '+id,async()=>{
  const p=registry().get(e.pluginId),rawBefore=fs.readFileSync(new URL('./fixtures/'+e.file,import.meta.url));
  const r=await executeArchive(p,{archiveId:id,approvedDigest:e.sha256});const before=canonical(r.fact);
- // Gitleaks parent is intentionally fail-closed on a pre-existing frozen source
- // mismatch. Preserve that blocker; never rewrite its manifest to pass replay.
- if(e.pluginId==='gitleaks')await assert.rejects(evaluateAsync(r.fact,{mode:'enforce'}),/frozen Gitleaks parent source changed/);
- else assert.equal((await evaluateAsync(r.fact,{mode:'enforce'})).decision,e.oldDecision);
+ assert.equal((await evaluateAsync(r.fact,{mode:'enforce'})).decision,e.oldDecision);
  assert.equal(canonical(r.fact),before);
  assert.equal(r.cleanup.workerTerminated,true);assert.equal(r.cleanup.threadIdAfterJoin,-1);assert.equal(sha(rawBefore),sha(fs.readFileSync(new URL('./fixtures/'+e.file,import.meta.url))));
 });

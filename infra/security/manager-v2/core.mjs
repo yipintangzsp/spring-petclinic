@@ -1,9 +1,10 @@
 import {configuration,identity,keys} from './config.mjs';
 import {registry as makeRegistry,capabilityCheck} from './registry.mjs';
 import {executeArchive} from './archive.mjs';
+import {executeRealGitleaks} from './gitleaks-real.mjs';
 import {policyOwner,sealResult,verifyResult,artifactStore,verifyArtifact} from './result.mjs';
 import {freeze,digest,fail} from '../summary-v2/codec.mjs';
-export const MANAGER_VERSION='2.0.0-candidate.1';
+export const MANAGER_VERSION='2.0.0-candidate.2';
 const nonEvaluation=(p,base,status,reason)=>sealResult({...base,executionStatus:status,policyDecision:null,evaluationCount:0,policy:null,rawReportDigest:null,factDigest:null,evidenceRefs:[],failureReason:reason,completedAt:new Date().toISOString(),cleanup:null});
 export async function runCandidate({config={},runId,projectId,context={platform:process.platform,capabilities:{}},inputs={},output,signal,registry=makeRegistry()}){
  identity(runId);identity(projectId);keys(inputs,registry.ids());
@@ -20,15 +21,16 @@ export async function runCandidate({config={},runId,projectId,context={platform:
    else{
     let execution;
     try{
-     execution=await executeArchive(p,inputs[p.pluginId],{signal});
+     execution=p.runner==='gitleaks-real'?await executeRealGitleaks(p,inputs[p.pluginId],{signal,projectId,runId}):await executeArchive(p,inputs[p.pluginId],{signal});
      if(execution.fact.component!==p.policyAdapter||execution.factDigest!==digest(execution.fact))fail('normalizer/adapter mismatch');
      store.putRaw(p.pluginId+'.raw.json',execution.rawReportBytesUtf8);
      const policy=await owner.evaluateOnce(p.pluginId,execution.fact);
-     result=sealResult({...base,executionScope:execution.executionScope,executionStatus:policy.evaluation.status==='POLICY_ERROR'?'POLICY_ERROR':policy.evaluation.decision===null?'NOT_CONFIGURED':'COMPLETED',policyDecision:policy.evaluation.decision,evaluationCount:policy.evaluationCount,policy,rawReportDigest:execution.rawReportDigest,factDigest:execution.factDigest,evidenceRefs:execution.evidenceRefs,failureReason:policy.evaluation.status==='POLICY_ERROR'?policy.evaluation.error:policy.evaluation.decision===null?'POLICY_EVIDENCE_INCOMPLETE':null,completedAt:new Date().toISOString(),cleanup:execution.cleanup});
+     if(execution.runtimeFacts){store.put(p.pluginId+'.runtime-facts.json',execution.runtimeFacts);store.put(p.pluginId+'.facts.json',execution.fact);if(policy.evaluation.status!=='POLICY_ERROR'&&policy.evaluation.decision!==execution.oldDecision)fail('real old Gate and Policy differ');}
+     result=sealResult({...base,executionScope:execution.executionScope,executionStatus:policy.evaluation.status==='POLICY_ERROR'?'POLICY_ERROR':policy.evaluation.decision===null?'NOT_CONFIGURED':'COMPLETED',policyDecision:policy.evaluation.decision,evaluationCount:policy.evaluationCount,policy,rawReportDigest:execution.rawReportDigest,factDigest:execution.factDigest,evidenceRefs:execution.evidenceRefs,failureReason:policy.evaluation.status==='POLICY_ERROR'?policy.evaluation.error:policy.evaluation.decision===null?'POLICY_EVIDENCE_INCOMPLETE':null,completedAt:new Date().toISOString(),cleanup:execution.cleanup,...(execution.runtimeFacts?{runtimeFacts:execution.runtimeFacts,oldGateDecision:execution.oldDecision}: {})});
     }catch(e){
-     const policyError=String(e.message).startsWith('POLICY_ERROR:');
-     const safeError=/^RUNNER_(TIMEOUT|CANCELLED|ERROR|EXIT_ERROR|CLEANUP_FAILED)$/.test(e.message)?e.message:'RUNNER_OR_COLLECTION_ERROR';
-     result=sealResult({...base,executionStatus:policyError?'POLICY_ERROR':'ERROR',policyDecision:null,evaluationCount:owner.counts()[p.pluginId]??0,policy:null,rawReportDigest:execution?.rawReportDigest??null,factDigest:execution?.factDigest??null,evidenceRefs:execution?.evidenceRefs??[],failureReason:policyError?e.message:safeError,completedAt:new Date().toISOString(),cleanup:execution?.cleanup??{status:safeError==='RUNNER_CLEANUP_FAILED'?'INCOMPLETE':'JOINED_OR_NOT_STARTED'}});
+     const policyError=String(e.message).startsWith('POLICY_ERROR:'),unsupported=e.message==='GITLEAKS_UNSUPPORTED_IDENTITY';
+     const safeError=/^RUNNER_(TIMEOUT|CANCELLED|ERROR|EXIT_ERROR|CLEANUP_FAILED|SCANNER_ERROR|TOOL_VERSION_ERROR|REPORT_ERROR|UNSAFE_REPORT|OUTPUT_LIMIT)$/.test(e.message)?e.message:'RUNNER_OR_COLLECTION_ERROR';
+     result=sealResult({...base,executionStatus:policyError?'POLICY_ERROR':unsupported?'UNSUPPORTED':'ERROR',policyDecision:null,evaluationCount:owner.counts()[p.pluginId]??0,policy:null,rawReportDigest:execution?.rawReportDigest??null,factDigest:execution?.factDigest??null,evidenceRefs:execution?.evidenceRefs??[],failureReason:policyError?e.message:unsupported?e.message:safeError,completedAt:new Date().toISOString(),cleanup:execution?.cleanup??{status:safeError==='RUNNER_CLEANUP_FAILED'?'INCOMPLETE':'JOINED_OR_NOT_STARTED'}});
     }
    }
   }
@@ -39,7 +41,7 @@ export async function runCandidate({config={},runId,projectId,context={platform:
  const operational=results.some(r=>['ERROR','POLICY_ERROR'].includes(r.executionStatus));
  const incomplete=results.some(r=>!['COMPLETED','DISABLED'].includes(r.executionStatus));
  const overallStatus=allDisabled?'DISABLED':results.some(r=>r.executionStatus==='POLICY_ERROR')?'POLICY_ERROR':operational?'ERROR':results.some(r=>r.policyDecision==='FAIL')?'FAIL':incomplete?'INCOMPLETE':results.some(r=>r.policyDecision==='WARN')?'WARN':'PASS';
- const summary=freeze({schemaVersion:1,kind:'SecuritySummaryCandidate',managerVersion:MANAGER_VERSION,runId,projectId,profile:effective.profile,securityEnabled:effective.enabled,globalMode:effective.globalMode,securityLevel:effective.securityLevel,policyVersion:effective.policyVersion,policySource:effective.policySource,effectivePolicy:effective.effectivePolicy,appliedOverrides:effective.appliedOverrides,configurationOrigins:effective.configurationOrigins,effectiveConfigDigest:effective.effectiveConfigDigest,contextDigest:digest(context),capabilityEvidenceClass:'CALLER_DECLARED_OFFLINE_CONTEXT',pluginResults:results,overallStatus,
+ const summary=freeze({schemaVersion:1,kind:'SecuritySummaryCandidate',managerVersion:MANAGER_VERSION,runId,projectId,profile:effective.profile,securityEnabled:effective.enabled,globalMode:effective.globalMode,securityLevel:effective.securityLevel,policyVersion:effective.policyVersion,policySource:effective.policySource,effectivePolicy:effective.effectivePolicy,appliedOverrides:effective.appliedOverrides,configurationOrigins:effective.configurationOrigins,effectiveConfigDigest:effective.effectiveConfigDigest,contextDigest:digest(context),capabilityEvidenceClass:results.some(r=>r.runtimeFacts)?'REAL_TOOL_AND_ROOT_OWNED_FIXTURE_APPROVAL_PLUS_DECLARED_HINTS':'CALLER_DECLARED_OFFLINE_CONTEXT',pluginResults:results,overallStatus,
   evidenceRefs:results.flatMap(r=>r.evidenceRefs),blockers,candidateBuildAllowed:!operational&&(effective.globalMode!=='enforce'||!incomplete&&!results.some(r=>r.policyDecision==='FAIL')),promotion:{status:'BLOCKED',reason:'CANDIDATE_ONLY_NOT_PRODUCTION_GATE_EVIDENCE'},productionEvidence:false,releaseCount:0,rolloutCount:0});
  store.put('candidate-summary.json',summary);const artifact=store.finish();verifyArtifact(output,artifact.sealDigest);
  return freeze({summary,gate,artifact,policyEvaluationCounts:owner.counts()});

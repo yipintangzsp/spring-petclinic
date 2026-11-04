@@ -1,0 +1,100 @@
+{
+  "input": {
+    "source": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "toolLock": "{",
+    "env": {
+      "BUILD_NUMBER": "270",
+      "HEAVY_HOLDER": "fixture-holder"
+    },
+    "lease": {
+      "spec": {
+        "holderIdentity": "fixture-holder"
+      }
+    },
+    "createdUid": "fixture-pod-uid",
+    "podUids": [],
+    "imageId": "127.0.0.1:30050/platform-security/gitleaks@sha256:6b2d52241f9d176fc59e6e3b026ea52c98f390070587d9475d6ee2bc64941815",
+    "resources": {
+      "requests": {
+        "cpu": "100m",
+        "memory": "256Mi"
+      },
+      "limits": {
+        "cpu": "1",
+        "memory": "512Mi"
+      }
+    },
+    "interfaces": {
+      "eth0": [
+        {
+          "family": "IPv4",
+          "address": "10.42.0.9"
+        }
+      ]
+    },
+    "canaryListen": true,
+    "canaryEvents": [
+      "connect"
+    ],
+    "ncHelp": "nc -z zero-I/O",
+    "isolationExits": [
+      1,
+      1
+    ],
+    "nodeNetworkExit": 1,
+    "effectiveUid": "65532",
+    "readOnlyExit": 1,
+    "readOnlyStderr": "read-only file system",
+    "memoryPeak": "33554432",
+    "scans": {
+      "/work/fixture": {
+        "exit": 1
+      },
+      "/work/clean": {
+        "exit": 0
+      },
+      "/work/source": {
+        "exit": 0
+      }
+    },
+    "reportFiles": {
+      "/work/positive.json": "[{\"RuleID\":\"github-pat\",\"File\":\"/work/fixture/test.txt\",\"StartLine\":1,\"Fingerprint\":\"synthetic-fixture\",\"Secret\":\"[REDACTED]\"}]",
+      "/work/clean.json": "[]",
+      "/work/source.json": "[]"
+    },
+    "sourceText": {
+      "/work/source/a.txt": "public checksum fixture"
+    },
+    "reviewedEntries": [],
+    "cleanupRemaining": false,
+    "io": {},
+    "commands": {}
+  },
+  "facts": {
+    "schema": 1,
+    "stage": "parent",
+    "complete": true,
+    "classification": "CONTROLLED_REPLAY",
+    "command": "node infra/security/source-gate.mjs",
+    "execution": {
+      "exitStatus": 1,
+      "diagnostic": "Expected property name or '}' in JSON at position 1 (line 1 column 2)"
+    },
+    "observations": [
+      {
+        "type": "io",
+        "key": "mkdir:.devsecops",
+        "occurrence": "mkdir:.devsecops#1",
+        "ok": true
+      },
+      {
+        "type": "io",
+        "key": "read:infra/security/tools-lock.json",
+        "occurrence": "read:infra/security/tools-lock.json#1",
+        "ok": true
+      }
+    ],
+    "reports": {},
+    "classifierInput": null
+  }
+}

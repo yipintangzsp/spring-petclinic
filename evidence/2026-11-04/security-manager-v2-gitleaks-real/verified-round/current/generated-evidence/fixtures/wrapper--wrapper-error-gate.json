@@ -1,0 +1,36 @@
+{
+  "input": {
+    "name": "wrapper-error-gate",
+    "operationExitCode": 0,
+    "raw": {
+      "cfg": {
+        "mode": "enforce",
+        "adapter": "petclinic",
+        "profile": "java-web",
+        "project": "fixture"
+      },
+      "steps": {
+        "gate": {
+          "error": "controlled gate error"
+        }
+      }
+    }
+  },
+  "facts": {
+    "schema": 1,
+    "stage": "wrapper",
+    "complete": true,
+    "classification": "CONTROLLED_REPLAY",
+    "execution": {
+      "failed": true,
+      "reason": "controlled gate error"
+    },
+    "module": null,
+    "observations": [
+      "module-stage",
+      "credentials",
+      "scan-sh",
+      "gate"
+    ]
+  }
+}

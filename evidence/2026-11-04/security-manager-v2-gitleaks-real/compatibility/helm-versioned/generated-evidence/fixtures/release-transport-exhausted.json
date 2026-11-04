@@ -1,0 +1,204 @@
+{
+  "input": {
+    "env": {
+      "BUILD_NUMBER": "270",
+      "AUDIT_CANDIDATE_IMAGE": "core.harbor.domain/petclinic/petclinic@sha256:a662251c52ed528541bb99e17c6ac97f492c579c6fc673f3943a3638329b7c44",
+      "HARBOR_USER": "synthetic-user",
+      "HARBOR_PASS": "synthetic-disposable-marker",
+      "IMAGE_TAG": "0.10.0-ci-270"
+    },
+    "manifest": "{\"schemaVersion\":2,\"mediaType\":\"application/vnd.oci.image.index.v1+json\",\"manifests\":[{\"digest\":\"sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb\",\"platform\":{\"os\":\"linux\",\"architecture\":\"amd64\"}},{\"digest\":\"sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc\",\"platform\":{\"os\":\"linux\",\"architecture\":\"arm64\"}}]}",
+    "expectedDigest": "sha256:a662251c52ed528541bb99e17c6ac97f492c579c6fc673f3943a3638329b7c44",
+    "root": {
+      "digest": "sha256:a662251c52ed528541bb99e17c6ac97f492c579c6fc673f3943a3638329b7c44",
+      "references": [
+        {
+          "child_digest": "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+          "platform": {
+            "architecture": "amd64"
+          }
+        },
+        {
+          "child_digest": "sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+          "platform": {
+            "architecture": "arm64"
+          }
+        }
+      ]
+    },
+    "deployment": {
+      "spec": {
+        "template": {
+          "spec": {
+            "containers": [
+              {
+                "image": "core.harbor.domain/petclinic/petclinic@sha256:a662251c52ed528541bb99e17c6ac97f492c579c6fc673f3943a3638329b7c44"
+              }
+            ]
+          }
+        },
+        "selector": {
+          "matchLabels": {
+            "app": "petclinic"
+          }
+        }
+      }
+    },
+    "pods": [
+      {
+        "metadata": {
+          "name": "fixture-pod",
+          "uid": "fixture-pod-uid"
+        },
+        "status": {
+          "containerStatuses": [
+            {
+              "name": "petclinic",
+              "ready": true,
+              "image": "core.harbor.domain/petclinic/petclinic@sha256:a662251c52ed528541bb99e17c6ac97f492c579c6fc673f3943a3638329b7c44"
+            }
+          ]
+        }
+      }
+    ],
+    "maps": "000-001 r-xp 0 /usr/lib/libfixture.so",
+    "sbom": "{\"components\":[]}",
+    "review": "{\"image\":\"core.harbor.domain/petclinic/petclinic@sha256:a662251c52ed528541bb99e17c6ac97f492c579c6fc673f3943a3638329b7c44\",\"entries\":[],\"reviewAfter\":\"2026-12-01T00:00:00Z\",\"limitations\":[\"synthetic control\"]}",
+    "scanSummary": {
+      "scan_status": "Success",
+      "scanner": {
+        "name": "Trivy"
+      },
+      "summary": {
+        "Critical": 0,
+        "High": 0,
+        "Medium": 0,
+        "Low": 0
+      }
+    },
+    "defaultNative": {
+      "application/vnd.security.vulnerability.report; version=1.1": {
+        "vulnerabilities": []
+      }
+    },
+    "nativeReports": {},
+    "http": {
+      "root": {
+        "error": {
+          "name": "TypeError"
+        }
+      }
+    },
+    "commands": {},
+    "io": {}
+  },
+  "facts": {
+    "schema": 1,
+    "stage": "release-scan",
+    "complete": true,
+    "classification": "CONTROLLED_REPLAY",
+    "execution": {
+      "exitStatus": 1,
+      "diagnostic": "controlled transport error"
+    },
+    "reports": {},
+    "observations": [
+      {
+        "type": "http",
+        "key": "root",
+        "occurrence": "http:root#1",
+        "url": "http://harbor-core.harbor.svc.cluster.local/api/v2.0/projects/petclinic/repositories/petclinic/artifacts/0.10.0-ci-270",
+        "method": "GET",
+        "headers": {
+          "Content-Type": "application/json",
+          "Authorization": "SYNTHETIC_AUTH_PRESENT"
+        },
+        "result": {
+          "error": {
+            "name": "TypeError"
+          }
+        }
+      },
+      {
+        "type": "http",
+        "key": "root",
+        "occurrence": "http:root#2",
+        "url": "http://harbor-core.harbor.svc.cluster.local/api/v2.0/projects/petclinic/repositories/petclinic/artifacts/0.10.0-ci-270",
+        "method": "GET",
+        "headers": {
+          "Content-Type": "application/json",
+          "Authorization": "SYNTHETIC_AUTH_PRESENT"
+        },
+        "result": {
+          "error": {
+            "name": "TypeError"
+          }
+        }
+      },
+      {
+        "type": "http",
+        "key": "root",
+        "occurrence": "http:root#3",
+        "url": "http://harbor-core.harbor.svc.cluster.local/api/v2.0/projects/petclinic/repositories/petclinic/artifacts/0.10.0-ci-270",
+        "method": "GET",
+        "headers": {
+          "Content-Type": "application/json",
+          "Authorization": "SYNTHETIC_AUTH_PRESENT"
+        },
+        "result": {
+          "error": {
+            "name": "TypeError"
+          }
+        }
+      },
+      {
+        "type": "http",
+        "key": "root",
+        "occurrence": "http:root#4",
+        "url": "http://harbor-core.harbor.svc.cluster.local/api/v2.0/projects/petclinic/repositories/petclinic/artifacts/0.10.0-ci-270",
+        "method": "GET",
+        "headers": {
+          "Content-Type": "application/json",
+          "Authorization": "SYNTHETIC_AUTH_PRESENT"
+        },
+        "result": {
+          "error": {
+            "name": "TypeError"
+          }
+        }
+      },
+      {
+        "type": "http",
+        "key": "root",
+        "occurrence": "http:root#5",
+        "url": "http://harbor-core.harbor.svc.cluster.local/api/v2.0/projects/petclinic/repositories/petclinic/artifacts/0.10.0-ci-270",
+        "method": "GET",
+        "headers": {
+          "Content-Type": "application/json",
+          "Authorization": "SYNTHETIC_AUTH_PRESENT"
+        },
+        "result": {
+          "error": {
+            "name": "TypeError"
+          }
+        }
+      },
+      {
+        "type": "http",
+        "key": "root",
+        "occurrence": "http:root#6",
+        "url": "http://harbor-core.harbor.svc.cluster.local/api/v2.0/projects/petclinic/repositories/petclinic/artifacts/0.10.0-ci-270",
+        "method": "GET",
+        "headers": {
+          "Content-Type": "application/json",
+          "Authorization": "SYNTHETIC_AUTH_PRESENT"
+        },
+        "result": {
+          "error": {
+            "name": "TypeError"
+          }
+        }
+      }
+    ]
+  }
+}

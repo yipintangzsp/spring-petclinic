@@ -2,11 +2,11 @@ import fs from 'node:fs';
 import crypto from 'node:crypto';
 import {isDeepStrictEqual} from 'node:util';
 import {gitleaksEvidence} from './gitleaks-evidence.mjs';
+import {verifyGitleaksSourceLock} from './gitleaks-source-lock.mjs';
 
 // Existing execution receipts only. No scanner, source read, network or new classifier.
 export function gitleaksParent(raw){
- const lock=JSON.parse(fs.readFileSync(new URL('./versions/gitleaks-parent-baseline-v1.json',import.meta.url)));
- for(const [name,hash]of Object.entries(lock.sourceHashes))if(crypto.createHash('sha256').update(fs.readFileSync(new URL('../../../'+name,import.meta.url))).digest('hex')!==hash)throw Error('POLICY_ERROR: frozen Gitleaks parent source changed');
+ const {lock}=verifyGitleaksSourceLock();
  const absent=reason=>({status:'NOT_TESTED',decision:null,reason,rawEvidence:structuredClone(raw)});
  if(!raw||raw.schema!==1||raw.complete!==true||!Array.isArray(raw.observations))return absent('Complete original Gitleaks execution observations absent');
  if(raw.stage==='wrapper'){

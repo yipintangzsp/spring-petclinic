@@ -1,0 +1,811 @@
+{
+  "input": {
+    "source": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "toolLock": "{\n  \"gitleaks\": {\n    \"version\": \"8.30.1\",\n    \"image\": \"127.0.0.1:30050/platform-security/gitleaks@sha256:6b2d52241f9d176fc59e6e3b026ea52c98f390070587d9475d6ee2bc64941815\",\n    \"platform\": \"linux/arm64\",\n    \"upstream\": \"https://github.com/gitleaks/gitleaks\",\n    \"upstream_image\": \"ghcr.io/gitleaks/gitleaks@sha256:6b2d52241f9d176fc59e6e3b026ea52c98f390070587d9475d6ee2bc64941815\"\n  },\n  \"kyverno\": {\n    \"version\": \"1.19.2\",\n    \"chart\": \"3.9.2\",\n    \"chart_sha256\": \"f6fe7184544d5e2ee33a77808c09e67aa603ce6560cc197038fde31d727c861e\",\n    \"controller_manifest_sha256\": \"106b6ceaee1eb0400eadefcfbbf9e96c277da1001085b9f33b76eeee902fb238\",\n    \"images\": {\n      \"controller\": \"sha256:5e0f7832adb9a3fda59ad879bf233df5b9602339efae44a45f0e5a399f4e1607\",\n      \"init\": \"sha256:8aa23a4e6871c3be38ad58473758e70898d395789b7e51cea984b2cf44f8d434\"\n    }\n  },\n  \"cyclonedx\": {\n    \"plugin\": \"org.cyclonedx:cyclonedx-maven-plugin:2.9.3 (existing effective Maven configuration)\",\n    \"schema\": \"1.6\",\n    \"source\": \"Packaged application JAR META-INF/sbom/application.cdx.json; no duplicate generation\"\n  },\n  \"supplyChain\": {\n    \"cosign\": \"3.1.4\",\n    \"sops\": \"3.13.3\",\n    \"age\": \"1.3.2\",\n    \"semgrep\": \"1.182.1\",\n    \"zap\": \"2.17.0\",\n    \"scanner_manifest_sha256\": \"4fdb335010b9bf57d61d5e28d1397285c813bfa9bbf2ac008efddb8f27e3b703\",\n    \"trusted_public_key_sha256\": \"490c048d85da66076c2c152fdc313930af5e9f309d64a75b3d5be7216dcf50f8\"\n  }\n}\n",
+    "env": {
+      "BUILD_NUMBER": "270",
+      "HEAVY_HOLDER": "fixture-holder"
+    },
+    "lease": {
+      "spec": {
+        "holderIdentity": "fixture-holder"
+      }
+    },
+    "createdUid": "fixture-pod-uid",
+    "podUids": [],
+    "imageId": "127.0.0.1:30050/platform-security/gitleaks@sha256:6b2d52241f9d176fc59e6e3b026ea52c98f390070587d9475d6ee2bc64941815",
+    "resources": {
+      "requests": {
+        "cpu": "100m",
+        "memory": "256Mi"
+      },
+      "limits": {
+        "cpu": "1",
+        "memory": "512Mi"
+      }
+    },
+    "interfaces": {
+      "eth0": [
+        {
+          "family": "IPv4",
+          "address": "10.42.0.9"
+        }
+      ]
+    },
+    "canaryListen": true,
+    "canaryEvents": [
+      "connect"
+    ],
+    "ncHelp": "nc -z zero-I/O",
+    "isolationExits": [
+      1,
+      1
+    ],
+    "nodeNetworkExit": 1,
+    "effectiveUid": "65532",
+    "readOnlyExit": 1,
+    "readOnlyStderr": "read-only file system",
+    "memoryPeak": "33554432",
+    "scans": {
+      "/work/fixture": {
+        "exit": 1
+      },
+      "/work/clean": {
+        "exit": 0
+      },
+      "/work/source": {
+        "exit": 1
+      }
+    },
+    "reportFiles": {
+      "/work/positive.json": "[{\"RuleID\":\"github-pat\",\"File\":\"/work/fixture/test.txt\",\"StartLine\":1,\"Fingerprint\":\"synthetic-fixture\",\"Secret\":\"[REDACTED]\"}]",
+      "/work/clean.json": "[]",
+      "/work/source.json": "[{\"RuleID\":\"fixture-rule\",\"File\":\"/work/source/../a.txt\",\"StartLine\":1,\"Fingerprint\":\"synthetic-location\",\"Description\":\"Non-secret controlled metadata\",\"Secret\":\"[REDACTED]\",\"Tags\":[\"fixture\"],\"Entropy\":0}]"
+    },
+    "sourceText": {
+      "/work/source/a.txt": "public checksum fixture"
+    },
+    "reviewedEntries": [],
+    "cleanupRemaining": false,
+    "io": {},
+    "commands": {}
+  },
+  "facts": {
+    "schema": 1,
+    "stage": "parent",
+    "complete": true,
+    "classification": "CONTROLLED_REPLAY",
+    "command": "node infra/security/source-gate.mjs",
+    "execution": {
+      "exitStatus": 1,
+      "diagnostic": "Unexpected scanner file path"
+    },
+    "observations": [
+      {
+        "type": "io",
+        "key": "mkdir:.devsecops",
+        "occurrence": "mkdir:.devsecops#1",
+        "ok": true
+      },
+      {
+        "type": "io",
+        "key": "read:infra/security/tools-lock.json",
+        "occurrence": "read:infra/security/tools-lock.json#1",
+        "ok": true
+      },
+      {
+        "type": "command",
+        "key": "lease",
+        "bin": "kubectl",
+        "args": [
+          "--request-timeout=20s",
+          "-n",
+          "data-infra",
+          "get",
+          "lease",
+          "platform-heavy",
+          "-o",
+          "json"
+        ],
+        "timeout": 30000,
+        "encoding": "utf8",
+        "result": {
+          "status": 0,
+          "stdout": "{\"spec\":{\"holderIdentity\":\"fixture-holder\"}}",
+          "stderr": ""
+        }
+      },
+      {
+        "type": "command",
+        "key": "git-revision",
+        "bin": "git",
+        "args": [
+          "rev-parse",
+          "HEAD"
+        ],
+        "timeout": 30000,
+        "encoding": "utf8",
+        "result": {
+          "status": 0,
+          "stdout": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "stderr": ""
+        }
+      },
+      {
+        "type": "command",
+        "key": "create",
+        "bin": "kubectl",
+        "args": [
+          "--request-timeout=20s",
+          "create",
+          "-f",
+          "-",
+          "-o",
+          "json"
+        ],
+        "timeout": 30000,
+        "encoding": "utf8",
+        "result": {
+          "status": 0,
+          "stdout": "{\"metadata\":{\"uid\":\"fixture-pod-uid\"}}",
+          "stderr": ""
+        },
+        "inputSha256": "9b8c8327c76420d8530d49bea9cc76af84e02adbf9c67ab277602acc51b2683b"
+      },
+      {
+        "type": "io",
+        "key": "write:.devsecops/source-gate.json",
+        "occurrence": "write:.devsecops/source-gate.json#1",
+        "ok": true
+      },
+      {
+        "type": "command",
+        "key": "ready",
+        "bin": "kubectl",
+        "args": [
+          "--request-timeout=20s",
+          "-n",
+          "devsecops-execution",
+          "wait",
+          "--for=condition=Ready",
+          "pod/source-270-abcdef",
+          "--timeout=180s"
+        ],
+        "timeout": 190000,
+        "encoding": "utf8",
+        "result": {
+          "status": 0,
+          "stdout": "",
+          "stderr": ""
+        }
+      },
+      {
+        "type": "canary",
+        "key": "listen",
+        "ip": "10.42.0.9",
+        "ok": true
+      },
+      {
+        "type": "canary",
+        "key": "baseline",
+        "event": "connect"
+      },
+      {
+        "type": "command",
+        "key": "probe-help",
+        "bin": "kubectl",
+        "args": [
+          "--request-timeout=20s",
+          "-n",
+          "devsecops-execution",
+          "exec",
+          "-i",
+          "source-270-abcdef",
+          "--",
+          "nc",
+          "--help"
+        ],
+        "timeout": 90000,
+        "encoding": "utf8",
+        "result": {
+          "status": 0,
+          "stdout": "nc -z zero-I/O",
+          "stderr": ""
+        }
+      },
+      {
+        "type": "canary",
+        "key": "baseline",
+        "event": "connect"
+      },
+      {
+        "type": "command",
+        "key": "isolation-probe",
+        "bin": "kubectl",
+        "args": [
+          "--request-timeout=20s",
+          "-n",
+          "devsecops-execution",
+          "exec",
+          "-i",
+          "source-270-abcdef",
+          "--",
+          "nc",
+          "-z",
+          "-v",
+          "-w",
+          "2",
+          "10.42.0.9",
+          "12345"
+        ],
+        "timeout": 90000,
+        "encoding": "utf8",
+        "result": {
+          "status": 1,
+          "stdout": "",
+          "stderr": ""
+        }
+      },
+      {
+        "type": "canary",
+        "key": "baseline",
+        "event": "connect"
+      },
+      {
+        "type": "canary",
+        "key": "baseline",
+        "event": "connect"
+      },
+      {
+        "type": "command",
+        "key": "isolation-probe",
+        "bin": "kubectl",
+        "args": [
+          "--request-timeout=20s",
+          "-n",
+          "devsecops-execution",
+          "exec",
+          "-i",
+          "source-270-abcdef",
+          "--",
+          "nc",
+          "-z",
+          "-v",
+          "-w",
+          "2",
+          "10.42.0.9",
+          "12345"
+        ],
+        "timeout": 90000,
+        "encoding": "utf8",
+        "result": {
+          "status": 1,
+          "stdout": "",
+          "stderr": ""
+        }
+      },
+      {
+        "type": "canary",
+        "key": "baseline",
+        "event": "connect"
+      },
+      {
+        "type": "command",
+        "key": "node-network",
+        "bin": "kubectl",
+        "args": [
+          "--request-timeout=20s",
+          "-n",
+          "devsecops-execution",
+          "exec",
+          "-i",
+          "source-270-abcdef",
+          "--",
+          "nc",
+          "-z",
+          "-w",
+          "1",
+          "10.0.0.3",
+          "6443"
+        ],
+        "timeout": 90000,
+        "encoding": "utf8",
+        "result": {
+          "status": 1,
+          "stdout": "",
+          "stderr": ""
+        }
+      },
+      {
+        "type": "command",
+        "key": "token-probe",
+        "bin": "kubectl",
+        "args": [
+          "--request-timeout=20s",
+          "-n",
+          "devsecops-execution",
+          "exec",
+          "-i",
+          "source-270-abcdef",
+          "--",
+          "sh",
+          "-c",
+          "test ! -e /var/run/secrets/kubernetes.io/serviceaccount/token"
+        ],
+        "timeout": 90000,
+        "encoding": "utf8",
+        "result": {
+          "status": 0,
+          "stdout": "",
+          "stderr": ""
+        }
+      },
+      {
+        "type": "command",
+        "key": "effective-uid",
+        "bin": "kubectl",
+        "args": [
+          "--request-timeout=20s",
+          "-n",
+          "devsecops-execution",
+          "exec",
+          "-i",
+          "source-270-abcdef",
+          "--",
+          "id",
+          "-u"
+        ],
+        "timeout": 90000,
+        "encoding": "utf8",
+        "result": {
+          "status": 0,
+          "stdout": "65532",
+          "stderr": ""
+        }
+      },
+      {
+        "type": "command",
+        "key": "readonly-probe",
+        "bin": "kubectl",
+        "args": [
+          "--request-timeout=20s",
+          "-n",
+          "devsecops-execution",
+          "exec",
+          "-i",
+          "source-270-abcdef",
+          "--",
+          "touch",
+          "/devsecops-readonly-probe"
+        ],
+        "timeout": 90000,
+        "encoding": "utf8",
+        "result": {
+          "status": 1,
+          "stdout": "",
+          "stderr": "read-only file system"
+        }
+      },
+      {
+        "type": "command",
+        "key": "pod-get-1",
+        "bin": "kubectl",
+        "args": [
+          "--request-timeout=20s",
+          "-n",
+          "devsecops-execution",
+          "get",
+          "pod",
+          "source-270-abcdef",
+          "-o",
+          "json"
+        ],
+        "timeout": 30000,
+        "encoding": "utf8",
+        "result": {
+          "status": 0,
+          "stdout": "{\"metadata\":{\"uid\":\"fixture-pod-uid\"},\"status\":{\"containerStatuses\":[{\"imageID\":\"127.0.0.1:30050/platform-security/gitleaks@sha256:6b2d52241f9d176fc59e6e3b026ea52c98f390070587d9475d6ee2bc64941815\"}]},\"spec\":{\"containers\":[{\"resources\":{\"requests\":{\"cpu\":\"100m\",\"memory\":\"256Mi\"},\"limits\":{\"cpu\":\"1\",\"memory\":\"512Mi\"}}}]}}",
+          "stderr": ""
+        }
+      },
+      {
+        "type": "command",
+        "key": "work-mkdir",
+        "bin": "kubectl",
+        "args": [
+          "--request-timeout=20s",
+          "-n",
+          "devsecops-execution",
+          "exec",
+          "-i",
+          "source-270-abcdef",
+          "--",
+          "mkdir",
+          "-p",
+          "/work/source",
+          "/work/fixture",
+          "/work/clean"
+        ],
+        "timeout": 90000,
+        "encoding": "utf8",
+        "result": {
+          "status": 0,
+          "stdout": "",
+          "stderr": ""
+        }
+      },
+      {
+        "type": "command",
+        "key": "source-archive",
+        "bin": "git",
+        "args": [
+          "archive",
+          "--format=tar",
+          "HEAD"
+        ],
+        "timeout": 30000,
+        "encoding": "buffer",
+        "result": {
+          "status": 0,
+          "stdout": {
+            "0": 100,
+            "1": 105,
+            "2": 115,
+            "3": 112,
+            "4": 111,
+            "5": 115,
+            "6": 97,
+            "7": 98,
+            "8": 108,
+            "9": 101,
+            "10": 45,
+            "11": 115,
+            "12": 111,
+            "13": 117,
+            "14": 114,
+            "15": 99,
+            "16": 101,
+            "17": 45,
+            "18": 97,
+            "19": 114,
+            "20": 99,
+            "21": 104,
+            "22": 105,
+            "23": 118,
+            "24": 101
+          },
+          "stderr": ""
+        },
+        "inputSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "type": "command",
+        "key": "archive-transfer",
+        "bin": "kubectl",
+        "args": [
+          "--request-timeout=20s",
+          "-n",
+          "devsecops-execution",
+          "exec",
+          "-i",
+          "source-270-abcdef",
+          "--",
+          "tar",
+          "xf",
+          "-",
+          "-C",
+          "/work/source"
+        ],
+        "timeout": 90000,
+        "encoding": "buffer",
+        "result": {
+          "status": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        "inputSha256": "031716e6a9d64ec6fa1ffeada9e82a1afc55108fa2eb709831d16edfb7110136"
+      },
+      {
+        "type": "fixture",
+        "key": "syntheticCredential",
+        "classification": "NON_PRODUCTION_SYNTHETIC"
+      },
+      {
+        "type": "command",
+        "key": "fixture-write",
+        "bin": "kubectl",
+        "args": [
+          "--request-timeout=20s",
+          "-n",
+          "devsecops-execution",
+          "exec",
+          "-i",
+          "source-270-abcdef",
+          "--",
+          "sh",
+          "-c",
+          "cat > /work/fixture/test.txt"
+        ],
+        "timeout": 90000,
+        "encoding": "utf8",
+        "result": {
+          "status": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        "inputSha256": "978c780091cc72c5941073bdb2adb6b841f7c1a394e1ed9aa59245034af8fffc"
+      },
+      {
+        "type": "command",
+        "key": "scan:/work/fixture",
+        "bin": "kubectl",
+        "args": [
+          "--request-timeout=20s",
+          "-n",
+          "devsecops-execution",
+          "exec",
+          "-i",
+          "source-270-abcdef",
+          "--",
+          "gitleaks",
+          "dir",
+          "/work/fixture",
+          "--redact=100",
+          "--no-banner",
+          "--log-level",
+          "error",
+          "--report-format",
+          "json",
+          "--report-path",
+          "/work/positive.json"
+        ],
+        "timeout": 90000,
+        "encoding": "utf8",
+        "result": {
+          "status": 1,
+          "stdout": "",
+          "stderr": ""
+        }
+      },
+      {
+        "type": "command",
+        "key": "report:/work/positive.json",
+        "bin": "kubectl",
+        "args": [
+          "--request-timeout=20s",
+          "-n",
+          "devsecops-execution",
+          "exec",
+          "-i",
+          "source-270-abcdef",
+          "--",
+          "cat",
+          "/work/positive.json"
+        ],
+        "timeout": 90000,
+        "encoding": "utf8",
+        "result": {
+          "status": 0,
+          "stdout": "[{\"RuleID\":\"github-pat\",\"File\":\"/work/fixture/test.txt\",\"StartLine\":1,\"Fingerprint\":\"synthetic-fixture\",\"Secret\":\"[REDACTED]\"}]",
+          "stderr": ""
+        }
+      },
+      {
+        "type": "command",
+        "key": "scan:/work/clean",
+        "bin": "kubectl",
+        "args": [
+          "--request-timeout=20s",
+          "-n",
+          "devsecops-execution",
+          "exec",
+          "-i",
+          "source-270-abcdef",
+          "--",
+          "gitleaks",
+          "dir",
+          "/work/clean",
+          "--redact=100",
+          "--no-banner",
+          "--log-level",
+          "error",
+          "--report-format",
+          "json",
+          "--report-path",
+          "/work/clean.json"
+        ],
+        "timeout": 90000,
+        "encoding": "utf8",
+        "result": {
+          "status": 0,
+          "stdout": "",
+          "stderr": ""
+        }
+      },
+      {
+        "type": "command",
+        "key": "report:/work/clean.json",
+        "bin": "kubectl",
+        "args": [
+          "--request-timeout=20s",
+          "-n",
+          "devsecops-execution",
+          "exec",
+          "-i",
+          "source-270-abcdef",
+          "--",
+          "cat",
+          "/work/clean.json"
+        ],
+        "timeout": 90000,
+        "encoding": "utf8",
+        "result": {
+          "status": 0,
+          "stdout": "[]",
+          "stderr": ""
+        }
+      },
+      {
+        "type": "command",
+        "key": "scan:/work/source",
+        "bin": "kubectl",
+        "args": [
+          "--request-timeout=20s",
+          "-n",
+          "devsecops-execution",
+          "exec",
+          "-i",
+          "source-270-abcdef",
+          "--",
+          "gitleaks",
+          "dir",
+          "/work/source",
+          "--redact=100",
+          "--no-banner",
+          "--log-level",
+          "error",
+          "--report-format",
+          "json",
+          "--report-path",
+          "/work/source.json"
+        ],
+        "timeout": 90000,
+        "encoding": "utf8",
+        "result": {
+          "status": 1,
+          "stdout": "",
+          "stderr": ""
+        }
+      },
+      {
+        "type": "command",
+        "key": "report:/work/source.json",
+        "bin": "kubectl",
+        "args": [
+          "--request-timeout=20s",
+          "-n",
+          "devsecops-execution",
+          "exec",
+          "-i",
+          "source-270-abcdef",
+          "--",
+          "cat",
+          "/work/source.json"
+        ],
+        "timeout": 90000,
+        "encoding": "utf8",
+        "result": {
+          "status": 0,
+          "stdout": "[{\"RuleID\":\"fixture-rule\",\"File\":\"/work/source/../a.txt\",\"StartLine\":1,\"Fingerprint\":\"synthetic-location\",\"Description\":\"Non-secret controlled metadata\",\"Secret\":\"[REDACTED]\",\"Tags\":[\"fixture\"],\"Entropy\":0}]",
+          "stderr": ""
+        }
+      },
+      {
+        "type": "io",
+        "key": "write:.devsecops/gitleaks-native.json",
+        "occurrence": "write:.devsecops/gitleaks-native.json#1",
+        "ok": true
+      },
+      {
+        "type": "io",
+        "key": "read:infra/security/reviewed-false-positives.json",
+        "occurrence": "read:infra/security/reviewed-false-positives.json#1",
+        "ok": true
+      },
+      {
+        "type": "canary",
+        "key": "close"
+      },
+      {
+        "type": "command",
+        "key": "pod-get-2",
+        "bin": "kubectl",
+        "args": [
+          "--request-timeout=20s",
+          "-n",
+          "devsecops-execution",
+          "get",
+          "pod",
+          "source-270-abcdef",
+          "-o",
+          "json"
+        ],
+        "timeout": 30000,
+        "encoding": "utf8",
+        "result": {
+          "status": 0,
+          "stdout": "{\"metadata\":{\"uid\":\"fixture-pod-uid\"},\"status\":{\"containerStatuses\":[{\"imageID\":\"127.0.0.1:30050/platform-security/gitleaks@sha256:6b2d52241f9d176fc59e6e3b026ea52c98f390070587d9475d6ee2bc64941815\"}]},\"spec\":{\"containers\":[{\"resources\":{\"requests\":{\"cpu\":\"100m\",\"memory\":\"256Mi\"},\"limits\":{\"cpu\":\"1\",\"memory\":\"512Mi\"}}}]}}",
+          "stderr": ""
+        }
+      },
+      {
+        "type": "command",
+        "key": "delete",
+        "bin": "kubectl",
+        "args": [
+          "--request-timeout=20s",
+          "-n",
+          "devsecops-execution",
+          "delete",
+          "pod",
+          "source-270-abcdef",
+          "--wait=true",
+          "--timeout=45s"
+        ],
+        "timeout": 55000,
+        "encoding": "utf8",
+        "result": {
+          "status": 0,
+          "stdout": "",
+          "stderr": ""
+        }
+      },
+      {
+        "type": "command",
+        "key": "cleanup-verify",
+        "bin": "kubectl",
+        "args": [
+          "--request-timeout=20s",
+          "-n",
+          "devsecops-execution",
+          "get",
+          "pod",
+          "source-270-abcdef",
+          "--ignore-not-found",
+          "-o",
+          "name"
+        ],
+        "timeout": 30000,
+        "encoding": "utf8",
+        "result": {
+          "status": 0,
+          "stdout": "",
+          "stderr": ""
+        }
+      },
+      {
+        "type": "io",
+        "key": "write:.devsecops/source-gate.json",
+        "occurrence": "write:.devsecops/source-gate.json#2",
+        "ok": true
+      }
+    ],
+    "reports": {
+      ".devsecops/source-gate.json": "{\n  \"status\": \"failed\",\n  \"source\": \"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\n  \"tool\": {\n    \"version\": \"8.30.1\",\n    \"image\": \"127.0.0.1:30050/platform-security/gitleaks@sha256:6b2d52241f9d176fc59e6e3b026ea52c98f390070587d9475d6ee2bc64941815\",\n    \"platform\": \"linux/arm64\",\n    \"upstream\": \"https://github.com/gitleaks/gitleaks\",\n    \"upstream_image\": \"ghcr.io/gitleaks/gitleaks@sha256:6b2d52241f9d176fc59e6e3b026ea52c98f390070587d9475d6ee2bc64941815\"\n  },\n  \"startedAt\": \"2026-11-01T00:00:00.000Z\",\n  \"pod\": \"source-270-abcdef\",\n  \"namespace\": \"devsecops-execution\",\n  \"tests\": [\n    {\n      \"case\": \"synthetic-secret-blocked\",\n      \"exit\": 1,\n      \"findings\": [\n        {\n          \"rule\": \"github-pat\",\n          \"file\": \"/work/fixture/test.txt\",\n          \"line\": 1,\n          \"fingerprint\": \"synthetic-fixture\"\n        }\n      ]\n    },\n    {\n      \"case\": \"clean-fixture-accepted\",\n      \"exit\": 0,\n      \"findings\": []\n    }\n  ],\n  \"cleanup\": true,\n  \"uid\": \"fixture-pod-uid\",\n  \"isolation\": {\n    \"podCanaryIp\": \"10.42.0.9\",\n    \"podCanaryPort\": 12345,\n    \"controllerBaselineBeforeAndAfter\": true,\n    \"networkPolicyPodToPodBlocked\": true,\n    \"networkPolicyAttempts\": [\n      {\n        \"attempt\": 1,\n        \"exit\": 1\n      },\n      {\n        \"attempt\": 2,\n        \"exit\": 1\n      }\n    ],\n    \"nodeApiTcpReachable\": false,\n    \"nodeBoundary\": \"NetworkPolicy is not a host/node firewall; token absent and RBAC denies secret reads\",\n    \"serviceAccountTokenAbsent\": true,\n    \"effectiveUid\": 65532,\n    \"readOnlyFilesystemVerified\": true\n  },\n  \"actualImageID\": \"127.0.0.1:30050/platform-security/gitleaks@sha256:6b2d52241f9d176fc59e6e3b026ea52c98f390070587d9475d6ee2bc64941815\",\n  \"archiveBytes\": 25,\n  \"sourceScan\": {\n    \"exit\": 1,\n    \"findings\": [\n      {\n        \"rule\": \"fixture-rule\",\n        \"file\": \"/work/source/../a.txt\",\n        \"line\": 1,\n        \"fingerprint\": \"synthetic-location\"\n      }\n    ],\n    \"verifiedFalsePositives\": [],\n    \"blockingFindings\": []\n  },\n  \"error\": \"Unexpected scanner file path\",\n  \"finishedAt\": \"2026-11-01T00:00:00.000Z\"\n}",
+      ".devsecops/gitleaks-native.json": "[\n  {\n    \"RuleID\": \"fixture-rule\",\n    \"File\": \"/work/source/../a.txt\",\n    \"StartLine\": 1,\n    \"Fingerprint\": \"synthetic-location\",\n    \"Description\": \"Non-secret controlled metadata\",\n    \"Secret\": \"[REDACTED]\",\n    \"Tags\": [\n      \"fixture\"\n    ],\n    \"Entropy\": 0\n  }\n]"
+    },
+    "classifierInput": {
+      "sourcePrefix": "/work/source/",
+      "findings": [
+        {
+          "rule": "fixture-rule",
+          "file": "/work/source/../a.txt",
+          "line": 1,
+          "fingerprint": "synthetic-location"
+        }
+      ],
+      "reviewedEntries": [],
+      "sourceLines": []
+    }
+  }
+}

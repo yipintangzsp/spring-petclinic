@@ -107,18 +107,45 @@ dry-run/local-evidence consumers preserve resultDigests, issue delivery receipts
 record errors independently. No consumer re-evaluates Policy. DefectDojo future
 adapter always returns NOT_CONFIGURED if enabled; it never calls a live API.
 
-## Known frozen compatibility blocker
+## Versioned Gitleaks source identity and real validation
 
-The Gitleaks parent manifest still pins `Jenkinsfile.security-audit` SHA
-`e6e7c1b8f838e42e8bc9b3aa35e731515e2e05feb300bd1833d64aa921c54ed2`.
-Current source is
-`6179859f70c1d6fec2560621ec1ae71dba20514de4ff430d84b7d60a1c319b3c`.
-The authoritative engine rejects both archived Gitleaks inputs as POLICY_ERROR.
-The candidate retains that result and blocks build continuation. Tests verifying
-that fail-closed behavior **do not prove Gitleaks differential compatibility**.
-No frozen hash was rewritten, old file restored over current source, or adapter
-bypassed. This affected integration remains INCOMPLETE pending a separately reviewed
-versioned source-compatibility proof. Semgrep/Cosign each have PASS/FAIL matches.
+The original frozen manifest is preserved. The only historical source mismatch
+was the separately reviewed Helm Shadow integration in Jenkinsfile.security-audit
+(first commit 90b4fca). `gitleaks-source-lock.mjs` accepts only the original or
+versioned exact source identity, verifies all nine dependencies, pins both adapter
+identities and proves the frozen decision body is byte-identical. Removing exactly
+four Helm marker blocks must recover the original Jenkinsfile bytes. Unknown source
+changes remain POLICY_ERROR. 127 original/current parent and wrapper differential
+samples match; this does not rewrite the original frozen evidence.
+
+`realGitleaksRegistry()` is a separate code-owned opt-in registry: Gitleaks defaults
+to disabled and is the only real runner. Explicit plugin enablement plus a trusted
+root-owned approval and SOURCE_DIR are required. The CLI selects it only with
+`--gitleaks-approval` / `--source-dir`. Every other plugin remains unchanged.
+`gitleaks-real.mjs` uses the existing pinned tool/image version and exact production
+`gitleaks dir ... --redact=100` command, built-in configuration and reviewed finding
+classifier. It accepts only root-owned bounded disposable snapshots, their approved
+Git revision/content identity, a SHA-pinned binary and owner-private outputs. The
+non-root Linux identity must have no root/Docker group, zero effective capabilities,
+NoNewPrivs, no Docker socket or administrator kubeconfig access, and a scrubbed env.
+No project executable, Docker API, Kubernetes write or network scanner runs.
+
+The original source classifier is executed unchanged on the real normalized
+locations, with only a bijective temporary path-prefix mapping. The existing Policy
+Engine evaluates that same fact once; raw native bytes, fact digest, result digest
+and a separately classified REAL_CONTROLLED_EXECUTION receipt are sealed. Failure
+or missing prerequisites never becomes PASS. The tool process group is terminated
+and checked; this is for a trusted pinned directory scanner, **not** a general
+adversarial descendant isolation backend or a solution to Trivy isolation/storage.
+
+Two disposable validation projects (java-web fake credential and python-api clean
+source) have actually scanned on Linux; old classifier and standard Policy match
+FAIL/FAIL and PASS/PASS. This proves the standalone scanner/classifier path only.
+Production Kubernetes Pod/Lease/network-canary prerequisites were covered separately
+by frozen parent differential replay, not re-executed here. The Candidate facts are
+not canonical production RuntimeSourceFacts and do not change 14/16. Historical raw
+payload remains unavailable; new controlled reports do not recover that history.
+Evidence: `evidence/2026-11-04/security-manager-v2-gitleaks-real`.
 
 ## Rollback and boundary
 

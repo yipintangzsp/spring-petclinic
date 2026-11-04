@@ -1,0 +1,86 @@
+{
+  "sampledAt": "2026-11-04T08:09:51.028842+00:00",
+  "classification": "READ_ONLY_FILE_SIZE_METADATA_AND_MOUNTS_NOT_REFRESH",
+  "pod": {
+    "name": "harbor-trivy-0",
+    "uid": "2d86597d-de7e-4c4e-927e-51815203ae2e",
+    "node": "devops",
+    "containers": [
+      {
+        "name": "trivy",
+        "image": "192.168.1.58:30050/platform-repair/harbor-trivy-arm64@sha256:c7586c7d21d967a5c652827256f1b357761c4384f6b5c7e7f459dcbda01e2355",
+        "volumeMounts": [
+          {
+            "mountPath": "/home/scanner/.cache",
+            "name": "data"
+          }
+        ]
+      }
+    ]
+  },
+  "volumes": [
+    {
+      "name": "data",
+      "persistentVolumeClaim": {
+        "claimName": "data-harbor-trivy-0"
+      }
+    }
+  ],
+  "statefulsetSpecSha256": "15562424e3ba9c12ba5ec10184db23f67025d2c8299426a400a52917f30fb5fa",
+  "environmentConfigurationSha256": "960785ca78e4d088142eaa02c134fd72ae03f34b2ed07d5e79dd2c32df1abf58",
+  "environmentValuesArchived": false,
+  "pvcs": [
+    {
+      "name": "data-harbor-trivy-0",
+      "uid": "262fbaec-19cb-49dd-b8e2-fd2be46ab2d7",
+      "capacity": {
+        "storage": "5Gi"
+      },
+      "pv": "pvc-262fbaec-19cb-49dd-b8e2-fd2be46ab2d7",
+      "hostPath": null,
+      "local": {
+        "path": "/var/lib/rancher/k3s/storage/pvc-262fbaec-19cb-49dd-b8e2-fd2be46ab2d7_harbor_data-harbor-trivy-0"
+      },
+      "csi": null,
+      "nodeAffinity": {
+        "required": {
+          "nodeSelectorTerms": [
+            {
+              "matchExpressions": [
+                {
+                  "key": "kubernetes.io/hostname",
+                  "operator": "In",
+                  "values": [
+                    "devops"
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "nodeFs": {
+    "time": "2026-11-04T08:09:42Z",
+    "availableBytes": 44941340672,
+    "capacityBytes": 270430261248,
+    "usedBytes": 212304539648,
+    "inodesFree": 15324275,
+    "inodes": 16842752,
+    "inodesUsed": 1518477
+  },
+  "imageFs": {
+    "time": "2026-11-04T08:09:42Z",
+    "availableBytes": 44941340672,
+    "capacityBytes": 270430261248,
+    "usedBytes": 34455552000,
+    "inodesFree": 15324275,
+    "inodes": 16842752,
+    "inodesUsed": 655205
+  },
+  "proxyOrStorageChanges": 0,
+  "refreshes": 0,
+  "dbContentsRead": false,
+  "dbMetadataRead": true
+}
