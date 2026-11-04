@@ -1,0 +1,26 @@
+[
+  [
+    "Native writable-layer quota",
+    "UNKNOWN",
+    "Docker overlayfs/containerd != classic overlay2; size accepted historically but not enforcement proof; existing ext4 no quota/project feature",
+    "cannot implement without further supported mechanism; no config changes"
+  ],
+  [
+    "Bounded tmpfs small scratch",
+    "SUPPORTED",
+    "historical4MiB native fixture; RAM available5348777984 bytes, swap in use2011754496 bytes",
+    "memory+swap+metadata accounting required; full DB UNSUPPORTED without peak proof"
+  ],
+  [
+    "Controlled directory on existing guest disk",
+    "UNSUPPORTED",
+    "ext4 lacks quota/project flags and quota mount option; directory0700 is ownership, not capacity",
+    "enabling quota/remount/storage changes is outside scope and not proposed as an action"
+  ],
+  [
+    "Monitoring-only fallback",
+    "UNSUPPORTED",
+    "no forced capacity bound; STORAGE_QUOTA_ENFORCEMENT=UNAVAILABLE for this directory-only fallback",
+    "not admissible as hard-quota replacement"
+  ]
+]

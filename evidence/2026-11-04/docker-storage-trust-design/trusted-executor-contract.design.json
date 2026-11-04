@@ -1,0 +1,95 @@
+{
+  "classification": "DESIGN_ONLY_NOT_IMPLEMENTED",
+  "selectedExistingExecutor": "NO_SAFE_EXISTING_EXECUTOR",
+  "architectureSelected": "NONE",
+  "requiredTrustSeparation": [
+    "untrusted project execution cannot access Docker socket or raw API",
+    "trusted operation source pinned, reviewed and not writable by project/job configurator",
+    "distinct OS execution identity and protected operation interface; separate job name insufficient",
+    "do not forward production credentials or environment",
+    "require independently authenticated authorizations, no arbitrary shell/argv"
+  ],
+  "requestSchemaAllowlist": [
+    "runIdentity",
+    "pinnedImageDigest",
+    "approvedTargetDigest",
+    "immutablePolicyVersion"
+  ],
+  "serverOwnedFields": [
+    "entrypoint",
+    "argv",
+    "all mounts",
+    "user",
+    "capabilities",
+    "network",
+    "PID/IPC/cgroup namespace",
+    "memory/PID/CPU",
+    "quotas",
+    "log transport"
+  ],
+  "deniedDockerAPIs": [
+    "arbitrary create",
+    "arbitrary exec",
+    "image build/pull/push/delete",
+    "volume create/delete",
+    "daemon update/prune",
+    "privileged",
+    "host PID/IPC/network",
+    "host bind mounts",
+    "Docker socket mounts",
+    "arbitrary env/entrypoint overrides"
+  ],
+  "storagePrerequisites": [
+    "verified all-domain hard quotas or equivalent bounds",
+    "guest and Mac physical COW headroom independently proven",
+    "tmpfs only bounded small scratch not full DB by default",
+    "reports/logs/archives bounded before materializing on disk"
+  ],
+  "cleanupStates": [
+    "PRECHECK",
+    "CREATING",
+    "RUNNING",
+    "STOPPING",
+    "UNCERTAIN_BLOCKED",
+    "RECONCILING",
+    "CLEAN_VERIFIED",
+    "FAILED"
+  ],
+  "cleanupContract": {
+    "persistBeforeCreate": [
+      "daemon ID",
+      "run nonce",
+      "owner principal",
+      "request hash",
+      "image digest",
+      "creation intent identity"
+    ],
+    "persistAfterCreate": [
+      "full immutable container ID",
+      "Created timestamp",
+      "exact labels",
+      "canonical approved mounts",
+      "cgroup identity"
+    ],
+    "transportFailure": "Do not assume create/stop failed atomically. Creation timeout may have created an unknown-ID container; block new runs and success. Do not retry create blindly.",
+    "daemonUnavailable": "No cleanup attestation; UNCERTAIN_BLOCKED. Container may remain alive even with live-restore=false on unexpected failure. No host PID kill fallback.",
+    "reconnect": "Verify same daemon ID and ledger; list is candidate discovery only. Exact container ID+nonce+Created+owner+image+mount match required. Name/label alone never deletion authorization.",
+    "stopRemove": "Only verified owned ID: bounded stop then owned-ID kill if needed; confirm exited and cgroup empty/absent, remove and verify not-found; never prune.",
+    "noIDAfterCreateTimeout": "Matching intent nonce candidates require full ownership proof; mismatches/multiple candidates/operator approval -> remain blocked; never broad deletion.",
+    "manualEscalation": "daemon remains unreachable beyond bounded retry window, daemon identity changed, foreign mount, ambiguous ownership, missing ledger, cgroup unknown or cleanup incomplete; operator receives metadata only, no production mutations.",
+    "ttlWarning": "client watchdog/labels do not stop a container when daemon API is unreachable; do not claim enforced TTL without independent proven mechanism"
+  },
+  "rollbackDesign": [
+    "disable validation entry point independently",
+    "revoke only newly introduced future executor capability",
+    "retain ownership ledger and receipts until cleanup verified",
+    "never restore unrestricted socket as rollback shortcut",
+    "production job/socket/daemon changes require separate approved change plan"
+  ],
+  "proposedFutureFilesNotCreated": [
+    "infra/security/validation/executor-contract.json",
+    "infra/security/validation/trusted-executor.mjs",
+    "infra/security/testing/validation-executor-contract.test.mjs"
+  ],
+  "currentImplementationChange": false
+}

@@ -1,0 +1,360 @@
+[
+  {
+    "command": [
+      "docker",
+      "info",
+      "--format",
+      "{{json .}}"
+    ],
+    "exit": 0,
+    "stderr": "",
+    "selectedFields": {
+      "ID": "4616ba22-4e70-4b96-8e66-6a3a4d756cb2",
+      "Name": "devops",
+      "ServerVersion": "29.6.2",
+      "DockerRootDir": "/var/lib/docker",
+      "Driver": "overlayfs",
+      "DriverStatus": [
+        [
+          "driver-type",
+          "io.containerd.snapshotter.v1"
+        ]
+      ],
+      "CgroupDriver": "systemd",
+      "CgroupVersion": "2",
+      "SecurityOptions": [
+        "name=apparmor",
+        "name=seccomp,profile=builtin",
+        "name=cgroupns"
+      ],
+      "LiveRestoreEnabled": false,
+      "MemTotal": 23025446912,
+      "NCPU": 6
+    }
+  },
+  {
+    "path": "/var/lib/docker",
+    "uid": 0,
+    "gid": 0,
+    "mode": "0o710",
+    "device": 64770,
+    "capacity": 270430261248,
+    "available": 45472956416,
+    "inodesFree": 15324314
+  },
+  {
+    "path": "/var/lib/containerd",
+    "uid": 0,
+    "gid": 0,
+    "mode": "0o700",
+    "device": 64770,
+    "capacity": 270430261248,
+    "available": 45472956416,
+    "inodesFree": 15324314
+  },
+  {
+    "path": "/tmp",
+    "uid": 0,
+    "gid": 0,
+    "mode": "0o1777",
+    "device": 64770,
+    "capacity": 270430261248,
+    "available": 45472956416,
+    "inodesFree": 15324314
+  },
+  {
+    "path": "/var/run/docker.sock",
+    "uid": 0,
+    "gid": 988,
+    "mode": "0o666",
+    "device": 29,
+    "capacity": 2302545920,
+    "available": 2286837760,
+    "inodesFree": 2805311
+  },
+  {
+    "command": [
+      "findmnt",
+      "-T",
+      "/var/lib/docker",
+      "-o",
+      "TARGET,SOURCE,FSTYPE,OPTIONS,MAJ:MIN"
+    ],
+    "exit": 0,
+    "stdout": "TARGET SOURCE    FSTYPE OPTIONS     MAJ:MIN\n/      /dev/vda2 ext4   rw,relatime 253:2  \n",
+    "stderr": ""
+  },
+  {
+    "command": [
+      "findmnt",
+      "-T",
+      "/var/lib/containerd",
+      "-o",
+      "TARGET,SOURCE,FSTYPE,OPTIONS,MAJ:MIN"
+    ],
+    "exit": 0,
+    "stdout": "TARGET SOURCE    FSTYPE OPTIONS     MAJ:MIN\n/      /dev/vda2 ext4   rw,relatime 253:2  \n",
+    "stderr": ""
+  },
+  {
+    "command": [
+      "sudo",
+      "-n",
+      "tune2fs",
+      "-l",
+      "/dev/vda2"
+    ],
+    "exit": 0,
+    "stderr": "",
+    "selectedMetadata": "Filesystem features:      has_journal ext_attr resize_inode dir_index filetype needs_recovery extent 64bit flex_bg sparse_super large_file huge_file dir_nlink extra_isize metadata_csum\nDefault mount options:    user_xattr acl\nFilesystem state:         clean\nBlock size:               4096"
+  },
+  {
+    "command": [
+      "sudo",
+      "-n",
+      "cat",
+      "/etc/docker/daemon.json"
+    ],
+    "exit": 0,
+    "stderr": "",
+    "selectedFields": {
+      "data-root": null,
+      "storage-driver": null,
+      "storage-opts": null,
+      "live-restore": null,
+      "userns-remap": null,
+      "authorization-plugins": null,
+      "features": null
+    }
+  },
+  {
+    "command": [
+      "free",
+      "-b"
+    ],
+    "exit": 0,
+    "stdout": "               total        used        free      shared  buff/cache   available\nMem:     23025446912 17676668928   176738304   208441344  5665267712  5348777984\nSwap:    12884893696  2011754496 10873139200\n",
+    "stderr": ""
+  },
+  {
+    "command": [
+      "cat",
+      "/proc/swaps"
+    ],
+    "exit": 0,
+    "stdout": "Filename\t\t\t\tType\t\tSize\t\tUsed\t\tPriority\n/swap.img                               file\t\t4194300\t\t982168\t\t-1\n/swapfile                               file\t\t8388604\t\t982436\t\t-1\n",
+    "stderr": ""
+  },
+  {
+    "command": [
+      "sudo",
+      "-n",
+      "kubectl",
+      "get",
+      "deployment",
+      "jenkins",
+      "-n",
+      "ns-devops",
+      "-o",
+      "json"
+    ],
+    "exit": 0,
+    "stderr": "",
+    "selectedFields": {
+      "serviceAccountName": "jenkins-admin",
+      "securityContext": {},
+      "volumes": [
+        {
+          "hostPath": {
+            "path": "/usr/libexec/docker/cli-plugins/docker-compose",
+            "type": "File"
+          },
+          "name": "docker-compose"
+        },
+        {
+          "hostPath": {
+            "path": "/usr/share/zoneinfo/Asia/Shanghai",
+            "type": ""
+          },
+          "name": "tz-config"
+        },
+        {
+          "name": "jenkins-data",
+          "persistentVolumeClaim": {
+            "claimName": "jenkins-pvc"
+          }
+        },
+        {
+          "hostPath": {
+            "path": "/var/run/docker.sock",
+            "type": ""
+          },
+          "name": "docker-sock"
+        },
+        {
+          "hostPath": {
+            "path": "/usr/bin/docker",
+            "type": ""
+          },
+          "name": "docker-bin"
+        },
+        {
+          "hostPath": {
+            "path": "/home/zhang/devops-tools/kubectl",
+            "type": ""
+          },
+          "name": "kubectl-bin"
+        },
+        {
+          "hostPath": {
+            "path": "/usr/local/bin/docker-safe",
+            "type": "File"
+          },
+          "name": "docker-safe"
+        },
+        {
+          "hostPath": {
+            "path": "/usr/bin/docker.original",
+            "type": "File"
+          },
+          "name": "docker-original"
+        },
+        {
+          "hostPath": {
+            "path": "/usr/libexec/docker/cli-plugins/docker-buildx",
+            "type": "File"
+          },
+          "name": "docker-buildx"
+        }
+      ],
+      "containers": [
+        {
+          "name": "jenkins",
+          "securityContext": null,
+          "volumeMounts": [
+            {
+              "mountPath": "/usr/libexec/docker/cli-plugins/docker-compose",
+              "name": "docker-compose",
+              "readOnly": true
+            },
+            {
+              "mountPath": "/etc/localtime",
+              "name": "tz-config",
+              "readOnly": true
+            },
+            {
+              "mountPath": "/var/jenkins_home",
+              "name": "jenkins-data"
+            },
+            {
+              "mountPath": "/var/run/docker.sock",
+              "name": "docker-sock"
+            },
+            {
+              "mountPath": "/usr/bin/docker",
+              "name": "docker-bin"
+            },
+            {
+              "mountPath": "/usr/bin/kubectl",
+              "name": "kubectl-bin"
+            },
+            {
+              "mountPath": "/usr/local/bin/docker-safe",
+              "name": "docker-safe",
+              "readOnly": true
+            },
+            {
+              "mountPath": "/usr/bin/docker.original",
+              "name": "docker-original",
+              "readOnly": true
+            },
+            {
+              "mountPath": "/usr/libexec/docker/cli-plugins/docker-buildx",
+              "name": "docker-buildx",
+              "readOnly": true
+            }
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "command": [
+      "sudo",
+      "-n",
+      "kubectl",
+      "get",
+      "pvc",
+      "jenkins-pvc",
+      "-n",
+      "ns-devops",
+      "-o",
+      "json"
+    ],
+    "exit": 0,
+    "stderr": "",
+    "selectedFields": {
+      "volumeName": "pvc-14c139bf-5717-4b2f-9997-4c77fa03f409",
+      "storageClass": "local-path"
+    }
+  },
+  {
+    "command": [
+      "sudo",
+      "-n",
+      "kubectl",
+      "get",
+      "pv",
+      "pvc-14c139bf-5717-4b2f-9997-4c77fa03f409",
+      "-o",
+      "json"
+    ],
+    "exit": 0,
+    "stderr": "",
+    "selectedFields": {
+      "hostPath": null,
+      "local": {
+        "path": "/var/lib/rancher/k3s/storage/pvc-14c139bf-5717-4b2f-9997-4c77fa03f409_ns-devops_jenkins-pvc"
+      },
+      "csi": null,
+      "capacity": {
+        "storage": "10Gi"
+      },
+      "nodeAffinity": {
+        "required": {
+          "nodeSelectorTerms": [
+            {
+              "matchExpressions": [
+                {
+                  "key": "kubernetes.io/hostname",
+                  "operator": "In",
+                  "values": [
+                    "devops"
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      }
+    }
+  },
+  {
+    "command": [
+      "sudo",
+      "-n",
+      "kubectl",
+      "exec",
+      "-n",
+      "ns-devops",
+      "deploy/jenkins",
+      "--",
+      "sh",
+      "-c",
+      "id; docker info --format \"{{.ID}} {{.Name}} {{json .SecurityOptions}}\"; stat -c \"%u %g %a %n\" /var/run/docker.sock"
+    ],
+    "exit": 0,
+    "stdout": "uid=1000(jenkins) gid=1000(jenkins) groups=1000(jenkins)\n4616ba22-4e70-4b96-8e66-6a3a4d756cb2 devops [\"name=apparmor\",\"name=seccomp,profile=builtin\",\"name=cgroupns\"]\n0 988 666 /var/run/docker.sock\n",
+    "stderr": "Defaulted container \"jenkins\" out of: jenkins, fix-permissions (init)\n"
+  }
+]

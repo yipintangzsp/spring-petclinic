@@ -1,0 +1,102 @@
+[
+  [
+    "overlay writable layer",
+    "/",
+    "Docker containerd snapshotter under /var/lib/containerd; exact prior mountinfo archived",
+    "guest /dev/vda2 ext4 253:2; shared",
+    "container root ro; backing metadata remains writable",
+    "no proven per-container quota",
+    "45472956416 bytes /15324314 free inodes at probe",
+    "new mounts must invalidate future spec; no mounts modified"
+  ],
+  [
+    "cache/temp/report/metadata",
+    "/validation/*",
+    "prior private4MiB tmpfs, no persistent host directory",
+    "private RAM/tmpfs, may swap to guest ext4",
+    "rw; historical bounded16KiB write",
+    "4MiB tmpfs only, no DB suitability proof",
+    "historical statvfs only; not recreated",
+    "arbitrary mounts denied by future executor"
+  ],
+  [
+    "evidence/log export",
+    "future only",
+    "not provisioned; future archive destination NOT_CONFIGURED",
+    "guest workspace and/or local evidence host",
+    "new evidence here only; no scanner output",
+    "bounded transport and destination quota NOT_PROVEN",
+    "no real scanner run",
+    "must not permit arbitrary output paths"
+  ],
+  [
+    "Docker daemon state",
+    "n/a",
+    "/var/lib/docker",
+    "guest /dev/vda2 ext4253:2 shared",
+    "rw",
+    "none proven",
+    "45472956416 bytes /15324314 inodes",
+    "daemon config untouched"
+  ],
+  [
+    "Docker snapshotter",
+    "n/a",
+    "/var/lib/containerd",
+    "same guest ext4 shared",
+    "rw metadata; root overlay consumer ro",
+    "none proven",
+    "same shared capacity, not additive",
+    "mount mapping must be attested per future run"
+  ],
+  [
+    "named volume",
+    "none in validation fixture",
+    "no validation volume; existing local volumes need quota proof",
+    "not provisioned",
+    "NOT_CONFIGURED",
+    "not covered by layer size",
+    "UNKNOWN future volume",
+    "no volume creation/inspection contents"
+  ],
+  [
+    "bind mount",
+    "none in validation fixture",
+    "prohibited for candidate; production dirs never attached",
+    "NOT_APPLICABLE fixture",
+    "none",
+    "layer quota never assumed to cover binds",
+    "NOT_APPLICABLE",
+    "future arbitrary binds denied"
+  ],
+  [
+    "Jenkins workspace",
+    "/var/jenkins_home/workspace/petclinic-ci",
+    "/var/lib/rancher/k3s/storage/pvc-14c139bf-5717-4b2f-9997-4c77fa03f409_ns-devops_jenkins-pvc",
+    "local-path PV devops; guest backing must remain part of shared budget",
+    "rw by Jenkins",
+    "PVC10Gi declaration is not proven fs quota",
+    "guest domain counters; path-specific stat NOT_TESTED",
+    "ordinary code must not control trusted executor files"
+  ],
+  [
+    "UTM guest filesystem",
+    "/var/lib/*",
+    "virtual block /dev/vda2",
+    "ext4 virtual capacity270430261248 shared",
+    "rw",
+    "no project quota enabled in observed metadata",
+    "guest42.35GiB available below hard floor",
+    "do not equate with physical Mac capacity"
+  ],
+  [
+    "Mac host qcow2/COW",
+    "n/a",
+    "devops.utm/Data/450FFAC4-2D45-4A41-B8C7-76EDE35C4877.qcow2 candidate",
+    "local host device16777231; filesystem type not newly queried",
+    "VM disk not opened/modified",
+    "no verified COW maximum",
+    "hostAvailable23224320000; allocated222322573312; logical365810089984; inodes227197440",
+    "devops-named candidate not cryptographically bound to guest disk; UNKNOWN association"
+  ]
+]
