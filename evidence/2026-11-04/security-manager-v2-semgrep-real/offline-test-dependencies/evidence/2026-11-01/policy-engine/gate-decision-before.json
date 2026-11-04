@@ -1,0 +1,977 @@
+{
+  "scope": "Pure classifier and generic exit semantics; not complete production gate coverage",
+  "hashes": {
+    "vars/securityManager.groovy": "ae297e7313cbf9bdde9e38acb32a3ee3310c571f2d70e289783c5c1c448811af",
+    "infra/security/manager/tool.mjs": "f688fd19f1ca5e7655f4f9fed0c0d479da818c57e10d870618aabdcbe47e0ad2",
+    "infra/security/semgrep-policy.mjs": "5472affa039e5985abe8aa13d97f508ac3fc7949d5fc9c5c2c349408d0b658c2",
+    "infra/security/trivy-medium-policy.mjs": "b46ab32c7e456574c12dbd5b5637fc031f319cbf3345fa87f01007ded32d43bd",
+    "infra/security/zap-policy.mjs": "79c03a12f249460ab3b12e6c540d824c66eeeb48fd6b8779272698bfc7245ce5",
+    "infra/security/runtime/event-policy.mjs": "73d561fe58f5cd49e959240b98ba7ea380f26825696c56ed353045348bc14563"
+  },
+  "cases": [
+    {
+      "component": "semgrep",
+      "scope": "frozen",
+      "input": {
+        "findings": [
+          {
+            "check_id": "java-http-runtime-exec",
+            "extra": {
+              "severity": "ERROR"
+            }
+          }
+        ]
+      },
+      "decision": "FAIL"
+    },
+    {
+      "component": "semgrep",
+      "scope": "frozen",
+      "input": {
+        "findings": [
+          {
+            "check_id": "java-http-runtime-exec",
+            "extra": {
+              "severity": "WARNING"
+            }
+          }
+        ]
+      },
+      "decision": "WARN"
+    },
+    {
+      "component": "semgrep",
+      "scope": "frozen",
+      "input": {
+        "findings": [
+          {
+            "check_id": "java-http-process-builder",
+            "extra": {
+              "severity": "ERROR"
+            }
+          }
+        ]
+      },
+      "decision": "FAIL"
+    },
+    {
+      "component": "semgrep",
+      "scope": "frozen",
+      "input": {
+        "findings": [
+          {
+            "check_id": "java-http-process-builder",
+            "extra": {
+              "severity": "WARNING"
+            }
+          }
+        ]
+      },
+      "decision": "WARN"
+    },
+    {
+      "component": "semgrep",
+      "scope": "frozen",
+      "input": {
+        "findings": [
+          {
+            "check_id": "java-weak-cipher",
+            "extra": {
+              "severity": "ERROR"
+            }
+          }
+        ]
+      },
+      "decision": "FAIL"
+    },
+    {
+      "component": "semgrep",
+      "scope": "frozen",
+      "input": {
+        "findings": [
+          {
+            "check_id": "java-weak-cipher",
+            "extra": {
+              "severity": "WARNING"
+            }
+          }
+        ]
+      },
+      "decision": "WARN"
+    },
+    {
+      "component": "semgrep",
+      "scope": "frozen",
+      "input": {
+        "findings": [
+          {
+            "check_id": "unknown",
+            "extra": {
+              "severity": "ERROR"
+            }
+          }
+        ]
+      },
+      "decision": "WARN"
+    },
+    {
+      "component": "semgrep",
+      "scope": "frozen",
+      "input": {
+        "findings": [
+          {
+            "check_id": "unknown",
+            "extra": {
+              "severity": "WARNING"
+            }
+          }
+        ]
+      },
+      "decision": "WARN"
+    },
+    {
+      "component": "trivy",
+      "scope": "frozen",
+      "input": {
+        "finding": {
+          "id": "test",
+          "package": "pkg",
+          "version": "1",
+          "severity": "Critical"
+        },
+        "review": {
+          "image": "digest-fixture",
+          "entries": []
+        },
+        "image": "digest-fixture"
+      },
+      "decision": "FAIL"
+    },
+    {
+      "component": "trivy",
+      "scope": "frozen",
+      "input": {
+        "finding": {
+          "id": "test",
+          "package": "pkg",
+          "version": "1",
+          "severity": "Critical"
+        },
+        "review": {
+          "image": "digest-fixture",
+          "entries": [
+            {
+              "id": "test",
+              "package": "pkg",
+              "version": "1",
+              "severity": "Critical",
+              "mustFix": true,
+              "reachability": "confirmed",
+              "fixVersion": "2",
+              "evidence": {
+                "positive": true,
+                "negative": true,
+                "businessPath": true
+              }
+            }
+          ]
+        },
+        "image": "digest-fixture"
+      },
+      "decision": "FAIL"
+    },
+    {
+      "component": "trivy",
+      "scope": "frozen",
+      "input": {
+        "finding": {
+          "id": "test",
+          "package": "pkg",
+          "version": "1",
+          "severity": "High"
+        },
+        "review": {
+          "image": "digest-fixture",
+          "entries": []
+        },
+        "image": "digest-fixture"
+      },
+      "decision": "FAIL"
+    },
+    {
+      "component": "trivy",
+      "scope": "frozen",
+      "input": {
+        "finding": {
+          "id": "test",
+          "package": "pkg",
+          "version": "1",
+          "severity": "High"
+        },
+        "review": {
+          "image": "digest-fixture",
+          "entries": [
+            {
+              "id": "test",
+              "package": "pkg",
+              "version": "1",
+              "severity": "High",
+              "mustFix": true,
+              "reachability": "confirmed",
+              "fixVersion": "2",
+              "evidence": {
+                "positive": true,
+                "negative": true,
+                "businessPath": true
+              }
+            }
+          ]
+        },
+        "image": "digest-fixture"
+      },
+      "decision": "FAIL"
+    },
+    {
+      "component": "trivy",
+      "scope": "frozen",
+      "input": {
+        "finding": {
+          "id": "test",
+          "package": "pkg",
+          "version": "1",
+          "severity": "Medium"
+        },
+        "review": {
+          "image": "digest-fixture",
+          "entries": []
+        },
+        "image": "digest-fixture"
+      },
+      "decision": "WARN"
+    },
+    {
+      "component": "trivy",
+      "scope": "frozen",
+      "input": {
+        "finding": {
+          "id": "test",
+          "package": "pkg",
+          "version": "1",
+          "severity": "Medium"
+        },
+        "review": {
+          "image": "digest-fixture",
+          "entries": [
+            {
+              "id": "test",
+              "package": "pkg",
+              "version": "1",
+              "severity": "Medium",
+              "mustFix": true,
+              "reachability": "confirmed",
+              "fixVersion": "2",
+              "evidence": {
+                "positive": true,
+                "negative": true,
+                "businessPath": true
+              }
+            }
+          ]
+        },
+        "image": "digest-fixture"
+      },
+      "decision": "FAIL"
+    },
+    {
+      "component": "trivy",
+      "scope": "frozen",
+      "input": {
+        "finding": {
+          "id": "test",
+          "package": "pkg",
+          "version": "1",
+          "severity": "Low"
+        },
+        "review": {
+          "image": "digest-fixture",
+          "entries": []
+        },
+        "image": "digest-fixture"
+      },
+      "decision": "WARN"
+    },
+    {
+      "component": "trivy",
+      "scope": "frozen",
+      "input": {
+        "finding": {
+          "id": "test",
+          "package": "pkg",
+          "version": "1",
+          "severity": "Low"
+        },
+        "review": {
+          "image": "digest-fixture",
+          "entries": [
+            {
+              "id": "test",
+              "package": "pkg",
+              "version": "1",
+              "severity": "Low",
+              "mustFix": true,
+              "reachability": "confirmed",
+              "fixVersion": "2",
+              "evidence": {
+                "positive": true,
+                "negative": true,
+                "businessPath": true
+              }
+            }
+          ]
+        },
+        "image": "digest-fixture"
+      },
+      "decision": "WARN"
+    },
+    {
+      "component": "zap",
+      "scope": "frozen",
+      "input": {
+        "raw": {
+          "site": [
+            {
+              "alerts": [
+                {
+                  "pluginid": "test",
+                  "riskcode": "0",
+                  "instances": []
+                }
+              ]
+            }
+          ]
+        },
+        "context": {},
+        "approved": {
+          "schema": 1,
+          "confirmations": []
+        }
+      },
+      "decision": "WARN"
+    },
+    {
+      "component": "zap",
+      "scope": "frozen",
+      "input": {
+        "raw": {
+          "site": [
+            {
+              "alerts": [
+                {
+                  "pluginid": "test",
+                  "riskcode": "1",
+                  "instances": []
+                }
+              ]
+            }
+          ]
+        },
+        "context": {},
+        "approved": {
+          "schema": 1,
+          "confirmations": []
+        }
+      },
+      "decision": "WARN"
+    },
+    {
+      "component": "zap",
+      "scope": "frozen",
+      "input": {
+        "raw": {
+          "site": [
+            {
+              "alerts": [
+                {
+                  "pluginid": "test",
+                  "riskcode": "2",
+                  "instances": []
+                }
+              ]
+            }
+          ]
+        },
+        "context": {},
+        "approved": {
+          "schema": 1,
+          "confirmations": []
+        }
+      },
+      "decision": "WARN"
+    },
+    {
+      "component": "zap",
+      "scope": "frozen",
+      "input": {
+        "raw": {
+          "site": [
+            {
+              "alerts": [
+                {
+                  "pluginid": "test",
+                  "riskcode": "3",
+                  "instances": []
+                }
+              ]
+            }
+          ]
+        },
+        "context": {},
+        "approved": {
+          "schema": 1,
+          "confirmations": []
+        }
+      },
+      "decision": "WARN"
+    },
+    {
+      "component": "gitleaks",
+      "scope": "generic",
+      "mode": "audit",
+      "input": {
+        "findings": 0,
+        "blocking": 0
+      },
+      "decision": "PASS"
+    },
+    {
+      "component": "gitleaks",
+      "scope": "generic",
+      "mode": "audit",
+      "input": {
+        "findings": 1,
+        "blocking": 0
+      },
+      "decision": "WARN"
+    },
+    {
+      "component": "gitleaks",
+      "scope": "generic",
+      "mode": "audit",
+      "input": {
+        "findings": 1,
+        "blocking": 1
+      },
+      "decision": "WARN"
+    },
+    {
+      "component": "gitleaks",
+      "scope": "generic",
+      "mode": "enforce",
+      "input": {
+        "findings": 0,
+        "blocking": 0
+      },
+      "decision": "PASS"
+    },
+    {
+      "component": "gitleaks",
+      "scope": "generic",
+      "mode": "enforce",
+      "input": {
+        "findings": 1,
+        "blocking": 0
+      },
+      "decision": "PASS"
+    },
+    {
+      "component": "gitleaks",
+      "scope": "generic",
+      "mode": "enforce",
+      "input": {
+        "findings": 1,
+        "blocking": 1
+      },
+      "decision": "FAIL"
+    },
+    {
+      "component": "semgrep",
+      "scope": "generic",
+      "mode": "audit",
+      "input": {
+        "findings": 0,
+        "blocking": 0
+      },
+      "decision": "PASS"
+    },
+    {
+      "component": "semgrep",
+      "scope": "generic",
+      "mode": "audit",
+      "input": {
+        "findings": 1,
+        "blocking": 0
+      },
+      "decision": "WARN"
+    },
+    {
+      "component": "semgrep",
+      "scope": "generic",
+      "mode": "audit",
+      "input": {
+        "findings": 1,
+        "blocking": 1
+      },
+      "decision": "WARN"
+    },
+    {
+      "component": "semgrep",
+      "scope": "generic",
+      "mode": "enforce",
+      "input": {
+        "findings": 0,
+        "blocking": 0
+      },
+      "decision": "PASS"
+    },
+    {
+      "component": "semgrep",
+      "scope": "generic",
+      "mode": "enforce",
+      "input": {
+        "findings": 1,
+        "blocking": 0
+      },
+      "decision": "PASS"
+    },
+    {
+      "component": "semgrep",
+      "scope": "generic",
+      "mode": "enforce",
+      "input": {
+        "findings": 1,
+        "blocking": 1
+      },
+      "decision": "FAIL"
+    },
+    {
+      "component": "trivy",
+      "scope": "generic",
+      "mode": "audit",
+      "input": {
+        "findings": 0,
+        "blocking": 0
+      },
+      "decision": "PASS"
+    },
+    {
+      "component": "trivy",
+      "scope": "generic",
+      "mode": "audit",
+      "input": {
+        "findings": 1,
+        "blocking": 0
+      },
+      "decision": "WARN"
+    },
+    {
+      "component": "trivy",
+      "scope": "generic",
+      "mode": "audit",
+      "input": {
+        "findings": 1,
+        "blocking": 1
+      },
+      "decision": "WARN"
+    },
+    {
+      "component": "trivy",
+      "scope": "generic",
+      "mode": "enforce",
+      "input": {
+        "findings": 0,
+        "blocking": 0
+      },
+      "decision": "PASS"
+    },
+    {
+      "component": "trivy",
+      "scope": "generic",
+      "mode": "enforce",
+      "input": {
+        "findings": 1,
+        "blocking": 0
+      },
+      "decision": "PASS"
+    },
+    {
+      "component": "trivy",
+      "scope": "generic",
+      "mode": "enforce",
+      "input": {
+        "findings": 1,
+        "blocking": 1
+      },
+      "decision": "FAIL"
+    },
+    {
+      "component": "sonarqube",
+      "scope": "generic",
+      "mode": "audit",
+      "input": {
+        "findings": 0,
+        "blocking": 0
+      },
+      "decision": "PASS"
+    },
+    {
+      "component": "sonarqube",
+      "scope": "generic",
+      "mode": "audit",
+      "input": {
+        "findings": 1,
+        "blocking": 0
+      },
+      "decision": "WARN"
+    },
+    {
+      "component": "sonarqube",
+      "scope": "generic",
+      "mode": "audit",
+      "input": {
+        "findings": 1,
+        "blocking": 1
+      },
+      "decision": "WARN"
+    },
+    {
+      "component": "sonarqube",
+      "scope": "generic",
+      "mode": "enforce",
+      "input": {
+        "findings": 0,
+        "blocking": 0
+      },
+      "decision": "PASS"
+    },
+    {
+      "component": "sonarqube",
+      "scope": "generic",
+      "mode": "enforce",
+      "input": {
+        "findings": 1,
+        "blocking": 0
+      },
+      "decision": "PASS"
+    },
+    {
+      "component": "sonarqube",
+      "scope": "generic",
+      "mode": "enforce",
+      "input": {
+        "findings": 1,
+        "blocking": 1
+      },
+      "decision": "FAIL"
+    },
+    {
+      "component": "kubescape",
+      "scope": "generic",
+      "mode": "audit",
+      "input": {
+        "findings": 0,
+        "blocking": 0
+      },
+      "decision": "PASS"
+    },
+    {
+      "component": "kubescape",
+      "scope": "generic",
+      "mode": "audit",
+      "input": {
+        "findings": 1,
+        "blocking": 0
+      },
+      "decision": "WARN"
+    },
+    {
+      "component": "kubescape",
+      "scope": "generic",
+      "mode": "audit",
+      "input": {
+        "findings": 1,
+        "blocking": 1
+      },
+      "decision": "WARN"
+    },
+    {
+      "component": "kubescape",
+      "scope": "generic",
+      "mode": "enforce",
+      "input": {
+        "findings": 0,
+        "blocking": 0
+      },
+      "decision": "PASS"
+    },
+    {
+      "component": "kubescape",
+      "scope": "generic",
+      "mode": "enforce",
+      "input": {
+        "findings": 1,
+        "blocking": 0
+      },
+      "decision": "PASS"
+    },
+    {
+      "component": "kubescape",
+      "scope": "generic",
+      "mode": "enforce",
+      "input": {
+        "findings": 1,
+        "blocking": 1
+      },
+      "decision": "FAIL"
+    },
+    {
+      "component": "zap",
+      "scope": "generic",
+      "mode": "audit",
+      "input": {
+        "findings": 0,
+        "blocking": 0
+      },
+      "decision": "PASS"
+    },
+    {
+      "component": "zap",
+      "scope": "generic",
+      "mode": "audit",
+      "input": {
+        "findings": 1,
+        "blocking": 0
+      },
+      "decision": "WARN"
+    },
+    {
+      "component": "zap",
+      "scope": "generic",
+      "mode": "audit",
+      "input": {
+        "findings": 1,
+        "blocking": 1
+      },
+      "decision": "WARN"
+    },
+    {
+      "component": "zap",
+      "scope": "generic",
+      "mode": "enforce",
+      "input": {
+        "findings": 0,
+        "blocking": 0
+      },
+      "decision": "PASS"
+    },
+    {
+      "component": "zap",
+      "scope": "generic",
+      "mode": "enforce",
+      "input": {
+        "findings": 1,
+        "blocking": 0
+      },
+      "decision": "PASS"
+    },
+    {
+      "component": "zap",
+      "scope": "generic",
+      "mode": "enforce",
+      "input": {
+        "findings": 1,
+        "blocking": 1
+      },
+      "decision": "FAIL"
+    },
+    {
+      "component": "sbom",
+      "scope": "generic",
+      "mode": "audit",
+      "input": {
+        "findings": 0,
+        "blocking": 0
+      },
+      "decision": "PASS"
+    },
+    {
+      "component": "sbom",
+      "scope": "generic",
+      "mode": "audit",
+      "input": {
+        "findings": 1,
+        "blocking": 0
+      },
+      "decision": "WARN"
+    },
+    {
+      "component": "sbom",
+      "scope": "generic",
+      "mode": "audit",
+      "input": {
+        "findings": 1,
+        "blocking": 1
+      },
+      "decision": "WARN"
+    },
+    {
+      "component": "sbom",
+      "scope": "generic",
+      "mode": "enforce",
+      "input": {
+        "findings": 0,
+        "blocking": 0
+      },
+      "decision": "PASS"
+    },
+    {
+      "component": "sbom",
+      "scope": "generic",
+      "mode": "enforce",
+      "input": {
+        "findings": 1,
+        "blocking": 0
+      },
+      "decision": "PASS"
+    },
+    {
+      "component": "sbom",
+      "scope": "generic",
+      "mode": "enforce",
+      "input": {
+        "findings": 1,
+        "blocking": 1
+      },
+      "decision": "FAIL"
+    },
+    {
+      "component": "cosign",
+      "scope": "generic",
+      "mode": "audit",
+      "input": {
+        "findings": 0,
+        "blocking": 0
+      },
+      "decision": "PASS"
+    },
+    {
+      "component": "cosign",
+      "scope": "generic",
+      "mode": "audit",
+      "input": {
+        "findings": 1,
+        "blocking": 0
+      },
+      "decision": "WARN"
+    },
+    {
+      "component": "cosign",
+      "scope": "generic",
+      "mode": "audit",
+      "input": {
+        "findings": 1,
+        "blocking": 1
+      },
+      "decision": "WARN"
+    },
+    {
+      "component": "cosign",
+      "scope": "generic",
+      "mode": "enforce",
+      "input": {
+        "findings": 0,
+        "blocking": 0
+      },
+      "decision": "PASS"
+    },
+    {
+      "component": "cosign",
+      "scope": "generic",
+      "mode": "enforce",
+      "input": {
+        "findings": 1,
+        "blocking": 0
+      },
+      "decision": "PASS"
+    },
+    {
+      "component": "cosign",
+      "scope": "generic",
+      "mode": "enforce",
+      "input": {
+        "findings": 1,
+        "blocking": 1
+      },
+      "decision": "FAIL"
+    },
+    {
+      "component": "defectdojo",
+      "scope": "generic",
+      "mode": "audit",
+      "input": {
+        "findings": 0,
+        "blocking": 0
+      },
+      "decision": "PASS"
+    },
+    {
+      "component": "defectdojo",
+      "scope": "generic",
+      "mode": "audit",
+      "input": {
+        "findings": 1,
+        "blocking": 0
+      },
+      "decision": "WARN"
+    },
+    {
+      "component": "defectdojo",
+      "scope": "generic",
+      "mode": "audit",
+      "input": {
+        "findings": 1,
+        "blocking": 1
+      },
+      "decision": "WARN"
+    },
+    {
+      "component": "defectdojo",
+      "scope": "generic",
+      "mode": "enforce",
+      "input": {
+        "findings": 0,
+        "blocking": 0
+      },
+      "decision": "PASS"
+    },
+    {
+      "component": "defectdojo",
+      "scope": "generic",
+      "mode": "enforce",
+      "input": {
+        "findings": 1,
+        "blocking": 0
+      },
+      "decision": "PASS"
+    },
+    {
+      "component": "defectdojo",
+      "scope": "generic",
+      "mode": "enforce",
+      "input": {
+        "findings": 1,
+        "blocking": 1
+      },
+      "decision": "FAIL"
+    }
+  ]
+}

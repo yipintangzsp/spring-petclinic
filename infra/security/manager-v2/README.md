@@ -155,3 +155,56 @@ after recording its seal if desired; never remove historical evidence. Reverting
 the local candidate commit can remove this entry without changing production;
 do not revert unrelated user changes. No push, Jenkins job creation, DB refresh,
 Trivy scan, Dojo import, GitOps change, signing, release or rollout is performed.
+
+## Second real plugin: Semgrep (Candidate .3)
+
+`realPluginsRegistry()` opts into fixed Gitleaks and Semgrep real runners. Both real
+plugins default disabled and need explicit `security.plugins.<id>.enabled=true`.
+The default replay registry and `realGitleaksRegistry()` remain compatible.
+`semgrep-real.mjs` uses the existing pinned Semgrep CE 1.182.1 native core and
+`infra/security/scan-rules.json` unchanged. No registry/network rule download,
+Python CLI auto-update, arbitrary shell, project hooks, or user runner code.
+
+The Semgrep capabilities are SOURCE_DIR, SEMGREP_BINARY, SEMGREP_RULESET,
+OUTPUT_DIR, POLICY_VERSION, and TRUSTED_VALIDATION_WORKSPACE. These hints do not
+authorize execution: the runner also requires the existing approved Linux ARM64
+non-root/no-new-privs/capability-free tool-only context, root-owned bounded
+synthetic input approval, fixed dependency hashes, source inode/device/content,
+and a private output directory. Unsupported architectures and Python-only input
+cannot become scan PASS. This is not a Jenkins Agent identity backend.
+
+The rules are Java-only. Cross-project real tests use java-fixture/java-web and
+service-fixture/container-service with distinct approved Java snapshots. They do
+not claim Python SAST coverage. Normalization preserves the native finding and
+severity, and the existing Policy owner evaluates each completed plugin once.
+Each native stdout is retained byte-for-byte inside the independent Semgrep raw
+collection with its SHA; runtime facts bind source, tool, rules, and commands.
+Errors/disabled/missing capability have no Policy PASS; a single plugin error is
+recorded while unrelated plugins continue. Semgrep's total deadline is separate
+from Gitleaks's timeout. Candidate results add Manager/profile/mode/level metadata
+without changing the existing Result Router or Gitleaks runner business logic.
+
+Real-mode CLI adds `--semgrep-approval` and `--semgrep-source-dir`. Combine them
+with the existing `--gitleaks-approval` / `--source-dir` for the same Manager run;
+all paths must already belong to a trusted approved disposable domain. CLI flags
+alone are not approval and cannot supply a binary path, rule URL or shell command.
+Other plugins should be explicitly disabled when exercising only these two.
+
+Compatibility scope is the existing `classifySemgrep` finding classification and
+the tested clean/high-risk production acceptance branches. Warning-only finding
+classification is WARN; the existing combined production shell stage can still
+exit successfully with warnings. The combined command-audit, Lease, Pod, network,
+and production lifecycle Gate was not executed by the local real runner. Those
+semantics and all production Gate sources remain unchanged.
+
+Evidence and exact test/incident scope:
+[evidence/2026-11-04/security-manager-v2-semgrep-real/REPORT.md](../../../evidence/2026-11-04/security-manager-v2-semgrep-real/REPORT.md).
+One legacy replay test wrote fixed historical output paths during this round;
+original bytes were restored only after a full pre-round SHA match. The incident,
+new outputs and recovery receipts are retained. Legacy replay tests must run in
+a disposable checkout (`clean-checkout.py`), not against sealed evidence paths.
+
+The old disabled Jenkins CI package stays pinned to Candidate .2. Its frozen
+release manifest must not be rewritten to accept .3; a future CI stage needs its
+own reviewed versioned package. No Agent, Jenkins build, production Summary V2,
+Trivy/Dojo execution, production Security Manager, release or rollout is enabled.

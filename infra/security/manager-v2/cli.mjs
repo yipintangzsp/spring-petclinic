@@ -1,9 +1,9 @@
 #!/usr/bin/env node
 import fs from 'node:fs';import path from 'node:path';import {pathToFileURL} from 'node:url';
-import {runCandidate} from './core.mjs';import {registry,realGitleaksRegistry} from './registry.mjs';import {routeResults} from './router.mjs';
+import {runCandidate} from './core.mjs';import {registry,realGitleaksRegistry,realPluginsRegistry} from './registry.mjs';import {routeResults} from './router.mjs';
 import {fail} from '../summary-v2/codec.mjs';
 export function parameters(argv,env){
- const options={};for(let i=0;i<argv.length;i+=2){const key=argv[i];if(!['--config','--inputs','--output','--project','--run-id','--gitleaks-approval','--source-dir'].includes(key)||options[key]!==undefined||!argv[i+1]||argv[i+1].startsWith('--'))fail('invalid/duplicate CLI argument');options[key]=argv[i+1];}
+ const options={};for(let i=0;i<argv.length;i+=2){const key=argv[i];if(!['--config','--inputs','--output','--project','--run-id','--gitleaks-approval','--semgrep-approval','--semgrep-source-dir','--source-dir'].includes(key)||options[key]!==undefined||!argv[i+1]||argv[i+1].startsWith('--'))fail('invalid/duplicate CLI argument');options[key]=argv[i+1];}
  if(!options['--output']||!options['--project']||!options['--run-id'])fail('output/project/run-id required');
  const config=options['--config']?JSON.parse(fs.readFileSync(options['--config'])):{};config.security??={};
  const mapping={SECURITY_ENABLED:'enabled',GLOBAL_MODE:'globalMode',SECURITY_LEVEL:'securityLevel',PROFILE:'profile',POLICY_VERSION:'policyVersion'};
@@ -14,6 +14,11 @@ export function parameters(argv,env){
   config.security.plugins=Object.fromEntries(ids.map(id=>[id,{enabled:selected.includes(id)}]));
  }
  const inputs=options['--inputs']?JSON.parse(fs.readFileSync(options['--inputs'])):{};
+ if(options['--semgrep-source-dir']&&!options['--semgrep-approval'])fail('Semgrep approval required');
+ if(options['--semgrep-approval']){
+  const ap=options['--semgrep-approval'],g=options['--gitleaks-approval'];
+  return {config,inputs:{...inputs,semgrep:{approvalFile:ap,sourceDir:options['--semgrep-source-dir']??options['--source-dir']??''},...(g?{gitleaks:{approvalFile:g,sourceDir:options['--source-dir']??''}}:{})},registry:realPluginsRegistry({gitleaks:!!g}),projectId:options['--project'],runId:options['--run-id'],output:path.resolve(options['--output']),context:{platform:process.platform,capabilities:Object.fromEntries(['SOURCE_DIR','SEMGREP_BINARY','SEMGREP_RULESET','OUTPUT_DIR','POLICY_VERSION','TRUSTED_VALIDATION_WORKSPACE',...(g?['GITLEAKS_TOOL']:[])].map(k=>[k,{state:k==='SOURCE_DIR'&&!options['--semgrep-source-dir']&&!options['--source-dir']?'NOT_CONFIGURED':'AVAILABLE'}]))}};
+ }
  if(options['--gitleaks-approval']||options['--source-dir'])return {config,inputs:{...inputs,gitleaks:{approvalFile:options['--gitleaks-approval']??'',sourceDir:options['--source-dir']??''}},registry:realGitleaksRegistry(),projectId:options['--project'],runId:options['--run-id'],output:path.resolve(options['--output']),context:{platform:process.platform,capabilities:{SOURCE_DIR:{state:options['--source-dir']?'AVAILABLE':'NOT_CONFIGURED'},GITLEAKS_TOOL:{state:options['--gitleaks-approval']?'AVAILABLE':'NOT_CONFIGURED'},TRUSTED_VALIDATION_WORKSPACE:{state:options['--gitleaks-approval']?'AVAILABLE':'NOT_CONFIGURED'}}}};
  return {config,inputs,projectId:options['--project'],runId:options['--run-id'],output:path.resolve(options['--output']),context:{platform:process.platform,capabilities:options['--inputs']?{SECURITY_REPORTS:{state:'AVAILABLE'}}:{}}};
 }

@@ -1,0 +1,1408 @@
+TAP version 13
+# Subtest: A default standard and explicit low
+ok 1 - A default standard and explicit low
+  ---
+  duration_ms: 6.866167
+  type: 'test'
+  ...
+# Subtest: A profile then component then project provenance
+ok 2 - A profile then component then project provenance
+  ---
+  duration_ms: 3.776958
+  type: 'test'
+  ...
+# Subtest: A malformed settings fail closed
+ok 3 - A malformed settings fail closed
+  ---
+  duration_ms: 0.520375
+  type: 'test'
+  ...
+# Subtest: A policy pins baseline-v2 compatibility and strict-v1
+ok 4 - A policy pins baseline-v2 compatibility and strict-v1
+  ---
+  duration_ms: 1.642916
+  type: 'test'
+  ...
+# Subtest: A invalid null/false layers and overridden invalid global values never fall back
+ok 5 - A invalid null/false layers and overridden invalid global values never fall back
+  ---
+  duration_ms: 0.29825
+  type: 'test'
+  ...
+# Subtest: A component and project policy changes only affect their intended target
+ok 6 - A component and project policy changes only affect their intended target
+  ---
+  duration_ms: 1.087792
+  type: 'test'
+  ...
+# Subtest: E master false suppresses even invalid unapproved runner inputs
+ok 7 - E master false suppresses even invalid unapproved runner inputs
+  ---
+  duration_ms: 281.666459
+  type: 'test'
+  ...
+# Subtest: E off and all disabled never fabricate PASS
+ok 8 - E off and all disabled never fabricate PASS
+  ---
+  duration_ms: 404.770208
+  type: 'test'
+  ...
+# Subtest: E audit retains FAIL while ordinary candidate build may continue
+ok 9 - E audit retains FAIL while ordinary candidate build may continue
+  ---
+  duration_ms: 177.033333
+  type: 'test'
+  ...
+# Subtest: E enforce FAIL stops candidate; no live promotion for PASS either
+ok 10 - E enforce FAIL stops candidate; no live promotion for PASS either
+  ---
+  duration_ms: 294.685833
+  type: 'test'
+  ...
+# Subtest: E disabled Trivy does not affect two independent workers
+ok 11 - E disabled Trivy does not affect two independent workers
+  ---
+  duration_ms: 157.2155
+  type: 'test'
+  ...
+# Subtest: E missing/unavailable/unsupported capabilities never PASS
+ok 12 - E missing/unavailable/unsupported capabilities never PASS
+  ---
+  duration_ms: 289.574666
+  type: 'test'
+  ...
+# Subtest: E missing archive is NOT_CONFIGURED; corrupt/unapproved input is POLICY_ERROR
+ok 13 - E missing archive is NOT_CONFIGURED; corrupt/unapproved input is POLICY_ERROR
+  ---
+  duration_ms: 143.03025
+  type: 'test'
+  ...
+# Subtest: F versioned Gitleaks preserves both frozen decisions with independent Cosign
+ok 14 - F versioned Gitleaks preserves both frozen decisions with independent Cosign
+  ---
+  duration_ms: 313.201083
+  type: 'test'
+  ...
+# Subtest: F claim is atomic before await; Gate and Summary reuse identical result
+ok 15 - F claim is atomic before await; Gate and Summary reuse identical result
+  ---
+  duration_ms: 114.963333
+  type: 'test'
+  ...
+# Subtest: F strict uses existing engine; original findings stay unchanged; frozen FAIL floor retained
+ok 16 - F strict uses existing engine; original findings stay unchanged; frozen FAIL floor retained
+  ---
+  duration_ms: 119.945625
+  type: 'test'
+  ...
+# Subtest: G history is exclusive, raw bytes match digest, tampering detected
+ok 17 - G history is exclusive, raw bytes match digest, tampering detected
+  ---
+  duration_ms: 123.608541
+  type: 'test'
+  ...
+# Subtest: G reserved V1 path, overwrite and post-seal writes are rejected
+ok 18 - G reserved V1 path, overwrite and post-seal writes are rejected
+  ---
+  duration_ms: 14.055583
+  type: 'test'
+  ...
+# Subtest: G symlink output parent and directory replacement are refused
+ok 19 - G symlink output parent and directory replacement are refused
+  ---
+  duration_ms: 0.959375
+  type: 'test'
+  ...
+# Subtest: H plugin removal does not alter unrelated policy decisions
+ok 20 - H plugin removal does not alter unrelated policy decisions
+  ---
+  duration_ms: 78.5395
+  type: 'test'
+  ...
+# Subtest: H enabled Trivy reports real blockers without execution/evaluation
+ok 21 - H enabled Trivy reports real blockers without execution/evaluation
+  ---
+  duration_ms: 126.440583
+  type: 'test'
+  ...
+# Subtest: H malformed and unknown configuration writes no artifact
+ok 22 - H malformed and unknown configuration writes no artifact
+  ---
+  duration_ms: 0.650917
+  type: 'test'
+  ...
+# Subtest: E actual worker timeout is an operational ERROR, never PASS/WARN
+ok 23 - E actual worker timeout is an operational ERROR, never PASS/WARN
+  ---
+  duration_ms: 87.846458
+  type: 'test'
+  ...
+# Subtest: F engine rejects invalid evidence once; no fabricated Policy result
+ok 24 - F engine rejects invalid evidence once; no fabricated Policy result
+  ---
+  duration_ms: 0.554583
+  type: 'test'
+  ...
+# Subtest: G a recomputed digest cannot turn nonexecution into PASS
+ok 25 - G a recomputed digest cannot turn nonexecution into PASS
+  ---
+  duration_ms: 72.413958
+  type: 'test'
+  ...
+# Subtest: B registry default disabled prevents execution before per-project explicit selection
+ok 26 - B registry default disabled prevents execution before per-project explicit selection
+  ---
+  duration_ms: 79.469125
+  type: 'test'
+  ...
+# Subtest: real registry is explicit, disabled by default and preserves every other plugin
+ok 27 - real registry is explicit, disabled by default and preserves every other plugin
+  ---
+  duration_ms: 3.509458
+  type: 'test'
+  ...
+# Subtest: real mode missing source/tool/trusted workspace never starts a process
+ok 28 - real mode missing source/tool/trusted workspace never starts a process
+  ---
+  duration_ms: 233.614625
+  type: 'test'
+  ...
+# Subtest: real mode Darwin is unsupported regardless of claimed capabilities
+ok 29 - real mode Darwin is unsupported regardless of claimed capabilities
+  ---
+  duration_ms: 0.247708
+  type: 'test'
+  ...
+# Subtest: real master switch disables even malformed unapproved inputs without execution
+ok 30 - real master switch disables even malformed unapproved inputs without execution
+  ---
+  duration_ms: 186.216958
+  type: 'test'
+  ...
+# Subtest: real plugin switch disables without changing registry or starting processes
+ok 31 - real plugin switch disables without changing registry or starting processes
+  ---
+  duration_ms: 184.645333
+  type: 'test'
+  ...
+# Subtest: real CLI explicitly selects fixed runner, missing source remains unconfigured
+ok 32 - real CLI explicitly selects fixed runner, missing source remains unconfigured
+  ---
+  duration_ms: 0.637041
+  type: 'test'
+  ...
+# Subtest: real invalid Policy is rejected before output creation or process start
+ok 33 - real invalid Policy is rejected before output creation or process start
+  ---
+  duration_ms: 0.553667
+  type: 'test'
+  ...
+# Subtest: I independent dry-run and local consumer verify receipt digests without re-evaluation
+ok 34 - I independent dry-run and local consumer verify receipt digests without re-evaluation
+  ---
+  duration_ms: 394.799375
+  type: 'test'
+  ...
+# Subtest: I duplicate consumers, injected handlers, mutated summary, bad seal rejected
+ok 35 - I duplicate consumers, injected handlers, mutated summary, bad seal rejected
+  ---
+  duration_ms: 301.76325
+  type: 'test'
+  ...
+# Subtest: I future DefectDojo cannot publish to network even if enabled
+ok 36 - I future DefectDojo cannot publish to network even if enabled
+  ---
+  duration_ms: 191.3975
+  type: 'test'
+  ...
+# Subtest: J same manager across projects/profiles with isolated overrides, schemas and capabilities
+ok 37 - J same manager across projects/profiles with isolated overrides, schemas and capabilities
+  ---
+  duration_ms: 336.753458
+  type: 'test'
+  ...
+# Subtest: J actual CLI master switch, required parameters, plugin selection and env validation
+ok 38 - J actual CLI master switch, required parameters, plugin selection and env validation
+  ---
+  duration_ms: 252.247542
+  type: 'test'
+  ...
+# Subtest: B duplicate/unknown IDs rejected; removal does not rewrite others
+ok 39 - B duplicate/unknown IDs rejected; removal does not rewrite others
+  ---
+  duration_ms: 9.737167
+  type: 'test'
+  ...
+# Subtest: B arbitrary runner code is not a registration contract
+ok 40 - B arbitrary runner code is not a registration contract
+  ---
+  duration_ms: 0.132916
+  type: 'test'
+  ...
+# Subtest: C capabilities are scoped; Trivy never executes even with asserted prerequisites
+ok 41 - C capabilities are scoped; Trivy never executes even with asserted prerequisites
+  ---
+  duration_ms: 0.307417
+  type: 'test'
+  ...
+# Subtest: C missing/unavailable/platform/profile are distinct
+ok 42 - C missing/unavailable/platform/profile are distinct
+  ---
+  duration_ms: 0.175042
+  type: 'test'
+  ...
+# Subtest: D independent immutable archive gitleaks-pass
+ok 43 - D independent immutable archive gitleaks-pass
+  ---
+  duration_ms: 72.315917
+  type: 'test'
+  ...
+# Subtest: D independent immutable archive gitleaks-fail
+ok 44 - D independent immutable archive gitleaks-fail
+  ---
+  duration_ms: 43.949834
+  type: 'test'
+  ...
+# Subtest: D independent immutable archive semgrep-pass
+ok 45 - D independent immutable archive semgrep-pass
+  ---
+  duration_ms: 40.040292
+  type: 'test'
+  ...
+# Subtest: D independent immutable archive semgrep-fail
+ok 46 - D independent immutable archive semgrep-fail
+  ---
+  duration_ms: 37.993917
+  type: 'test'
+  ...
+# Subtest: D independent immutable archive cosign-pass
+ok 47 - D independent immutable archive cosign-pass
+  ---
+  duration_ms: 35.39725
+  type: 'test'
+  ...
+# Subtest: D independent immutable archive cosign-fail
+ok 48 - D independent immutable archive cosign-fail
+  ---
+  duration_ms: 35.481708
+  type: 'test'
+  ...
+# Subtest: D unapproved/cross-plugin digest prevents worker start
+ok 49 - D unapproved/cross-plugin digest prevents worker start
+  ---
+  duration_ms: 0.834333
+  type: 'test'
+  ...
+# Subtest: D missing and corrupted raw reports cannot reach Policy
+ok 50 - D missing and corrupted raw reports cannot reach Policy
+  ---
+  duration_ms: 0.192833
+  type: 'test'
+  ...
+# Subtest: D timeout and pre-cancellation join a dedicated bounded worker
+ok 51 - D timeout and pre-cancellation join a dedicated bounded worker
+  ---
+  duration_ms: 1.893583
+  type: 'test'
+  ...
+# Subtest: D in-flight cancellation leaves no active owned worker
+ok 52 - D in-flight cancellation leaves no active owned worker
+  ---
+  duration_ms: 0.844375
+  type: 'test'
+  ...
+# Subtest: fixed opt-in registries keep replay and existing Gitleaks definition intact
+ok 53 - fixed opt-in registries keep replay and existing Gitleaks definition intact
+  ---
+  duration_ms: 12.614417
+  type: 'test'
+  ...
+# Subtest: Semgrep independent capability set includes all five concrete inputs
+ok 54 - Semgrep independent capability set includes all five concrete inputs
+  ---
+  duration_ms: 0.4745
+  type: 'test'
+  ...
+# Subtest: capability missing SOURCE_DIR never PASS
+ok 55 - capability missing SOURCE_DIR never PASS
+  ---
+  duration_ms: 0.3005
+  type: 'test'
+  ...
+# Subtest: capability missing SEMGREP_BINARY never PASS
+ok 56 - capability missing SEMGREP_BINARY never PASS
+  ---
+  duration_ms: 7.528916
+  type: 'test'
+  ...
+# Subtest: capability missing SEMGREP_RULESET never PASS
+ok 57 - capability missing SEMGREP_RULESET never PASS
+  ---
+  duration_ms: 0.384083
+  type: 'test'
+  ...
+# Subtest: capability missing OUTPUT_DIR never PASS
+ok 58 - capability missing OUTPUT_DIR never PASS
+  ---
+  duration_ms: 0.283084
+  type: 'test'
+  ...
+# Subtest: capability missing POLICY_VERSION never PASS
+ok 59 - capability missing POLICY_VERSION never PASS
+  ---
+  duration_ms: 0.249959
+  type: 'test'
+  ...
+# Subtest: capability missing TRUSTED_VALIDATION_WORKSPACE never PASS
+ok 60 - capability missing TRUSTED_VALIDATION_WORKSPACE never PASS
+  ---
+  duration_ms: 0.269542
+  type: 'test'
+  ...
+# Subtest: Darwin cannot execute Linux-native runner regardless of declarations
+ok 61 - Darwin cannot execute Linux-native runner regardless of declarations
+  ---
+  duration_ms: 0.28475
+  type: 'test'
+  ...
+# Subtest: raw finding data and severity preserved by normalizer
+ok 62 - raw finding data and severity preserved by normalizer
+  ---
+  duration_ms: 0.261583
+  type: 'test'
+  ...
+# Subtest: real empty native report is distinct from absent execution
+ok 63 - real empty native report is distinct from absent execution
+  ---
+  duration_ms: 3.675208
+  type: 'test'
+  ...
+# Subtest: normalizer rejects errors blocking
+ok 64 - normalizer rejects errors blocking
+  ---
+  duration_ms: 0.121792
+  type: 'test'
+  ...
+# Subtest: normalizer rejects missing results
+ok 65 - normalizer rejects missing results
+  ---
+  duration_ms: 0.086833
+  type: 'test'
+  ...
+# Subtest: normalizer rejects missing errors
+ok 66 - normalizer rejects missing errors
+  ---
+  duration_ms: 0.047708
+  type: 'test'
+  ...
+# Subtest: normalizer rejects wrong path
+ok 67 - normalizer rejects wrong path
+  ---
+  duration_ms: 0.058
+  type: 'test'
+  ...
+# Subtest: normalizer rejects unknown rule
+ok 68 - normalizer rejects unknown rule
+  ---
+  duration_ms: 0.04975
+  type: 'test'
+  ...
+# Subtest: normalizer rejects missing severity
+ok 69 - normalizer rejects missing severity
+  ---
+  duration_ms: 0.050291
+  type: 'test'
+  ...
+# Subtest: normalizer rejects invalid line
+ok 70 - normalizer rejects invalid line
+  ---
+  duration_ms: 0.052542
+  type: 'test'
+  ...
+# Subtest: existing classifier and standard agree on controlled empty/high/warning findings
+ok 71 - existing classifier and standard agree on controlled empty/high/warning findings
+  ---
+  duration_ms: 0.862708
+  type: 'test'
+  ...
+# Subtest: all production command/Semgrep source identities still match original frozen manifest
+ok 72 - all production command/Semgrep source identities still match original frozen manifest
+  ---
+  duration_ms: 9.076042
+  type: 'test'
+  ...
+# Subtest: missing real capabilities cannot start either native process
+ok 73 - missing real capabilities cannot start either native process
+  ---
+  duration_ms: 252.646958
+  type: 'test'
+  ...
+# Subtest: master OFF ignores untrusted inputs and emits DISABLED without scan PASS
+ok 74 - master OFF ignores untrusted inputs and emits DISABLED without scan PASS
+  ---
+  duration_ms: 200.385125
+  type: 'test'
+  ...
+# Subtest: one plugin disable does not modify the other configuration
+ok 75 - one plugin disable does not modify the other configuration
+  ---
+  duration_ms: 163.650666
+  type: 'test'
+  ...
+# Subtest: native runner does not accept arbitrary command registry entry
+ok 76 - native runner does not accept arbitrary command registry entry
+  ---
+  duration_ms: 0.357667
+  type: 'test'
+  ...
+# Subtest: unknown Policy rejected before output or native launch
+ok 77 - unknown Policy rejected before output or native launch
+  ---
+  duration_ms: 0.604666
+  type: 'test'
+  ...
+# Subtest: CLI opts into code-owned Semgrep runner without arbitrary arguments
+ok 78 - CLI opts into code-owned Semgrep runner without arbitrary arguments
+  ---
+  duration_ms: 0.431792
+  type: 'test'
+  ...
+# Subtest: original static analyzer differential: fixed
+ok 79 - original static analyzer differential: fixed
+  ---
+  duration_ms: 101.476791
+  type: 'test'
+  ...
+# Subtest: original static analyzer differential: unknown-environment
+ok 80 - original static analyzer differential: unknown-environment
+  ---
+  duration_ms: 74.804333
+  type: 'test'
+  ...
+# Subtest: original static analyzer differential: direct-shell-input
+ok 81 - original static analyzer differential: direct-shell-input
+  ---
+  duration_ms: 60.226625
+  type: 'test'
+  ...
+# Subtest: original static analyzer differential: direct-interpreter-input
+ok 82 - original static analyzer differential: direct-interpreter-input
+  ---
+  duration_ms: 60.555459
+  type: 'test'
+  ...
+# Subtest: original static analyzer differential: parse-error
+ok 83 - original static analyzer differential: parse-error
+  ---
+  duration_ms: 58.159916
+  type: 'test'
+  ...
+not ok 84 - /private/var/folders/jc/_2vrrrl544v3287_9gs3ngxh0000gn/T/semgrep-manager-v2-clean-sygxmjnm/infra/security/policy/command-evidence.test.mjs
+  ---
+  duration_ms: 0.297542
+  location: '/private/var/folders/jc/_2vrrrl544v3287_9gs3ngxh0000gn/T/semgrep-manager-v2-clean-sygxmjnm/infra/security/policy/command-evidence.test.mjs:20:6'
+  failureType: 'hookFailed'
+  error: "ENOENT: no such file or directory, open 'evidence/2026-11-01/remaining-policy/command-differential.json'"
+  code: 'ENOENT'
+  stack: |-
+    Object.writeFileSync (node:fs:2398:20)
+    TestContext.<anonymous> (file:///private/var/folders/jc/_2vrrrl544v3287_9gs3ngxh0000gn/T/semgrep-manager-v2-clean-sygxmjnm/infra/security/policy/command-evidence.test.mjs:20:19)
+    TestHook.runInAsyncScope (node:async_hooks:226:14)
+    TestHook.run (node:internal/test_runner/test:1201:25)
+    TestHook.run (node:internal/test_runner/test:1528:18)
+    TestHook.run (node:internal/util:602:20)
+    Test.runHook (node:internal/test_runner/test:1117:20)
+    after (node:internal/test_runner/test:1159:20)
+    Test.run (node:internal/test_runner/test:1227:13)
+  ...
+# Subtest: complete original command parent healthy
+ok 85 - complete original command parent healthy
+  ---
+  duration_ms: 3417.920042
+  type: 'test'
+  ...
+# Subtest: complete original command parent shell-input
+ok 86 - complete original command parent shell-input
+  ---
+  duration_ms: 76.185708
+  type: 'test'
+  ...
+# Subtest: complete original command parent os-system-input
+ok 87 - complete original command parent os-system-input
+  ---
+  duration_ms: 79.834209
+  type: 'test'
+  ...
+# Subtest: complete original command parent sys-argv-shell
+ok 88 - complete original command parent sys-argv-shell
+  ---
+  duration_ms: 80.035375
+  type: 'test'
+  ...
+# Subtest: complete original command parent flask-shell
+ok 89 - complete original command parent flask-shell
+  ---
+  duration_ms: 81.331917
+  type: 'test'
+  ...
+# Subtest: complete original command parent assignment-shell
+ok 90 - complete original command parent assignment-shell
+  ---
+  duration_ms: 81.785791
+  type: 'test'
+  ...
+# Subtest: complete original command parent eval-input
+ok 91 - complete original command parent eval-input
+  ---
+  duration_ms: 86.870125
+  type: 'test'
+  ...
+# Subtest: complete original command parent argv-safe-argument
+ok 92 - complete original command parent argv-safe-argument
+  ---
+  duration_ms: 99.705167
+  type: 'test'
+  ...
+# Subtest: complete original command parent constant-allowlist
+ok 93 - complete original command parent constant-allowlist
+  ---
+  duration_ms: 122.862875
+  type: 'test'
+  ...
+# Subtest: complete original command parent quoted-shell
+ok 94 - complete original command parent quoted-shell
+  ---
+  duration_ms: 106.441666
+  type: 'test'
+  ...
+# Subtest: complete original command parent environment-unconfirmed
+ok 95 - complete original command parent environment-unconfirmed
+  ---
+  duration_ms: 97.62175
+  type: 'test'
+  ...
+# Subtest: complete original command parent wrapped-input-unknown
+ok 96 - complete original command parent wrapped-input-unknown
+  ---
+  duration_ms: 92.869417
+  type: 'test'
+  ...
+# Subtest: complete original command parent shadowed-input
+ok 97 - complete original command parent shadowed-input
+  ---
+  duration_ms: 90.033833
+  type: 'test'
+  ...
+# Subtest: complete original command parent ssh-controlled-input
+ok 98 - complete original command parent ssh-controlled-input
+  ---
+  duration_ms: 85.67525
+  type: 'test'
+  ...
+# Subtest: complete original command parent ssh-fixed-host
+ok 99 - complete original command parent ssh-fixed-host
+  ---
+  duration_ms: 86.100083
+  type: 'test'
+  ...
+# Subtest: complete original command parent ssh-argv-source
+ok 100 - complete original command parent ssh-argv-source
+  ---
+  duration_ms: 82.120625
+  type: 'test'
+  ...
+# Subtest: complete original command parent ssh-quote-safe
+ok 101 - complete original command parent ssh-quote-safe
+  ---
+  duration_ms: 95.063458
+  type: 'test'
+  ...
+# Subtest: complete original command parent ssh-join-safe
+ok 102 - complete original command parent ssh-join-safe
+  ---
+  duration_ms: 87.93175
+  type: 'test'
+  ...
+# Subtest: complete original command parent ssh-file-origin-unknown
+ok 103 - complete original command parent ssh-file-origin-unknown
+  ---
+  duration_ms: 90.702792
+  type: 'test'
+  ...
+# Subtest: complete original command parent ssh-dynamic-loaded-alias
+ok 104 - complete original command parent ssh-dynamic-loaded-alias
+  ---
+  duration_ms: 91.673042
+  type: 'test'
+  ...
+# Subtest: complete original command parent shell-code-argv
+ok 105 - complete original command parent shell-code-argv
+  ---
+  duration_ms: 88.432291
+  type: 'test'
+  ...
+# Subtest: complete original command parent python-code-argv
+ok 106 - complete original command parent python-code-argv
+  ---
+  duration_ms: 83.590625
+  type: 'test'
+  ...
+# Subtest: complete original command parent node-code-argv
+ok 107 - complete original command parent node-code-argv
+  ---
+  duration_ms: 78.4115
+  type: 'test'
+  ...
+# Subtest: complete original command parent interpreter-stdin
+ok 108 - complete original command parent interpreter-stdin
+  ---
+  duration_ms: 80.400708
+  type: 'test'
+  ...
+# Subtest: complete original command parent ssh-nested-join
+ok 109 - complete original command parent ssh-nested-join
+  ---
+  duration_ms: 82.507
+  type: 'test'
+  ...
+# Subtest: complete original command parent ssh-nested-outer-quote
+ok 110 - complete original command parent ssh-nested-outer-quote
+  ---
+  duration_ms: 79.892875
+  type: 'test'
+  ...
+# Subtest: complete original command parent interpreter-environment
+ok 111 - complete original command parent interpreter-environment
+  ---
+  duration_ms: 90.120083
+  type: 'test'
+  ...
+# Subtest: complete original command parent interpreter-data-not-code
+ok 112 - complete original command parent interpreter-data-not-code
+  ---
+  duration_ms: 102.874
+  type: 'test'
+  ...
+# Subtest: complete original command parent interpreter-file-source-unknown
+ok 113 - complete original command parent interpreter-file-source-unknown
+  ---
+  duration_ms: 92.4965
+  type: 'test'
+  ...
+# Subtest: complete original command parent interpreter-quoted-code-unknown
+ok 114 - complete original command parent interpreter-quoted-code-unknown
+  ---
+  duration_ms: 91.401834
+  type: 'test'
+  ...
+# Subtest: complete original command parent malformed-Python
+ok 115 - complete original command parent malformed-Python
+  ---
+  duration_ms: 79.705791
+  type: 'test'
+  ...
+# Subtest: complete original command parent shell-inventory-only
+ok 116 - complete original command parent shell-inventory-only
+  ---
+  duration_ms: 94.117209
+  type: 'test'
+  ...
+# Subtest: complete original command parent mjs-inventory-only
+ok 117 - complete original command parent mjs-inventory-only
+  ---
+  duration_ms: 91.501083
+  type: 'test'
+  ...
+# Subtest: complete original command parent historical-audit-report-replayed
+ok 118 - complete original command parent historical-audit-report-replayed
+  ---
+  duration_ms: 39.528458
+  type: 'test'
+  ...
+# Subtest: complete original command parent java-http-runtime-exec
+ok 119 - complete original command parent java-http-runtime-exec
+  ---
+  duration_ms: 37.164125
+  type: 'test'
+  ...
+# Subtest: complete original command parent java-http-process-builder
+ok 120 - complete original command parent java-http-process-builder
+  ---
+  duration_ms: 41.946
+  type: 'test'
+  ...
+# Subtest: complete original command parent Java-direct-FAIL-even-finding-mode-warn
+ok 121 - complete original command parent Java-direct-FAIL-even-finding-mode-warn
+  ---
+  duration_ms: 40.433167
+  type: 'test'
+  ...
+# Subtest: complete original command parent Java-generic-exec-is-warning-fact
+ok 122 - complete original command parent Java-generic-exec-is-warning-fact
+  ---
+  duration_ms: 44.591458
+  type: 'test'
+  ...
+# Subtest: complete original command parent Java-generic-builder-is-warning-fact
+ok 123 - complete original command parent Java-generic-builder-is-warning-fact
+  ---
+  duration_ms: 44.879583
+  type: 'test'
+  ...
+# Subtest: complete original command parent Java-unreviewed-rule-is-warning-fact
+ok 124 - complete original command parent Java-unreviewed-rule-is-warning-fact
+  ---
+  duration_ms: 36.612959
+  type: 'test'
+  ...
+# Subtest: complete original command parent Java-direct-low-severity-remains-warning
+ok 125 - complete original command parent Java-direct-low-severity-remains-warning
+  ---
+  duration_ms: 38.011708
+  type: 'test'
+  ...
+# Subtest: complete original command parent existing-weak-cipher-parent-rule-not-removed
+ok 126 - complete original command parent existing-weak-cipher-parent-rule-not-removed
+  ---
+  duration_ms: 40.043459
+  type: 'test'
+  ...
+# Subtest: complete original command parent command-audit-create-failed
+ok 127 - complete original command parent command-audit-create-failed
+  ---
+  duration_ms: 25.852834
+  type: 'test'
+  ...
+# Subtest: complete original command parent command-audit-ready-failed
+ok 128 - complete original command parent command-audit-ready-failed
+  ---
+  duration_ms: 27.467125
+  type: 'test'
+  ...
+# Subtest: complete original command parent command-audit-delete-failed
+ok 129 - complete original command parent command-audit-delete-failed
+  ---
+  duration_ms: 26.034541
+  type: 'test'
+  ...
+# Subtest: complete original command parent command-audit-replacement-UID-preserved
+ok 130 - complete original command parent command-audit-replacement-UID-preserved
+  ---
+  duration_ms: 26.110458
+  type: 'test'
+  ...
+# Subtest: complete original command parent semgrep-create-failed
+ok 131 - complete original command parent semgrep-create-failed
+  ---
+  duration_ms: 39.88425
+  type: 'test'
+  ...
+# Subtest: complete original command parent semgrep-ready-failed
+ok 132 - complete original command parent semgrep-ready-failed
+  ---
+  duration_ms: 38.449917
+  type: 'test'
+  ...
+# Subtest: complete original command parent semgrep-delete-failed
+ok 133 - complete original command parent semgrep-delete-failed
+  ---
+  duration_ms: 40.7285
+  type: 'test'
+  ...
+# Subtest: complete original command parent semgrep-replacement-UID-preserved
+ok 134 - complete original command parent semgrep-replacement-UID-preserved
+  ---
+  duration_ms: 40.836
+  type: 'test'
+  ...
+# Subtest: complete original command parent audit-delete-wait-failure
+ok 135 - complete original command parent audit-delete-wait-failure
+  ---
+  duration_ms: 30.623375
+  type: 'test'
+  ...
+# Subtest: complete original command parent scanner-cleanup-incomplete
+ok 136 - complete original command parent scanner-cleanup-incomplete
+  ---
+  duration_ms: 41.375125
+  type: 'test'
+  ...
+# Subtest: complete original command parent foreign-heavy-Lease
+ok 137 - complete original command parent foreign-heavy-Lease
+  ---
+  duration_ms: 32.120958
+  type: 'test'
+  ...
+# Subtest: complete original command parent manifest-hash-mismatch
+ok 138 - complete original command parent manifest-hash-mismatch
+  ---
+  duration_ms: 29.545291
+  type: 'test'
+  ...
+# Subtest: complete original command parent malformed-manifest
+ok 139 - complete original command parent malformed-manifest
+  ---
+  duration_ms: 28.104292
+  type: 'test'
+  ...
+# Subtest: complete original command parent semgrep-tool-hash-mismatch
+ok 140 - complete original command parent semgrep-tool-hash-mismatch
+  ---
+  duration_ms: 42.035709
+  type: 'test'
+  ...
+# Subtest: complete original command parent semgrep-tool-file-missing
+ok 141 - complete original command parent semgrep-tool-file-missing
+  ---
+  duration_ms: 40.980042
+  type: 'test'
+  ...
+# Subtest: complete original command parent scanner-securityProbe-failure
+ok 142 - complete original command parent scanner-securityProbe-failure
+  ---
+  duration_ms: 44.0175
+  type: 'test'
+  ...
+# Subtest: complete original command parent scanner-sourceTransfer-failure
+ok 143 - complete original command parent scanner-sourceTransfer-failure
+  ---
+  duration_ms: 34.615959
+  type: 'test'
+  ...
+# Subtest: complete original command parent scanner-sourceArchive-failure
+ok 144 - complete original command parent scanner-sourceArchive-failure
+  ---
+  duration_ms: 36.25025
+  type: 'test'
+  ...
+# Subtest: complete original command parent scanner-toolTransfer-failure
+ok 145 - complete original command parent scanner-toolTransfer-failure
+  ---
+  duration_ms: 41.538833
+  type: 'test'
+  ...
+# Subtest: complete original command parent scanner-fixtureWrites-failure
+ok 146 - complete original command parent scanner-fixtureWrites-failure
+  ---
+  duration_ms: 39.366083
+  type: 'test'
+  ...
+# Subtest: complete original command parent scanner-find-failure
+ok 147 - complete original command parent scanner-find-failure
+  ---
+  duration_ms: 39.718584
+  type: 'test'
+  ...
+# Subtest: complete original command parent canaryWorks-failed
+ok 148 - complete original command parent canaryWorks-failed
+  ---
+  duration_ms: 44.569541
+  type: 'test'
+  ...
+# Subtest: complete original command parent canaryListen-failed
+ok 149 - complete original command parent canaryListen-failed
+  ---
+  duration_ms: 45.267375
+  type: 'test'
+  ...
+# Subtest: complete original command parent isolationDenied-failed
+ok 150 - complete original command parent isolationDenied-failed
+  ---
+  duration_ms: 45.530375
+  type: 'test'
+  ...
+# Subtest: complete original command parent unmeasured-Jenkins-IP
+ok 151 - complete original command parent unmeasured-Jenkins-IP
+  ---
+  duration_ms: 45.384709
+  type: 'test'
+  ...
+# Subtest: complete original command parent empty-Java-file-list
+ok 152 - complete original command parent empty-Java-file-list
+  ---
+  duration_ms: 44.885417
+  type: 'test'
+  ...
+# Subtest: complete original command parent unbounded-Java-file-list
+ok 153 - complete original command parent unbounded-Java-file-list
+  ---
+  duration_ms: 41.507625
+  type: 'test'
+  ...
+# Subtest: complete original command parent Java-file-outside-target
+ok 154 - complete original command parent Java-file-outside-target
+  ---
+  duration_ms: 44.709334
+  type: 'test'
+  ...
+# Subtest: complete original command parent positive-parser-error
+ok 155 - complete original command parent positive-parser-error
+  ---
+  duration_ms: 39.949333
+  type: 'test'
+  ...
+# Subtest: complete original command parent positive-malformed-JSON
+ok 156 - complete original command parent positive-malformed-JSON
+  ---
+  duration_ms: 60.940708
+  type: 'test'
+  ...
+# Subtest: complete original command parent positive-scanner-timeout
+ok 157 - complete original command parent positive-scanner-timeout
+  ---
+  duration_ms: 45.054875
+  type: 'test'
+  ...
+# Subtest: complete original command parent negative-parser-error
+ok 158 - complete original command parent negative-parser-error
+  ---
+  duration_ms: 38.181417
+  type: 'test'
+  ...
+# Subtest: complete original command parent negative-malformed-JSON
+ok 159 - complete original command parent negative-malformed-JSON
+  ---
+  duration_ms: 47.906792
+  type: 'test'
+  ...
+# Subtest: complete original command parent negative-scanner-timeout
+ok 160 - complete original command parent negative-scanner-timeout
+  ---
+  duration_ms: 34.302458
+  type: 'test'
+  ...
+# Subtest: complete original command parent repeat-parser-error
+ok 161 - complete original command parent repeat-parser-error
+  ---
+  duration_ms: 37.416042
+  type: 'test'
+  ...
+# Subtest: complete original command parent repeat-malformed-JSON
+ok 162 - complete original command parent repeat-malformed-JSON
+  ---
+  duration_ms: 41.051167
+  type: 'test'
+  ...
+# Subtest: complete original command parent repeat-scanner-timeout
+ok 163 - complete original command parent repeat-scanner-timeout
+  ---
+  duration_ms: 43.901792
+  type: 'test'
+  ...
+# Subtest: complete original command parent commandPositive-parser-error
+ok 164 - complete original command parent commandPositive-parser-error
+  ---
+  duration_ms: 48.113375
+  type: 'test'
+  ...
+# Subtest: complete original command parent commandPositive-malformed-JSON
+ok 165 - complete original command parent commandPositive-malformed-JSON
+  ---
+  duration_ms: 42.127667
+  type: 'test'
+  ...
+# Subtest: complete original command parent commandPositive-scanner-timeout
+ok 166 - complete original command parent commandPositive-scanner-timeout
+  ---
+  duration_ms: 44.66275
+  type: 'test'
+  ...
+# Subtest: complete original command parent commandNegative-parser-error
+ok 167 - complete original command parent commandNegative-parser-error
+  ---
+  duration_ms: 36.256
+  type: 'test'
+  ...
+# Subtest: complete original command parent commandNegative-malformed-JSON
+ok 168 - complete original command parent commandNegative-malformed-JSON
+  ---
+  duration_ms: 44.287583
+  type: 'test'
+  ...
+# Subtest: complete original command parent commandNegative-scanner-timeout
+ok 169 - complete original command parent commandNegative-scanner-timeout
+  ---
+  duration_ms: 44.352833
+  type: 'test'
+  ...
+# Subtest: complete original command parent commandRepeat-parser-error
+ok 170 - complete original command parent commandRepeat-parser-error
+  ---
+  duration_ms: 34.377792
+  type: 'test'
+  ...
+# Subtest: complete original command parent commandRepeat-malformed-JSON
+ok 171 - complete original command parent commandRepeat-malformed-JSON
+  ---
+  duration_ms: 41.457208
+  type: 'test'
+  ...
+# Subtest: complete original command parent commandRepeat-scanner-timeout
+ok 172 - complete original command parent commandRepeat-scanner-timeout
+  ---
+  duration_ms: 41.926375
+  type: 'test'
+  ...
+# Subtest: complete original command parent sourceReport-parser-error
+ok 173 - complete original command parent sourceReport-parser-error
+  ---
+  duration_ms: 37.971542
+  type: 'test'
+  ...
+# Subtest: complete original command parent sourceReport-malformed-JSON
+ok 174 - complete original command parent sourceReport-malformed-JSON
+  ---
+  duration_ms: 41.293208
+  type: 'test'
+  ...
+# Subtest: complete original command parent sourceReport-scanner-timeout
+ok 175 - complete original command parent sourceReport-scanner-timeout
+  ---
+  duration_ms: 46.401667
+  type: 'test'
+  ...
+# Subtest: complete original command parent fixture-positive-detection-missing
+ok 176 - complete original command parent fixture-positive-detection-missing
+  ---
+  duration_ms: 39.2065
+  type: 'test'
+  ...
+# Subtest: complete original command parent fixture-negative-unexpected-finding
+ok 177 - complete original command parent fixture-negative-unexpected-finding
+  ---
+  duration_ms: 38.218875
+  type: 'test'
+  ...
+# Subtest: complete original command parent command-fixture-direct-detection-missing
+ok 178 - complete original command parent command-fixture-direct-detection-missing
+  ---
+  duration_ms: 44.760917
+  type: 'test'
+  ...
+# Subtest: complete original command parent command-fixture-negative-unexpected
+ok 179 - complete original command parent command-fixture-negative-unexpected
+  ---
+  duration_ms: 30.842833
+  type: 'test'
+  ...
+# Subtest: complete original command parent command-fixture-repeat-drift
+ok 180 - complete original command parent command-fixture-repeat-drift
+  ---
+  duration_ms: 41.51825
+  type: 'test'
+  ...
+# Subtest: complete original command parent read-failed-infra_messaging_dependencies.json
+ok 181 - complete original command parent read-failed-infra_messaging_dependencies.json
+  ---
+  duration_ms: 32.51825
+  type: 'test'
+  ...
+# Subtest: complete original command parent read-failed-infra_security_command-audit.py
+ok 182 - complete original command parent read-failed-infra_security_command-audit.py
+  ---
+  duration_ms: 27.12475
+  type: 'test'
+  ...
+# Subtest: complete original command parent read-failed-infra_security_script-command-policy.py
+ok 183 - complete original command parent read-failed-infra_security_script-command-policy.py
+  ---
+  duration_ms: 23.079125
+  type: 'test'
+  ...
+# Subtest: complete original command parent read-failed-infra_security_ssh-command-policy.py
+ok 184 - complete original command parent read-failed-infra_security_ssh-command-policy.py
+  ---
+  duration_ms: 21.734375
+  type: 'test'
+  ...
+# Subtest: complete original command parent read-failed-infra_security_interpreter-command-policy.py
+ok 185 - complete original command parent read-failed-infra_security_interpreter-command-policy.py
+  ---
+  duration_ms: 23.045917
+  type: 'test'
+  ...
+# Subtest: complete original command parent read-failed-infra_security_script-command-review.json
+ok 186 - complete original command parent read-failed-infra_security_script-command-review.json
+  ---
+  duration_ms: 25.519667
+  type: 'test'
+  ...
+# Subtest: complete original command parent read-failed-infra_security_ssh-command-review.json
+ok 187 - complete original command parent read-failed-infra_security_ssh-command-review.json
+  ---
+  duration_ms: 23.894958
+  type: 'test'
+  ...
+# Subtest: complete original command parent read-failed-.git-sha
+ok 188 - complete original command parent read-failed-.git-sha
+  ---
+  duration_ms: 44.502375
+  type: 'test'
+  ...
+# Subtest: complete original command parent read-failed-infra_security_scan-rules.json
+ok 189 - complete original command parent read-failed-infra_security_scan-rules.json
+  ---
+  duration_ms: 32.0055
+  type: 'test'
+  ...
+# Subtest: complete original command parent IO-write:.devsecops_command-audit.json
+ok 190 - complete original command parent IO-write:.devsecops_command-audit.json
+  ---
+  duration_ms: 23.900416
+  type: 'test'
+  ...
+# Subtest: complete original command parent IO-write:.devsecops_semgrep-native.json
+ok 191 - complete original command parent IO-write:.devsecops_semgrep-native.json
+  ---
+  duration_ms: 39.327042
+  type: 'test'
+  ...
+# Subtest: complete original command parent IO-write:.devsecops_semgrep-gate.json
+ok 192 - complete original command parent IO-write:.devsecops_semgrep-gate.json
+  ---
+  duration_ms: 40.511375
+  type: 'test'
+  ...
+# Subtest: complete original command parent IO-mkdir:.devsecops
+ok 193 - complete original command parent IO-mkdir:.devsecops
+  ---
+  duration_ms: 67.643917
+  type: 'test'
+  ...
+# Subtest: complete original command parent Python-no-JSON-output
+ok 194 - complete original command parent Python-no-JSON-output
+  ---
+  duration_ms: 31.072083
+  type: 'test'
+  ...
+# Subtest: complete original command parent Python-invalid-report-JSON
+ok 195 - complete original command parent Python-invalid-report-JSON
+  ---
+  duration_ms: 29.210334
+  type: 'test'
+  ...
+# Subtest: complete original command parent Python-JSON-null-report
+ok 196 - complete original command parent Python-JSON-null-report
+  ---
+  duration_ms: 24.607292
+  type: 'test'
+  ...
+# Subtest: complete original command parent invalid-finding-mode
+ok 197 - complete original command parent invalid-finding-mode
+  ---
+  duration_ms: 37.081542
+  type: 'test'
+  ...
+# Subtest: complete original command parent tracked-source-list-git-failure
+ok 198 - complete original command parent tracked-source-list-git-failure
+  ---
+  duration_ms: 22.559583
+  type: 'test'
+  ...
+# Subtest: complete original command parent memory-peak-operational-failure-not-success-report
+ok 199 - complete original command parent memory-peak-operational-failure-not-success-report
+  ---
+  duration_ms: 29.905167
+  type: 'test'
+  ...
+# Subtest: complete original command parent Python-prerequisite-unavailable
+ok 200 - complete original command parent Python-prerequisite-unavailable
+  ---
+  duration_ms: 21.378916
+  type: 'test'
+  ...
+# Subtest: complete original command parent historical-SSH-review-binding-is-inventory-not-bypass
+ok 201 - complete original command parent historical-SSH-review-binding-is-inventory-not-bypass
+  ---
+  duration_ms: 33.100834
+  type: 'test'
+  ...
+# Subtest: complete original command parent zero-tracked-scripts-no-added-nonempty-rule
+ok 202 - complete original command parent zero-tracked-scripts-no-added-nonempty-rule
+  ---
+  duration_ms: 103.158833
+  type: 'test'
+  ...
+# Subtest: complete original command parent Python-report-status-missing
+ok 203 - complete original command parent Python-report-status-missing
+  ---
+  duration_ms: 26.157333
+  type: 'test'
+  ...
+# Subtest: complete original command parent Python-report-status-failed
+ok 204 - complete original command parent Python-report-status-failed
+  ---
+  duration_ms: 27.651875
+  type: 'test'
+  ...
+# Subtest: real historical 270 complete parent acceptance
+ok 205 - real historical 270 complete parent acceptance
+  ---
+  duration_ms: 28.684417
+  type: 'test'
+  ...
+# Subtest: missing full command-parent facts incomplete
+ok 206 - missing full command-parent facts incomplete
+  ---
+  duration_ms: 5.088209
+  type: 'test'
+  ...
+# Subtest: missing full command-parent facts wrong-command
+ok 207 - missing full command-parent facts wrong-command
+  ---
+  duration_ms: 5.387208
+  type: 'test'
+  ...
+# Subtest: missing full command-parent facts missing-Semgrep-after-audit-success
+ok 208 - missing full command-parent facts missing-Semgrep-after-audit-success
+  ---
+  duration_ms: 5.450041
+  type: 'test'
+  ...
+# Subtest: missing full command-parent facts missing-command-status
+ok 209 - missing full command-parent facts missing-command-status
+  ---
+  duration_ms: 7.350667
+  type: 'test'
+  ...
+# Subtest: missing full command-parent facts missing-reports
+ok 210 - missing full command-parent facts missing-reports
+  ---
+  duration_ms: 6.1555
+  type: 'test'
+  ...
+# Subtest: Policy never re-runs source analysis and never counts Semgrep twice
+ok 211 - Policy never re-runs source analysis and never counts Semgrep twice
+  ---
+  duration_ms: 7.530208
+  type: 'test'
+  ...
+# Subtest: no inspected command actually executes
+ok 212 - no inspected command actually executes
+  ---
+  duration_ms: 54.762875
+  type: 'test'
+  ...
+# Subtest: low/strict/audit override cannot soften the frozen command parent
+ok 213 - low/strict/audit override cannot soften the frozen command parent
+  ---
+  duration_ms: 3.275792
+  type: 'test'
+  ...
+# Subtest: complete original command parent Semgrep-missing-native-result-shape
+ok 214 - complete original command parent Semgrep-missing-native-result-shape
+  ---
+  duration_ms: 36.961916
+  type: 'test'
+  ...
+# Subtest: successful command execution without native report is NOT_TESTED
+ok 215 - successful command execution without native report is NOT_TESTED
+  ---
+  duration_ms: 4.721042
+  type: 'test'
+  ...
+# Subtest: default standard; explicit low; invalid values never fall back
+ok 216 - default standard; explicit low; invalid values never fall back
+  ---
+  duration_ms: 1.937792
+  type: 'test'
+  ...
+# Subtest: standard matches pre-extraction frozen Semgrep Trivy and ZAP decisions
+ok 217 - standard matches pre-extraction frozen Semgrep Trivy and ZAP decisions
+  ---
+  duration_ms: 4.2995
+  type: 'test'
+  ...
+# Subtest: strict strengthens same raw finding; input immutable
+ok 218 - strict strengthens same raw finding; input immutable
+  ---
+  duration_ms: 0.203583
+  type: 'test'
+  ...
+# Subtest: component/project overrides local, auditable and mandatory floor preserved
+ok 219 - component/project overrides local, auditable and mandatory floor preserved
+  ---
+  duration_ms: 0.427042
+  type: 'test'
+  ...
+# Subtest: summary payload carries policy provenance and operational failures are not findings
+ok 220 - summary payload carries policy provenance and operational failures are not findings
+  ---
+  duration_ms: 0.261667
+  type: 'test'
+  ...
+# Subtest: version lineage is exact original projection, not hash-only acceptance
+ok 221 - version lineage is exact original projection, not hash-only acceptance
+  ---
+  duration_ms: 3.414917
+  type: 'test'
+  ...
+# Subtest: original identity still accepted independently
+ok 222 - original identity still accepted independently
+  ---
+  duration_ms: 18.36075
+  type: 'test'
+  ...
+# Subtest: unknown mutation rejected Jenkinsfile.security-audit
+ok 223 - unknown mutation rejected Jenkinsfile.security-audit
+  ---
+  duration_ms: 8.980208
+  type: 'test'
+  ...
+# Subtest: unknown mutation rejected infra/security/source-gate.mjs
+ok 224 - unknown mutation rejected infra/security/source-gate.mjs
+  ---
+  duration_ms: 19.807667
+  type: 'test'
+  ...
+# Subtest: unknown mutation rejected infra/security/policy/gitleaks-parent.mjs
+ok 225 - unknown mutation rejected infra/security/policy/gitleaks-parent.mjs
+  ---
+  duration_ms: 13.087541
+  type: 'test'
+  ...
+# Subtest: unknown mutation rejected infra/security/policy/versions/gitleaks-parent-baseline-v1.json
+ok 226 - unknown mutation rejected infra/security/policy/versions/gitleaks-parent-baseline-v1.json
+  ---
+  duration_ms: 20.832208
+  type: 'test'
+  ...
+# Subtest: unknown mutation rejected infra/security/policy/versions/gitleaks-parent-helm-shadow-v1.json
+ok 227 - unknown mutation rejected infra/security/policy/versions/gitleaks-parent-helm-shadow-v1.json
+  ---
+  duration_ms: 21.024958
+  type: 'test'
+  ...
+# Subtest: unknown mutation rejected infra/security/policy/versions/gitleaks-parent.frozen-v1.mjs
+ok 228 - unknown mutation rejected infra/security/policy/versions/gitleaks-parent.frozen-v1.mjs
+  ---
+  duration_ms: 11.0345
+  type: 'test'
+  ...
+# Subtest: ambiguous markers and source symlink rejected
+ok 229 - ambiguous markers and source symlink rejected
+  ---
+  duration_ms: 17.501084
+  type: 'test'
+  ...
+# Subtest: only reviewed high severity fixed weak cipher findings block
+ok 230 - only reviewed high severity fixed weak cipher findings block
+  ---
+  duration_ms: 1.680792
+  type: 'test'
+  ...
+# Subtest: only reviewed HTTP command flow rules block, generic commands stay warning
+ok 231 - only reviewed HTTP command flow rules block, generic commands stay warning
+  ---
+  duration_ms: 0.088875
+  type: 'test'
+  ...
+1..231
+# tests 231
+# suites 0
+# pass 230
+# fail 1
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 10063.244084

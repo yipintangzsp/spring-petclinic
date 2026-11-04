@@ -1,0 +1,35 @@
+// STATIC / FIXTURE only; real Linux executions are in the separately sealed suite.
+import test from 'node:test';import assert from 'node:assert/strict';import fs from 'node:fs';import os from 'node:os';import path from 'node:path';
+import {normalizeSemgrepNative,semgrepSourceIdentity,semgrepExecutionCounts} from './semgrep-real.mjs';
+import {registry,realGitleaksRegistry,realPluginsRegistry,capabilityCheck} from './registry.mjs';
+import {runCandidate} from './core.mjs';import {evaluateAsync} from '../policy/engine.mjs';import {classifySemgrep} from '../semgrep-policy.mjs';import {parameters} from './cli.mjs';
+const parent=fs.realpathSync(fs.mkdtempSync(path.join(os.tmpdir(),'semgrep-real-contract-')));let n=0;
+test.after(()=>fs.rmSync(parent,{recursive:true}));
+const source='/approved/source',file=source+'/Safe.java',ids=['java-weak-cipher','java-runtime-exec'];
+const finding=(id='java-weak-cipher')=>({check_id:id,path:file,start:{line:1,col:1},end:{line:1,col:2},extra:{severity:'ERROR',message:'Existing rule'}});
+const native=()=>[{results:[finding()],errors:[]}];
+test('fixed opt-in registries keep replay and existing Gitleaks definition intact',()=>{
+ const r=realPluginsRegistry();assert.equal(r.get('semgrep').enabled,false);assert.equal(r.get('semgrep').runner,'semgrep-real');assert.equal(r.get('semgrep').policyAdapter,'semgrep');assert.deepEqual(r.get('gitleaks'),realGitleaksRegistry().get('gitleaks'));
+ for(const id of r.ids().filter(id=>!['semgrep','gitleaks'].includes(id)))assert.deepEqual(r.get(id),registry().get(id));
+ assert.deepEqual(realPluginsRegistry({semgrep:false}).get('semgrep'),registry().get('semgrep'));
+});
+test('Semgrep independent capability set includes all five concrete inputs',()=>{const p=realPluginsRegistry().get('semgrep');for(const k of ['SOURCE_DIR','SEMGREP_BINARY','SEMGREP_RULESET','OUTPUT_DIR','POLICY_VERSION'])assert.ok(p.requiredCapabilities.includes(k));const c=Object.fromEntries(p.requiredCapabilities.map(k=>[k,{state:'AVAILABLE'}]));assert.equal(capabilityCheck(p,{platform:'linux',capabilities:c},'java-web').executionStatus,'READY');});
+for(const k of ['SOURCE_DIR','SEMGREP_BINARY','SEMGREP_RULESET','OUTPUT_DIR','POLICY_VERSION','TRUSTED_VALIDATION_WORKSPACE'])test('capability missing '+k+' never PASS',()=>{const p=realPluginsRegistry().get('semgrep'),c=Object.fromEntries(p.requiredCapabilities.filter(x=>x!==k).map(x=>[x,{state:'AVAILABLE'}]));assert.equal(capabilityCheck(p,{platform:'linux',capabilities:c},'java-web').executionStatus,'NOT_CONFIGURED');});
+test('Darwin cannot execute Linux-native runner regardless of declarations',()=>assert.equal(capabilityCheck(realPluginsRegistry().get('semgrep'),{platform:'darwin',capabilities:{}},'java-web').executionStatus,'UNSUPPORTED'));
+test('raw finding data and severity preserved by normalizer',()=>{const r=native(),before=JSON.stringify(r),f=normalizeSemgrepNative(r,source,[file],ids);assert.equal(JSON.stringify(r),before);assert.deepEqual(f.raw.findings,r[0].results);assert.equal(f.raw.findings[0].extra.severity,'ERROR');});
+test('real empty native report is distinct from absent execution',()=>{assert.equal(normalizeSemgrepNative([{results:[],errors:[]}],source,[file],ids).raw.findings.length,0);assert.throws(()=>normalizeSemgrepNative([],source,[file],ids),/REPORT_ERROR/);});
+for(const [name,mutate]of [
+ ['errors blocking',r=>r[0].errors.push({error_type:'Syntax error'})],['missing results',r=>delete r[0].results],['missing errors',r=>delete r[0].errors],['wrong path',r=>r[0].results[0].path='/etc/passwd'],['unknown rule',r=>r[0].results[0].check_id='injected-rule'],['missing severity',r=>delete r[0].results[0].extra.severity],['invalid line',r=>r[0].results[0].start.line=0]
+])test('normalizer rejects '+name,()=>{const r=native();mutate(r);assert.throws(()=>normalizeSemgrepNative(r,source,[file],ids),/RUNNER_/);});
+test('existing classifier and standard agree on controlled empty/high/warning findings',async()=>{
+ for(const findings of [[],[finding()],[finding('java-runtime-exec')]]){const old=classifySemgrep(findings),expected=old.blocking.length?'FAIL':old.warnings.length?'WARN':'PASS';const r=await evaluateAsync({component:'semgrep',status:'success',raw:{findings}},{securityLevel:'standard',profile:'java-web',mode:'enforce',policyVersion:'baseline-v1'});assert.equal(r.decision,expected);}
+});
+test('all production command/Semgrep source identities still match original frozen manifest',()=>assert.equal(semgrepSourceIdentity().manifestSha256,'f83a876ca96c5943b83bc289aeb27282fff7d9eb42cd2be0e1fdb6b41d098482'));
+const config=()=>({security:{plugins:Object.fromEntries(registry().ids().map(id=>[id,{enabled:['gitleaks','semgrep'].includes(id)}]))}});
+async function run(extra={}){return runCandidate({runId:'semgrep-unit-'+(++n),projectId:'controlled',config:config(),registry:realPluginsRegistry(),context:{platform:'linux',capabilities:{}},output:path.join(parent,'run-'+n),...extra});}
+test('missing real capabilities cannot start either native process',async()=>{const before=semgrepExecutionCounts(),r=await run();assert.equal(r.gate.semgrep.executionStatus,'NOT_CONFIGURED');assert.equal(r.gate.semgrep.policyDecision,null);assert.equal(r.gate.semgrep.evaluationCount,0);assert.deepEqual(semgrepExecutionCounts(),before);});
+test('master OFF ignores untrusted inputs and emits DISABLED without scan PASS',async()=>{const c=config();c.security.enabled=false;const before=semgrepExecutionCounts(),r=await run({config:c,inputs:{semgrep:{command:'arbitrary shell'}}});for(const id of ['semgrep','gitleaks']){assert.equal(r.gate[id].executionStatus,'DISABLED');assert.equal(r.gate[id].policyDecision,null);}assert.equal(r.summary.candidateBuildAllowed,true);assert.equal(r.summary.promotion.status,'BLOCKED');assert.deepEqual(semgrepExecutionCounts(),before);});
+test('one plugin disable does not modify the other configuration',async()=>{const c=config();c.security.plugins.gitleaks.enabled=false;const r=await run({config:c});assert.equal(r.gate.gitleaks.executionStatus,'DISABLED');assert.equal(r.gate.semgrep.executionStatus,'NOT_CONFIGURED');});
+test('native runner does not accept arbitrary command registry entry',()=>assert.throws(()=>registry([{...realPluginsRegistry().get('semgrep'),runner:'sh -c arbitrary'}]),/untrusted/));
+test('unknown Policy rejected before output or native launch',async()=>{const c=config();c.security.policyVersion='missing';const before=semgrepExecutionCounts();await assert.rejects(run({config:c}),/POLICY_ERROR/);assert.deepEqual(semgrepExecutionCounts(),before);});
+test('CLI opts into code-owned Semgrep runner without arbitrary arguments',()=>{const a=parameters(['--output',parent+'/cli','--project','controlled','--run-id','cli','--semgrep-approval','/untrusted','--semgrep-source-dir','/untrusted'],{});assert.equal(a.registry.get('semgrep').runner,'semgrep-real');assert.equal(a.registry.get('semgrep').enabled,false);assert.throws(()=>parameters(['--output',parent+'/x','--project','controlled','--run-id','x','--rules','attacker'],{}),/POLICY_ERROR/);});
