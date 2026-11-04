@@ -1,0 +1,383 @@
+{
+  "input": {
+    "env": {
+      "BUILD_NUMBER": "270",
+      "AUDIT_CANDIDATE_IMAGE": "core.harbor.domain/petclinic/petclinic@sha256:a662251c52ed528541bb99e17c6ac97f492c579c6fc673f3943a3638329b7c44",
+      "HARBOR_USER": "synthetic-user",
+      "HARBOR_PASS": "synthetic-disposable-marker",
+      "IMAGE_TAG": "0.10.0-ci-270"
+    },
+    "manifest": "{\"schemaVersion\":2,\"mediaType\":\"application/vnd.oci.image.index.v1+json\",\"manifests\":[{\"digest\":\"sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb\",\"platform\":{\"os\":\"linux\",\"architecture\":\"amd64\"}},{\"digest\":\"sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc\",\"platform\":{\"os\":\"linux\",\"architecture\":\"arm64\"}}]}",
+    "expectedDigest": "sha256:a662251c52ed528541bb99e17c6ac97f492c579c6fc673f3943a3638329b7c44",
+    "root": {
+      "digest": "sha256:a662251c52ed528541bb99e17c6ac97f492c579c6fc673f3943a3638329b7c44",
+      "references": [
+        {
+          "child_digest": "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+          "platform": {
+            "architecture": "amd64"
+          }
+        },
+        {
+          "child_digest": "sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+          "platform": {
+            "architecture": "arm64"
+          }
+        }
+      ]
+    },
+    "deployment": {
+      "spec": {
+        "template": {
+          "spec": {
+            "containers": [
+              {
+                "image": "core.harbor.domain/petclinic/petclinic@sha256:a662251c52ed528541bb99e17c6ac97f492c579c6fc673f3943a3638329b7c44"
+              }
+            ]
+          }
+        },
+        "selector": {
+          "matchLabels": {
+            "app": "petclinic"
+          }
+        }
+      }
+    },
+    "pods": [
+      {
+        "metadata": {
+          "name": "fixture-pod",
+          "uid": "fixture-pod-uid"
+        },
+        "status": {
+          "containerStatuses": [
+            {
+              "name": "petclinic",
+              "ready": true,
+              "image": "core.harbor.domain/petclinic/petclinic@sha256:a662251c52ed528541bb99e17c6ac97f492c579c6fc673f3943a3638329b7c44"
+            }
+          ]
+        }
+      }
+    ],
+    "maps": "000-001 r-xp 0 /usr/lib/libfixture.so",
+    "sbom": "{\"components\":[]}",
+    "review": "{\"image\":\"core.harbor.domain/petclinic/petclinic@sha256:a662251c52ed528541bb99e17c6ac97f492c579c6fc673f3943a3638329b7c44\",\"entries\":[],\"reviewAfter\":\"2026-12-01T00:00:00Z\",\"limitations\":[\"synthetic control\"]}",
+    "scanSummary": {
+      "scan_status": "Success",
+      "scanner": {
+        "name": "Trivy"
+      },
+      "summary": {
+        "Critical": 0,
+        "High": 0,
+        "Medium": 0,
+        "Low": 0
+      }
+    },
+    "defaultNative": {
+      "unrelated": {
+        "artifact": "different",
+        "vulnerabilities": []
+      }
+    },
+    "nativeReports": {},
+    "http": {},
+    "commands": {},
+    "io": {}
+  },
+  "facts": {
+    "schema": 1,
+    "stage": "parent",
+    "complete": true,
+    "classification": "CONTROLLED_REPLAY",
+    "command": "( node infra/security/ensure-audit-candidate.mjs && node infra/security/audit-trivy.mjs )",
+    "operations": [
+      {
+        "stage": "ensure-candidate",
+        "execution": {
+          "exitStatus": 0
+        },
+        "reports": {},
+        "observations": [
+          {
+            "type": "http",
+            "key": "candidate-exists",
+            "occurrence": "http:candidate-exists#1",
+            "url": "http://harbor-core.harbor.svc.cluster.local/api/v2.0/projects/petclinic/repositories/petclinic/artifacts/sha256:a662251c52ed528541bb99e17c6ac97f492c579c6fc673f3943a3638329b7c44",
+            "method": "GET",
+            "headers": {
+              "Authorization": "SYNTHETIC_AUTH_PRESENT"
+            },
+            "result": {
+              "status": 200,
+              "json": {}
+            }
+          }
+        ]
+      },
+      {
+        "stage": "audit",
+        "execution": {
+          "exitStatus": 0
+        },
+        "reports": {
+          ".devsecops/trivy-audit.json": "{\n  \"status\": \"success\",\n  \"scans\": [\n    {\n      \"digest\": \"sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb\",\n      \"scan\": {\n        \"scan_status\": \"Success\",\n        \"scanner\": {\n          \"name\": \"Trivy\"\n        },\n        \"summary\": {\n          \"Critical\": 0,\n          \"High\": 0,\n          \"Medium\": 0,\n          \"Low\": 0\n        }\n      },\n      \"raw\": {\n        \"unrelated\": {\n          \"artifact\": \"different\",\n          \"vulnerabilities\": []\n        }\n      }\n    },\n    {\n      \"digest\": \"sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc\",\n      \"scan\": {\n        \"scan_status\": \"Success\",\n        \"scanner\": {\n          \"name\": \"Trivy\"\n        },\n        \"summary\": {\n          \"Critical\": 0,\n          \"High\": 0,\n          \"Medium\": 0,\n          \"Low\": 0\n        }\n      },\n      \"raw\": {\n        \"unrelated\": {\n          \"artifact\": \"different\",\n          \"vulnerabilities\": []\n        }\n      }\n    }\n  ],\n  \"warnings\": [],\n  \"runtimeImage\": \"core.harbor.domain/petclinic/petclinic@sha256:a662251c52ed528541bb99e17c6ac97f492c579c6fc673f3943a3638329b7c44\",\n  \"auditTargetImage\": \"core.harbor.domain/petclinic/petclinic@sha256:a662251c52ed528541bb99e17c6ac97f492c579c6fc673f3943a3638329b7c44\",\n  \"targetScope\": \"candidate\",\n  \"image\": \"core.harbor.domain/petclinic/petclinic@sha256:a662251c52ed528541bb99e17c6ac97f492c579c6fc673f3943a3638329b7c44\",\n  \"runtimeContext\": [\n    {\n      \"pod\": \"fixture-pod\",\n      \"podUid\": \"fixture-pod-uid\",\n      \"image\": \"core.harbor.domain/petclinic/petclinic@sha256:a662251c52ed528541bb99e17c6ac97f492c579c6fc673f3943a3638329b7c44\",\n      \"observed\": true,\n      \"libraries\": [\n        \"/usr/lib/libfixture.so\"\n      ],\n      \"brotliObserved\": false,\n      \"limitation\": \"A bounded mapping observation cannot prove future dynamic loading impossible\"\n    }\n  ],\n  \"applicationBrotliComponents\": [],\n  \"classifications\": [],\n  \"failures\": [],\n  \"mediumGovernance\": {\n    \"unique\": 0,\n    \"counts\": {},\n    \"blocking\": 0,\n    \"reviewAfter\": \"2026-12-01T00:00:00Z\",\n    \"reviewExpired\": false,\n    \"limitations\": [\n      \"synthetic control\"\n    ]\n  }\n}"
+        },
+        "observations": [
+          {
+            "type": "io",
+            "key": "mkdir:.devsecops",
+            "occurrence": "mkdir:.devsecops#1",
+            "ok": true
+          },
+          {
+            "type": "command",
+            "key": "deployment",
+            "bin": "kubectl",
+            "args": [
+              "-n",
+              "petclinic",
+              "get",
+              "deploy",
+              "petclinic",
+              "-o",
+              "json"
+            ],
+            "result": {
+              "status": 0
+            }
+          },
+          {
+            "type": "command",
+            "key": "pods",
+            "bin": "kubectl",
+            "args": [
+              "-n",
+              "petclinic",
+              "get",
+              "pods",
+              "-l",
+              "app=petclinic",
+              "-o",
+              "json"
+            ],
+            "timeout": 20000,
+            "result": {
+              "status": 0
+            }
+          },
+          {
+            "type": "command",
+            "key": "runtime-maps",
+            "bin": "kubectl",
+            "args": [
+              "-n",
+              "petclinic",
+              "exec",
+              "fixture-pod",
+              "-c",
+              "petclinic",
+              "--",
+              "cat",
+              "/proc/1/maps"
+            ],
+            "timeout": 15000,
+            "result": {
+              "status": 0
+            }
+          },
+          {
+            "type": "io",
+            "key": "read:.devsecops/sbom.json",
+            "occurrence": "read:.devsecops/sbom.json#1",
+            "ok": true
+          },
+          {
+            "type": "http",
+            "key": "root",
+            "occurrence": "http:root#1",
+            "url": "http://harbor-core.harbor.svc.cluster.local/api/v2.0/projects/petclinic/repositories/petclinic/artifacts/sha256:a662251c52ed528541bb99e17c6ac97f492c579c6fc673f3943a3638329b7c44",
+            "method": "GET",
+            "headers": {
+              "Authorization": "SYNTHETIC_AUTH_PRESENT"
+            },
+            "result": {
+              "status": 200,
+              "json": {
+                "digest": "sha256:a662251c52ed528541bb99e17c6ac97f492c579c6fc673f3943a3638329b7c44",
+                "references": [
+                  {
+                    "child_digest": "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+                    "platform": {
+                      "architecture": "amd64"
+                    }
+                  },
+                  {
+                    "child_digest": "sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+                    "platform": {
+                      "architecture": "arm64"
+                    }
+                  }
+                ]
+              }
+            }
+          },
+          {
+            "type": "http",
+            "key": "scan:sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+            "occurrence": "http:scan:sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb#1",
+            "url": "http://harbor-core.harbor.svc.cluster.local/api/v2.0/projects/petclinic/repositories/petclinic/artifacts/sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb/scan",
+            "method": "POST",
+            "headers": {
+              "Authorization": "SYNTHETIC_AUTH_PRESENT"
+            },
+            "result": {
+              "status": 202,
+              "json": {}
+            }
+          },
+          {
+            "type": "http",
+            "key": "overview:sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+            "occurrence": "http:overview:sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb#1",
+            "url": "http://harbor-core.harbor.svc.cluster.local/api/v2.0/projects/petclinic/repositories/petclinic/artifacts/sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb?with_scan_overview=true",
+            "method": "GET",
+            "headers": {
+              "Authorization": "SYNTHETIC_AUTH_PRESENT"
+            },
+            "result": {
+              "status": 200,
+              "json": {
+                "scan_overview": {
+                  "trivy": {
+                    "scan_status": "Success",
+                    "scanner": {
+                      "name": "Trivy"
+                    },
+                    "summary": {
+                      "Critical": 0,
+                      "High": 0,
+                      "Medium": 0,
+                      "Low": 0
+                    }
+                  }
+                }
+              }
+            }
+          },
+          {
+            "type": "http",
+            "key": "report:sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+            "occurrence": "http:report:sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb#1",
+            "url": "http://harbor-core.harbor.svc.cluster.local/api/v2.0/projects/petclinic/repositories/petclinic/artifacts/sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb/additions/vulnerabilities",
+            "method": "GET",
+            "headers": {
+              "Authorization": "SYNTHETIC_AUTH_PRESENT",
+              "Accept": "application/json",
+              "X-Accept-Vulnerabilities": "application/vnd.security.vulnerability.report; version=1.1"
+            },
+            "result": {
+              "status": 200,
+              "json": {
+                "unrelated": {
+                  "artifact": "different",
+                  "vulnerabilities": []
+                }
+              }
+            }
+          },
+          {
+            "type": "http",
+            "key": "scan:sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+            "occurrence": "http:scan:sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc#1",
+            "url": "http://harbor-core.harbor.svc.cluster.local/api/v2.0/projects/petclinic/repositories/petclinic/artifacts/sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc/scan",
+            "method": "POST",
+            "headers": {
+              "Authorization": "SYNTHETIC_AUTH_PRESENT"
+            },
+            "result": {
+              "status": 202,
+              "json": {}
+            }
+          },
+          {
+            "type": "http",
+            "key": "overview:sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+            "occurrence": "http:overview:sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc#1",
+            "url": "http://harbor-core.harbor.svc.cluster.local/api/v2.0/projects/petclinic/repositories/petclinic/artifacts/sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc?with_scan_overview=true",
+            "method": "GET",
+            "headers": {
+              "Authorization": "SYNTHETIC_AUTH_PRESENT"
+            },
+            "result": {
+              "status": 200,
+              "json": {
+                "scan_overview": {
+                  "trivy": {
+                    "scan_status": "Success",
+                    "scanner": {
+                      "name": "Trivy"
+                    },
+                    "summary": {
+                      "Critical": 0,
+                      "High": 0,
+                      "Medium": 0,
+                      "Low": 0
+                    }
+                  }
+                }
+              }
+            }
+          },
+          {
+            "type": "http",
+            "key": "report:sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+            "occurrence": "http:report:sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc#1",
+            "url": "http://harbor-core.harbor.svc.cluster.local/api/v2.0/projects/petclinic/repositories/petclinic/artifacts/sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc/additions/vulnerabilities",
+            "method": "GET",
+            "headers": {
+              "Authorization": "SYNTHETIC_AUTH_PRESENT",
+              "Accept": "application/json",
+              "X-Accept-Vulnerabilities": "application/vnd.security.vulnerability.report; version=1.1"
+            },
+            "result": {
+              "status": 200,
+              "json": {
+                "unrelated": {
+                  "artifact": "different",
+                  "vulnerabilities": []
+                }
+              }
+            }
+          },
+          {
+            "type": "io",
+            "key": "read:infra/security/trivy-medium-review.json",
+            "occurrence": "read:infra/security/trivy-medium-review.json#1",
+            "ok": true
+          },
+          {
+            "type": "io",
+            "key": "write:.devsecops/trivy-audit.json",
+            "occurrence": "write:.devsecops/trivy-audit.json#1",
+            "ok": true
+          }
+        ],
+        "classifierInput": {
+          "findings": [],
+          "review": {
+            "image": "core.harbor.domain/petclinic/petclinic@sha256:a662251c52ed528541bb99e17c6ac97f492c579c6fc673f3943a3638329b7c44",
+            "entries": [],
+            "reviewAfter": "2026-12-01T00:00:00Z",
+            "limitations": [
+              "synthetic control"
+            ]
+          },
+          "image": "core.harbor.domain/petclinic/petclinic@sha256:a662251c52ed528541bb99e17c6ac97f492c579c6fc673f3943a3638329b7c44"
+        }
+      }
+    ]
+  }
+}

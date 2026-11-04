@@ -1,0 +1,1301 @@
+{
+  "host": "devops",
+  "uid": 1000,
+  "engine": {
+    "ID": "4616ba22-4e70-4b96-8e66-6a3a4d756cb2",
+    "Name": "devops",
+    "DockerRootDir": "/var/lib/docker",
+    "Driver": "overlayfs",
+    "DriverStatus": [
+      [
+        "driver-type",
+        "io.containerd.snapshotter.v1"
+      ]
+    ],
+    "CgroupDriver": "systemd",
+    "CgroupVersion": "2",
+    "SecurityOptions": [
+      "name=apparmor",
+      "name=seccomp,profile=builtin",
+      "name=cgroupns"
+    ],
+    "OperatingSystem": "Ubuntu 24.04.4 LTS",
+    "KernelVersion": "7.0.0-38-generic"
+  },
+  "version": {
+    "Client": {
+      "Platform": {
+        "Name": "Docker Engine - Community"
+      },
+      "Version": "29.6.2",
+      "ApiVersion": "1.55",
+      "DefaultAPIVersion": "1.55",
+      "GitCommit": "dfc4efb",
+      "GoVersion": "go1.26.5",
+      "Os": "linux",
+      "Arch": "arm64",
+      "BuildTime": "Thu Jul 16 16:13:09 2026",
+      "Context": "default"
+    },
+    "Server": {
+      "Platform": {
+        "Name": "Docker Engine - Community"
+      },
+      "Version": "29.6.2",
+      "ApiVersion": "1.55",
+      "MinAPIVersion": "1.40",
+      "Os": "linux",
+      "Arch": "arm64",
+      "Components": [
+        {
+          "Name": "Engine",
+          "Version": "29.6.2",
+          "Details": {
+            "ApiVersion": "1.55",
+            "Arch": "arm64",
+            "BuildTime": "Thu Jul 16 16:13:09 2026",
+            "Experimental": "false",
+            "GitCommit": "3d80467",
+            "GoVersion": "go1.26.5",
+            "KernelVersion": "7.0.0-38-generic",
+            "MinAPIVersion": "1.40",
+            "Module": "github.com/moby/moby/v2",
+            "ModuleVersion": "v2.0.0+unknown",
+            "Os": "linux"
+          }
+        },
+        {
+          "Name": "containerd",
+          "Version": "v2.2.6",
+          "Details": {
+            "GitCommit": "11ce9d5f3c68c941867e82890e93e815c1304f1b"
+          }
+        },
+        {
+          "Name": "runc",
+          "Version": "1.3.6",
+          "Details": {
+            "GitCommit": "v1.3.6-0-g491b69ba"
+          }
+        },
+        {
+          "Name": "docker-init",
+          "Version": "0.19.0",
+          "Details": {
+            "GitCommit": "de40ad0"
+          }
+        }
+      ],
+      "GitCommit": "3d80467",
+      "GoVersion": "go1.26.5",
+      "KernelVersion": "7.0.0-38-generic",
+      "BuildTime": "2026-07-16T16:13:09.000000000+00:00"
+    }
+  },
+  "image": "sha256:fbecd461fc72d21b2143c6eaba25143738079154a6d0ea3da3aec724f50eed4a",
+  "baselineFlags": [
+    "--pull=never",
+    "--network=none",
+    "--read-only",
+    "--cap-drop=ALL",
+    "--security-opt=no-new-privileges",
+    "--pids-limit=24",
+    "--memory=48m",
+    "--memory-swap=48m",
+    "--cpus=0.5",
+    "--user=65534:65534",
+    "--ipc=private",
+    "--shm-size=1m",
+    "--tmpfs",
+    "/validation:rw,nosuid,nodev,noexec,size=4m,uid=65534,gid=65534,mode=0700",
+    "--tmpfs",
+    "/tmp:rw,nosuid,nodev,noexec,size=1m",
+    "--log-driver=none"
+  ],
+  "records": [
+    {
+      "command": [
+        "docker",
+        "info",
+        "--format",
+        "{{json .}}"
+      ],
+      "exit": 0,
+      "stdout": "{\"ID\":\"4616ba22-4e70-4b96-8e66-6a3a4d756cb2\",\"Containers\":13,\"ContainersRunning\":8,\"ContainersPaused\":0,\"ContainersStopped\":5,\"Images\":27,\"Driver\":\"overlayfs\",\"DriverStatus\":[[\"driver-type\",\"io.containerd.snapshotter.v1\"]],\"Plugins\":{\"Volume\":[\"local\"],\"Network\":[\"bridge\",\"host\",\"ipvlan\",\"macvlan\",\"null\",\"overlay\"],\"Authorization\":null,\"Log\":[\"awslogs\",\"fluentd\",\"gcplogs\",\"gelf\",\"journald\",\"json-file\",\"local\",\"splunk\",\"syslog\"]},\"MemoryLimit\":true,\"SwapLimit\":true,\"CpuCfsPeriod\":true,\"CpuCfsQuota\":true,\"CPUShares\":true,\"CPUSet\":true,\"PidsLimit\":true,\"IPv4Forwarding\":true,\"Debug\":false,\"NFd\":93,\"OomKillDisable\":false,\"NGoroutines\":105,\"SystemTime\":\"2026-11-04T11:50:01.281656752+08:00\",\"LoggingDriver\":\"json-file\",\"CgroupDriver\":\"systemd\",\"CgroupVersion\":\"2\",\"NEventsListener\":0,\"KernelVersion\":\"7.0.0-38-generic\",\"OperatingSystem\":\"Ubuntu 24.04.4 LTS\",\"OSVersion\":\"24.04\",\"OSType\":\"linux\",\"Architecture\":\"aarch64\",\"IndexServerAddress\":\"https://index.docker.io/v1/\",\"RegistryConfig\":{\"InsecureRegistryCIDRs\":[\"::1/128\",\"127.0.0.0/8\"],\"IndexConfigs\":{\"127.0.0.1:30050\":{\"Name\":\"127.0.0.1:30050\",\"Mirrors\":[],\"Secure\":false,\"Official\":false},\"127.0.0.1:8081\":{\"Name\":\"127.0.0.1:8081\",\"Mirrors\":[],\"Secure\":false,\"Official\":false},\"192.168.1.58:30050\":{\"Name\":\"192.168.1.58:30050\",\"Mirrors\":[],\"Secure\":false,\"Official\":false},\"192.168.1.58:8081\":{\"Name\":\"192.168.1.58:8081\",\"Mirrors\":[],\"Secure\":false,\"Official\":false},\"docker.io\":{\"Name\":\"docker.io\",\"Mirrors\":[\"http://127.0.0.1:30050/\",\"https://docker.m.daocloud.io/\",\"https://docker.1ms.run/\"],\"Secure\":true,\"Official\":true},\"harbor.devops.local\":{\"Name\":\"harbor.devops.local\",\"Mirrors\":[],\"Secure\":false,\"Official\":false}},\"Mirrors\":[\"http://127.0.0.1:30050/\",\"https://docker.m.daocloud.io/\",\"https://docker.1ms.run/\"]},\"NCPU\":6,\"MemTotal\":23025446912,\"GenericResources\":null,\"DockerRootDir\":\"/var/lib/docker\",\"HttpProxy\":\"http://10.0.0.2:8118\",\"HttpsProxy\":\"http://10.0.0.2:8118\",\"NoProxy\":\"127.0.0.1,localhost,192.168.1.58,10.0.0.0/24,10.42.0.0/16,10.43.0.0/16,docker.m.daocloud.io,m.daocloud.io,docker.1ms.run,image-mirror.r2.daocloud.vip,cloudfront-docker-cf.mrs.1ms.run\",\"Name\":\"devops\",\"Labels\":[],\"ExperimentalBuild\":false,\"ServerVersion\":\"29.6.2\",\"Runtimes\":{\"io.containerd.runc.v2\":{\"path\":\"runc\",\"status\":{\"org.opencontainers.runtime-spec.features\":\"{\\\"ociVersionMin\\\":\\\"1.0.0\\\",\\\"ociVersionMax\\\":\\\"1.2.1\\\",\\\"hooks\\\":[\\\"prestart\\\",\\\"createRuntime\\\",\\\"createContainer\\\",\\\"startContainer\\\",\\\"poststart\\\",\\\"poststop\\\"],\\\"mountOptions\\\":[\\\"async\\\",\\\"atime\\\",\\\"bind\\\",\\\"defaults\\\",\\\"dev\\\",\\\"diratime\\\",\\\"dirsync\\\",\\\"exec\\\",\\\"iversion\\\",\\\"lazytime\\\",\\\"loud\\\",\\\"mand\\\",\\\"noatime\\\",\\\"nodev\\\",\\\"nodiratime\\\",\\\"noexec\\\",\\\"noiversion\\\",\\\"nolazytime\\\",\\\"nomand\\\",\\\"norelatime\\\",\\\"nostrictatime\\\",\\\"nosuid\\\",\\\"nosymfollow\\\",\\\"private\\\",\\\"ratime\\\",\\\"rbind\\\",\\\"rdev\\\",\\\"rdiratime\\\",\\\"relatime\\\",\\\"remount\\\",\\\"rexec\\\",\\\"rnoatime\\\",\\\"rnodev\\\",\\\"rnodiratime\\\",\\\"rnoexec\\\",\\\"rnorelatime\\\",\\\"rnostrictatime\\\",\\\"rnosuid\\\",\\\"rnosymfollow\\\",\\\"ro\\\",\\\"rprivate\\\",\\\"rrelatime\\\",\\\"rro\\\",\\\"rrw\\\",\\\"rshared\\\",\\\"rslave\\\",\\\"rstrictatime\\\",\\\"rsuid\\\",\\\"rsymfollow\\\",\\\"runbindable\\\",\\\"rw\\\",\\\"shared\\\",\\\"silent\\\",\\\"slave\\\",\\\"strictatime\\\",\\\"suid\\\",\\\"symfollow\\\",\\\"sync\\\",\\\"tmpcopyup\\\",\\\"unbindable\\\"],\\\"linux\\\":{\\\"namespaces\\\":[\\\"cgroup\\\",\\\"ipc\\\",\\\"mount\\\",\\\"network\\\",\\\"pid\\\",\\\"time\\\",\\\"user\\\",\\\"uts\\\"],\\\"capabilities\\\":[\\\"CAP_CHOWN\\\",\\\"CAP_DAC_OVERRIDE\\\",\\\"CAP_DAC_READ_SEARCH\\\",\\\"CAP_FOWNER\\\",\\\"CAP_FSETID\\\",\\\"CAP_KILL\\\",\\\"CAP_SETGID\\\",\\\"CAP_SETUID\\\",\\\"CAP_SETPCAP\\\",\\\"CAP_LINUX_IMMUTABLE\\\",\\\"CAP_NET_BIND_SERVICE\\\",\\\"CAP_NET_BROADCAST\\\",\\\"CAP_NET_ADMIN\\\",\\\"CAP_NET_RAW\\\",\\\"CAP_IPC_LOCK\\\",\\\"CAP_IPC_OWNER\\\",\\\"CAP_SYS_MODULE\\\",\\\"CAP_SYS_RAWIO\\\",\\\"CAP_SYS_CHROOT\\\",\\\"CAP_SYS_PTRACE\\\",\\\"CAP_SYS_PACCT\\\",\\\"CAP_SYS_ADMIN\\\",\\\"CAP_SYS_BOOT\\\",\\\"CAP_SYS_NICE\\\",\\\"CAP_SYS_RESOURCE\\\",\\\"CAP_SYS_TIME\\\",\\\"CAP_SYS_TTY_CONFIG\\\",\\\"CAP_MKNOD\\\",\\\"CAP_LEASE\\\",\\\"CAP_AUDIT_WRITE\\\",\\\"CAP_AUDIT_CONTROL\\\",\\\"CAP_SETFCAP\\\",\\\"CAP_MAC_OVERRIDE\\\",\\\"CAP_MAC_ADMIN\\\",\\\"CAP_SYSLOG\\\",\\\"CAP_WAKE_ALARM\\\",\\\"CAP_BLOCK_SUSPEND\\\",\\\"CAP_AUDIT_READ\\\",\\\"CAP_PERFMON\\\",\\\"CAP_BPF\\\",\\\"CAP_CHECKPOINT_RESTORE\\\"],\\\"cgroup\\\":{\\\"v1\\\":true,\\\"v2\\\":true,\\\"systemd\\\":true,\\\"systemdUser\\\":true,\\\"rdma\\\":true},\\\"seccomp\\\":{\\\"enabled\\\":true,\\\"actions\\\":[\\\"SCMP_ACT_ALLOW\\\",\\\"SCMP_ACT_ERRNO\\\",\\\"SCMP_ACT_KILL\\\",\\\"SCMP_ACT_KILL_PROCESS\\\",\\\"SCMP_ACT_KILL_THREAD\\\",\\\"SCMP_ACT_LOG\\\",\\\"SCMP_ACT_NOTIFY\\\",\\\"SCMP_ACT_TRACE\\\",\\\"SCMP_ACT_TRAP\\\"],\\\"operators\\\":[\\\"SCMP_CMP_EQ\\\",\\\"SCMP_CMP_GE\\\",\\\"SCMP_CMP_GT\\\",\\\"SCMP_CMP_LE\\\",\\\"SCMP_CMP_LT\\\",\\\"SCMP_CMP_MASKED_EQ\\\",\\\"SCMP_CMP_NE\\\"],\\\"archs\\\":[\\\"SCMP_ARCH_AARCH64\\\",\\\"SCMP_ARCH_ARM\\\",\\\"SCMP_ARCH_MIPS\\\",\\\"SCMP_ARCH_MIPS64\\\",\\\"SCMP_ARCH_MIPS64N32\\\",\\\"SCMP_ARCH_MIPSEL\\\",\\\"SCMP_ARCH_MIPSEL64\\\",\\\"SCMP_ARCH_MIPSEL64N32\\\",\\\"SCMP_ARCH_PPC\\\",\\\"SCMP_ARCH_PPC64\\\",\\\"SCMP_ARCH_PPC64LE\\\",\\\"SCMP_ARCH_RISCV64\\\",\\\"SCMP_ARCH_S390\\\",\\\"SCMP_ARCH_S390X\\\",\\\"SCMP_ARCH_X32\\\",\\\"SCMP_ARCH_X86\\\",\\\"SCMP_ARCH_X86_64\\\"],\\\"knownFlags\\\":[\\\"SECCOMP_FILTER_FLAG_TSYNC\\\",\\\"SECCOMP_FILTER_FLAG_SPEC_ALLOW\\\",\\\"SECCOMP_FILTER_FLAG_LOG\\\"],\\\"supportedFlags\\\":[\\\"SECCOMP_FILTER_FLAG_TSYNC\\\",\\\"SECCOMP_FILTER_FLAG_SPEC_ALLOW\\\",\\\"SECCOMP_FILTER_FLAG_LOG\\\"]},\\\"apparmor\\\":{\\\"enabled\\\":true},\\\"selinux\\\":{\\\"enabled\\\":true},\\\"intelRdt\\\":{\\\"enabled\\\":true},\\\"mountExtensions\\\":{\\\"idmap\\\":{\\\"enabled\\\":true}}},\\\"annotations\\\":{\\\"io.github.seccomp.libseccomp.version\\\":\\\"2.5.5\\\",\\\"org.opencontainers.runc.checkpoint.enabled\\\":\\\"true\\\",\\\"org.opencontainers.runc.commit\\\":\\\"v1.3.6-0-g491b69ba\\\",\\\"org.opencontainers.runc.version\\\":\\\"1.3.6\\\\n\\\"},\\\"potentiallyUnsafeConfigAnnotations\\\":[\\\"bundle\\\",\\\"org.systemd.property.\\\",\\\"org.criu.config\\\"]}\"}},\"runc\":{\"path\":\"runc\",\"status\":{\"org.opencontainers.runtime-spec.features\":\"{\\\"ociVersionMin\\\":\\\"1.0.0\\\",\\\"ociVersionMax\\\":\\\"1.2.1\\\",\\\"hooks\\\":[\\\"prestart\\\",\\\"createRuntime\\\",\\\"createContainer\\\",\\\"startContainer\\\",\\\"poststart\\\",\\\"poststop\\\"],\\\"mountOptions\\\":[\\\"async\\\",\\\"atime\\\",\\\"bind\\\",\\\"defaults\\\",\\\"dev\\\",\\\"diratime\\\",\\\"dirsync\\\",\\\"exec\\\",\\\"iversion\\\",\\\"lazytime\\\",\\\"loud\\\",\\\"mand\\\",\\\"noatime\\\",\\\"nodev\\\",\\\"nodiratime\\\",\\\"noexec\\\",\\\"noiversion\\\",\\\"nolazytime\\\",\\\"nomand\\\",\\\"norelatime\\\",\\\"nostrictatime\\\",\\\"nosuid\\\",\\\"nosymfollow\\\",\\\"private\\\",\\\"ratime\\\",\\\"rbind\\\",\\\"rdev\\\",\\\"rdiratime\\\",\\\"relatime\\\",\\\"remount\\\",\\\"rexec\\\",\\\"rnoatime\\\",\\\"rnodev\\\",\\\"rnodiratime\\\",\\\"rnoexec\\\",\\\"rnorelatime\\\",\\\"rnostrictatime\\\",\\\"rnosuid\\\",\\\"rnosymfollow\\\",\\\"ro\\\",\\\"rprivate\\\",\\\"rrelatime\\\",\\\"rro\\\",\\\"rrw\\\",\\\"rshared\\\",\\\"rslave\\\",\\\"rstrictatime\\\",\\\"rsuid\\\",\\\"rsymfollow\\\",\\\"runbindable\\\",\\\"rw\\\",\\\"shared\\\",\\\"silent\\\",\\\"slave\\\",\\\"strictatime\\\",\\\"suid\\\",\\\"symfollow\\\",\\\"sync\\\",\\\"tmpcopyup\\\",\\\"unbindable\\\"],\\\"linux\\\":{\\\"namespaces\\\":[\\\"cgroup\\\",\\\"ipc\\\",\\\"mount\\\",\\\"network\\\",\\\"pid\\\",\\\"time\\\",\\\"user\\\",\\\"uts\\\"],\\\"capabilities\\\":[\\\"CAP_CHOWN\\\",\\\"CAP_DAC_OVERRIDE\\\",\\\"CAP_DAC_READ_SEARCH\\\",\\\"CAP_FOWNER\\\",\\\"CAP_FSETID\\\",\\\"CAP_KILL\\\",\\\"CAP_SETGID\\\",\\\"CAP_SETUID\\\",\\\"CAP_SETPCAP\\\",\\\"CAP_LINUX_IMMUTABLE\\\",\\\"CAP_NET_BIND_SERVICE\\\",\\\"CAP_NET_BROADCAST\\\",\\\"CAP_NET_ADMIN\\\",\\\"CAP_NET_RAW\\\",\\\"CAP_IPC_LOCK\\\",\\\"CAP_IPC_OWNER\\\",\\\"CAP_SYS_MODULE\\\",\\\"CAP_SYS_RAWIO\\\",\\\"CAP_SYS_CHROOT\\\",\\\"CAP_SYS_PTRACE\\\",\\\"CAP_SYS_PACCT\\\",\\\"CAP_SYS_ADMIN\\\",\\\"CAP_SYS_BOOT\\\",\\\"CAP_SYS_NICE\\\",\\\"CAP_SYS_RESOURCE\\\",\\\"CAP_SYS_TIME\\\",\\\"CAP_SYS_TTY_CONFIG\\\",\\\"CAP_MKNOD\\\",\\\"CAP_LEASE\\\",\\\"CAP_AUDIT_WRITE\\\",\\\"CAP_AUDIT_CONTROL\\\",\\\"CAP_SETFCAP\\\",\\\"CAP_MAC_OVERRIDE\\\",\\\"CAP_MAC_ADMIN\\\",\\\"CAP_SYSLOG\\\",\\\"CAP_WAKE_ALARM\\\",\\\"CAP_BLOCK_SUSPEND\\\",\\\"CAP_AUDIT_READ\\\",\\\"CAP_PERFMON\\\",\\\"CAP_BPF\\\",\\\"CAP_CHECKPOINT_RESTORE\\\"],\\\"cgroup\\\":{\\\"v1\\\":true,\\\"v2\\\":true,\\\"systemd\\\":true,\\\"systemdUser\\\":true,\\\"rdma\\\":true},\\\"seccomp\\\":{\\\"enabled\\\":true,\\\"actions\\\":[\\\"SCMP_ACT_ALLOW\\\",\\\"SCMP_ACT_ERRNO\\\",\\\"SCMP_ACT_KILL\\\",\\\"SCMP_ACT_KILL_PROCESS\\\",\\\"SCMP_ACT_KILL_THREAD\\\",\\\"SCMP_ACT_LOG\\\",\\\"SCMP_ACT_NOTIFY\\\",\\\"SCMP_ACT_TRACE\\\",\\\"SCMP_ACT_TRAP\\\"],\\\"operators\\\":[\\\"SCMP_CMP_EQ\\\",\\\"SCMP_CMP_GE\\\",\\\"SCMP_CMP_GT\\\",\\\"SCMP_CMP_LE\\\",\\\"SCMP_CMP_LT\\\",\\\"SCMP_CMP_MASKED_EQ\\\",\\\"SCMP_CMP_NE\\\"],\\\"archs\\\":[\\\"SCMP_ARCH_AARCH64\\\",\\\"SCMP_ARCH_ARM\\\",\\\"SCMP_ARCH_MIPS\\\",\\\"SCMP_ARCH_MIPS64\\\",\\\"SCMP_ARCH_MIPS64N32\\\",\\\"SCMP_ARCH_MIPSEL\\\",\\\"SCMP_ARCH_MIPSEL64\\\",\\\"SCMP_ARCH_MIPSEL64N32\\\",\\\"SCMP_ARCH_PPC\\\",\\\"SCMP_ARCH_PPC64\\\",\\\"SCMP_ARCH_PPC64LE\\\",\\\"SCMP_ARCH_RISCV64\\\",\\\"SCMP_ARCH_S390\\\",\\\"SCMP_ARCH_S390X\\\",\\\"SCMP_ARCH_X32\\\",\\\"SCMP_ARCH_X86\\\",\\\"SCMP_ARCH_X86_64\\\"],\\\"knownFlags\\\":[\\\"SECCOMP_FILTER_FLAG_TSYNC\\\",\\\"SECCOMP_FILTER_FLAG_SPEC_ALLOW\\\",\\\"SECCOMP_FILTER_FLAG_LOG\\\"],\\\"supportedFlags\\\":[\\\"SECCOMP_FILTER_FLAG_TSYNC\\\",\\\"SECCOMP_FILTER_FLAG_SPEC_ALLOW\\\",\\\"SECCOMP_FILTER_FLAG_LOG\\\"]},\\\"apparmor\\\":{\\\"enabled\\\":true},\\\"selinux\\\":{\\\"enabled\\\":true},\\\"intelRdt\\\":{\\\"enabled\\\":true},\\\"mountExtensions\\\":{\\\"idmap\\\":{\\\"enabled\\\":true}}},\\\"annotations\\\":{\\\"io.github.seccomp.libseccomp.version\\\":\\\"2.5.5\\\",\\\"org.opencontainers.runc.checkpoint.enabled\\\":\\\"true\\\",\\\"org.opencontainers.runc.commit\\\":\\\"v1.3.6-0-g491b69ba\\\",\\\"org.opencontainers.runc.version\\\":\\\"1.3.6\\\\n\\\"},\\\"potentiallyUnsafeConfigAnnotations\\\":[\\\"bundle\\\",\\\"org.systemd.property.\\\",\\\"org.criu.config\\\"]}\"}}},\"DefaultRuntime\":\"runc\",\"Swarm\":{\"NodeID\":\"\",\"NodeAddr\":\"\",\"LocalNodeState\":\"inactive\",\"ControlAvailable\":false,\"Error\":\"\",\"RemoteManagers\":null},\"LiveRestoreEnabled\":false,\"Isolation\":\"\",\"InitBinary\":\"docker-init\",\"ContainerdCommit\":{\"ID\":\"11ce9d5f3c68c941867e82890e93e815c1304f1b\"},\"RuncCommit\":{\"ID\":\"v1.3.6-0-g491b69ba\"},\"InitCommit\":{\"ID\":\"de40ad0\"},\"SecurityOptions\":[\"name=apparmor\",\"name=seccomp,profile=builtin\",\"name=cgroupns\"],\"FirewallBackend\":{\"Driver\":\"iptables\",\"Info\":[[\"EnableUserlandProxy\",\"true\"],[\"UserlandProxyPath\",\"/usr/bin/docker-proxy\"]]},\"CDISpecDirs\":[\"/etc/cdi\",\"/var/run/cdi\"],\"Containerd\":{\"Address\":\"/run/containerd/containerd.sock\",\"Namespaces\":{\"Containers\":\"moby\",\"Plugins\":\"plugins.moby\"}},\"Warnings\":null,\"ClientInfo\":{\"Debug\":false,\"Platform\":{\"Name\":\"Docker Engine - Community\"},\"Version\":\"29.6.2\",\"DefaultAPIVersion\":\"1.55\",\"GitCommit\":\"dfc4efb\",\"GoVersion\":\"go1.26.5\",\"Os\":\"linux\",\"Arch\":\"arm64\",\"BuildTime\":\"Thu Jul 16 16:13:09 2026\",\"Context\":\"default\",\"Plugins\":[{\"SchemaVersion\":\"0.1.0\",\"Vendor\":\"Docker Inc.\",\"Version\":\"v0.35.0\",\"ShortDescription\":\"Docker Buildx\",\"Name\":\"buildx\",\"Path\":\"/usr/libexec/docker/cli-plugins/docker-buildx\"},{\"SchemaVersion\":\"0.1.0\",\"Vendor\":\"Docker Inc.\",\"Version\":\"v5.3.1\",\"ShortDescription\":\"Docker Compose\",\"Name\":\"compose\",\"Path\":\"/usr/libexec/docker/cli-plugins/docker-compose\"},{\"SchemaVersion\":\"0.1.0\",\"Vendor\":\"Docker Inc.\",\"Version\":\"v1.2.6\",\"ShortDescription\":\"Docker Model Runner\",\"Name\":\"model\",\"Path\":\"/usr/libexec/docker/cli-plugins/docker-model\"}],\"Warnings\":null}}\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "docker",
+        "version",
+        "--format",
+        "{{json .}}"
+      ],
+      "exit": 0,
+      "stdout": "{\"Client\":{\"Platform\":{\"Name\":\"Docker Engine - Community\"},\"Version\":\"29.6.2\",\"ApiVersion\":\"1.55\",\"DefaultAPIVersion\":\"1.55\",\"GitCommit\":\"dfc4efb\",\"GoVersion\":\"go1.26.5\",\"Os\":\"linux\",\"Arch\":\"arm64\",\"BuildTime\":\"Thu Jul 16 16:13:09 2026\",\"Context\":\"default\"},\"Server\":{\"Platform\":{\"Name\":\"Docker Engine - Community\"},\"Version\":\"29.6.2\",\"ApiVersion\":\"1.55\",\"MinAPIVersion\":\"1.40\",\"Os\":\"linux\",\"Arch\":\"arm64\",\"Components\":[{\"Name\":\"Engine\",\"Version\":\"29.6.2\",\"Details\":{\"ApiVersion\":\"1.55\",\"Arch\":\"arm64\",\"BuildTime\":\"Thu Jul 16 16:13:09 2026\",\"Experimental\":\"false\",\"GitCommit\":\"3d80467\",\"GoVersion\":\"go1.26.5\",\"KernelVersion\":\"7.0.0-38-generic\",\"MinAPIVersion\":\"1.40\",\"Module\":\"github.com/moby/moby/v2\",\"ModuleVersion\":\"v2.0.0+unknown\",\"Os\":\"linux\"}},{\"Name\":\"containerd\",\"Version\":\"v2.2.6\",\"Details\":{\"GitCommit\":\"11ce9d5f3c68c941867e82890e93e815c1304f1b\"}},{\"Name\":\"runc\",\"Version\":\"1.3.6\",\"Details\":{\"GitCommit\":\"v1.3.6-0-g491b69ba\"}},{\"Name\":\"docker-init\",\"Version\":\"0.19.0\",\"Details\":{\"GitCommit\":\"de40ad0\"}}],\"GitCommit\":\"3d80467\",\"GoVersion\":\"go1.26.5\",\"KernelVersion\":\"7.0.0-38-generic\",\"BuildTime\":\"2026-07-16T16:13:09.000000000+00:00\"}}\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "docker",
+        "image",
+        "inspect",
+        "python:3.14.8-slim-trixie",
+        "--format",
+        "{{.Id}}"
+      ],
+      "exit": 0,
+      "stdout": "sha256:fbecd461fc72d21b2143c6eaba25143738079154a6d0ea3da3aec724f50eed4a\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "docker",
+        "run",
+        "-d",
+        "--name",
+        "trivy-acceptance-e7a097900fac",
+        "--label",
+        "purpose=trivy-docker-acceptance",
+        "--pull=never",
+        "--network=none",
+        "--read-only",
+        "--cap-drop=ALL",
+        "--security-opt=no-new-privileges",
+        "--pids-limit=24",
+        "--memory=48m",
+        "--memory-swap=48m",
+        "--cpus=0.5",
+        "--user=65534:65534",
+        "--ipc=private",
+        "--shm-size=1m",
+        "--tmpfs",
+        "/validation:rw,nosuid,nodev,noexec,size=4m,uid=65534,gid=65534,mode=0700",
+        "--tmpfs",
+        "/tmp:rw,nosuid,nodev,noexec,size=1m",
+        "--log-driver=none",
+        "sha256:fbecd461fc72d21b2143c6eaba25143738079154a6d0ea3da3aec724f50eed4a",
+        "python3",
+        "-B",
+        "-c",
+        "import os,json,time,signal,pathlib\npass"
+      ],
+      "exit": 0,
+      "stdout": "6b6747d9478ad7146baf14d32199776a8ce8e9b0ebb805cbf6ff4b9db9e80a6c\n",
+      "stderr": ""
+    },
+    {
+      "case": "single-normal",
+      "containerId": "6b6747d9478ad7146baf14d32199776a8ce8e9b0ebb805cbf6ff4b9db9e80a6c",
+      "action": "wait",
+      "classification": "REAL_CONTROLLED_EXECUTION",
+      "stateAfter": {
+        "Status": "exited",
+        "Running": false,
+        "Paused": false,
+        "Restarting": false,
+        "OOMKilled": false,
+        "Dead": false,
+        "Pid": 0,
+        "ExitCode": 0,
+        "Error": "",
+        "StartedAt": "2026-11-04T03:50:01.729190006Z",
+        "FinishedAt": "2026-11-04T03:50:02.123327438Z"
+      },
+      "removed": true,
+      "hostSentinelUnchanged": true,
+      "unrelatedHostProcessStillPresent": true,
+      "status": "PASS"
+    },
+    {
+      "command": [
+        "docker",
+        "wait",
+        "6b6747d9478ad7146baf14d32199776a8ce8e9b0ebb805cbf6ff4b9db9e80a6c"
+      ],
+      "exit": 0,
+      "stdout": "0\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "docker",
+        "inspect",
+        "6b6747d9478ad7146baf14d32199776a8ce8e9b0ebb805cbf6ff4b9db9e80a6c",
+        "--format",
+        "{{json .State}}"
+      ],
+      "exit": 0,
+      "stdout": "{\"Status\":\"exited\",\"Running\":false,\"Paused\":false,\"Restarting\":false,\"OOMKilled\":false,\"Dead\":false,\"Pid\":0,\"ExitCode\":0,\"Error\":\"\",\"StartedAt\":\"2026-11-04T03:50:01.729190006Z\",\"FinishedAt\":\"2026-11-04T03:50:02.123327438Z\"}\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "docker",
+        "rm",
+        "6b6747d9478ad7146baf14d32199776a8ce8e9b0ebb805cbf6ff4b9db9e80a6c"
+      ],
+      "exit": 0,
+      "stdout": "6b6747d9478ad7146baf14d32199776a8ce8e9b0ebb805cbf6ff4b9db9e80a6c\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "docker",
+        "run",
+        "-d",
+        "--name",
+        "trivy-acceptance-05d60dd42e6f",
+        "--label",
+        "purpose=trivy-docker-acceptance",
+        "--pull=never",
+        "--network=none",
+        "--read-only",
+        "--cap-drop=ALL",
+        "--security-opt=no-new-privileges",
+        "--pids-limit=24",
+        "--memory=48m",
+        "--memory-swap=48m",
+        "--cpus=0.5",
+        "--user=65534:65534",
+        "--ipc=private",
+        "--shm-size=1m",
+        "--tmpfs",
+        "/validation:rw,nosuid,nodev,noexec,size=4m,uid=65534,gid=65534,mode=0700",
+        "--tmpfs",
+        "/tmp:rw,nosuid,nodev,noexec,size=1m",
+        "--log-driver=none",
+        "sha256:fbecd461fc72d21b2143c6eaba25143738079154a6d0ea3da3aec724f50eed4a",
+        "python3",
+        "-B",
+        "-c",
+        "import os,json,time,signal,pathlib\nraise SystemExit(7)"
+      ],
+      "exit": 0,
+      "stdout": "4341fcbaaa887bb4b2b9f6d72c077727198cb3014fd67fcaf88dc41da7af059f\n",
+      "stderr": ""
+    },
+    {
+      "case": "nonzero-exit",
+      "containerId": "4341fcbaaa887bb4b2b9f6d72c077727198cb3014fd67fcaf88dc41da7af059f",
+      "action": "wait",
+      "classification": "REAL_CONTROLLED_EXECUTION",
+      "stateAfter": {
+        "Status": "exited",
+        "Running": false,
+        "Paused": false,
+        "Restarting": false,
+        "OOMKilled": false,
+        "Dead": false,
+        "Pid": 0,
+        "ExitCode": 7,
+        "Error": "",
+        "StartedAt": "2026-11-04T03:50:02.521064596Z",
+        "FinishedAt": "2026-11-04T03:50:02.863801132Z"
+      },
+      "removed": true,
+      "hostSentinelUnchanged": true,
+      "unrelatedHostProcessStillPresent": true,
+      "status": "PASS"
+    },
+    {
+      "command": [
+        "docker",
+        "wait",
+        "4341fcbaaa887bb4b2b9f6d72c077727198cb3014fd67fcaf88dc41da7af059f"
+      ],
+      "exit": 0,
+      "stdout": "7\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "docker",
+        "inspect",
+        "4341fcbaaa887bb4b2b9f6d72c077727198cb3014fd67fcaf88dc41da7af059f",
+        "--format",
+        "{{json .State}}"
+      ],
+      "exit": 0,
+      "stdout": "{\"Status\":\"exited\",\"Running\":false,\"Paused\":false,\"Restarting\":false,\"OOMKilled\":false,\"Dead\":false,\"Pid\":0,\"ExitCode\":7,\"Error\":\"\",\"StartedAt\":\"2026-11-04T03:50:02.521064596Z\",\"FinishedAt\":\"2026-11-04T03:50:02.863801132Z\"}\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "docker",
+        "rm",
+        "4341fcbaaa887bb4b2b9f6d72c077727198cb3014fd67fcaf88dc41da7af059f"
+      ],
+      "exit": 0,
+      "stdout": "4341fcbaaa887bb4b2b9f6d72c077727198cb3014fd67fcaf88dc41da7af059f\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "docker",
+        "run",
+        "-d",
+        "--name",
+        "trivy-acceptance-9c8b6a788522",
+        "--label",
+        "purpose=trivy-docker-acceptance",
+        "--pull=never",
+        "--network=none",
+        "--read-only",
+        "--cap-drop=ALL",
+        "--security-opt=no-new-privileges",
+        "--pids-limit=24",
+        "--memory=48m",
+        "--memory-swap=48m",
+        "--cpus=0.5",
+        "--user=65534:65534",
+        "--ipc=private",
+        "--shm-size=1m",
+        "--tmpfs",
+        "/validation:rw,nosuid,nodev,noexec,size=4m,uid=65534,gid=65534,mode=0700",
+        "--tmpfs",
+        "/tmp:rw,nosuid,nodev,noexec,size=1m",
+        "--log-driver=none",
+        "sha256:fbecd461fc72d21b2143c6eaba25143738079154a6d0ea3da3aec724f50eed4a",
+        "python3",
+        "-B",
+        "-c",
+        "import os,json,time,signal,pathlib\np=os.fork()\nif p==0:os._exit(0)\nos.waitpid(p,0)\n"
+      ],
+      "exit": 0,
+      "stdout": "3948646d2274191917da279475fe650a69011eb3e2eae92339a17b692105efce\n",
+      "stderr": ""
+    },
+    {
+      "case": "parent-child-normal",
+      "containerId": "3948646d2274191917da279475fe650a69011eb3e2eae92339a17b692105efce",
+      "action": "wait",
+      "classification": "REAL_CONTROLLED_EXECUTION",
+      "stateAfter": {
+        "Status": "exited",
+        "Running": false,
+        "Paused": false,
+        "Restarting": false,
+        "OOMKilled": false,
+        "Dead": false,
+        "Pid": 0,
+        "ExitCode": 0,
+        "Error": "",
+        "StartedAt": "2026-11-04T03:50:03.253160877Z",
+        "FinishedAt": "2026-11-04T03:50:03.592107981Z"
+      },
+      "removed": true,
+      "hostSentinelUnchanged": true,
+      "unrelatedHostProcessStillPresent": true,
+      "status": "PASS"
+    },
+    {
+      "command": [
+        "docker",
+        "wait",
+        "3948646d2274191917da279475fe650a69011eb3e2eae92339a17b692105efce"
+      ],
+      "exit": 0,
+      "stdout": "0\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "docker",
+        "inspect",
+        "3948646d2274191917da279475fe650a69011eb3e2eae92339a17b692105efce",
+        "--format",
+        "{{json .State}}"
+      ],
+      "exit": 0,
+      "stdout": "{\"Status\":\"exited\",\"Running\":false,\"Paused\":false,\"Restarting\":false,\"OOMKilled\":false,\"Dead\":false,\"Pid\":0,\"ExitCode\":0,\"Error\":\"\",\"StartedAt\":\"2026-11-04T03:50:03.253160877Z\",\"FinishedAt\":\"2026-11-04T03:50:03.592107981Z\"}\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "docker",
+        "rm",
+        "3948646d2274191917da279475fe650a69011eb3e2eae92339a17b692105efce"
+      ],
+      "exit": 0,
+      "stdout": "3948646d2274191917da279475fe650a69011eb3e2eae92339a17b692105efce\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "docker",
+        "run",
+        "-d",
+        "--name",
+        "trivy-acceptance-62a79f18f1e3",
+        "--label",
+        "purpose=trivy-docker-acceptance",
+        "--pull=never",
+        "--network=none",
+        "--read-only",
+        "--cap-drop=ALL",
+        "--security-opt=no-new-privileges",
+        "--pids-limit=24",
+        "--memory=48m",
+        "--memory-swap=48m",
+        "--cpus=0.5",
+        "--user=65534:65534",
+        "--ipc=private",
+        "--shm-size=1m",
+        "--tmpfs",
+        "/validation:rw,nosuid,nodev,noexec,size=4m,uid=65534,gid=65534,mode=0700",
+        "--tmpfs",
+        "/tmp:rw,nosuid,nodev,noexec,size=1m",
+        "--log-driver=none",
+        "sha256:fbecd461fc72d21b2143c6eaba25143738079154a6d0ea3da3aec724f50eed4a",
+        "python3",
+        "-B",
+        "-c",
+        "import os,json,time,signal,pathlib\nfor depth in range(3):\n p=os.fork()\n if p:break\nos.setsid() if os.getpid()!=1 else None\nsignal.signal(signal.SIGTERM,signal.SIG_IGN)\npathlib.Path('/validation/ready.json').write_text(json.dumps({'pid':os.getpid(),'cgroup':pathlib.Path('/proc/self/cgroup').read_text()}))\ntime.sleep(30)"
+      ],
+      "exit": 0,
+      "stdout": "c70f90e416387c4764d38fe05c8d0581006d0d602e12132a35925eb54900be56\n",
+      "stderr": ""
+    },
+    {
+      "case": "multilevel-setsid-sigterm-kill-escalation",
+      "containerId": "c70f90e416387c4764d38fe05c8d0581006d0d602e12132a35925eb54900be56",
+      "action": "stop",
+      "classification": "REAL_CONTROLLED_EXECUTION",
+      "facts": {
+        "pid": 15,
+        "cgroup": "0::/\n"
+      },
+      "hostCgroup": "/sys/fs/cgroup/system.slice/docker-c70f90e416387c4764d38fe05c8d0581006d0d602e12132a35925eb54900be56.scope",
+      "cgroupBefore": "674647\n674691\n674692\n674693\n",
+      "topBefore": "PID                 PPID                SID                 COMMAND\n674647              674623              674647              python3\n674691              674647              674691              python3\n674692              674691              674692              python3\n674693              674692              674693              python3\n",
+      "stateAfter": {
+        "Status": "exited",
+        "Running": false,
+        "Paused": false,
+        "Restarting": false,
+        "OOMKilled": false,
+        "Dead": false,
+        "Pid": 0,
+        "ExitCode": 137,
+        "Error": "",
+        "StartedAt": "2026-11-04T03:50:04.06244959Z",
+        "FinishedAt": "2026-11-04T03:50:05.742317632Z"
+      },
+      "cgroupExistsAfter": false,
+      "eventsAfter": null,
+      "removed": true,
+      "hostSentinelUnchanged": true,
+      "unrelatedHostProcessStillPresent": true,
+      "status": "PASS"
+    },
+    {
+      "command": [
+        "docker",
+        "inspect",
+        "c70f90e416387c4764d38fe05c8d0581006d0d602e12132a35925eb54900be56",
+        "--format",
+        "{{json .State}}"
+      ],
+      "exit": 0,
+      "stdout": "{\"Status\":\"running\",\"Running\":true,\"Paused\":false,\"Restarting\":false,\"OOMKilled\":false,\"Dead\":false,\"Pid\":674647,\"ExitCode\":0,\"Error\":\"\",\"StartedAt\":\"2026-11-04T03:50:04.06244959Z\",\"FinishedAt\":\"0001-01-01T00:00:00Z\"}\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "docker",
+        "top",
+        "c70f90e416387c4764d38fe05c8d0581006d0d602e12132a35925eb54900be56",
+        "-eo",
+        "pid,ppid,sid,comm"
+      ],
+      "exit": 0,
+      "stdout": "PID                 PPID                SID                 COMMAND\n674647              674623              674647              python3\n674691              674647              674691              python3\n674692              674691              674692              python3\n674693              674692              674693              python3\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "docker",
+        "stop",
+        "--timeout=1",
+        "c70f90e416387c4764d38fe05c8d0581006d0d602e12132a35925eb54900be56"
+      ],
+      "exit": 0,
+      "stdout": "c70f90e416387c4764d38fe05c8d0581006d0d602e12132a35925eb54900be56\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "docker",
+        "wait",
+        "c70f90e416387c4764d38fe05c8d0581006d0d602e12132a35925eb54900be56"
+      ],
+      "exit": 0,
+      "stdout": "137\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "docker",
+        "inspect",
+        "c70f90e416387c4764d38fe05c8d0581006d0d602e12132a35925eb54900be56",
+        "--format",
+        "{{json .State}}"
+      ],
+      "exit": 0,
+      "stdout": "{\"Status\":\"exited\",\"Running\":false,\"Paused\":false,\"Restarting\":false,\"OOMKilled\":false,\"Dead\":false,\"Pid\":0,\"ExitCode\":137,\"Error\":\"\",\"StartedAt\":\"2026-11-04T03:50:04.06244959Z\",\"FinishedAt\":\"2026-11-04T03:50:05.742317632Z\"}\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "docker",
+        "rm",
+        "c70f90e416387c4764d38fe05c8d0581006d0d602e12132a35925eb54900be56"
+      ],
+      "exit": 0,
+      "stdout": "c70f90e416387c4764d38fe05c8d0581006d0d602e12132a35925eb54900be56\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "docker",
+        "run",
+        "-d",
+        "--name",
+        "trivy-acceptance-158198aef7fd",
+        "--label",
+        "purpose=trivy-docker-acceptance",
+        "--pull=never",
+        "--network=none",
+        "--read-only",
+        "--cap-drop=ALL",
+        "--security-opt=no-new-privileges",
+        "--pids-limit=24",
+        "--memory=48m",
+        "--memory-swap=48m",
+        "--cpus=0.5",
+        "--user=65534:65534",
+        "--ipc=private",
+        "--shm-size=1m",
+        "--tmpfs",
+        "/validation:rw,nosuid,nodev,noexec,size=4m,uid=65534,gid=65534,mode=0700",
+        "--tmpfs",
+        "/tmp:rw,nosuid,nodev,noexec,size=1m",
+        "--log-driver=none",
+        "sha256:fbecd461fc72d21b2143c6eaba25143738079154a6d0ea3da3aec724f50eed4a",
+        "python3",
+        "-B",
+        "-c",
+        "import os,json,time,signal,pathlib\np=os.fork()\nif p==0:\n os.setsid();pathlib.Path('/validation/child.json').write_text(json.dumps({'child':os.getpid()}));time.sleep(30);os._exit(0)\nwhile not pathlib.Path('/validation/child.json').exists():time.sleep(.01)\npathlib.Path('/validation/ready.json').write_text(json.dumps({'pid':os.getpid(),'cgroup':pathlib.Path('/proc/self/cgroup').read_text()}))\nwhile not pathlib.Path('/validation/exit').exists():time.sleep(.01)\nos._exit(0)"
+      ],
+      "exit": 0,
+      "stdout": "2d6b77d9f78f2f515b571e1772b4e14ade2d8e385051cfbefc94aa1965ec522a\n",
+      "stderr": ""
+    },
+    {
+      "case": "parent-exit-orphan-descendant",
+      "containerId": "2d6b77d9f78f2f515b571e1772b4e14ade2d8e385051cfbefc94aa1965ec522a",
+      "action": "parent-exit",
+      "classification": "REAL_CONTROLLED_EXECUTION",
+      "facts": {
+        "pid": 1,
+        "cgroup": "0::/\n"
+      },
+      "hostCgroup": "/sys/fs/cgroup/system.slice/docker-2d6b77d9f78f2f515b571e1772b4e14ade2d8e385051cfbefc94aa1965ec522a.scope",
+      "cgroupBefore": "674971\n675035\n",
+      "topBefore": "PID                 PPID                SID                 COMMAND\n674971              674946              674971              python3\n675035              674971              675035              python3\n",
+      "parentExitTrigger": {
+        "command": [
+          "docker",
+          "exec",
+          "2d6b77d9f78f2f515b571e1772b4e14ade2d8e385051cfbefc94aa1965ec522a",
+          "python3",
+          "-c",
+          "import pathlib;pathlib.Path('/validation/exit').touch()"
+        ],
+        "exit": 137,
+        "stdout": "",
+        "stderr": ""
+      },
+      "stateAfter": {
+        "Status": "exited",
+        "Running": false,
+        "Paused": false,
+        "Restarting": false,
+        "OOMKilled": false,
+        "Dead": false,
+        "Pid": 0,
+        "ExitCode": 0,
+        "Error": "",
+        "StartedAt": "2026-11-04T03:50:06.209633981Z",
+        "FinishedAt": "2026-11-04T03:50:07.512543922Z"
+      },
+      "cgroupExistsAfter": false,
+      "eventsAfter": null,
+      "removed": true,
+      "hostSentinelUnchanged": true,
+      "unrelatedHostProcessStillPresent": true,
+      "status": "PASS"
+    },
+    {
+      "command": [
+        "docker",
+        "inspect",
+        "2d6b77d9f78f2f515b571e1772b4e14ade2d8e385051cfbefc94aa1965ec522a",
+        "--format",
+        "{{json .State}}"
+      ],
+      "exit": 0,
+      "stdout": "{\"Status\":\"running\",\"Running\":true,\"Paused\":false,\"Restarting\":false,\"OOMKilled\":false,\"Dead\":false,\"Pid\":674971,\"ExitCode\":0,\"Error\":\"\",\"StartedAt\":\"2026-11-04T03:50:06.209633981Z\",\"FinishedAt\":\"0001-01-01T00:00:00Z\"}\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "docker",
+        "top",
+        "2d6b77d9f78f2f515b571e1772b4e14ade2d8e385051cfbefc94aa1965ec522a",
+        "-eo",
+        "pid,ppid,sid,comm"
+      ],
+      "exit": 0,
+      "stdout": "PID                 PPID                SID                 COMMAND\n674971              674946              674971              python3\n675035              674971              675035              python3\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "docker",
+        "wait",
+        "2d6b77d9f78f2f515b571e1772b4e14ade2d8e385051cfbefc94aa1965ec522a"
+      ],
+      "exit": 0,
+      "stdout": "0\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "docker",
+        "inspect",
+        "2d6b77d9f78f2f515b571e1772b4e14ade2d8e385051cfbefc94aa1965ec522a",
+        "--format",
+        "{{json .State}}"
+      ],
+      "exit": 0,
+      "stdout": "{\"Status\":\"exited\",\"Running\":false,\"Paused\":false,\"Restarting\":false,\"OOMKilled\":false,\"Dead\":false,\"Pid\":0,\"ExitCode\":0,\"Error\":\"\",\"StartedAt\":\"2026-11-04T03:50:06.209633981Z\",\"FinishedAt\":\"2026-11-04T03:50:07.512543922Z\"}\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "docker",
+        "rm",
+        "2d6b77d9f78f2f515b571e1772b4e14ade2d8e385051cfbefc94aa1965ec522a"
+      ],
+      "exit": 0,
+      "stdout": "2d6b77d9f78f2f515b571e1772b4e14ade2d8e385051cfbefc94aa1965ec522a\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "docker",
+        "run",
+        "-d",
+        "--name",
+        "trivy-acceptance-d78db229ff15",
+        "--label",
+        "purpose=trivy-docker-acceptance",
+        "--pull=never",
+        "--network=none",
+        "--read-only",
+        "--cap-drop=ALL",
+        "--security-opt=no-new-privileges",
+        "--pids-limit=24",
+        "--memory=48m",
+        "--memory-swap=48m",
+        "--cpus=0.5",
+        "--user=65534:65534",
+        "--ipc=private",
+        "--shm-size=1m",
+        "--tmpfs",
+        "/validation:rw,nosuid,nodev,noexec,size=4m,uid=65534,gid=65534,mode=0700",
+        "--tmpfs",
+        "/tmp:rw,nosuid,nodev,noexec,size=1m",
+        "--log-driver=none",
+        "sha256:fbecd461fc72d21b2143c6eaba25143738079154a6d0ea3da3aec724f50eed4a",
+        "python3",
+        "-B",
+        "-c",
+        "import os,json,time,signal,pathlib\npathlib.Path('/validation/ready.json').write_text(json.dumps({'pid':os.getpid(),'cgroup':pathlib.Path('/proc/self/cgroup').read_text()}))\ntime.sleep(30)"
+      ],
+      "exit": 0,
+      "stdout": "ee63814c9cda9a0ca9cc9950f34970de8ee1c033fb08291b342afec30c891d2f\n",
+      "stderr": ""
+    },
+    {
+      "case": "docker-kill",
+      "containerId": "ee63814c9cda9a0ca9cc9950f34970de8ee1c033fb08291b342afec30c891d2f",
+      "action": "kill",
+      "classification": "REAL_CONTROLLED_EXECUTION",
+      "facts": {
+        "pid": 1,
+        "cgroup": "0::/\n"
+      },
+      "hostCgroup": "/sys/fs/cgroup/system.slice/docker-ee63814c9cda9a0ca9cc9950f34970de8ee1c033fb08291b342afec30c891d2f.scope",
+      "cgroupBefore": "675242\n",
+      "topBefore": "PID                 PPID                SID                 COMMAND\n675242              675218              675242              python3\n",
+      "stateAfter": {
+        "Status": "exited",
+        "Running": false,
+        "Paused": false,
+        "Restarting": false,
+        "OOMKilled": false,
+        "Dead": false,
+        "Pid": 0,
+        "ExitCode": 137,
+        "Error": "",
+        "StartedAt": "2026-11-04T03:50:08.064197611Z",
+        "FinishedAt": "2026-11-04T03:50:08.682572978Z"
+      },
+      "cgroupExistsAfter": false,
+      "eventsAfter": null,
+      "removed": true,
+      "hostSentinelUnchanged": true,
+      "unrelatedHostProcessStillPresent": true,
+      "status": "PASS"
+    },
+    {
+      "command": [
+        "docker",
+        "inspect",
+        "ee63814c9cda9a0ca9cc9950f34970de8ee1c033fb08291b342afec30c891d2f",
+        "--format",
+        "{{json .State}}"
+      ],
+      "exit": 0,
+      "stdout": "{\"Status\":\"running\",\"Running\":true,\"Paused\":false,\"Restarting\":false,\"OOMKilled\":false,\"Dead\":false,\"Pid\":675242,\"ExitCode\":0,\"Error\":\"\",\"StartedAt\":\"2026-11-04T03:50:08.064197611Z\",\"FinishedAt\":\"0001-01-01T00:00:00Z\"}\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "docker",
+        "top",
+        "ee63814c9cda9a0ca9cc9950f34970de8ee1c033fb08291b342afec30c891d2f",
+        "-eo",
+        "pid,ppid,sid,comm"
+      ],
+      "exit": 0,
+      "stdout": "PID                 PPID                SID                 COMMAND\n675242              675218              675242              python3\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "docker",
+        "kill",
+        "ee63814c9cda9a0ca9cc9950f34970de8ee1c033fb08291b342afec30c891d2f"
+      ],
+      "exit": 0,
+      "stdout": "ee63814c9cda9a0ca9cc9950f34970de8ee1c033fb08291b342afec30c891d2f\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "docker",
+        "wait",
+        "ee63814c9cda9a0ca9cc9950f34970de8ee1c033fb08291b342afec30c891d2f"
+      ],
+      "exit": 0,
+      "stdout": "137\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "docker",
+        "inspect",
+        "ee63814c9cda9a0ca9cc9950f34970de8ee1c033fb08291b342afec30c891d2f",
+        "--format",
+        "{{json .State}}"
+      ],
+      "exit": 0,
+      "stdout": "{\"Status\":\"exited\",\"Running\":false,\"Paused\":false,\"Restarting\":false,\"OOMKilled\":false,\"Dead\":false,\"Pid\":0,\"ExitCode\":137,\"Error\":\"\",\"StartedAt\":\"2026-11-04T03:50:08.064197611Z\",\"FinishedAt\":\"2026-11-04T03:50:08.682572978Z\"}\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "docker",
+        "rm",
+        "ee63814c9cda9a0ca9cc9950f34970de8ee1c033fb08291b342afec30c891d2f"
+      ],
+      "exit": 0,
+      "stdout": "ee63814c9cda9a0ca9cc9950f34970de8ee1c033fb08291b342afec30c891d2f\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "docker",
+        "run",
+        "-d",
+        "--name",
+        "trivy-acceptance-aaca150fa77f",
+        "--label",
+        "purpose=trivy-docker-acceptance",
+        "--pull=never",
+        "--network=none",
+        "--read-only",
+        "--cap-drop=ALL",
+        "--security-opt=no-new-privileges",
+        "--pids-limit=24",
+        "--memory=48m",
+        "--memory-swap=48m",
+        "--cpus=0.5",
+        "--user=65534:65534",
+        "--ipc=private",
+        "--shm-size=1m",
+        "--tmpfs",
+        "/validation:rw,nosuid,nodev,noexec,size=4m,uid=65534,gid=65534,mode=0700",
+        "--tmpfs",
+        "/tmp:rw,nosuid,nodev,noexec,size=1m",
+        "--log-driver=none",
+        "sha256:fbecd461fc72d21b2143c6eaba25143738079154a6d0ea3da3aec724f50eed4a",
+        "python3",
+        "-B",
+        "-c",
+        "import os,json,time,signal,pathlib\npathlib.Path('/validation/ready.json').write_text(json.dumps({'pid':os.getpid(),'cgroup':pathlib.Path('/proc/self/cgroup').read_text()}))\ntime.sleep(30)"
+      ],
+      "exit": 0,
+      "stdout": "fdc2b09f1498f47d69279cfcaa97c64ff3f18a5cd480ee4377f1adb0f76a6b71\n",
+      "stderr": ""
+    },
+    {
+      "case": "watchdog-timeout",
+      "containerId": "fdc2b09f1498f47d69279cfcaa97c64ff3f18a5cd480ee4377f1adb0f76a6b71",
+      "action": "timeout",
+      "classification": "REAL_CONTROLLED_EXECUTION",
+      "facts": {
+        "pid": 1,
+        "cgroup": "0::/\n"
+      },
+      "hostCgroup": "/sys/fs/cgroup/system.slice/docker-fdc2b09f1498f47d69279cfcaa97c64ff3f18a5cd480ee4377f1adb0f76a6b71.scope",
+      "cgroupBefore": "675505\n",
+      "topBefore": "PID                 PPID                SID                 COMMAND\n675505              675482              675505              python3\n",
+      "watchdog": {
+        "command": [
+          "docker",
+          "wait",
+          "fdc2b09f1498f47d69279cfcaa97c64ff3f18a5cd480ee4377f1adb0f76a6b71"
+        ],
+        "timeout": true
+      },
+      "stateAfter": {
+        "Status": "exited",
+        "Running": false,
+        "Paused": false,
+        "Restarting": false,
+        "OOMKilled": false,
+        "Dead": false,
+        "Pid": 0,
+        "ExitCode": 137,
+        "Error": "",
+        "StartedAt": "2026-11-04T03:50:09.046541449Z",
+        "FinishedAt": "2026-11-04T03:50:11.637431875Z"
+      },
+      "cgroupExistsAfter": false,
+      "eventsAfter": null,
+      "removed": true,
+      "hostSentinelUnchanged": true,
+      "unrelatedHostProcessStillPresent": true,
+      "status": "PASS"
+    },
+    {
+      "command": [
+        "docker",
+        "inspect",
+        "fdc2b09f1498f47d69279cfcaa97c64ff3f18a5cd480ee4377f1adb0f76a6b71",
+        "--format",
+        "{{json .State}}"
+      ],
+      "exit": 0,
+      "stdout": "{\"Status\":\"running\",\"Running\":true,\"Paused\":false,\"Restarting\":false,\"OOMKilled\":false,\"Dead\":false,\"Pid\":675505,\"ExitCode\":0,\"Error\":\"\",\"StartedAt\":\"2026-11-04T03:50:09.046541449Z\",\"FinishedAt\":\"0001-01-01T00:00:00Z\"}\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "docker",
+        "top",
+        "fdc2b09f1498f47d69279cfcaa97c64ff3f18a5cd480ee4377f1adb0f76a6b71",
+        "-eo",
+        "pid,ppid,sid,comm"
+      ],
+      "exit": 0,
+      "stdout": "PID                 PPID                SID                 COMMAND\n675505              675482              675505              python3\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "docker",
+        "stop",
+        "--timeout=1",
+        "fdc2b09f1498f47d69279cfcaa97c64ff3f18a5cd480ee4377f1adb0f76a6b71"
+      ],
+      "exit": 0,
+      "stdout": "fdc2b09f1498f47d69279cfcaa97c64ff3f18a5cd480ee4377f1adb0f76a6b71\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "docker",
+        "wait",
+        "fdc2b09f1498f47d69279cfcaa97c64ff3f18a5cd480ee4377f1adb0f76a6b71"
+      ],
+      "exit": 0,
+      "stdout": "137\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "docker",
+        "inspect",
+        "fdc2b09f1498f47d69279cfcaa97c64ff3f18a5cd480ee4377f1adb0f76a6b71",
+        "--format",
+        "{{json .State}}"
+      ],
+      "exit": 0,
+      "stdout": "{\"Status\":\"exited\",\"Running\":false,\"Paused\":false,\"Restarting\":false,\"OOMKilled\":false,\"Dead\":false,\"Pid\":0,\"ExitCode\":137,\"Error\":\"\",\"StartedAt\":\"2026-11-04T03:50:09.046541449Z\",\"FinishedAt\":\"2026-11-04T03:50:11.637431875Z\"}\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "docker",
+        "rm",
+        "fdc2b09f1498f47d69279cfcaa97c64ff3f18a5cd480ee4377f1adb0f76a6b71"
+      ],
+      "exit": 0,
+      "stdout": "fdc2b09f1498f47d69279cfcaa97c64ff3f18a5cd480ee4377f1adb0f76a6b71\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "docker",
+        "run",
+        "-d",
+        "--name",
+        "trivy-acceptance-5f84d32a7073",
+        "--label",
+        "purpose=trivy-docker-acceptance",
+        "--pull=never",
+        "--network=none",
+        "--read-only",
+        "--cap-drop=ALL",
+        "--security-opt=no-new-privileges",
+        "--pids-limit=24",
+        "--memory=48m",
+        "--memory-swap=48m",
+        "--cpus=0.5",
+        "--user=65534:65534",
+        "--ipc=private",
+        "--shm-size=1m",
+        "--tmpfs",
+        "/validation:rw,nosuid,nodev,noexec,size=4m,uid=65534,gid=65534,mode=0700",
+        "--tmpfs",
+        "/tmp:rw,nosuid,nodev,noexec,size=1m",
+        "--log-driver=none",
+        "sha256:fbecd461fc72d21b2143c6eaba25143738079154a6d0ea3da3aec724f50eed4a",
+        "python3",
+        "-B",
+        "-c",
+        "import os,json,time,signal,pathlib\npathlib.Path('/validation/ready.json').write_text(json.dumps({'pid':os.getpid(),'cgroup':pathlib.Path('/proc/self/cgroup').read_text()}))\ntime.sleep(30)"
+      ],
+      "exit": 0,
+      "stdout": "7150176362f2aa151263784bf5b60c6853b2e25d7acd8b8a45fcc60ba205d255\n",
+      "stderr": ""
+    },
+    {
+      "case": "cleanup-running-container-denied",
+      "containerId": "7150176362f2aa151263784bf5b60c6853b2e25d7acd8b8a45fcc60ba205d255",
+      "action": "cleanup-failure",
+      "classification": "REAL_CONTROLLED_EXECUTION",
+      "facts": {
+        "pid": 1,
+        "cgroup": "0::/\n"
+      },
+      "hostCgroup": "/sys/fs/cgroup/system.slice/docker-7150176362f2aa151263784bf5b60c6853b2e25d7acd8b8a45fcc60ba205d255.scope",
+      "cgroupBefore": "676083\n",
+      "topBefore": "PID                 PPID                SID                 COMMAND\n676083              676044              676083              python3\n",
+      "cleanupDenial": {
+        "command": [
+          "docker",
+          "rm",
+          "7150176362f2aa151263784bf5b60c6853b2e25d7acd8b8a45fcc60ba205d255"
+        ],
+        "exit": 1,
+        "stdout": "",
+        "stderr": "Error response from daemon: cannot remove container \"7150176362f2aa151263784bf5b60c6853b2e25d7acd8b8a45fcc60ba205d255\": container is running: stop the container before removing or force remove\n"
+      },
+      "wouldPermitNextStep": false,
+      "stateAfter": {
+        "Status": "exited",
+        "Running": false,
+        "Paused": false,
+        "Restarting": false,
+        "OOMKilled": false,
+        "Dead": false,
+        "Pid": 0,
+        "ExitCode": 137,
+        "Error": "",
+        "StartedAt": "2026-11-04T03:50:12.168247478Z",
+        "FinishedAt": "2026-11-04T03:50:13.967634478Z"
+      },
+      "cgroupExistsAfter": false,
+      "eventsAfter": null,
+      "removed": true,
+      "hostSentinelUnchanged": true,
+      "unrelatedHostProcessStillPresent": true,
+      "status": "PASS"
+    },
+    {
+      "command": [
+        "docker",
+        "inspect",
+        "7150176362f2aa151263784bf5b60c6853b2e25d7acd8b8a45fcc60ba205d255",
+        "--format",
+        "{{json .State}}"
+      ],
+      "exit": 0,
+      "stdout": "{\"Status\":\"running\",\"Running\":true,\"Paused\":false,\"Restarting\":false,\"OOMKilled\":false,\"Dead\":false,\"Pid\":676083,\"ExitCode\":0,\"Error\":\"\",\"StartedAt\":\"2026-11-04T03:50:12.168247478Z\",\"FinishedAt\":\"0001-01-01T00:00:00Z\"}\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "docker",
+        "top",
+        "7150176362f2aa151263784bf5b60c6853b2e25d7acd8b8a45fcc60ba205d255",
+        "-eo",
+        "pid,ppid,sid,comm"
+      ],
+      "exit": 0,
+      "stdout": "PID                 PPID                SID                 COMMAND\n676083              676044              676083              python3\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "docker",
+        "stop",
+        "--timeout=1",
+        "7150176362f2aa151263784bf5b60c6853b2e25d7acd8b8a45fcc60ba205d255"
+      ],
+      "exit": 0,
+      "stdout": "7150176362f2aa151263784bf5b60c6853b2e25d7acd8b8a45fcc60ba205d255\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "docker",
+        "wait",
+        "7150176362f2aa151263784bf5b60c6853b2e25d7acd8b8a45fcc60ba205d255"
+      ],
+      "exit": 0,
+      "stdout": "137\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "docker",
+        "inspect",
+        "7150176362f2aa151263784bf5b60c6853b2e25d7acd8b8a45fcc60ba205d255",
+        "--format",
+        "{{json .State}}"
+      ],
+      "exit": 0,
+      "stdout": "{\"Status\":\"exited\",\"Running\":false,\"Paused\":false,\"Restarting\":false,\"OOMKilled\":false,\"Dead\":false,\"Pid\":0,\"ExitCode\":137,\"Error\":\"\",\"StartedAt\":\"2026-11-04T03:50:12.168247478Z\",\"FinishedAt\":\"2026-11-04T03:50:13.967634478Z\"}\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "docker",
+        "rm",
+        "7150176362f2aa151263784bf5b60c6853b2e25d7acd8b8a45fcc60ba205d255"
+      ],
+      "exit": 0,
+      "stdout": "7150176362f2aa151263784bf5b60c6853b2e25d7acd8b8a45fcc60ba205d255\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "docker",
+        "run",
+        "-d",
+        "--name",
+        "trivy-acceptance-75585f3a71fd",
+        "--label",
+        "purpose=trivy-docker-acceptance",
+        "--pull=never",
+        "--network=none",
+        "--read-only",
+        "--cap-drop=ALL",
+        "--security-opt=no-new-privileges",
+        "--pids-limit=24",
+        "--memory=48m",
+        "--memory-swap=48m",
+        "--cpus=0.5",
+        "--user=65534:65534",
+        "--ipc=private",
+        "--shm-size=1m",
+        "--tmpfs",
+        "/validation:rw,nosuid,nodev,noexec,size=4m,uid=65534,gid=65534,mode=0700",
+        "--tmpfs",
+        "/tmp:rw,nosuid,nodev,noexec,size=1m",
+        "--log-driver=none",
+        "sha256:fbecd461fc72d21b2143c6eaba25143738079154a6d0ea3da3aec724f50eed4a",
+        "python3",
+        "-B",
+        "-c",
+        "import os,json,time,signal,pathlib\nresults={}\nfor name,path in [('root','/outside'),('traversal','/validation/../outside'),('host-path','/tmp/docker-validation-acceptance-nffw19zp/sentinel')]:\n try:pathlib.Path(path).write_text('disposable');results[name]='ALLOWED'\n except OSError as e:results[name]='DENIED:'+str(e.errno)\nos.symlink('/','/validation/link')\ntry:pathlib.Path('/validation/link/outside').write_text('disposable');results['symlink']='ALLOWED'\nexcept OSError as e:results['symlink']='DENIED:'+str(e.errno)\npathlib.Path('/validation/replaced').mkdir();pathlib.Path('/validation/replaced').rmdir();os.symlink('/','/validation/replaced')\ntry:pathlib.Path('/validation/replaced/outside').write_text('disposable');results['directory-replacement']='ALLOWED'\nexcept OSError as e:results['directory-replacement']='DENIED:'+str(e.errno)\nfor d in ['cache','temp','report','metadata']:\n p=pathlib.Path('/validation')/d;p.mkdir();(p/'small').write_bytes(b'x'*4096)\nresults['boundedBytesWritten']=16384\nv=os.statvfs('/validation');results['statvfs']={'capacity':v.f_blocks*v.f_frsize,'free':v.f_bavail*v.f_frsize,'inodesFree':v.f_favail};results['device']=os.stat('/validation').st_dev\nresults['mountinfo']=pathlib.Path('/proc/self/mountinfo').read_text();results['status']=pathlib.Path('/proc/self/status').read_text()\nassert all(results[k].startswith('DENIED:') for k in ['root','traversal','host-path','symlink','directory-replacement'])\npathlib.Path('/validation/ready.json').write_text(json.dumps(results));time.sleep(30)\n"
+      ],
+      "exit": 0,
+      "stdout": "bc34624197b8d003c79c8558b60566cd4028091d629240427f24800f6cf00b3c\n",
+      "stderr": ""
+    },
+    {
+      "case": "filesystem-and-bounded-storage",
+      "containerId": "bc34624197b8d003c79c8558b60566cd4028091d629240427f24800f6cf00b3c",
+      "action": "stop",
+      "classification": "REAL_CONTROLLED_EXECUTION",
+      "facts": {
+        "root": "DENIED:30",
+        "traversal": "DENIED:30",
+        "host-path": "DENIED:2",
+        "symlink": "DENIED:30",
+        "directory-replacement": "DENIED:30",
+        "boundedBytesWritten": 16384,
+        "statvfs": {
+          "capacity": 4194304,
+          "free": 4177920,
+          "inodesFree": 2810712
+        },
+        "device": 5242979,
+        "mountinfo": "9712 8586 0:414 / / ro,relatime - overlay overlay rw,lowerdir=/var/lib/containerd/io.containerd.snapshotter.v1.overlayfs/snapshots/21720/fs:/var/lib/containerd/io.containerd.snapshotter.v1.overlayfs/snapshots/20351/fs:/var/lib/containerd/io.containerd.snapshotter.v1.overlayfs/snapshots/20350/fs:/var/lib/containerd/io.containerd.snapshotter.v1.overlayfs/snapshots/20349/fs:/var/lib/containerd/io.containerd.snapshotter.v1.overlayfs/snapshots/20348/fs,upperdir=/var/lib/containerd/io.containerd.snapshotter.v1.overlayfs/snapshots/21721/fs,workdir=/var/lib/containerd/io.containerd.snapshotter.v1.overlayfs/snapshots/21721/work,nouserxattr\n9714 9712 0:1249 / /proc rw,nosuid,nodev,noexec,relatime - proc proc rw\n9715 9712 0:1263 / /dev rw,nosuid - tmpfs tmpfs rw,size=65536k,mode=755,inode64\n9716 9715 0:1269 / /dev/pts rw,nosuid,noexec,relatime - devpts devpts rw,gid=5,mode=620,ptmxmode=666\n9717 9712 0:1364 / /sys ro,nosuid,nodev,noexec,relatime - sysfs sysfs ro\n9718 9717 0:34 / /sys/fs/cgroup ro,nosuid,nodev,noexec,relatime - cgroup2 cgroup rw,nsdelegate,memory_recursiveprot\n9719 9715 0:1102 / /dev/mqueue rw,nosuid,nodev,noexec,relatime - mqueue mqueue rw\n9720 9715 0:1365 / /dev/shm rw,nosuid,nodev,noexec,relatime - tmpfs shm rw,size=1024k,inode64\n9721 9712 0:1379 / /validation rw,nosuid,nodev,noexec,relatime - tmpfs tmpfs rw,size=4096k,mode=700,uid=65534,gid=65534,inode64\n9722 9712 0:1380 / /tmp rw,nosuid,nodev,noexec,relatime - tmpfs tmpfs rw,size=1024k,inode64\n9723 9712 253:2 /var/lib/docker/containers/bc34624197b8d003c79c8558b60566cd4028091d629240427f24800f6cf00b3c/resolv.conf /etc/resolv.conf ro,relatime - ext4 /dev/vda2 rw\n9724 9712 253:2 /var/lib/docker/containers/bc34624197b8d003c79c8558b60566cd4028091d629240427f24800f6cf00b3c/hostname /etc/hostname ro,relatime - ext4 /dev/vda2 rw\n9725 9712 253:2 /var/lib/docker/containers/bc34624197b8d003c79c8558b60566cd4028091d629240427f24800f6cf00b3c/hosts /etc/hosts ro,relatime - ext4 /dev/vda2 rw\n8710 9714 0:1249 /bus /proc/bus ro,nosuid,nodev,noexec,relatime - proc proc rw\n8711 9714 0:1249 /fs /proc/fs ro,nosuid,nodev,noexec,relatime - proc proc rw\n8712 9714 0:1249 /irq /proc/irq ro,nosuid,nodev,noexec,relatime - proc proc rw\n8714 9714 0:1249 /sys /proc/sys ro,nosuid,nodev,noexec,relatime - proc proc rw\n8718 9714 0:1249 /sysrq-trigger /proc/sysrq-trigger ro,nosuid,nodev,noexec,relatime - proc proc rw\n8730 9714 0:1381 / /proc/acpi ro,relatime - tmpfs tmpfs ro,size=4k,nr_inodes=1,inode64\n8731 9714 0:1263 /null /proc/interrupts rw,nosuid - tmpfs tmpfs rw,size=65536k,mode=755,inode64\n8732 9714 0:1263 /null /proc/kcore rw,nosuid - tmpfs tmpfs rw,size=65536k,mode=755,inode64\n8733 9714 0:1263 /null /proc/keys rw,nosuid - tmpfs tmpfs rw,size=65536k,mode=755,inode64\n8734 9714 0:1263 /null /proc/latency_stats rw,nosuid - tmpfs tmpfs rw,size=65536k,mode=755,inode64\n8735 9714 0:1381 / /proc/scsi ro,relatime - tmpfs tmpfs ro,size=4k,nr_inodes=1,inode64\n8736 9714 0:1263 /null /proc/timer_list rw,nosuid - tmpfs tmpfs rw,size=65536k,mode=755,inode64\n8737 9717 0:1381 / /sys/firmware ro,relatime - tmpfs tmpfs ro,size=4k,nr_inodes=1,inode64\n",
+        "status": "Name:\tpython3\nUmask:\t0022\nState:\tR (running)\nTgid:\t1\nNgid:\t0\nPid:\t1\nPPid:\t0\nTracerPid:\t0\nUid:\t65534\t65534\t65534\t65534\nGid:\t65534\t65534\t65534\t65534\nFDSize:\t64\nGroups:\t65534 \nNStgid:\t1\nNSpid:\t1\nNSpgid:\t1\nNSsid:\t1\nKthread:\t0\nVmPeak:\t   19004 kB\nVmSize:\t   18712 kB\nVmLck:\t       0 kB\nVmPin:\t       0 kB\nVmHWM:\t   14256 kB\nVmRSS:\t   14256 kB\nRssAnon:\t    8724 kB\nRssFile:\t    5532 kB\nRssShmem:\t       0 kB\nVmData:\t   10120 kB\nVmStk:\t     132 kB\nVmExe:\t       4 kB\nVmLib:\t    7156 kB\nVmPTE:\t      80 kB\nVmSwap:\t       0 kB\nHugetlbPages:\t       0 kB\nCoreDumping:\t0\nTHP_enabled:\t1\nuntag_mask:\t0xffffffffffffff\nThreads:\t1\nSigQ:\t0/80415\nSigPnd:\t0000000000000000\nShdPnd:\t0000000000000000\nSigBlk:\t0000000000000000\nSigIgn:\t0000000001001000\nSigCgt:\t0000000000000002\nCapInh:\t0000000000000000\nCapPrm:\t0000000000000000\nCapEff:\t0000000000000000\nCapBnd:\t0000000000000000\nCapAmb:\t0000000000000000\nNoNewPrivs:\t1\nSeccomp:\t2\nSeccomp_filters:\t1\nSpeculation_Store_Bypass:\tvulnerable\nSpeculationIndirectBranch:\tunknown\nCpus_allowed:\t3f\nCpus_allowed_list:\t0-5\nMems_allowed:\t00000000,00000001\nMems_allowed_list:\t0\nvoluntary_ctxt_switches:\t18\nnonvoluntary_ctxt_switches:\t95\n"
+      },
+      "hostCgroup": "/sys/fs/cgroup/system.slice/docker-bc34624197b8d003c79c8558b60566cd4028091d629240427f24800f6cf00b3c.scope",
+      "cgroupBefore": "676370\n",
+      "topBefore": "PID                 PPID                SID                 COMMAND\n676370              676347              676370              python3\n",
+      "stateAfter": {
+        "Status": "exited",
+        "Running": false,
+        "Paused": false,
+        "Restarting": false,
+        "OOMKilled": false,
+        "Dead": false,
+        "Pid": 0,
+        "ExitCode": 137,
+        "Error": "",
+        "StartedAt": "2026-11-04T03:50:14.424195541Z",
+        "FinishedAt": "2026-11-04T03:50:16.131180635Z"
+      },
+      "cgroupExistsAfter": false,
+      "eventsAfter": null,
+      "removed": true,
+      "hostSentinelUnchanged": true,
+      "unrelatedHostProcessStillPresent": true,
+      "status": "PASS"
+    },
+    {
+      "command": [
+        "docker",
+        "inspect",
+        "bc34624197b8d003c79c8558b60566cd4028091d629240427f24800f6cf00b3c",
+        "--format",
+        "{{json .State}}"
+      ],
+      "exit": 0,
+      "stdout": "{\"Status\":\"running\",\"Running\":true,\"Paused\":false,\"Restarting\":false,\"OOMKilled\":false,\"Dead\":false,\"Pid\":676370,\"ExitCode\":0,\"Error\":\"\",\"StartedAt\":\"2026-11-04T03:50:14.424195541Z\",\"FinishedAt\":\"0001-01-01T00:00:00Z\"}\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "docker",
+        "top",
+        "bc34624197b8d003c79c8558b60566cd4028091d629240427f24800f6cf00b3c",
+        "-eo",
+        "pid,ppid,sid,comm"
+      ],
+      "exit": 0,
+      "stdout": "PID                 PPID                SID                 COMMAND\n676370              676347              676370              python3\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "docker",
+        "stop",
+        "--timeout=1",
+        "bc34624197b8d003c79c8558b60566cd4028091d629240427f24800f6cf00b3c"
+      ],
+      "exit": 0,
+      "stdout": "bc34624197b8d003c79c8558b60566cd4028091d629240427f24800f6cf00b3c\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "docker",
+        "wait",
+        "bc34624197b8d003c79c8558b60566cd4028091d629240427f24800f6cf00b3c"
+      ],
+      "exit": 0,
+      "stdout": "137\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "docker",
+        "inspect",
+        "bc34624197b8d003c79c8558b60566cd4028091d629240427f24800f6cf00b3c",
+        "--format",
+        "{{json .State}}"
+      ],
+      "exit": 0,
+      "stdout": "{\"Status\":\"exited\",\"Running\":false,\"Paused\":false,\"Restarting\":false,\"OOMKilled\":false,\"Dead\":false,\"Pid\":0,\"ExitCode\":137,\"Error\":\"\",\"StartedAt\":\"2026-11-04T03:50:14.424195541Z\",\"FinishedAt\":\"2026-11-04T03:50:16.131180635Z\"}\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "docker",
+        "rm",
+        "bc34624197b8d003c79c8558b60566cd4028091d629240427f24800f6cf00b3c"
+      ],
+      "exit": 0,
+      "stdout": "bc34624197b8d003c79c8558b60566cd4028091d629240427f24800f6cf00b3c\n",
+      "stderr": ""
+    },
+    {
+      "case": "daemon-unreachable-client",
+      "classification": "SIMULATED_TRANSPORT_UNAVAILABLE_NOT_NATIVE_DAEMON_FAILURE",
+      "result": {
+        "command": [
+          "docker",
+          "--host",
+          "unix:///tmp/docker-validation-acceptance-nffw19zp/absent.sock",
+          "info"
+        ],
+        "exit": 1,
+        "stdout": "Client: Docker Engine - Community\n Version:    29.6.2\n Context:    default\n Debug Mode: false\n Plugins:\n  buildx: Docker Buildx (Docker Inc.)\n    Version:  v0.35.0\n    Path:     /usr/libexec/docker/cli-plugins/docker-buildx\n  compose: Docker Compose (Docker Inc.)\n    Version:  v5.3.1\n    Path:     /usr/libexec/docker/cli-plugins/docker-compose\n  model: Docker Model Runner (Docker Inc.)\n    Version:  v1.2.6\n    Path:     /usr/libexec/docker/cli-plugins/docker-model\n\nServer:\n",
+        "stderr": "failed to connect to the docker API at unix:///tmp/docker-validation-acceptance-nffw19zp/absent.sock; check if the path is correct and if the daemon is running: dial unix /tmp/docker-validation-acceptance-nffw19zp/absent.sock: connect: no such file or directory\n"
+      },
+      "nativeDaemonDisruption": "NOT_TESTED_PROHIBITED",
+      "status": "INCOMPLETE"
+    }
+  ],
+  "cleanup": [],
+  "hostSentinelUnchanged": true,
+  "fixtureDirectoryRemoved": true,
+  "leftovers": {
+    "command": [
+      "docker",
+      "ps",
+      "-a",
+      "--filter",
+      "label=purpose=trivy-docker-acceptance",
+      "--format",
+      "{{.ID}} {{.Names}}"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  }
+}

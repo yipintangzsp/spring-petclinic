@@ -1,0 +1,51 @@
+[
+  [
+    "root overlay",
+    "/",
+    "containerd snapshotter overlay lower/upper; readonly container mount",
+    "host /dev/vda2 ext4 253:2",
+    "shared production backing; no proven per-container quota"
+  ],
+  [
+    "cache/temp/report/metadata",
+    "/validation/{cache,temp,report,metadata}",
+    "dedicated tmpfs",
+    "container private mount/device in filesystem-facts.json",
+    "4MiB tmpfs total; only16KiB test writes"
+  ],
+  [
+    "temporary",
+    "/tmp",
+    "dedicated tmpfs",
+    "container private mount",
+    "1MiB configured"
+  ],
+  [
+    "IPC/dev",
+    "/dev/shm; /dev",
+    "private tmpfs/dev mounts",
+    "container private IPC/device mounts",
+    "shm1MiB configured; dev mount available per mountinfo, no host devices added"
+  ],
+  [
+    "Docker metadata",
+    "n/a",
+    "/var/lib/docker",
+    "/dev/vda2 ext4 253:2",
+    "shared; available45617647616 bytes; free inodes15324262; no proven quota"
+  ],
+  [
+    "snapshot runtime",
+    "overlay backing",
+    "/var/lib/containerd",
+    "/dev/vda2 ext4 253:2",
+    "same shared disk; full COW/metadata upper bound unknown"
+  ],
+  [
+    "generated config",
+    "/etc/hosts /etc/hostname /etc/resolv.conf",
+    "Docker-managed per-container config files",
+    "observed mounts in filesystem-facts.json",
+    "not user bind mounts; UID65534 cannot modify root-owned files; cleanup owned container only"
+  ]
+]
