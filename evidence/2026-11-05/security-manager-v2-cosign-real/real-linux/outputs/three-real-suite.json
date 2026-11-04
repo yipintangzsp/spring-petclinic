@@ -1,0 +1,1497 @@
+{
+  "classification": "REAL_CONTROLLED_SAME_ROUND_THREE_NATIVE_TOOLS_NOT_PRODUCTION_RUNTIME",
+  "records": [
+    {
+      "name": "A-three-valid",
+      "classification": "REAL_CONTROLLED_SAME_MANAGER_THREE_NATIVE_PLUGINS",
+      "projectId": "java-fixture",
+      "profile": "java-web",
+      "enabled": [
+        "gitleaks",
+        "semgrep",
+        "cosign"
+      ],
+      "master": true,
+      "globalMode": "audit",
+      "plugins": {
+        "gitleaks": {
+          "executionStatus": "COMPLETED",
+          "policyDecision": "PASS",
+          "oldGateDecision": "PASS",
+          "evaluationCount": 1,
+          "rawReportDigest": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570",
+          "factDigest": "5c9d8f0aea9d0a6c34aef9c1ba236c4176ce124ab03f086a231bb42667cf4587",
+          "resultDigest": "7c899ff331d133efe4f5c1d2f5fc09b4fde4dc82bdbbf656e6a82c39a82821c3",
+          "failureReason": null
+        },
+        "semgrep": {
+          "executionStatus": "COMPLETED",
+          "policyDecision": "PASS",
+          "oldGateDecision": "PASS",
+          "evaluationCount": 1,
+          "rawReportDigest": "171e7a46bbdd1716dc73b2d058ba35487ea8d19e9afac8d605d5252fa27f1c42",
+          "factDigest": "75a9c27cce2e5efcd26344daa7a75be17d844a84fe80d6b04c78c5c0aafabfb9",
+          "resultDigest": "3380208ef80e2f51e9778e37817a9ec4583004427adc6d448301ab31aef6d8a7",
+          "failureReason": null
+        },
+        "cosign": {
+          "executionStatus": "COMPLETED",
+          "policyDecision": "PASS",
+          "oldGateDecision": "PASS",
+          "evaluationCount": 1,
+          "rawReportDigest": "a6007ff647727f102b4576700b2440c481a09a0fbee58d24920cb9b1d9f83823",
+          "factDigest": "865d2e4cd4a35e659159daad5cb4d497e7b502b9cf122797b1a0813efb51d6d1",
+          "resultDigest": "34d742dbc0784c2bc68d77da18dee9b90e48c217d660e5e54edf1026d1417728",
+          "failureReason": null
+        }
+      },
+      "countsBefore": {
+        "gitleaks": {
+          "scans": 0,
+          "commands": 0
+        },
+        "semgrep": {
+          "scans": 0,
+          "commands": 0,
+          "nativeCommands": 0
+        },
+        "cosign": {
+          "commands": 0,
+          "verifications": 0
+        }
+      },
+      "countsAfter": {
+        "gitleaks": {
+          "scans": 1,
+          "commands": 2
+        },
+        "semgrep": {
+          "scans": 1,
+          "commands": 2,
+          "nativeCommands": 1
+        },
+        "cosign": {
+          "commands": 2,
+          "verifications": 1
+        }
+      },
+      "policyCounts": {
+        "cosign": 1,
+        "gitleaks": 1,
+        "semgrep": 1
+      },
+      "overallStatus": "PASS",
+      "promotion": {
+        "status": "BLOCKED",
+        "reason": "CANDIDATE_ONLY_NOT_PRODUCTION_GATE_EVIDENCE"
+      },
+      "artifactSeal": "bd9679c8e5c6ed8e5ae02659df047c2389f7cda67dc01c6b2af763723b12ee15"
+    },
+    {
+      "name": "B-cosign-disabled",
+      "classification": "REAL_CONTROLLED_SAME_MANAGER_THREE_NATIVE_PLUGINS",
+      "projectId": "java-fixture",
+      "profile": "java-web",
+      "enabled": [
+        "gitleaks",
+        "semgrep"
+      ],
+      "master": true,
+      "globalMode": "audit",
+      "plugins": {
+        "gitleaks": {
+          "executionStatus": "COMPLETED",
+          "policyDecision": "PASS",
+          "oldGateDecision": "PASS",
+          "evaluationCount": 1,
+          "rawReportDigest": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570",
+          "factDigest": "5c9d8f0aea9d0a6c34aef9c1ba236c4176ce124ab03f086a231bb42667cf4587",
+          "resultDigest": "19e236f31e101298e2356dedf18eb62ee6a29db7d6ff51860bde843b562da46a",
+          "failureReason": null
+        },
+        "semgrep": {
+          "executionStatus": "COMPLETED",
+          "policyDecision": "PASS",
+          "oldGateDecision": "PASS",
+          "evaluationCount": 1,
+          "rawReportDigest": "26a82054faa56b94e08fa4d76c6a582e69de402690b471bf252b2367909eef1c",
+          "factDigest": "75a9c27cce2e5efcd26344daa7a75be17d844a84fe80d6b04c78c5c0aafabfb9",
+          "resultDigest": "29b7abb5456a6d3c329cd05f767eff1bcf7d74652523f962411deff19979e454",
+          "failureReason": null
+        },
+        "cosign": {
+          "executionStatus": "DISABLED",
+          "policyDecision": null,
+          "oldGateDecision": null,
+          "evaluationCount": 0,
+          "rawReportDigest": null,
+          "factDigest": null,
+          "resultDigest": "63fdb7f8edef59d33fa106981398cafa5225acd091b7a76a74038da4c1c19562",
+          "failureReason": "PLUGIN_DISABLED"
+        }
+      },
+      "countsBefore": {
+        "gitleaks": {
+          "scans": 1,
+          "commands": 2
+        },
+        "semgrep": {
+          "scans": 1,
+          "commands": 2,
+          "nativeCommands": 1
+        },
+        "cosign": {
+          "commands": 2,
+          "verifications": 1
+        }
+      },
+      "countsAfter": {
+        "gitleaks": {
+          "scans": 2,
+          "commands": 4
+        },
+        "semgrep": {
+          "scans": 2,
+          "commands": 4,
+          "nativeCommands": 2
+        },
+        "cosign": {
+          "commands": 2,
+          "verifications": 1
+        }
+      },
+      "policyCounts": {
+        "gitleaks": 1,
+        "semgrep": 1
+      },
+      "overallStatus": "PASS",
+      "promotion": {
+        "status": "BLOCKED",
+        "reason": "CANDIDATE_ONLY_NOT_PRODUCTION_GATE_EVIDENCE"
+      },
+      "artifactSeal": "ccd335dabe4518b24cc95b9675f7aed3dadc6b37cc26a83ced90a8a2db235cdb"
+    },
+    {
+      "name": "C-semgrep-disabled",
+      "classification": "REAL_CONTROLLED_SAME_MANAGER_THREE_NATIVE_PLUGINS",
+      "projectId": "java-fixture",
+      "profile": "java-web",
+      "enabled": [
+        "gitleaks",
+        "cosign"
+      ],
+      "master": true,
+      "globalMode": "audit",
+      "plugins": {
+        "gitleaks": {
+          "executionStatus": "COMPLETED",
+          "policyDecision": "PASS",
+          "oldGateDecision": "PASS",
+          "evaluationCount": 1,
+          "rawReportDigest": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570",
+          "factDigest": "5c9d8f0aea9d0a6c34aef9c1ba236c4176ce124ab03f086a231bb42667cf4587",
+          "resultDigest": "c36a3e62462d3039dd33165510c2cfb166888a232b7f13c9f406bb6dafb4d734",
+          "failureReason": null
+        },
+        "semgrep": {
+          "executionStatus": "DISABLED",
+          "policyDecision": null,
+          "oldGateDecision": null,
+          "evaluationCount": 0,
+          "rawReportDigest": null,
+          "factDigest": null,
+          "resultDigest": "eda053b9d990bca65d56041f683cdabe25011886ee9b05fd431707c2b1770441",
+          "failureReason": "PLUGIN_DISABLED"
+        },
+        "cosign": {
+          "executionStatus": "COMPLETED",
+          "policyDecision": "PASS",
+          "oldGateDecision": "PASS",
+          "evaluationCount": 1,
+          "rawReportDigest": "8e0a3d3a95f0e3b4051181ed1049c75cf8bc50e0ab4326e9735aa1857d39ff6e",
+          "factDigest": "c035aec2c59810f6b0602d82e670ff95f2a1158fcd61a49f7ad1d3c84a44c070",
+          "resultDigest": "f0bf4d8b841c1677abbb0190e020ec0c73706c8d46100671983ca3b7284dd41f",
+          "failureReason": null
+        }
+      },
+      "countsBefore": {
+        "gitleaks": {
+          "scans": 2,
+          "commands": 4
+        },
+        "semgrep": {
+          "scans": 2,
+          "commands": 4,
+          "nativeCommands": 2
+        },
+        "cosign": {
+          "commands": 2,
+          "verifications": 1
+        }
+      },
+      "countsAfter": {
+        "gitleaks": {
+          "scans": 3,
+          "commands": 6
+        },
+        "semgrep": {
+          "scans": 2,
+          "commands": 4,
+          "nativeCommands": 2
+        },
+        "cosign": {
+          "commands": 4,
+          "verifications": 2
+        }
+      },
+      "policyCounts": {
+        "cosign": 1,
+        "gitleaks": 1
+      },
+      "overallStatus": "PASS",
+      "promotion": {
+        "status": "BLOCKED",
+        "reason": "CANDIDATE_ONLY_NOT_PRODUCTION_GATE_EVIDENCE"
+      },
+      "artifactSeal": "93fb6b8a3703661048caa6cc65337e0a82fa605ecebd62fd407b83e9041dd3b7"
+    },
+    {
+      "name": "D-gitleaks-disabled",
+      "classification": "REAL_CONTROLLED_SAME_MANAGER_THREE_NATIVE_PLUGINS",
+      "projectId": "java-fixture",
+      "profile": "java-web",
+      "enabled": [
+        "semgrep",
+        "cosign"
+      ],
+      "master": true,
+      "globalMode": "audit",
+      "plugins": {
+        "gitleaks": {
+          "executionStatus": "DISABLED",
+          "policyDecision": null,
+          "oldGateDecision": null,
+          "evaluationCount": 0,
+          "rawReportDigest": null,
+          "factDigest": null,
+          "resultDigest": "99c3729b05904d9e9caad0437edf4b51a504354800151acce4708ffe6168ca25",
+          "failureReason": "PLUGIN_DISABLED"
+        },
+        "semgrep": {
+          "executionStatus": "COMPLETED",
+          "policyDecision": "PASS",
+          "oldGateDecision": "PASS",
+          "evaluationCount": 1,
+          "rawReportDigest": "a7cd5be1ea513f6a540dd18095fe1c9a5512746edcdd5fe01241a6d206f63e90",
+          "factDigest": "75a9c27cce2e5efcd26344daa7a75be17d844a84fe80d6b04c78c5c0aafabfb9",
+          "resultDigest": "fa579f21db888d73a51c1be24ded4a1af0256642c07963adaf51cda3a24072c2",
+          "failureReason": null
+        },
+        "cosign": {
+          "executionStatus": "COMPLETED",
+          "policyDecision": "PASS",
+          "oldGateDecision": "PASS",
+          "evaluationCount": 1,
+          "rawReportDigest": "5054955029f11fe4e453982a7a96f929df09de8cb96a045bea2d0e286df1b83a",
+          "factDigest": "54a1e5d32c8c16e140ff5211a6151c80b65529c53ab63adb3e631901000096e4",
+          "resultDigest": "f782270eab22a12aec9ec11c9381715bfe30e1164451d8aa6fe4e7621c1399e2",
+          "failureReason": null
+        }
+      },
+      "countsBefore": {
+        "gitleaks": {
+          "scans": 3,
+          "commands": 6
+        },
+        "semgrep": {
+          "scans": 2,
+          "commands": 4,
+          "nativeCommands": 2
+        },
+        "cosign": {
+          "commands": 4,
+          "verifications": 2
+        }
+      },
+      "countsAfter": {
+        "gitleaks": {
+          "scans": 3,
+          "commands": 6
+        },
+        "semgrep": {
+          "scans": 3,
+          "commands": 6,
+          "nativeCommands": 3
+        },
+        "cosign": {
+          "commands": 6,
+          "verifications": 3
+        }
+      },
+      "policyCounts": {
+        "cosign": 1,
+        "semgrep": 1
+      },
+      "overallStatus": "PASS",
+      "promotion": {
+        "status": "BLOCKED",
+        "reason": "CANDIDATE_ONLY_NOT_PRODUCTION_GATE_EVIDENCE"
+      },
+      "artifactSeal": "77f78863439d8590e3286e44dfb03b97bd5336e600858e5c97aa78e72628be0a"
+    },
+    {
+      "name": "E-all-disabled",
+      "classification": "REAL_CONTROLLED_SAME_MANAGER_THREE_NATIVE_PLUGINS",
+      "projectId": "java-fixture",
+      "profile": "java-web",
+      "enabled": [],
+      "master": true,
+      "globalMode": "audit",
+      "plugins": {
+        "gitleaks": {
+          "executionStatus": "DISABLED",
+          "policyDecision": null,
+          "oldGateDecision": null,
+          "evaluationCount": 0,
+          "rawReportDigest": null,
+          "factDigest": null,
+          "resultDigest": "3bd08d66f0e17852e536cbb9191eaec3d5670749943b9c6a3ef69f0256931113",
+          "failureReason": "PLUGIN_DISABLED"
+        },
+        "semgrep": {
+          "executionStatus": "DISABLED",
+          "policyDecision": null,
+          "oldGateDecision": null,
+          "evaluationCount": 0,
+          "rawReportDigest": null,
+          "factDigest": null,
+          "resultDigest": "42c3407ff710e344e40f9b25738dce3e479b04f4f44f17c1cffe2a91821dbe90",
+          "failureReason": "PLUGIN_DISABLED"
+        },
+        "cosign": {
+          "executionStatus": "DISABLED",
+          "policyDecision": null,
+          "oldGateDecision": null,
+          "evaluationCount": 0,
+          "rawReportDigest": null,
+          "factDigest": null,
+          "resultDigest": "f98058a59f1f38f8f0b1ebd90d213a9c502764e21ba90dee77e930ad32294c6a",
+          "failureReason": "PLUGIN_DISABLED"
+        }
+      },
+      "countsBefore": {
+        "gitleaks": {
+          "scans": 3,
+          "commands": 6
+        },
+        "semgrep": {
+          "scans": 3,
+          "commands": 6,
+          "nativeCommands": 3
+        },
+        "cosign": {
+          "commands": 6,
+          "verifications": 3
+        }
+      },
+      "countsAfter": {
+        "gitleaks": {
+          "scans": 3,
+          "commands": 6
+        },
+        "semgrep": {
+          "scans": 3,
+          "commands": 6,
+          "nativeCommands": 3
+        },
+        "cosign": {
+          "commands": 6,
+          "verifications": 3
+        }
+      },
+      "policyCounts": {},
+      "overallStatus": "DISABLED",
+      "promotion": {
+        "status": "BLOCKED",
+        "reason": "CANDIDATE_ONLY_NOT_PRODUCTION_GATE_EVIDENCE"
+      },
+      "artifactSeal": "9a4c432efa9330d743bbc9ed5d5f7a1d7ea7e6eb4cdec29f2fbe81b2ebc80ad3"
+    },
+    {
+      "name": "F-cosign-tampered",
+      "classification": "REAL_CONTROLLED_SAME_MANAGER_THREE_NATIVE_PLUGINS",
+      "projectId": "java-fixture",
+      "profile": "java-web",
+      "enabled": [
+        "gitleaks",
+        "semgrep",
+        "cosign"
+      ],
+      "master": true,
+      "globalMode": "audit",
+      "plugins": {
+        "gitleaks": {
+          "executionStatus": "COMPLETED",
+          "policyDecision": "PASS",
+          "oldGateDecision": "PASS",
+          "evaluationCount": 1,
+          "rawReportDigest": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570",
+          "factDigest": "5c9d8f0aea9d0a6c34aef9c1ba236c4176ce124ab03f086a231bb42667cf4587",
+          "resultDigest": "77c7096281972635d4f13d360ff17f9f3a343e615a08025b9726a41a4b795291",
+          "failureReason": null
+        },
+        "semgrep": {
+          "executionStatus": "COMPLETED",
+          "policyDecision": "PASS",
+          "oldGateDecision": "PASS",
+          "evaluationCount": 1,
+          "rawReportDigest": "127d0d28d3c3b3d75a031d612d191828ec7487f3f3e80d7989ef3cb88a68bef3",
+          "factDigest": "75a9c27cce2e5efcd26344daa7a75be17d844a84fe80d6b04c78c5c0aafabfb9",
+          "resultDigest": "3b8a200d1e804570f6d0aa277ca503251719ae7bf77fdfeb8ce2ea62dfd1609e",
+          "failureReason": null
+        },
+        "cosign": {
+          "executionStatus": "COMPLETED",
+          "policyDecision": "FAIL",
+          "oldGateDecision": "FAIL",
+          "evaluationCount": 1,
+          "rawReportDigest": "bf75b4a592f1da1d58ddcb1768fb0ba5b709136f22da64a7015cd3c2fcf53552",
+          "factDigest": "87be095b5501ba233397ff01909062e9fe8962d5e0c8b7ccd1100ffc166032f3",
+          "resultDigest": "a9ad4b4eed4512641b3269b9b9748d587d3d443d785da97b43c20ce5b6e73ea3",
+          "failureReason": null
+        }
+      },
+      "countsBefore": {
+        "gitleaks": {
+          "scans": 3,
+          "commands": 6
+        },
+        "semgrep": {
+          "scans": 3,
+          "commands": 6,
+          "nativeCommands": 3
+        },
+        "cosign": {
+          "commands": 6,
+          "verifications": 3
+        }
+      },
+      "countsAfter": {
+        "gitleaks": {
+          "scans": 4,
+          "commands": 8
+        },
+        "semgrep": {
+          "scans": 4,
+          "commands": 8,
+          "nativeCommands": 4
+        },
+        "cosign": {
+          "commands": 8,
+          "verifications": 4
+        }
+      },
+      "policyCounts": {
+        "cosign": 1,
+        "gitleaks": 1,
+        "semgrep": 1
+      },
+      "overallStatus": "FAIL",
+      "promotion": {
+        "status": "BLOCKED",
+        "reason": "CANDIDATE_ONLY_NOT_PRODUCTION_GATE_EVIDENCE"
+      },
+      "artifactSeal": "04164617dc1b9bfeec3dd443f127eeb99483f2526dd990cf046a88b1f6a60dae"
+    },
+    {
+      "name": "G-semgrep-fail",
+      "classification": "REAL_CONTROLLED_SAME_MANAGER_THREE_NATIVE_PLUGINS",
+      "projectId": "java-fixture",
+      "profile": "java-web",
+      "enabled": [
+        "gitleaks",
+        "semgrep",
+        "cosign"
+      ],
+      "master": true,
+      "globalMode": "audit",
+      "plugins": {
+        "gitleaks": {
+          "executionStatus": "COMPLETED",
+          "policyDecision": "PASS",
+          "oldGateDecision": "PASS",
+          "evaluationCount": 1,
+          "rawReportDigest": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570",
+          "factDigest": "5c9d8f0aea9d0a6c34aef9c1ba236c4176ce124ab03f086a231bb42667cf4587",
+          "resultDigest": "38e2ed65c0ad30aa506249dbb25c0b5a66aa213790c3f281a2128fa78ce17af6",
+          "failureReason": null
+        },
+        "semgrep": {
+          "executionStatus": "COMPLETED",
+          "policyDecision": "FAIL",
+          "oldGateDecision": "FAIL",
+          "evaluationCount": 1,
+          "rawReportDigest": "546042c8933c9feb1971fee4e084fc15f4f80d4c4d1c9cfca3d5488f10275446",
+          "factDigest": "c86686540665e27341ed2f18087c21cf78260abaf75640e8002af86d60e5a66e",
+          "resultDigest": "f53a11ee7069ee14763309d517faaa57a05fbb1b726b1bc2f92f045dbc089c3c",
+          "failureReason": null
+        },
+        "cosign": {
+          "executionStatus": "COMPLETED",
+          "policyDecision": "PASS",
+          "oldGateDecision": "PASS",
+          "evaluationCount": 1,
+          "rawReportDigest": "f0fa13547d4a5ece0e97aa6e33f650d46056aab81e173aa8703f03f1e3629ab7",
+          "factDigest": "07dae5620707c4f1f67ea76eb8ac849596a7291f492afdec9497e1f422fe6441",
+          "resultDigest": "0caf568d1c0195ffd55070425ce8255563240fdafc11c2a727b0ab594ba9ccba",
+          "failureReason": null
+        }
+      },
+      "countsBefore": {
+        "gitleaks": {
+          "scans": 4,
+          "commands": 8
+        },
+        "semgrep": {
+          "scans": 4,
+          "commands": 8,
+          "nativeCommands": 4
+        },
+        "cosign": {
+          "commands": 8,
+          "verifications": 4
+        }
+      },
+      "countsAfter": {
+        "gitleaks": {
+          "scans": 5,
+          "commands": 10
+        },
+        "semgrep": {
+          "scans": 5,
+          "commands": 10,
+          "nativeCommands": 5
+        },
+        "cosign": {
+          "commands": 10,
+          "verifications": 5
+        }
+      },
+      "policyCounts": {
+        "cosign": 1,
+        "gitleaks": 1,
+        "semgrep": 1
+      },
+      "overallStatus": "FAIL",
+      "promotion": {
+        "status": "BLOCKED",
+        "reason": "CANDIDATE_ONLY_NOT_PRODUCTION_GATE_EVIDENCE"
+      },
+      "artifactSeal": "ba4c0d34261d6065648f391bfc33e898c61caa4fed22e479527272e4b866572d"
+    },
+    {
+      "name": "H-gitleaks-fail",
+      "classification": "REAL_CONTROLLED_SAME_MANAGER_THREE_NATIVE_PLUGINS",
+      "projectId": "java-fixture",
+      "profile": "java-web",
+      "enabled": [
+        "gitleaks",
+        "semgrep",
+        "cosign"
+      ],
+      "master": true,
+      "globalMode": "audit",
+      "plugins": {
+        "gitleaks": {
+          "executionStatus": "COMPLETED",
+          "policyDecision": "FAIL",
+          "oldGateDecision": "FAIL",
+          "evaluationCount": 1,
+          "rawReportDigest": "edb651d8b83fcf40f3f07903d6dfe53e4f5aebf4738b751fdcf9f9a9b2054604",
+          "factDigest": "250954c4744c1b0ea80203970f1adff908e8e2dffd55aa0008afd6cd8c234b97",
+          "resultDigest": "501deac4d1299546c6edbbd83b4b4b4d5c0460b16912557175ef52be711dc699",
+          "failureReason": null
+        },
+        "semgrep": {
+          "executionStatus": "COMPLETED",
+          "policyDecision": "PASS",
+          "oldGateDecision": "PASS",
+          "evaluationCount": 1,
+          "rawReportDigest": "49cb1ab18eae9c99b51b311f0de64c5d934c54a07015d001bd89d626437864e6",
+          "factDigest": "75a9c27cce2e5efcd26344daa7a75be17d844a84fe80d6b04c78c5c0aafabfb9",
+          "resultDigest": "4ee70b492cf709236315142f14955a70ae1bd4a1346e5044294221bfecbe9f94",
+          "failureReason": null
+        },
+        "cosign": {
+          "executionStatus": "COMPLETED",
+          "policyDecision": "PASS",
+          "oldGateDecision": "PASS",
+          "evaluationCount": 1,
+          "rawReportDigest": "cf2cb4e8e88aa7f57fd0f2756d6988d61c6d2e92a2c83adb5f5c7952c508283b",
+          "factDigest": "cf1d81bc0fa6444e6b34f20084587934f2e53ecaee33ba455fdb3154e512678d",
+          "resultDigest": "d1178b7993d7d8e94f886b03f6389acefa5e012dca86090429b0335697581980",
+          "failureReason": null
+        }
+      },
+      "countsBefore": {
+        "gitleaks": {
+          "scans": 5,
+          "commands": 10
+        },
+        "semgrep": {
+          "scans": 5,
+          "commands": 10,
+          "nativeCommands": 5
+        },
+        "cosign": {
+          "commands": 10,
+          "verifications": 5
+        }
+      },
+      "countsAfter": {
+        "gitleaks": {
+          "scans": 6,
+          "commands": 12
+        },
+        "semgrep": {
+          "scans": 6,
+          "commands": 12,
+          "nativeCommands": 6
+        },
+        "cosign": {
+          "commands": 12,
+          "verifications": 6
+        }
+      },
+      "policyCounts": {
+        "cosign": 1,
+        "gitleaks": 1,
+        "semgrep": 1
+      },
+      "overallStatus": "FAIL",
+      "promotion": {
+        "status": "BLOCKED",
+        "reason": "CANDIDATE_ONLY_NOT_PRODUCTION_GATE_EVIDENCE"
+      },
+      "artifactSeal": "e0b43acede88e9a34d51bdb4a43f05ef055a8fc9433b015bceda39bc6e9bdae2"
+    },
+    {
+      "name": "I-cosign-timeout",
+      "classification": "REAL_CONTROLLED_SAME_MANAGER_THREE_NATIVE_PLUGINS",
+      "projectId": "java-fixture",
+      "profile": "java-web",
+      "enabled": [
+        "gitleaks",
+        "semgrep",
+        "cosign"
+      ],
+      "master": true,
+      "globalMode": "audit",
+      "plugins": {
+        "gitleaks": {
+          "executionStatus": "COMPLETED",
+          "policyDecision": "PASS",
+          "oldGateDecision": "PASS",
+          "evaluationCount": 1,
+          "rawReportDigest": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570",
+          "factDigest": "5c9d8f0aea9d0a6c34aef9c1ba236c4176ce124ab03f086a231bb42667cf4587",
+          "resultDigest": "8e9853c4ab3311b752ed78aaeba77757e2ae3ca1b48fc238eaaa61fa2d538c6f",
+          "failureReason": null
+        },
+        "semgrep": {
+          "executionStatus": "COMPLETED",
+          "policyDecision": "PASS",
+          "oldGateDecision": "PASS",
+          "evaluationCount": 1,
+          "rawReportDigest": "4570feeaf073e106f0b3d4e61e50bd8d6536909ee6626adc6ffa1f5319da612b",
+          "factDigest": "75a9c27cce2e5efcd26344daa7a75be17d844a84fe80d6b04c78c5c0aafabfb9",
+          "resultDigest": "1da1e3380d9dd94832839690d6b884f3e2c3b9527fa0aaafc91d490a1d327dea",
+          "failureReason": null
+        },
+        "cosign": {
+          "executionStatus": "ERROR",
+          "policyDecision": null,
+          "oldGateDecision": null,
+          "evaluationCount": 0,
+          "rawReportDigest": null,
+          "factDigest": null,
+          "resultDigest": "188ae993f392da322652ab1fce867b13a96f52f08c2b568f429a6360f49c3dac",
+          "failureReason": "RUNNER_TIMEOUT"
+        }
+      },
+      "countsBefore": {
+        "gitleaks": {
+          "scans": 6,
+          "commands": 12
+        },
+        "semgrep": {
+          "scans": 6,
+          "commands": 12,
+          "nativeCommands": 6
+        },
+        "cosign": {
+          "commands": 12,
+          "verifications": 6
+        }
+      },
+      "countsAfter": {
+        "gitleaks": {
+          "scans": 7,
+          "commands": 14
+        },
+        "semgrep": {
+          "scans": 7,
+          "commands": 14,
+          "nativeCommands": 7
+        },
+        "cosign": {
+          "commands": 13,
+          "verifications": 6
+        }
+      },
+      "policyCounts": {
+        "gitleaks": 1,
+        "semgrep": 1
+      },
+      "overallStatus": "ERROR",
+      "promotion": {
+        "status": "BLOCKED",
+        "reason": "CANDIDATE_ONLY_NOT_PRODUCTION_GATE_EVIDENCE"
+      },
+      "artifactSeal": "3b7b32edc32a927bfc794465da5e5a13dcad00c356a839440d9a5014d57b9750"
+    },
+    {
+      "name": "J-global-off",
+      "classification": "REAL_CONTROLLED_SAME_MANAGER_THREE_NATIVE_PLUGINS",
+      "projectId": "java-fixture",
+      "profile": "java-web",
+      "enabled": [
+        "gitleaks",
+        "semgrep",
+        "cosign"
+      ],
+      "master": true,
+      "globalMode": "off",
+      "plugins": {
+        "gitleaks": {
+          "executionStatus": "DISABLED",
+          "policyDecision": null,
+          "oldGateDecision": null,
+          "evaluationCount": 0,
+          "rawReportDigest": null,
+          "factDigest": null,
+          "resultDigest": "a7964c73d8893b318e3415a911c873f576552343169060644b68cc7051a967fe",
+          "failureReason": "MODE_OFF"
+        },
+        "semgrep": {
+          "executionStatus": "DISABLED",
+          "policyDecision": null,
+          "oldGateDecision": null,
+          "evaluationCount": 0,
+          "rawReportDigest": null,
+          "factDigest": null,
+          "resultDigest": "5514707774e823327f5bf6bb02365ea4ae8c1f35ea702a50cf219d14e87f5bd9",
+          "failureReason": "MODE_OFF"
+        },
+        "cosign": {
+          "executionStatus": "DISABLED",
+          "policyDecision": null,
+          "oldGateDecision": null,
+          "evaluationCount": 0,
+          "rawReportDigest": null,
+          "factDigest": null,
+          "resultDigest": "4185d158df7740cd6ddaee2c115df4943ec22cfe51910fb3553957fd9969f343",
+          "failureReason": "MODE_OFF"
+        }
+      },
+      "countsBefore": {
+        "gitleaks": {
+          "scans": 7,
+          "commands": 14
+        },
+        "semgrep": {
+          "scans": 7,
+          "commands": 14,
+          "nativeCommands": 7
+        },
+        "cosign": {
+          "commands": 13,
+          "verifications": 6
+        }
+      },
+      "countsAfter": {
+        "gitleaks": {
+          "scans": 7,
+          "commands": 14
+        },
+        "semgrep": {
+          "scans": 7,
+          "commands": 14,
+          "nativeCommands": 7
+        },
+        "cosign": {
+          "commands": 13,
+          "verifications": 6
+        }
+      },
+      "policyCounts": {},
+      "overallStatus": "DISABLED",
+      "promotion": {
+        "status": "BLOCKED",
+        "reason": "CANDIDATE_ONLY_NOT_PRODUCTION_GATE_EVIDENCE"
+      },
+      "artifactSeal": "f459416777b3f906cfddb0fe22d87a0a3bde983d7a146308af84181d7380acb9"
+    },
+    {
+      "name": "K-master-off",
+      "classification": "REAL_CONTROLLED_SAME_MANAGER_THREE_NATIVE_PLUGINS",
+      "projectId": "java-fixture",
+      "profile": "java-web",
+      "enabled": [
+        "gitleaks",
+        "semgrep",
+        "cosign"
+      ],
+      "master": false,
+      "globalMode": "audit",
+      "plugins": {
+        "gitleaks": {
+          "executionStatus": "DISABLED",
+          "policyDecision": null,
+          "oldGateDecision": null,
+          "evaluationCount": 0,
+          "rawReportDigest": null,
+          "factDigest": null,
+          "resultDigest": "6a081bd77c5755ba28a08e014046c4786f25fe448d3f3dd3a5d190c2cbdf9f7e",
+          "failureReason": "MASTER_DISABLED"
+        },
+        "semgrep": {
+          "executionStatus": "DISABLED",
+          "policyDecision": null,
+          "oldGateDecision": null,
+          "evaluationCount": 0,
+          "rawReportDigest": null,
+          "factDigest": null,
+          "resultDigest": "82ca3a41a632a35528e3d5373a157b026db32b85097b74788793aefaa63191a5",
+          "failureReason": "MASTER_DISABLED"
+        },
+        "cosign": {
+          "executionStatus": "DISABLED",
+          "policyDecision": null,
+          "oldGateDecision": null,
+          "evaluationCount": 0,
+          "rawReportDigest": null,
+          "factDigest": null,
+          "resultDigest": "5f952e9e0cfb8aa33f224e196f93c972add4eeb844031725292a7f982f983294",
+          "failureReason": "MASTER_DISABLED"
+        }
+      },
+      "countsBefore": {
+        "gitleaks": {
+          "scans": 7,
+          "commands": 14
+        },
+        "semgrep": {
+          "scans": 7,
+          "commands": 14,
+          "nativeCommands": 7
+        },
+        "cosign": {
+          "commands": 13,
+          "verifications": 6
+        }
+      },
+      "countsAfter": {
+        "gitleaks": {
+          "scans": 7,
+          "commands": 14
+        },
+        "semgrep": {
+          "scans": 7,
+          "commands": 14,
+          "nativeCommands": 7
+        },
+        "cosign": {
+          "commands": 13,
+          "verifications": 6
+        }
+      },
+      "policyCounts": {},
+      "overallStatus": "DISABLED",
+      "promotion": {
+        "status": "BLOCKED",
+        "reason": "CANDIDATE_ONLY_NOT_PRODUCTION_GATE_EVIDENCE"
+      },
+      "artifactSeal": "ae6d6c8821409ff202e7f9337819e478afd1485777addf262940a3f920141b9c"
+    },
+    {
+      "name": "L-cosign-wrong-trust",
+      "classification": "REAL_CONTROLLED_SAME_MANAGER_THREE_NATIVE_PLUGINS",
+      "projectId": "java-fixture",
+      "profile": "java-web",
+      "enabled": [
+        "gitleaks",
+        "semgrep",
+        "cosign"
+      ],
+      "master": true,
+      "globalMode": "audit",
+      "plugins": {
+        "gitleaks": {
+          "executionStatus": "COMPLETED",
+          "policyDecision": "PASS",
+          "oldGateDecision": "PASS",
+          "evaluationCount": 1,
+          "rawReportDigest": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570",
+          "factDigest": "5c9d8f0aea9d0a6c34aef9c1ba236c4176ce124ab03f086a231bb42667cf4587",
+          "resultDigest": "90a2030b535ba59f78243260fc7718c937f5f0a8da6c5aa0f553c3919535cacb",
+          "failureReason": null
+        },
+        "semgrep": {
+          "executionStatus": "COMPLETED",
+          "policyDecision": "PASS",
+          "oldGateDecision": "PASS",
+          "evaluationCount": 1,
+          "rawReportDigest": "f38812df152fce4aba5a363c0d0708662768d0d4ea28a087eca029deece4bb8a",
+          "factDigest": "75a9c27cce2e5efcd26344daa7a75be17d844a84fe80d6b04c78c5c0aafabfb9",
+          "resultDigest": "001976e6f8e0f2ba05884f1745eb2d0b4ad2227b76d89368f0958ad00866033e",
+          "failureReason": null
+        },
+        "cosign": {
+          "executionStatus": "COMPLETED",
+          "policyDecision": "FAIL",
+          "oldGateDecision": "FAIL",
+          "evaluationCount": 1,
+          "rawReportDigest": "d37f23c3ccaeede91ecd96cb375f96b77c5dea2bb56942a655efe9041e7c0f25",
+          "factDigest": "2119860064f7050d066d419f5955822de169f872ca4ae59fd4405d4192d2e061",
+          "resultDigest": "a2586023af1f838a7e64deb318d3513360625c8b2f8d21dbfe04e67f369d03c5",
+          "failureReason": null
+        }
+      },
+      "countsBefore": {
+        "gitleaks": {
+          "scans": 7,
+          "commands": 14
+        },
+        "semgrep": {
+          "scans": 7,
+          "commands": 14,
+          "nativeCommands": 7
+        },
+        "cosign": {
+          "commands": 13,
+          "verifications": 6
+        }
+      },
+      "countsAfter": {
+        "gitleaks": {
+          "scans": 8,
+          "commands": 16
+        },
+        "semgrep": {
+          "scans": 8,
+          "commands": 16,
+          "nativeCommands": 8
+        },
+        "cosign": {
+          "commands": 15,
+          "verifications": 7
+        }
+      },
+      "policyCounts": {
+        "cosign": 1,
+        "gitleaks": 1,
+        "semgrep": 1
+      },
+      "overallStatus": "FAIL",
+      "promotion": {
+        "status": "BLOCKED",
+        "reason": "CANDIDATE_ONLY_NOT_PRODUCTION_GATE_EVIDENCE"
+      },
+      "artifactSeal": "b859bfd3d74343d95e8c2f06f38a456782fcac33129f6b6e69cf8dfa5fece7a3"
+    },
+    {
+      "name": "M-cosign-missing-signature",
+      "classification": "REAL_CONTROLLED_SAME_MANAGER_THREE_NATIVE_PLUGINS",
+      "projectId": "java-fixture",
+      "profile": "java-web",
+      "enabled": [
+        "gitleaks",
+        "semgrep",
+        "cosign"
+      ],
+      "master": true,
+      "globalMode": "audit",
+      "plugins": {
+        "gitleaks": {
+          "executionStatus": "COMPLETED",
+          "policyDecision": "PASS",
+          "oldGateDecision": "PASS",
+          "evaluationCount": 1,
+          "rawReportDigest": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570",
+          "factDigest": "5c9d8f0aea9d0a6c34aef9c1ba236c4176ce124ab03f086a231bb42667cf4587",
+          "resultDigest": "c80c5cf74e4d57c89e0cde4f7eaddeaa6a26b5fc08eb969c3667856988c05b67",
+          "failureReason": null
+        },
+        "semgrep": {
+          "executionStatus": "COMPLETED",
+          "policyDecision": "PASS",
+          "oldGateDecision": "PASS",
+          "evaluationCount": 1,
+          "rawReportDigest": "932535e7f833a5cad98d1dfa9f74b362d4b08618c779c657b7b0b93b395e7a20",
+          "factDigest": "75a9c27cce2e5efcd26344daa7a75be17d844a84fe80d6b04c78c5c0aafabfb9",
+          "resultDigest": "3abe9f98902f73ee4b6fade3cdd1b61501420994575dc88ebbe909c96acc270b",
+          "failureReason": null
+        },
+        "cosign": {
+          "executionStatus": "COMPLETED",
+          "policyDecision": "FAIL",
+          "oldGateDecision": "FAIL",
+          "evaluationCount": 1,
+          "rawReportDigest": "a8d13957156a881748df88f1b5b841f3e6c9bb63c75f90e77bbffde40d820661",
+          "factDigest": "b0150e00da486a339446801cd02d1d85c66de9f7a5794e95744e15777d3f57b2",
+          "resultDigest": "c57f86d958f4a8d2ea55cc844c0a4419d9d751f77ed61da4f966eaba0b24ad1c",
+          "failureReason": null
+        }
+      },
+      "countsBefore": {
+        "gitleaks": {
+          "scans": 8,
+          "commands": 16
+        },
+        "semgrep": {
+          "scans": 8,
+          "commands": 16,
+          "nativeCommands": 8
+        },
+        "cosign": {
+          "commands": 15,
+          "verifications": 7
+        }
+      },
+      "countsAfter": {
+        "gitleaks": {
+          "scans": 9,
+          "commands": 18
+        },
+        "semgrep": {
+          "scans": 9,
+          "commands": 18,
+          "nativeCommands": 9
+        },
+        "cosign": {
+          "commands": 17,
+          "verifications": 8
+        }
+      },
+      "policyCounts": {
+        "cosign": 1,
+        "gitleaks": 1,
+        "semgrep": 1
+      },
+      "overallStatus": "FAIL",
+      "promotion": {
+        "status": "BLOCKED",
+        "reason": "CANDIDATE_ONLY_NOT_PRODUCTION_GATE_EVIDENCE"
+      },
+      "artifactSeal": "19b1ad6851848f2fb1c99a83ffa5c77088f43b89e7b8fc7cae31e84cb1006fb6"
+    },
+    {
+      "name": "N-cosign-malformed-signature",
+      "classification": "REAL_CONTROLLED_SAME_MANAGER_THREE_NATIVE_PLUGINS",
+      "projectId": "java-fixture",
+      "profile": "java-web",
+      "enabled": [
+        "gitleaks",
+        "semgrep",
+        "cosign"
+      ],
+      "master": true,
+      "globalMode": "audit",
+      "plugins": {
+        "gitleaks": {
+          "executionStatus": "COMPLETED",
+          "policyDecision": "PASS",
+          "oldGateDecision": "PASS",
+          "evaluationCount": 1,
+          "rawReportDigest": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570",
+          "factDigest": "5c9d8f0aea9d0a6c34aef9c1ba236c4176ce124ab03f086a231bb42667cf4587",
+          "resultDigest": "a517e0f49dc00170f7d6d69773b5240ac9043958dbaa6a82f873180b9971a394",
+          "failureReason": null
+        },
+        "semgrep": {
+          "executionStatus": "COMPLETED",
+          "policyDecision": "PASS",
+          "oldGateDecision": "PASS",
+          "evaluationCount": 1,
+          "rawReportDigest": "3c79bd017f2556b3c79726e3bd5bfb0b4d69210ac2c5ea91e212dea0e4610e58",
+          "factDigest": "75a9c27cce2e5efcd26344daa7a75be17d844a84fe80d6b04c78c5c0aafabfb9",
+          "resultDigest": "a836eafc0e9bd90af703d7bd42f6ea4332cea50a0f0c27eb3b0dc8c6260c67e4",
+          "failureReason": null
+        },
+        "cosign": {
+          "executionStatus": "COMPLETED",
+          "policyDecision": "FAIL",
+          "oldGateDecision": "FAIL",
+          "evaluationCount": 1,
+          "rawReportDigest": "1d22e9cf679d194e62daf3552f0b3b8d4c584661281819f9cdfc84e1d6bda735",
+          "factDigest": "5786a3403ab311f83b0255a76664f71ba52a8289626b1bac4e70c20f18dd3710",
+          "resultDigest": "6e872241cc0d4d00b6ba299b810c2e6827b89aae976442fbabc27f6d4b8cb3fb",
+          "failureReason": null
+        }
+      },
+      "countsBefore": {
+        "gitleaks": {
+          "scans": 9,
+          "commands": 18
+        },
+        "semgrep": {
+          "scans": 9,
+          "commands": 18,
+          "nativeCommands": 9
+        },
+        "cosign": {
+          "commands": 17,
+          "verifications": 8
+        }
+      },
+      "countsAfter": {
+        "gitleaks": {
+          "scans": 10,
+          "commands": 20
+        },
+        "semgrep": {
+          "scans": 10,
+          "commands": 20,
+          "nativeCommands": 10
+        },
+        "cosign": {
+          "commands": 19,
+          "verifications": 9
+        }
+      },
+      "policyCounts": {
+        "cosign": 1,
+        "gitleaks": 1,
+        "semgrep": 1
+      },
+      "overallStatus": "FAIL",
+      "promotion": {
+        "status": "BLOCKED",
+        "reason": "CANDIDATE_ONLY_NOT_PRODUCTION_GATE_EVIDENCE"
+      },
+      "artifactSeal": "5caecb795e7d3414b3f3e6fbcba586b68b80729bc831207190e0630fc33e3b58"
+    },
+    {
+      "name": "O-cosign-unavailable",
+      "classification": "REAL_CONTROLLED_SAME_MANAGER_THREE_NATIVE_PLUGINS",
+      "projectId": "java-fixture",
+      "profile": "java-web",
+      "enabled": [
+        "gitleaks",
+        "semgrep",
+        "cosign"
+      ],
+      "master": true,
+      "globalMode": "audit",
+      "plugins": {
+        "gitleaks": {
+          "executionStatus": "COMPLETED",
+          "policyDecision": "PASS",
+          "oldGateDecision": "PASS",
+          "evaluationCount": 1,
+          "rawReportDigest": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570",
+          "factDigest": "5c9d8f0aea9d0a6c34aef9c1ba236c4176ce124ab03f086a231bb42667cf4587",
+          "resultDigest": "b485bb67d6742de16eb185fe75a98964524ea60dcde22a14bdc2ab4dab8ea550",
+          "failureReason": null
+        },
+        "semgrep": {
+          "executionStatus": "COMPLETED",
+          "policyDecision": "PASS",
+          "oldGateDecision": "PASS",
+          "evaluationCount": 1,
+          "rawReportDigest": "678ef0bedd334e914413c0ab000e796e52137140ab2e4588e42ec37f5a97e87d",
+          "factDigest": "75a9c27cce2e5efcd26344daa7a75be17d844a84fe80d6b04c78c5c0aafabfb9",
+          "resultDigest": "7d2155c93d3eb38e459a048bda283b964e595ae8c112b8347e42392046cd1ca6",
+          "failureReason": null
+        },
+        "cosign": {
+          "executionStatus": "NOT_CONFIGURED",
+          "policyDecision": null,
+          "oldGateDecision": null,
+          "evaluationCount": 0,
+          "rawReportDigest": null,
+          "factDigest": null,
+          "resultDigest": "55531b72884343716bff2c830d341de44c653b502f43ec6402923e76e5d4d470",
+          "failureReason": {
+            "executionStatus": "NOT_CONFIGURED",
+            "reason": "CAPABILITY_BLOCKED",
+            "missing": [
+              "COSIGN_BINARY"
+            ]
+          }
+        }
+      },
+      "countsBefore": {
+        "gitleaks": {
+          "scans": 10,
+          "commands": 20
+        },
+        "semgrep": {
+          "scans": 10,
+          "commands": 20,
+          "nativeCommands": 10
+        },
+        "cosign": {
+          "commands": 19,
+          "verifications": 9
+        }
+      },
+      "countsAfter": {
+        "gitleaks": {
+          "scans": 11,
+          "commands": 22
+        },
+        "semgrep": {
+          "scans": 11,
+          "commands": 22,
+          "nativeCommands": 11
+        },
+        "cosign": {
+          "commands": 19,
+          "verifications": 9
+        }
+      },
+      "policyCounts": {
+        "gitleaks": 1,
+        "semgrep": 1
+      },
+      "overallStatus": "INCOMPLETE",
+      "promotion": {
+        "status": "BLOCKED",
+        "reason": "CANDIDATE_ONLY_NOT_PRODUCTION_GATE_EVIDENCE"
+      },
+      "artifactSeal": "be97e88ba7e128716d99bf80632831ed2cae992deaa8aab9b984a9cf2f958f26"
+    },
+    {
+      "name": "P-service-project",
+      "classification": "REAL_CONTROLLED_SAME_MANAGER_THREE_NATIVE_PLUGINS",
+      "projectId": "service-fixture",
+      "profile": "container-service",
+      "enabled": [
+        "gitleaks",
+        "semgrep",
+        "cosign"
+      ],
+      "master": true,
+      "globalMode": "audit",
+      "plugins": {
+        "gitleaks": {
+          "executionStatus": "COMPLETED",
+          "policyDecision": "PASS",
+          "oldGateDecision": "PASS",
+          "evaluationCount": 1,
+          "rawReportDigest": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570",
+          "factDigest": "82ae56d4dc9f48de8a9893dce572a0cec83092aeea37c4c17e860d07814e80a0",
+          "resultDigest": "d4ff34824edb36ea5e682583c7a79f676444cd0d44baef4bbe3ec549b8e99d6a",
+          "failureReason": null
+        },
+        "semgrep": {
+          "executionStatus": "COMPLETED",
+          "policyDecision": "PASS",
+          "oldGateDecision": "PASS",
+          "evaluationCount": 1,
+          "rawReportDigest": "8b8b10eb014646e753a3a586e7de14bdb65a54f5e5d1300ce795f7c895cd2152",
+          "factDigest": "75a9c27cce2e5efcd26344daa7a75be17d844a84fe80d6b04c78c5c0aafabfb9",
+          "resultDigest": "125a49a5bc3689bbfee9c0530db53ba9ea245dbca762bba5198a744b61678b11",
+          "failureReason": null
+        },
+        "cosign": {
+          "executionStatus": "COMPLETED",
+          "policyDecision": "PASS",
+          "oldGateDecision": "PASS",
+          "evaluationCount": 1,
+          "rawReportDigest": "2faa3dd87ecd181f2bfc901b96bda1c6e4dd2343ac71f56f6b10d3b73f4abf62",
+          "factDigest": "4cd4314b2fc473ac5d9dadd12498aae4e0f50a0b9a1e123a6e46db0283bd4920",
+          "resultDigest": "3e149af1311a1661d01c36839134132dac9ca02afdc3120c447ad65232730cd6",
+          "failureReason": null
+        }
+      },
+      "countsBefore": {
+        "gitleaks": {
+          "scans": 11,
+          "commands": 22
+        },
+        "semgrep": {
+          "scans": 11,
+          "commands": 22,
+          "nativeCommands": 11
+        },
+        "cosign": {
+          "commands": 19,
+          "verifications": 9
+        }
+      },
+      "countsAfter": {
+        "gitleaks": {
+          "scans": 12,
+          "commands": 24
+        },
+        "semgrep": {
+          "scans": 12,
+          "commands": 24,
+          "nativeCommands": 12
+        },
+        "cosign": {
+          "commands": 21,
+          "verifications": 10
+        }
+      },
+      "policyCounts": {
+        "cosign": 1,
+        "gitleaks": 1,
+        "semgrep": 1
+      },
+      "overallStatus": "PASS",
+      "promotion": {
+        "status": "BLOCKED",
+        "reason": "CANDIDATE_ONLY_NOT_PRODUCTION_GATE_EVIDENCE"
+      },
+      "artifactSeal": "5591e4088c2715e835d5ed54082e86604dc34ad2c54e56edcbd06e4ae6dae8fd"
+    },
+    {
+      "name": "Q-cross-project-identity-rejected",
+      "classification": "REAL_CONTROLLED_SAME_MANAGER_THREE_NATIVE_PLUGINS",
+      "projectId": "java-fixture",
+      "profile": "java-web",
+      "enabled": [
+        "gitleaks",
+        "semgrep",
+        "cosign"
+      ],
+      "master": true,
+      "globalMode": "audit",
+      "plugins": {
+        "gitleaks": {
+          "executionStatus": "COMPLETED",
+          "policyDecision": "PASS",
+          "oldGateDecision": "PASS",
+          "evaluationCount": 1,
+          "rawReportDigest": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570",
+          "factDigest": "5c9d8f0aea9d0a6c34aef9c1ba236c4176ce124ab03f086a231bb42667cf4587",
+          "resultDigest": "6c029352ead18027cf079adc7b593cc627e3e1d8fdd824bac939ae79f7158503",
+          "failureReason": null
+        },
+        "semgrep": {
+          "executionStatus": "COMPLETED",
+          "policyDecision": "PASS",
+          "oldGateDecision": "PASS",
+          "evaluationCount": 1,
+          "rawReportDigest": "904b94be422db70bc0be844352d75e36fb5631314a3d3214b559cfa7c182fb90",
+          "factDigest": "75a9c27cce2e5efcd26344daa7a75be17d844a84fe80d6b04c78c5c0aafabfb9",
+          "resultDigest": "341c1a56dfe1509442541cf93aaae2bfdec8976bf131fc1fafcfd4297f1d9286",
+          "failureReason": null
+        },
+        "cosign": {
+          "executionStatus": "POLICY_ERROR",
+          "policyDecision": null,
+          "oldGateDecision": null,
+          "evaluationCount": 0,
+          "rawReportDigest": null,
+          "factDigest": null,
+          "resultDigest": "e059c762bf5e9786036804d3e19efb5b96a984c50512813d739291ffbc5ad6a6",
+          "failureReason": "POLICY_ERROR: Cosign unapproved object/project/trust"
+        }
+      },
+      "countsBefore": {
+        "gitleaks": {
+          "scans": 12,
+          "commands": 24
+        },
+        "semgrep": {
+          "scans": 12,
+          "commands": 24,
+          "nativeCommands": 12
+        },
+        "cosign": {
+          "commands": 21,
+          "verifications": 10
+        }
+      },
+      "countsAfter": {
+        "gitleaks": {
+          "scans": 13,
+          "commands": 26
+        },
+        "semgrep": {
+          "scans": 13,
+          "commands": 26,
+          "nativeCommands": 13
+        },
+        "cosign": {
+          "commands": 21,
+          "verifications": 10
+        }
+      },
+      "policyCounts": {
+        "gitleaks": 1,
+        "semgrep": 1
+      },
+      "overallStatus": "POLICY_ERROR",
+      "promotion": {
+        "status": "BLOCKED",
+        "reason": "CANDIDATE_ONLY_NOT_PRODUCTION_GATE_EVIDENCE"
+      },
+      "artifactSeal": "7975aeccd315bed3d0bf7142c222566dee10651603388936731097ed3d65d185"
+    }
+  ],
+  "negatives": [
+    {
+      "name": "approval-write",
+      "classification": "REAL",
+      "status": "DENIED"
+    },
+    {
+      "name": "object-write",
+      "classification": "REAL",
+      "status": "DENIED"
+    },
+    {
+      "name": "public-key-write",
+      "classification": "REAL",
+      "status": "DENIED"
+    },
+    {
+      "name": "docker-read",
+      "classification": "REAL",
+      "status": "DENIED"
+    },
+    {
+      "name": "kubeconfig-read",
+      "classification": "REAL",
+      "status": "DENIED"
+    }
+  ],
+  "counts": {
+    "gitleaks": {
+      "scans": 13,
+      "commands": 26
+    },
+    "semgrep": {
+      "scans": 13,
+      "commands": 26,
+      "nativeCommands": 13
+    },
+    "cosign": {
+      "commands": 21,
+      "verifications": 10
+    }
+  },
+  "routerChecks": 2,
+  "privateKeysAbsentBeforeManager": true,
+  "scannedSourceExecuted": false,
+  "productionSigning": 0,
+  "release": 0,
+  "rollout": 0,
+  "runtime": "14/16"
+}

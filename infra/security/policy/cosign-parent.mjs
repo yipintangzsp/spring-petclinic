@@ -1,3 +1,6 @@
+// COSIGN_CANDIDATE_BLOB_IMPORT_BEGIN
+import {COSIGN_BLOB_MODE,legacyBlobDecision} from './cosign-blob-evidence.mjs';
+// COSIGN_CANDIDATE_BLOB_IMPORT_END
 import fs from 'node:fs';import path from 'node:path';import crypto from 'node:crypto';
 import {checkCosignVerification} from '../cosign-verification.mjs';
 import {cosignObservations,MissingCosignEvidence} from './cosign-observations.mjs';
@@ -6,6 +9,9 @@ const sha=v=>crypto.createHash('sha256').update(v).digest('hex');
 export function cosignParent(raw){
  const lock=JSON.parse(fs.readFileSync(new URL('./versions/cosign-parent-baseline-v1.json',import.meta.url)));
  for(const [p,h]of Object.entries(lock.sourceHashes))if(sha(fs.readFileSync(new URL('../'+p.replace('infra/security/',''),import.meta.url)))!==h)throw Error('POLICY_ERROR: frozen Cosign source changed');
+ // COSIGN_CANDIDATE_BLOB_DISPATCH_BEGIN
+ if(raw?.stage===COSIGN_BLOB_MODE)return legacyBlobDecision(raw);
+ // COSIGN_CANDIDATE_BLOB_DISPATCH_END
  if(!raw||!raw.stage||!raw.configuration||!raw.environment||!raw.runtime||!raw.files||!raw.commands||!raw.io)return {decision:null,status:'NOT_CONFIGURED',reason:'Complete Cosign facts absent'};
  const f=cosignObservations(raw),env=raw.environment,c=raw.configuration,dir='/tmp/cosign-frozen';let phase='prerequisite',report,decision,reason,missing=false,genericWriteAttempted=false;
  const checked=(r,allowed=[0])=>{if(r.error||!allowed.includes(r.status))throw Error('Command execution failed');return r;};

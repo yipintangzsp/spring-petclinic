@@ -208,3 +208,52 @@ The old disabled Jenkins CI package stays pinned to Candidate .2. Its frozen
 release manifest must not be rewritten to accept .3; a future CI stage needs its
 own reviewed versioned package. No Agent, Jenkins build, production Summary V2,
 Trivy/Dojo execution, production Security Manager, release or rollout is enabled.
+
+## Third real plugin: Cosign (Candidate .4)
+
+`realThreePluginsRegistry()` adds the static, disabled-by-default `cosign-real`
+runner without changing the existing Gitleaks/Semgrep definitions or replay
+registry. Explicitly enable the desired plugins in configuration. Cosign needs
+COSIGN_BINARY, COSIGN_VERSION, OFFLINE_SIGNED_OBJECT,
+TRUSTED_VERIFICATION_IDENTITY, SIGNATURE_SOURCE, POLICY_VERSION,
+VALIDATION_OUTPUT_DIR and the trusted non-production workspace capability.
+Capability hints never authorize a source or public key by themselves.
+
+`cosign-real.mjs` runs the fixed offline Cosign 3.1.4 ARM64 binary. It performs
+verification only, never signs or accepts private-key parameters. Project-scoped
+root-owned approvals pin synthetic object, public key and signature hashes and
+fixed tool identity. Test identities cannot create production trust or promotion
+eligibility. Missing actual binary is NOT_CONFIGURED, unsupported identity is
+UNSUPPORTED, operational failure is ERROR, nonzero actual signature verification
+is a completed Policy FAIL. Disabled/off branches do not launch the verifier.
+
+The original production `signing.mjs` and frozen source manifest are unchanged.
+An explicit `candidate-offline-blob-v1` evidence branch in the existing
+`cosign-parent.mjs` reuses the exact original verify-blob command checker via
+`cosign-blob-evidence.mjs`. Removing only the two marked additive blocks must
+reproduce the original parent bytes. Existing production stages remain under
+the old checks; the full old Cosign regression runs in a disposable sandbox.
+This proves command-acceptance compatibility for offline blob verification,
+not registry/admission/signing authorization or keyless/transparency verification.
+The pre-existing no-transparency-log option is preserved for local keyed test
+objects; it must not be described as production Sigstore trust verification.
+
+CLI opts into the third fixed runner with `--cosign-approval` and
+`--cosign-object`. The existing Gitleaks and Semgrep approval/source flags may be
+combined. No arbitrary command, rule URL, key path or private-key option exists.
+The summary adds compatible `validationRunId` and `overallDecision` aliases;
+results, artifacts and the existing offline Router reuse the single evaluated
+Policy object and resultDigest. No Consumer or earlier real runner logic changes.
+
+Before any regression, run the explicit evidence boundary preflight. Tests must
+execute in a unique disposable checkout under `infra/security/testing/evidence-boundary.py`,
+which uses the macOS OS sandbox to deny network and writes outside that temporary
+tree. This is a test executor boundary, not a Linux scanner execution backend.
+Legacy tests may generate evidence only inside the disposable tree. Never run
+old fixed-output tests from the repository root. Pre/post content SHA, mtime,
+ctime, permissions, ownership, inode and historical file-list checks are separate.
+
+See [Cosign evidence and complete scope](../../../evidence/2026-11-05/security-manager-v2-cosign-real/REPORT.md).
+Historical #32 remains HISTORICAL_ARCHIVE; the fresh three-tool native suite is
+same-round REAL_CONTROLLED_EXECUTION. Prior original evidence integrity remains
+FAILED. Production Manager, Jenkins CI, Summary V2 and Runtime 14/16 are unchanged.

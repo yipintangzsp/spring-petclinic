@@ -1,9 +1,9 @@
 #!/usr/bin/env node
 import fs from 'node:fs';import path from 'node:path';import {pathToFileURL} from 'node:url';
-import {runCandidate} from './core.mjs';import {registry,realGitleaksRegistry,realPluginsRegistry} from './registry.mjs';import {routeResults} from './router.mjs';
+import {runCandidate} from './core.mjs';import {registry,realGitleaksRegistry,realPluginsRegistry,realThreePluginsRegistry} from './registry.mjs';import {routeResults} from './router.mjs';
 import {fail} from '../summary-v2/codec.mjs';
 export function parameters(argv,env){
- const options={};for(let i=0;i<argv.length;i+=2){const key=argv[i];if(!['--config','--inputs','--output','--project','--run-id','--gitleaks-approval','--semgrep-approval','--semgrep-source-dir','--source-dir'].includes(key)||options[key]!==undefined||!argv[i+1]||argv[i+1].startsWith('--'))fail('invalid/duplicate CLI argument');options[key]=argv[i+1];}
+ const options={};for(let i=0;i<argv.length;i+=2){const key=argv[i];if(!['--config','--inputs','--output','--project','--run-id','--gitleaks-approval','--semgrep-approval','--semgrep-source-dir','--cosign-approval','--cosign-object','--source-dir'].includes(key)||options[key]!==undefined||!argv[i+1]||argv[i+1].startsWith('--'))fail('invalid/duplicate CLI argument');options[key]=argv[i+1];}
  if(!options['--output']||!options['--project']||!options['--run-id'])fail('output/project/run-id required');
  const config=options['--config']?JSON.parse(fs.readFileSync(options['--config'])):{};config.security??={};
  const mapping={SECURITY_ENABLED:'enabled',GLOBAL_MODE:'globalMode',SECURITY_LEVEL:'securityLevel',PROFILE:'profile',POLICY_VERSION:'policyVersion'};
@@ -14,6 +14,12 @@ export function parameters(argv,env){
   config.security.plugins=Object.fromEntries(ids.map(id=>[id,{enabled:selected.includes(id)}]));
  }
  const inputs=options['--inputs']?JSON.parse(fs.readFileSync(options['--inputs'])):{};
+ if(options['--cosign-object']&&!options['--cosign-approval'])fail('Cosign approval required');
+ if(options['--cosign-approval']){
+  const g=options['--gitleaks-approval'],s=options['--semgrep-approval'],c=options['--cosign-approval'];
+  const required=['COSIGN_BINARY','COSIGN_VERSION','OFFLINE_SIGNED_OBJECT','TRUSTED_VERIFICATION_IDENTITY','SIGNATURE_SOURCE','POLICY_VERSION','VALIDATION_OUTPUT_DIR','TRUSTED_VALIDATION_WORKSPACE',...(g?['SOURCE_DIR','GITLEAKS_TOOL']:[]),...(s?['SOURCE_DIR','SEMGREP_BINARY','SEMGREP_RULESET','OUTPUT_DIR']:[])];
+  return {config,inputs:{...inputs,cosign:{approvalFile:c,objectId:options['--cosign-object']??''},...(g?{gitleaks:{approvalFile:g,sourceDir:options['--source-dir']??''}}:{}),...(s?{semgrep:{approvalFile:s,sourceDir:options['--semgrep-source-dir']??options['--source-dir']??''}}:{})},registry:realThreePluginsRegistry(),projectId:options['--project'],runId:options['--run-id'],output:path.resolve(options['--output']),context:{platform:process.platform,capabilities:Object.fromEntries(required.map(k=>[k,{state:k==='OFFLINE_SIGNED_OBJECT'&&!options['--cosign-object']?'NOT_CONFIGURED':'AVAILABLE'}]))}};
+ }
  if(options['--semgrep-source-dir']&&!options['--semgrep-approval'])fail('Semgrep approval required');
  if(options['--semgrep-approval']){
   const ap=options['--semgrep-approval'],g=options['--gitleaks-approval'];
