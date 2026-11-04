@@ -1,0 +1,922 @@
+TAP version 13
+# Subtest: A default standard and explicit low
+ok 1 - A default standard and explicit low
+  ---
+  duration_ms: 7.658167
+  type: 'test'
+  ...
+# Subtest: A profile then component then project provenance
+ok 2 - A profile then component then project provenance
+  ---
+  duration_ms: 0.993416
+  type: 'test'
+  ...
+# Subtest: A malformed settings fail closed
+ok 3 - A malformed settings fail closed
+  ---
+  duration_ms: 0.306041
+  type: 'test'
+  ...
+# Subtest: A policy pins baseline-v2 compatibility and strict-v1
+ok 4 - A policy pins baseline-v2 compatibility and strict-v1
+  ---
+  duration_ms: 0.964708
+  type: 'test'
+  ...
+# Subtest: A invalid null/false layers and overridden invalid global values never fall back
+ok 5 - A invalid null/false layers and overridden invalid global values never fall back
+  ---
+  duration_ms: 0.481834
+  type: 'test'
+  ...
+# Subtest: A component and project policy changes only affect their intended target
+ok 6 - A component and project policy changes only affect their intended target
+  ---
+  duration_ms: 1.109041
+  type: 'test'
+  ...
+# Subtest: REPLAY Gitleaks actual finding becomes a redacted Generic finding with versioned default severity
+ok 7 - REPLAY Gitleaks actual finding becomes a redacted Generic finding with versioned default severity
+  ---
+  duration_ms: 10.914833
+  type: 'test'
+  ...
+# Subtest: REPLAY Semgrep native rules/severity/locations preserved separately from Policy
+ok 8 - REPLAY Semgrep native rules/severity/locations preserved separately from Policy
+  ---
+  duration_ms: 14.795
+  type: 'test'
+  ...
+# Subtest: REPLAY Cosign supply-chain failure explicitly UNSUPPORTED, no invented CVE
+ok 9 - REPLAY Cosign supply-chain failure explicitly UNSUPPORTED, no invented CVE
+  ---
+  duration_ms: 4.854
+  type: 'test'
+  ...
+# Subtest: REPLAY three-plugin same-run candidate prepares independent sources without Trivy
+ok 10 - REPLAY three-plugin same-run candidate prepares independent sources without Trivy
+  ---
+  duration_ms: 4.999709
+  type: 'test'
+  ...
+# Subtest: REPLAY noncomplete D-gitleaks-disabled cannot close history or emit scan PASS
+ok 11 - REPLAY noncomplete D-gitleaks-disabled cannot close history or emit scan PASS
+  ---
+  duration_ms: 3.162417
+  type: 'test'
+  ...
+# Subtest: REPLAY noncomplete C-semgrep-disabled cannot close history or emit scan PASS
+ok 12 - REPLAY noncomplete C-semgrep-disabled cannot close history or emit scan PASS
+  ---
+  duration_ms: 4.258459
+  type: 'test'
+  ...
+# Subtest: REPLAY noncomplete I-cosign-timeout cannot close history or emit scan PASS
+ok 13 - REPLAY noncomplete I-cosign-timeout cannot close history or emit scan PASS
+  ---
+  duration_ms: 3.606541
+  type: 'test'
+  ...
+# Subtest: REPLAY noncomplete Q-cross-project-identity-rejected cannot close history or emit scan PASS
+ok 14 - REPLAY noncomplete Q-cross-project-identity-rejected cannot close history or emit scan PASS
+  ---
+  duration_ms: 4.25
+  type: 'test'
+  ...
+# Subtest: FIXTURE Trivy blocked is independent and does not prevent Gitleaks/Semgrep preparation
+ok 15 - FIXTURE Trivy blocked is independent and does not prevent Gitleaks/Semgrep preparation
+  ---
+  duration_ms: 392.426875
+  type: 'test'
+  ...
+# Subtest: REPLAY project B maps to a distinct nonproduction Product/Engagement/Test plan
+ok 16 - REPLAY project B maps to a distinct nonproduction Product/Engagement/Test plan
+  ---
+  duration_ms: 9.14925
+  type: 'test'
+  ...
+# Subtest: REPLAY offline repeated preparation and delivery preserve exact facts and reuse the sealed payload
+ok 17 - REPLAY offline repeated preparation and delivery preserve exact facts and reuse the sealed payload
+  ---
+  duration_ms: 116.242333
+  type: 'test'
+  ...
+# Subtest: FIXTURE equal finding in different projects has different stable identity
+ok 18 - FIXTURE equal finding in different projects has different stable identity
+  ---
+  duration_ms: 329.817833
+  type: 'test'
+  ...
+# Subtest: FIXTURE equal title/location across plugins and scope is not a shared identity
+ok 19 - FIXTURE equal title/location across plugins and scope is not a shared identity
+  ---
+  duration_ms: 0.164
+  type: 'test'
+  ...
+# Subtest: FIXTURE invalid production IDs, colliding aliases or profile mapping rejected
+ok 20 - FIXTURE invalid production IDs, colliding aliases or profile mapping rejected
+  ---
+  duration_ms: 0.749209
+  type: 'test'
+  ...
+# Subtest: FIXTURE unknown project is NOT_CONFIGURED and never auto-creates context
+ok 21 - FIXTURE unknown project is NOT_CONFIGURED and never auto-creates context
+  ---
+  duration_ms: 239.347625
+  type: 'test'
+  ...
+# Subtest: FIXTURE missing raw report reference blocks only that plugin, no synthetic PASS
+ok 22 - FIXTURE missing raw report reference blocks only that plugin, no synthetic PASS
+  ---
+  duration_ms: 270.61575
+  type: 'test'
+  ...
+# Subtest: FIXTURE corrupted raw bytes fail artifact validation before any consumer delivery
+ok 23 - FIXTURE corrupted raw bytes fail artifact validation before any consumer delivery
+  ---
+  duration_ms: 214.226708
+  type: 'test'
+  ...
+# Subtest: FIXTURE payload digest mismatch rejected
+ok 24 - FIXTURE payload digest mismatch rejected
+  ---
+  duration_ms: 7.612292
+  type: 'test'
+  ...
+# Subtest: REPLAY Policy FAIL remains FAIL through Router and receipt with same result/fact digests
+ok 25 - REPLAY Policy FAIL remains FAIL through Router and receipt with same result/fact digests
+  ---
+  duration_ms: 47.365375
+  type: 'test'
+  ...
+# Subtest: REPLAY consumer delivery error is independent and retry reuses original Policy results
+ok 26 - REPLAY consumer delivery error is independent and retry reuses original Policy results
+  ---
+  duration_ms: 92.489458
+  type: 'test'
+  ...
+# Subtest: FIXTURE redaction drops Secret/Match/source snippets/messages/email regardless of caller text
+ok 27 - FIXTURE redaction drops Secret/Match/source snippets/messages/email regardless of caller text
+  ---
+  duration_ms: 225.595625
+  type: 'test'
+  ...
+# Subtest: REPLAY no history-close actions in disabled/error/empty reports
+ok 28 - REPLAY no history-close actions in disabled/error/empty reports
+  ---
+  duration_ms: 11.13075
+  type: 'test'
+  ...
+# Subtest: STATIC no token/remote destination accepted, no HTTP success receipt fabricated
+ok 29 - STATIC no token/remote destination accepted, no HTTP success receipt fabricated
+  ---
+  duration_ms: 40.79975
+  type: 'test'
+  ...
+# Subtest: STATIC arbitrary registry transform and private Product CLI parameters rejected
+ok 30 - STATIC arbitrary registry transform and private Product CLI parameters rejected
+  ---
+  duration_ms: 0.274791
+  type: 'test'
+  ...
+# Subtest: REPLAY actual CLI prepares consumer artifacts without starting scanners/Policy
+ok 31 - REPLAY actual CLI prepares consumer artifacts without starting scanners/Policy
+  ---
+  duration_ms: 183.41375
+  type: 'test'
+  ...
+# Subtest: REPLAY rediscovery across two real prior runs keeps stable finding identity, distinct result binding
+ok 32 - REPLAY rediscovery across two real prior runs keeps stable finding identity, distinct result binding
+  ---
+  duration_ms: 9.861833
+  type: 'test'
+  ...
+# Subtest: FIXTURE token smuggling via a resealed plan is rejected
+ok 33 - FIXTURE token smuggling via a resealed plan is rejected
+  ---
+  duration_ms: 3.931833
+  type: 'test'
+  ...
+# Subtest: FIXTURE no arbitrary inline endpoint, raw source field or lifecycle state in Generic Finding
+ok 34 - FIXTURE no arbitrary inline endpoint, raw source field or lifecycle state in Generic Finding
+  ---
+  duration_ms: 4.505875
+  type: 'test'
+  ...
+# Subtest: REPLAY Router refuses remote options without changing other consumer or result
+ok 35 - REPLAY Router refuses remote options without changing other consumer or result
+  ---
+  duration_ms: 8.468125
+  type: 'test'
+  ...
+# Subtest: E master false suppresses even invalid unapproved runner inputs
+ok 36 - E master false suppresses even invalid unapproved runner inputs
+  ---
+  duration_ms: 292.415959
+  type: 'test'
+  ...
+# Subtest: E off and all disabled never fabricate PASS
+ok 37 - E off and all disabled never fabricate PASS
+  ---
+  duration_ms: 501.14025
+  type: 'test'
+  ...
+# Subtest: E audit retains FAIL while ordinary candidate build may continue
+ok 38 - E audit retains FAIL while ordinary candidate build may continue
+  ---
+  duration_ms: 230.202583
+  type: 'test'
+  ...
+# Subtest: E enforce FAIL stops candidate; no live promotion for PASS either
+ok 39 - E enforce FAIL stops candidate; no live promotion for PASS either
+  ---
+  duration_ms: 391.601792
+  type: 'test'
+  ...
+# Subtest: E disabled Trivy does not affect two independent workers
+ok 40 - E disabled Trivy does not affect two independent workers
+  ---
+  duration_ms: 219.476875
+  type: 'test'
+  ...
+# Subtest: E missing/unavailable/unsupported capabilities never PASS
+ok 41 - E missing/unavailable/unsupported capabilities never PASS
+  ---
+  duration_ms: 392.651917
+  type: 'test'
+  ...
+# Subtest: E missing archive is NOT_CONFIGURED; corrupt/unapproved input is POLICY_ERROR
+ok 42 - E missing archive is NOT_CONFIGURED; corrupt/unapproved input is POLICY_ERROR
+  ---
+  duration_ms: 198.687125
+  type: 'test'
+  ...
+# Subtest: F versioned Gitleaks preserves both frozen decisions with independent Cosign
+ok 43 - F versioned Gitleaks preserves both frozen decisions with independent Cosign
+  ---
+  duration_ms: 310.286708
+  type: 'test'
+  ...
+# Subtest: F claim is atomic before await; Gate and Summary reuse identical result
+ok 44 - F claim is atomic before await; Gate and Summary reuse identical result
+  ---
+  duration_ms: 120.877
+  type: 'test'
+  ...
+# Subtest: F strict uses existing engine; original findings stay unchanged; frozen FAIL floor retained
+ok 45 - F strict uses existing engine; original findings stay unchanged; frozen FAIL floor retained
+  ---
+  duration_ms: 109.786333
+  type: 'test'
+  ...
+# Subtest: G history is exclusive, raw bytes match digest, tampering detected
+ok 46 - G history is exclusive, raw bytes match digest, tampering detected
+  ---
+  duration_ms: 106.038875
+  type: 'test'
+  ...
+# Subtest: G reserved V1 path, overwrite and post-seal writes are rejected
+ok 47 - G reserved V1 path, overwrite and post-seal writes are rejected
+  ---
+  duration_ms: 9.8175
+  type: 'test'
+  ...
+# Subtest: G symlink output parent and directory replacement are refused
+ok 48 - G symlink output parent and directory replacement are refused
+  ---
+  duration_ms: 0.940958
+  type: 'test'
+  ...
+# Subtest: H plugin removal does not alter unrelated policy decisions
+ok 49 - H plugin removal does not alter unrelated policy decisions
+  ---
+  duration_ms: 68.7235
+  type: 'test'
+  ...
+# Subtest: H enabled Trivy reports real blockers without execution/evaluation
+ok 50 - H enabled Trivy reports real blockers without execution/evaluation
+  ---
+  duration_ms: 121.313833
+  type: 'test'
+  ...
+# Subtest: H malformed and unknown configuration writes no artifact
+ok 51 - H malformed and unknown configuration writes no artifact
+  ---
+  duration_ms: 0.594916
+  type: 'test'
+  ...
+# Subtest: E actual worker timeout is an operational ERROR, never PASS/WARN
+ok 52 - E actual worker timeout is an operational ERROR, never PASS/WARN
+  ---
+  duration_ms: 68.982708
+  type: 'test'
+  ...
+# Subtest: F engine rejects invalid evidence once; no fabricated Policy result
+ok 53 - F engine rejects invalid evidence once; no fabricated Policy result
+  ---
+  duration_ms: 0.534416
+  type: 'test'
+  ...
+# Subtest: G a recomputed digest cannot turn nonexecution into PASS
+ok 54 - G a recomputed digest cannot turn nonexecution into PASS
+  ---
+  duration_ms: 76.13025
+  type: 'test'
+  ...
+# Subtest: B registry default disabled prevents execution before per-project explicit selection
+ok 55 - B registry default disabled prevents execution before per-project explicit selection
+  ---
+  duration_ms: 81.664958
+  type: 'test'
+  ...
+# Subtest: explicit third registry preserves existing two real plugin definitions
+ok 56 - explicit third registry preserves existing two real plugin definitions
+  ---
+  duration_ms: 21.333375
+  type: 'test'
+  ...
+# Subtest: original frozen Cosign and projected parent identities match
+ok 57 - original frozen Cosign and projected parent identities match
+  ---
+  duration_ms: 1.176458
+  type: 'test'
+  ...
+# Subtest: unchanged legacy verify-blob command acceptance vs Policy 0
+ok 58 - unchanged legacy verify-blob command acceptance vs Policy 0
+  ---
+  duration_ms: 6.435875
+  type: 'test'
+  ...
+# Subtest: unchanged legacy verify-blob command acceptance vs Policy 1
+ok 59 - unchanged legacy verify-blob command acceptance vs Policy 1
+  ---
+  duration_ms: 7.729042
+  type: 'test'
+  ...
+# Subtest: unchanged legacy verify-blob command acceptance vs Policy 2
+ok 60 - unchanged legacy verify-blob command acceptance vs Policy 2
+  ---
+  duration_ms: 2.970041
+  type: 'test'
+  ...
+# Subtest: unchanged legacy verify-blob command acceptance vs Policy 255
+ok 61 - unchanged legacy verify-blob command acceptance vs Policy 255
+  ---
+  duration_ms: 7.202291
+  type: 'test'
+  ...
+# Subtest: malformed evidence rejected wrong tool
+ok 62 - malformed evidence rejected wrong tool
+  ---
+  duration_ms: 1.108292
+  type: 'test'
+  ...
+# Subtest: malformed evidence rejected wrong version
+ok 63 - malformed evidence rejected wrong version
+  ---
+  duration_ms: 0.600709
+  type: 'test'
+  ...
+# Subtest: malformed evidence rejected wrong project trust
+ok 64 - malformed evidence rejected wrong project trust
+  ---
+  duration_ms: 0.716
+  type: 'test'
+  ...
+# Subtest: malformed evidence rejected production trust scope
+ok 65 - malformed evidence rejected production trust scope
+  ---
+  duration_ms: 0.540584
+  type: 'test'
+  ...
+# Subtest: malformed evidence rejected missing digest
+ok 66 - malformed evidence rejected missing digest
+  ---
+  duration_ms: 0.506541
+  type: 'test'
+  ...
+# Subtest: malformed evidence rejected missing command
+ok 67 - malformed evidence rejected missing command
+  ---
+  duration_ms: 0.560583
+  type: 'test'
+  ...
+# Subtest: malformed evidence rejected command injection
+ok 68 - malformed evidence rejected command injection
+  ---
+  duration_ms: 0.627708
+  type: 'test'
+  ...
+# Subtest: malformed evidence rejected network ref
+ok 69 - malformed evidence rejected network ref
+  ---
+  duration_ms: 0.52275
+  type: 'test'
+  ...
+# Subtest: malformed evidence rejected noninteger exit
+ok 70 - malformed evidence rejected noninteger exit
+  ---
+  duration_ms: 0.616917
+  type: 'test'
+  ...
+# Subtest: malformed evidence rejected signal exit
+ok 71 - malformed evidence rejected signal exit
+  ---
+  duration_ms: 0.542958
+  type: 'test'
+  ...
+# Subtest: missing complete evidence never becomes PASS
+ok 72 - missing complete evidence never becomes PASS
+  ---
+  duration_ms: 0.879125
+  type: 'test'
+  ...
+# Subtest: missing signature is real nonzero verifier failure, no invented signature
+ok 73 - missing signature is real nonzero verifier failure, no invented signature
+  ---
+  duration_ms: 1.310875
+  type: 'test'
+  ...
+# Subtest: capability missing COSIGN_BINARY cannot verify
+ok 74 - capability missing COSIGN_BINARY cannot verify
+  ---
+  duration_ms: 0.459
+  type: 'test'
+  ...
+# Subtest: capability missing COSIGN_VERSION cannot verify
+ok 75 - capability missing COSIGN_VERSION cannot verify
+  ---
+  duration_ms: 0.339333
+  type: 'test'
+  ...
+# Subtest: capability missing OFFLINE_SIGNED_OBJECT cannot verify
+ok 76 - capability missing OFFLINE_SIGNED_OBJECT cannot verify
+  ---
+  duration_ms: 0.278041
+  type: 'test'
+  ...
+# Subtest: capability missing TRUSTED_VERIFICATION_IDENTITY cannot verify
+ok 77 - capability missing TRUSTED_VERIFICATION_IDENTITY cannot verify
+  ---
+  duration_ms: 0.941167
+  type: 'test'
+  ...
+# Subtest: capability missing SIGNATURE_SOURCE cannot verify
+ok 78 - capability missing SIGNATURE_SOURCE cannot verify
+  ---
+  duration_ms: 0.350333
+  type: 'test'
+  ...
+# Subtest: capability missing POLICY_VERSION cannot verify
+ok 79 - capability missing POLICY_VERSION cannot verify
+  ---
+  duration_ms: 0.296667
+  type: 'test'
+  ...
+# Subtest: capability missing VALIDATION_OUTPUT_DIR cannot verify
+ok 80 - capability missing VALIDATION_OUTPUT_DIR cannot verify
+  ---
+  duration_ms: 0.281042
+  type: 'test'
+  ...
+# Subtest: native runner architecture context cannot be simulated on Darwin
+ok 81 - native runner architecture context cannot be simulated on Darwin
+  ---
+  duration_ms: 0.48925
+  type: 'test'
+  ...
+# Subtest: master OFF does not invoke any native Cosign process or Policy
+ok 82 - master OFF does not invoke any native Cosign process or Policy
+  ---
+  duration_ms: 271.789167
+  type: 'test'
+  ...
+# Subtest: enabled plugin without capability is NOT_CONFIGURED
+ok 83 - enabled plugin without capability is NOT_CONFIGURED
+  ---
+  duration_ms: 253.354666
+  type: 'test'
+  ...
+# Subtest: untrusted runner and private-key CLI rejected
+ok 84 - untrusted runner and private-key CLI rejected
+  ---
+  duration_ms: 0.879708
+  type: 'test'
+  ...
+# Subtest: real registry is explicit, disabled by default and preserves every other plugin
+ok 85 - real registry is explicit, disabled by default and preserves every other plugin
+  ---
+  duration_ms: 3.327875
+  type: 'test'
+  ...
+# Subtest: real mode missing source/tool/trusted workspace never starts a process
+ok 86 - real mode missing source/tool/trusted workspace never starts a process
+  ---
+  duration_ms: 293.24825
+  type: 'test'
+  ...
+# Subtest: real mode Darwin is unsupported regardless of claimed capabilities
+ok 87 - real mode Darwin is unsupported regardless of claimed capabilities
+  ---
+  duration_ms: 0.234958
+  type: 'test'
+  ...
+# Subtest: real master switch disables even malformed unapproved inputs without execution
+ok 88 - real master switch disables even malformed unapproved inputs without execution
+  ---
+  duration_ms: 262.038334
+  type: 'test'
+  ...
+# Subtest: real plugin switch disables without changing registry or starting processes
+ok 89 - real plugin switch disables without changing registry or starting processes
+  ---
+  duration_ms: 201.807917
+  type: 'test'
+  ...
+# Subtest: real CLI explicitly selects fixed runner, missing source remains unconfigured
+ok 90 - real CLI explicitly selects fixed runner, missing source remains unconfigured
+  ---
+  duration_ms: 0.662166
+  type: 'test'
+  ...
+# Subtest: real invalid Policy is rejected before output creation or process start
+ok 91 - real invalid Policy is rejected before output creation or process start
+  ---
+  duration_ms: 0.552208
+  type: 'test'
+  ...
+# Subtest: I independent dry-run and local consumer verify receipt digests without re-evaluation
+ok 92 - I independent dry-run and local consumer verify receipt digests without re-evaluation
+  ---
+  duration_ms: 485.57375
+  type: 'test'
+  ...
+# Subtest: I duplicate consumers, injected handlers, mutated summary, bad seal rejected
+ok 93 - I duplicate consumers, injected handlers, mutated summary, bad seal rejected
+  ---
+  duration_ms: 339.700791
+  type: 'test'
+  ...
+# Subtest: I future DefectDojo cannot publish to network even if enabled
+ok 94 - I future DefectDojo cannot publish to network even if enabled
+  ---
+  duration_ms: 241.541167
+  type: 'test'
+  ...
+# Subtest: J same manager across projects/profiles with isolated overrides, schemas and capabilities
+ok 95 - J same manager across projects/profiles with isolated overrides, schemas and capabilities
+  ---
+  duration_ms: 470.984541
+  type: 'test'
+  ...
+# Subtest: J actual CLI master switch, required parameters, plugin selection and env validation
+ok 96 - J actual CLI master switch, required parameters, plugin selection and env validation
+  ---
+  duration_ms: 264.176291
+  type: 'test'
+  ...
+# Subtest: B duplicate/unknown IDs rejected; removal does not rewrite others
+ok 97 - B duplicate/unknown IDs rejected; removal does not rewrite others
+  ---
+  duration_ms: 3.320125
+  type: 'test'
+  ...
+# Subtest: B arbitrary runner code is not a registration contract
+ok 98 - B arbitrary runner code is not a registration contract
+  ---
+  duration_ms: 0.1085
+  type: 'test'
+  ...
+# Subtest: C capabilities are scoped; Trivy never executes even with asserted prerequisites
+ok 99 - C capabilities are scoped; Trivy never executes even with asserted prerequisites
+  ---
+  duration_ms: 0.298292
+  type: 'test'
+  ...
+# Subtest: C missing/unavailable/platform/profile are distinct
+ok 100 - C missing/unavailable/platform/profile are distinct
+  ---
+  duration_ms: 0.186875
+  type: 'test'
+  ...
+# Subtest: D independent immutable archive gitleaks-pass
+ok 101 - D independent immutable archive gitleaks-pass
+  ---
+  duration_ms: 53.804083
+  type: 'test'
+  ...
+# Subtest: D independent immutable archive gitleaks-fail
+ok 102 - D independent immutable archive gitleaks-fail
+  ---
+  duration_ms: 43.337041
+  type: 'test'
+  ...
+# Subtest: D independent immutable archive semgrep-pass
+ok 103 - D independent immutable archive semgrep-pass
+  ---
+  duration_ms: 46.300375
+  type: 'test'
+  ...
+# Subtest: D independent immutable archive semgrep-fail
+ok 104 - D independent immutable archive semgrep-fail
+  ---
+  duration_ms: 39.955041
+  type: 'test'
+  ...
+# Subtest: D independent immutable archive cosign-pass
+ok 105 - D independent immutable archive cosign-pass
+  ---
+  duration_ms: 39.461959
+  type: 'test'
+  ...
+# Subtest: D independent immutable archive cosign-fail
+ok 106 - D independent immutable archive cosign-fail
+  ---
+  duration_ms: 34.477458
+  type: 'test'
+  ...
+# Subtest: D unapproved/cross-plugin digest prevents worker start
+ok 107 - D unapproved/cross-plugin digest prevents worker start
+  ---
+  duration_ms: 0.722584
+  type: 'test'
+  ...
+# Subtest: D missing and corrupted raw reports cannot reach Policy
+ok 108 - D missing and corrupted raw reports cannot reach Policy
+  ---
+  duration_ms: 0.172625
+  type: 'test'
+  ...
+# Subtest: D timeout and pre-cancellation join a dedicated bounded worker
+ok 109 - D timeout and pre-cancellation join a dedicated bounded worker
+  ---
+  duration_ms: 1.666375
+  type: 'test'
+  ...
+# Subtest: D in-flight cancellation leaves no active owned worker
+ok 110 - D in-flight cancellation leaves no active owned worker
+  ---
+  duration_ms: 0.965333
+  type: 'test'
+  ...
+# Subtest: fixed opt-in registries keep replay and existing Gitleaks definition intact
+ok 111 - fixed opt-in registries keep replay and existing Gitleaks definition intact
+  ---
+  duration_ms: 11.358334
+  type: 'test'
+  ...
+# Subtest: Semgrep independent capability set includes all five concrete inputs
+ok 112 - Semgrep independent capability set includes all five concrete inputs
+  ---
+  duration_ms: 0.403958
+  type: 'test'
+  ...
+# Subtest: capability missing SOURCE_DIR never PASS
+ok 113 - capability missing SOURCE_DIR never PASS
+  ---
+  duration_ms: 0.314416
+  type: 'test'
+  ...
+# Subtest: capability missing SEMGREP_BINARY never PASS
+ok 114 - capability missing SEMGREP_BINARY never PASS
+  ---
+  duration_ms: 0.249416
+  type: 'test'
+  ...
+# Subtest: capability missing SEMGREP_RULESET never PASS
+ok 115 - capability missing SEMGREP_RULESET never PASS
+  ---
+  duration_ms: 0.256041
+  type: 'test'
+  ...
+# Subtest: capability missing OUTPUT_DIR never PASS
+ok 116 - capability missing OUTPUT_DIR never PASS
+  ---
+  duration_ms: 0.256916
+  type: 'test'
+  ...
+# Subtest: capability missing POLICY_VERSION never PASS
+ok 117 - capability missing POLICY_VERSION never PASS
+  ---
+  duration_ms: 0.237208
+  type: 'test'
+  ...
+# Subtest: capability missing TRUSTED_VALIDATION_WORKSPACE never PASS
+ok 118 - capability missing TRUSTED_VALIDATION_WORKSPACE never PASS
+  ---
+  duration_ms: 0.234666
+  type: 'test'
+  ...
+# Subtest: Darwin cannot execute Linux-native runner regardless of declarations
+ok 119 - Darwin cannot execute Linux-native runner regardless of declarations
+  ---
+  duration_ms: 0.242583
+  type: 'test'
+  ...
+# Subtest: raw finding data and severity preserved by normalizer
+ok 120 - raw finding data and severity preserved by normalizer
+  ---
+  duration_ms: 0.218542
+  type: 'test'
+  ...
+# Subtest: real empty native report is distinct from absent execution
+ok 121 - real empty native report is distinct from absent execution
+  ---
+  duration_ms: 0.247875
+  type: 'test'
+  ...
+# Subtest: normalizer rejects errors blocking
+ok 122 - normalizer rejects errors blocking
+  ---
+  duration_ms: 0.094291
+  type: 'test'
+  ...
+# Subtest: normalizer rejects missing results
+ok 123 - normalizer rejects missing results
+  ---
+  duration_ms: 0.058375
+  type: 'test'
+  ...
+# Subtest: normalizer rejects missing errors
+ok 124 - normalizer rejects missing errors
+  ---
+  duration_ms: 0.048291
+  type: 'test'
+  ...
+# Subtest: normalizer rejects wrong path
+ok 125 - normalizer rejects wrong path
+  ---
+  duration_ms: 0.053916
+  type: 'test'
+  ...
+# Subtest: normalizer rejects unknown rule
+ok 126 - normalizer rejects unknown rule
+  ---
+  duration_ms: 0.045334
+  type: 'test'
+  ...
+# Subtest: normalizer rejects missing severity
+ok 127 - normalizer rejects missing severity
+  ---
+  duration_ms: 0.045958
+  type: 'test'
+  ...
+# Subtest: normalizer rejects invalid line
+ok 128 - normalizer rejects invalid line
+  ---
+  duration_ms: 0.076375
+  type: 'test'
+  ...
+# Subtest: existing classifier and standard agree on controlled empty/high/warning findings
+ok 129 - existing classifier and standard agree on controlled empty/high/warning findings
+  ---
+  duration_ms: 0.832666
+  type: 'test'
+  ...
+# Subtest: all production command/Semgrep source identities still match original frozen manifest
+ok 130 - all production command/Semgrep source identities still match original frozen manifest
+  ---
+  duration_ms: 2.183875
+  type: 'test'
+  ...
+# Subtest: missing real capabilities cannot start either native process
+ok 131 - missing real capabilities cannot start either native process
+  ---
+  duration_ms: 278.756416
+  type: 'test'
+  ...
+# Subtest: master OFF ignores untrusted inputs and emits DISABLED without scan PASS
+ok 132 - master OFF ignores untrusted inputs and emits DISABLED without scan PASS
+  ---
+  duration_ms: 262.049958
+  type: 'test'
+  ...
+# Subtest: one plugin disable does not modify the other configuration
+ok 133 - one plugin disable does not modify the other configuration
+  ---
+  duration_ms: 230.020333
+  type: 'test'
+  ...
+# Subtest: native runner does not accept arbitrary command registry entry
+ok 134 - native runner does not accept arbitrary command registry entry
+  ---
+  duration_ms: 0.402292
+  type: 'test'
+  ...
+# Subtest: unknown Policy rejected before output or native launch
+ok 135 - unknown Policy rejected before output or native launch
+  ---
+  duration_ms: 0.661209
+  type: 'test'
+  ...
+# Subtest: CLI opts into code-owned Semgrep runner without arbitrary arguments
+ok 136 - CLI opts into code-owned Semgrep runner without arbitrary arguments
+  ---
+  duration_ms: 0.87725
+  type: 'test'
+  ...
+# Subtest: default standard; explicit low; invalid values never fall back
+ok 137 - default standard; explicit low; invalid values never fall back
+  ---
+  duration_ms: 2.732292
+  type: 'test'
+  ...
+# Subtest: standard matches pre-extraction frozen Semgrep Trivy and ZAP decisions
+ok 138 - standard matches pre-extraction frozen Semgrep Trivy and ZAP decisions
+  ---
+  duration_ms: 4.477459
+  type: 'test'
+  ...
+# Subtest: strict strengthens same raw finding; input immutable
+ok 139 - strict strengthens same raw finding; input immutable
+  ---
+  duration_ms: 0.200333
+  type: 'test'
+  ...
+# Subtest: component/project overrides local, auditable and mandatory floor preserved
+ok 140 - component/project overrides local, auditable and mandatory floor preserved
+  ---
+  duration_ms: 0.372166
+  type: 'test'
+  ...
+# Subtest: summary payload carries policy provenance and operational failures are not findings
+ok 141 - summary payload carries policy provenance and operational failures are not findings
+  ---
+  duration_ms: 0.251167
+  type: 'test'
+  ...
+# Subtest: version lineage is exact original projection, not hash-only acceptance
+ok 142 - version lineage is exact original projection, not hash-only acceptance
+  ---
+  duration_ms: 3.497917
+  type: 'test'
+  ...
+# Subtest: original identity still accepted independently
+ok 143 - original identity still accepted independently
+  ---
+  duration_ms: 31.440917
+  type: 'test'
+  ...
+# Subtest: unknown mutation rejected Jenkinsfile.security-audit
+ok 144 - unknown mutation rejected Jenkinsfile.security-audit
+  ---
+  duration_ms: 20.585542
+  type: 'test'
+  ...
+# Subtest: unknown mutation rejected infra/security/source-gate.mjs
+ok 145 - unknown mutation rejected infra/security/source-gate.mjs
+  ---
+  duration_ms: 28.650959
+  type: 'test'
+  ...
+# Subtest: unknown mutation rejected infra/security/policy/gitleaks-parent.mjs
+ok 146 - unknown mutation rejected infra/security/policy/gitleaks-parent.mjs
+  ---
+  duration_ms: 38.290417
+  type: 'test'
+  ...
+# Subtest: unknown mutation rejected infra/security/policy/versions/gitleaks-parent-baseline-v1.json
+ok 147 - unknown mutation rejected infra/security/policy/versions/gitleaks-parent-baseline-v1.json
+  ---
+  duration_ms: 20.749125
+  type: 'test'
+  ...
+# Subtest: unknown mutation rejected infra/security/policy/versions/gitleaks-parent-helm-shadow-v1.json
+ok 148 - unknown mutation rejected infra/security/policy/versions/gitleaks-parent-helm-shadow-v1.json
+  ---
+  duration_ms: 31.301458
+  type: 'test'
+  ...
+# Subtest: unknown mutation rejected infra/security/policy/versions/gitleaks-parent.frozen-v1.mjs
+ok 149 - unknown mutation rejected infra/security/policy/versions/gitleaks-parent.frozen-v1.mjs
+  ---
+  duration_ms: 15.516958
+  type: 'test'
+  ...
+# Subtest: ambiguous markers and source symlink rejected
+ok 150 - ambiguous markers and source symlink rejected
+  ---
+  duration_ms: 24.368959
+  type: 'test'
+  ...
+# Subtest: only reviewed high severity fixed weak cipher findings block
+ok 151 - only reviewed high severity fixed weak cipher findings block
+  ---
+  duration_ms: 1.632
+  type: 'test'
+  ...
+# Subtest: only reviewed HTTP command flow rules block, generic commands stay warning
+ok 152 - only reviewed HTTP command flow rules block, generic commands stay warning
+  ---
+  duration_ms: 0.086458
+  type: 'test'
+  ...
+1..152
+# tests 152
+# suites 0
+# pass 152
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 3550.810708

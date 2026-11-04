@@ -1,0 +1,78 @@
+{
+  "schemaVersion": 1,
+  "consumerVersion": "1.0.0-candidate.1",
+  "mappingVersion": "dojo-findings-v1",
+  "parser": {
+    "scanType": "Generic Findings Import",
+    "instanceVersion": "3.4.301",
+    "djangoImage": "registry.defectdojo.com/defectdojo/defectdojo-django@sha256:ccee9de64bae2156abafac946a83a3bfda43e13a314ac703e849cf9831bedba9",
+    "genericParserSha256": "8de539f496babaa6b5ebc5ec98f337839af467dd57ebd2406939b5888359a58b",
+    "genericParserRequiredFields": [
+      "description",
+      "severity",
+      "title"
+    ],
+    "allowedFindingFieldsSubset": [
+      "title",
+      "severity",
+      "description",
+      "severity_justification",
+      "file_path",
+      "line",
+      "unique_id_from_tool",
+      "vuln_id_from_tool",
+      "references",
+      "static_finding",
+      "dynamic_finding",
+      "active",
+      "verified",
+      "nb_occurences"
+    ]
+  },
+  "severityMappings": {
+    "gitleaks": {
+      "nativeSeverity": "ABSENT",
+      "dojoSeverity": "High",
+      "basis": "Installed Gitleaks get_finding_current uses High. Governance display default only; not a scanner-reported severity or new Policy rule.",
+      "sourceSha256": "f7973c52dd5be62b099fa65128facc6437fc9e7f5bd693dd9e140e9526c726e2"
+    },
+    "semgrep": {
+      "values": {
+        "CRITICAL": "Critical",
+        "ERROR": "High",
+        "HIGH": "High",
+        "WARNING": "Medium",
+        "MEDIUM": "Medium",
+        "LOW": "Low",
+        "INFO": "Low"
+      },
+      "basis": "Exact installed SemgrepParser.convert_severity, including INFO -> Low; raw source severity retained in separate evidence record.",
+      "sourceSha256": "8d85fd5b7af234d52f85bd589894a062f4c9b492429fc90a0cfdacf1f7e12b2c"
+    }
+  },
+  "cosign": {
+    "findingMapping": "UNSUPPORTED",
+    "classification": "SUPPLY_CHAIN_VERIFICATION_METADATA_ONLY",
+    "reason": "No approved severity/type mapping for offline test-trust violations; no vulnerability/CVE invention."
+  },
+  "trivy": {
+    "findingMapping": "NOT_CONFIGURED",
+    "reason": "Future adapter only; no current runtime/native report, no historical scan fallback."
+  },
+  "idempotency": {
+    "scope": "OFFLINE_ONLY",
+    "identityFields": [
+      "projectId",
+      "pluginId",
+      "scanScope",
+      "rule",
+      "relativeFile",
+      "line",
+      "column"
+    ],
+    "runIdInFindingIdentity": false,
+    "remoteIdempotency": "NOT_TESTED",
+    "note": "Generic parser stores unique_id_from_tool but shipped dedupe is hash-only; remote unique IDs alone do not establish remote idempotency."
+  },
+  "remoteDelivery": "PROHIBITED_THIS_STAGE"
+}

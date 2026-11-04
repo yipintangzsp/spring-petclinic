@@ -257,3 +257,61 @@ See [Cosign evidence and complete scope](../../../evidence/2026-11-05/security-m
 Historical #32 remains HISTORICAL_ARCHIVE; the fresh three-tool native suite is
 same-round REAL_CONTROLLED_EXECUTION. Prior original evidence integrity remains
 FAILED. Production Manager, Jenkins CI, Summary V2 and Runtime 14/16 are unchanged.
+
+## DefectDojo Consumer Candidate (offline only)
+
+`consumers/defectdojo.mjs` consumes sealed Candidate Summary/Results, standard
+per-plugin raw/fact references and their existing digests. It never starts a
+scanner or evaluates Policy. `router.mjs` adds a static explicit opt-in consumer;
+the original CONSUMERS defaults and future placeholder remain unchanged. It does
+not import the frozen production `governance/defectdojo.mjs` or its Trivy private
+files. Existing Runner, Policy and production governance code is unchanged.
+
+The installed DefectDojo 3.4.301 Generic Findings Import JSON parser was read
+without tokens. `dojo-mapping-v1.json` pins parser/source hashes and a strict
+supported field subset. Gitleaks uses the installed current parser's High default
+when the native tool has no severity; this is a labeled governance mapping, not
+an invented scanner severity or Policy change. Semgrep uses the installed parser's
+exact severity conversion. Raw secrets, matches, source lines, messages and author
+information never enter payloads. Evidence is represented by digests.
+
+Cosign verification PASS is not a vulnerability. Failures remain supply-chain
+metadata with explicit UNSUPPORTED Finding mapping until a type/severity mapping
+is separately approved. Trivy remains a future mapping and need not run for other
+plugins to prepare payloads. Disabled/error/unconfigured plugins generate no import
+or history-closing action. All close_old_findings/auto_create_context flags are
+false; no production Product is automatically created or selected.
+
+`dojo-projects-v1.json` whitelists java-fixture/java-web and
+service-fixture/container-service as separate nonproduction aliases. Real Product
+and Engagement IDs are deliberately null, remoteApproved=false, apiRequestReady=false.
+Production Product1/Engagement1 are excluded. This validates Candidate project
+isolation; remote binding still needs an independently approved nonproduction context.
+
+Offline payload files and plan digests are deterministic for the same Result;
+Finding identity includes project/plugin/scope/rule/relative location but excludes
+run ID. Repeated local preparation reuses the verified sealed directory. Publish
+prepares under a uniquely owned temporary directory and atomically promotes the
+sealed output. Failure cannot modify Policy or other Consumer records.
+Generic unique_id_from_tool is stored by the current parser, but its shipped
+matching is hash-based: this does **not** prove remote deduplication/idempotency.
+
+Run only against an already sealed approved Candidate artifact:
+
+```sh
+node infra/security/manager-v2/consumers/dojo-cli.mjs \
+  --artifact /absolute/path/to/candidate \
+  --seal-digest <verified-candidate-seal-digest> \
+  --output /absolute/path/to/owned-private-output
+```
+
+The CLI has no token, URL, arbitrary Product ID or remote publish flag. It emits
+OFFLINE_PAYLOAD_PREPARED, never an HTTP-import success. Remote delivery and remote
+idempotency remain NOT_TESTED. Payload format is checked against installed parser
+code in an isolated harness with Django model doubles; DB/API acceptance is not
+claimed. Every prepared payload remains Candidate-only with Promotion BLOCKED.
+
+[Consumer evidence, samples, limitations and test entry](../../../evidence/2026-11-05/security-manager-v2-dojo-consumer/REPORT.md).
+Regressions use the existing OS write sandbox and unique temporary copies. Do not
+run historical fixed-output suites from the workspace root. Previous original
+integrity remains FAILED; Runtime is 14/16, no production Summary V2 migration.
