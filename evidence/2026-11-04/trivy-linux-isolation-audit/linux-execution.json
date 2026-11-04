@@ -1,0 +1,67 @@
+{
+  "sshExit": 0,
+  "hostKeyVerification": "STRICT_UNCHANGED",
+  "userApprovedTransfer": true,
+  "archiveSha256": "ae8a23221c52ff3d8034ff075fb2b92604b2ae97257940860fd56e3fd195472f",
+  "platform": "Linux-7.0.0-38-generic-aarch64-with-glibc2.39",
+  "arch": "aarch64",
+  "uid": 1000,
+  "suites": [
+    {
+      "name": "guard-linux",
+      "command": [
+        "node",
+        "--test",
+        "--test-concurrency=1",
+        "infra/observability/testing/scanner-validation-guard.test.mjs",
+        "infra/observability/testing/scanner-validation-review.test.mjs",
+        "infra/observability/testing/scanner-validation-boundary.test.mjs"
+      ],
+      "exit": 0,
+      "sourceTree": "current"
+    },
+    {
+      "name": "path-races-linux",
+      "command": [
+        "python3",
+        "-B",
+        "infra/observability/testing/scanner-validation-path-races.test.py"
+      ],
+      "exit": 0,
+      "sourceTree": "current"
+    },
+    {
+      "name": "evidence-protection-linux",
+      "command": [
+        "python3",
+        "-B",
+        "infra/observability/testing/frozen-evidence-writes.test.py"
+      ],
+      "exit": 0,
+      "sourceTree": "current"
+    },
+    {
+      "name": "legacy-guard-linux",
+      "command": [
+        "node",
+        "--test",
+        "--test-concurrency=1",
+        "infra/observability/testing/scanner-validation-guard.test.mjs",
+        "infra/observability/testing/scanner-validation-review.test.mjs"
+      ],
+      "exit": 0,
+      "sourceTree": "legacy"
+    }
+  ],
+  "capabilityProbe": {
+    "selfCgroup": "/user.slice/user-1000.slice/session-58246.scope",
+    "selfCgroupWritable": false,
+    "killWritable": false,
+    "bwrapAvailable": false,
+    "unshareAvailable": true,
+    "cgroupCreated": false,
+    "permissionsExpanded": false
+  },
+  "fixtureDirectoryRemoved": true,
+  "retainedPath": null
+}

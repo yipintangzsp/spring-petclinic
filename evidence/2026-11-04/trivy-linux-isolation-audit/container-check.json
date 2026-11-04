@@ -1,0 +1,119 @@
+{
+  "classification": "REAL_CONTROLLED_CONTAINER_NO_TRIVY",
+  "rows": [
+    {
+      "command": [
+        "docker",
+        "image",
+        "inspect",
+        "python:3.14.8-slim-trixie",
+        "--format",
+        "{{.Id}}"
+      ],
+      "exit": 0,
+      "stdout": "sha256:fbecd461fc72d21b2143c6eaba25143738079154a6d0ea3da3aec724f50eed4a\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "docker",
+        "run",
+        "--detach",
+        "--pull=never",
+        "--name",
+        "trivy-isolation-af95e2c19e14",
+        "--label",
+        "purpose=trivy-isolation-controlled-fixture",
+        "--network=none",
+        "--read-only",
+        "--cap-drop=ALL",
+        "--security-opt=no-new-privileges",
+        "--pids-limit=12",
+        "--memory=48m",
+        "--memory-swap=48m",
+        "--cpus=0.1",
+        "--user=65534:65534",
+        "--tmpfs",
+        "/tmp:rw,nosuid,nodev,noexec,size=4m",
+        "--log-driver=none",
+        "sha256:fbecd461fc72d21b2143c6eaba25143738079154a6d0ea3da3aec724f50eed4a",
+        "python3",
+        "-B",
+        "-c",
+        "import os,pathlib,json,signal,time\nr={'uid':os.getuid(),'cgroup':pathlib.Path('/proc/self/cgroup').read_text(),'mounts':pathlib.Path('/proc/self/mountinfo').read_text()}\nfor name,p in [('root','/outside'),('symlink','/tmp/link/outside')]:\n try:\n  if name=='symlink':os.symlink('/','/tmp/link')\n  pathlib.Path(p).write_text('disposable');r[name]='WRITE_ALLOWED'\n except OSError as e:r[name]='DENIED:'+str(e.errno)\npid=os.fork()\nif pid==0:\n os.setsid();signal.signal(signal.SIGTERM,signal.SIG_IGN);time.sleep(7);os._exit(0)\nr['child']=pid;print(json.dumps(r),flush=True)\nsignal.signal(signal.SIGTERM,signal.SIG_IGN);time.sleep(7)\n"
+      ],
+      "exit": 0,
+      "stdout": "005193af05e2c730318dbfe2d6509b8cab0f28746217298fcfead169a2cda912\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "docker",
+        "inspect",
+        "trivy-isolation-af95e2c19e14",
+        "--format",
+        "{{json .State}} {{json .HostConfig}}"
+      ],
+      "exit": 0,
+      "stdout": "{\"Status\":\"running\",\"Running\":true,\"Paused\":false,\"Restarting\":false,\"OOMKilled\":false,\"Dead\":false,\"Pid\":634101,\"ExitCode\":0,\"Error\":\"\",\"StartedAt\":\"2026-11-04T03:37:36.258442408Z\",\"FinishedAt\":\"0001-01-01T00:00:00Z\"} {\"Binds\":null,\"ContainerIDFile\":\"\",\"LogConfig\":{\"Type\":\"none\",\"Config\":{}},\"NetworkMode\":\"none\",\"PortBindings\":{},\"RestartPolicy\":{\"Name\":\"no\",\"MaximumRetryCount\":0},\"AutoRemove\":false,\"VolumeDriver\":\"\",\"VolumesFrom\":null,\"ConsoleSize\":[0,0],\"CapAdd\":null,\"CapDrop\":[\"ALL\"],\"CgroupnsMode\":\"private\",\"Dns\":null,\"DnsOptions\":[],\"DnsSearch\":[],\"ExtraHosts\":null,\"GroupAdd\":null,\"IpcMode\":\"private\",\"Cgroup\":\"\",\"Links\":null,\"OomScoreAdj\":0,\"PidMode\":\"\",\"Privileged\":false,\"PublishAllPorts\":false,\"ReadonlyRootfs\":true,\"SecurityOpt\":[\"no-new-privileges\"],\"Tmpfs\":{\"/tmp\":\"rw,nosuid,nodev,noexec,size=4m\"},\"UTSMode\":\"\",\"UsernsMode\":\"\",\"ShmSize\":67108864,\"Runtime\":\"runc\",\"Isolation\":\"\",\"CpuShares\":0,\"Memory\":50331648,\"NanoCpus\":100000000,\"CgroupParent\":\"\",\"BlkioWeight\":0,\"BlkioWeightDevice\":[],\"BlkioDeviceReadBps\":[],\"BlkioDeviceWriteBps\":[],\"BlkioDeviceReadIOps\":[],\"BlkioDeviceWriteIOps\":[],\"CpuPeriod\":0,\"CpuQuota\":0,\"CpuRealtimePeriod\":0,\"CpuRealtimeRuntime\":0,\"CpusetCpus\":\"\",\"CpusetMems\":\"\",\"Devices\":[],\"DeviceCgroupRules\":null,\"DeviceRequests\":null,\"MemoryReservation\":0,\"MemorySwap\":50331648,\"MemorySwappiness\":null,\"OomKillDisable\":null,\"PidsLimit\":12,\"Ulimits\":[],\"CpuCount\":0,\"CpuPercent\":0,\"IOMaximumIOps\":0,\"IOMaximumBandwidth\":0,\"MaskedPaths\":[\"/proc/acpi\",\"/proc/asound\",\"/proc/interrupts\",\"/proc/kcore\",\"/proc/keys\",\"/proc/latency_stats\",\"/proc/sched_debug\",\"/proc/scsi\",\"/proc/timer_list\",\"/proc/timer_stats\",\"/sys/devices/virtual/powercap\",\"/sys/firmware\"],\"ReadonlyPaths\":[\"/proc/bus\",\"/proc/fs\",\"/proc/irq\",\"/proc/sys\",\"/proc/sysrq-trigger\"]}\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "docker",
+        "top",
+        "trivy-isolation-af95e2c19e14",
+        "-eo",
+        "pid,ppid,comm"
+      ],
+      "exit": 0,
+      "stdout": "PID                 PPID                COMMAND\n634101              634044              python3\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "docker",
+        "stop",
+        "--time=1",
+        "trivy-isolation-af95e2c19e14"
+      ],
+      "exit": 0,
+      "stdout": "Flag --time has been deprecated, use --timeout instead\ntrivy-isolation-af95e2c19e14\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "docker",
+        "inspect",
+        "trivy-isolation-af95e2c19e14",
+        "--format",
+        "{{json .State}}"
+      ],
+      "exit": 0,
+      "stdout": "{\"Status\":\"exited\",\"Running\":false,\"Paused\":false,\"Restarting\":false,\"OOMKilled\":false,\"Dead\":false,\"Pid\":0,\"ExitCode\":137,\"Error\":\"\",\"StartedAt\":\"2026-11-04T03:37:36.258442408Z\",\"FinishedAt\":\"2026-11-04T03:37:38.468456286Z\"}\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "docker",
+        "rm",
+        "-f",
+        "trivy-isolation-af95e2c19e14"
+      ],
+      "exit": 0,
+      "stdout": "trivy-isolation-af95e2c19e14\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "docker",
+        "inspect",
+        "trivy-isolation-af95e2c19e14"
+      ],
+      "exit": 1,
+      "stdout": "[]\n",
+      "stderr": "error: no such object: trivy-isolation-af95e2c19e14\n"
+    }
+  ],
+  "note": "log-driver none deliberately; filesystem facts must be captured by attached transport in future complete test; not VERIFIED"
+}

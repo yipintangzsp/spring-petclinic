@@ -1,0 +1,67 @@
+[
+  [
+    "kernel",
+    "AVAILABLE",
+    "7.0.0-38-generic ARM64"
+  ],
+  [
+    "cgroup v2",
+    "AVAILABLE",
+    "controllers and actual Docker cgroup observed"
+  ],
+  [
+    "direct cgroup delegation",
+    "UNAVAILABLE",
+    "UID1000 session directory and cgroup.kill not writable"
+  ],
+  [
+    "systemd user manager",
+    "AVAILABLE",
+    "transient unit true exited0; collected"
+  ],
+  [
+    "systemd filesystem sandbox",
+    "UNAVAILABLE",
+    "same host mount namespace; outside disposable sentinel write ALLOWED despite ProtectSystem/PrivateTmp"
+  ],
+  [
+    "direct user/mount/PID unshare",
+    "UNAVAILABLE",
+    "uid_map EPERM; no sysctl changes"
+  ],
+  [
+    "systemd PrivateUsers",
+    "AVAILABLE",
+    "distinct user namespace observed, insufficient filesystem boundary"
+  ],
+  [
+    "rootless container",
+    "UNAVAILABLE",
+    "no podman/nerdctl; Docker info not rootless"
+  ],
+  [
+    "Docker controlled execution",
+    "AVAILABLE",
+    "cached immutable image, nonprivileged no host mounts, UID65534"
+  ],
+  [
+    "containerd direct socket",
+    "UNAVAILABLE",
+    "UID1000 cannot read/write k3s socket"
+  ],
+  [
+    "seccomp support",
+    "AVAILABLE",
+    "Docker builtin configured; actual filtering details UNKNOWN"
+  ],
+  [
+    "Jenkins executor",
+    "UNKNOWN",
+    "Jenkins deployment UID1000 CapEff0, cgroup readonly, Docker socket writable; exact #270 executor binding not re-queried"
+  ],
+  [
+    "existing approved Linux sandbox",
+    "UNKNOWN",
+    "no separately authenticated sandbox identified"
+  ]
+]

@@ -1,0 +1,142 @@
+{
+  "classification": "REAL_CONTROLLED_CONTAINER_NO_TRIVY",
+  "rows": [
+    {
+      "command": [
+        "docker",
+        "image",
+        "inspect",
+        "python:3.14.8-slim-trixie",
+        "--format",
+        "{{.Id}}"
+      ],
+      "exit": 0,
+      "stdout": "sha256:fbecd461fc72d21b2143c6eaba25143738079154a6d0ea3da3aec724f50eed4a\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "docker",
+        "run",
+        "--detach",
+        "--pull=never",
+        "--name",
+        "trivy-isolation-0afc5113217a",
+        "--label",
+        "purpose=trivy-isolation-controlled-fixture",
+        "--network=none",
+        "--read-only",
+        "--cap-drop=ALL",
+        "--security-opt=no-new-privileges",
+        "--pids-limit=12",
+        "--memory=48m",
+        "--memory-swap=48m",
+        "--cpus=0.1",
+        "--user=65534:65534",
+        "--tmpfs",
+        "/tmp:rw,nosuid,nodev,noexec,size=4m",
+        "--log-driver=none",
+        "sha256:fbecd461fc72d21b2143c6eaba25143738079154a6d0ea3da3aec724f50eed4a",
+        "python3",
+        "-B",
+        "-c",
+        "import os,pathlib,json,signal,time\nr={'uid':os.getuid(),'cgroup':pathlib.Path('/proc/self/cgroup').read_text(),'mounts':pathlib.Path('/proc/self/mountinfo').read_text()}\nfor name,p in [('root','/outside'),('symlink','/tmp/link/outside')]:\n try:\n  if name=='symlink':os.symlink('/','/tmp/link')\n  pathlib.Path(p).write_text('disposable');r[name]='WRITE_ALLOWED'\n except OSError as e:r[name]='DENIED:'+str(e.errno)\npid=os.fork()\nif pid==0:\n os.setsid();signal.signal(signal.SIGTERM,signal.SIG_IGN);time.sleep(7);os._exit(0)\nr['child']=pid;pathlib.Path('/tmp/facts.json').write_text(json.dumps(r));print(json.dumps(r),flush=True)\nsignal.signal(signal.SIGTERM,signal.SIG_IGN);time.sleep(7)\n"
+      ],
+      "exit": 0,
+      "stdout": "6d8cf081b08ecf8eccf003c9680f70b0c69b6b9053e6487227672aec03eb73ce\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "docker",
+        "exec",
+        "trivy-isolation-0afc5113217a",
+        "cat",
+        "/tmp/facts.json"
+      ],
+      "exit": 0,
+      "stdout": "{\"uid\": 65534, \"cgroup\": \"0::/\\n\", \"mounts\": \"9712 8586 0:414 / / ro,relatime - overlay overlay rw,lowerdir=/var/lib/containerd/io.containerd.snapshotter.v1.overlayfs/snapshots/21690/fs:/var/lib/containerd/io.containerd.snapshotter.v1.overlayfs/snapshots/20351/fs:/var/lib/containerd/io.containerd.snapshotter.v1.overlayfs/snapshots/20350/fs:/var/lib/containerd/io.containerd.snapshotter.v1.overlayfs/snapshots/20349/fs:/var/lib/containerd/io.containerd.snapshotter.v1.overlayfs/snapshots/20348/fs,upperdir=/var/lib/containerd/io.containerd.snapshotter.v1.overlayfs/snapshots/21691/fs,workdir=/var/lib/containerd/io.containerd.snapshotter.v1.overlayfs/snapshots/21691/work,nouserxattr\\n9714 9712 0:1249 / /proc rw,nosuid,nodev,noexec,relatime - proc proc rw\\n9715 9712 0:1263 / /dev rw,nosuid - tmpfs tmpfs rw,size=65536k,mode=755,inode64\\n9716 9715 0:1269 / /dev/pts rw,nosuid,noexec,relatime - devpts devpts rw,gid=5,mode=620,ptmxmode=666\\n9717 9712 0:1364 / /sys ro,nosuid,nodev,noexec,relatime - sysfs sysfs ro\\n9718 9717 0:34 / /sys/fs/cgroup ro,nosuid,nodev,noexec,relatime - cgroup2 cgroup rw,nsdelegate,memory_recursiveprot\\n9719 9715 0:1102 / /dev/mqueue rw,nosuid,nodev,noexec,relatime - mqueue mqueue rw\\n9720 9715 0:1365 / /dev/shm rw,nosuid,nodev,noexec,relatime - tmpfs shm rw,size=65536k,inode64\\n9721 9712 0:1379 / /tmp rw,nosuid,nodev,noexec,relatime - tmpfs tmpfs rw,size=4096k,inode64\\n9722 9712 253:2 /var/lib/docker/containers/6d8cf081b08ecf8eccf003c9680f70b0c69b6b9053e6487227672aec03eb73ce/resolv.conf /etc/resolv.conf ro,relatime - ext4 /dev/vda2 rw\\n9723 9712 253:2 /var/lib/docker/containers/6d8cf081b08ecf8eccf003c9680f70b0c69b6b9053e6487227672aec03eb73ce/hostname /etc/hostname ro,relatime - ext4 /dev/vda2 rw\\n9724 9712 253:2 /var/lib/docker/containers/6d8cf081b08ecf8eccf003c9680f70b0c69b6b9053e6487227672aec03eb73ce/hosts /etc/hosts ro,relatime - ext4 /dev/vda2 rw\\n8710 9714 0:1249 /bus /proc/bus ro,nosuid,nodev,noexec,relatime - proc proc rw\\n8711 9714 0:1249 /fs /proc/fs ro,nosuid,nodev,noexec,relatime - proc proc rw\\n8712 9714 0:1249 /irq /proc/irq ro,nosuid,nodev,noexec,relatime - proc proc rw\\n8714 9714 0:1249 /sys /proc/sys ro,nosuid,nodev,noexec,relatime - proc proc rw\\n8718 9714 0:1249 /sysrq-trigger /proc/sysrq-trigger ro,nosuid,nodev,noexec,relatime - proc proc rw\\n8730 9714 0:1380 / /proc/acpi ro,relatime - tmpfs tmpfs ro,size=4k,nr_inodes=1,inode64\\n8731 9714 0:1263 /null /proc/interrupts rw,nosuid - tmpfs tmpfs rw,size=65536k,mode=755,inode64\\n8732 9714 0:1263 /null /proc/kcore rw,nosuid - tmpfs tmpfs rw,size=65536k,mode=755,inode64\\n8733 9714 0:1263 /null /proc/keys rw,nosuid - tmpfs tmpfs rw,size=65536k,mode=755,inode64\\n8734 9714 0:1263 /null /proc/latency_stats rw,nosuid - tmpfs tmpfs rw,size=65536k,mode=755,inode64\\n8735 9714 0:1380 / /proc/scsi ro,relatime - tmpfs tmpfs ro,size=4k,nr_inodes=1,inode64\\n8736 9714 0:1263 /null /proc/timer_list rw,nosuid - tmpfs tmpfs rw,size=65536k,mode=755,inode64\\n8737 9717 0:1380 / /sys/firmware ro,relatime - tmpfs tmpfs ro,size=4k,nr_inodes=1,inode64\\n\", \"root\": \"DENIED:30\", \"symlink\": \"DENIED:30\", \"child\": 31}",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "docker",
+        "inspect",
+        "trivy-isolation-0afc5113217a",
+        "--format",
+        "{{json .State}}"
+      ],
+      "exit": 0,
+      "stdout": "{\"Status\":\"running\",\"Running\":true,\"Paused\":false,\"Restarting\":false,\"OOMKilled\":false,\"Dead\":false,\"Pid\":642289,\"ExitCode\":0,\"Error\":\"\",\"StartedAt\":\"2026-11-04T03:40:03.662511307Z\",\"FinishedAt\":\"0001-01-01T00:00:00Z\"}\n",
+      "stderr": ""
+    },
+    {
+      "hostCgroup": "0::/system.slice/docker-6d8cf081b08ecf8eccf003c9680f70b0c69b6b9053e6487227672aec03eb73ce.scope\n"
+    },
+    {
+      "cgroupEventsBefore": "populated 1\nfrozen 0\n",
+      "cgroupProcessesBefore": "642289\n642554\n"
+    },
+    {
+      "command": [
+        "docker",
+        "top",
+        "trivy-isolation-0afc5113217a",
+        "-eo",
+        "pid,ppid,comm"
+      ],
+      "exit": 0,
+      "stdout": "PID                 PPID                COMMAND\n642289              642265              python3\n642554              642289              python3\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "docker",
+        "stop",
+        "--time=1",
+        "trivy-isolation-0afc5113217a"
+      ],
+      "exit": 0,
+      "stdout": "Flag --time has been deprecated, use --timeout instead\ntrivy-isolation-0afc5113217a\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "docker",
+        "inspect",
+        "trivy-isolation-0afc5113217a",
+        "--format",
+        "{{json .State}}"
+      ],
+      "exit": 0,
+      "stdout": "{\"Status\":\"exited\",\"Running\":false,\"Paused\":false,\"Restarting\":false,\"OOMKilled\":false,\"Dead\":false,\"Pid\":0,\"ExitCode\":137,\"Error\":\"\",\"StartedAt\":\"2026-11-04T03:40:03.662511307Z\",\"FinishedAt\":\"2026-11-04T03:40:08.779616915Z\"}\n",
+      "stderr": ""
+    },
+    {
+      "cgroupExistsAfterStop": false,
+      "cgroupEventsAfter": null
+    },
+    {
+      "command": [
+        "docker",
+        "rm",
+        "-f",
+        "trivy-isolation-0afc5113217a"
+      ],
+      "exit": 0,
+      "stdout": "trivy-isolation-0afc5113217a\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "docker",
+        "inspect",
+        "trivy-isolation-0afc5113217a"
+      ],
+      "exit": 1,
+      "stdout": "[]\n",
+      "stderr": "error: no such object: trivy-isolation-0afc5113217a\n"
+    }
+  ],
+  "note": "Controlled native proof only; full acceptance matrix incomplete; no adapter authorization"
+}

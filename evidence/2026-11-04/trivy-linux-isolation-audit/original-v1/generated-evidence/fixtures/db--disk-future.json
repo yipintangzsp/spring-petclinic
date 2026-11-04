@@ -1,0 +1,111 @@
+{
+  "input": {
+    "metadata": {
+      "db": {
+        "Version": 2,
+        "UpdatedAt": "2026-10-31T23:00:00Z",
+        "DownloadedAt": "2026-10-31T23:30:00Z",
+        "NextUpdate": "2026-10-31T23:59:00Z"
+      },
+      "java-db": {
+        "Version": 1,
+        "UpdatedAt": "2026-10-31T23:00:00Z",
+        "DownloadedAt": "2026-10-31T23:30:00Z",
+        "NextUpdate": "2026-11-02T00:00:00Z"
+      }
+    },
+    "after": {
+      "db": {
+        "Version": 2,
+        "UpdatedAt": "2026-10-31T23:00:00Z",
+        "DownloadedAt": "2026-10-31T23:30:00Z",
+        "NextUpdate": "2026-11-02T00:00:00Z"
+      },
+      "java-db": {
+        "Version": 1,
+        "UpdatedAt": "2026-10-31T23:00:00Z",
+        "DownloadedAt": "2026-10-31T23:30:00Z",
+        "NextUpdate": "2026-11-02T00:00:00Z"
+      }
+    },
+    "env": {
+      "BUILD_NUMBER": "270",
+      "HEAVY_HOLDER": "fixture-holder",
+      "PACKAGE_HTTPS_PROXY": "http://synthetic-proxy.invalid:1"
+    },
+    "lease": {
+      "spec": {
+        "holderIdentity": "fixture-holder"
+      }
+    },
+    "disk": {
+      "time": "2026-11-01T00:01:00Z",
+      "capacityBytes": 107374182400,
+      "availableBytes": 68719476736
+    },
+    "ps": "sh",
+    "faults": {},
+    "io": {},
+    "cacheDir": "/home/scanner/.cache/trivy"
+  },
+  "facts": {
+    "schema": 1,
+    "stage": "database-prerequisite",
+    "complete": true,
+    "classification": "CONTROLLED_REPLAY",
+    "execution": {
+      "exitStatus": 1,
+      "diagnostic": "Scanner refresh requires fresh disk headroom plus 4 GiB temporary allowance"
+    },
+    "observations": [
+      {
+        "type": "command",
+        "key": "lease",
+        "occurrence": "lease#1",
+        "kind": "db",
+        "bin": "kubectl",
+        "args": [
+          "--request-timeout=10s",
+          "-n",
+          "data-infra",
+          "get",
+          "lease",
+          "platform-heavy",
+          "-o",
+          "json"
+        ],
+        "timeout": 12000,
+        "ok": true
+      },
+      {
+        "type": "command",
+        "key": "disk",
+        "occurrence": "disk#1",
+        "kind": "db",
+        "bin": "kubectl",
+        "args": [
+          "--request-timeout=10s",
+          "get",
+          "--raw",
+          "/api/v1/nodes/devops/proxy/stats/summary"
+        ],
+        "timeout": 12000,
+        "ok": true
+      }
+    ],
+    "metadataBefore": {
+      "db": {
+        "Version": 2,
+        "UpdatedAt": "2026-10-31T23:00:00Z",
+        "DownloadedAt": "2026-10-31T23:30:00Z",
+        "NextUpdate": "2026-10-31T23:59:00Z"
+      },
+      "java-db": {
+        "Version": 1,
+        "UpdatedAt": "2026-10-31T23:00:00Z",
+        "DownloadedAt": "2026-10-31T23:30:00Z",
+        "NextUpdate": "2026-11-02T00:00:00Z"
+      }
+    }
+  }
+}

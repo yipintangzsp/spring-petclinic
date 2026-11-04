@@ -1,0 +1,7 @@
+import subprocess,json,time
+commands=[['unshare','--user','--map-root-user','--mount','--pid','--fork','/usr/bin/true'],['systemd-run','--user','--wait','--pipe','--collect','--unit=trivy-isolation-probe-'+str(int(time.time())),'-p','Type=exec','-p','KillMode=control-group','-p','RuntimeMaxSec=5','-p','MemoryMax=32M','-p','TasksMax=8','-p','NoNewPrivileges=yes','-p','ProtectSystem=strict','-p','PrivateTmp=yes','-p','PrivateUsers=yes','/usr/bin/true'],['docker','image','ls','--format','{{.Repository}}:{{.Tag}} {{.ID}}'],['docker','info','--format','{{json .DockerRootDir}} {{json .CgroupVersion}} {{json .Driver}}'],['sudo','-n','kubectl','get','pods','-n','ns-devops','-o','custom-columns=NAME:.metadata.name,SA:.spec.serviceAccountName,HOSTPID:.spec.hostPID,PRIV:.spec.containers[*].securityContext.privileged,RUNAS:.spec.securityContext.runAsUser','--no-headers'],['sudo','-n','kubectl','exec','-n','ns-devops','deploy/jenkins','--','sh','-c','id; cat /proc/self/cgroup; sed -n "/^Cap/p; /^Seccomp/p; /^NoNewPrivs/p" /proc/self/status; test -w /sys/fs/cgroup && echo CGROUP_WRITE_ALLOWED; test -w /var/run/docker.sock && echo DOCKER_SOCKET_WRITE_ALLOWED; command -v docker; command -v systemd-run; true']]
+rows=[]
+for c in commands:
+ try:r=subprocess.run(c,capture_output=True,text=True,timeout=18);rows.append({'command':c,'exit':r.returncode,'stdout':r.stdout[:12000],'stderr':r.stderr[:3000]})
+ except Exception as e:rows.append({'command':c,'error':type(e).__name__})
+print(json.dumps(rows,indent=2))

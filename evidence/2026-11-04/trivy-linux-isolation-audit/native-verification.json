@@ -1,0 +1,106 @@
+[
+  {
+    "command": [
+      "unshare",
+      "--user",
+      "--map-root-user",
+      "--mount",
+      "--pid",
+      "--fork",
+      "/usr/bin/true"
+    ],
+    "exit": 1,
+    "stdout": "",
+    "stderr": "unshare: write failed /proc/self/uid_map: Operation not permitted\n"
+  },
+  {
+    "command": [
+      "systemd-run",
+      "--user",
+      "--wait",
+      "--pipe",
+      "--collect",
+      "--unit=trivy-isolation-probe-1793763336",
+      "-p",
+      "Type=exec",
+      "-p",
+      "KillMode=control-group",
+      "-p",
+      "RuntimeMaxSec=5",
+      "-p",
+      "MemoryMax=32M",
+      "-p",
+      "TasksMax=8",
+      "-p",
+      "NoNewPrivileges=yes",
+      "-p",
+      "ProtectSystem=strict",
+      "-p",
+      "PrivateTmp=yes",
+      "-p",
+      "PrivateUsers=yes",
+      "/usr/bin/true"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": "Running as unit: trivy-isolation-probe-1793763336.service\nFinished with result: success\nMain processes terminated with: code=exited/status=0\nService runtime: 8ms\nCPU time consumed: 3ms\nMemory peak: 256.0K\nMemory swap peak: 0B\n"
+  },
+  {
+    "command": [
+      "docker",
+      "image",
+      "ls",
+      "--format",
+      "{{.Repository}}:{{.Tag}} {{.ID}}"
+    ],
+    "exit": 0,
+    "stdout": "127.0.0.1:13050/petclinic/petclinic:0.10.0-ci-1000002 2fbaea65ab03\n127.0.0.1:13050/petclinic/petclinic:brotli-fixed-20261029 489cb821573f\nregistry.defectdojo.com/defectdojo/defectdojo-django:<none> ccee9de64bae\nmysql:9.7 86b390ef642f\n127.0.0.1:13050/petclinic/petclinic:0.10.0-ci-207 c8160221d553\n127.0.0.1:13050/petclinic/terraform-runner:isolation-ci-207 8e3d717d0b5b\n127.0.0.1:13050/petclinic/petclinic:0.10.0-ci-190 30409763d6fe\n127.0.0.1:13050/petclinic/petclinic:0.10.0-ci-189 19f5e9e77fa4\nregistry.defectdojo.com/defectdojo/defectdojo-nginx:<none> da1e530addac\n127.0.0.1:13050/petclinic/petclinic:0.10.0-ci-184 1eab3ddc6268\n127.0.0.1:13050/petclinic/petclinic:0.10.0-ci-183 a102d6d46aca\nregistry-native-recovery:20261023 7b1f785d57d9\n127.0.0.1:30050/platform-repair/harbor-registryctl:2.14.2-arm64-20261022 4e213a9725d3\npython:3.14.8-slim-trixie fbecd461fc72\nproxynodehub-local:f03ae81-no-pw-length-arm64 e6f6d06bdf93\nghcr.io/astral-sh/uv:0.13.1 6be16527e572\nproxynodehub-runtime:mcr-819bd3649d8b-arm64 0888e226d096\nvalkey/valkey:9.1.2-alpine eb5a657e0701\npostgres:18.6-alpine 89f747171c4b\npetclinic:0.1.0 5e29eefdabdc\npostgres:18.4 0826e5f29960\n127.0.0.1:13050/platform-upgrade/eclipse-temurin:21-jre-local 69bc3d67c3f9\n127.0.0.1:30050/platform-upgrade/eclipse-temurin:<none> 69bc3d67c3f9\nportainer/portainer-ce:2.39.0 3267f1869e0f\n127.0.0.1:30050/platform-upgrade/alertmanager:v0.31.1-arm64 88b605de9aba\nprom/alertmanager:v0.31.1 88b605de9aba\ngoharbor/harbor-registryctl:v2.14.2 e148259c1f76\ngoharbor/registry-photon:v2.14.2 d4d062d50456\ntestcontainers/ryuk:0.14.0 79e2fbedad76\n",
+    "stderr": ""
+  },
+  {
+    "command": [
+      "docker",
+      "info",
+      "--format",
+      "{{json .DockerRootDir}} {{json .CgroupVersion}} {{json .Driver}}"
+    ],
+    "exit": 0,
+    "stdout": "\"/var/lib/docker\" \"2\" \"overlayfs\"\n",
+    "stderr": ""
+  },
+  {
+    "command": [
+      "sudo",
+      "-n",
+      "kubectl",
+      "get",
+      "pods",
+      "-n",
+      "ns-devops",
+      "-o",
+      "custom-columns=NAME:.metadata.name,SA:.spec.serviceAccountName,HOSTPID:.spec.hostPID,PRIV:.spec.containers[*].securityContext.privileged,RUNAS:.spec.securityContext.runAsUser",
+      "--no-headers"
+    ],
+    "exit": 0,
+    "stdout": "flaresolverr-df88978dd-cpmfg                        default            <none>   <none>   <none>\ngithub-webhook-relay-b66d64478-r2mbz                default            <none>   <none>   <none>\ngitlab-578fd9dcbb-rhbx8                             default            <none>   <none>   <none>\ngitlab-runner-54d84c66f-h7djt                       gitlab-runner-sa   <none>   <none>   <none>\njenkins-6955bc6b65-nq8mh                            jenkins-admin      <none>   <none>   <none>\njenkins-build-log-filebeat-es-65699f8fd9-ks2h4      default            <none>   <none>   <none>\njenkins-build-log-filebeat-kafka-7868f4dbf7-hrgzg   default            <none>   <none>   <none>\nlocal-registry-d46c4d76d-rgrng                      default            <none>   <none>   <none>\nportainer-687ffb46f7-zr77p                          default            <none>   <none>   <none>\n",
+    "stderr": ""
+  },
+  {
+    "command": [
+      "sudo",
+      "-n",
+      "kubectl",
+      "exec",
+      "-n",
+      "ns-devops",
+      "deploy/jenkins",
+      "--",
+      "sh",
+      "-c",
+      "id; cat /proc/self/cgroup; sed -n \"/^Cap/p; /^Seccomp/p; /^NoNewPrivs/p\" /proc/self/status; test -w /sys/fs/cgroup && echo CGROUP_WRITE_ALLOWED; test -w /var/run/docker.sock && echo DOCKER_SOCKET_WRITE_ALLOWED; command -v docker; command -v systemd-run; true"
+    ],
+    "exit": 0,
+    "stdout": "uid=1000(jenkins) gid=1000(jenkins) groups=1000(jenkins)\n0::/\nCapInh:\t0000000000000000\nCapPrm:\t0000000000000000\nCapEff:\t0000000000000000\nCapBnd:\t00000000a80425fb\nCapAmb:\t0000000000000000\nNoNewPrivs:\t0\nSeccomp:\t0\nSeccomp_filters:\t0\nDOCKER_SOCKET_WRITE_ALLOWED\n/usr/bin/docker\n",
+    "stderr": "Defaulted container \"jenkins\" out of: jenkins, fix-permissions (init)\n"
+  }
+]

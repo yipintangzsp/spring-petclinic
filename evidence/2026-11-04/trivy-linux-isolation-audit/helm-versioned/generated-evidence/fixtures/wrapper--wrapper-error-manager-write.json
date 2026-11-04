@@ -1,0 +1,38 @@
+{
+  "input": {
+    "name": "wrapper-error-manager-write",
+    "operationExitCode": 0,
+    "raw": {
+      "cfg": {
+        "mode": "enforce",
+        "adapter": "petclinic",
+        "profile": "java-web",
+        "project": "fixture"
+      },
+      "steps": {
+        "manager-write": {
+          "error": "controlled manager-write error"
+        }
+      }
+    }
+  },
+  "facts": {
+    "schema": 1,
+    "stage": "wrapper",
+    "complete": true,
+    "classification": "CONTROLLED_REPLAY",
+    "execution": {
+      "failed": true,
+      "reason": "controlled manager-write error"
+    },
+    "module": null,
+    "observations": [
+      "module-stage",
+      "credential-binding",
+      "credentials",
+      "scan-sh",
+      "gate",
+      "manager-write"
+    ]
+  }
+}
