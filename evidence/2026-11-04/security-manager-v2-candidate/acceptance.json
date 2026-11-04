@@ -1,0 +1,86 @@
+{
+  "scope": "NON_PRODUCTION_OFFLINE_CANDIDATE_ONLY",
+  "verdict": {
+    "SECURITY_ENABLED_MASTER_SWITCH": "VERIFIED",
+    "GLOBAL_MODE_CONTROL": "VERIFIED",
+    "SECURITY_LEVEL_CONTROL": "VERIFIED",
+    "PLUGIN_REGISTRY": "VERIFIED",
+    "PER_PLUGIN_SWITCH": "VERIFIED",
+    "CAPABILITY_CHECK": "VERIFIED",
+    "SINGLE_EVALUATION": "VERIFIED",
+    "IMMUTABLE_CANDIDATE_RESULT": "VERIFIED",
+    "UNIFIED_SUMMARY_CANDIDATE": "VERIFIED",
+    "RESULT_ROUTER_CONTRACT": "VERIFIED",
+    "CROSS_PROJECT_OFFLINE_SMOKE": "VERIFIED",
+    "SECURITY_MANAGER_CORE": "INCOMPLETE",
+    "INDEPENDENT_PLUGIN_EXECUTION": "INCOMPLETE",
+    "POLICY_INTEGRATION": "INCOMPLETE",
+    "OFFLINE_RUNNER_CONTRACT": "VERIFIED",
+    "REAL_HISTORICAL_FULL_INPUT_REPLAY": "INCOMPLETE",
+    "PRODUCTION_SECURITY_MANAGER": "NOT_ACTIVE",
+    "TRIVY_RUNTIME_FACT_CAPTURE": "INCOMPLETE",
+    "DEFECTDOJO_RUNTIME_FACT_CAPTURE": "INCOMPLETE",
+    "FINAL_WIRED_CAPABILITY": "14/16",
+    "REAL_RUNTIME_FACT_CAPTURE": "INCOMPLETE",
+    "REAL_POLICY_OWNER": "INCOMPLETE",
+    "IMMUTABLE_ARTIFACT_RUNTIME": "INCOMPLETE",
+    "SUMMARY_V2_MIGRATION": "INCOMPLETE",
+    "ORIGINAL_EVIDENCE_INTEGRITY": "FAILED",
+    "RELEASE_COUNT": 0,
+    "ROLLOUT_COUNT": 0,
+    "PUSH_COUNT": 0
+  },
+  "tests": {
+    "candidate": {
+      "pass": 45,
+      "fail": 0,
+      "skip": 0
+    },
+    "trivyFrozenV1": {
+      "pass": 190,
+      "fail": 0
+    },
+    "trivyVersioned": {
+      "pass": 190,
+      "fail": 0
+    },
+    "trivyDifferentialPerVersion": 184,
+    "helmShadow": {
+      "pass": 43,
+      "fail": 0
+    },
+    "sourceLock": {
+      "pass": 54,
+      "fail": 0
+    },
+    "policyCore": {
+      "pass": 5,
+      "fail": 0
+    },
+    "contract": {
+      "pass": 10,
+      "fail": 0
+    }
+  },
+  "blockers": [
+    {
+      "id": "GITLEAKS_FROZEN_SOURCE_MISMATCH",
+      "source": "infra/security/policy/versions/gitleaks-parent-baseline-v1.json",
+      "path": "Jenkinsfile.security-audit",
+      "expectedSha256": "e6e7c1b8f838e42e8bc9b3aa35e731515e2e05feb300bd1833d64aa921c54ed2",
+      "actualSha256": "6179859f70c1d6fec2560621ec1ae71dba20514de4ff430d84b7d60a1c319b3c",
+      "observed": "POLICY_ERROR: frozen Gitleaks parent source changed",
+      "affected": "Gitleaks PASS/FAIL differential and complete first-batch integration",
+      "minimalNextStep": "Separately review and prove versioned source compatibility; do not edit frozen baseline or bypass checks"
+    },
+    {
+      "id": "REAL_HISTORICAL_FULL_PAYLOAD_UNAVAILABLE",
+      "evidence": "runtime-14-checkpoint-guard-review/receipts/{gitleaks,semgrep-command-audit,cosign}/capture.json rawPayloadPersisted=false",
+      "observed": "Only archive receipts/digests remain, not complete historical raw facts",
+      "performedInstead": "Existing archived controlled compatibility inputs, explicitly ARCHIVED_CONTROLLED_REPLAY; not Runtime and not production incidents",
+      "affected": "Real historical full-input fallback criterion",
+      "minimalNextStep": "Recover an already-authorized immutable full raw archive if available; otherwise retain INCOMPLETE, no production scanner invocation in this round"
+    }
+  ],
+  "productionChanges": []
+}

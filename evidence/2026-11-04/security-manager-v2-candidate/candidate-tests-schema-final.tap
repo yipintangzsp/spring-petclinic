@@ -1,0 +1,82 @@
+✔ A default standard and explicit low (4.45075ms)
+✔ A profile then component then project provenance (4.999667ms)
+✔ A malformed settings fail closed (0.373834ms)
+✔ A policy pins baseline-v2 compatibility and strict-v1 (1.753416ms)
+✔ A invalid null/false layers and overridden invalid global values never fall back (1.29175ms)
+✔ A component and project policy changes only affect their intended target (1.010041ms)
+✔ E master false suppresses even invalid unapproved runner inputs (129.028125ms)
+✔ E off and all disabled never fabricate PASS (204.431667ms)
+✔ E audit retains FAIL while ordinary candidate build may continue (178.689875ms)
+✔ E enforce FAIL stops candidate; no live promotion for PASS either (292.7885ms)
+✔ E disabled Trivy does not affect two independent workers (178.688875ms)
+✔ E missing/unavailable/unsupported capabilities never PASS (314.885667ms)
+✔ E missing archive is NOT_CONFIGURED; corrupt/unapproved input is POLICY_ERROR (161.93675ms)
+✔ F frozen Gitleaks mismatch remains visible POLICY_ERROR, not a new PASS (141.097ms)
+✔ F claim is atomic before await; Gate and Summary reuse identical result (113.861166ms)
+✔ F strict uses existing engine; original findings stay unchanged; frozen FAIL floor retained (113.815375ms)
+✖ G history is exclusive, raw bytes match digest, tampering detected (113.30225ms)
+✔ G reserved V1 path, overwrite and post-seal writes are rejected (10.203292ms)
+✔ G symlink output parent and directory replacement are refused (0.745583ms)
+✔ H plugin removal does not alter unrelated policy decisions (66.363ms)
+✔ H enabled Trivy reports real blockers without execution/evaluation (113.41775ms)
+✔ H malformed and unknown configuration writes no artifact (0.5745ms)
+✔ E actual worker timeout is an operational ERROR, never PASS/WARN (87.914584ms)
+✔ F engine rejects invalid evidence once; no fabricated Policy result (0.621792ms)
+✔ G a recomputed digest cannot turn nonexecution into PASS (71.411375ms)
+✔ B registry default disabled prevents execution before per-project explicit selection (91.352042ms)
+✔ I independent dry-run and local consumer verify receipt digests without re-evaluation (287.909291ms)
+✔ I duplicate consumers, injected handlers, mutated summary, bad seal rejected (220.746791ms)
+✔ I future DefectDojo cannot publish to network even if enabled (184.584708ms)
+✔ J same manager across projects/profiles with isolated overrides, schemas and capabilities (345.769875ms)
+✔ J actual CLI master switch, required parameters, plugin selection and env validation (247.667041ms)
+✔ B duplicate/unknown IDs rejected; removal does not rewrite others (2.531042ms)
+✔ B arbitrary runner code is not a registration contract (0.151417ms)
+✔ C capabilities are scoped; Trivy never executes even with asserted prerequisites (0.998917ms)
+✔ C missing/unavailable/platform/profile are distinct (0.172083ms)
+✔ D independent immutable archive gitleaks-pass (57.052708ms)
+✔ D independent immutable archive gitleaks-fail (43.248959ms)
+✔ D independent immutable archive semgrep-pass (39.666166ms)
+✔ D independent immutable archive semgrep-fail (31.542292ms)
+✔ D independent immutable archive cosign-pass (30.822083ms)
+✔ D independent immutable archive cosign-fail (31.048875ms)
+✔ D unapproved/cross-plugin digest prevents worker start (0.589084ms)
+✔ D missing and corrupted raw reports cannot reach Policy (0.187709ms)
+✔ D timeout and pre-cancellation join a dedicated bounded worker (11.622208ms)
+✔ D in-flight cancellation leaves no active owned worker (1.118458ms)
+ℹ tests 45
+ℹ suites 0
+ℹ pass 44
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 2565.377791
+
+✖ failing tests:
+
+test at infra/security/manager-v2/core.test.mjs:29:1
+✖ G history is exclusive, raw bytes match digest, tampering detected (113.30225ms)
+  AssertionError [ERR_ASSERTION]: The input did not match the regular expression /digest mismatch/. Input:
+  
+  'Error: POLICY_ERROR: completed result evidence'
+  
+      at TestContext.<anonymous> (file:///Users/zhangsir/code/petclinic-platform-20261011/infra/security/manager-v2/core.test.mjs:34:9)
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async Test.run (node:internal/test_runner/test:1208:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:831:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: Error: POLICY_ERROR: completed result evidence
+        at fail (file:///Users/zhangsir/code/petclinic-platform-20261011/infra/security/summary-v2/codec.mjs:4:40)
+        at verifyResult (file:///Users/zhangsir/code/petclinic-platform-20261011/infra/security/manager-v2/result.mjs:32:236)
+        at file:///Users/zhangsir/code/petclinic-platform-20261011/infra/security/manager-v2/core.test.mjs:34:20
+        at getActual (node:assert:586:5)
+        at strict.throws (node:assert:734:24)
+        at TestContext.<anonymous> (file:///Users/zhangsir/code/petclinic-platform-20261011/infra/security/manager-v2/core.test.mjs:34:9)
+        at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+        at async Test.run (node:internal/test_runner/test:1208:7)
+        at async Test.processPendingSubtests (node:internal/test_runner/test:831:7),
+    expected: /digest mismatch/,
+    operator: 'throws',
+    diff: 'simple'
+  }

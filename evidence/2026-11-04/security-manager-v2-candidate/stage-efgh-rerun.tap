@@ -1,0 +1,80 @@
+✔ E master false suppresses even invalid unapproved runner inputs (116.696625ms)
+✔ E off and all disabled never fabricate PASS (160.379625ms)
+✔ E audit retains FAIL while ordinary candidate build may continue (118.068833ms)
+✔ E enforce FAIL stops candidate; no live promotion for PASS either (221.334542ms)
+✖ E disabled Trivy does not affect two independent workers (153.005042ms)
+✔ E missing/unavailable/unsupported capabilities never PASS (224.211334ms)
+✔ E missing archive is NOT_CONFIGURED; corrupt/unapproved input is POLICY_ERROR (156.042167ms)
+✖ F frozen Gitleaks mismatch remains visible POLICY_ERROR, not a new PASS (150.416667ms)
+✔ F claim is atomic before await; Gate and Summary reuse identical result (122.074084ms)
+✔ F strict uses existing engine; original findings stay unchanged; frozen FAIL floor retained (110.273084ms)
+✔ G history is exclusive, raw bytes match digest, tampering detected (111.763708ms)
+✔ G reserved V1 path, overwrite and post-seal writes are rejected (10.585042ms)
+✔ G symlink output parent and directory replacement are refused (1.188458ms)
+✔ H plugin removal does not alter unrelated policy decisions (76.865334ms)
+✖ H enabled Trivy reports real blockers without execution/evaluation (96.701958ms)
+✔ H malformed and unknown configuration writes no artifact (0.675875ms)
+ℹ tests 16
+ℹ suites 0
+ℹ pass 13
+ℹ fail 3
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 2014.017625
+
+✖ failing tests:
+
+test at infra/security/manager-v2/core.test.mjs:14:1
+✖ E disabled Trivy does not affect two independent workers (153.005042ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  null !== 'PASS'
+  
+      at TestContext.<anonymous> (file:///Users/zhangsir/code/petclinic-platform-20261011/infra/security/manager-v2/core.test.mjs:14:243)
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async Test.run (node:internal/test_runner/test:1208:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:831:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: null,
+    expected: 'PASS',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at infra/security/manager-v2/core.test.mjs:17:1
+✖ F frozen Gitleaks mismatch remains visible POLICY_ERROR, not a new PASS (150.416667ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  null !== 'PASS'
+  
+      at TestContext.<anonymous> (file:///Users/zhangsir/code/petclinic-platform-20261011/infra/security/manager-v2/core.test.mjs:17:418)
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async Test.run (node:internal/test_runner/test:1208:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:831:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: null,
+    expected: 'PASS',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at infra/security/manager-v2/core.test.mjs:39:1
+✖ H enabled Trivy reports real blockers without execution/evaluation (96.701958ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  null !== 'PASS'
+  
+      at TestContext.<anonymous> (file:///Users/zhangsir/code/petclinic-platform-20261011/infra/security/manager-v2/core.test.mjs:39:357)
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async Test.run (node:internal/test_runner/test:1208:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:831:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: null,
+    expected: 'PASS',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }

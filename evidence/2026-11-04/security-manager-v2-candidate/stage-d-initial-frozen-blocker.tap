@@ -1,0 +1,41 @@
+✖ D independent immutable archive gitleaks-pass (31.597083ms)
+✖ D independent immutable archive gitleaks-fail (22.141333ms)
+✔ D independent immutable archive semgrep-pass (29.844542ms)
+✔ D independent immutable archive semgrep-fail (24.355125ms)
+✔ D independent immutable archive cosign-pass (27.055834ms)
+✔ D independent immutable archive cosign-fail (23.534708ms)
+✔ D unapproved/cross-plugin digest prevents worker start (0.746292ms)
+✔ D missing and corrupted raw reports cannot reach Policy (0.179333ms)
+✔ D timeout and pre-cancellation join a dedicated bounded worker (1.890167ms)
+ℹ tests 9
+ℹ suites 0
+ℹ pass 7
+ℹ fail 2
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 308.960958
+
+✖ failing tests:
+
+test at infra/security/manager-v2/runner.test.mjs:4:44
+✖ D independent immutable archive gitleaks-pass (31.597083ms)
+  Error: POLICY_ERROR: frozen Gitleaks parent source changed
+      at gitleaksParent (file:///Users/zhangsir/code/petclinic-platform-20261011/infra/security/policy/gitleaks-parent.mjs:9:185)
+      at evaluate (file:///Users/zhangsir/code/petclinic-platform-20261011/infra/security/policy/engine.mjs:79:73)
+      at evaluateAsync (file:///Users/zhangsir/code/petclinic-platform-20261011/infra/security/policy/engine.mjs:141:91)
+      at TestContext.<anonymous> (file:///Users/zhangsir/code/petclinic-platform-20261011/infra/security/manager-v2/runner.test.mjs:7:22)
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async Test.run (node:internal/test_runner/test:1208:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:385:3)
+
+test at infra/security/manager-v2/runner.test.mjs:4:44
+✖ D independent immutable archive gitleaks-fail (22.141333ms)
+  Error: POLICY_ERROR: frozen Gitleaks parent source changed
+      at gitleaksParent (file:///Users/zhangsir/code/petclinic-platform-20261011/infra/security/policy/gitleaks-parent.mjs:9:185)
+      at evaluate (file:///Users/zhangsir/code/petclinic-platform-20261011/infra/security/policy/engine.mjs:79:73)
+      at evaluateAsync (file:///Users/zhangsir/code/petclinic-platform-20261011/infra/security/policy/engine.mjs:141:91)
+      at TestContext.<anonymous> (file:///Users/zhangsir/code/petclinic-platform-20261011/infra/security/manager-v2/runner.test.mjs:7:22)
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async Test.run (node:internal/test_runner/test:1208:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:831:7)

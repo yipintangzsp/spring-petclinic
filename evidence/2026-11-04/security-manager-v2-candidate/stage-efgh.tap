@@ -1,0 +1,227 @@
+✖ E master false suppresses even invalid unapproved runner inputs (4.074292ms)
+✖ E off and all disabled never fabricate PASS (0.725375ms)
+✖ E audit retains FAIL while ordinary candidate build may continue (0.657291ms)
+✖ E enforce FAIL stops candidate; no live promotion for PASS either (0.771166ms)
+✖ E disabled Trivy does not affect two independent workers (0.553917ms)
+✖ E missing/unavailable/unsupported capabilities never PASS (0.47275ms)
+✖ E missing archive is NOT_CONFIGURED; corrupt/unapproved input is POLICY_ERROR (0.494417ms)
+✖ F frozen Gitleaks mismatch remains visible POLICY_ERROR, not a new PASS (0.451209ms)
+✖ F claim is atomic before await; Gate and Summary reuse identical result (2.802916ms)
+✖ F strict uses existing engine; original findings stay unchanged; frozen FAIL floor retained (2.774375ms)
+✖ G history is exclusive, raw bytes match digest, tampering detected (0.947583ms)
+✖ G reserved V1 path, overwrite and post-seal writes are rejected (0.192ms)
+✖ G symlink output parent and directory replacement are refused (0.841375ms)
+✖ H plugin removal does not alter unrelated policy decisions (0.677458ms)
+✖ H enabled Trivy reports real blockers without execution/evaluation (0.558792ms)
+✔ H malformed and unknown configuration writes no artifact (0.513083ms)
+ℹ tests 16
+ℹ suites 0
+ℹ pass 1
+ℹ fail 15
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 156.311459
+
+✖ failing tests:
+
+test at infra/security/manager-v2/core.test.mjs:10:1
+✖ E master false suppresses even invalid unapproved runner inputs (4.074292ms)
+  Error: POLICY_ERROR: artifact parent symlink
+      at fail (file:///Users/zhangsir/code/petclinic-platform-20261011/infra/security/summary-v2/codec.mjs:4:40)
+      at artifactStore (file:///Users/zhangsir/code/petclinic-platform-20261011/infra/security/manager-v2/result.mjs:26:69)
+      at runCandidate (file:///Users/zhangsir/code/petclinic-platform-20261011/infra/security/manager-v2/core.mjs:10:100)
+      at make (file:///Users/zhangsir/code/petclinic-platform-20261011/infra/security/manager-v2/core.test.mjs:7:31)
+      at TestContext.<anonymous> (file:///Users/zhangsir/code/petclinic-platform-20261011/infra/security/manager-v2/core.test.mjs:10:96)
+      at Test.runInAsyncScope (node:async_hooks:226:14)
+      at Test.run (node:internal/test_runner/test:1201:25)
+      at Test.start (node:internal/test_runner/test:1096:17)
+      at startSubtestAfterBootstrap (node:internal/test_runner/harness:385:17)
+
+test at infra/security/manager-v2/core.test.mjs:11:1
+✖ E off and all disabled never fabricate PASS (0.725375ms)
+  Error: POLICY_ERROR: artifact parent symlink
+      at fail (file:///Users/zhangsir/code/petclinic-platform-20261011/infra/security/summary-v2/codec.mjs:4:40)
+      at artifactStore (file:///Users/zhangsir/code/petclinic-platform-20261011/infra/security/manager-v2/result.mjs:26:69)
+      at runCandidate (file:///Users/zhangsir/code/petclinic-platform-20261011/infra/security/manager-v2/core.mjs:10:100)
+      at make (file:///Users/zhangsir/code/petclinic-platform-20261011/infra/security/manager-v2/core.test.mjs:7:31)
+      at TestContext.<anonymous> (file:///Users/zhangsir/code/petclinic-platform-20261011/infra/security/manager-v2/core.test.mjs:11:138)
+      at Test.runInAsyncScope (node:async_hooks:226:14)
+      at Test.run (node:internal/test_runner/test:1201:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:831:18)
+      at Test.postRun (node:internal/test_runner/test:1330:19)
+      at Test.run (node:internal/test_runner/test:1258:12)
+
+test at infra/security/manager-v2/core.test.mjs:12:1
+✖ E audit retains FAIL while ordinary candidate build may continue (0.657291ms)
+  Error: POLICY_ERROR: artifact parent symlink
+      at fail (file:///Users/zhangsir/code/petclinic-platform-20261011/infra/security/summary-v2/codec.mjs:4:40)
+      at artifactStore (file:///Users/zhangsir/code/petclinic-platform-20261011/infra/security/manager-v2/result.mjs:26:69)
+      at runCandidate (file:///Users/zhangsir/code/petclinic-platform-20261011/infra/security/manager-v2/core.mjs:10:100)
+      at make (file:///Users/zhangsir/code/petclinic-platform-20261011/infra/security/manager-v2/core.test.mjs:7:31)
+      at TestContext.<anonymous> (file:///Users/zhangsir/code/petclinic-platform-20261011/infra/security/manager-v2/core.test.mjs:12:97)
+      at Test.runInAsyncScope (node:async_hooks:226:14)
+      at Test.run (node:internal/test_runner/test:1201:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:831:18)
+      at Test.postRun (node:internal/test_runner/test:1330:19)
+      at Test.run (node:internal/test_runner/test:1258:12)
+
+test at infra/security/manager-v2/core.test.mjs:13:1
+✖ E enforce FAIL stops candidate; no live promotion for PASS either (0.771166ms)
+  Error: POLICY_ERROR: artifact parent symlink
+      at fail (file:///Users/zhangsir/code/petclinic-platform-20261011/infra/security/summary-v2/codec.mjs:4:40)
+      at artifactStore (file:///Users/zhangsir/code/petclinic-platform-20261011/infra/security/manager-v2/result.mjs:26:69)
+      at runCandidate (file:///Users/zhangsir/code/petclinic-platform-20261011/infra/security/manager-v2/core.mjs:10:100)
+      at make (file:///Users/zhangsir/code/petclinic-platform-20261011/infra/security/manager-v2/core.test.mjs:7:31)
+      at TestContext.<anonymous> (file:///Users/zhangsir/code/petclinic-platform-20261011/infra/security/manager-v2/core.test.mjs:13:147)
+      at Test.runInAsyncScope (node:async_hooks:226:14)
+      at Test.run (node:internal/test_runner/test:1201:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:831:18)
+      at Test.postRun (node:internal/test_runner/test:1330:19)
+      at Test.run (node:internal/test_runner/test:1258:12)
+
+test at infra/security/manager-v2/core.test.mjs:14:1
+✖ E disabled Trivy does not affect two independent workers (0.553917ms)
+  Error: POLICY_ERROR: artifact parent symlink
+      at fail (file:///Users/zhangsir/code/petclinic-platform-20261011/infra/security/summary-v2/codec.mjs:4:40)
+      at artifactStore (file:///Users/zhangsir/code/petclinic-platform-20261011/infra/security/manager-v2/result.mjs:26:69)
+      at runCandidate (file:///Users/zhangsir/code/petclinic-platform-20261011/infra/security/manager-v2/core.mjs:10:100)
+      at make (file:///Users/zhangsir/code/petclinic-platform-20261011/infra/security/manager-v2/core.test.mjs:7:31)
+      at TestContext.<anonymous> (file:///Users/zhangsir/code/petclinic-platform-20261011/infra/security/manager-v2/core.test.mjs:14:89)
+      at Test.runInAsyncScope (node:async_hooks:226:14)
+      at Test.run (node:internal/test_runner/test:1201:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:831:18)
+      at Test.postRun (node:internal/test_runner/test:1330:19)
+      at Test.run (node:internal/test_runner/test:1258:12)
+
+test at infra/security/manager-v2/core.test.mjs:15:1
+✖ E missing/unavailable/unsupported capabilities never PASS (0.47275ms)
+  Error: POLICY_ERROR: artifact parent symlink
+      at fail (file:///Users/zhangsir/code/petclinic-platform-20261011/infra/security/summary-v2/codec.mjs:4:40)
+      at artifactStore (file:///Users/zhangsir/code/petclinic-platform-20261011/infra/security/manager-v2/result.mjs:26:69)
+      at runCandidate (file:///Users/zhangsir/code/petclinic-platform-20261011/infra/security/manager-v2/core.mjs:10:100)
+      at make (file:///Users/zhangsir/code/petclinic-platform-20261011/infra/security/manager-v2/core.test.mjs:7:31)
+      at TestContext.<anonymous> (file:///Users/zhangsir/code/petclinic-platform-20261011/infra/security/manager-v2/core.test.mjs:15:251)
+      at Test.runInAsyncScope (node:async_hooks:226:14)
+      at Test.run (node:internal/test_runner/test:1201:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:831:18)
+      at Test.postRun (node:internal/test_runner/test:1330:19)
+      at Test.run (node:internal/test_runner/test:1258:12)
+
+test at infra/security/manager-v2/core.test.mjs:16:1
+✖ E missing archive is NOT_CONFIGURED; corrupt/unapproved input is POLICY_ERROR (0.494417ms)
+  Error: POLICY_ERROR: artifact parent symlink
+      at fail (file:///Users/zhangsir/code/petclinic-platform-20261011/infra/security/summary-v2/codec.mjs:4:40)
+      at artifactStore (file:///Users/zhangsir/code/petclinic-platform-20261011/infra/security/manager-v2/result.mjs:26:69)
+      at runCandidate (file:///Users/zhangsir/code/petclinic-platform-20261011/infra/security/manager-v2/core.mjs:10:100)
+      at make (file:///Users/zhangsir/code/petclinic-platform-20261011/infra/security/manager-v2/core.test.mjs:7:31)
+      at TestContext.<anonymous> (file:///Users/zhangsir/code/petclinic-platform-20261011/infra/security/manager-v2/core.test.mjs:16:116)
+      at Test.runInAsyncScope (node:async_hooks:226:14)
+      at Test.run (node:internal/test_runner/test:1201:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:831:18)
+      at Test.postRun (node:internal/test_runner/test:1330:19)
+      at Test.run (node:internal/test_runner/test:1258:12)
+
+test at infra/security/manager-v2/core.test.mjs:17:1
+✖ F frozen Gitleaks mismatch remains visible POLICY_ERROR, not a new PASS (0.451209ms)
+  Error: POLICY_ERROR: artifact parent symlink
+      at fail (file:///Users/zhangsir/code/petclinic-platform-20261011/infra/security/summary-v2/codec.mjs:4:40)
+      at artifactStore (file:///Users/zhangsir/code/petclinic-platform-20261011/infra/security/manager-v2/result.mjs:26:69)
+      at runCandidate (file:///Users/zhangsir/code/petclinic-platform-20261011/infra/security/manager-v2/core.mjs:10:100)
+      at make (file:///Users/zhangsir/code/petclinic-platform-20261011/infra/security/manager-v2/core.test.mjs:7:31)
+      at TestContext.<anonymous> (file:///Users/zhangsir/code/petclinic-platform-20261011/infra/security/manager-v2/core.test.mjs:17:104)
+      at Test.runInAsyncScope (node:async_hooks:226:14)
+      at Test.run (node:internal/test_runner/test:1201:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:831:18)
+      at Test.postRun (node:internal/test_runner/test:1330:19)
+      at Test.run (node:internal/test_runner/test:1258:12)
+
+test at infra/security/manager-v2/core.test.mjs:18:1
+✖ F claim is atomic before await; Gate and Summary reuse identical result (2.802916ms)
+  Error: POLICY_ERROR: artifact parent symlink
+      at fail (file:///Users/zhangsir/code/petclinic-platform-20261011/infra/security/summary-v2/codec.mjs:4:40)
+      at artifactStore (file:///Users/zhangsir/code/petclinic-platform-20261011/infra/security/manager-v2/result.mjs:26:69)
+      at runCandidate (file:///Users/zhangsir/code/petclinic-platform-20261011/infra/security/manager-v2/core.mjs:10:100)
+      at make (file:///Users/zhangsir/code/petclinic-platform-20261011/infra/security/manager-v2/core.test.mjs:7:31)
+      at TestContext.<anonymous> (file:///Users/zhangsir/code/petclinic-platform-20261011/infra/security/manager-v2/core.test.mjs:21:16)
+      at async Test.run (node:internal/test_runner/test:1208:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:831:7)
+
+test at infra/security/manager-v2/core.test.mjs:23:1
+✖ F strict uses existing engine; original findings stay unchanged; frozen FAIL floor retained (2.774375ms)
+  Error: POLICY_ERROR: artifact parent symlink
+      at fail (file:///Users/zhangsir/code/petclinic-platform-20261011/infra/security/summary-v2/codec.mjs:4:40)
+      at artifactStore (file:///Users/zhangsir/code/petclinic-platform-20261011/infra/security/manager-v2/result.mjs:26:69)
+      at runCandidate (file:///Users/zhangsir/code/petclinic-platform-20261011/infra/security/manager-v2/core.mjs:10:100)
+      at make (file:///Users/zhangsir/code/petclinic-platform-20261011/infra/security/manager-v2/core.test.mjs:7:31)
+      at TestContext.<anonymous> (file:///Users/zhangsir/code/petclinic-platform-20261011/infra/security/manager-v2/core.test.mjs:27:16)
+      at async Test.run (node:internal/test_runner/test:1208:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:831:7)
+
+test at infra/security/manager-v2/core.test.mjs:29:1
+✖ G history is exclusive, raw bytes match digest, tampering detected (0.947583ms)
+  Error: POLICY_ERROR: artifact parent symlink
+      at fail (file:///Users/zhangsir/code/petclinic-platform-20261011/infra/security/summary-v2/codec.mjs:4:40)
+      at artifactStore (file:///Users/zhangsir/code/petclinic-platform-20261011/infra/security/manager-v2/result.mjs:26:69)
+      at runCandidate (file:///Users/zhangsir/code/petclinic-platform-20261011/infra/security/manager-v2/core.mjs:10:100)
+      at make (file:///Users/zhangsir/code/petclinic-platform-20261011/infra/security/manager-v2/core.test.mjs:7:31)
+      at TestContext.<anonymous> (file:///Users/zhangsir/code/petclinic-platform-20261011/infra/security/manager-v2/core.test.mjs:30:50)
+      at Test.runInAsyncScope (node:async_hooks:226:14)
+      at Test.run (node:internal/test_runner/test:1201:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:831:18)
+      at Test.postRun (node:internal/test_runner/test:1330:19)
+      at Test.run (node:internal/test_runner/test:1258:12)
+
+test at infra/security/manager-v2/core.test.mjs:36:1
+✖ G reserved V1 path, overwrite and post-seal writes are rejected (0.192ms)
+  Error: POLICY_ERROR: artifact parent symlink
+      at fail (file:///Users/zhangsir/code/petclinic-platform-20261011/infra/security/summary-v2/codec.mjs:4:40)
+      at artifactStore (file:///Users/zhangsir/code/petclinic-platform-20261011/infra/security/manager-v2/result.mjs:26:69)
+      at TestContext.<anonymous> (file:///Users/zhangsir/code/petclinic-platform-20261011/infra/security/manager-v2/core.test.mjs:36:89)
+      at Test.runInAsyncScope (node:async_hooks:226:14)
+      at Test.run (node:internal/test_runner/test:1201:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:831:18)
+      at Test.postRun (node:internal/test_runner/test:1330:19)
+      at Test.run (node:internal/test_runner/test:1258:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:831:7)
+
+test at infra/security/manager-v2/core.test.mjs:37:1
+✖ G symlink output parent and directory replacement are refused (0.841375ms)
+  Error: POLICY_ERROR: artifact parent symlink
+      at fail (file:///Users/zhangsir/code/petclinic-platform-20261011/infra/security/summary-v2/codec.mjs:4:40)
+      at artifactStore (file:///Users/zhangsir/code/petclinic-platform-20261011/infra/security/manager-v2/result.mjs:26:69)
+      at TestContext.<anonymous> (file:///Users/zhangsir/code/petclinic-platform-20261011/infra/security/manager-v2/core.test.mjs:37:306)
+      at Test.runInAsyncScope (node:async_hooks:226:14)
+      at Test.run (node:internal/test_runner/test:1201:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:831:18)
+      at Test.postRun (node:internal/test_runner/test:1330:19)
+      at Test.run (node:internal/test_runner/test:1258:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:831:7)
+
+test at infra/security/manager-v2/core.test.mjs:38:1
+✖ H plugin removal does not alter unrelated policy decisions (0.677458ms)
+  Error: POLICY_ERROR: artifact parent symlink
+      at fail (file:///Users/zhangsir/code/petclinic-platform-20261011/infra/security/summary-v2/codec.mjs:4:40)
+      at artifactStore (file:///Users/zhangsir/code/petclinic-platform-20261011/infra/security/manager-v2/result.mjs:26:69)
+      at runCandidate (file:///Users/zhangsir/code/petclinic-platform-20261011/infra/security/manager-v2/core.mjs:10:100)
+      at make (file:///Users/zhangsir/code/petclinic-platform-20261011/infra/security/manager-v2/core.test.mjs:7:31)
+      at TestContext.<anonymous> (file:///Users/zhangsir/code/petclinic-platform-20261011/infra/security/manager-v2/core.test.mjs:38:91)
+      at Test.runInAsyncScope (node:async_hooks:226:14)
+      at Test.run (node:internal/test_runner/test:1201:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:831:18)
+      at Test.postRun (node:internal/test_runner/test:1330:19)
+      at Test.run (node:internal/test_runner/test:1258:12)
+
+test at infra/security/manager-v2/core.test.mjs:39:1
+✖ H enabled Trivy reports real blockers without execution/evaluation (0.558792ms)
+  Error: POLICY_ERROR: artifact parent symlink
+      at fail (file:///Users/zhangsir/code/petclinic-platform-20261011/infra/security/summary-v2/codec.mjs:4:40)
+      at artifactStore (file:///Users/zhangsir/code/petclinic-platform-20261011/infra/security/manager-v2/result.mjs:26:69)
+      at runCandidate (file:///Users/zhangsir/code/petclinic-platform-20261011/infra/security/manager-v2/core.mjs:10:100)
+      at make (file:///Users/zhangsir/code/petclinic-platform-20261011/infra/security/manager-v2/core.test.mjs:7:31)
+      at TestContext.<anonymous> (file:///Users/zhangsir/code/petclinic-platform-20261011/infra/security/manager-v2/core.test.mjs:39:99)
+      at Test.runInAsyncScope (node:async_hooks:226:14)
+      at Test.run (node:internal/test_runner/test:1201:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:831:18)
+      at Test.postRun (node:internal/test_runner/test:1330:19)
+      at Test.run (node:internal/test_runner/test:1258:12)
