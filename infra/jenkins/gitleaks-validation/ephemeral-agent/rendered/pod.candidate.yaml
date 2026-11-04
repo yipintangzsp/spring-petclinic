@@ -89,6 +89,10 @@
           "-s",
           "-g",
           "--",
+          "/usr/bin/prlimit",
+          "--nproc=128:128",
+          "--core=0:0",
+          "--",
           "/opt/java/openjdk/bin/java"
         ],
         "args": [
@@ -97,6 +101,7 @@
           "-XX:MaxDirectMemorySize=32m",
           "-XX:ReservedCodeCacheSize=48m",
           "-Djava.io.tmpdir=/tmp",
+          "-Duser.home=/work/home",
           "-jar",
           "/opt/agent/agent.jar",
           "-url",
@@ -105,7 +110,7 @@
           "-secret",
           "@/agent-auth/secret",
           "-name",
-          "gitleaks-validation-restricted",
+          "gitleaks-v2-REQUIRES_BUILD_AND_RANDOM_NONREUSED_NONCE",
           "-workDir",
           "/work/remoting",
           "-noReconnect"

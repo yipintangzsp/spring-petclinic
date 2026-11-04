@@ -1,0 +1,57 @@
+{
+  "schemaVersion": 1,
+  "classification": "OFFLINE_NOT_RUNTIME_AUTHORIZATION",
+  "identities": {
+    "linux": {
+      "uid": 24001,
+      "gid": 24001,
+      "supplementalGroups": [],
+      "imageUidRuntime": "NOT_TESTED",
+      "sharedWithTrustedRemoting": true
+    },
+    "kubernetes": {
+      "serviceAccount": "gitleaks-validation-agent",
+      "namespace": "devsecops-execution",
+      "automountToken": false,
+      "RBAC": "NONE_PROPOSED",
+      "actualCanI": "NOT_TESTED"
+    },
+    "jenkinsNode": {
+      "logicalLabel": "gitleaks-validation-restricted",
+      "physicalName": "gitleaks-v2-<trusted-build>-<trusted-96bit-random-nonce>",
+      "executors": 1,
+      "mode": "EXCLUSIVE",
+      "neverReuse": true
+    },
+    "nodeCredential": {
+      "nativeTTL": null,
+      "delivery": "trusted operator to exact-run Secret via private API stream, no console/temp archive/CLI argument value",
+      "mount": "/agent-auth/secret read-only, group 24001 mode0440",
+      "accessWithinContainer": "same UID Manager and remoting; not separate credential-isolation boundary",
+      "revocation": "remove exact Node, verify no reconnect; persist tombstone; never rotate global SLAVE_SECRET",
+      "revocationRuntime": "NOT_TESTED"
+    },
+    "controllerManager": {
+      "existingIdentityHasAdminister": true,
+      "location": "existing authorized management channel only",
+      "injectIntoAgent": false,
+      "delegationCreated": false
+    }
+  },
+  "actualAPIReadOnlyChecks": {
+    "addNode": true,
+    "removeNode": true,
+    "JNLPLauncher": true,
+    "webSocket": true,
+    "getJnlpMacAccessorPresentNotInvoked": true
+  },
+  "remainingBlockers": [
+    "Pod identity backend absent; frozen entry accepts systemd only",
+    "Physical unique Node identity backend absent; do not spoof frozen NODE_NAME",
+    "Controller uses FullControlOnceLoggedIn; label and EXCLUSIVE are not per-job ACL",
+    "Agent UID/work directory/immutable input/output runtime compatibility NOT_TESTED",
+    "Internal HTTP exposes node connection credential transport to untrusted network peers; no approved TLS path",
+    "Never-reuse registry and reconnect-rejection proof not yet implemented or exercised"
+  ],
+  "additionalAuthorization": "Only after blockers close: approve one exact job/build run including Node/SA/Secret/allow-NP/Pod creation and exact cleanup; management principal remains outside Pod."
+}

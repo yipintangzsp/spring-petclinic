@@ -11,14 +11,35 @@
     "image": "127.0.0.1:30050/platform-security/gitleaks@sha256:6b2d52241f9d176fc59e6e3b026ea52c98f390070587d9475d6ee2bc64941815",
     "platform": "linux/arm64",
     "upstream": "https://github.com/gitleaks/gitleaks",
-    "upstream_image": "ghcr.io/gitleaks/gitleaks@sha256:6b2d52241f9d176fc59e6e3b026ea52c98f390070587d9475d6ee2bc64941815"
+    "upstream_image": "ghcr.io/gitleaks/gitleaks@sha256:6b2d52241f9d176fc59e6e3b026ea52c98f390070587d9475d6ee2bc64941815",
+    "binaryProvenance": {
+      "classification": "HISTORICAL_ARCHIVE",
+      "reference": "evidence/2026-11-04/security-manager-v2-gitleaks-real/linux-tool-provenance.json",
+      "sha256": "db4d43dd4ab54f047a2d18d210a8d2294e2e5cc26d1e26a299a9675916f5647d",
+      "bytes": 21904478,
+      "license": "MIT; upstream license, retain in final input manifest"
+    }
   },
   "gitleaksCachedSizeBytes": 24604976,
   "agentJar": {
     "source": "http://jenkins.ns-devops.svc.cluster.local:8080/jnlpJars/agent.jar",
     "sha256": "f8ff1d49076a2ee0d3f8cc60168f43c23c2277c4cbdddaf82a52b2558ad80df5",
     "bytes": 1407936,
-    "runtimeDownloadAllowed": false
+    "runtimeDownloadAllowed": false,
+    "manifest": [
+      "Manifest-Version: 1.0",
+      "Build-Jdk-Spec: 21",
+      "Specification-Title: Jenkins remoting layer",
+      "Specification-Version: 0.0",
+      "Implementation-Title: Jenkins remoting layer",
+      "Implementation-Version: 3355.v388858a_47b_33",
+      "Version: 3355.v388858a_47b_33"
+    ],
+    "licenseFiles": [
+      "NOTICE",
+      "LICENSE"
+    ],
+    "license": "MIT with bundled notices; LICENSE/NOTICE present in controller public JAR; redistribution review required in input assembly"
   },
   "manager": {
     "baselineCommit": "2ca60f750525cf8858d5644abc09bd7202e3fdf6",
@@ -33,5 +54,206 @@
   "amd64": "NOT_VERIFIED_NO_EMULATION",
   "toolDownloads": 0,
   "imageBuilds": 0,
-  "imagePushes": 0
+  "imagePushes": 0,
+  "observedTools": {
+    "classification": "REAL_READ_ONLY_EXISTING_CONTROLLER_NOT_FINAL_AGENT_IMAGE",
+    "files": [
+      {
+        "path": "/usr/bin/node",
+        "realpath": "/usr/bin/node",
+        "uid": 0,
+        "gid": 0,
+        "mode": "755",
+        "bytes": 67592,
+        "sha256": "9c3d7058ca471e28a590d9fb85452f80c2a61dd1f7ee2ddadf0fb6bb28a64389"
+      },
+      {
+        "path": "/usr/bin/git",
+        "realpath": "/usr/bin/git",
+        "uid": 0,
+        "gid": 0,
+        "mode": "755",
+        "bytes": 4081272,
+        "sha256": "a0e562e4bd3c4c79379e91d8c07a10104b2cefe8fac966dc6bd4874a57a807f3"
+      },
+      {
+        "path": "/opt/java/openjdk/bin/java",
+        "realpath": "/opt/java/openjdk/bin/java",
+        "uid": 0,
+        "gid": 0,
+        "mode": "755",
+        "bytes": 70848,
+        "sha256": "1cedc51a4102638f1f06077acb3611b88f3061f9c7d76bd0a0df7f8607a9367b"
+      },
+      {
+        "path": "/usr/bin/tini",
+        "realpath": "/usr/bin/tini",
+        "uid": 0,
+        "gid": 0,
+        "mode": "755",
+        "bytes": 68680,
+        "sha256": "7cbd2eb7b2cbdb72ee234d4d3aef4a03176cd6a12daf4a740a78bf07f448f080"
+      },
+      {
+        "path": "/usr/bin/prlimit",
+        "realpath": "/usr/bin/prlimit",
+        "uid": 0,
+        "gid": 0,
+        "mode": "755",
+        "bytes": 68424,
+        "sha256": "78ca202bfbdb039bf924b3b3a104c5a1c8f61790a3e8e9bb4242ed51a512693a"
+      },
+      {
+        "path": "/etc/ssl/certs/ca-certificates.crt",
+        "realpath": "/etc/ssl/certs/ca-certificates.crt",
+        "uid": 0,
+        "gid": 0,
+        "mode": "644",
+        "bytes": 224449,
+        "sha256": "714d457d580922dbf1d0be8bd35ba236a842b50b0072ae791582a19adef772a5"
+      }
+    ],
+    "versions": {
+      "git": "git version 2.47.3",
+      "prlimit": "prlimit from util-linux 2.41",
+      "tini": "tini version 0.19.0",
+      "java": "openjdk version \"21.0.11\" 2026-04-21 LTS\nOpenJDK Runtime Environment Temurin-21.0.11+10 (build 21.0.11+10-LTS)\nOpenJDK 64-Bit Server VM Temurin-21.0.11+10 (build 21.0.11+10-LTS, mixed mode)",
+      "node": "v20.19.2"
+    },
+    "licenseFiles": [
+      {
+        "path": "/usr/share/doc/git/copyright",
+        "sha256": "263a2b847e1809cb78c2379802f090117888995d3f7773e030d2a7ebd80db3ec",
+        "bytes": 19210
+      },
+      {
+        "path": "/usr/share/doc/nodejs/copyright",
+        "sha256": "2a18cfb5f806aa60e67e4b6fa9a84945a3b0294412081188e3697f4c04ce2dc0",
+        "bytes": 54580
+      },
+      {
+        "path": "/usr/share/doc/tini/copyright",
+        "sha256": "2a9e8635624420da99b2886e1874924d098b12f102466b453866e6b50c768c87",
+        "bytes": 1382
+      },
+      {
+        "path": "/usr/share/doc/util-linux/copyright",
+        "sha256": "56b67e2eb8bac5a15d91e261d558d73f1f029113cced229753138194997366b6",
+        "bytes": 30341
+      },
+      {
+        "path": "/usr/share/doc/ca-certificates/copyright",
+        "sha256": "e85e1bcad3a915dc7e6f41412bc5bdeba275cadd817896ea0451f2140a93967c",
+        "bytes": 18940
+      },
+      {
+        "path": "/opt/java/openjdk/legal/java.base/LICENSE",
+        "sha256": "4b9abebc4338048a7c2dc184e9f800deb349366bdf28eb23c2677a77b4c87726",
+        "bytes": 19274
+      }
+    ],
+    "licenseMentions": [
+      {
+        "path": "/usr/share/doc/git/copyright",
+        "licenseMentions": [
+          "License: GPL-2",
+          "License: BSD-3-clause",
+          "License: Zlib",
+          "License: LGPL-2.1+",
+          "License: EDL-1.0",
+          "License: GPL-2+",
+          "License: Expat",
+          "License: GPL-1+ or Artistic-1",
+          "    a) the GNU General Public License as published by the Free Software",
+          "License: ISC",
+          "License: mingw-runtime",
+          "License: Boost",
+          "License: dlmalloc",
+          "License: Apache-2.0",
+          " the GNU General Public License as published by the Free Software",
+          " On Debian systems, the complete text of the GNU General Public License"
+        ]
+      },
+      {
+        "path": "/usr/share/doc/nodejs/copyright",
+        "licenseMentions": [
+          "License: Expat",
+          "License: Expat or Apache-2.0",
+          "License: CC0",
+          "License: BSD-3-clause~holders",
+          "License: BSD-3-clause~Google",
+          "License: BSD-3-clause~contributors or W3C-Test-Suite",
+          "License: BSD-2-clause",
+          "License: unlicense",
+          "License: CC0 or BSD-2-clause~holders",
+          "License: ISC",
+          "License: BSD-2-clause~holders",
+          "License: GPL3+ with autoconf exception",
+          "License: MIT/X11",
+          "License: BSD-2-clause~holders and Expat",
+          "License: Apache-2.0",
+          "License: LGPL-2.1+"
+        ]
+      },
+      {
+        "path": "/usr/share/doc/tini/copyright",
+        "licenseMentions": [
+          "License: Expat"
+        ]
+      },
+      {
+        "path": "/usr/share/doc/util-linux/copyright",
+        "licenseMentions": [
+          "License: GPL-2+",
+          "License: GPL-2",
+          "License: GPL-3+",
+          "License: LGPL-2.1+",
+          "License: public-domain",
+          "License: BSD-4-clause",
+          "License: Expat",
+          "License: ISC",
+          "License: BSD-3-clause",
+          "License: BSLA",
+          "License: LGPL-2+",
+          "License: LGPL",
+          "License: BSD-2-clause",
+          "License: LGPL-3+",
+          " it under the terms of the GNU General Public License, v2, as",
+          " GNU General Public License for more details."
+        ]
+      },
+      {
+        "path": "/usr/share/doc/ca-certificates/copyright",
+        "licenseMentions": [
+          "License: GPL-2+",
+          " it under the terms of the GNU General Public License as published by",
+          " GNU General Public License for more details.",
+          " You should have received a copy of the GNU General Public License",
+          "License: MPL-2.0",
+          "     means either the GNU General Public License, Version 2.0, the GNU"
+        ]
+      },
+      {
+        "path": "/opt/java/openjdk/legal/java.base/LICENSE",
+        "licenseMentions": [
+          "The GNU General Public License (GPL)",
+          "and change it.  By contrast, the GNU General Public License is intended to",
+          "    under the terms of the GNU General Public License as published by the Free",
+          "    FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for",
+          "    You should have received a copy of the GNU General Public License along",
+          "the words \"Oracle designates this particular file as subject to the \"Classpath\"",
+          "    the GNU General Public License cover the whole combination."
+        ]
+      }
+    ],
+    "packages": "ca-certificates 20250419 all\ngit 1:2.47.3-0+deb13u1 arm64\nlibc6 2.41-12+deb13u3 arm64\nlibssl3t64 3.5.6-1~deb13u2 arm64\nlibstdc++6 14.2.0-19 arm64\nnodejs 20.19.2+dfsg-1+deb13u2 arm64\ntini 0.19.0-3+b7 arm64\nutil-linux 2.41-5 arm64\nzlib1g 1:1.3.dfsg+really1.3.1-1+b1 arm64\n",
+    "runtimeDependencies": "Observed distro package versions and enclosing base image digest. Complete dependency closure/final image ownership and runtime remain NOT_TESTED."
+  },
+  "pidWrapper": {
+    "path": "/usr/bin/prlimit",
+    "nproc": 128,
+    "core": 0,
+    "scope": "inherited real-UID RLIMIT_NPROC, threads included; not Pod cgroup pids.max",
+    "runtimeVerified": false
+  }
 }

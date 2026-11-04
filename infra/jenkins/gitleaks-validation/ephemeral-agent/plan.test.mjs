@@ -1,6 +1,6 @@
 // SYNTHETIC_UNIT_ONLY / STATIC_CONTRACT; NOT real admission, isolation or CI.
 import test from 'node:test';import assert from 'node:assert/strict';import fs from 'node:fs';import os from 'node:os';import path from 'node:path';
-import {candidatePod,candidateSA,candidateNetworkPolicy,validateCandidate,validateFixtureFiles,validateBinding,validateCIRequest,validateCleanup,assertReadiness,readinessKeys,AGENT,JOB,RELEASE,clone,UID} from './plan.mjs';
+import {candidatePod,candidateSA,candidateNetworkPolicy,validateCandidate,validateFixtureFiles,validateBinding,validateCIRequest,validateCleanup,assertReadiness,readinessKeys,AGENT,JOB,RELEASE,clone,UID,nodeName} from './plan.mjs';
 import {render} from './render.mjs';
 const docs=()=>({pod:candidatePod(),sa:candidateSA(),networkPolicy:candidateNetworkPolicy()});
 const check=x=>validateCandidate(x,{reviewOnly:true});
@@ -54,7 +54,7 @@ reject('GitLab/proxy/Harbor egress',x=>x.networkPolicy.spec.egress.push({to:[{ip
 reject('API server egress',x=>x.networkPolicy.spec.egress.push({ports:[{port:6443}]}));
 reject('namespace mismatch',x=>x.pod.metadata.namespace='ns-devops');
 reject('built-in label fallback',x=>x.pod.metadata.labels.agent='built-in');
-const binding=()=>({agent:AGENT,job:JOB,executors:1,mode:'EXCLUSIVE',runBuild:1,label:AGENT+' && security-run-1',managerRelease:RELEASE,trustedManifestSha256:'e8677d348192d378de0314c4ce5edc102514dbf0ec28c13aa850d510bf514b5a'});
+const binding=()=>({agent:nodeName(1,'a'.repeat(24)),runNonce:'a'.repeat(24),job:JOB,executors:1,mode:'EXCLUSIVE',runBuild:1,label:AGENT+' && security-run-1',managerRelease:RELEASE,trustedManifestSha256:'e8677d348192d378de0314c4ce5edc102514dbf0ec28c13aa850d510bf514b5a'});
 test('explicit per-build job binding',()=>assert.equal(validateBinding(binding()),true));
 for(const [name,key,value] of [['wrong Agent','agent','built-in'],['wrong label','label','built-in || '+AGENT],['other Job','job','petclinic-ci'],['multiple executors','executors',2],['normal mode','mode','NORMAL'],['Manager source identity mismatch','trustedManifestSha256','0'.repeat(64)],['workspace as Manager','managerRelease','/work/source'],['run build injection','runBuild','1 || built-in']])test('binding rejects '+name,()=>{const b=binding();b[key]=value;assert.throws(()=>validateBinding(b),/AGENT_PLAN_REJECTED/);});
 const passive=()=>[{path:'src/example.txt',type:'file',executable:false,bytes:100}];
@@ -71,10 +71,10 @@ const allReady=()=>Object.fromEntries(readinessKeys.map(k=>[k,true]));
 for(const k of readinessKeys)test('readiness refuses unproven '+k,()=>{const r=allReady();r[k]=false;assert.throws(()=>assertReadiness(r),/unproven/);});
 test('missing readiness cannot silently pass',()=>assert.throws(()=>assertReadiness({}),/explicit/));
 test('UNKNOWN or string READY are not readiness evidence',()=>{const r=allReady();r.AGENT_RESOURCE_READY='READY';assert.throws(()=>assertReadiness(r),/unproven/);});
-const expected={podUid:'synthetic-pod-uid',runId:'synthetic-ci-run'};
-const cleaned=()=>({source:'TRUSTED_OPERATOR_OBSERVATION',namespace:'devsecops-execution',...expected,nodeOffline:true,jenkinsNodeRemoved:true,agentSecretRemoved:true,podDeletionObserved:true,runtimeProcessesAbsent:true,safeArchiveVerified:true,privateFixtureRemoved:true,forceDeleteUsed:false,namespaceDeleted:false});
+const expected={podUid:'synthetic-pod-uid',runId:'synthetic-ci-run',nodeName:nodeName(1,'a'.repeat(24)),secretUid:'synthetic-secret-uid'};
+const cleaned=()=>({source:'TRUSTED_OPERATOR_OBSERVATION',namespace:'devsecops-execution',...expected,nodeNameTombstoned:true,nodeOffline:true,jenkinsNodeRemoved:true,agentSecretRemoved:true,podDeletionObserved:true,runtimeProcessesAbsent:true,safeArchiveVerified:true,privateFixtureRemoved:true,forceDeleteUsed:false,namespaceDeleted:false});
 test('complete synthetic cleanup receipt passes only its contract',()=>assert.equal(validateCleanup(cleaned(),expected),true));
-for(const k of ['nodeOffline','jenkinsNodeRemoved','agentSecretRemoved','podDeletionObserved','runtimeProcessesAbsent','safeArchiveVerified','privateFixtureRemoved'])test('cleanup retains failure '+k,()=>{const x=cleaned();x[k]=false;assert.throws(()=>validateCleanup(x,expected),/cleanup incomplete/);});
+for(const k of ['nodeNameTombstoned','nodeOffline','jenkinsNodeRemoved','agentSecretRemoved','podDeletionObserved','runtimeProcessesAbsent','safeArchiveVerified','privateFixtureRemoved'])test('cleanup retains failure '+k,()=>{const x=cleaned();x[k]=false;assert.throws(()=>validateCleanup(x,expected),/cleanup incomplete/);});
 test('cleanup must not rely on self report',()=>{const x=cleaned();x.source='AGENT_SELF_REPORT';assert.throws(()=>validateCleanup(x,expected),/ownership/);});
 test('cleanup cannot delete a different Pod UID',()=>assert.throws(()=>validateCleanup(cleaned(),{...expected,podUid:'other'}),/ownership/));
 test('no namespace deletion',()=>{const x=cleaned();x.namespaceDeleted=true;assert.throws(()=>validateCleanup(x,expected),/unsafe/);});

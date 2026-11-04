@@ -4,6 +4,11 @@ import {resolveCI,AGENT,JOB,RELEASE} from '../../../security/manager-v2/ci/contr
 export {AGENT,JOB,RELEASE};
 export const NS='devsecops-execution';
 export const UID=24001; // Proposed only: inspected root-owned 0755 tools; no host account/process found.
+export const NODE_PLACEHOLDER='gitleaks-v2-REQUIRES_BUILD_AND_RANDOM_NONREUSED_NONCE';
+export function nodeName(build,nonce){
+ if(!Number.isSafeInteger(build)||build<1||build>999999999||typeof nonce!=='string'||!(/^[a-f0-9]{24}$/).test(nonce))throw Error('AGENT_PLAN_REJECTED: trusted build/nonce');
+ return 'gitleaks-v2-'+build+'-'+nonce;
+}
 export const SA='gitleaks-validation-agent';
 export const UNRESOLVED_IMAGE='127.0.0.1:30050/platform-security/gitleaks-validation-agent@sha256:UNRESOLVED';
 export const LABELS={'security.devops.local/purpose':'gitleaks-validation','security.devops.local/run-id':'REQUIRES_BOUND_RUN_ID'};
@@ -20,8 +25,8 @@ export function candidatePod(){return {
  securityContext:{runAsNonRoot:true,runAsUser:UID,runAsGroup:UID,fsGroup:UID,supplementalGroups:[],supplementalGroupsPolicy:'Strict',fsGroupChangePolicy:'OnRootMismatch',seccompProfile:{type:'RuntimeDefault'}},
  affinity:{nodeAffinity:{requiredDuringSchedulingIgnoredDuringExecution:{nodeSelectorTerms:[{matchExpressions:[{key:'kubernetes.io/os',operator:'In',values:['linux']},{key:'kubernetes.io/arch',operator:'In',values:['arm64']}]}]}}},
  containers:[{name:'validation-agent',image:UNRESOLVED_IMAGE,imagePullPolicy:'Never',securityContext:clone(security),
- command:['/usr/bin/tini','-s','-g','--','/opt/java/openjdk/bin/java'],
- args:['-Xmx192m','-XX:MaxMetaspaceSize=96m','-XX:MaxDirectMemorySize=32m','-XX:ReservedCodeCacheSize=48m','-Djava.io.tmpdir=/tmp','-jar','/opt/agent/agent.jar','-url','http://jenkins.ns-devops.svc.cluster.local:8080/','-webSocket','-secret','@/agent-auth/secret','-name',AGENT,'-workDir','/work/remoting','-noReconnect'],
+ command:['/usr/bin/tini','-s','-g','--','/usr/bin/prlimit','--nproc=128:128','--core=0:0','--','/opt/java/openjdk/bin/java'],
+ args:['-Xmx192m','-XX:MaxMetaspaceSize=96m','-XX:MaxDirectMemorySize=32m','-XX:ReservedCodeCacheSize=48m','-Djava.io.tmpdir=/tmp','-Duser.home=/work/home','-jar','/opt/agent/agent.jar','-url','http://jenkins.ns-devops.svc.cluster.local:8080/','-webSocket','-secret','@/agent-auth/secret','-name',NODE_PLACEHOLDER,'-workDir','/work/remoting','-noReconnect'],
  env:[{name:'HOME',value:'/work/home'},{name:'TMPDIR',value:'/tmp'},{name:'JENKINS_HOME',value:'/work/home'},{name:'NODE_OPTIONS',value:'--max-old-space-size=128'},{name:'POD_UID',valueFrom:{fieldRef:{fieldPath:'metadata.uid'}}}],
  resources:{requests:{cpu:'250m',memory:'512Mi','ephemeral-storage':'128Mi'},limits:{cpu:'1',memory:'768Mi','ephemeral-storage':'256Mi'}},
  volumeMounts:[{name:'work',mountPath:'/work'},{name:'temp',mountPath:'/tmp'},{name:'agent-auth',mountPath:'/agent-auth',readOnly:true}]}],
@@ -34,7 +39,7 @@ export function candidateNetworkPolicy(){return {
  egress:[{to:[{namespaceSelector:{matchLabels:{'kubernetes.io/metadata.name':'ns-devops'}},podSelector:{matchLabels:{app:'jenkins'}}}],ports:[{protocol:'TCP',port:8080}]},
  {to:[{namespaceSelector:{matchLabels:{'kubernetes.io/metadata.name':'kube-system'}},podSelector:{matchLabels:{'k8s-app':'kube-dns'}}}],ports:[{protocol:'UDP',port:53},{protocol:'TCP',port:53}]}]
  }};}
-export const readinessKeys=['AGENT_CAPABILITY_READY','AGENT_IDENTITY_READY','AGENT_RESOURCE_READY','AGENT_NETWORK_READY','AGENT_IMAGE_READY','AGENT_CLEANUP_READY','AGENT_JOB_BINDING_READY'];
+export const readinessKeys=['AGENT_CAPABILITY_READY','AGENT_IDENTITY_READY','AGENT_RESOURCE_READY','AGENT_NETWORK_READY','AGENT_IMAGE_READY','AGENT_CLEANUP_READY','AGENT_JOB_BINDING_READY','AGENT_FIXTURE_READY'];
 export function assertReadiness(r){
  must(r&&same(Object.keys(r).sort(),[...readinessKeys].sort()),'readiness keys must be explicit and exact');
  for(const k of readinessKeys)must(r[k]===true,'unproven '+k);
@@ -73,8 +78,8 @@ export function validateFixtureFiles(files){
  return true;
 }
 export function validateBinding(b){
- must(b&&same(Object.keys(b).sort(),['agent','executors','job','label','managerRelease','mode','runBuild','trustedManifestSha256'].sort()),'binding field allowlist');
- must(b.agent===AGENT&&b.job===JOB&&b.executors===1&&b.mode==='EXCLUSIVE','job/agent identity');
+ must(b&&same(Object.keys(b).sort(),['agent','executors','job','label','managerRelease','mode','runBuild','runNonce','trustedManifestSha256'].sort()),'binding field allowlist');
+ must(b.agent===nodeName(b.runBuild,b.runNonce)&&b.job===JOB&&b.executors===1&&b.mode==='EXCLUSIVE','job/agent identity');
  must(Number.isSafeInteger(b.runBuild)&&b.runBuild>0&&b.label===AGENT+' && security-run-'+b.runBuild,'per-build label; no fallback');
  must(b.managerRelease===RELEASE&&b.trustedManifestSha256==='e8677d348192d378de0314c4ce5edc102514dbf0ec28c13aa850d510bf514b5a','frozen Manager identity');
  return true;
@@ -82,7 +87,8 @@ export function validateBinding(b){
 export function validateCIRequest(parameters,ci){return resolveCI(parameters,ci);}
 export function validateCleanup(x,expected){
  must(x?.source==='TRUSTED_OPERATOR_OBSERVATION'&&x.namespace===NS&&x.podUid===expected.podUid&&x.runId===expected.runId,'cleanup ownership proof');
- for(const k of ['nodeOffline','jenkinsNodeRemoved','agentSecretRemoved','podDeletionObserved','runtimeProcessesAbsent','safeArchiveVerified','privateFixtureRemoved'])must(x[k]===true,'cleanup incomplete: '+k);
+ must(x.nodeName===expected.nodeName&&x.secretUid===expected.secretUid&&typeof expected.nodeName==='string'&&typeof expected.secretUid==='string','cleanup Node/Secret identity');
+ for(const k of ['nodeNameTombstoned','nodeOffline','jenkinsNodeRemoved','agentSecretRemoved','podDeletionObserved','runtimeProcessesAbsent','safeArchiveVerified','privateFixtureRemoved'])must(x[k]===true,'cleanup incomplete: '+k);
  must(x.forceDeleteUsed===false&&x.namespaceDeleted===false,'unsafe cleanup');
  return true;
 }

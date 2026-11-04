@@ -1,0 +1,37 @@
+{
+  "schemaVersion": 1,
+  "classification": "STATIC_DESIGN_WITH_KNOWN_GAPS",
+  "controller": "http://jenkins.ns-devops.svc.cluster.local:8080/",
+  "clusterIPObserved": "10.43.47.83",
+  "webSocketEndpoint": "/wsagents/",
+  "transport": "WS_OVER_HTTP_NO_TLS",
+  "publicProbeStatus": 400,
+  "actualAgentHandshake": "NOT_TESTED",
+  "tlsCertificateVerification": "NOT_APPLICABLE_FOR_CURRENT_HTTP_PATH_NO_TLS_PROTECTION",
+  "approvedSecureTransport": "MISSING",
+  "dns": "kube-system/kube-dns TCP+UDP53 selector only",
+  "fixtureSource": "baked pinned passive data; no checkout or network download",
+  "proxy": "none; unexpected proxy env rejected by exact Pod template",
+  "allowPolicy": "gitleaks-agent-controller-only; exact purpose selector; only ns-devops/app=jenkins TCP8080 plus DNS",
+  "existingDenyPolicy": "scanner-deny-network retained",
+  "implementation": "k3s KUBE-NWPLCY chains observed; disable flag absent",
+  "unexpectedAccessMatrix": {
+    "kubernetesServiceIP": "NOT_TESTED",
+    "kubernetesNodeIP": "NOT_TESTED",
+    "kubernetesPodIP": "NOT_TESTED",
+    "metadata169254169254": "NOT_TESTED",
+    "harbor": "NOT_TESTED",
+    "gitlab": "NOT_TESTED",
+    "internet": "NOT_TESTED",
+    "sameNodeServices": "NOT_TESTED"
+  },
+  "limitations": [
+    "NetworkPolicy is additive, union of matching policies; ZAP label prohibited",
+    "L3/L4 allow to Jenkins allows other controller URLs on same port",
+    "Node-local/host traffic and Service DNAT limitations require actual negative probes",
+    "DNS allows data in DNS questions; not L7 exfiltration protection",
+    "No per-container policy or TLS supplied by NetworkPolicy"
+  ],
+  "runtime": "NOT_VERIFIED",
+  "designReadiness": "NOT_READY"
+}

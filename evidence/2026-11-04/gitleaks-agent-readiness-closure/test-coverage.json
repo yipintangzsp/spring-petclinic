@@ -1,0 +1,100 @@
+{
+  "classification": "TEST_SCOPE_NOT_RUNTIME_QUALIFICATION",
+  "items": [
+    {
+      "requirement": "Agent UID/GID",
+      "class": "STATIC",
+      "evidence": "plan.test.mjs: root/nobody UID and runtime unknown"
+    },
+    {
+      "requirement": "Docker group",
+      "class": "STATIC",
+      "evidence": "plan.test.mjs: supplementary group988"
+    },
+    {
+      "requirement": "Docker socket mount",
+      "class": "STATIC",
+      "evidence": "plan.test.mjs: hostPath whitelist"
+    },
+    {
+      "requirement": "ServiceAccount token",
+      "class": "STATIC",
+      "evidence": "plan.test.mjs: SA and Pod automount false"
+    },
+    {
+      "requirement": "Node secret not in evidence",
+      "class": "STATIC",
+      "evidence": "readiness-contract.test.mjs: strict receipt field/value allowlist; actual credential never fetched"
+    },
+    {
+      "requirement": "Agent label",
+      "class": "STATIC",
+      "evidence": "plan.test.mjs: exact per-build label"
+    },
+    {
+      "requirement": "built-in fallback",
+      "class": "STATIC",
+      "evidence": "plan.test.mjs: unknown label and unchanged CI refusal"
+    },
+    {
+      "requirement": "Fixture unapproved",
+      "class": "FIXTURE",
+      "evidence": "readiness-contract.test.mjs: pending approval refusal; positive is schema-only synthetic approval"
+    },
+    {
+      "requirement": "Fixture revision",
+      "class": "FIXTURE",
+      "evidence": "readiness-contract.test.mjs: changed contentDigest refused"
+    },
+    {
+      "requirement": "Manager version",
+      "class": "STATIC",
+      "evidence": "plan.test.mjs + readiness-contract.test.mjs: manifest mismatch"
+    },
+    {
+      "requirement": "Image digest",
+      "class": "STATIC",
+      "evidence": "plan.test.mjs: unresolved final image refused"
+    },
+    {
+      "requirement": "ARM64/AMD64",
+      "class": "STATIC",
+      "evidence": "plan.test.mjs: amd64 affinity refused"
+    },
+    {
+      "requirement": "Resource insufficient",
+      "class": "FIXTURE",
+      "evidence": "readiness-contract.test.mjs: resource budget and unknown proof rejection"
+    },
+    {
+      "requirement": "NetworkPolicy incomplete",
+      "class": "STATIC",
+      "evidence": "plan.test.mjs/readiness-contract.test.mjs: missing/widened or missing TLS proof refused"
+    },
+    {
+      "requirement": "Cleanup wrong ownership",
+      "class": "FIXTURE",
+      "evidence": "plan.test.mjs/readiness-contract.test.mjs: wrong Pod/Secret UID"
+    },
+    {
+      "requirement": "Secret remains",
+      "class": "FIXTURE",
+      "evidence": "plan.test.mjs: agentSecretRemoved false remains incomplete"
+    },
+    {
+      "requirement": "Node name reuse",
+      "class": "FIXTURE",
+      "evidence": "readiness-contract.test.mjs: tombstone refusal"
+    },
+    {
+      "requirement": "Production baseline",
+      "class": "REAL",
+      "evidence": "production-comparison.json: read-only only"
+    },
+    {
+      "requirement": "Agent admission/WS/auth/PID/network/cleanup",
+      "class": "NOT_TESTED",
+      "evidence": "No Agent Pod, Node, credentials, or CI created"
+    }
+  ]
+}

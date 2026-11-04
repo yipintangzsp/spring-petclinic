@@ -58,7 +58,7 @@ Agent只持有绑定一个临时 Node 的 remoting secret，不持有 Jenkins管
 只读RBAC盘点未发现该候选SA或namespace-wide SA组继承业务资源权限；仍会继承系统默认discovery/basic-user等权限。
 这不等于“API零权限”，而且没有真实SA/token，真实认证与can-i验证仍未执行。
 remoting secret存于一次性 Secret只读挂载 `/agent-auth/secret`，不出现在命令行明文、环境变量、工作区或归档。
-其非生产 Node凭据也属于敏感数据；结束必须删除Secret和Node注册，不能声称Agent完全“无凭据”。
+其非生产 Node凭据也属于敏感数据；结束必须删除Secret和Node注册，不能声称Agent完全“无凭据”。Jenkins该版本Node Secret无独立TTL，按Node名派生；同名重建不是轮换。参见下方本轮补充。
 当前 Controller 的 docker/root等效权限和全局授权遗留问题保持未解决，独立 Pod不等于Controller整体整改完成。
 
 ## 两个需要先适配的真实代码阻塞
@@ -134,18 +134,18 @@ Kubernetes NetworkPolicy对本节点流量和Service DNAT有实现限制；尤�
 
 ## Job绑定、启动与身份验收（以后另行授权）
 
-`node.candidate.xml`：固定Node名、一个executor、EXCLUSIVE、独立/work/jenkins，WebSocket launcher。
+`node.candidate.xml`：每轮唯一且永不复用的物理Node名、固定逻辑label、一个executor、EXCLUSIVE、独立/work/jenkins，WebSocket launcher。
 run标签从可信Job整数BUILD_NUMBER产生，不允许用户指定label、shell、路径或镜像。
 `job-binding.plan.json`列出对原禁用Job的最小改动：stage label改为
 `gitleaks-validation-restricted && security-run-${BUILD_NUMBER}`，其余参数白名单、可信入口、非发布限制保留。
 Manager版本升级必须重新生成和审查完整manifest/hash；不手改旧manifest来“通过”。
 Agent不存在时父流水线8分钟超时失败，不回退built-in；identity/provision失败直接FAIL/NOT_READY。
 不能仅用label/EXCLUSIVE当作跨Job授权隔离；未来受信provisioner必须校验Node、Pod UID和固定job/build归属，
-核实当前队列、其他Job配置权限与Controller Agent-to-Controller保护。未经审核的Job不得借用该Agent。
+核实当前队列、其他Job配置权限与Controller Agent-to-Controller保护。现有FullControlOnceLoggedIn仍是阻塞，不声称已限制其他Job。未经审核的Job不得借用该Agent。
 
 未来顺序：
 
-1. 七项规划前置条件全通过后，取得创建单次Node/SA/Secret/Pod/目标NetworkPolicy及清理的专项批准。
+1. 全部规划前置条件（含Fixture批准）通过后，取得创建单次Node/SA/Secret/Pod/目标NetworkPolicy及清理的专项批准。
 2. 重新只读采样，确认quota空闲、无生产发布冲突、所有受保护digest/summary不变，镜像已本地缓存。
 3. 应用无权限SA、仅Agent专用网络规则；注册唯一EXCLUSIVE Node，绑定固定job/build/runId，安全注入仅该Node的secret。
 4. 创建一个Pod，记录UID，验证真实UID/GID/groups、NoNewPrivs、capabilities、seccomp、只读mount、无socket/API token。
@@ -166,7 +166,7 @@ Controller失联：`-noReconnect`限制连接断开后的重连；Pod activeDead
 若初始连接挂起，deadline也必须收尾。timeout/SIGTERM忽略/多级后代由runtime终止整个容器域，
 **具体行为留到真实负例验证**，不能因写了tini或deadline宣称VERIFIED。
 若节点/kubelet失联，deadline不保证在墙钟600秒内停止进程；保留CLEANUP_INCOMPLETE，锁住后续run，
-管理端确认进程已停止或节点可靠隔离前不得重用Node名/secret/fixture，不得用API force delete伪造清理。
+管理端确认进程已停止或节点可靠隔离前不得再执行；物理Node名在任何情况下永久禁止复用，不得用API force delete伪造清理。
 
 `validateCleanup`只校验来自可信管理端的定向receipt契约；synthetic PASS不等于真实删除证明。
 清理必须保留任何Pod删除失败、remoting Node残留或工作区残留的原始错误，不被finally成功覆盖。
@@ -199,3 +199,34 @@ Manager身份/路径穿越/链接/未知参数/错误label/资源与网络条件
 [Jenkins Agent/WebSocket端口](https://www.jenkins.io/doc/book/security/services/)、
 [NetworkPolicy限制](https://kubernetes.io/docs/concepts/services-networking/network-policies/)、
 [临时存储计量与驱逐](https://kubernetes.io/docs/concepts/storage/ephemeral-storage/)。
+
+
+## 2026-11-04 定向收口（当前权威补充）
+
+本轮证据与完整执行清单：[readiness closure](../../../../evidence/2026-11-04/gitleaks-agent-readiness-closure/REPORT.md)。
+历史证据不重写；a7379f13候选按Git历史字节验证，本目录是用户批准的候选演进。
+
+- `identity-boundary.plan.json`分别列Linux24001、无Token SA、一次性Inbound Node、Node连接凭据、Controller管理身份。
+  Jenkins2.568.1真实只读反射确认addNode/removeNode/JNLPLauncher/WebSocket可用，**没有调用凭据getter或任何mutator**。
+  Node名格式为`gitleaks-v2-<build>-<管理端96-bit随机nonce>`；固定label保留。
+  Jenkins Secret由全局密钥与Node名派生，非原生短TTL。删除Node仅在该身份不存在时拒绝认证，必须永久不复用名称；
+  未来以非敏感tombstone登记，真实断连/删除后拒绝重连仍NOT_TESTED。不更改全局SLAVE_SECRET。
+- `fixture-contract.json`固定java-fixture/java-web、clean/secret两份被动文本、逐文件SHA及contentDigest、无Git history、
+  原Gate/Policy预期PASS/PASS和FAIL/FAIL。假token只由可信候选generator生成，从未向服务申请/使用；不归档明文。
+  两份CI审批均PENDING_APPROVAL，授权主体/引用为null；单元测试里的APPROVED仅合成结构测试，**不是实际批准**。
+- `readiness-contract.mjs`仅验证离线契约结构，明确`runtimeAuthorization:false`；`authorizeRuntime()`永远拒绝执行。
+  不提供Pod backend，不更改原entry/Runner/Policy；唯一物理Node名目前会被冻结CI固定Node校验拒绝，不能伪造NODE_NAME。
+- PID：实际kubelet podPidsLimit=-1。已存在的util-linux2.41提供prlimit；候选命令增加继承`RLIMIT_NPROC=128:128`及`CORE=0`。
+  这是**每real UID含线程的限制，不是Pod cgroup pids.max**；专用UID、无CAP/NoNewPrivs必需，Java/Node/Go组合线程峰值未验证。
+  本轮未执行该包装器/未创建Pod，不宣称PID/生命周期验收通过。不修改kubelet。
+- 资源：只重新采样devops。基础quota允许单Agent，requests250m/512Mi、limits1/768Mi不变。
+  tmpfs160Mi计入内存；临时存储128/256Mi是计量/驱逐限制，非强制quota。最终镜像/解包/线程/内存峰值仍未知。
+- 工具：已读现有Controller内Java21.0.11、Node20.19.2、Git2.47.3、tini0.19.0、prlimit2.41、CA包版本/文件SHA/许可记录。
+  公共agent.jar为3355.v388858a_47b_33，SHA与前轮一致。Gitleaks二进制出处是**HISTORICAL_ARCHIVE**，不是本轮扫描。
+  组合镜像没有构建，无最终digest；amd64仍NOT_VERIFIED，不改ARM64约束。完整依赖闭包及最终镜像许可清单待构建输入审核。
+- 网络：`network-boundary.plan.json`记录真实Service与/wsagents/路径。当前HTTP/WS，无TLS，不能声称证书已验证。
+  Jenkins Ingress也无tls配置。需另行评审可信加密路径，不允许在本轮修改全局TLS/代理。
+  可见17条KUBE-NWPLCY链不等于Agent数据面隔离通过；API/metadata/同节点流量及DNS负例全部NOT_TESTED。
+
+本轮未构建镜像/创建任何线上资源/启用Job。下一步只能继续离线收口Pod身份和输入批准backend、受信传输及镜像输入清单；
+相关变更需单独评审。真实创建与运行仍须后续专项批准，不能凭本目录的静态通过执行CI。

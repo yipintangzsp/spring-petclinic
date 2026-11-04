@@ -15,4 +15,4 @@ RUN cd /opt/validation-inputs && sha256sum -c image-inputs.sha256 && \
 USER 24001:24001
 ENV HOME=/work/home TMPDIR=/tmp JENKINS_HOME=/work/home
 # The reviewed Pod overrides command/args: never use the controller entrypoint.
-ENTRYPOINT ["/usr/bin/tini", "-s", "-g", "--", "/opt/java/openjdk/bin/java"]
+ENTRYPOINT ["/usr/bin/tini", "-s", "-g", "--", "/usr/bin/prlimit", "--nproc=128:128", "--core=0:0", "--", "/opt/java/openjdk/bin/java"]

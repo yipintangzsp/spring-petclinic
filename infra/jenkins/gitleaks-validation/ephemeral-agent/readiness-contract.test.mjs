@@ -1,0 +1,36 @@
+// STATIC / FIXTURE only. No Linux process, network, Jenkins or scanner execution.
+import test from 'node:test';import assert from 'node:assert/strict';import fs from 'node:fs';
+import {fixtureFiles,fixtureContract,validateFixtureApproval,validateRunBinding,safeArchiveMetadata,assessResources,assessNetwork,authorizeRuntime,MANIFEST} from './readiness-contract.mjs';
+import {nodeName,AGENT,JOB,RELEASE,candidatePod,validateCleanup} from './plan.mjs';
+const approval=c=>({status:'APPROVED',subject:'UNIT_ONLY_SYNTHETIC_REVIEWER',reference:'FIXTURE_NOT_REAL_APPROVAL',projectId:c.projectId,case:c.case,contentDigest:c.contentDigest,managerManifest:MANIFEST});
+for(const id of ['clean','secret']){
+ test('FIXTURE '+id+' manifest and synthetic approval are not CI permission',()=>{const c=fixtureContract(id),r=validateFixtureApproval(c,fixtureFiles(id),approval(c));assert.equal(r.runtimeAuthorization,false);assert.equal(c.approval.status,'PENDING_APPROVAL');assert.equal(c.approval.subject,null);});
+ test('FIXTURE '+id+' pending approval rejected',()=>{const c=fixtureContract(id);assert.throws(()=>validateFixtureApproval(c,fixtureFiles(id),{...approval(c),status:'PENDING_APPROVAL'}),/not authorized/);});
+ test('FIXTURE '+id+' wrong revision rejected',()=>{const c=fixtureContract(id),files=fixtureFiles(id);files[0].content+='changed';assert.throws(()=>validateFixtureApproval(c,files,approval(c)),/revision/);});
+ test('FIXTURE '+id+' scanner expectation only, no real decision claimed',()=>{const c=fixtureContract(id);assert.equal(c.expected.oldGate,id==='clean'?'PASS':'FAIL');assert.equal(c.expected.policy,c.expected.oldGate);assert.equal(c.gitHistory,false);});
+}
+for(const [field,value] of [['projectId','production'],['profile','python-api'],['gitHistory',true],['scanScope','GIT_HISTORY'],['trustedConfig','USER_CONFIG']])test('STATIC fixture contract change rejected '+field,()=>{const c=fixtureContract('clean'),a=approval(c);c[field]=value;assert.throws(()=>validateFixtureApproval(c,fixtureFiles('clean'),a),/pinned/);});
+for(const field of ['projectId','case','contentDigest','managerManifest'])test('STATIC approval mismatch '+field,()=>{const c=fixtureContract('clean'),a=approval(c);a[field]='wrong';assert.throws(()=>validateFixtureApproval(c,fixtureFiles('clean'),a),/binding/);});
+test('STATIC approval cannot inject Node connection parameters',()=>{const c=fixtureContract('clean');assert.throws(()=>validateFixtureApproval(c,fixtureFiles('clean'),{...approval(c),secret:'UNIT_ONLY'}),/allowlist/);});
+const binding=()=>({agent:nodeName(42,'a'.repeat(24)),runNonce:'a'.repeat(24),job:JOB,executors:1,mode:'EXCLUSIVE',runBuild:42,label:AGENT+' && security-run-42',managerRelease:RELEASE,trustedManifestSha256:MANIFEST});
+test('STATIC unique physical name and fixed logical label',()=>{const b=binding(),r=validateRunBinding(b,[]);assert.equal(r.logicalLabel,AGENT);assert.notEqual(r.physicalNode,AGENT);assert.equal(r.secretTTL,null);assert.equal(r.frozenEntryCompatible,false);});
+test('STATIC Node reuse rejected even with same build',()=>{const b=binding();assert.throws(()=>validateRunBinding(b,[b.agent]),/reused/);});
+test('STATIC missing trusted name registry rejected',()=>assert.throws(()=>validateRunBinding(binding()),/registry/));
+for(const n of ['1;sh','gitleaks-validation-restricted','a'.repeat(23),'A'.repeat(24)])test('STATIC nonce injection rejected '+n,()=>assert.throws(()=>nodeName(42,n),/nonce/));
+test('STATIC nonce changes physical Node identity',()=>assert.notEqual(nodeName(42,'a'.repeat(24)),nodeName(42,'b'.repeat(24))));
+test('STATIC no connection secret value accepted in evidence receipt',()=>assert.throws(()=>safeArchiveMetadata({nodeName:binding().agent,secret:'SYNTHETIC_NOT_REAL'}),/credential/));
+test('STATIC nested Secret artifact rejected',()=>assert.throws(()=>safeArchiveMetadata({classification:{secret:'SYNTHETIC'}}),/nested/));
+test('STATIC receipt permits UID only, never credential contents',()=>assert.deepEqual(safeArchiveMetadata({classification:'FIXTURE',secretUid:'11111111-1111-4111-8111-111111111111'}),{classification:'FIXTURE',secretUid:'11111111-1111-4111-8111-111111111111'}));
+test('STATIC credential disguised as digest rejected',()=>assert.throws(()=>safeArchiveMetadata({resultDigest:'SYNTHETIC_SECRET_NOT_REAL'}),/archive digest/));
+test('STATIC source cannot smuggle command or link target',()=>{const c=fixtureContract('clean'),f=fixtureFiles('clean');f[0].target='/opt/manager';assert.throws(()=>validateFixtureApproval(c,f,approval(c)),/field allowlist/);});
+const resource=()=>({node:'devops',arch:'arm64',pressure:false,freeRequestedCpu:1.5,freeRequestedMemoryBytes:5*2**30,minAvailableMemoryBytes:4*2**30,freeEphemeralBytes:40*2**30,requiredPeakEphemeralBytes:2**30,quotaFree:true,peakMemoryVerified:true,pidLimitVerified:true,imageCached:true,imageUnpackBudgetVerified:true,ephemeralPeakVerified:true});
+test('STATIC synthetic resource proof remains non-runtime',()=>assert.equal(assessResources(resource()).runtime,'NOT_TESTED'));
+for(const k of ['quotaFree','peakMemoryVerified','pidLimitVerified','imageCached','imageUnpackBudgetVerified','ephemeralPeakVerified'])test('STATIC resource missing proof '+k,()=>{const x=resource();x[k]=false;assert.throws(()=>assessResources(x),/unproven/);});
+for(const [k,v] of [['freeRequestedCpu',0.1],['freeRequestedMemoryBytes',1],['minAvailableMemoryBytes',2**30],['freeEphemeralBytes',1],['arch','amd64'],['pressure',true],['requiredPeakEphemeralBytes',NaN]])test('STATIC insufficient or unknown resource '+k,()=>{const x=resource();x[k]=v;assert.throws(()=>assessResources(x),/READINESS_REJECTED/);});
+test('STATIC proposed PID inheritance and core dump prohibition fixed in command',()=>{const c=candidatePod().spec.containers[0];assert.ok(c.command.includes('--nproc=128:128'));assert.ok(c.command.includes('--core=0:0'));});
+const network=()=>({transport:'WEBSOCKET',fallback:null,denyAllPresent:true,exactControllerSelector:true,dnsOnly:true,noSourceDownload:true,noProxy:true,policyImplementationObserved:true,tlsVerified:true,apiMetadataDenialVerified:true});
+for(const k of ['denyAllPresent','exactControllerSelector','dnsOnly','noSourceDownload','noProxy','policyImplementationObserved','tlsVerified','apiMetadataDenialVerified'])test('STATIC network missing proof '+k,()=>{const x=network();x[k]=false;assert.throws(()=>assessNetwork(x),/network/);});
+test('STATIC network YAML proof never declares runtime isolation',()=>assert.equal(assessNetwork(network()).runtime,'NOT_VERIFIED'));
+test('STATIC no provision or CI authorization entrypoint',()=>assert.throws(authorizeRuntime,/CI_EXECUTION_NOT_READY/));
+test('STATIC rendered candidate remains exact and contains no actual credential value',()=>{const p=JSON.parse(fs.readFileSync(new URL('./rendered/pod.candidate.yaml',import.meta.url)));assert.deepEqual(p,candidatePod());assert.ok(!JSON.stringify(p).includes('JENKINS_SECRET'));});
+test('STATIC cleanup rejects wrong secret UID and old Node',()=>{const expected={podUid:'unit-pod',secretUid:'unit-secret',nodeName:binding().agent,runId:'unit-run'};assert.throws(()=>validateCleanup({source:'TRUSTED_OPERATOR_OBSERVATION',namespace:'devsecops-execution',...expected,secretUid:'other'},expected),/Node\/Secret/);});

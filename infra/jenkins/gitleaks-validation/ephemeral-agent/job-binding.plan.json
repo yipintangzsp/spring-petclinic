@@ -4,7 +4,7 @@
   "existingLocalJob": "infra/jenkins/gitleaks-validation/job.xml",
   "onlineValidationJobPresent": false,
   "job": "security-manager-v2-gitleaks-validation",
-  "requiredNodeName": "gitleaks-validation-restricted",
+  "requiredNodeName": "gitleaks-v2-${BUILD_NUMBER}-${TRUSTED_OPERATOR_RANDOM_96BIT_NONREUSED_NONCE}",
   "requiredLabelExpression": "gitleaks-validation-restricted && security-run-${BUILD_NUMBER}",
   "labelsSource": "Trusted Job uses integer Jenkins BUILD_NUMBER; never a user parameter",
   "executors": 1,
@@ -23,10 +23,17 @@
   "liveNodeCreateCount": 0,
   "currentIdentityEntryCompatibleWithPod": false,
   "requiredChangesBeforeEnable": [
+    "Reviewed physical Node binding backend for unique names, preserve frozen host contract; never spoof NODE_NAME",
     "Reviewed Pod identity and lifecycle verification backend; preserve host backend",
     "Reviewed Pod immutable source approval/output backend; preserve original scanner facts and Gate",
     "Regenerate pinned trusted release and disabled Job with new reviewed manifest, never bypass old identity check",
     "Bind only approved Job/build to one temporary node and run label; Controller-side verify no unrelated task can use it",
     "Verify remoting image/UID/read-only workDir compatibility and transport without granting API credentials"
-  ]
+  ],
+  "fixedLogicalAgentLabel": "gitleaks-validation-restricted",
+  "nodeNameSource": "Trusted operator only; never fixture or build parameter; persistent never-reuse registry required",
+  "credentialTTL": null,
+  "credentialInvalidation": "Delete exact Node, verify reconnection denied; never recreate same Node name. No claim of cryptographic TTL or rotation.",
+  "currentFrozenContractAcceptsUniqueNodeName": false,
+  "controllerAuthorizationBoundary": "FullControlOnceLoggedIn; label/EXCLUSIVE do not provide per-job ACL. Restricted-task ownership verification NOT_IMPLEMENTED."
 }

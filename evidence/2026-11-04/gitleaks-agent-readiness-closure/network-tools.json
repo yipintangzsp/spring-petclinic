@@ -1,0 +1,163 @@
+{
+  "classification": "REAL_READ_ONLY_NOT_AGENT_RUNTIME",
+  "tools": {
+    "licenses": [
+      {
+        "path": "/usr/share/doc/git/copyright",
+        "licenseMentions": [
+          "License: GPL-2",
+          "License: BSD-3-clause",
+          "License: Zlib",
+          "License: LGPL-2.1+",
+          "License: EDL-1.0",
+          "License: GPL-2+",
+          "License: Expat",
+          "License: GPL-1+ or Artistic-1",
+          "    a) the GNU General Public License as published by the Free Software",
+          "License: ISC",
+          "License: mingw-runtime",
+          "License: Boost",
+          "License: dlmalloc",
+          "License: Apache-2.0",
+          " the GNU General Public License as published by the Free Software",
+          " On Debian systems, the complete text of the GNU General Public License"
+        ]
+      },
+      {
+        "path": "/usr/share/doc/nodejs/copyright",
+        "licenseMentions": [
+          "License: Expat",
+          "License: Expat or Apache-2.0",
+          "License: CC0",
+          "License: BSD-3-clause~holders",
+          "License: BSD-3-clause~Google",
+          "License: BSD-3-clause~contributors or W3C-Test-Suite",
+          "License: BSD-2-clause",
+          "License: unlicense",
+          "License: CC0 or BSD-2-clause~holders",
+          "License: ISC",
+          "License: BSD-2-clause~holders",
+          "License: GPL3+ with autoconf exception",
+          "License: MIT/X11",
+          "License: BSD-2-clause~holders and Expat",
+          "License: Apache-2.0",
+          "License: LGPL-2.1+"
+        ]
+      },
+      {
+        "path": "/usr/share/doc/tini/copyright",
+        "licenseMentions": [
+          "License: Expat"
+        ]
+      },
+      {
+        "path": "/usr/share/doc/util-linux/copyright",
+        "licenseMentions": [
+          "License: GPL-2+",
+          "License: GPL-2",
+          "License: GPL-3+",
+          "License: LGPL-2.1+",
+          "License: public-domain",
+          "License: BSD-4-clause",
+          "License: Expat",
+          "License: ISC",
+          "License: BSD-3-clause",
+          "License: BSLA",
+          "License: LGPL-2+",
+          "License: LGPL",
+          "License: BSD-2-clause",
+          "License: LGPL-3+",
+          " it under the terms of the GNU General Public License, v2, as",
+          " GNU General Public License for more details."
+        ]
+      },
+      {
+        "path": "/usr/share/doc/ca-certificates/copyright",
+        "licenseMentions": [
+          "License: GPL-2+",
+          " it under the terms of the GNU General Public License as published by",
+          " GNU General Public License for more details.",
+          " You should have received a copy of the GNU General Public License",
+          "License: MPL-2.0",
+          "     means either the GNU General Public License, Version 2.0, the GNU"
+        ]
+      },
+      {
+        "path": "/opt/java/openjdk/legal/java.base/LICENSE",
+        "licenseMentions": [
+          "The GNU General Public License (GPL)",
+          "and change it.  By contrast, the GNU General Public License is intended to",
+          "    under the terms of the GNU General Public License as published by the Free",
+          "    FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for",
+          "    You should have received a copy of the GNU General Public License along",
+          "the words \"Oracle designates this particular file as subject to the \"Classpath\"",
+          "    the GNU General Public License cover the whole combination."
+        ]
+      }
+    ],
+    "packages": "ca-certificates 20250419 all\ngit 1:2.47.3-0+deb13u1 arm64\nlibc6 2.41-12+deb13u3 arm64\nlibssl3t64 3.5.6-1~deb13u2 arm64\nlibstdc++6 14.2.0-19 arm64\nnodejs 20.19.2+dfsg-1+deb13u2 arm64\ntini 0.19.0-3+b7 arm64\nutil-linux 2.41-5 arm64\nzlib1g 1:1.3.dfsg+really1.3.1-1+b1 arm64\n",
+    "queryExit": 0,
+    "architecture": "arm64",
+    "uid": 1000,
+    "gid": 1000,
+    "groups": [
+      988,
+      1000
+    ]
+  },
+  "agentJar": {
+    "sha256": "f8ff1d49076a2ee0d3f8cc60168f43c23c2277c4cbdddaf82a52b2558ad80df5",
+    "bytes": 1407936,
+    "manifest": [
+      "Manifest-Version: 1.0",
+      "Build-Jdk-Spec: 21",
+      "Specification-Title: Jenkins remoting layer",
+      "Specification-Version: 0.0",
+      "Implementation-Title: Jenkins remoting layer",
+      "Implementation-Version: 3355.v388858a_47b_33",
+      "Version: 3355.v388858a_47b_33"
+    ],
+    "licenseFiles": [
+      "NOTICE",
+      "LICENSE"
+    ]
+  },
+  "webSocketUnauthenticatedProbe": {
+    "status": 400,
+    "actualHandshake": false
+  },
+  "jenkinsIngress": [
+    {
+      "name": "jenkins-ingress",
+      "tls": [],
+      "rules": [
+        {
+          "host": "jenkins.devops.local",
+          "http": {
+            "paths": [
+              {
+                "backend": {
+                  "service": {
+                    "name": "jenkins",
+                    "port": {
+                      "number": 8080
+                    }
+                  }
+                },
+                "path": "/",
+                "pathType": "Prefix"
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ],
+  "networkPolicyImplementation": {
+    "KUBE_NWPLCY_chainCount": 17,
+    "disableNetworkPolicyFlagPresent": false,
+    "argumentInspectionComplete": true
+  },
+  "hostUid24001Accounts": [],
+  "mutations": 0
+}
