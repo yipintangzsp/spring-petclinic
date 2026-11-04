@@ -1,0 +1,416 @@
+[
+  {
+    "socket": {
+      "uid": 0,
+      "gid": 988,
+      "mode": "0o666",
+      "ino": 1405
+    }
+  },
+  {
+    "command": [
+      "systemctl",
+      "show",
+      "docker.service",
+      "-p",
+      "MainPID",
+      "-p",
+      "ExecMainStartTimestampMonotonic",
+      "-p",
+      "NRestarts",
+      "-p",
+      "ActiveState",
+      "-p",
+      "ExecStartPost"
+    ],
+    "exit": 0,
+    "stdout": "MainPID=983\nNRestarts=0\nExecMainStartTimestampMonotonic=7142503\nExecStartPost={ path=/bin/chmod ; argv[]=/bin/chmod 666 /var/run/docker.sock ; ignore_errors=no ; start_time=[Sun 2026-11-01 10:26:51 CST] ; stop_time=[Sun 2026-11-01 10:26:51 CST] ; pid=2704 ; code=exited ; status=0 }\nActiveState=active\n",
+    "stderr": ""
+  },
+  {
+    "command": [
+      "systemctl",
+      "show",
+      "docker.socket",
+      "-p",
+      "SocketMode",
+      "-p",
+      "SocketUser",
+      "-p",
+      "SocketGroup",
+      "-p",
+      "ActiveState"
+    ],
+    "exit": 0,
+    "stdout": "SocketUser=root\nSocketGroup=docker\nSocketMode=0660\nActiveState=active\n",
+    "stderr": ""
+  },
+  {
+    "command": [
+      "getfacl",
+      "-cp",
+      "/run/docker.sock"
+    ],
+    "error": "FileNotFoundError"
+  },
+  {
+    "command": [
+      "sudo",
+      "-n",
+      "cat",
+      "/etc/systemd/system/docker.service.d/override.conf"
+    ],
+    "exit": 0,
+    "stdout": "[Service]\nExecStartPost=/bin/chmod 666 /var/run/docker.sock\n",
+    "stderr": "",
+    "sha256": "ab806ac13ce92bcc87c29d57befe985ff826c35db7fffa96b71277c3c740c8b3"
+  },
+  {
+    "command": [
+      "sudo",
+      "-n",
+      "cat",
+      "/etc/systemd/system/docker.service.d/limits.conf"
+    ],
+    "exit": 0,
+    "stdout": "[Service]\n# \u9650\u5236 docker \u53ca\u5176\u6240\u6709\u5b50\u8fdb\u7a0b\uff08\u5bb9\u5668\uff09\u6700\u591a\u4f7f\u7528 6GB \u5185\u5b58\nMemoryMax=6G\nMemoryHigh=5G\n",
+    "stderr": "",
+    "sha256": "48f794a8f78486485c4d8d20cdd1e0fbaf4b88a210741046e4b8b54b3e785782"
+  },
+  {
+    "command": [
+      "sudo",
+      "-n",
+      "kubectl",
+      "exec",
+      "-n",
+      "ns-devops",
+      "deploy/jenkins",
+      "--",
+      "sh",
+      "-c",
+      "id; docker info --format \"{{.ID}}\""
+    ],
+    "exit": 0,
+    "stdout": "uid=1000(jenkins) gid=1000(jenkins) groups=1000(jenkins)\n4616ba22-4e70-4b96-8e66-6a3a4d756cb2\n",
+    "stderr": "Defaulted container \"jenkins\" out of: jenkins, fix-permissions (init)\n"
+  },
+  {
+    "command": [
+      "sudo",
+      "-n",
+      "kubectl",
+      "get",
+      "deployment",
+      "jenkins",
+      "-n",
+      "ns-devops",
+      "-o",
+      "json"
+    ],
+    "exit": 0,
+    "stderr": "",
+    "selected": {
+      "uid": "f2540d48-0f1e-4791-b277-0432c223c98f",
+      "resourceVersion": "16441796",
+      "generation": 31,
+      "managers": [],
+      "annotationKeys": [
+        "deployment.kubernetes.io/revision",
+        "kubectl.kubernetes.io/last-applied-configuration"
+      ],
+      "securityContext": {},
+      "strategy": {
+        "type": "Recreate"
+      },
+      "replicas": 1,
+      "status": {
+        "availableReplicas": 1,
+        "conditions": [
+          {
+            "lastTransitionTime": "2026-04-19T02:25:20Z",
+            "lastUpdateTime": "2026-10-02T13:48:58Z",
+            "message": "ReplicaSet \"jenkins-6955bc6b65\" has successfully progressed.",
+            "reason": "NewReplicaSetAvailable",
+            "status": "True",
+            "type": "Progressing"
+          },
+          {
+            "lastTransitionTime": "2026-11-01T02:28:33Z",
+            "lastUpdateTime": "2026-11-01T02:28:33Z",
+            "message": "Deployment has minimum availability.",
+            "reason": "MinimumReplicasAvailable",
+            "status": "True",
+            "type": "Available"
+          }
+        ],
+        "observedGeneration": 31,
+        "readyReplicas": 1,
+        "replicas": 1,
+        "terminatingReplicas": 0,
+        "updatedReplicas": 1
+      },
+      "specSha256": "da6f3a246189536e16edd2f9275e6bcaaa04af0e6cb0c48ba34c0a51a0c4eed9"
+    }
+  },
+  {
+    "command": [
+      "docker",
+      "ps",
+      "-aq"
+    ],
+    "exit": 0,
+    "stderr": "",
+    "ids": [
+      "9054ea3560b1",
+      "3108147db2ed",
+      "3f77088081e8",
+      "304dae775d0e",
+      "a14ad0dc5fe9",
+      "ad9de1a0854e",
+      "89801ecda41b",
+      "cc3efe7be07b",
+      "e59440708107",
+      "ef61c419177c",
+      "c7abe6942396",
+      "2c997f04bab8",
+      "0f8a5b423aa0"
+    ]
+  },
+  {
+    "command": [
+      "docker",
+      "inspect",
+      "9054ea3560b1",
+      "3108147db2ed",
+      "3f77088081e8",
+      "304dae775d0e",
+      "a14ad0dc5fe9",
+      "ad9de1a0854e",
+      "89801ecda41b",
+      "cc3efe7be07b",
+      "e59440708107",
+      "ef61c419177c",
+      "c7abe6942396",
+      "2c997f04bab8",
+      "0f8a5b423aa0"
+    ],
+    "exit": 0,
+    "stderr": "",
+    "containers": [
+      {
+        "id": "9054ea3560b1409e373565c3383fb3bd855e507c5f4568596a2dd105a433c733",
+        "name": "/runtime-sbom-build-9lbr9g-postgres-1",
+        "running": false,
+        "pid": 0,
+        "startedAt": "2026-11-02T16:20:14.491241785Z",
+        "restartCount": 0,
+        "health": null,
+        "socketMounts": []
+      },
+      {
+        "id": "3108147db2ed8931f484a3a17338a2f3864dcacee4f668b8feea860be4943751",
+        "name": "/platform-defectdojo-uwsgi-1",
+        "running": true,
+        "pid": 2251,
+        "startedAt": "2026-11-01T02:26:49.646552254Z",
+        "restartCount": 0,
+        "health": null,
+        "socketMounts": []
+      },
+      {
+        "id": "3f77088081e82b2c97b5f47e6a6996e9baf8f8df217ff49fd965c2bc049d0188",
+        "name": "/platform-defectdojo-nginx-1",
+        "running": true,
+        "pid": 2271,
+        "startedAt": "2026-11-01T02:26:49.625327421Z",
+        "restartCount": 0,
+        "health": null,
+        "socketMounts": []
+      },
+      {
+        "id": "304dae775d0e6182ac8407a751e0b3789c212de17b8a187059548df212222860",
+        "name": "/platform-defectdojo-celerybeat-1",
+        "running": true,
+        "pid": 2261,
+        "startedAt": "2026-11-01T02:26:49.647194129Z",
+        "restartCount": 0,
+        "health": null,
+        "socketMounts": []
+      },
+      {
+        "id": "a14ad0dc5fe920a7855c2e984d3edad90a06e662683aabf4dba96cac5851d9db",
+        "name": "/platform-defectdojo-celeryworker-1",
+        "running": true,
+        "pid": 2284,
+        "startedAt": "2026-11-01T02:26:49.644274712Z",
+        "restartCount": 0,
+        "health": null,
+        "socketMounts": []
+      },
+      {
+        "id": "ad9de1a0854e9e1d2350537fc956da54df7f58e24d3b1bf50f170d5c3769b1cf",
+        "name": "/platform-defectdojo-initializer-1",
+        "running": false,
+        "pid": 0,
+        "startedAt": "2026-10-28T23:27:16.153720056Z",
+        "restartCount": 0,
+        "health": null,
+        "socketMounts": []
+      },
+      {
+        "id": "89801ecda41b75463fd19be1520fb0d20de39e48b8e5879fd22bed885292617e",
+        "name": "/platform-defectdojo-postgres-1",
+        "running": true,
+        "pid": 2169,
+        "startedAt": "2026-11-01T02:26:49.604243296Z",
+        "restartCount": 0,
+        "health": "healthy",
+        "socketMounts": []
+      },
+      {
+        "id": "cc3efe7be07b1c537665863dc24832c559d78274b125d79e1ce2de9d676442bc",
+        "name": "/platform-defectdojo-valkey-1",
+        "running": true,
+        "pid": 2220,
+        "startedAt": "2026-11-01T02:26:49.622107296Z",
+        "restartCount": 0,
+        "health": "healthy",
+        "socketMounts": []
+      },
+      {
+        "id": "e59440708107621ffaa4a4bbbed6c7b87c7aaf9ea191c5bb715d31133340ad6e",
+        "name": "/proxynodehub",
+        "running": true,
+        "pid": 2229,
+        "startedAt": "2026-11-01T02:26:49.620078171Z",
+        "restartCount": 0,
+        "health": "healthy",
+        "socketMounts": []
+      },
+      {
+        "id": "ef61c419177c9642a9ccb37016ea6c3473ae2eab96f98cdc79377cb91bc0058f",
+        "name": "/portainer",
+        "running": true,
+        "pid": 2272,
+        "startedAt": "2026-11-01T02:26:49.637576962Z",
+        "restartCount": 0,
+        "health": null,
+        "socketMounts": [
+          {
+            "Type": "bind",
+            "Source": "/var/run/docker.sock",
+            "Destination": "/var/run/docker.sock",
+            "Mode": "rw",
+            "RW": true,
+            "Propagation": "rprivate"
+          }
+        ]
+      },
+      {
+        "id": "c7abe6942396cb6b78cc9bc2c98e8b8ac00f2a5682f7deea68784f88b5ba2f72",
+        "name": "/petclinic-upgrade-20260930-postgres-1",
+        "running": false,
+        "pid": 0,
+        "startedAt": "2026-09-30T04:06:09.39390049Z",
+        "restartCount": 0,
+        "health": null,
+        "socketMounts": []
+      },
+      {
+        "id": "2c997f04bab807fb9b0bb2809fb37eabde3edd8a1763e467f17cbc4ce839f5f4",
+        "name": "/petclinic-devops-lab-postgres-1",
+        "running": false,
+        "pid": 0,
+        "startedAt": "2026-08-17T17:39:08.149360157Z",
+        "restartCount": 0,
+        "health": null,
+        "socketMounts": []
+      },
+      {
+        "id": "0f8a5b423aa04d1130d0e159182ab2a47db0fa6f5ab1cd2076946ba21914c5dd",
+        "name": "/petclinic-v010",
+        "running": false,
+        "pid": 0,
+        "startedAt": "2026-08-09T22:29:05.779956842Z",
+        "restartCount": 0,
+        "health": null,
+        "socketMounts": []
+      }
+    ]
+  },
+  {
+    "command": [
+      "sudo",
+      "-n",
+      "systemctl",
+      "show",
+      "gitlab-runner",
+      "-p",
+      "ActiveState",
+      "-p",
+      "MainPID"
+    ],
+    "exit": 0,
+    "stdout": "MainPID=712\nActiveState=active\n",
+    "stderr": ""
+  },
+  {
+    "command": [
+      "sudo",
+      "-n",
+      "-u",
+      "gitlab-runner",
+      "id"
+    ],
+    "exit": 0,
+    "stdout": "uid=1001(gitlab-runner) gid=1001(gitlab-runner) groups=1001(gitlab-runner),988(docker)\n",
+    "stderr": ""
+  },
+  {
+    "command": [
+      "sudo",
+      "-n",
+      "-u",
+      "gitlab-runner",
+      "docker",
+      "info",
+      "--format",
+      "{{.ID}}"
+    ],
+    "exit": 0,
+    "stdout": "4616ba22-4e70-4b96-8e66-6a3a4d756cb2\n",
+    "stderr": ""
+  },
+  {
+    "command": [
+      "docker",
+      "inspect",
+      "portainer",
+      "--format",
+      "{{json .NetworkSettings.Ports}}"
+    ],
+    "exit": 0,
+    "stderr": "",
+    "ports": {
+      "8000/tcp": null,
+      "9000/tcp": [
+        {
+          "HostIp": "0.0.0.0",
+          "HostPort": "9000"
+        },
+        {
+          "HostIp": "::",
+          "HostPort": "9000"
+        }
+      ],
+      "9443/tcp": null
+    }
+  },
+  {
+    "portainerStatus": 200
+  },
+  {
+    "portainerStatus": 200
+  }
+]
