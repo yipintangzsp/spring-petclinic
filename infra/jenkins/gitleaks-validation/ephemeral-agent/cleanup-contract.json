@@ -1,0 +1,31 @@
+{
+  "schemaVersion": 1,
+  "classification": "OFFLINE_CONTRACT_NOT_EXECUTED",
+  "namespace": "devsecops-execution",
+  "requiredOwnerLabel": {"security.devops.local/purpose": "gitleaks-validation"},
+  "identityPreconditions": ["approved job", "integer build", "unique runId", "observed Pod name and UID", "observed Secret name and UID", "unique Node registration"],
+  "steps": [
+    "Stop new tasks and disconnect only the bound Jenkins Node",
+    "Archive only redacted ci-evidence; independently verify artifact seal/run/build/digests",
+    "DELETE the exact Pod with UID precondition and 30-second grace; never delete by broad label alone",
+    "Wait at most 90 seconds and inspect the bound runtime domain, including descendants",
+    "Only after processes are proven absent, remove the exact run's remoting Secret and Node registration",
+    "Remove only the run's disposable fixture; verify temporary workspace is gone",
+    "Remove newly created dedicated SA and allow NetworkPolicy only after proving no run is using them"
+  ],
+  "deleteOptionsTemplate": {
+    "apiVersion": "v1",
+    "kind": "DeleteOptions",
+    "gracePeriodSeconds": 30,
+    "preconditions": {"uid": "REQUIRES_MANAGEMENT_OBSERVED_POD_UID"}
+  },
+  "maxDeleteAttempts": 2,
+  "retryOnlySameUid": true,
+  "controllerLoss": "noReconnect plus Pod deadline600s; trusted operator resumes exact-run reconciliation",
+  "nodeLoss": "CLEANUP_INCOMPLETE; no force delete, no Node-name/token reuse until runtime stop or reliable node isolation proven",
+  "forceDelete": false,
+  "namespaceDeletion": false,
+  "globalKill": false,
+  "failureStatus": "CLEANUP_INCOMPLETE_BLOCK_SUBSEQUENT_RUNS",
+  "actualCleanupVerification": "NOT_TESTED"
+}

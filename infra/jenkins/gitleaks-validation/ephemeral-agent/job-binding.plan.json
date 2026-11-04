@@ -1,0 +1,32 @@
+{
+  "schemaVersion": 1,
+  "classification": "OFFLINE_CHANGE_PROPOSAL_NOT_IMPORTED",
+  "existingLocalJob": "infra/jenkins/gitleaks-validation/job.xml",
+  "onlineValidationJobPresent": false,
+  "job": "security-manager-v2-gitleaks-validation",
+  "requiredNodeName": "gitleaks-validation-restricted",
+  "requiredLabelExpression": "gitleaks-validation-restricted && security-run-${BUILD_NUMBER}",
+  "labelsSource": "Trusted Job uses integer Jenkins BUILD_NUMBER; never a user parameter",
+  "executors": 1,
+  "mode": "EXCLUSIVE",
+  "remoteFS": "/work/jenkins",
+  "transport": "WEBSOCKET",
+  "controllerUrl": "http://jenkins.ns-devops.svc.cluster.local:8080/",
+  "agentSocketPortUsed": false,
+  "jobEnabled": false,
+  "triggers": [],
+  "fallback": null,
+  "unknownParameters": "REJECT",
+  "fixtureJobDefinitionSource": "PROHIBITED",
+  "managerDelivery": "PINNED_IMAGE_READ_ONLY_ROOT_OWNED_RELEASE",
+  "liveJobCreateCount": 0,
+  "liveNodeCreateCount": 0,
+  "currentIdentityEntryCompatibleWithPod": false,
+  "requiredChangesBeforeEnable": [
+    "Reviewed Pod identity and lifecycle verification backend; preserve host backend",
+    "Reviewed Pod immutable source approval/output backend; preserve original scanner facts and Gate",
+    "Regenerate pinned trusted release and disabled Job with new reviewed manifest, never bypass old identity check",
+    "Bind only approved Job/build to one temporary node and run label; Controller-side verify no unrelated task can use it",
+    "Verify remoting image/UID/read-only workDir compatibility and transport without granting API credentials"
+  ]
+}

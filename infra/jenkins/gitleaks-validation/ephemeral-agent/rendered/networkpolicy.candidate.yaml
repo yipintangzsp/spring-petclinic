@@ -1,0 +1,70 @@
+{
+  "apiVersion": "networking.k8s.io/v1",
+  "kind": "NetworkPolicy",
+  "metadata": {
+    "name": "gitleaks-agent-controller-only",
+    "namespace": "devsecops-execution"
+  },
+  "spec": {
+    "podSelector": {
+      "matchLabels": {
+        "security.devops.local/purpose": "gitleaks-validation"
+      }
+    },
+    "policyTypes": [
+      "Ingress",
+      "Egress"
+    ],
+    "ingress": [],
+    "egress": [
+      {
+        "to": [
+          {
+            "namespaceSelector": {
+              "matchLabels": {
+                "kubernetes.io/metadata.name": "ns-devops"
+              }
+            },
+            "podSelector": {
+              "matchLabels": {
+                "app": "jenkins"
+              }
+            }
+          }
+        ],
+        "ports": [
+          {
+            "protocol": "TCP",
+            "port": 8080
+          }
+        ]
+      },
+      {
+        "to": [
+          {
+            "namespaceSelector": {
+              "matchLabels": {
+                "kubernetes.io/metadata.name": "kube-system"
+              }
+            },
+            "podSelector": {
+              "matchLabels": {
+                "k8s-app": "kube-dns"
+              }
+            }
+          }
+        ],
+        "ports": [
+          {
+            "protocol": "UDP",
+            "port": 53
+          },
+          {
+            "protocol": "TCP",
+            "port": 53
+          }
+        ]
+      }
+    ]
+  }
+}

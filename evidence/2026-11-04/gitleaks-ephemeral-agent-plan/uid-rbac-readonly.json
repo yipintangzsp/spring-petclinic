@@ -1,0 +1,186 @@
+{
+  "classification": "READ_ONLY_IMAGE_UID_AND_EXISTING_RBAC_METADATA_NOT_REAL_SA_AUTH",
+  "identity": {
+    "proposedUid": 24001,
+    "existingImageAccountsUsingUid": [],
+    "observedToolRootOwnership": [
+      {
+        "path": "/usr/bin/node",
+        "uid": 0,
+        "gid": 0,
+        "mode": "755"
+      },
+      {
+        "path": "/usr/bin/git",
+        "uid": 0,
+        "gid": 0,
+        "mode": "755"
+      },
+      {
+        "path": "/opt/java/openjdk/bin/java",
+        "uid": 0,
+        "gid": 0,
+        "mode": "755"
+      }
+    ],
+    "runtimeAs24001Tested": false
+  },
+  "inheritedBindings": [
+    {
+      "kind": "ClusterRoleBinding",
+      "name": "system:basic-user",
+      "namespace": null,
+      "subjects": [
+        {
+          "apiGroup": "rbac.authorization.k8s.io",
+          "kind": "Group",
+          "name": "system:authenticated"
+        }
+      ],
+      "roleRef": {
+        "apiGroup": "rbac.authorization.k8s.io",
+        "kind": "ClusterRole",
+        "name": "system:basic-user"
+      }
+    },
+    {
+      "kind": "ClusterRoleBinding",
+      "name": "system:discovery",
+      "namespace": null,
+      "subjects": [
+        {
+          "apiGroup": "rbac.authorization.k8s.io",
+          "kind": "Group",
+          "name": "system:authenticated"
+        }
+      ],
+      "roleRef": {
+        "apiGroup": "rbac.authorization.k8s.io",
+        "kind": "ClusterRole",
+        "name": "system:discovery"
+      }
+    },
+    {
+      "kind": "ClusterRoleBinding",
+      "name": "system:public-info-viewer",
+      "namespace": null,
+      "subjects": [
+        {
+          "apiGroup": "rbac.authorization.k8s.io",
+          "kind": "Group",
+          "name": "system:authenticated"
+        }
+      ],
+      "roleRef": {
+        "apiGroup": "rbac.authorization.k8s.io",
+        "kind": "ClusterRole",
+        "name": "system:public-info-viewer"
+      }
+    },
+    {
+      "kind": "ClusterRoleBinding",
+      "name": "system:service-account-issuer-discovery",
+      "namespace": null,
+      "subjects": [
+        {
+          "apiGroup": "rbac.authorization.k8s.io",
+          "kind": "Group",
+          "name": "system:serviceaccounts"
+        }
+      ],
+      "roleRef": {
+        "apiGroup": "rbac.authorization.k8s.io",
+        "kind": "ClusterRole",
+        "name": "system:service-account-issuer-discovery"
+      }
+    }
+  ],
+  "roles": [
+    {
+      "name": "system:public-info-viewer",
+      "rules": [
+        {
+          "nonResourceURLs": [
+            "/healthz",
+            "/livez",
+            "/readyz",
+            "/version",
+            "/version/"
+          ],
+          "verbs": [
+            "get"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "system:basic-user",
+      "rules": [
+        {
+          "apiGroups": [
+            "authorization.k8s.io"
+          ],
+          "resources": [
+            "selfsubjectaccessreviews",
+            "selfsubjectrulesreviews"
+          ],
+          "verbs": [
+            "create"
+          ]
+        },
+        {
+          "apiGroups": [
+            "authentication.k8s.io"
+          ],
+          "resources": [
+            "selfsubjectreviews"
+          ],
+          "verbs": [
+            "create"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "system:service-account-issuer-discovery",
+      "rules": [
+        {
+          "nonResourceURLs": [
+            "/.well-known/openid-configuration",
+            "/.well-known/openid-configuration/",
+            "/openid/v1/jwks",
+            "/openid/v1/jwks/"
+          ],
+          "verbs": [
+            "get"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "system:discovery",
+      "rules": [
+        {
+          "nonResourceURLs": [
+            "/api",
+            "/api/*",
+            "/apis",
+            "/apis/*",
+            "/healthz",
+            "/livez",
+            "/openapi",
+            "/openapi/*",
+            "/readyz",
+            "/version",
+            "/version/"
+          ],
+          "verbs": [
+            "get"
+          ]
+        }
+      ]
+    }
+  ],
+  "agentSAExists": false,
+  "resourcesCreated": 0
+}

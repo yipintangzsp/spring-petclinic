@@ -1,0 +1,198 @@
+{
+  "apiVersion": "v1",
+  "kind": "Pod",
+  "metadata": {
+    "generateName": "gitleaks-v2-",
+    "namespace": "devsecops-execution",
+    "labels": {
+      "security.devops.local/purpose": "gitleaks-validation",
+      "security.devops.local/run-id": "REQUIRES_BOUND_RUN_ID"
+    },
+    "annotations": {
+      "security.devops.local/review-only": "true",
+      "security.devops.local/execution-readiness": "CI_EXECUTION_NOT_READY"
+    }
+  },
+  "spec": {
+    "serviceAccountName": "gitleaks-validation-agent",
+    "automountServiceAccountToken": false,
+    "enableServiceLinks": false,
+    "hostNetwork": false,
+    "hostPID": false,
+    "hostIPC": false,
+    "shareProcessNamespace": false,
+    "restartPolicy": "Never",
+    "activeDeadlineSeconds": 600,
+    "terminationGracePeriodSeconds": 30,
+    "preemptionPolicy": "Never",
+    "securityContext": {
+      "runAsNonRoot": true,
+      "runAsUser": 24001,
+      "runAsGroup": 24001,
+      "fsGroup": 24001,
+      "supplementalGroups": [],
+      "supplementalGroupsPolicy": "Strict",
+      "fsGroupChangePolicy": "OnRootMismatch",
+      "seccompProfile": {
+        "type": "RuntimeDefault"
+      }
+    },
+    "affinity": {
+      "nodeAffinity": {
+        "requiredDuringSchedulingIgnoredDuringExecution": {
+          "nodeSelectorTerms": [
+            {
+              "matchExpressions": [
+                {
+                  "key": "kubernetes.io/os",
+                  "operator": "In",
+                  "values": [
+                    "linux"
+                  ]
+                },
+                {
+                  "key": "kubernetes.io/arch",
+                  "operator": "In",
+                  "values": [
+                    "arm64"
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      }
+    },
+    "containers": [
+      {
+        "name": "validation-agent",
+        "image": "127.0.0.1:30050/platform-security/gitleaks-validation-agent@sha256:UNRESOLVED",
+        "imagePullPolicy": "Never",
+        "securityContext": {
+          "allowPrivilegeEscalation": false,
+          "readOnlyRootFilesystem": true,
+          "privileged": false,
+          "capabilities": {
+            "drop": [
+              "ALL"
+            ]
+          },
+          "runAsNonRoot": true,
+          "runAsUser": 24001,
+          "runAsGroup": 24001,
+          "seccompProfile": {
+            "type": "RuntimeDefault"
+          }
+        },
+        "command": [
+          "/usr/bin/tini",
+          "-s",
+          "-g",
+          "--",
+          "/opt/java/openjdk/bin/java"
+        ],
+        "args": [
+          "-Xmx192m",
+          "-XX:MaxMetaspaceSize=96m",
+          "-XX:MaxDirectMemorySize=32m",
+          "-XX:ReservedCodeCacheSize=48m",
+          "-Djava.io.tmpdir=/tmp",
+          "-jar",
+          "/opt/agent/agent.jar",
+          "-url",
+          "http://jenkins.ns-devops.svc.cluster.local:8080/",
+          "-webSocket",
+          "-secret",
+          "@/agent-auth/secret",
+          "-name",
+          "gitleaks-validation-restricted",
+          "-workDir",
+          "/work/remoting",
+          "-noReconnect"
+        ],
+        "env": [
+          {
+            "name": "HOME",
+            "value": "/work/home"
+          },
+          {
+            "name": "TMPDIR",
+            "value": "/tmp"
+          },
+          {
+            "name": "JENKINS_HOME",
+            "value": "/work/home"
+          },
+          {
+            "name": "NODE_OPTIONS",
+            "value": "--max-old-space-size=128"
+          },
+          {
+            "name": "POD_UID",
+            "valueFrom": {
+              "fieldRef": {
+                "fieldPath": "metadata.uid"
+              }
+            }
+          }
+        ],
+        "resources": {
+          "requests": {
+            "cpu": "250m",
+            "memory": "512Mi",
+            "ephemeral-storage": "128Mi"
+          },
+          "limits": {
+            "cpu": "1",
+            "memory": "768Mi",
+            "ephemeral-storage": "256Mi"
+          }
+        },
+        "volumeMounts": [
+          {
+            "name": "work",
+            "mountPath": "/work"
+          },
+          {
+            "name": "temp",
+            "mountPath": "/tmp"
+          },
+          {
+            "name": "agent-auth",
+            "mountPath": "/agent-auth",
+            "readOnly": true
+          }
+        ]
+      }
+    ],
+    "volumes": [
+      {
+        "name": "work",
+        "emptyDir": {
+          "medium": "Memory",
+          "sizeLimit": "128Mi"
+        }
+      },
+      {
+        "name": "temp",
+        "emptyDir": {
+          "medium": "Memory",
+          "sizeLimit": "32Mi"
+        }
+      },
+      {
+        "name": "agent-auth",
+        "secret": {
+          "secretName": "gitleaks-v2-REQUIRES_BOUND_RUN_ID",
+          "defaultMode": 288,
+          "items": [
+            {
+              "key": "secret",
+              "path": "secret"
+            }
+          ]
+        }
+      }
+    ]
+  }
+}

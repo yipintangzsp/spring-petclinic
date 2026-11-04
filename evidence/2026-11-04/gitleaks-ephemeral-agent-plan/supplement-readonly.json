@@ -1,0 +1,55 @@
+{
+  "cachedRelevantImageNames": [
+    "127.0.0.1:30050/jenkins-custom:2.568.1-lts-atomic-node20-v1",
+    "127.0.0.1:30050/jenkins-custom@sha256:4af1f673ec8996ef8ffc2c913eeb02f9c2a326e96c9deb95e3dd713d0704d567",
+    "127.0.0.1:30050/platform-security/gitleaks@sha256:6b2d52241f9d176fc59e6e3b026ea52c98f390070587d9475d6ee2bc64941815",
+    "127.0.0.1:30050/platform-upgrade/node:24.18.0-alpine3.23-arm64"
+  ],
+  "networkPolicyChains": {
+    "iptablesReadable": true,
+    "kubeRouterChains": 88,
+    "networkPolicyRulesPresent": true
+  },
+  "networkPolicyDisableFlagPresent": false,
+  "controllerService": {
+    "name": "jenkins",
+    "clusterIP": "10.43.47.83",
+    "ports": [
+      {
+        "name": "http",
+        "nodePort": 30659,
+        "port": 8080,
+        "protocol": "TCP",
+        "targetPort": 8080
+      },
+      {
+        "name": "agent",
+        "nodePort": 32430,
+        "port": 50000,
+        "protocol": "TCP",
+        "targetPort": 50000
+      }
+    ]
+  },
+  "/jnlpJars/agent.jar": {
+    "status": 200,
+    "bytes": 1407936,
+    "sha256": "f8ff1d49076a2ee0d3f8cc60168f43c23c2277c4cbdddaf82a52b2558ad80df5",
+    "responseHeaders": {
+      "X-Jenkins": null,
+      "X-Jenkins-JNLP-Port": null,
+      "Content-Type": "application/java-archive"
+    }
+  },
+  "/wsagents/": {
+    "status": 400,
+    "bytes": 601,
+    "sha256": "7e7a55c9581c8927789f5bc00665de198a8a18d4945f2acae58b83bac7fbce34",
+    "responseHeaders": {
+      "X-Jenkins": null,
+      "X-Jenkins-JNLP-Port": null,
+      "Content-Type": "text/html;charset=iso-8859-1"
+    }
+  },
+  "source": "READ_ONLY_CONTROLLER_HTTP_AND_LOCAL_IMAGE_CACHE_NOT_AGENT_CONNECTION"
+}

@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- REVIEW ONLY. Not imported. Never include the inbound secret in Git. -->
+<slave>
+  <name>gitleaks-validation-restricted</name>
+  <description>Temporary non-release Gitleaks validation; one approved run only</description>
+  <remoteFS>/work/jenkins</remoteFS>
+  <numExecutors>1</numExecutors>
+  <mode>EXCLUSIVE</mode>
+  <retentionStrategy class="hudson.slaves.RetentionStrategy$Always"/>
+  <launcher class="hudson.slaves.JNLPLauncher"><webSocket>true</webSocket></launcher>
+  <label>gitleaks-validation-restricted security-run-REQUIRES_BUILD_NUMBER</label>
+  <nodeProperties/>
+</slave>

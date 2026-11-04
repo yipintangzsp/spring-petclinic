@@ -1,0 +1,104 @@
+{
+  "schemaVersion": 1,
+  "singleAgentOnly": true,
+  "namespace": "devsecops-execution",
+  "requests": {
+    "cpu": "250m",
+    "memory": "512Mi",
+    "ephemeral-storage": "128Mi"
+  },
+  "limits": {
+    "cpu": "1",
+    "memory": "768Mi",
+    "ephemeral-storage": "256Mi"
+  },
+  "workTmpfs": "128Mi",
+  "tempTmpfs": "32Mi",
+  "tmpfsIncludedInPodMemoryLimit": true,
+  "diskEmptyDirUsed": false,
+  "ephemeralLimitIsHardFilesystemQuota": false,
+  "imagePullsAllowed": false,
+  "finalImageUnpackedPeakUnknown": true,
+  "trivyDiskFloorChanged": false,
+  "liveStats": [
+    {
+      "node": "aliyun-worker",
+      "arch": "amd64",
+      "taints": [
+        {
+          "effect": "NoSchedule",
+          "key": "cloud",
+          "value": "true"
+        }
+      ],
+      "allocatable": {
+        "cpu": "2",
+        "ephemeral-storage": "39788796283",
+        "hugepages-1Gi": "0",
+        "hugepages-2Mi": "0",
+        "memory": "1647528Ki",
+        "pods": "110"
+      },
+      "requests": {
+        "cpu": 0.01,
+        "memory": 52428800.0,
+        "ephemeral-storage": 0.0
+      },
+      "memoryAvailableBytes": 761200640,
+      "filesystemAvailableBytes": 10054385664,
+      "observedCpuNanoCores": 73916427
+    },
+    {
+      "node": "devops",
+      "arch": "arm64",
+      "taints": [],
+      "allocatable": {
+        "cpu": "6",
+        "ephemeral-storage": "256908747985",
+        "hugepages-1Gi": "0",
+        "hugepages-2Mi": "0",
+        "hugepages-32Mi": "0",
+        "hugepages-64Ki": "0",
+        "memory": "22485788Ki",
+        "pods": "110"
+      },
+      "requests": {
+        "cpu": 4.055,
+        "memory": 15743320064.0,
+        "ephemeral-storage": 2005762048.0
+      },
+      "memoryAvailableBytes": 5113356288,
+      "filesystemAvailableBytes": 45672759296,
+      "observedCpuNanoCores": 1170002577
+    },
+    {
+      "node": "ucloud-worker",
+      "arch": "amd64",
+      "taints": [
+        {
+          "effect": "NoSchedule",
+          "key": "cloud",
+          "value": "true"
+        }
+      ],
+      "allocatable": {
+        "cpu": "2",
+        "ephemeral-storage": "78900761129",
+        "hugepages-1Gi": "0",
+        "hugepages-2Mi": "0",
+        "memory": "3968068Ki",
+        "pods": "110"
+      },
+      "requests": {
+        "cpu": 0.01,
+        "memory": 52428800.0,
+        "ephemeral-storage": 0.0
+      },
+      "memoryAvailableBytes": 1734336512,
+      "filesystemAvailableBytes": 56775729152,
+      "observedCpuNanoCores": 41928080
+    }
+  ],
+  "scheduling": "No nodeSelector/nodeName/tolerations. Required ARM64/Linux affinity matches inspected tools; cloud taints retained. Current only eligible node devops.",
+  "launchRequirement": "Fresh bounded samples and final image/layer/inode/log budgets; do not infer safety from Ready or requests alone."
+}

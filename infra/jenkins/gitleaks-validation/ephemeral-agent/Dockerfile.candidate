@@ -1,0 +1,18 @@
+# REVIEW ONLY. No image is built/pushed by this phase; final digest UNRESOLVED.
+# All COPY inputs must be assembled and checksum-reviewed by a trusted operator.
+# Base is the actual cached ARM64 Jenkins Java21/Node20 image, not latest.
+FROM 127.0.0.1:30050/jenkins-custom@sha256:4af1f673ec8996ef8ffc2c913eeb02f9c2a326e96c9deb95e3dd713d0704d567
+USER 0
+COPY --chown=0:0 image-inputs/ /opt/validation-inputs/
+# SHA list includes ALL inputs, including the pinned controller agent.jar,
+# fixed Manager files, future reviewed Pod identity adapter, and Gitleaks binary.
+# This input tree and its manifest have NOT yet been produced or approved.
+RUN cd /opt/validation-inputs && sha256sum -c image-inputs.sha256 && \
+    install -d -m 0555 /opt/agent /opt/security-manager-v2-validation/releases && \
+    install -m 0444 agent.jar /opt/agent/agent.jar && \
+    cp -a gitleaks-ci-v1 /opt/security-manager-v2-validation/releases/ && \
+    chmod -R a-w /opt/security-manager-v2-validation /opt/agent
+USER 24001:24001
+ENV HOME=/work/home TMPDIR=/tmp JENKINS_HOME=/work/home
+# The reviewed Pod overrides command/args: never use the controller entrypoint.
+ENTRYPOINT ["/usr/bin/tini", "-s", "-g", "--", "/opt/java/openjdk/bin/java"]

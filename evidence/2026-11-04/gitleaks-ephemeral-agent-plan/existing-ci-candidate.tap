@@ -1,0 +1,454 @@
+TAP version 13
+# Subtest: default parameters are fixed standard audit, Gitleaks only, promotion blocked
+ok 1 - default parameters are fixed standard audit, Gitleaks only, promotion blocked
+  ---
+  duration_ms: 1.9625
+  type: 'test'
+  ...
+# Subtest: both projects use same core and exact project/profile binding
+ok 2 - both projects use same core and exact project/profile binding
+  ---
+  duration_ms: 0.566959
+  type: 'test'
+  ...
+# Subtest: invalid and arbitrary path/shell/credentials parameters are rejected
+ok 3 - invalid and arbitrary path/shell/credentials parameters are rejected
+  ---
+  duration_ms: 0.144417
+  type: 'test'
+  ...
+# Subtest: Jenkins identity cannot select production job, built-in or invented build
+ok 4 - Jenkins identity cannot select production job, built-in or invented build
+  ---
+  duration_ms: 0.093833
+  type: 'test'
+  ...
+# Subtest: run identity is bound to Jenkins build/project/case
+ok 5 - run identity is bound to Jenkins build/project/case
+  ---
+  duration_ms: 0.480541
+  type: 'test'
+  ...
+# Subtest: master and plugin off override clean expectation and do not mean Policy PASS
+ok 6 - master and plugin off override clean expectation and do not mean Policy PASS
+  ---
+  duration_ms: 0.338917
+  type: 'test'
+  ...
+# Subtest: controlled invalid Policy remains an explicit Policy error fixture
+ok 7 - controlled invalid Policy remains an explicit Policy error fixture
+  ---
+  duration_ms: 0.36775
+  type: 'test'
+  ...
+# Subtest: actual built-in UID1000 Docker GID988 observation is rejected
+ok 8 - actual built-in UID1000 Docker GID988 observation is rejected
+  ---
+  duration_ms: 0.130292
+  type: 'test'
+  ...
+# Subtest: approved identity must prove every isolation field
+ok 9 - approved identity must prove every isolation field
+  ---
+  duration_ms: 0.162875
+  type: 'test'
+  ...
+# Subtest: unknown permissions never imply safe identity
+ok 10 - unknown permissions never imply safe identity
+  ---
+  duration_ms: 0.154083
+  type: 'test'
+  ...
+# Subtest: Secret fixture acceptance records EXPECTED_POLICY_FAIL and preserves FAIL
+ok 11 - Secret fixture acceptance records EXPECTED_POLICY_FAIL and preserves FAIL
+  ---
+  duration_ms: 0.235625
+  type: 'test'
+  ...
+# Subtest: tool error/missing capability cannot be accepted as clean
+ok 12 - tool error/missing capability cannot be accepted as clean
+  ---
+  duration_ms: 0.193834
+  type: 'test'
+  ...
+# Subtest: evaluation ID identifies existing evaluation without evaluating Policy again
+ok 13 - evaluation ID identifies existing evaluation without evaluating Policy again
+  ---
+  duration_ms: 0.23225
+  type: 'test'
+  ...
+# Subtest: manifest pins sealed 2ca60f7 source and new CI entry
+ok 14 - manifest pins sealed 2ca60f7 source and new CI entry
+  ---
+  duration_ms: 19.439625
+  type: 'test'
+  ...
+# Subtest: Job is disabled, sandboxed, has no triggers and is exclusive to restricted Agent
+ok 15 - Job is disabled, sandboxed, has no triggers and is exclusive to restricted Agent
+  ---
+  duration_ms: 0.384042
+  type: 'test'
+  ...
+# Subtest: archive failure is propagated, workspace cleanup is in finally
+ok 16 - archive failure is propagated, workspace cleanup is in finally
+  ---
+  duration_ms: 0.951375
+  type: 'test'
+  ...
+# Subtest: local renderer does not import or trigger a Jenkins Job
+ok 17 - local renderer does not import or trigger a Jenkins Job
+  ---
+  duration_ms: 14.43075
+  type: 'test'
+  ...
+# Subtest: entry rejects actual local identity before any scan or artifact
+ok 18 - entry rejects actual local identity before any scan or artifact
+  ---
+  duration_ms: 225.482625
+  type: 'test'
+  ...
+# Subtest: local core contract, never real CI: master-off
+ok 19 - local core contract, never real CI: master-off
+  ---
+  duration_ms: 221.403125
+  type: 'test'
+  ...
+# Subtest: local core contract, never real CI: plugin-off
+ok 20 - local core contract, never real CI: plugin-off
+  ---
+  duration_ms: 204.379834
+  type: 'test'
+  ...
+# Subtest: local core contract, never real CI: missing-capability
+ok 21 - local core contract, never real CI: missing-capability
+  ---
+  duration_ms: 149.420875
+  type: 'test'
+  ...
+# Subtest: local core contract, never real CI: policy-error
+ok 22 - local core contract, never real CI: policy-error
+  ---
+  duration_ms: 0.595875
+  type: 'test'
+  ...
+# Subtest: A default standard and explicit low
+ok 23 - A default standard and explicit low
+  ---
+  duration_ms: 8.046958
+  type: 'test'
+  ...
+# Subtest: A profile then component then project provenance
+ok 24 - A profile then component then project provenance
+  ---
+  duration_ms: 4.886583
+  type: 'test'
+  ...
+# Subtest: A malformed settings fail closed
+ok 25 - A malformed settings fail closed
+  ---
+  duration_ms: 1.163917
+  type: 'test'
+  ...
+# Subtest: A policy pins baseline-v2 compatibility and strict-v1
+ok 26 - A policy pins baseline-v2 compatibility and strict-v1
+  ---
+  duration_ms: 5.9245
+  type: 'test'
+  ...
+# Subtest: A invalid null/false layers and overridden invalid global values never fall back
+ok 27 - A invalid null/false layers and overridden invalid global values never fall back
+  ---
+  duration_ms: 0.333917
+  type: 'test'
+  ...
+# Subtest: A component and project policy changes only affect their intended target
+ok 28 - A component and project policy changes only affect their intended target
+  ---
+  duration_ms: 2.065167
+  type: 'test'
+  ...
+# Subtest: E master false suppresses even invalid unapproved runner inputs
+ok 29 - E master false suppresses even invalid unapproved runner inputs
+  ---
+  duration_ms: 225.367667
+  type: 'test'
+  ...
+# Subtest: E off and all disabled never fabricate PASS
+ok 30 - E off and all disabled never fabricate PASS
+  ---
+  duration_ms: 387.164125
+  type: 'test'
+  ...
+# Subtest: E audit retains FAIL while ordinary candidate build may continue
+ok 31 - E audit retains FAIL while ordinary candidate build may continue
+  ---
+  duration_ms: 220.1085
+  type: 'test'
+  ...
+# Subtest: E enforce FAIL stops candidate; no live promotion for PASS either
+ok 32 - E enforce FAIL stops candidate; no live promotion for PASS either
+  ---
+  duration_ms: 320.003083
+  type: 'test'
+  ...
+# Subtest: E disabled Trivy does not affect two independent workers
+ok 33 - E disabled Trivy does not affect two independent workers
+  ---
+  duration_ms: 217.5915
+  type: 'test'
+  ...
+# Subtest: E missing/unavailable/unsupported capabilities never PASS
+ok 34 - E missing/unavailable/unsupported capabilities never PASS
+  ---
+  duration_ms: 306.420375
+  type: 'test'
+  ...
+# Subtest: E missing archive is NOT_CONFIGURED; corrupt/unapproved input is POLICY_ERROR
+ok 35 - E missing archive is NOT_CONFIGURED; corrupt/unapproved input is POLICY_ERROR
+  ---
+  duration_ms: 168.749417
+  type: 'test'
+  ...
+# Subtest: F versioned Gitleaks preserves both frozen decisions with independent Cosign
+ok 36 - F versioned Gitleaks preserves both frozen decisions with independent Cosign
+  ---
+  duration_ms: 340.620958
+  type: 'test'
+  ...
+# Subtest: F claim is atomic before await; Gate and Summary reuse identical result
+ok 37 - F claim is atomic before await; Gate and Summary reuse identical result
+  ---
+  duration_ms: 127.677208
+  type: 'test'
+  ...
+# Subtest: F strict uses existing engine; original findings stay unchanged; frozen FAIL floor retained
+ok 38 - F strict uses existing engine; original findings stay unchanged; frozen FAIL floor retained
+  ---
+  duration_ms: 129.159208
+  type: 'test'
+  ...
+# Subtest: G history is exclusive, raw bytes match digest, tampering detected
+ok 39 - G history is exclusive, raw bytes match digest, tampering detected
+  ---
+  duration_ms: 131.734625
+  type: 'test'
+  ...
+# Subtest: G reserved V1 path, overwrite and post-seal writes are rejected
+ok 40 - G reserved V1 path, overwrite and post-seal writes are rejected
+  ---
+  duration_ms: 9.604042
+  type: 'test'
+  ...
+# Subtest: G symlink output parent and directory replacement are refused
+ok 41 - G symlink output parent and directory replacement are refused
+  ---
+  duration_ms: 1.120042
+  type: 'test'
+  ...
+# Subtest: H plugin removal does not alter unrelated policy decisions
+ok 42 - H plugin removal does not alter unrelated policy decisions
+  ---
+  duration_ms: 68.589792
+  type: 'test'
+  ...
+# Subtest: H enabled Trivy reports real blockers without execution/evaluation
+ok 43 - H enabled Trivy reports real blockers without execution/evaluation
+  ---
+  duration_ms: 128.611084
+  type: 'test'
+  ...
+# Subtest: H malformed and unknown configuration writes no artifact
+ok 44 - H malformed and unknown configuration writes no artifact
+  ---
+  duration_ms: 0.665167
+  type: 'test'
+  ...
+# Subtest: E actual worker timeout is an operational ERROR, never PASS/WARN
+ok 45 - E actual worker timeout is an operational ERROR, never PASS/WARN
+  ---
+  duration_ms: 102.868708
+  type: 'test'
+  ...
+# Subtest: F engine rejects invalid evidence once; no fabricated Policy result
+ok 46 - F engine rejects invalid evidence once; no fabricated Policy result
+  ---
+  duration_ms: 1.032875
+  type: 'test'
+  ...
+# Subtest: G a recomputed digest cannot turn nonexecution into PASS
+ok 47 - G a recomputed digest cannot turn nonexecution into PASS
+  ---
+  duration_ms: 77.911416
+  type: 'test'
+  ...
+# Subtest: B registry default disabled prevents execution before per-project explicit selection
+ok 48 - B registry default disabled prevents execution before per-project explicit selection
+  ---
+  duration_ms: 82.062083
+  type: 'test'
+  ...
+# Subtest: real registry is explicit, disabled by default and preserves every other plugin
+ok 49 - real registry is explicit, disabled by default and preserves every other plugin
+  ---
+  duration_ms: 3.665125
+  type: 'test'
+  ...
+# Subtest: real mode missing source/tool/trusted workspace never starts a process
+ok 50 - real mode missing source/tool/trusted workspace never starts a process
+  ---
+  duration_ms: 207.318875
+  type: 'test'
+  ...
+# Subtest: real mode Darwin is unsupported regardless of claimed capabilities
+ok 51 - real mode Darwin is unsupported regardless of claimed capabilities
+  ---
+  duration_ms: 0.776041
+  type: 'test'
+  ...
+# Subtest: real master switch disables even malformed unapproved inputs without execution
+ok 52 - real master switch disables even malformed unapproved inputs without execution
+  ---
+  duration_ms: 200.6915
+  type: 'test'
+  ...
+# Subtest: real plugin switch disables without changing registry or starting processes
+ok 53 - real plugin switch disables without changing registry or starting processes
+  ---
+  duration_ms: 179.257583
+  type: 'test'
+  ...
+# Subtest: real CLI explicitly selects fixed runner, missing source remains unconfigured
+ok 54 - real CLI explicitly selects fixed runner, missing source remains unconfigured
+  ---
+  duration_ms: 0.780334
+  type: 'test'
+  ...
+# Subtest: real invalid Policy is rejected before output creation or process start
+ok 55 - real invalid Policy is rejected before output creation or process start
+  ---
+  duration_ms: 0.676042
+  type: 'test'
+  ...
+# Subtest: I independent dry-run and local consumer verify receipt digests without re-evaluation
+ok 56 - I independent dry-run and local consumer verify receipt digests without re-evaluation
+  ---
+  duration_ms: 452.2875
+  type: 'test'
+  ...
+# Subtest: I duplicate consumers, injected handlers, mutated summary, bad seal rejected
+ok 57 - I duplicate consumers, injected handlers, mutated summary, bad seal rejected
+  ---
+  duration_ms: 298.720625
+  type: 'test'
+  ...
+# Subtest: I future DefectDojo cannot publish to network even if enabled
+ok 58 - I future DefectDojo cannot publish to network even if enabled
+  ---
+  duration_ms: 209.347625
+  type: 'test'
+  ...
+# Subtest: J same manager across projects/profiles with isolated overrides, schemas and capabilities
+ok 59 - J same manager across projects/profiles with isolated overrides, schemas and capabilities
+  ---
+  duration_ms: 388.613042
+  type: 'test'
+  ...
+# Subtest: J actual CLI master switch, required parameters, plugin selection and env validation
+ok 60 - J actual CLI master switch, required parameters, plugin selection and env validation
+  ---
+  duration_ms: 317.175667
+  type: 'test'
+  ...
+# Subtest: B duplicate/unknown IDs rejected; removal does not rewrite others
+ok 61 - B duplicate/unknown IDs rejected; removal does not rewrite others
+  ---
+  duration_ms: 4.316917
+  type: 'test'
+  ...
+# Subtest: B arbitrary runner code is not a registration contract
+ok 62 - B arbitrary runner code is not a registration contract
+  ---
+  duration_ms: 0.180375
+  type: 'test'
+  ...
+# Subtest: C capabilities are scoped; Trivy never executes even with asserted prerequisites
+ok 63 - C capabilities are scoped; Trivy never executes even with asserted prerequisites
+  ---
+  duration_ms: 0.334084
+  type: 'test'
+  ...
+# Subtest: C missing/unavailable/platform/profile are distinct
+ok 64 - C missing/unavailable/platform/profile are distinct
+  ---
+  duration_ms: 0.168459
+  type: 'test'
+  ...
+# Subtest: D independent immutable archive gitleaks-pass
+ok 65 - D independent immutable archive gitleaks-pass
+  ---
+  duration_ms: 68.592041
+  type: 'test'
+  ...
+# Subtest: D independent immutable archive gitleaks-fail
+ok 66 - D independent immutable archive gitleaks-fail
+  ---
+  duration_ms: 48.817875
+  type: 'test'
+  ...
+# Subtest: D independent immutable archive semgrep-pass
+ok 67 - D independent immutable archive semgrep-pass
+  ---
+  duration_ms: 75.737667
+  type: 'test'
+  ...
+# Subtest: D independent immutable archive semgrep-fail
+ok 68 - D independent immutable archive semgrep-fail
+  ---
+  duration_ms: 53.573167
+  type: 'test'
+  ...
+# Subtest: D independent immutable archive cosign-pass
+ok 69 - D independent immutable archive cosign-pass
+  ---
+  duration_ms: 48.572708
+  type: 'test'
+  ...
+# Subtest: D independent immutable archive cosign-fail
+ok 70 - D independent immutable archive cosign-fail
+  ---
+  duration_ms: 65.471875
+  type: 'test'
+  ...
+# Subtest: D unapproved/cross-plugin digest prevents worker start
+ok 71 - D unapproved/cross-plugin digest prevents worker start
+  ---
+  duration_ms: 0.971958
+  type: 'test'
+  ...
+# Subtest: D missing and corrupted raw reports cannot reach Policy
+ok 72 - D missing and corrupted raw reports cannot reach Policy
+  ---
+  duration_ms: 0.208
+  type: 'test'
+  ...
+# Subtest: D timeout and pre-cancellation join a dedicated bounded worker
+ok 73 - D timeout and pre-cancellation join a dedicated bounded worker
+  ---
+  duration_ms: 2.48825
+  type: 'test'
+  ...
+# Subtest: D in-flight cancellation leaves no active owned worker
+ok 74 - D in-flight cancellation leaves no active owned worker
+  ---
+  duration_ms: 1.040917
+  type: 'test'
+  ...
+1..74
+# tests 74
+# suites 0
+# pass 74
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 3236.973125
