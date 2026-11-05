@@ -1,0 +1,188 @@
+{
+  "project": {
+    "id": 12,
+    "path": "root/petclinic-platform",
+    "url": "http://gitlab-578fd9dcbb-rhbx8/root/petclinic-platform",
+    "defaultBranch": "main"
+  },
+  "hooks": [
+    {
+      "id": 4,
+      "url": "http://jenkins.ns-devops.svc.cluster.local:8080/project/petclinic-ci",
+      "push": true,
+      "branch": "main",
+      "branchStrategy": "wildcard",
+      "disabledUntil": null,
+      "alertStatus": "executable"
+    }
+  ],
+  "jobs": [
+    {
+      "name": "cook-ci",
+      "disabled": false,
+      "last": 30,
+      "triggers": [
+        {
+          "type": "com.dabsquared.gitlabjenkins.GitLabPushTrigger",
+          "push": true,
+          "branchType": "NameBasedFilter",
+          "include": "main",
+          "exclude": "",
+          "secretConfigured": true
+        }
+      ]
+    },
+    {
+      "name": "github-cicd-test-v8",
+      "disabled": false,
+      "last": null,
+      "triggers": [
+        {
+          "type": "com.dabsquared.gitlabjenkins.GitLabPushTrigger",
+          "push": true,
+          "branchType": "NameBasedFilter",
+          "include": "main",
+          "exclude": null,
+          "secretConfigured": false
+        }
+      ]
+    },
+    {
+      "name": "github-cicd-test-v9",
+      "disabled": false,
+      "last": null,
+      "triggers": [
+        {
+          "type": "com.dabsquared.gitlabjenkins.GitLabPushTrigger",
+          "push": true,
+          "branchType": "NameBasedFilter",
+          "include": "main",
+          "exclude": null,
+          "secretConfigured": false
+        }
+      ]
+    },
+    {
+      "name": "hello-app",
+      "disabled": false,
+      "last": 289,
+      "triggers": [
+        {
+          "type": "com.dabsquared.gitlabjenkins.GitLabPushTrigger",
+          "push": true,
+          "branchType": "NameBasedFilter",
+          "include": "main",
+          "exclude": null,
+          "secretConfigured": false
+        }
+      ]
+    },
+    {
+      "name": "hello-app-v8",
+      "disabled": false,
+      "last": 4,
+      "triggers": [
+        {
+          "type": "com.dabsquared.gitlabjenkins.GitLabPushTrigger",
+          "push": true,
+          "branchType": "NameBasedFilter",
+          "include": "main",
+          "exclude": null,
+          "secretConfigured": false
+        }
+      ]
+    },
+    {
+      "name": "hello-app-v8-jkvideo",
+      "disabled": false,
+      "last": 2,
+      "triggers": [
+        {
+          "type": "com.dabsquared.gitlabjenkins.GitLabPushTrigger",
+          "push": true,
+          "branchType": "NameBasedFilter",
+          "include": "main",
+          "exclude": null,
+          "secretConfigured": false
+        }
+      ]
+    },
+    {
+      "name": "hello-app-v9",
+      "disabled": false,
+      "last": 1,
+      "triggers": [
+        {
+          "type": "com.dabsquared.gitlabjenkins.GitLabPushTrigger",
+          "push": true,
+          "branchType": "NameBasedFilter",
+          "include": "main",
+          "exclude": null,
+          "secretConfigured": false
+        }
+      ]
+    },
+    {
+      "name": "petclinic-candidate-build",
+      "disabled": false,
+      "last": 2,
+      "triggers": []
+    },
+    {
+      "name": "petclinic-ci",
+      "disabled": false,
+      "last": 270,
+      "triggers": [
+        {
+          "type": "com.dabsquared.gitlabjenkins.GitLabPushTrigger",
+          "push": true,
+          "branchType": "NameBasedFilter",
+          "include": "main",
+          "exclude": "",
+          "secretConfigured": true
+        }
+      ]
+    },
+    {
+      "name": "petclinic-helm-shadow-20261103",
+      "disabled": false,
+      "last": 6,
+      "triggers": []
+    },
+    {
+      "name": "security-gitleaks-demo",
+      "disabled": false,
+      "last": 3,
+      "triggers": []
+    },
+    {
+      "name": "security-manager-contract-audit",
+      "disabled": false,
+      "last": 6,
+      "triggers": []
+    },
+    {
+      "name": "security-manager-contract-off",
+      "disabled": false,
+      "last": 6,
+      "triggers": []
+    },
+    {
+      "name": "security-manager-portability-smoke",
+      "disabled": false,
+      "last": 7,
+      "triggers": []
+    },
+    {
+      "name": "security-runtime-facts-20261102",
+      "disabled": false,
+      "last": 33,
+      "triggers": []
+    }
+  ],
+  "main": "340ef4b8c74e3c2a5820da8d98b0f134283bb8d9",
+  "ci": "stages: [audit]\nrelease-source-audit:\n  stage: audit\n  timeout: 2m\n  variables:\n    KUBERNETES_MEMORY_REQUEST: \"128Mi\"\n    KUBERNETES_MEMORY_LIMIT: \"128Mi\"\n    KUBERNETES_CPU_REQUEST: \"100m\"\n    KUBERNETES_CPU_LIMIT: \"500m\"\n    JAVA_TOOL_OPTIONS: \"-Xmx32m -XX:ActiveProcessorCount=1\"\n  image: 10.0.0.3:30050/platform-upgrade/eclipse-temurin:21-jre-local\n  script:\n    - java -version\n    - test -n \"$CI_COMMIT_SHA\"\n    - test -f Jenkinsfile\n    - test -f k8s/production/petclinic.yaml\n    - echo \"Petclinic mirrored source checked at $CI_COMMIT_SHA\"\n  rules:\n    - if: '$CI_COMMIT_BRANCH == \"main\"'\n",
+  "integrations": [],
+  "demoBranch": "security-demo/gitlab-push-20261105",
+  "queue": 0
+}

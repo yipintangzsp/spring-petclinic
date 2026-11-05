@@ -1,0 +1,67 @@
+{
+  "verifiedAt": "2026-11-05T12:07:08.693860+00:00",
+  "pageUrl": "http://security.devops.local:17862/#pipeline-overview",
+  "pageHttp": 200,
+  "classification": "HISTORICAL",
+  "commit": "37e28037c1d10ec74b5cb8acb212b1ccf4ee7b4b",
+  "gitPushInvocations": 1,
+  "initialAutomaticBuild": {
+    "url": "http://jenkins.devops.local/job/security-gitlab-push-demo/1/",
+    "result": "FAILURE",
+    "reason": "cause.data not exported into Pipeline JSON"
+  },
+  "afterCompatibilityFix": {
+    "url": "http://jenkins.devops.local/job/security-gitlab-push-demo/2/",
+    "result": "SUCCESS",
+    "trigger": "GitLab redelivery of original stored event 336"
+  },
+  "jenkinsBuildApiCalled": false,
+  "twoRealDeliveriesSameCommit": true,
+  "originalFailurePreserved": true,
+  "existingGitleaksPassFailStillVisible": true,
+  "links": [
+    {
+      "url": "http://jenkins.devops.local/job/security-gitlab-push-demo/2/",
+      "http": 403,
+      "curlExit": 0
+    },
+    {
+      "url": "http://jenkins.devops.local/job/security-gitlab-push-demo/1/",
+      "http": 403,
+      "curlExit": 0
+    },
+    {
+      "url": "http://gitlab.devops.local/root/petclinic-platform/-/commit/37e28037c1d10ec74b5cb8acb212b1ccf4ee7b4b",
+      "http": 302,
+      "curlExit": 0
+    }
+  ],
+  "productionHealth": {
+    "at": "2026-11-05T12:04:27.584470+00:00",
+    "ready": 3,
+    "generation": 175,
+    "images": [
+      "core.harbor.domain/petclinic/petclinic@sha256:489cb821573ff1f98edd846d5949d74bf3391b24e2f1fe5bcfb71c6be0793137"
+    ],
+    "argoSync": "Synced",
+    "argoHealth": "Healthy",
+    "argoRevision": "340ef4b8c74e3c2a5820da8d98b0f134283bb8d9",
+    "nodes": {
+      "aliyun-worker": "True",
+      "devops": "True",
+      "ucloud-worker": "True"
+    },
+    "dockerSocketMode": "0660",
+    "http": 200,
+    "mutations": 0
+  },
+  "verdict": {
+    "GITLAB_PUSH": "VERIFIED",
+    "WEBHOOK_DELIVERY": "VERIFIED",
+    "JENKINS_AUTO_TRIGGER": "VERIFIED",
+    "COMMIT_BUILD_LINK": "VERIFIED",
+    "PIPELINE_OVERVIEW": "VERIFIED"
+  },
+  "productionRelease": "NO",
+  "productionRollout": "NO"
+}

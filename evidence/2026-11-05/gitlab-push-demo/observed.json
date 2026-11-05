@@ -1,0 +1,65 @@
+{
+  "observedAt": "2026-11-05T11:57:06Z",
+  "deliveries": [
+    {
+      "id": 336,
+      "createdAt": "2026-11-05T11:54:48.192Z",
+      "url": "http://jenkins.ns-devops.svc.cluster.local:8080/project/security-gitlab-push-demo",
+      "httpStatus": "200",
+      "trigger": "push_hooks",
+      "executionDuration": 0.5231549330055714,
+      "eventUuid": "f68f002b-71a4-4cbd-86f0-c91acf0ca6e1",
+      "webhookUuid": "9f8798ba-97dc-4d35-a6f4-4ce78106fb55",
+      "projectId": 12,
+      "ref": "refs/heads/security-demo/gitlab-push-20261105",
+      "after": "37e28037c1d10ec74b5cb8acb212b1ccf4ee7b4b",
+      "before": "0000000000000000000000000000000000000000"
+    }
+  ],
+  "build": {
+    "number": 1,
+    "result": "FAILURE",
+    "building": false,
+    "startedAt": 1793879693732,
+    "duration": 1461,
+    "url": "http://jenkins.devops.local/job/security-gitlab-push-demo/1/",
+    "causes": [
+      "com.dabsquared.gitlabjenkins.cause.GitLabWebHookCause"
+    ],
+    "cause": {
+      "projectId": 12,
+      "branch": "security-demo/gitlab-push-20261105",
+      "action": "PUSH",
+      "after": "37e28037c1d10ec74b5cb8acb212b1ccf4ee7b4b",
+      "before": "0000000000000000000000000000000000000000"
+    },
+    "console": "Started by GitLab push by Administrator\n[Pipeline] Start of Pipeline\n[Pipeline] timeout\nTimeout set to expire in 2 min 0 sec\n[Pipeline] {\n[Pipeline] stage\n[Pipeline] { (Verify GitLab Push Identity)\n[Pipeline] script\n[Pipeline] {\n[Pipeline] }\n[Pipeline] // script\n[Pipeline] }\n[Pipeline] // stage\n[Pipeline] stage\n[Pipeline] { (Non-production Verification)\nStage \"Non-production Verification\" skipped due to earlier failure(s)\n[Pipeline] getContext\n[Pipeline] }\n[Pipeline] // stage\n[Pipeline] }\n[Pipeline] // timeout\n[Pipeline] End of Pipeline\nAlso:   org.jenkinsci.plugins.workflow.actions.ErrorAction$ErrorId: 326a5c23-9058-409d-a66d-9246f757f2bb\njava.lang.NullPointerException: Cannot get property 'sourceProjectId' on null object\n\tat org.codehaus.groovy.runtime.NullObject.getProperty(NullObject.java:60)\n\tat org.codehaus.groovy.runtime.InvokerHelper.getProperty(InvokerHelper.java:190)\n\tat org.codehaus.groovy.runtime.ScriptBytecodeAdapter.getProperty(ScriptBytecodeAdapter.java:469)\n\tat PluginClassLoader for script-security//org.kohsuke.groovy.sandbox.impl.Checker$7.call(Checker.java:377)\n\tat PluginClassLoader for script-security//org.kohsuke.groovy.sandbox.impl.Checker.checkedGetProperty(Checker.java:379)\n\tat PluginClassLoader for workflow-cps//com.cloudbees.groovy.cps.sandbox.SandboxInvoker.getProperty(SandboxInvoker.java:29)\n\tat PluginClassLoader for workflow-cps//org.jenkinsci.plugins.workflow.cps.LoggingInvoker.getProperty(LoggingInvoker.java:168)\n\tat PluginClassLoader for workflow-cps//com.cloudbees.groovy.cps.impl.PropertyAccessBlock.rawGet(PropertyAccessBlock.java:20)\n\tat WorkflowScript.run(WorkflowScript:17)\n\tat ___cps.transform___(Native Method)\n\tat PluginClassLoader for workflow-cps//com.cloudbees.groovy.cps.impl.PropertyishBlock$ContinuationImpl.get(PropertyishBlock.java:74)\n\tat PluginClassLoader for workflow-cps//com.cloudbees.groovy.cps.LValueBlock$GetAdapter.receive(LValueBlock.java:30)\n\tat PluginClassLoader for workflow-cps//com.cloudbees.groovy.cps.impl.PropertyishBlock$ContinuationImpl.fixName(PropertyishBlock.java:66)\n\tat java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(Unknown Source)\n\tat java.base/java.lang.reflect.Method.invoke(Unknown Source)\n\tat PluginClassLoader for workflow-cps//com.cloudbees.groovy.cps.impl.ContinuationPtr$ContinuationImpl.receive(ContinuationPtr.java:71)\n\tat PluginClassLoader for workflow-cps//com.cloudbees.groovy.cps.impl.ConstantBlock.eval(ConstantBlock.java:21)\n\tat PluginClassLoader for workflow-cps//com.cloudbees.groovy.cps.Next.step(Next.java:84)\n\tat PluginClassLoader for workflow-cps//com.cloudbees.groovy.cps.Continuable.run0(Continuable.java:142)\n\tat PluginClassLoader for workflow-cps//org.jenkinsci.plugins.workflow.cps.SandboxContinuable.access$001(SandboxContinuable.java:17)\n\tat PluginClassLoader for workflow-cps//org.jenkinsci.plugins.workflow.cps.SandboxContinuable.run0(SandboxContinuable.java:48)\n\tat PluginClassLoader for workflow-cps//org.jenkinsci.plugins.workflow.cps.CpsThread.runNextChunk(CpsThread.java:188)\n\tat PluginClassLoader for workflow-cps//org.jenkinsci.plugins.workflow.cps.CpsThreadGroup.run(CpsThreadGroup.java:464)\n\tat PluginClassLoader for workflow-cps//org.jenkinsci.plugins.workflow.cps.CpsThreadGroup$2.call(CpsThreadGroup.java:372)\n\tat PluginClassLoader for workflow-cps//org.jenkinsci.plugins.workflow.cps.CpsThreadGroup$2.call(CpsThreadGroup.java:302)\n\tat PluginClassLoader for workflow-cps//org.jenkinsci.plugins.workflow.cps.CpsVmExecutorService.lambda$wrap$4(CpsVmExecutorService.java:143)\n\tat java.base/java.util.concurrent.FutureTask.run(Unknown Source)\n\tat hudson.remoting.SingleLaneExecutorService$1.run(SingleLaneExecutorService.java:139)\n\tat jenkins.util.ContextResettingExecutorService.lambda$wrap$0(ContextResettingExecutorService.java:26)\n\tat jenkins.security.ImpersonatingExecutorService.lambda$wrap$0(ImpersonatingExecutorService.java:66)\n\tat jenkins.util.ErrorLoggingExecutorService.lambda$wrap$0(ErrorLoggingExecutorService.java:51)\n\tat java.base/java.util.concurrent.Executors$RunnableAdapter.call(Unknown Source)\n\tat java.base/java.util.concurrent.FutureTask.run(Unknown Source)\n\tat java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(Unknown Source)\n\tat java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(Unknown Source)\n\tat PluginClassLoader for workflow-cps//org.jenkinsci.plugins.workflow.cps.CpsVmExecutorService$1.call(CpsVmExecutorService.java:53)\n\tat PluginClassLoader for workflow-cps//org.jenkinsci.plugins.workflow.cps.CpsVmExecutorService$1.call(CpsVmExecutorService.java:50)\n\tat org.codehaus.groovy.runtime.GroovyCategorySupport$ThreadCategoryInfo.use(GroovyCategorySupport.java:136)\n\tat org.codehaus.groovy.runtime.GroovyCategorySupport.use(GroovyCategorySupport.java:275)\n\tat PluginClassLoader for workflow-cps//org.jenkinsci.plugins.workflow.cps.CpsVmExecutorService.lambda$categoryThreadFactory$0(CpsVmExecutorService.java:50)\n\tat java.base/java.lang.Thread.run(Unknown Source)\nFinished: FAILURE"
+  },
+  "commit": {
+    "id": "37e28037c1d10ec74b5cb8acb212b1ccf4ee7b4b",
+    "parents": [
+      "9a78cc89f22fa98fb1ffcc43e2ae279299471793"
+    ],
+    "title": "demo: verify isolated GitLab push webhook",
+    "committedAt": "2026-11-05T19:50:15.000+08:00"
+  },
+  "changedPaths": [
+    "docs/security-demo-gitlab-push.md"
+  ],
+  "gitlabBranchPipelines": [],
+  "main": "340ef4b8c74e3c2a5820da8d98b0f134283bb8d9",
+  "productionJob": {
+    "lastBuild": 270,
+    "building": false,
+    "result": "SUCCESS",
+    "definitionSha256": "abedd817048170dcf0833853d3820347341a91bd77501a77a2fcf10fb07a8f25",
+    "summarySha256": "ec9ee51a06d4b9f61c6c0eaf50b374d1e25e6d3ca687908b7596d3a2c794f5d8"
+  },
+  "existingHook": {
+    "branch_filter_strategy": "wildcard",
+    "id": 4,
+    "push_events": true,
+    "push_events_branch_filter": "main",
+    "url": "http://jenkins.ns-devops.svc.cluster.local:8080/project/petclinic-ci"
+  }
+}

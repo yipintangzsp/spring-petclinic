@@ -11,13 +11,35 @@
 <div class="section-heading"><div><span class="eyebrow">PETCLINIC DEVSECOPS</span><h2>PetClinic Pipeline Overview</h2></div><span class="tag replay">HISTORICAL · 只读快照</span></div>
 <p class="muted">采集时间：<time datetime="2026-11-05T10:37:17.395314+00:00">2026-11-05 18:37:17 +08:00</time>。刷新只重新读取本地记录，不触发扫描、构建或生产查询。</p>
 <p class="muted">GitLab → Jenkins / Security Gate → Harbor 候选镜像 · GitOps → Argo CD → Kubernetes。下列分段证据不代表同轮生产发布。</p>
+<!-- GITLAB_PUSH_DEMO_BEGIN -->
+<article id="gitlab-push-demo" class="consumer">
+<div class="card-top"><h3>GitLab Push → Jenkins · 隔离分支真实验证</h3><span class="tag real">HISTORICAL · REAL EVENT</span></div>
+<p>一条真实 Push，GitLab 自动触发构建；兼容性修复后，GitLab 重投原始事件并成功。不是首次直接成功，也未再次 Push 或调用 Jenkins Build API。</p>
+<div class="card-row"><span>项目 / 测试分支</span><b>root/petclinic-platform / security-demo/gitlab-push-20261105</b></div>
+<div class="card-row"><span>真实测试 Commit</span><b>37e28037c1d10ec74b5cb8acb212b1ccf4ee7b4b</b></div>
+<div class="card-row"><span>实际 Git Push 次数 / 退出码</span><b>1 / 0</b></div>
+<div class="card-row"><span>Push 时间（UTC）</span><b>2026-11-05T11:54:43Z → 2026-11-05T11:54:45Z</b></div>
+<div class="card-row"><span>原始投递 / 修复后重投</span><b>Hook #5 · Event #336 HTTP 200 → Event #337 HTTP 200</b></div>
+<div class="card-row"><span>Jenkins 接收 Cause</span><b>GitLabWebHookCause / project 12 / PUSH</b></div>
+<div class="card-row"><span>首次自动构建</span><b>#1 · FAILURE · 2026-11-05 19:54:53 +08:00</b></div>
+<div class="card-row"><span>修复后 GitLab 重投构建</span><b>#2 · SUCCESS · 2026-11-05 20:01:33 +08:00</b></div>
+<div class="card-row"><span>Commit ↔ Build 校验</span><b>37e28037c1d10ec74b5cb8acb212b1ccf4ee7b4b</b></div>
+<div class="card-row"><span>执行边界</span><b>agent none；无 checkout / Shell / 扫描 / 镜像发布 / 部署</b></div>
+<p><a href="http://gitlab.devops.local/root/petclinic-platform/-/commit/37e28037c1d10ec74b5cb8acb212b1ccf4ee7b4b">GitLab 测试提交</a> · <a href="http://jenkins.devops.local/job/security-gitlab-push-demo/1/">首次自动触发 #1 · FAILURE</a> · <a href="http://jenkins.devops.local/job/security-gitlab-push-demo/2/">修复后事件重投 #2 · SUCCESS</a></p>
+<p>首次失败为演示定义读取了当前插件未导出的 cause.data；已改用相同事件实际提供的固定仓库、分支及 Commit 变量。原始失败与投递记录均保留。成功仅证明此隔离测试分支，不代表生产 main 自动发布已验收。</p>
+<details><summary>GitLab 投递证据</summary>
+<p>Event #336 · 2026-11-05T11:54:48.192Z · HTTP 200 · refs/heads/security-demo/gitlab-push-20261105 · after=37e28037c1d10ec74b5cb8acb212b1ccf4ee7b4b</p>
+<p>Event #337 · 2026-11-05T12:01:27.309Z · HTTP 200 · refs/heads/security-demo/gitlab-push-20261105 · after=37e28037c1d10ec74b5cb8acb212b1ccf4ee7b4b</p>
+<p class="source-path">evidence/2026-11-05/gitlab-push-demo/verified.json · SHA256 f5ac3636605aae94276da48f5a8439ddae89e175b250e7b2e4d2cad8b9c34840</p>
+</details></article>
+<!-- GITLAB_PUSH_DEMO_END -->
 <div class="consumer-grid">
 <article class="consumer"><div class="card-top"><h3>GitLab · 项目与构建提交</h3><span class="tag replay">HISTORICAL</span></div>
 <p>数据时点：<time datetime="2026-10-30T03:17:18.408000+00:00">2026-10-30T03:17:18.408000+00:00</time></p>
 <div class="card-row"><span>项目</span><b>root/petclinic-platform</b></div>
 <div class="card-row"><span>构建实际检出的 Commit</span><b>9a78cc89f22fa98fb1ffcc43e2ae279299471793</b></div>
 <div class="card-row"><span>GitLab Push Trigger</span><b>com.dabsquared.gitlabjenkins.GitLabPushTrigger</b></div>
-<div class="card-row"><span>自动触发验收</span><b>UNAVAILABLE · 本次未发送 Push；#270 为 UserIdCause</b></div>
+<div class="card-row"><span>自动触发验收</span><b>UNAVAILABLE · 生产 main 自动触发未验；#270 为 UserIdCause</b></div>
 <p>SCM 当前固定到审计提交，非跟踪 main。项目 API 匿名返回 404；不据此推断项目不存在或自动触发已通过。</p>
 <p><a href="http://gitlab.devops.local/root/petclinic-platform">GitLab 项目</a> · HTTP 302（检查于本次采集）</p>
 <p><a href="http://gitlab.devops.local/root/petclinic-platform/-/commit/9a78cc89f22fa98fb1ffcc43e2ae279299471793">查看 #270 对应提交</a> · HTTP 302（检查于本次采集）</p>
@@ -87,7 +109,7 @@
 <p>LIVE=无。页面展示真实历史归档与带时间的当前状态快照，不冒充实时跨系统查询。</p>
 <p>已证明：GitLab Commit → 候选构建 #2 → 候选镜像 → #270 安全审计/构建证明校验。</p>
 <p>已证明：GitOps Revision → Argo CD Synced/Healthy → 当前 PetClinic 3/3；两段证据不是同一次端到端生产发布。</p>
-<p>未验证：本次 GitLab Push 自动触发、候选镜像晋升为当前运行镜像、完整同次发布链、Harbor 登录后的 artifact 内容。</p>
+<p>仍未验证：生产 main 分支 Push 自动触发、候选镜像晋升为当前运行镜像、完整同次发布链、Harbor 登录后的 artifact 内容。</p>
 <p>Gitleaks Clean #2 / Finding #3 的 Jenkins 门禁演示独立保留；Production Manager NOT_ACTIVE，Canonical Runtime 14/16。</p>
 <p class="source-path">evidence/2026-11-05/petclinic-pipeline-overview/read-only-sources.json · SHA256 7cf7c5463ad37f64d31d2ab1f271e2c8d53185320ff2952fbd02e379cd45737b</p>
 <p class="source-path">evidence/2026-11-05/petclinic-pipeline-overview/links-observability.json · SHA256 3299ef14041409a241ce04ccf928c75e91fadf988d94d1a808c4c79f0cd77b37</p>
