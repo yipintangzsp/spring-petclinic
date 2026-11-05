@@ -11,6 +11,10 @@
 <p class="muted">仅接受固定插件和固定场景。安全条件不足时返回 BLOCKED，不会重放历史记录充当真实执行。FAIL 表示发现被策略阻止，ERROR 才表示执行错误。</p>
 <div class="select-row live-controls"><label>插件<select id="live-plugin"><option value="gitleaks">Gitleaks</option><option value="semgrep">Semgrep</option><option value="cosign">Cosign</option></select></label><label>场景<select id="live-scenario"><option value="clean">Clean</option><option value="controlled-finding">Controlled Finding</option></select></label><button id="run-validation" type="button" disabled>运行受控验证</button></div>
 <p id="live-capability" class="muted">正在检查执行条件…</p><p id="live-message" role="status" aria-live="polite"></p><div id="live-results" class="consumer-grid"></div>
+<p class="muted">Jenkins 受控真实门禁演示 · 2026-11-05：
+<a href="http://jenkins.devops.local/job/security-gitleaks-demo/2/">Clean #2 · SUCCESS · Policy PASS</a> /
+<a href="http://jenkins.devops.local/job/security-gitleaks-demo/3/">Finding #3 · FAILURE · Policy FAIL</a>。
+Finding 真实命中 1 项受控假凭证，Demo Publish 已跳过；扫描由 Linux security-gitleaks 执行，无生产发布。历史演示记录，重新运行需启动受限调度。</p>
 <p class="muted"><a href="http://jenkins.devops.local/job/petclinic-ci/270/">Jenkins #270 历史源码门禁</a> · <time datetime="2026-10-30T03:19:59.223Z">2026-10-30 11:19:59 +08:00</time> · 门禁 PASS，阻断项 0；内置自检 Clean 0 命中，Finding 1 命中、退出码 1。此构建成功，未记录发布被该自检阻止。</p>
 </section>
 <section class="run-section"><div class="section-heading"><div><span class="eyebrow">01 / EXECUTION RECORD</span><h2>Historical Replay Results · 历史记录</h2></div><span class="muted">切换记录不会触发执行</span></div><label for="scenario">受控场景</label><div class="select-row"><select id="scenario" disabled><option>正在读取已有证据…</option></select><button id="refresh" type="button">重新读取证据 ↻</button></div><div class="run-info"><div><span>RUN ID</span><code id="run-id">—</code></div><div><span>记录完成时间 · 北京时间</span><strong id="run-time">—</strong></div><div><span>POLICY / MODE</span><strong id="policy">—</strong></div><div><span>原记录综合判定</span><strong id="overall">—</strong></div></div><p class="muted" id="run-description"></p></section>

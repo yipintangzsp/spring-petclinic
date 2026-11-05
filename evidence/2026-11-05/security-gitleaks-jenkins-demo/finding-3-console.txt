@@ -1,0 +1,50 @@
+Started by user admin
+[Pipeline] Start of Pipeline
+[Pipeline] timeout
+Timeout set to expire in 8 min 0 sec
+[Pipeline] {
+[Pipeline] stage
+[Pipeline] { (Await Restricted Linux Scan)
+[Pipeline] script
+[Pipeline] {
+[Pipeline] input
+Input requested
+Approved by admin
+[Pipeline] }
+[Pipeline] // script
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] stage
+[Pipeline] { (Gitleaks Gate)
+[Pipeline] node
+Running on Jenkins in /var/jenkins_home/workspace/security-gitleaks-demo
+[Pipeline] {
+[Pipeline] script
+[Pipeline] {
+[Pipeline] dir
+Running in /var/jenkins_home/workspace/security-gitleaks-demo/verified-receipt-3
+[Pipeline] {
+[Pipeline] sh
+[Pipeline] archiveArtifacts
+Archiving artifacts
+[Pipeline] error
+[Pipeline] deleteDir
+[Pipeline] }
+[Pipeline] // dir
+[Pipeline] }
+[Pipeline] // script
+[Pipeline] }
+[Pipeline] // node
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] stage
+[Pipeline] { (Demo Publish)
+Stage "Demo Publish" skipped due to earlier failure(s)
+[Pipeline] getContext
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] }
+[Pipeline] // timeout
+[Pipeline] End of Pipeline
+ERROR: Gitleaks Policy FAIL: verified controlled finding; blocking Demo Publish
+Finished: FAILURE
