@@ -50,3 +50,19 @@ async function load(){
   finally{$('refresh').disabled=false;}
 }
 $('scenario').addEventListener('change',renderRun);$('refresh').addEventListener('click',load);load();
+let sessionToken=null,liveCapabilities=null,liveBusy=false;
+async function api(url,options){const r=await fetch(url,{cache:'no-store',...options});const v=await r.json();if(!r.ok)throw Error(v.error??v.reason??'HTTP '+r.status);return v;}
+function capabilityText(){const c=liveCapabilities?.plugins.find(p=>p.pluginId===$('live-plugin').value);$('live-capability').textContent=c?`${c.pluginId}: ${c.state} / ${c.reason} · ${liveCapabilities.platform}/${liveCapabilities.arch} UID ${liveCapabilities.uid} · 工具版本：${c.toolVersion??'未执行 / 未验证'}`:'UNAVAILABLE';}
+function renderLive(runs){$('live-results').replaceChildren(...runs.map(r=>{const card=el('article',undefined,'consumer');card.dataset.runId=r.runId;const top=el('div',undefined,'card-top');top.append(el('h3',r.pluginId+' / '+r.scenarioId),el('span',r.evidenceClass,'tag '+(r.evidenceClass==='REAL'?'real':'neutral')));card.append(top,el('div',r.state,'delivery'),row('Policy Decision',r.policyDecision??'未求值'),row('Run ID',r.runId),row('开始',time(r.startedAt)),row('完成',time(r.completedAt)),row('耗时',r.durationMs==null?'—':r.durationMs+' ms'),row('Policy 求值次数',r.evaluationCount??0));if(r.reason)card.append(el('p','原因：'+r.reason));if(r.resultDigest)card.append(el('span','Result Digest（可能仅为 BLOCKED 预检结果）','detail-label'),el('code',r.resultDigest));if(r.auditDigest)card.append(el('p','Audit Digest: '+r.auditDigest));if(r.source)card.append(el('code',r.source,'source-path'));else card.append(el('p','未运行 scanner；没有扫描报告或 Policy Result。'));return card;}));}
+async function refreshLive(){const v=await api('/api/runs');renderLive(v.runs);}
+async function initializeLive(){try{liveCapabilities=await api('/api/plugins');sessionToken=liveCapabilities.csrfToken;capabilityText();await refreshLive();$('run-validation').disabled=false;}catch(e){$('live-message').textContent='UNAVAILABLE: '+e.message;}}
+$('live-plugin').addEventListener('change',capabilityText);
+$('run-validation').addEventListener('click',async()=>{
+ if(liveBusy||!sessionToken)return;liveBusy=true;$('run-validation').disabled=true;$('live-message').textContent='正在提交并检查固定 Runner 执行条件…';
+ try{const r=await api('/api/run',{method:'POST',headers:{'Content-Type':'application/json','X-CSRF-Token':sessionToken},body:JSON.stringify({pluginId:$('live-plugin').value,scenarioId:$('live-scenario').value})});
+  let done=false;for(let i=0;i<65;i++){const v=await api('/api/runs/'+r.runId);if(!['QUEUED','RUNNING'].includes(v.state)){$('live-message').textContent=`${v.state}: ${v.reason??v.policyDecision??'无判定'} · ${v.runId}`;done=true;break;}await new Promise(r=>setTimeout(r,500));}
+  if(!done)$('live-message').textContent='执行状态未能及时确认，请刷新记录；不会自动重复执行。';await refreshLive();
+ }catch(e){$('live-message').textContent='请求失败：'+e.message;}
+ finally{liveBusy=false;$('run-validation').disabled=false;}
+});
+initializeLive();
