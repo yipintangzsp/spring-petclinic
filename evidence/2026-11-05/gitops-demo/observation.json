@@ -1,0 +1,2250 @@
+{
+  "observedAt": "2026-11-05T15:51:14.281460+00:00",
+  "applications": [
+    {
+      "name": "airflow",
+      "project": "default",
+      "source": {
+        "kustomize": {
+          "patches": [
+            {
+              "patch": "{\"apiVersion\": \"apps/v1\", \"kind\": \"Deployment\", \"metadata\": {\"name\": \"airflow-api-server\"}, \"spec\": {\"template\": {\"metadata\": {\"annotations\": {\"petclinic.devops.local/revision\": \"0a51371151c57cf40b0389595ced3334e6645aef\"}}, \"spec\": {\"containers\": [{\"name\": \"api-server\", \"env\": [{\"name\": \"PETCLINIC_ANALYTICS_SCHEDULE\", \"value\": \"30 2 * * 1\"}]}]}}}}",
+              "target": {
+                "kind": "Deployment",
+                "name": "airflow-api-server"
+              }
+            },
+            {
+              "patch": "{\"apiVersion\": \"apps/v1\", \"kind\": \"Deployment\", \"metadata\": {\"name\": \"airflow-scheduler\"}, \"spec\": {\"template\": {\"metadata\": {\"annotations\": {\"petclinic.devops.local/revision\": \"0a51371151c57cf40b0389595ced3334e6645aef\"}}, \"spec\": {\"containers\": [{\"name\": \"scheduler\", \"env\": [{\"name\": \"PETCLINIC_ANALYTICS_SCHEDULE\", \"value\": \"30 2 * * 1\"}]}]}}}}",
+              "target": {
+                "kind": "Deployment",
+                "name": "airflow-scheduler"
+              }
+            },
+            {
+              "patch": "{\"apiVersion\": \"apps/v1\", \"kind\": \"Deployment\", \"metadata\": {\"name\": \"airflow-dag-processor\"}, \"spec\": {\"template\": {\"metadata\": {\"annotations\": {\"petclinic.devops.local/revision\": \"0a51371151c57cf40b0389595ced3334e6645aef\"}}, \"spec\": {\"containers\": [{\"name\": \"dag-processor\", \"env\": [{\"name\": \"PETCLINIC_ANALYTICS_SCHEDULE\", \"value\": \"30 2 * * 1\"}]}]}}}}",
+              "target": {
+                "kind": "Deployment",
+                "name": "airflow-dag-processor"
+              }
+            }
+          ],
+          "replicas": [
+            {
+              "count": 0,
+              "name": "airflow-api-server"
+            },
+            {
+              "count": 0,
+              "name": "airflow-scheduler"
+            },
+            {
+              "count": 0,
+              "name": "airflow-dag-processor"
+            },
+            {
+              "count": 0,
+              "name": "airflow-statsd"
+            },
+            {
+              "count": 0,
+              "name": "airflow-triggerer"
+            }
+          ]
+        },
+        "path": "infra/analytics",
+        "repoURL": "http://gitlab-service.ns-devops.svc.cluster.local/root/petclinic-platform.git",
+        "targetRevision": "0a51371151c57cf40b0389595ced3334e6645aef"
+      },
+      "sources": null,
+      "destination": {
+        "namespace": "data-infra",
+        "server": "https://kubernetes.default.svc"
+      },
+      "syncPolicy": {
+        "automated": {
+          "prune": false,
+          "selfHeal": true
+        },
+        "syncOptions": [
+          "CreateNamespace=true"
+        ]
+      },
+      "sync": {
+        "comparedTo": {
+          "destination": {
+            "namespace": "data-infra",
+            "server": "https://kubernetes.default.svc"
+          },
+          "source": {
+            "kustomize": {
+              "patches": [
+                {
+                  "patch": "{\"apiVersion\": \"apps/v1\", \"kind\": \"Deployment\", \"metadata\": {\"name\": \"airflow-api-server\"}, \"spec\": {\"template\": {\"metadata\": {\"annotations\": {\"petclinic.devops.local/revision\": \"0a51371151c57cf40b0389595ced3334e6645aef\"}}, \"spec\": {\"containers\": [{\"name\": \"api-server\", \"env\": [{\"name\": \"PETCLINIC_ANALYTICS_SCHEDULE\", \"value\": \"30 2 * * 1\"}]}]}}}}",
+                  "target": {
+                    "kind": "Deployment",
+                    "name": "airflow-api-server"
+                  }
+                },
+                {
+                  "patch": "{\"apiVersion\": \"apps/v1\", \"kind\": \"Deployment\", \"metadata\": {\"name\": \"airflow-scheduler\"}, \"spec\": {\"template\": {\"metadata\": {\"annotations\": {\"petclinic.devops.local/revision\": \"0a51371151c57cf40b0389595ced3334e6645aef\"}}, \"spec\": {\"containers\": [{\"name\": \"scheduler\", \"env\": [{\"name\": \"PETCLINIC_ANALYTICS_SCHEDULE\", \"value\": \"30 2 * * 1\"}]}]}}}}",
+                  "target": {
+                    "kind": "Deployment",
+                    "name": "airflow-scheduler"
+                  }
+                },
+                {
+                  "patch": "{\"apiVersion\": \"apps/v1\", \"kind\": \"Deployment\", \"metadata\": {\"name\": \"airflow-dag-processor\"}, \"spec\": {\"template\": {\"metadata\": {\"annotations\": {\"petclinic.devops.local/revision\": \"0a51371151c57cf40b0389595ced3334e6645aef\"}}, \"spec\": {\"containers\": [{\"name\": \"dag-processor\", \"env\": [{\"name\": \"PETCLINIC_ANALYTICS_SCHEDULE\", \"value\": \"30 2 * * 1\"}]}]}}}}",
+                  "target": {
+                    "kind": "Deployment",
+                    "name": "airflow-dag-processor"
+                  }
+                }
+              ],
+              "replicas": [
+                {
+                  "count": 0,
+                  "name": "airflow-api-server"
+                },
+                {
+                  "count": 0,
+                  "name": "airflow-scheduler"
+                },
+                {
+                  "count": 0,
+                  "name": "airflow-dag-processor"
+                },
+                {
+                  "count": 0,
+                  "name": "airflow-statsd"
+                },
+                {
+                  "count": 0,
+                  "name": "airflow-triggerer"
+                }
+              ]
+            },
+            "path": "infra/analytics",
+            "repoURL": "http://gitlab-service.ns-devops.svc.cluster.local/root/petclinic-platform.git",
+            "targetRevision": "0a51371151c57cf40b0389595ced3334e6645aef"
+          }
+        },
+        "revision": "0a51371151c57cf40b0389595ced3334e6645aef",
+        "status": "Synced"
+      },
+      "health": {
+        "lastTransitionTime": "2026-10-27T16:45:22Z",
+        "status": "Healthy"
+      },
+      "managedResources": [
+        {
+          "kind": "ConfigMap",
+          "namespace": "data-infra",
+          "name": "airflow-config"
+        },
+        {
+          "kind": "ConfigMap",
+          "namespace": "data-infra",
+          "name": "petclinic-analysis-code"
+        },
+        {
+          "kind": "Deployment",
+          "namespace": "data-infra",
+          "name": "airflow-api-server"
+        },
+        {
+          "kind": "Deployment",
+          "namespace": "data-infra",
+          "name": "airflow-dag-processor"
+        },
+        {
+          "kind": "Deployment",
+          "namespace": "data-infra",
+          "name": "airflow-scheduler"
+        },
+        {
+          "kind": "Deployment",
+          "namespace": "data-infra",
+          "name": "airflow-statsd"
+        },
+        {
+          "kind": "StatefulSet",
+          "namespace": "data-infra",
+          "name": "airflow-triggerer"
+        },
+        {
+          "kind": "ClusterRole",
+          "namespace": null,
+          "name": "petclinic-airflow-resource-read"
+        },
+        {
+          "kind": "ClusterRoleBinding",
+          "namespace": null,
+          "name": "petclinic-airflow-resource-read"
+        },
+        {
+          "kind": "Role",
+          "namespace": "data-infra",
+          "name": "petclinic-airflow-orchestrator"
+        },
+        {
+          "kind": "Role",
+          "namespace": "default",
+          "name": "petclinic-airflow-spark"
+        },
+        {
+          "kind": "Role",
+          "namespace": "ns-bigdata",
+          "name": "petclinic-airflow-flink"
+        },
+        {
+          "kind": "Role",
+          "namespace": "ns-data",
+          "name": "petclinic-airflow-baseline"
+        },
+        {
+          "kind": "Role",
+          "namespace": "ns-devops",
+          "name": "petclinic-airflow-jenkins"
+        },
+        {
+          "kind": "Role",
+          "namespace": "sonarqube",
+          "name": "petclinic-airflow-sonar-pause"
+        },
+        {
+          "kind": "RoleBinding",
+          "namespace": "data-infra",
+          "name": "petclinic-airflow-orchestrator"
+        },
+        {
+          "kind": "RoleBinding",
+          "namespace": "default",
+          "name": "petclinic-airflow-spark"
+        },
+        {
+          "kind": "RoleBinding",
+          "namespace": "ns-bigdata",
+          "name": "petclinic-airflow-flink"
+        },
+        {
+          "kind": "RoleBinding",
+          "namespace": "ns-data",
+          "name": "petclinic-airflow-baseline"
+        },
+        {
+          "kind": "RoleBinding",
+          "namespace": "ns-devops",
+          "name": "petclinic-airflow-jenkins"
+        },
+        {
+          "kind": "RoleBinding",
+          "namespace": "sonarqube",
+          "name": "petclinic-airflow-sonar-pause"
+        }
+      ]
+    },
+    {
+      "name": "cook",
+      "project": "default",
+      "source": {
+        "path": "apps/cook",
+        "repoURL": "http://gitlab-service.ns-devops.svc.cluster.local/root/cook-gitops.git",
+        "targetRevision": "main"
+      },
+      "sources": null,
+      "destination": {
+        "namespace": "cook",
+        "server": "https://kubernetes.default.svc"
+      },
+      "syncPolicy": {
+        "automated": {
+          "prune": false,
+          "selfHeal": true
+        }
+      },
+      "sync": {
+        "comparedTo": {
+          "destination": {
+            "namespace": "cook",
+            "server": "https://kubernetes.default.svc"
+          },
+          "source": {
+            "path": "apps/cook",
+            "repoURL": "http://gitlab-service.ns-devops.svc.cluster.local/root/cook-gitops.git",
+            "targetRevision": "main"
+          }
+        },
+        "revision": "d1f9a0ec3acce6faa3c70ce955d3e21ce61ab4c9",
+        "status": "Synced"
+      },
+      "health": {
+        "lastTransitionTime": "2026-11-05T02:27:51Z",
+        "status": "Healthy"
+      },
+      "managedResources": [
+        {
+          "kind": "ConfigMap",
+          "namespace": "cook",
+          "name": "cook-blackbox"
+        },
+        {
+          "kind": "ConfigMap",
+          "namespace": "cook",
+          "name": "cook-grafana-dashboard"
+        },
+        {
+          "kind": "Service",
+          "namespace": "cook",
+          "name": "cook"
+        },
+        {
+          "kind": "Service",
+          "namespace": "cook",
+          "name": "cook-blackbox"
+        },
+        {
+          "kind": "Service",
+          "namespace": "kube-system",
+          "name": "cook-traefik-metrics"
+        },
+        {
+          "kind": "ServiceAccount",
+          "namespace": "cook",
+          "name": "cook"
+        },
+        {
+          "kind": "Deployment",
+          "namespace": "cook",
+          "name": "cook"
+        },
+        {
+          "kind": "Deployment",
+          "namespace": "cook",
+          "name": "cook-blackbox"
+        },
+        {
+          "kind": "Probe",
+          "namespace": "cook",
+          "name": "cook-http"
+        },
+        {
+          "kind": "ServiceMonitor",
+          "namespace": "cook",
+          "name": "cook-traefik"
+        },
+        {
+          "kind": "Ingress",
+          "namespace": "cook",
+          "name": "cook"
+        }
+      ]
+    },
+    {
+      "name": "devops-tls-lab",
+      "project": "default",
+      "source": {
+        "path": "infra/devops-lab/tls",
+        "repoURL": "http://gitlab-service.ns-devops.svc.cluster.local/root/petclinic-platform.git",
+        "targetRevision": "main"
+      },
+      "sources": null,
+      "destination": {
+        "namespace": "devops-lab",
+        "server": "https://kubernetes.default.svc"
+      },
+      "syncPolicy": {
+        "automated": {
+          "prune": false,
+          "selfHeal": true
+        },
+        "syncOptions": [
+          "CreateNamespace=true",
+          "ServerSideApply=true"
+        ]
+      },
+      "sync": {
+        "comparedTo": {
+          "destination": {
+            "namespace": "devops-lab",
+            "server": "https://kubernetes.default.svc"
+          },
+          "source": {
+            "path": "infra/devops-lab/tls",
+            "repoURL": "http://gitlab-service.ns-devops.svc.cluster.local/root/petclinic-platform.git",
+            "targetRevision": "main"
+          }
+        },
+        "revision": "340ef4b8c74e3c2a5820da8d98b0f134283bb8d9",
+        "status": "Synced"
+      },
+      "health": {
+        "lastTransitionTime": "2026-11-05T12:56:55Z",
+        "status": "Healthy"
+      },
+      "managedResources": [
+        {
+          "kind": "ConfigMap",
+          "namespace": "devops-lab",
+          "name": "tls-lab-page"
+        },
+        {
+          "kind": "LimitRange",
+          "namespace": "devops-lab",
+          "name": "lab-defaults"
+        },
+        {
+          "kind": "Namespace",
+          "namespace": null,
+          "name": "devops-lab"
+        },
+        {
+          "kind": "ResourceQuota",
+          "namespace": "devops-lab",
+          "name": "lab-budget"
+        },
+        {
+          "kind": "Service",
+          "namespace": "devops-lab",
+          "name": "tls-lab"
+        },
+        {
+          "kind": "Deployment",
+          "namespace": "devops-lab",
+          "name": "tls-lab"
+        },
+        {
+          "kind": "Certificate",
+          "namespace": "devops-lab",
+          "name": "lab-root"
+        },
+        {
+          "kind": "Certificate",
+          "namespace": "devops-lab",
+          "name": "tls-lab"
+        },
+        {
+          "kind": "Issuer",
+          "namespace": "devops-lab",
+          "name": "lab-ca"
+        },
+        {
+          "kind": "Issuer",
+          "namespace": "devops-lab",
+          "name": "lab-selfsigned"
+        },
+        {
+          "kind": "Ingress",
+          "namespace": "devops-lab",
+          "name": "tls-lab"
+        }
+      ]
+    },
+    {
+      "name": "hello-app-dev",
+      "project": "default",
+      "source": {
+        "path": "dev",
+        "repoURL": "http://gitlab-service.ns-devops.svc.cluster.local/root/hello-app-config.git",
+        "targetRevision": "main"
+      },
+      "sources": null,
+      "destination": {
+        "namespace": "ns-apps",
+        "server": "https://kubernetes.default.svc"
+      },
+      "syncPolicy": {
+        "automated": {
+          "prune": true,
+          "selfHeal": true
+        },
+        "syncOptions": [
+          "CreateNamespace=true",
+          "ApplyOutOfSyncOnly=true"
+        ]
+      },
+      "sync": {
+        "comparedTo": {
+          "destination": {
+            "namespace": "ns-apps",
+            "server": "https://kubernetes.default.svc"
+          },
+          "source": {
+            "path": "dev",
+            "repoURL": "http://gitlab-service.ns-devops.svc.cluster.local/root/hello-app-config.git",
+            "targetRevision": "main"
+          }
+        },
+        "revision": "c5ccc4e36ac22f93317767e775f04339028a49a3",
+        "status": "Synced"
+      },
+      "health": {
+        "lastTransitionTime": "2026-11-05T02:27:51Z",
+        "status": "Healthy"
+      },
+      "managedResources": [
+        {
+          "kind": "Service",
+          "namespace": "ns-apps",
+          "name": "hello-app"
+        },
+        {
+          "kind": "Service",
+          "namespace": "ns-apps",
+          "name": "jkvideo-web"
+        },
+        {
+          "kind": "Deployment",
+          "namespace": "ns-apps",
+          "name": "hello-app"
+        },
+        {
+          "kind": "Deployment",
+          "namespace": "ns-apps",
+          "name": "jkvideo-web"
+        }
+      ]
+    },
+    {
+      "name": "petclinic",
+      "project": "default",
+      "source": {
+        "path": "k8s/production",
+        "repoURL": "http://gitlab-service.ns-devops.svc.cluster.local/root/petclinic-platform.git",
+        "targetRevision": "main"
+      },
+      "sources": null,
+      "destination": {
+        "namespace": "petclinic",
+        "server": "https://kubernetes.default.svc"
+      },
+      "syncPolicy": {
+        "automated": {
+          "prune": false,
+          "selfHeal": true
+        },
+        "syncOptions": [
+          "CreateNamespace=false"
+        ]
+      },
+      "sync": {
+        "comparedTo": {
+          "destination": {
+            "namespace": "petclinic",
+            "server": "https://kubernetes.default.svc"
+          },
+          "source": {
+            "path": "k8s/production",
+            "repoURL": "http://gitlab-service.ns-devops.svc.cluster.local/root/petclinic-platform.git",
+            "targetRevision": "main"
+          }
+        },
+        "revision": "340ef4b8c74e3c2a5820da8d98b0f134283bb8d9",
+        "status": "Synced"
+      },
+      "health": {
+        "lastTransitionTime": "2026-11-05T02:28:20Z",
+        "status": "Healthy"
+      },
+      "managedResources": [
+        {
+          "kind": "ConfigMap",
+          "namespace": "petclinic",
+          "name": "petclinic-config"
+        },
+        {
+          "kind": "ConfigMap",
+          "namespace": "petclinic",
+          "name": "petclinic-grafana-dashboard"
+        },
+        {
+          "kind": "ConfigMap",
+          "namespace": "petclinic",
+          "name": "petclinic-metrics-dashboard"
+        },
+        {
+          "kind": "ConfigMap",
+          "namespace": "petclinic",
+          "name": "petclinic-release-analysis-dashboard"
+        },
+        {
+          "kind": "ConfigMap",
+          "namespace": "petclinic",
+          "name": "petclinic-v09-dashboard"
+        },
+        {
+          "kind": "Service",
+          "namespace": "petclinic",
+          "name": "petclinic"
+        },
+        {
+          "kind": "Deployment",
+          "namespace": "petclinic",
+          "name": "petclinic"
+        },
+        {
+          "kind": "Application",
+          "namespace": "argocd",
+          "name": "platform-alertmanager"
+        },
+        {
+          "kind": "Application",
+          "namespace": "argocd",
+          "name": "spark-operator"
+        },
+        {
+          "kind": "PrometheusRule",
+          "namespace": "petclinic",
+          "name": "petclinic"
+        },
+        {
+          "kind": "ServiceMonitor",
+          "namespace": "petclinic",
+          "name": "petclinic"
+        },
+        {
+          "kind": "Ingress",
+          "namespace": "harbor",
+          "name": "petclinic-harbor-alias"
+        },
+        {
+          "kind": "Ingress",
+          "namespace": "petclinic",
+          "name": "petclinic"
+        },
+        {
+          "kind": "PodDisruptionBudget",
+          "namespace": "petclinic",
+          "name": "petclinic"
+        }
+      ]
+    },
+    {
+      "name": "platform-alertmanager",
+      "project": "default",
+      "source": {
+        "path": "infra/observability/alertmanager",
+        "repoURL": "http://gitlab-service.ns-devops.svc.cluster.local/root/petclinic-platform.git",
+        "targetRevision": "main"
+      },
+      "sources": null,
+      "destination": {
+        "namespace": "monitoring",
+        "server": "https://kubernetes.default.svc"
+      },
+      "syncPolicy": {
+        "automated": {
+          "prune": false,
+          "selfHeal": true
+        },
+        "syncOptions": [
+          "CreateNamespace=true"
+        ]
+      },
+      "sync": {
+        "comparedTo": {
+          "destination": {
+            "namespace": "monitoring",
+            "server": "https://kubernetes.default.svc"
+          },
+          "source": {
+            "path": "infra/observability/alertmanager",
+            "repoURL": "http://gitlab-service.ns-devops.svc.cluster.local/root/petclinic-platform.git",
+            "targetRevision": "main"
+          }
+        },
+        "revision": "340ef4b8c74e3c2a5820da8d98b0f134283bb8d9",
+        "status": "Synced"
+      },
+      "health": {
+        "lastTransitionTime": "2026-11-05T02:26:52Z",
+        "status": "Healthy"
+      },
+      "managedResources": [
+        {
+          "kind": "Secret",
+          "namespace": "monitoring",
+          "name": "alertmanager-platform"
+        },
+        {
+          "kind": "Service",
+          "namespace": "monitoring",
+          "name": "alertmanager-platform"
+        },
+        {
+          "kind": "Alertmanager",
+          "namespace": "monitoring",
+          "name": "platform"
+        },
+        {
+          "kind": "Prometheus",
+          "namespace": "monitoring",
+          "name": "kube-stack-kube-prometheus-prometheus"
+        },
+        {
+          "kind": "ServiceMonitor",
+          "namespace": "monitoring",
+          "name": "alertmanager-platform"
+        },
+        {
+          "kind": "ServiceMonitor",
+          "namespace": "monitoring",
+          "name": "k3s-kube-controller-manager"
+        },
+        {
+          "kind": "ServiceMonitor",
+          "namespace": "monitoring",
+          "name": "k3s-kube-proxy"
+        },
+        {
+          "kind": "ServiceMonitor",
+          "namespace": "monitoring",
+          "name": "k3s-kube-scheduler"
+        },
+        {
+          "kind": "Ingress",
+          "namespace": "monitoring",
+          "name": "alertmanager-platform"
+        }
+      ]
+    },
+    {
+      "name": "platform-cert-manager",
+      "project": "default",
+      "source": {
+        "path": "infra/devops-lab/cert-manager",
+        "repoURL": "http://gitlab-service.ns-devops.svc.cluster.local/root/petclinic-platform.git",
+        "targetRevision": "main"
+      },
+      "sources": null,
+      "destination": {
+        "namespace": "cert-manager",
+        "server": "https://kubernetes.default.svc"
+      },
+      "syncPolicy": {
+        "automated": {
+          "prune": false,
+          "selfHeal": true
+        },
+        "syncOptions": [
+          "CreateNamespace=true",
+          "ServerSideApply=true"
+        ]
+      },
+      "sync": {
+        "comparedTo": {
+          "destination": {
+            "namespace": "cert-manager",
+            "server": "https://kubernetes.default.svc"
+          },
+          "source": {
+            "path": "infra/devops-lab/cert-manager",
+            "repoURL": "http://gitlab-service.ns-devops.svc.cluster.local/root/petclinic-platform.git",
+            "targetRevision": "main"
+          }
+        },
+        "revision": "340ef4b8c74e3c2a5820da8d98b0f134283bb8d9",
+        "status": "Synced"
+      },
+      "health": {
+        "lastTransitionTime": "2026-11-05T02:27:50Z",
+        "status": "Healthy"
+      },
+      "managedResources": [
+        {
+          "kind": "Namespace",
+          "namespace": null,
+          "name": "cert-manager"
+        },
+        {
+          "kind": "Service",
+          "namespace": "cert-manager",
+          "name": "cert-manager"
+        },
+        {
+          "kind": "Service",
+          "namespace": "cert-manager",
+          "name": "cert-manager-cainjector"
+        },
+        {
+          "kind": "Service",
+          "namespace": "cert-manager",
+          "name": "cert-manager-webhook"
+        },
+        {
+          "kind": "ServiceAccount",
+          "namespace": "cert-manager",
+          "name": "cert-manager"
+        },
+        {
+          "kind": "ServiceAccount",
+          "namespace": "cert-manager",
+          "name": "cert-manager-cainjector"
+        },
+        {
+          "kind": "ServiceAccount",
+          "namespace": "cert-manager",
+          "name": "cert-manager-webhook"
+        },
+        {
+          "kind": "MutatingWebhookConfiguration",
+          "namespace": null,
+          "name": "cert-manager-webhook"
+        },
+        {
+          "kind": "ValidatingWebhookConfiguration",
+          "namespace": null,
+          "name": "cert-manager-webhook"
+        },
+        {
+          "kind": "CustomResourceDefinition",
+          "namespace": null,
+          "name": "certificaterequests.cert-manager.io"
+        },
+        {
+          "kind": "CustomResourceDefinition",
+          "namespace": null,
+          "name": "certificates.cert-manager.io"
+        },
+        {
+          "kind": "CustomResourceDefinition",
+          "namespace": null,
+          "name": "challenges.acme.cert-manager.io"
+        },
+        {
+          "kind": "CustomResourceDefinition",
+          "namespace": null,
+          "name": "clusterissuers.cert-manager.io"
+        },
+        {
+          "kind": "CustomResourceDefinition",
+          "namespace": null,
+          "name": "issuers.cert-manager.io"
+        },
+        {
+          "kind": "CustomResourceDefinition",
+          "namespace": null,
+          "name": "orders.acme.cert-manager.io"
+        },
+        {
+          "kind": "Deployment",
+          "namespace": "cert-manager",
+          "name": "cert-manager"
+        },
+        {
+          "kind": "Deployment",
+          "namespace": "cert-manager",
+          "name": "cert-manager-cainjector"
+        },
+        {
+          "kind": "Deployment",
+          "namespace": "cert-manager",
+          "name": "cert-manager-webhook"
+        },
+        {
+          "kind": "ServiceMonitor",
+          "namespace": "cert-manager",
+          "name": "cert-manager"
+        },
+        {
+          "kind": "ClusterRole",
+          "namespace": null,
+          "name": "cert-manager-cainjector"
+        },
+        {
+          "kind": "ClusterRole",
+          "namespace": null,
+          "name": "cert-manager-cluster-view"
+        },
+        {
+          "kind": "ClusterRole",
+          "namespace": null,
+          "name": "cert-manager-controller-approve:cert-manager-io"
+        },
+        {
+          "kind": "ClusterRole",
+          "namespace": null,
+          "name": "cert-manager-controller-certificates"
+        },
+        {
+          "kind": "ClusterRole",
+          "namespace": null,
+          "name": "cert-manager-controller-certificatesigningrequests"
+        },
+        {
+          "kind": "ClusterRole",
+          "namespace": null,
+          "name": "cert-manager-controller-challenges"
+        },
+        {
+          "kind": "ClusterRole",
+          "namespace": null,
+          "name": "cert-manager-controller-clusterissuers"
+        },
+        {
+          "kind": "ClusterRole",
+          "namespace": null,
+          "name": "cert-manager-controller-ingress-shim"
+        },
+        {
+          "kind": "ClusterRole",
+          "namespace": null,
+          "name": "cert-manager-controller-issuers"
+        },
+        {
+          "kind": "ClusterRole",
+          "namespace": null,
+          "name": "cert-manager-controller-orders"
+        },
+        {
+          "kind": "ClusterRole",
+          "namespace": null,
+          "name": "cert-manager-edit"
+        },
+        {
+          "kind": "ClusterRole",
+          "namespace": null,
+          "name": "cert-manager-view"
+        },
+        {
+          "kind": "ClusterRole",
+          "namespace": null,
+          "name": "cert-manager-webhook:subjectaccessreviews"
+        },
+        {
+          "kind": "ClusterRoleBinding",
+          "namespace": null,
+          "name": "cert-manager-cainjector"
+        },
+        {
+          "kind": "ClusterRoleBinding",
+          "namespace": null,
+          "name": "cert-manager-controller-approve:cert-manager-io"
+        },
+        {
+          "kind": "ClusterRoleBinding",
+          "namespace": null,
+          "name": "cert-manager-controller-certificates"
+        },
+        {
+          "kind": "ClusterRoleBinding",
+          "namespace": null,
+          "name": "cert-manager-controller-certificatesigningrequests"
+        },
+        {
+          "kind": "ClusterRoleBinding",
+          "namespace": null,
+          "name": "cert-manager-controller-challenges"
+        },
+        {
+          "kind": "ClusterRoleBinding",
+          "namespace": null,
+          "name": "cert-manager-controller-clusterissuers"
+        },
+        {
+          "kind": "ClusterRoleBinding",
+          "namespace": null,
+          "name": "cert-manager-controller-ingress-shim"
+        },
+        {
+          "kind": "ClusterRoleBinding",
+          "namespace": null,
+          "name": "cert-manager-controller-issuers"
+        },
+        {
+          "kind": "ClusterRoleBinding",
+          "namespace": null,
+          "name": "cert-manager-controller-orders"
+        },
+        {
+          "kind": "ClusterRoleBinding",
+          "namespace": null,
+          "name": "cert-manager-webhook:subjectaccessreviews"
+        },
+        {
+          "kind": "Role",
+          "namespace": "cert-manager",
+          "name": "cert-manager-cainjector:leaderelection"
+        },
+        {
+          "kind": "Role",
+          "namespace": "cert-manager",
+          "name": "cert-manager-webhook:dynamic-serving"
+        },
+        {
+          "kind": "Role",
+          "namespace": "cert-manager",
+          "name": "cert-manager:leaderelection"
+        },
+        {
+          "kind": "RoleBinding",
+          "namespace": "cert-manager",
+          "name": "cert-manager-cainjector:leaderelection"
+        },
+        {
+          "kind": "RoleBinding",
+          "namespace": "cert-manager",
+          "name": "cert-manager-webhook:dynamic-serving"
+        },
+        {
+          "kind": "RoleBinding",
+          "namespace": "cert-manager",
+          "name": "cert-manager:leaderelection"
+        }
+      ]
+    },
+    {
+      "name": "platform-devsecops",
+      "project": "default",
+      "source": {
+        "path": "infra/security",
+        "repoURL": "http://gitlab-service.ns-devops.svc.cluster.local/root/petclinic-platform.git",
+        "targetRevision": "205ecb4ada8e75740fc7542054ab101b9673c3d5"
+      },
+      "sources": null,
+      "destination": {
+        "namespace": "devsecops-system",
+        "server": "https://kubernetes.default.svc"
+      },
+      "syncPolicy": {
+        "automated": {
+          "prune": false,
+          "selfHeal": true
+        },
+        "syncOptions": [
+          "CreateNamespace=true",
+          "ServerSideApply=true"
+        ]
+      },
+      "sync": {
+        "comparedTo": {
+          "destination": {
+            "namespace": "devsecops-system",
+            "server": "https://kubernetes.default.svc"
+          },
+          "source": {
+            "path": "infra/security",
+            "repoURL": "http://gitlab-service.ns-devops.svc.cluster.local/root/petclinic-platform.git",
+            "targetRevision": "205ecb4ada8e75740fc7542054ab101b9673c3d5"
+          }
+        },
+        "revision": "205ecb4ada8e75740fc7542054ab101b9673c3d5",
+        "status": "Synced"
+      },
+      "health": {
+        "lastTransitionTime": "2026-11-05T02:27:45Z",
+        "status": "Healthy"
+      },
+      "managedResources": [
+        {
+          "kind": "ConfigMap",
+          "namespace": "devsecops-system",
+          "name": "kyverno"
+        },
+        {
+          "kind": "ConfigMap",
+          "namespace": "devsecops-system",
+          "name": "kyverno-metrics"
+        },
+        {
+          "kind": "ConfigMap",
+          "namespace": "devsecops-system",
+          "name": "platform-falco"
+        },
+        {
+          "kind": "ConfigMap",
+          "namespace": "devsecops-system",
+          "name": "platform-falco-rules"
+        },
+        {
+          "kind": "ConfigMap",
+          "namespace": "monitoring",
+          "name": "devsecops-dashboard"
+        },
+        {
+          "kind": "Namespace",
+          "namespace": null,
+          "name": "devsecops-execution"
+        },
+        {
+          "kind": "Namespace",
+          "namespace": null,
+          "name": "devsecops-supply-chain"
+        },
+        {
+          "kind": "Namespace",
+          "namespace": null,
+          "name": "devsecops-system"
+        },
+        {
+          "kind": "Namespace",
+          "namespace": null,
+          "name": "devsecops-test"
+        },
+        {
+          "kind": "ResourceQuota",
+          "namespace": "devsecops-execution",
+          "name": "security-budget"
+        },
+        {
+          "kind": "ResourceQuota",
+          "namespace": "devsecops-test",
+          "name": "runtime-test-budget"
+        },
+        {
+          "kind": "Service",
+          "namespace": "devsecops-system",
+          "name": "kyverno-svc"
+        },
+        {
+          "kind": "Service",
+          "namespace": "devsecops-system",
+          "name": "kyverno-svc-metrics"
+        },
+        {
+          "kind": "Service",
+          "namespace": "devsecops-system",
+          "name": "platform-falco-metrics"
+        },
+        {
+          "kind": "ServiceAccount",
+          "namespace": "devsecops-system",
+          "name": "kubescape-readonly"
+        },
+        {
+          "kind": "ServiceAccount",
+          "namespace": "devsecops-system",
+          "name": "kyverno-admission-controller"
+        },
+        {
+          "kind": "ServiceAccount",
+          "namespace": "devsecops-system",
+          "name": "platform-falco"
+        },
+        {
+          "kind": "ServiceAccount",
+          "namespace": "devsecops-system",
+          "name": "platform-secret-reconciler"
+        },
+        {
+          "kind": "CustomResourceDefinition",
+          "namespace": null,
+          "name": "cleanuppolicies.kyverno.io"
+        },
+        {
+          "kind": "CustomResourceDefinition",
+          "namespace": null,
+          "name": "clustercleanuppolicies.kyverno.io"
+        },
+        {
+          "kind": "CustomResourceDefinition",
+          "namespace": null,
+          "name": "clusterephemeralreports.reports.kyverno.io"
+        },
+        {
+          "kind": "CustomResourceDefinition",
+          "namespace": null,
+          "name": "clusterpolicies.kyverno.io"
+        },
+        {
+          "kind": "CustomResourceDefinition",
+          "namespace": null,
+          "name": "clusterpolicyreports.wgpolicyk8s.io"
+        },
+        {
+          "kind": "CustomResourceDefinition",
+          "namespace": null,
+          "name": "deletingpolicies.policies.kyverno.io"
+        },
+        {
+          "kind": "CustomResourceDefinition",
+          "namespace": null,
+          "name": "ephemeralreports.reports.kyverno.io"
+        },
+        {
+          "kind": "CustomResourceDefinition",
+          "namespace": null,
+          "name": "generatingpolicies.policies.kyverno.io"
+        },
+        {
+          "kind": "CustomResourceDefinition",
+          "namespace": null,
+          "name": "globalcontextentries.kyverno.io"
+        },
+        {
+          "kind": "CustomResourceDefinition",
+          "namespace": null,
+          "name": "imagevalidatingpolicies.policies.kyverno.io"
+        },
+        {
+          "kind": "CustomResourceDefinition",
+          "namespace": null,
+          "name": "mutatingpolicies.policies.kyverno.io"
+        },
+        {
+          "kind": "CustomResourceDefinition",
+          "namespace": null,
+          "name": "namespaceddeletingpolicies.policies.kyverno.io"
+        },
+        {
+          "kind": "CustomResourceDefinition",
+          "namespace": null,
+          "name": "namespacedgeneratingpolicies.policies.kyverno.io"
+        },
+        {
+          "kind": "CustomResourceDefinition",
+          "namespace": null,
+          "name": "namespacedimagevalidatingpolicies.policies.kyverno.io"
+        },
+        {
+          "kind": "CustomResourceDefinition",
+          "namespace": null,
+          "name": "namespacedmutatingpolicies.policies.kyverno.io"
+        },
+        {
+          "kind": "CustomResourceDefinition",
+          "namespace": null,
+          "name": "namespacedvalidatingpolicies.policies.kyverno.io"
+        },
+        {
+          "kind": "CustomResourceDefinition",
+          "namespace": null,
+          "name": "policies.kyverno.io"
+        },
+        {
+          "kind": "CustomResourceDefinition",
+          "namespace": null,
+          "name": "policyexceptions.kyverno.io"
+        },
+        {
+          "kind": "CustomResourceDefinition",
+          "namespace": null,
+          "name": "policyexceptions.policies.kyverno.io"
+        },
+        {
+          "kind": "CustomResourceDefinition",
+          "namespace": null,
+          "name": "policyreports.wgpolicyk8s.io"
+        },
+        {
+          "kind": "CustomResourceDefinition",
+          "namespace": null,
+          "name": "updaterequests.kyverno.io"
+        },
+        {
+          "kind": "CustomResourceDefinition",
+          "namespace": null,
+          "name": "validatingpolicies.policies.kyverno.io"
+        },
+        {
+          "kind": "DaemonSet",
+          "namespace": "devsecops-system",
+          "name": "platform-falco"
+        },
+        {
+          "kind": "Deployment",
+          "namespace": "devsecops-system",
+          "name": "kyverno-admission-controller"
+        },
+        {
+          "kind": "ClusterPolicy",
+          "namespace": null,
+          "name": "devsecops-production-baseline"
+        },
+        {
+          "kind": "ClusterPolicy",
+          "namespace": null,
+          "name": "devsecops-signed-images"
+        },
+        {
+          "kind": "ClusterPolicy",
+          "namespace": null,
+          "name": "devsecops-workload-contract"
+        },
+        {
+          "kind": "ServiceMonitor",
+          "namespace": "devsecops-system",
+          "name": "kyverno-admission-controller"
+        },
+        {
+          "kind": "ServiceMonitor",
+          "namespace": "devsecops-system",
+          "name": "platform-falco"
+        },
+        {
+          "kind": "NetworkPolicy",
+          "namespace": "devsecops-execution",
+          "name": "scanner-deny-network"
+        },
+        {
+          "kind": "NetworkPolicy",
+          "namespace": "devsecops-execution",
+          "name": "zap-business-get-target"
+        },
+        {
+          "kind": "NetworkPolicy",
+          "namespace": "devsecops-supply-chain",
+          "name": "signature-fixture-deny-network"
+        },
+        {
+          "kind": "NetworkPolicy",
+          "namespace": "devsecops-test",
+          "name": "runtime-test-deny"
+        },
+        {
+          "kind": "ClusterRole",
+          "namespace": null,
+          "name": "kubescape-readonly"
+        },
+        {
+          "kind": "ClusterRole",
+          "namespace": null,
+          "name": "kyverno:admission-controller"
+        },
+        {
+          "kind": "ClusterRole",
+          "namespace": null,
+          "name": "kyverno:admission-controller:core"
+        },
+        {
+          "kind": "ClusterRole",
+          "namespace": null,
+          "name": "kyverno:rbac:admin:policies"
+        },
+        {
+          "kind": "ClusterRole",
+          "namespace": null,
+          "name": "kyverno:rbac:admin:policyreports"
+        },
+        {
+          "kind": "ClusterRole",
+          "namespace": null,
+          "name": "kyverno:rbac:admin:reports"
+        },
+        {
+          "kind": "ClusterRole",
+          "namespace": null,
+          "name": "kyverno:rbac:admin:updaterequests"
+        },
+        {
+          "kind": "ClusterRole",
+          "namespace": null,
+          "name": "kyverno:rbac:view:policies"
+        },
+        {
+          "kind": "ClusterRole",
+          "namespace": null,
+          "name": "kyverno:rbac:view:policyreports"
+        },
+        {
+          "kind": "ClusterRole",
+          "namespace": null,
+          "name": "kyverno:rbac:view:reports"
+        },
+        {
+          "kind": "ClusterRole",
+          "namespace": null,
+          "name": "kyverno:rbac:view:updaterequests"
+        },
+        {
+          "kind": "ClusterRoleBinding",
+          "namespace": null,
+          "name": "kubescape-readonly"
+        },
+        {
+          "kind": "ClusterRoleBinding",
+          "namespace": null,
+          "name": "kyverno:admission-controller"
+        },
+        {
+          "kind": "ClusterRoleBinding",
+          "namespace": null,
+          "name": "kyverno:admission-controller:view"
+        },
+        {
+          "kind": "Role",
+          "namespace": "devsecops-system",
+          "name": "kyverno:admission-controller"
+        },
+        {
+          "kind": "Role",
+          "namespace": "devsecops-system",
+          "name": "platform-registry-secret-reconciler"
+        },
+        {
+          "kind": "Role",
+          "namespace": "petclinic",
+          "name": "platform-secret-reconciler"
+        },
+        {
+          "kind": "Role",
+          "namespace": "petclinic",
+          "name": "platform-signature-pull"
+        },
+        {
+          "kind": "RoleBinding",
+          "namespace": "devsecops-system",
+          "name": "kyverno:admission-controller"
+        },
+        {
+          "kind": "RoleBinding",
+          "namespace": "devsecops-system",
+          "name": "platform-registry-secret-reconciler"
+        },
+        {
+          "kind": "RoleBinding",
+          "namespace": "petclinic",
+          "name": "platform-secret-reconciler"
+        },
+        {
+          "kind": "RoleBinding",
+          "namespace": "petclinic",
+          "name": "platform-signature-pull"
+        }
+      ]
+    },
+    {
+      "name": "platform-messaging",
+      "project": "default",
+      "source": {
+        "path": "infra/messaging",
+        "repoURL": "http://gitlab-service.ns-devops.svc.cluster.local/root/petclinic-platform.git",
+        "targetRevision": "1fc223cb01a153b66e00ddbbff1b3b517a9784b1"
+      },
+      "sources": null,
+      "destination": {
+        "namespace": "petclinic",
+        "server": "https://kubernetes.default.svc"
+      },
+      "syncPolicy": {
+        "automated": {
+          "prune": false,
+          "selfHeal": true
+        },
+        "syncOptions": [
+          "CreateNamespace=true",
+          "ServerSideApply=true"
+        ]
+      },
+      "sync": {
+        "comparedTo": {
+          "destination": {
+            "namespace": "petclinic",
+            "server": "https://kubernetes.default.svc"
+          },
+          "source": {
+            "path": "infra/messaging",
+            "repoURL": "http://gitlab-service.ns-devops.svc.cluster.local/root/petclinic-platform.git",
+            "targetRevision": "1fc223cb01a153b66e00ddbbff1b3b517a9784b1"
+          }
+        },
+        "revision": "1fc223cb01a153b66e00ddbbff1b3b517a9784b1",
+        "status": "Synced"
+      },
+      "health": {
+        "lastTransitionTime": "2026-11-05T02:26:56Z",
+        "status": "Healthy"
+      },
+      "managedResources": [
+        {
+          "kind": "ConfigMap",
+          "namespace": "petclinic",
+          "name": "clinic-message-code-9bc9ch76mb"
+        },
+        {
+          "kind": "Deployment",
+          "namespace": "petclinic",
+          "name": "clinic-message-worker"
+        },
+        {
+          "kind": "NetworkPolicy",
+          "namespace": "petclinic",
+          "name": "clinic-message-worker"
+        }
+      ]
+    },
+    {
+      "name": "platform-rabbitmq",
+      "project": "default",
+      "source": {
+        "path": "infra/data/rabbitmq",
+        "repoURL": "http://gitlab-service.ns-devops.svc.cluster.local/root/petclinic-platform.git",
+        "targetRevision": "2ca4274e9e8ed507a896ee7ab47cea438be7a977"
+      },
+      "sources": null,
+      "destination": {
+        "namespace": "data-infra",
+        "server": "https://kubernetes.default.svc"
+      },
+      "syncPolicy": {
+        "automated": {
+          "prune": false,
+          "selfHeal": true
+        },
+        "syncOptions": [
+          "CreateNamespace=true",
+          "ServerSideApply=true"
+        ]
+      },
+      "sync": {
+        "comparedTo": {
+          "destination": {
+            "namespace": "data-infra",
+            "server": "https://kubernetes.default.svc"
+          },
+          "ignoreDifferences": [
+            {
+              "group": "apps",
+              "jsonPointers": [
+                "/spec/volumeClaimTemplates/0/status"
+              ],
+              "kind": "StatefulSet",
+              "name": "rabbitmq",
+              "namespace": "data-infra"
+            }
+          ],
+          "source": {
+            "path": "infra/data/rabbitmq",
+            "repoURL": "http://gitlab-service.ns-devops.svc.cluster.local/root/petclinic-platform.git",
+            "targetRevision": "2ca4274e9e8ed507a896ee7ab47cea438be7a977"
+          }
+        },
+        "revision": "2ca4274e9e8ed507a896ee7ab47cea438be7a977",
+        "status": "Synced"
+      },
+      "health": {
+        "lastTransitionTime": "2026-11-05T02:27:02Z",
+        "status": "Healthy"
+      },
+      "managedResources": [
+        {
+          "kind": "ConfigMap",
+          "namespace": "data-infra",
+          "name": "rabbitmq-config"
+        },
+        {
+          "kind": "Service",
+          "namespace": "data-infra",
+          "name": "rabbitmq"
+        },
+        {
+          "kind": "Service",
+          "namespace": "data-infra",
+          "name": "rabbitmq-headless"
+        },
+        {
+          "kind": "StatefulSet",
+          "namespace": "data-infra",
+          "name": "rabbitmq"
+        },
+        {
+          "kind": "PrometheusRule",
+          "namespace": "data-infra",
+          "name": "rabbitmq"
+        },
+        {
+          "kind": "ServiceMonitor",
+          "namespace": "data-infra",
+          "name": "rabbitmq"
+        },
+        {
+          "kind": "Ingress",
+          "namespace": "data-infra",
+          "name": "rabbitmq"
+        },
+        {
+          "kind": "NetworkPolicy",
+          "namespace": "data-infra",
+          "name": "rabbitmq"
+        }
+      ]
+    },
+    {
+      "name": "platform-rollouts",
+      "project": "default",
+      "source": {
+        "path": "infra/devops-lab/rollouts-controller",
+        "repoURL": "http://gitlab-service.ns-devops.svc.cluster.local/root/petclinic-platform.git",
+        "targetRevision": "main"
+      },
+      "sources": null,
+      "destination": {
+        "namespace": "rollouts-lab",
+        "server": "https://kubernetes.default.svc"
+      },
+      "syncPolicy": {
+        "automated": {
+          "prune": false,
+          "selfHeal": true
+        },
+        "syncOptions": [
+          "CreateNamespace=true",
+          "ServerSideApply=true"
+        ]
+      },
+      "sync": {
+        "comparedTo": {
+          "destination": {
+            "namespace": "rollouts-lab",
+            "server": "https://kubernetes.default.svc"
+          },
+          "source": {
+            "path": "infra/devops-lab/rollouts-controller",
+            "repoURL": "http://gitlab-service.ns-devops.svc.cluster.local/root/petclinic-platform.git",
+            "targetRevision": "main"
+          }
+        },
+        "revision": "340ef4b8c74e3c2a5820da8d98b0f134283bb8d9",
+        "status": "Synced"
+      },
+      "health": {
+        "lastTransitionTime": "2026-11-05T02:26:57Z",
+        "status": "Healthy"
+      },
+      "managedResources": [
+        {
+          "kind": "ConfigMap",
+          "namespace": "rollouts-lab",
+          "name": "argo-rollouts-config"
+        },
+        {
+          "kind": "Namespace",
+          "namespace": null,
+          "name": "rollouts-lab"
+        },
+        {
+          "kind": "Secret",
+          "namespace": "rollouts-lab",
+          "name": "argo-rollouts-notification-secret"
+        },
+        {
+          "kind": "Service",
+          "namespace": "rollouts-lab",
+          "name": "argo-rollouts-metrics"
+        },
+        {
+          "kind": "ServiceAccount",
+          "namespace": "rollouts-lab",
+          "name": "argo-rollouts"
+        },
+        {
+          "kind": "CustomResourceDefinition",
+          "namespace": null,
+          "name": "analysisruns.argoproj.io"
+        },
+        {
+          "kind": "CustomResourceDefinition",
+          "namespace": null,
+          "name": "analysistemplates.argoproj.io"
+        },
+        {
+          "kind": "CustomResourceDefinition",
+          "namespace": null,
+          "name": "clusteranalysistemplates.argoproj.io"
+        },
+        {
+          "kind": "CustomResourceDefinition",
+          "namespace": null,
+          "name": "experiments.argoproj.io"
+        },
+        {
+          "kind": "CustomResourceDefinition",
+          "namespace": null,
+          "name": "rollouts.argoproj.io"
+        },
+        {
+          "kind": "Deployment",
+          "namespace": "rollouts-lab",
+          "name": "argo-rollouts"
+        },
+        {
+          "kind": "Role",
+          "namespace": "rollouts-lab",
+          "name": "argo-rollouts"
+        },
+        {
+          "kind": "RoleBinding",
+          "namespace": "rollouts-lab",
+          "name": "argo-rollouts"
+        }
+      ]
+    },
+    {
+      "name": "rollouts-lab",
+      "project": "default",
+      "source": {
+        "path": "infra/devops-lab/rollouts",
+        "repoURL": "http://gitlab-service.ns-devops.svc.cluster.local/root/petclinic-platform.git",
+        "targetRevision": "main"
+      },
+      "sources": null,
+      "destination": {
+        "namespace": "rollouts-lab",
+        "server": "https://kubernetes.default.svc"
+      },
+      "syncPolicy": {
+        "automated": {
+          "prune": false,
+          "selfHeal": true
+        },
+        "syncOptions": [
+          "CreateNamespace=true",
+          "ServerSideApply=true"
+        ]
+      },
+      "sync": {
+        "comparedTo": {
+          "destination": {
+            "namespace": "rollouts-lab",
+            "server": "https://kubernetes.default.svc"
+          },
+          "source": {
+            "path": "infra/devops-lab/rollouts",
+            "repoURL": "http://gitlab-service.ns-devops.svc.cluster.local/root/petclinic-platform.git",
+            "targetRevision": "main"
+          }
+        },
+        "revision": "340ef4b8c74e3c2a5820da8d98b0f134283bb8d9",
+        "status": "Synced"
+      },
+      "health": {
+        "lastTransitionTime": "2026-10-20T07:19:28Z",
+        "status": "Healthy"
+      },
+      "managedResources": [
+        {
+          "kind": "ConfigMap",
+          "namespace": "rollouts-lab",
+          "name": "delivery-scenarios"
+        },
+        {
+          "kind": "ResourceQuota",
+          "namespace": "rollouts-lab",
+          "name": "delivery-budget"
+        },
+        {
+          "kind": "Service",
+          "namespace": "rollouts-lab",
+          "name": "blue-active"
+        },
+        {
+          "kind": "Service",
+          "namespace": "rollouts-lab",
+          "name": "blue-preview"
+        },
+        {
+          "kind": "Service",
+          "namespace": "rollouts-lab",
+          "name": "delivery"
+        },
+        {
+          "kind": "Service",
+          "namespace": "rollouts-lab",
+          "name": "delivery-canary"
+        },
+        {
+          "kind": "Service",
+          "namespace": "rollouts-lab",
+          "name": "delivery-stable"
+        },
+        {
+          "kind": "AnalysisTemplate",
+          "namespace": "rollouts-lab",
+          "name": "canary-http"
+        },
+        {
+          "kind": "Rollout",
+          "namespace": "rollouts-lab",
+          "name": "blue"
+        },
+        {
+          "kind": "Rollout",
+          "namespace": "rollouts-lab",
+          "name": "delivery"
+        },
+        {
+          "kind": "Probe",
+          "namespace": "rollouts-lab",
+          "name": "delivery-canary"
+        }
+      ]
+    },
+    {
+      "name": "spark-operator",
+      "project": "default",
+      "source": {
+        "chart": "spark-operator",
+        "helm": {
+          "releaseName": "spark-operator",
+          "values": "image:\n  tag: 2.5.1\ncontroller:\n  replicas: 1\n  resources:\n    requests: {cpu: 100m, memory: 1Gi}\n    limits: {cpu: \"1\", memory: 1Gi}\nwebhook:\n  enable: true\n  replicas: 1\n  resources:\n    requests: {cpu: 100m, memory: 256Mi}\n    limits: {cpu: \"1\", memory: 256Mi}\n"
+        },
+        "repoURL": "https://kubeflow.github.io/spark-operator",
+        "targetRevision": "2.5.0"
+      },
+      "sources": null,
+      "destination": {
+        "namespace": "ns-bigdata",
+        "server": "https://kubernetes.default.svc"
+      },
+      "syncPolicy": {
+        "automated": {
+          "prune": false,
+          "selfHeal": true
+        },
+        "syncOptions": [
+          "CreateNamespace=false"
+        ]
+      },
+      "sync": {
+        "comparedTo": {
+          "destination": {
+            "namespace": "ns-bigdata",
+            "server": "https://kubernetes.default.svc"
+          },
+          "source": {
+            "chart": "spark-operator",
+            "helm": {
+              "releaseName": "spark-operator",
+              "values": "image:\n  tag: 2.5.1\ncontroller:\n  replicas: 1\n  resources:\n    requests: {cpu: 100m, memory: 1Gi}\n    limits: {cpu: \"1\", memory: 1Gi}\nwebhook:\n  enable: true\n  replicas: 1\n  resources:\n    requests: {cpu: 100m, memory: 256Mi}\n    limits: {cpu: \"1\", memory: 256Mi}\n"
+            },
+            "repoURL": "https://kubeflow.github.io/spark-operator",
+            "targetRevision": "2.5.0"
+          }
+        },
+        "revision": "2.5.0",
+        "status": "Synced"
+      },
+      "health": {
+        "lastTransitionTime": "2026-11-05T02:27:54Z",
+        "status": "Healthy"
+      },
+      "managedResources": [
+        {
+          "kind": "Service",
+          "namespace": "ns-bigdata",
+          "name": "spark-operator-webhook-svc"
+        },
+        {
+          "kind": "ServiceAccount",
+          "namespace": "default",
+          "name": "spark-operator-spark"
+        },
+        {
+          "kind": "ServiceAccount",
+          "namespace": "ns-bigdata",
+          "name": "spark-operator-controller"
+        },
+        {
+          "kind": "ServiceAccount",
+          "namespace": "ns-bigdata",
+          "name": "spark-operator-webhook"
+        },
+        {
+          "kind": "MutatingWebhookConfiguration",
+          "namespace": null,
+          "name": "spark-operator-webhook"
+        },
+        {
+          "kind": "ValidatingWebhookConfiguration",
+          "namespace": null,
+          "name": "spark-operator-webhook"
+        },
+        {
+          "kind": "CustomResourceDefinition",
+          "namespace": null,
+          "name": "scheduledsparkapplications.sparkoperator.k8s.io"
+        },
+        {
+          "kind": "CustomResourceDefinition",
+          "namespace": null,
+          "name": "sparkapplications.sparkoperator.k8s.io"
+        },
+        {
+          "kind": "CustomResourceDefinition",
+          "namespace": null,
+          "name": "sparkconnects.sparkoperator.k8s.io"
+        },
+        {
+          "kind": "Deployment",
+          "namespace": "ns-bigdata",
+          "name": "spark-operator-controller"
+        },
+        {
+          "kind": "Deployment",
+          "namespace": "ns-bigdata",
+          "name": "spark-operator-webhook"
+        },
+        {
+          "kind": "ClusterRole",
+          "namespace": null,
+          "name": "spark-operator-controller"
+        },
+        {
+          "kind": "ClusterRole",
+          "namespace": null,
+          "name": "spark-operator-webhook"
+        },
+        {
+          "kind": "ClusterRoleBinding",
+          "namespace": null,
+          "name": "spark-operator-controller"
+        },
+        {
+          "kind": "ClusterRoleBinding",
+          "namespace": null,
+          "name": "spark-operator-webhook"
+        },
+        {
+          "kind": "Role",
+          "namespace": "default",
+          "name": "spark-operator-controller"
+        },
+        {
+          "kind": "Role",
+          "namespace": "default",
+          "name": "spark-operator-spark"
+        },
+        {
+          "kind": "Role",
+          "namespace": "default",
+          "name": "spark-operator-webhook"
+        },
+        {
+          "kind": "Role",
+          "namespace": "ns-bigdata",
+          "name": "spark-operator-controller"
+        },
+        {
+          "kind": "Role",
+          "namespace": "ns-bigdata",
+          "name": "spark-operator-webhook"
+        },
+        {
+          "kind": "RoleBinding",
+          "namespace": "default",
+          "name": "spark-operator-controller"
+        },
+        {
+          "kind": "RoleBinding",
+          "namespace": "default",
+          "name": "spark-operator-spark"
+        },
+        {
+          "kind": "RoleBinding",
+          "namespace": "default",
+          "name": "spark-operator-webhook"
+        },
+        {
+          "kind": "RoleBinding",
+          "namespace": "ns-bigdata",
+          "name": "spark-operator-controller"
+        },
+        {
+          "kind": "RoleBinding",
+          "namespace": "ns-bigdata",
+          "name": "spark-operator-webhook"
+        }
+      ]
+    }
+  ],
+  "namespaceNames": [
+    "argocd",
+    "cert-manager",
+    "cook",
+    "data-infra",
+    "default",
+    "devops-lab",
+    "devsecops-execution",
+    "devsecops-supply-chain",
+    "devsecops-system",
+    "devsecops-test",
+    "harbor",
+    "kube-node-lease",
+    "kube-public",
+    "kube-system",
+    "monitoring",
+    "ns-apps",
+    "ns-bigdata",
+    "ns-data",
+    "ns-devops",
+    "ns-openclaw",
+    "petclinic",
+    "proxynodehub-web",
+    "rollouts-lab",
+    "sonarqube",
+    "system-upgrade",
+    "terraform-execution",
+    "terraform-state",
+    "tf-remote-lab",
+    "zabbix"
+  ],
+  "resourceQuotas": [
+    {
+      "namespace": "devops-lab",
+      "name": "lab-budget",
+      "status": {
+        "hard": {
+          "count/services": "4",
+          "limits.cpu": "2",
+          "limits.memory": "1Gi",
+          "pods": "6",
+          "requests.cpu": "500m",
+          "requests.memory": "512Mi",
+          "requests.storage": "2Gi"
+        },
+        "used": {
+          "count/services": "1",
+          "limits.cpu": "100m",
+          "limits.memory": "64Mi",
+          "pods": "1",
+          "requests.cpu": "25m",
+          "requests.memory": "24Mi",
+          "requests.storage": "0"
+        }
+      }
+    },
+    {
+      "namespace": "devsecops-execution",
+      "name": "security-budget",
+      "status": {
+        "hard": {
+          "limits.cpu": "1",
+          "limits.memory": "768Mi",
+          "persistentvolumeclaims": "0",
+          "pods": "1",
+          "requests.cpu": "250m",
+          "requests.memory": "512Mi",
+          "requests.storage": "0"
+        },
+        "used": {
+          "limits.cpu": "0",
+          "limits.memory": "0",
+          "persistentvolumeclaims": "0",
+          "pods": "0",
+          "requests.cpu": "0",
+          "requests.memory": "0",
+          "requests.storage": "0"
+        }
+      }
+    },
+    {
+      "namespace": "devsecops-test",
+      "name": "runtime-test-budget",
+      "status": {
+        "hard": {
+          "limits.cpu": "500m",
+          "limits.memory": "512Mi",
+          "persistentvolumeclaims": "0",
+          "pods": "1",
+          "requests.cpu": "100m",
+          "requests.memory": "256Mi"
+        },
+        "used": {
+          "limits.cpu": "0",
+          "limits.memory": "0",
+          "persistentvolumeclaims": "0",
+          "pods": "0",
+          "requests.cpu": "0",
+          "requests.memory": "0"
+        }
+      }
+    },
+    {
+      "namespace": "rollouts-lab",
+      "name": "delivery-budget",
+      "status": {
+        "hard": {
+          "count/services": "8",
+          "limits.cpu": "2",
+          "limits.memory": "768Mi",
+          "persistentvolumeclaims": "0",
+          "pods": "6",
+          "requests.cpu": "300m",
+          "requests.memory": "512Mi"
+        },
+        "used": {
+          "count/services": "6",
+          "limits.cpu": "500m",
+          "limits.memory": "256Mi",
+          "persistentvolumeclaims": "0",
+          "pods": "1",
+          "requests.cpu": "100m",
+          "requests.memory": "128Mi"
+        }
+      }
+    },
+    {
+      "namespace": "terraform-execution",
+      "name": "terraform-execution-budget",
+      "status": {
+        "hard": {
+          "configmaps": "4",
+          "count/jobs.batch": "2",
+          "limits.cpu": "1",
+          "limits.ephemeral-storage": "384Mi",
+          "limits.memory": "512Mi",
+          "persistentvolumeclaims": "0",
+          "pods": "1",
+          "requests.cpu": "100m",
+          "requests.ephemeral-storage": "128Mi",
+          "requests.memory": "384Mi",
+          "requests.storage": "0",
+          "secrets": "0",
+          "services": "0"
+        },
+        "used": {
+          "configmaps": "1",
+          "count/jobs.batch": "0",
+          "limits.cpu": "0",
+          "limits.ephemeral-storage": "0",
+          "limits.memory": "0",
+          "persistentvolumeclaims": "0",
+          "pods": "0",
+          "requests.cpu": "0",
+          "requests.ephemeral-storage": "0",
+          "requests.memory": "0",
+          "requests.storage": "0",
+          "secrets": "0",
+          "services": "0"
+        }
+      }
+    },
+    {
+      "namespace": "terraform-state",
+      "name": "terraform-budget",
+      "status": {
+        "hard": {
+          "configmaps": "4",
+          "count/leases.coordination.k8s.io": "4",
+          "persistentvolumeclaims": "0",
+          "pods": "0",
+          "requests.storage": "0",
+          "secrets": "4",
+          "services": "0"
+        },
+        "used": {
+          "configmaps": "1",
+          "count/leases.coordination.k8s.io": "1",
+          "persistentvolumeclaims": "0",
+          "pods": "0",
+          "requests.storage": "0",
+          "secrets": "2",
+          "services": "0"
+        }
+      }
+    },
+    {
+      "namespace": "tf-remote-lab",
+      "name": "terraform-budget",
+      "status": {
+        "hard": {
+          "configmaps": "4",
+          "count/leases.coordination.k8s.io": "0",
+          "persistentvolumeclaims": "0",
+          "pods": "0",
+          "requests.storage": "0",
+          "secrets": "0",
+          "services": "0"
+        },
+        "used": {
+          "configmaps": "2",
+          "count/leases.coordination.k8s.io": "0",
+          "persistentvolumeclaims": "0",
+          "pods": "0",
+          "requests.storage": "0",
+          "secrets": "0",
+          "services": "0"
+        }
+      }
+    }
+  ],
+  "production": {
+    "deploymentUid": "ae889fa4-5f34-4c85-9bbb-73d80e5a0b1f",
+    "generation": 175,
+    "specSha256": "123ad729d83f3a7afc548a8c3071be70ff7ac8ed78b7333a296945b525552f4b",
+    "desired": 3,
+    "ready": 3,
+    "image": [
+      "core.harbor.domain/petclinic/petclinic@sha256:489cb821573ff1f98edd846d5949d74bf3391b24e2f1fe5bcfb71c6be0793137"
+    ],
+    "pods": [
+      {
+        "name": "petclinic-7b9fc47976-7gqqx",
+        "node": "devops",
+        "phase": "Running",
+        "deletionTimestamp": null,
+        "containers": [
+          {
+            "ready": true,
+            "restartCount": 6,
+            "imageID": "127.0.0.1:30050/petclinic/petclinic@sha256:489cb821573ff1f98edd846d5949d74bf3391b24e2f1fe5bcfb71c6be0793137"
+          }
+        ]
+      },
+      {
+        "name": "petclinic-7b9fc47976-v7pbv",
+        "node": "devops",
+        "phase": "Running",
+        "deletionTimestamp": null,
+        "containers": [
+          {
+            "ready": true,
+            "restartCount": 8,
+            "imageID": "127.0.0.1:30050/petclinic/petclinic@sha256:489cb821573ff1f98edd846d5949d74bf3391b24e2f1fe5bcfb71c6be0793137"
+          }
+        ]
+      },
+      {
+        "name": "petclinic-7b9fc47976-z9q2p",
+        "node": "devops",
+        "phase": "Running",
+        "deletionTimestamp": null,
+        "containers": [
+          {
+            "ready": true,
+            "restartCount": 6,
+            "imageID": "127.0.0.1:30050/petclinic/petclinic@sha256:489cb821573ff1f98edd846d5949d74bf3391b24e2f1fe5bcfb71c6be0793137"
+          }
+        ]
+      }
+    ],
+    "readyEndpoints": 3,
+    "warningEvents": [],
+    "nodes": {
+      "aliyun-worker": "True",
+      "devops": "True",
+      "ucloud-worker": "True"
+    },
+    "argo": {
+      "revision": "340ef4b8c74e3c2a5820da8d98b0f134283bb8d9",
+      "sync": "Synced",
+      "health": "Healthy",
+      "history": [
+        {
+          "id": 111,
+          "revision": "713314b3b6076fde2354f373b696f8dd99eb7f6b",
+          "deployedAt": "2026-10-26T18:32:33Z"
+        },
+        {
+          "id": 112,
+          "revision": "deeb40746d86040d396321d70f91d4859d392ad7",
+          "deployedAt": "2026-10-26T19:36:27Z"
+        },
+        {
+          "id": 113,
+          "revision": "f8a123695c0900edca8be0508033cd79c7807d89",
+          "deployedAt": "2026-10-27T05:05:52Z"
+        },
+        {
+          "id": 114,
+          "revision": "340ef4b8c74e3c2a5820da8d98b0f134283bb8d9",
+          "deployedAt": "2026-10-29T10:34:38Z"
+        }
+      ]
+    },
+    "http": 200
+  },
+  "mutations": 0,
+  "releaseCount": 0,
+  "rolloutCount": 0
+}
