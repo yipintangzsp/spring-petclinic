@@ -10,6 +10,7 @@ import {realThreePluginsRegistry} from '../registry.mjs';
 import {routeResults,CONSUMERS} from '../router.mjs';
 import {verifyArtifact,verifyResult} from '../result.mjs';
 import {digest} from '../../summary-v2/codec.mjs';
+import {macBudget,decision as budgetDecision} from './mac-budget.mjs';
 const ids=['gitleaks','semgrep','cosign'],scenarios=['clean','controlled-finding'];
 const directory=path.join(root,'.devsecops/security-view-runs-v1');
 const identifier=/^web-[a-f0-9-]{36}$/;
@@ -47,9 +48,13 @@ export function submit(value){
  setImmediate(async()=>{
   const start=performance.now();const controller=new AbortController();const timer=setTimeout(()=>controller.abort(),30000);let result,budget;
   try{
-   const disk=fs.statfsSync(directory);budget={load1:os.loadavg()[0],cpuCount:os.cpus().length,freeMemory:os.freemem(),freeDisk:Number(disk.bavail)*Number(disk.bsize)};
    if(process.platform!=='darwin'||process.getuid()===0)throw fault('LOCAL_MAC_IDENTITY_REQUIRED');
-   if(budget.load1>budget.cpuCount*.75||budget.freeMemory<512*1024**2||budget.freeDisk<512*1024**2)throw fault('LOCAL_RESOURCE_BUDGET_BLOCKED');
+   if(value.pluginId==='gitleaks'){
+    budget=await macBudget(directory);const reason=budgetDecision(budget);if(reason)throw fault(reason);
+   }else{
+    const disk=fs.statfsSync(directory);budget={load1:os.loadavg()[0],cpuCount:os.cpus().length,freeMemory:os.freemem(),freeDisk:Number(disk.bavail)*Number(disk.bsize)};
+    if(budget.load1>budget.cpuCount*.75||budget.freeMemory<512*1024**2||budget.freeDisk<512*1024**2)throw fault('LOCAL_RESOURCE_BUDGET_BLOCKED');
+   }
    const registry=realThreePluginsRegistry();
    // Actual platform, unavailable capabilities, no fabricated Linux identity or facts.
    const run=await runCandidate({registry,runId,projectId:'web-controlled-fixture',context:{platform:process.platform,capabilities:{}},inputs:{},

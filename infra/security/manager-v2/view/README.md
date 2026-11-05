@@ -44,3 +44,10 @@ Live Validation Results 独立于 Historical Replay Results。选择三个插件
 原始hosts备份：`/private/etc/hosts.security-v2-20261105-0724.before`；补IPv6前备份：`/private/etc/hosts.security-v2-dual-loopback-20261105.before`。回滚用 `sudoedit /etc/hosts` 仅删除上述两行，再 `sudo dscacheutil -flushcache` 与 `sudo killall -HUP mDNSResponder`；不得覆盖其他域名。启动/停止/重启仍使用上面的control.mjs命令。
 
 Gitleaks Clean仍BLOCKED：当前预算与可信Darwin二进制/适配条件未满足，域名可用不代表真实扫描完成。详细事实见本轮 `evidence/2026-11-05/security-manager-v2-gitleaks-domain/REPORT.md`。
+
+
+## Gitleaks Mac 预算测量修正
+
+Gitleaks 改为 `mac-budget.mjs`：当前 Mac CPU ticks 差分得到忙碌比例；`vm_stat` 的 free+file-backed 页估算可回收内存；`statfs.bavail*bsize` 为可用磁盘；内核原生 memory-pressure enum 必须 NORMAL=0。不能把 dispatch 的 NORMAL bit=1 混入该 enum。内存与磁盘准入值仍各512MiB，CPU忙碌上限75%。load average只作诊断，不再代替CPU利用率。其他插件分支保持不变。
+
+本轮真实域名请求仍因内核2/URGENT压力拒绝；没有执行工具或产生真实扫描Result。只获取官方固定版本公共资产清单，未安装/执行新工具。可信Mac工具与原生适配尚未完成，不能以修正预算代替扫描成功。详见 `evidence/2026-11-05/security-manager-v2-mac-admission/REPORT.md`。
