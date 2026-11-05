@@ -372,3 +372,75 @@ UNKNOWN_REMOTE_STATE，只输出只读观察证据，不再 POST。journal 损�
 非生产 Product/Engagement/身份都未获证明。生产配置、V1 Summary、14/16 和
 `ORIGINAL_EVIDENCE_INTEGRITY=FAILED` 保持原状。关闭 HTTP 功能只需继续使用原同步 Router；
 不需要删除任何 Kubernetes 资源或回滚生产部署。
+
+### Loki / Grafana Candidate (2026-11-05)
+
+`routeResultsWithLoki` explicitly registers `LOKI_DEFINITION` and delegates to
+existing `routeResults` / `routeResultsHttp`. Neither existing entry point nor
+its default registry activates Loki. No scanner or Policy evaluation occurs in
+the consumer. A sealed Candidate is REPLAY, never a new execution attestation.
+
+`consumers/loki.mjs` projects the allowlisted event schema in
+`consumers/loki-event-v1.json`. Default transport is **dry-run**. The only HTTP
+transport is an explicit **Mock** target `loki-loopback-v1`, hardwired to
+`127.0.0.1:32187/loki/api/v1/push`; no remote URL, proxy, token, tenant, headers or
+redirect override exists. This is not a production Loki delivery client.
+
+Streams have seven fixed/enumerated labels (at most 160 combinations).
+Project/run/digests stay in JSON, never stream labels. Lines <=4096 bytes,
+batches <=128 KiB, <=64 events and <=32 streams. Original completion/receipt
+nanosecond timestamp strings are preserved; HTTP rejects samples older than
+168 hours or more than 60 seconds ahead, without retimestamping. These are
+Candidate bounds, not a claim that unspecified server limits/retention were
+verified. Installed Loki buildinfo was 3.7.4, auth_enabled=false, old-sample
+limit 168h. Grafana datasource UID `loki` is provisioned already.
+
+Only verified native fact arrays contribute counts. Missing/unexecuted data is
+null, never zero. Gitleaks has no native High severity. Semgrep ERROR/WARNING
+stay native categories, not High/Medium. Cosign is verification, not CVE count.
+Raw reports, source snippets, failure text, credentials and arbitrary evidence
+paths are not forwarded. Restricted metadata is bounded and credential-shaped
+identities are rejected. This projection is not a general-purpose secret DLP.
+
+Only HTTP 204 is an ACK; 200 can represent blocked ingestion. 401/403/other
+nonretryable responses reject. 429/5xx and refused connections retry <=3 times
+with bounded backoff, using identical bytes/identities. Lost/timeout responses
+are UNKNOWN_REMOTE_STATE and are not blindly retried. A 5xx/retry may duplicate
+events. Stable event identity does **not** prove server deduplication or exactly
+once. Response bodies never become diagnostics. Local receipts bind original
+Result digests and payload digest; no receipt can change the Policy decision.
+
+The initial Push cannot contain its own final ACK. An explicit subsequent
+projection may include the hashed Loki receipt as CONSUMER_DELIVERY with
+MOCK_HTTP origin. There is no recursive send. Dojo offline/HTTP failures and
+Loki failures produce separate receipts; aggregate Candidate delivery can be
+blocked while original Policy FAIL/PASS and immutable results remain unchanged.
+Dojo remote delivery/idempotency remain NOT_TESTED.
+
+`consumers/loki-cli.mjs --artifact ABS --seal SHA --project ID --output ABS`
+prepares sealed local payloads under an existing owner-private output directory.
+`--mock-http` is test-only and cannot target production. Output overlapping the
+input artifact, symlinks and conflicting prior payloads are rejected. CLI
+errors omit raw exception/argument content. Disable by omitting the explicit
+Loki Router entry; production needs no rollback because nothing is activated.
+
+`observability/dashboard.json` is an **unimported** eight-panel Candidate;
+`queries.json` contains actual scoped LogQL. Project/run are scalar JSON-escaped
+body filters. Metric panels take per-plugin maxima in one selected run before
+aggregation so retry rows are not independent scans. Unknown data has no value;
+log panels may contain repeated deliveries and do not claim semantic dedup.
+`status-authority.json` is a fixed dated authority note, not dynamic telemetry.
+A final Loki ACK appears only if its receipt is later explicitly projected.
+
+Offline tests check exact restricted templates, balanced structure, extracted
+fields, Dashboard shape and fixture data semantics. `fixtureView` is a test
+projection, **not** a Loki parser or query engine. No isolated Loki server was
+available: real Push, real LogQL evaluation and Grafana import/render are
+NOT_TESTED. Empty production queries cannot count as success. No production
+Dashboard, Alloy pipeline or Loki configuration is changed.
+
+Protocol basis: [Loki HTTP API](https://grafana.com/docs/loki/latest/reference/loki-http-api/),
+[LogQL log queries](https://grafana.com/docs/loki/latest/query/log_queries/),
+[metric queries](https://grafana.com/docs/loki/latest/query/metric_queries/),
+[Grafana variable formatting](https://grafana.com/docs/grafana/latest/visualizations/dashboards/variables/variable-syntax/).
+The new events never query the V1 `job=devsecops-security` stream.

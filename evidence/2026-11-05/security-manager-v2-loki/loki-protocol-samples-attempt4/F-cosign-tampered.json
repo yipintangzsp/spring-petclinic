@@ -1,0 +1,528 @@
+{
+  "classification": "REAL_LOOPBACK_HTTP_MOCK_WITH_SEALED_ARTIFACT_REPLAY_NOT_NEW_SCAN",
+  "name": "F-cosign-tampered",
+  "sourceSealDigest": "69934c09bd960ae828a2b4dfce5a13b4868bb8e95fcd8b1bceb029677159592b",
+  "sourceResults": [
+    {
+      "pluginId": "build-provenance",
+      "executionStatus": "DISABLED",
+      "policyDecision": null,
+      "evaluationCount": 0,
+      "factDigest": null,
+      "resultDigest": "f65b0de3a059ce75ffd9f74d3a34e5a1845e3ee9fb3be303527b856378bc71a4"
+    },
+    {
+      "pluginId": "cosign",
+      "executionStatus": "COMPLETED",
+      "policyDecision": "FAIL",
+      "evaluationCount": 1,
+      "factDigest": "7d6cc3511effa4348cd949039231d71f927a3afac0fc4fea9129fa6b39dbc164",
+      "resultDigest": "965e8bb1a20c4076b03d741c19082dad6d93da01f668eb80fc6de89d531cf334"
+    },
+    {
+      "pluginId": "falco",
+      "executionStatus": "DISABLED",
+      "policyDecision": null,
+      "evaluationCount": 0,
+      "factDigest": null,
+      "resultDigest": "099eab9e1ec67ad3938682ee9e3c3ac23f37a05538f0b2f9c52bf3e21d0359e4"
+    },
+    {
+      "pluginId": "gitleaks",
+      "executionStatus": "COMPLETED",
+      "policyDecision": "PASS",
+      "evaluationCount": 1,
+      "factDigest": "5c9d8f0aea9d0a6c34aef9c1ba236c4176ce124ab03f086a231bb42667cf4587",
+      "resultDigest": "05ce6815127587000870f4f02f2738e9754a6e3305d8befc1561c9d0d0aa81df"
+    },
+    {
+      "pluginId": "kubescape",
+      "executionStatus": "DISABLED",
+      "policyDecision": null,
+      "evaluationCount": 0,
+      "factDigest": null,
+      "resultDigest": "0bd367393366d803c159df705dec7be1276f7998e57a696b4e3b3211ac864826"
+    },
+    {
+      "pluginId": "kyverno",
+      "executionStatus": "DISABLED",
+      "policyDecision": null,
+      "evaluationCount": 0,
+      "factDigest": null,
+      "resultDigest": "240cdbdebe17f7958b5ee44f3165a09168aa6fb0bdc4978d4b40c059d9ccbf13"
+    },
+    {
+      "pluginId": "provenance",
+      "executionStatus": "DISABLED",
+      "policyDecision": null,
+      "evaluationCount": 0,
+      "factDigest": null,
+      "resultDigest": "26da5037b7a185852a6e54c72974241fb74c5ca1f9fa2b5467f5d5bfb633d7be"
+    },
+    {
+      "pluginId": "sbom",
+      "executionStatus": "DISABLED",
+      "policyDecision": null,
+      "evaluationCount": 0,
+      "factDigest": null,
+      "resultDigest": "935978260446e76523faf9cff67cc215e783bcea442768f7cfe2780b9bba9a44"
+    },
+    {
+      "pluginId": "semgrep",
+      "executionStatus": "COMPLETED",
+      "policyDecision": "PASS",
+      "evaluationCount": 1,
+      "factDigest": "75a9c27cce2e5efcd26344daa7a75be17d844a84fe80d6b04c78c5c0aafabfb9",
+      "resultDigest": "38bfa9d93c3e071dc40833de6558d71862baba7daf9266bb9f6cdcdaedd3d3f8"
+    },
+    {
+      "pluginId": "sonarqube",
+      "executionStatus": "DISABLED",
+      "policyDecision": null,
+      "evaluationCount": 0,
+      "factDigest": null,
+      "resultDigest": "d19305020d0c8b16749acd090fa973f4ad6482d04da3811c32ddbbdc8d8d0dd4"
+    },
+    {
+      "pluginId": "sops",
+      "executionStatus": "DISABLED",
+      "policyDecision": null,
+      "evaluationCount": 0,
+      "factDigest": null,
+      "resultDigest": "44845a4d553ac89c2d711291b9fec4b4c0dba662d28e4b9b7d1a9548f086b36a"
+    },
+    {
+      "pluginId": "trivy",
+      "executionStatus": "DISABLED",
+      "policyDecision": null,
+      "evaluationCount": 0,
+      "factDigest": null,
+      "resultDigest": "6153a39214d4cdaf1ac6fced77d1fee7bfa1c27bfb9cc665675815d11dde40f2"
+    },
+    {
+      "pluginId": "zap",
+      "executionStatus": "DISABLED",
+      "policyDecision": null,
+      "evaluationCount": 0,
+      "factDigest": null,
+      "resultDigest": "a5fb68bb3c0d34bf94126622225552d762de2ce992269151c8758c5d7343e337"
+    }
+  ],
+  "requests": [
+    {
+      "method": "POST",
+      "path": "/loki/api/v1/push",
+      "contentType": "application/json",
+      "authorizationPresent": false,
+      "bytes": 16073,
+      "bodySha256": "d91ae162e9835551895990025f8953aa506fc32fbe4919d4b1a9f1cdaaff7b47",
+      "validPush": true
+    }
+  ],
+  "received": [
+    {
+      "streams": [
+        {
+          "stream": {
+            "environment": "validation",
+            "execution_status": "COMPLETED",
+            "job": "devsecops-security-v2",
+            "plugin": "cosign",
+            "policy_decision": "FAIL",
+            "schema_version": "1",
+            "service_name": "security-manager-v2"
+          },
+          "values": [
+            [
+              "1793812406833000000",
+              "{\"artifactDigest\":\"69934c09bd960ae828a2b4dfce5a13b4868bb8e95fcd8b1bceb029677159592b\",\"consumerId\":\"defectdojo-candidate\",\"deliveryOrigin\":\"DRY_RUN\",\"deliveryStatus\":\"OFFLINE_PAYLOAD_PREPARED\",\"errorCategory\":null,\"evaluationCount\":1,\"eventIdentity\":\"cabda9f1dcd16fc5384ce9d08b5508563db0e175467fdff4b1a31d49da41b4b5\",\"eventType\":\"CONSUMER_DELIVERY\",\"evidenceRef\":[{\"digest\":\"965e8bb1a20c4076b03d741c19082dad6d93da01f668eb80fc6de89d531cf334\",\"kind\":\"RESULT\"},{\"digest\":\"7d6cc3511effa4348cd949039231d71f927a3afac0fc4fea9129fa6b39dbc164\",\"kind\":\"FACT\"}],\"executionStatus\":\"COMPLETED\",\"factDigest\":\"7d6cc3511effa4348cd949039231d71f927a3afac0fc4fea9129fa6b39dbc164\",\"findingCount\":null,\"findingCountKnown\":false,\"findingEvidenceStatus\":\"NOT_A_VULNERABILITY_SCANNER\",\"globalMode\":\"audit\",\"highSeverityCountKnown\":false,\"highSeverityFindingCount\":null,\"managerVersion\":\"2.0.0-candidate.4\",\"nativeSeverityCounts\":null,\"pluginId\":\"cosign\",\"pluginVersion\":\"2.0.0-candidate.4\",\"policyDecision\":\"FAIL\",\"policyVersion\":\"baseline-v1\",\"productionEvidence\":false,\"profile\":\"java-web\",\"projectId\":\"java-fixture\",\"promotionStatus\":\"BLOCKED\",\"resultDigest\":\"965e8bb1a20c4076b03d741c19082dad6d93da01f668eb80fc6de89d531cf334\",\"runId\":\"attempt2-F-cosign-tampered\",\"schemaVersion\":1,\"securityEnabled\":true,\"sourceClassification\":\"SEALED_ARTIFACT_REPLAY_NOT_NEW_SCAN\",\"sourceReceiptDigest\":\"564a7d6804bc72bca6e5bdf4d7c2b7b0d824964aa2df0e5703e2f220a3513c07\",\"summaryDigest\":\"45d279bf717d25c1fd31db1c4439123f26a746d942413c65625654b4a87b7c4e\",\"timestamp\":\"2026-11-04T17:13:26.833Z\",\"timestampBasis\":\"RESULT_COMPLETION_RECEIPT_TIME_UNAVAILABLE\"}"
+            ],
+            [
+              "1793812406833000000",
+              "{\"artifactDigest\":\"69934c09bd960ae828a2b4dfce5a13b4868bb8e95fcd8b1bceb029677159592b\",\"consumerId\":null,\"deliveryOrigin\":\"PREPARATION\",\"deliveryStatus\":\"PREPARED\",\"errorCategory\":null,\"evaluationCount\":1,\"eventIdentity\":\"d157948976bcb1ccc9b56767bc70dcbb04ddfd96898b9bb336ca181513c51798\",\"eventType\":\"PLUGIN_RESULT\",\"evidenceRef\":[{\"digest\":\"965e8bb1a20c4076b03d741c19082dad6d93da01f668eb80fc6de89d531cf334\",\"kind\":\"RESULT\"},{\"digest\":\"7d6cc3511effa4348cd949039231d71f927a3afac0fc4fea9129fa6b39dbc164\",\"kind\":\"FACT\"}],\"executionStatus\":\"COMPLETED\",\"factDigest\":\"7d6cc3511effa4348cd949039231d71f927a3afac0fc4fea9129fa6b39dbc164\",\"findingCount\":null,\"findingCountKnown\":false,\"findingEvidenceStatus\":\"NOT_A_VULNERABILITY_SCANNER\",\"globalMode\":\"audit\",\"highSeverityCountKnown\":false,\"highSeverityFindingCount\":null,\"managerVersion\":\"2.0.0-candidate.4\",\"nativeSeverityCounts\":null,\"pluginId\":\"cosign\",\"pluginVersion\":\"2.0.0-candidate.4\",\"policyDecision\":\"FAIL\",\"policyVersion\":\"baseline-v1\",\"productionEvidence\":false,\"profile\":\"java-web\",\"projectId\":\"java-fixture\",\"promotionStatus\":\"BLOCKED\",\"resultDigest\":\"965e8bb1a20c4076b03d741c19082dad6d93da01f668eb80fc6de89d531cf334\",\"runId\":\"attempt2-F-cosign-tampered\",\"schemaVersion\":1,\"securityEnabled\":true,\"sourceClassification\":\"SEALED_ARTIFACT_REPLAY_NOT_NEW_SCAN\",\"sourceReceiptDigest\":null,\"summaryDigest\":\"45d279bf717d25c1fd31db1c4439123f26a746d942413c65625654b4a87b7c4e\",\"timestamp\":\"2026-11-04T17:13:26.833Z\",\"timestampBasis\":\"RESULT_COMPLETED_AT\"}"
+            ]
+          ]
+        },
+        {
+          "stream": {
+            "environment": "validation",
+            "execution_status": "COMPLETED",
+            "job": "devsecops-security-v2",
+            "plugin": "gitleaks",
+            "policy_decision": "PASS",
+            "schema_version": "1",
+            "service_name": "security-manager-v2"
+          },
+          "values": [
+            [
+              "1793812407000000000",
+              "{\"artifactDigest\":\"69934c09bd960ae828a2b4dfce5a13b4868bb8e95fcd8b1bceb029677159592b\",\"consumerId\":\"defectdojo-candidate\",\"deliveryOrigin\":\"DRY_RUN\",\"deliveryStatus\":\"OFFLINE_PAYLOAD_PREPARED\",\"errorCategory\":null,\"evaluationCount\":1,\"eventIdentity\":\"24dcdd8f50efd490120a555f20c0d067bd3e4fa79a7ae06c09a2785de093c305\",\"eventType\":\"CONSUMER_DELIVERY\",\"evidenceRef\":[{\"digest\":\"05ce6815127587000870f4f02f2738e9754a6e3305d8befc1561c9d0d0aa81df\",\"kind\":\"RESULT\"},{\"digest\":\"5c9d8f0aea9d0a6c34aef9c1ba236c4176ce124ab03f086a231bb42667cf4587\",\"kind\":\"FACT\"}],\"executionStatus\":\"COMPLETED\",\"factDigest\":\"5c9d8f0aea9d0a6c34aef9c1ba236c4176ce124ab03f086a231bb42667cf4587\",\"findingCount\":0,\"findingCountKnown\":true,\"findingEvidenceStatus\":\"VERIFIED_NATIVE_COUNT_NO_NATIVE_SEVERITY\",\"globalMode\":\"audit\",\"highSeverityCountKnown\":false,\"highSeverityFindingCount\":null,\"managerVersion\":\"2.0.0-candidate.4\",\"nativeSeverityCounts\":null,\"pluginId\":\"gitleaks\",\"pluginVersion\":\"2.0.0-candidate.2\",\"policyDecision\":\"PASS\",\"policyVersion\":\"baseline-v1\",\"productionEvidence\":false,\"profile\":\"java-web\",\"projectId\":\"java-fixture\",\"promotionStatus\":\"BLOCKED\",\"resultDigest\":\"05ce6815127587000870f4f02f2738e9754a6e3305d8befc1561c9d0d0aa81df\",\"runId\":\"attempt2-F-cosign-tampered\",\"schemaVersion\":1,\"securityEnabled\":true,\"sourceClassification\":\"SEALED_ARTIFACT_REPLAY_NOT_NEW_SCAN\",\"sourceReceiptDigest\":\"564a7d6804bc72bca6e5bdf4d7c2b7b0d824964aa2df0e5703e2f220a3513c07\",\"summaryDigest\":\"45d279bf717d25c1fd31db1c4439123f26a746d942413c65625654b4a87b7c4e\",\"timestamp\":\"2026-11-04T17:13:27.000Z\",\"timestampBasis\":\"RESULT_COMPLETION_RECEIPT_TIME_UNAVAILABLE\"}"
+            ],
+            [
+              "1793812407000000000",
+              "{\"artifactDigest\":\"69934c09bd960ae828a2b4dfce5a13b4868bb8e95fcd8b1bceb029677159592b\",\"consumerId\":null,\"deliveryOrigin\":\"PREPARATION\",\"deliveryStatus\":\"PREPARED\",\"errorCategory\":null,\"evaluationCount\":1,\"eventIdentity\":\"37e0f3a858245c6a84f4e1c4d4b3029a7a402493c33aeb80f0652a4406e6b653\",\"eventType\":\"PLUGIN_RESULT\",\"evidenceRef\":[{\"digest\":\"05ce6815127587000870f4f02f2738e9754a6e3305d8befc1561c9d0d0aa81df\",\"kind\":\"RESULT\"},{\"digest\":\"5c9d8f0aea9d0a6c34aef9c1ba236c4176ce124ab03f086a231bb42667cf4587\",\"kind\":\"FACT\"}],\"executionStatus\":\"COMPLETED\",\"factDigest\":\"5c9d8f0aea9d0a6c34aef9c1ba236c4176ce124ab03f086a231bb42667cf4587\",\"findingCount\":0,\"findingCountKnown\":true,\"findingEvidenceStatus\":\"VERIFIED_NATIVE_COUNT_NO_NATIVE_SEVERITY\",\"globalMode\":\"audit\",\"highSeverityCountKnown\":false,\"highSeverityFindingCount\":null,\"managerVersion\":\"2.0.0-candidate.4\",\"nativeSeverityCounts\":null,\"pluginId\":\"gitleaks\",\"pluginVersion\":\"2.0.0-candidate.2\",\"policyDecision\":\"PASS\",\"policyVersion\":\"baseline-v1\",\"productionEvidence\":false,\"profile\":\"java-web\",\"projectId\":\"java-fixture\",\"promotionStatus\":\"BLOCKED\",\"resultDigest\":\"05ce6815127587000870f4f02f2738e9754a6e3305d8befc1561c9d0d0aa81df\",\"runId\":\"attempt2-F-cosign-tampered\",\"schemaVersion\":1,\"securityEnabled\":true,\"sourceClassification\":\"SEALED_ARTIFACT_REPLAY_NOT_NEW_SCAN\",\"sourceReceiptDigest\":null,\"summaryDigest\":\"45d279bf717d25c1fd31db1c4439123f26a746d942413c65625654b4a87b7c4e\",\"timestamp\":\"2026-11-04T17:13:27.000Z\",\"timestampBasis\":\"RESULT_COMPLETED_AT\"}"
+            ]
+          ]
+        },
+        {
+          "stream": {
+            "environment": "validation",
+            "execution_status": "COMPLETED",
+            "job": "devsecops-security-v2",
+            "plugin": "semgrep",
+            "policy_decision": "PASS",
+            "schema_version": "1",
+            "service_name": "security-manager-v2"
+          },
+          "values": [
+            [
+              "1793812407841000000",
+              "{\"artifactDigest\":\"69934c09bd960ae828a2b4dfce5a13b4868bb8e95fcd8b1bceb029677159592b\",\"consumerId\":\"defectdojo-candidate\",\"deliveryOrigin\":\"DRY_RUN\",\"deliveryStatus\":\"OFFLINE_PAYLOAD_PREPARED\",\"errorCategory\":null,\"evaluationCount\":1,\"eventIdentity\":\"7acd04d5ef3a574966666bfaaf8ac96fa27b65e40258febb144f94ad527ee8e2\",\"eventType\":\"CONSUMER_DELIVERY\",\"evidenceRef\":[{\"digest\":\"38bfa9d93c3e071dc40833de6558d71862baba7daf9266bb9f6cdcdaedd3d3f8\",\"kind\":\"RESULT\"},{\"digest\":\"75a9c27cce2e5efcd26344daa7a75be17d844a84fe80d6b04c78c5c0aafabfb9\",\"kind\":\"FACT\"}],\"executionStatus\":\"COMPLETED\",\"factDigest\":\"75a9c27cce2e5efcd26344daa7a75be17d844a84fe80d6b04c78c5c0aafabfb9\",\"findingCount\":0,\"findingCountKnown\":true,\"findingEvidenceStatus\":\"VERIFIED_NATIVE_COUNT\",\"globalMode\":\"audit\",\"highSeverityCountKnown\":true,\"highSeverityFindingCount\":0,\"managerVersion\":\"2.0.0-candidate.4\",\"nativeSeverityCounts\":{\"CRITICAL\":0,\"ERROR\":0,\"HIGH\":0,\"INFO\":0,\"LOW\":0,\"MEDIUM\":0,\"UNKNOWN\":0,\"WARNING\":0},\"pluginId\":\"semgrep\",\"pluginVersion\":\"2.0.0-candidate.3\",\"policyDecision\":\"PASS\",\"policyVersion\":\"baseline-v1\",\"productionEvidence\":false,\"profile\":\"java-web\",\"projectId\":\"java-fixture\",\"promotionStatus\":\"BLOCKED\",\"resultDigest\":\"38bfa9d93c3e071dc40833de6558d71862baba7daf9266bb9f6cdcdaedd3d3f8\",\"runId\":\"attempt2-F-cosign-tampered\",\"schemaVersion\":1,\"securityEnabled\":true,\"sourceClassification\":\"SEALED_ARTIFACT_REPLAY_NOT_NEW_SCAN\",\"sourceReceiptDigest\":\"564a7d6804bc72bca6e5bdf4d7c2b7b0d824964aa2df0e5703e2f220a3513c07\",\"summaryDigest\":\"45d279bf717d25c1fd31db1c4439123f26a746d942413c65625654b4a87b7c4e\",\"timestamp\":\"2026-11-04T17:13:27.841Z\",\"timestampBasis\":\"RESULT_COMPLETION_RECEIPT_TIME_UNAVAILABLE\"}"
+            ],
+            [
+              "1793812407841000000",
+              "{\"artifactDigest\":\"69934c09bd960ae828a2b4dfce5a13b4868bb8e95fcd8b1bceb029677159592b\",\"consumerId\":null,\"deliveryOrigin\":\"PREPARATION\",\"deliveryStatus\":\"PREPARED\",\"errorCategory\":null,\"evaluationCount\":1,\"eventIdentity\":\"b3ffd1a2898e5eb438af3126f1f451b8524fbb8f1710aff6cee4b4bce4914f7b\",\"eventType\":\"PLUGIN_RESULT\",\"evidenceRef\":[{\"digest\":\"38bfa9d93c3e071dc40833de6558d71862baba7daf9266bb9f6cdcdaedd3d3f8\",\"kind\":\"RESULT\"},{\"digest\":\"75a9c27cce2e5efcd26344daa7a75be17d844a84fe80d6b04c78c5c0aafabfb9\",\"kind\":\"FACT\"}],\"executionStatus\":\"COMPLETED\",\"factDigest\":\"75a9c27cce2e5efcd26344daa7a75be17d844a84fe80d6b04c78c5c0aafabfb9\",\"findingCount\":0,\"findingCountKnown\":true,\"findingEvidenceStatus\":\"VERIFIED_NATIVE_COUNT\",\"globalMode\":\"audit\",\"highSeverityCountKnown\":true,\"highSeverityFindingCount\":0,\"managerVersion\":\"2.0.0-candidate.4\",\"nativeSeverityCounts\":{\"CRITICAL\":0,\"ERROR\":0,\"HIGH\":0,\"INFO\":0,\"LOW\":0,\"MEDIUM\":0,\"UNKNOWN\":0,\"WARNING\":0},\"pluginId\":\"semgrep\",\"pluginVersion\":\"2.0.0-candidate.3\",\"policyDecision\":\"PASS\",\"policyVersion\":\"baseline-v1\",\"productionEvidence\":false,\"profile\":\"java-web\",\"projectId\":\"java-fixture\",\"promotionStatus\":\"BLOCKED\",\"resultDigest\":\"38bfa9d93c3e071dc40833de6558d71862baba7daf9266bb9f6cdcdaedd3d3f8\",\"runId\":\"attempt2-F-cosign-tampered\",\"schemaVersion\":1,\"securityEnabled\":true,\"sourceClassification\":\"SEALED_ARTIFACT_REPLAY_NOT_NEW_SCAN\",\"sourceReceiptDigest\":null,\"summaryDigest\":\"45d279bf717d25c1fd31db1c4439123f26a746d942413c65625654b4a87b7c4e\",\"timestamp\":\"2026-11-04T17:13:27.841Z\",\"timestampBasis\":\"RESULT_COMPLETED_AT\"}"
+            ]
+          ]
+        },
+        {
+          "stream": {
+            "environment": "validation",
+            "execution_status": "DISABLED",
+            "job": "devsecops-security-v2",
+            "plugin": "trivy",
+            "policy_decision": "NONE",
+            "schema_version": "1",
+            "service_name": "security-manager-v2"
+          },
+          "values": [
+            [
+              "1793812407854000000",
+              "{\"artifactDigest\":\"69934c09bd960ae828a2b4dfce5a13b4868bb8e95fcd8b1bceb029677159592b\",\"consumerId\":null,\"deliveryOrigin\":\"PREPARATION\",\"deliveryStatus\":\"PREPARED\",\"errorCategory\":\"PLUGIN_DISABLED\",\"evaluationCount\":0,\"eventIdentity\":\"58c956f69cd7732e981189f7290711d74ac78e34010551c0e12f5d93baae2cf7\",\"eventType\":\"PLUGIN_RESULT\",\"evidenceRef\":[{\"digest\":\"6153a39214d4cdaf1ac6fced77d1fee7bfa1c27bfb9cc665675815d11dde40f2\",\"kind\":\"RESULT\"}],\"executionStatus\":\"DISABLED\",\"factDigest\":null,\"findingCount\":null,\"findingCountKnown\":false,\"findingEvidenceStatus\":\"NOT_EXECUTED\",\"globalMode\":\"audit\",\"highSeverityCountKnown\":false,\"highSeverityFindingCount\":null,\"managerVersion\":\"2.0.0-candidate.4\",\"nativeSeverityCounts\":null,\"pluginId\":\"trivy\",\"pluginVersion\":\"2.0.0-candidate.1\",\"policyDecision\":null,\"policyVersion\":\"baseline-v1\",\"productionEvidence\":false,\"profile\":\"java-web\",\"projectId\":\"java-fixture\",\"promotionStatus\":\"BLOCKED\",\"resultDigest\":\"6153a39214d4cdaf1ac6fced77d1fee7bfa1c27bfb9cc665675815d11dde40f2\",\"runId\":\"attempt2-F-cosign-tampered\",\"schemaVersion\":1,\"securityEnabled\":true,\"sourceClassification\":\"SEALED_ARTIFACT_REPLAY_NOT_NEW_SCAN\",\"sourceReceiptDigest\":null,\"summaryDigest\":\"45d279bf717d25c1fd31db1c4439123f26a746d942413c65625654b4a87b7c4e\",\"timestamp\":\"2026-11-04T17:13:27.854Z\",\"timestampBasis\":\"RESULT_COMPLETED_AT\"}"
+            ],
+            [
+              "1793812407854000000",
+              "{\"artifactDigest\":\"69934c09bd960ae828a2b4dfce5a13b4868bb8e95fcd8b1bceb029677159592b\",\"consumerId\":\"defectdojo-candidate\",\"deliveryOrigin\":\"DRY_RUN\",\"deliveryStatus\":\"OFFLINE_PAYLOAD_PREPARED\",\"errorCategory\":null,\"evaluationCount\":0,\"eventIdentity\":\"d1bbb9dfb10be1e470a3655dc59d434dc56f41b91beb643b0200cfb91e6386ca\",\"eventType\":\"CONSUMER_DELIVERY\",\"evidenceRef\":[{\"digest\":\"6153a39214d4cdaf1ac6fced77d1fee7bfa1c27bfb9cc665675815d11dde40f2\",\"kind\":\"RESULT\"}],\"executionStatus\":\"DISABLED\",\"factDigest\":null,\"findingCount\":null,\"findingCountKnown\":false,\"findingEvidenceStatus\":\"NOT_EXECUTED\",\"globalMode\":\"audit\",\"highSeverityCountKnown\":false,\"highSeverityFindingCount\":null,\"managerVersion\":\"2.0.0-candidate.4\",\"nativeSeverityCounts\":null,\"pluginId\":\"trivy\",\"pluginVersion\":\"2.0.0-candidate.1\",\"policyDecision\":null,\"policyVersion\":\"baseline-v1\",\"productionEvidence\":false,\"profile\":\"java-web\",\"projectId\":\"java-fixture\",\"promotionStatus\":\"BLOCKED\",\"resultDigest\":\"6153a39214d4cdaf1ac6fced77d1fee7bfa1c27bfb9cc665675815d11dde40f2\",\"runId\":\"attempt2-F-cosign-tampered\",\"schemaVersion\":1,\"securityEnabled\":true,\"sourceClassification\":\"SEALED_ARTIFACT_REPLAY_NOT_NEW_SCAN\",\"sourceReceiptDigest\":\"564a7d6804bc72bca6e5bdf4d7c2b7b0d824964aa2df0e5703e2f220a3513c07\",\"summaryDigest\":\"45d279bf717d25c1fd31db1c4439123f26a746d942413c65625654b4a87b7c4e\",\"timestamp\":\"2026-11-04T17:13:27.854Z\",\"timestampBasis\":\"RESULT_COMPLETION_RECEIPT_TIME_UNAVAILABLE\"}"
+            ]
+          ]
+        },
+        {
+          "stream": {
+            "environment": "validation",
+            "execution_status": "NOT_APPLICABLE",
+            "job": "devsecops-security-v2",
+            "plugin": "manager",
+            "policy_decision": "NONE",
+            "schema_version": "1",
+            "service_name": "security-manager-v2"
+          },
+          "values": [
+            [
+              "1793812407854000000",
+              "{\"artifactDigest\":\"69934c09bd960ae828a2b4dfce5a13b4868bb8e95fcd8b1bceb029677159592b\",\"consumerId\":null,\"deliveryOrigin\":\"PREPARATION\",\"deliveryStatus\":\"PREPARED\",\"errorCategory\":null,\"evaluationCount\":0,\"eventIdentity\":\"b192046d28253f07964ab5cf4b23a81dbecc9bf5be6d283129a693c4cd219ad5\",\"eventType\":\"PROMOTION_STATUS\",\"evidenceRef\":[{\"digest\":\"45d279bf717d25c1fd31db1c4439123f26a746d942413c65625654b4a87b7c4e\",\"kind\":\"SUMMARY\"}],\"executionStatus\":null,\"factDigest\":null,\"findingCount\":null,\"findingCountKnown\":false,\"findingEvidenceStatus\":\"NOT_APPLICABLE\",\"globalMode\":\"audit\",\"highSeverityCountKnown\":false,\"highSeverityFindingCount\":null,\"managerVersion\":\"2.0.0-candidate.4\",\"nativeSeverityCounts\":null,\"pluginId\":\"manager\",\"pluginVersion\":null,\"policyDecision\":null,\"policyVersion\":\"baseline-v1\",\"productionEvidence\":false,\"profile\":\"java-web\",\"projectId\":\"java-fixture\",\"promotionStatus\":\"BLOCKED\",\"resultDigest\":null,\"runId\":\"attempt2-F-cosign-tampered\",\"schemaVersion\":1,\"securityEnabled\":true,\"sourceClassification\":\"SEALED_ARTIFACT_REPLAY_NOT_NEW_SCAN\",\"sourceReceiptDigest\":null,\"summaryDigest\":\"45d279bf717d25c1fd31db1c4439123f26a746d942413c65625654b4a87b7c4e\",\"timestamp\":\"2026-11-04T17:13:27.854Z\",\"timestampBasis\":\"LAST_RESULT_COMPLETED_AT\"}"
+            ]
+          ]
+        }
+      ]
+    }
+  ],
+  "output": {
+    "receipts": [
+      {
+        "schemaVersion": 1,
+        "kind": "CandidateDeliveryReceipt",
+        "consumerId": "defectdojo-candidate",
+        "runId": "attempt2-F-cosign-tampered",
+        "projectId": "java-fixture",
+        "deliveryDecision": "OFFLINE_PAYLOAD_PREPARED",
+        "inputDigest": "45d279bf717d25c1fd31db1c4439123f26a746d942413c65625654b4a87b7c4e",
+        "resultDigests": {
+          "build-provenance": "f65b0de3a059ce75ffd9f74d3a34e5a1845e3ee9fb3be303527b856378bc71a4",
+          "cosign": "965e8bb1a20c4076b03d741c19082dad6d93da01f668eb80fc6de89d531cf334",
+          "falco": "099eab9e1ec67ad3938682ee9e3c3ac23f37a05538f0b2f9c52bf3e21d0359e4",
+          "gitleaks": "05ce6815127587000870f4f02f2738e9754a6e3305d8befc1561c9d0d0aa81df",
+          "kubescape": "0bd367393366d803c159df705dec7be1276f7998e57a696b4e3b3211ac864826",
+          "kyverno": "240cdbdebe17f7958b5ee44f3165a09168aa6fb0bdc4978d4b40c059d9ccbf13",
+          "provenance": "26da5037b7a185852a6e54c72974241fb74c5ca1f9fa2b5467f5d5bfb633d7be",
+          "sbom": "935978260446e76523faf9cff67cc215e783bcea442768f7cfe2780b9bba9a44",
+          "semgrep": "38bfa9d93c3e071dc40833de6558d71862baba7daf9266bb9f6cdcdaedd3d3f8",
+          "sonarqube": "d19305020d0c8b16749acd090fa973f4ad6482d04da3811c32ddbbdc8d8d0dd4",
+          "sops": "44845a4d553ac89c2d711291b9fec4b4c0dba662d28e4b9b7d1a9548f086b36a",
+          "trivy": "6153a39214d4cdaf1ac6fced77d1fee7bfa1c27bfb9cc665675815d11dde40f2",
+          "zap": "a5fb68bb3c0d34bf94126622225552d762de2ce992269151c8758c5d7343e337"
+        },
+        "receiptSeal": "b62eda454aa4b10a04689a968cccccc25dde066fdafb2b8b4a27f9343526dc30",
+        "error": null,
+        "productionDelivery": false,
+        "promotionAllowed": false,
+        "consumerVersion": "1.0.0-candidate.1",
+        "planDigest": "099534d265b9b7ce323e7ddd945d8c325fe5fb03cd4793a8473f864df8d74852",
+        "idempotencyKey": "9f885470e440dabbcbd7d3c144bf28bd3a6ccf2893d1ad1d2ec368cb4a267d74",
+        "reusedOfflinePayload": false,
+        "payloadDigests": {
+          "gitleaks": "ba38e7e67432b8d481baf32eba377f404db888e5815830c447b3d46cebb622a0",
+          "semgrep": "33eadf7834384bc78c34d4e845dc00cb9f7de27f61b908462d79e604370c8dca"
+        },
+        "factDigests": {
+          "build-provenance": null,
+          "cosign": "7d6cc3511effa4348cd949039231d71f927a3afac0fc4fea9129fa6b39dbc164",
+          "falco": null,
+          "gitleaks": "5c9d8f0aea9d0a6c34aef9c1ba236c4176ce124ab03f086a231bb42667cf4587",
+          "kubescape": null,
+          "kyverno": null,
+          "provenance": null,
+          "sbom": null,
+          "semgrep": "75a9c27cce2e5efcd26344daa7a75be17d844a84fe80d6b04c78c5c0aafabfb9",
+          "sonarqube": null,
+          "sops": null,
+          "trivy": null,
+          "zap": null
+        },
+        "mappingRecords": [
+          {
+            "pluginId": "build-provenance",
+            "executionStatus": "DISABLED",
+            "policyDecision": null,
+            "evaluationCount": 0,
+            "factDigest": null,
+            "resultDigest": "f65b0de3a059ce75ffd9f74d3a34e5a1845e3ee9fb3be303527b856378bc71a4",
+            "rawReportDigest": null,
+            "findingCount": 0,
+            "autoCloseHistoricalFindings": false,
+            "mappingStatus": "NO_IMPORT",
+            "reason": "NONCOMPLETED_STATE_PRESERVES_HISTORY"
+          },
+          {
+            "pluginId": "cosign",
+            "executionStatus": "COMPLETED",
+            "policyDecision": "FAIL",
+            "evaluationCount": 1,
+            "factDigest": "7d6cc3511effa4348cd949039231d71f927a3afac0fc4fea9129fa6b39dbc164",
+            "resultDigest": "965e8bb1a20c4076b03d741c19082dad6d93da01f668eb80fc6de89d531cf334",
+            "rawReportDigest": "d674b52fac4f514e8e49eedf12a78ce9127f75a36d064b18ee7594bcfb103be4",
+            "findingCount": 0,
+            "autoCloseHistoricalFindings": false,
+            "mappingStatus": "UNSUPPORTED",
+            "reason": "SUPPLY_CHAIN_VIOLATION_WITHOUT_APPROVED_FINDING_MAPPING"
+          },
+          {
+            "pluginId": "falco",
+            "executionStatus": "DISABLED",
+            "policyDecision": null,
+            "evaluationCount": 0,
+            "factDigest": null,
+            "resultDigest": "099eab9e1ec67ad3938682ee9e3c3ac23f37a05538f0b2f9c52bf3e21d0359e4",
+            "rawReportDigest": null,
+            "findingCount": 0,
+            "autoCloseHistoricalFindings": false,
+            "mappingStatus": "NO_IMPORT",
+            "reason": "NONCOMPLETED_STATE_PRESERVES_HISTORY"
+          },
+          {
+            "pluginId": "gitleaks",
+            "executionStatus": "COMPLETED",
+            "policyDecision": "PASS",
+            "evaluationCount": 1,
+            "factDigest": "5c9d8f0aea9d0a6c34aef9c1ba236c4176ce124ab03f086a231bb42667cf4587",
+            "resultDigest": "05ce6815127587000870f4f02f2738e9754a6e3305d8befc1561c9d0d0aa81df",
+            "rawReportDigest": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570",
+            "findingCount": 0,
+            "autoCloseHistoricalFindings": false,
+            "mappingStatus": "PREPARED",
+            "payloadDigest": "ba38e7e67432b8d481baf32eba377f404db888e5815830c447b3d46cebb622a0",
+            "idempotencyKey": "238ac9719d6fe35670ea1f6da15f4dc3d002f103576eac8932aa8a81c261c1b5"
+          },
+          {
+            "pluginId": "kubescape",
+            "executionStatus": "DISABLED",
+            "policyDecision": null,
+            "evaluationCount": 0,
+            "factDigest": null,
+            "resultDigest": "0bd367393366d803c159df705dec7be1276f7998e57a696b4e3b3211ac864826",
+            "rawReportDigest": null,
+            "findingCount": 0,
+            "autoCloseHistoricalFindings": false,
+            "mappingStatus": "NO_IMPORT",
+            "reason": "NONCOMPLETED_STATE_PRESERVES_HISTORY"
+          },
+          {
+            "pluginId": "kyverno",
+            "executionStatus": "DISABLED",
+            "policyDecision": null,
+            "evaluationCount": 0,
+            "factDigest": null,
+            "resultDigest": "240cdbdebe17f7958b5ee44f3165a09168aa6fb0bdc4978d4b40c059d9ccbf13",
+            "rawReportDigest": null,
+            "findingCount": 0,
+            "autoCloseHistoricalFindings": false,
+            "mappingStatus": "NO_IMPORT",
+            "reason": "NONCOMPLETED_STATE_PRESERVES_HISTORY"
+          },
+          {
+            "pluginId": "provenance",
+            "executionStatus": "DISABLED",
+            "policyDecision": null,
+            "evaluationCount": 0,
+            "factDigest": null,
+            "resultDigest": "26da5037b7a185852a6e54c72974241fb74c5ca1f9fa2b5467f5d5bfb633d7be",
+            "rawReportDigest": null,
+            "findingCount": 0,
+            "autoCloseHistoricalFindings": false,
+            "mappingStatus": "NO_IMPORT",
+            "reason": "NONCOMPLETED_STATE_PRESERVES_HISTORY"
+          },
+          {
+            "pluginId": "sbom",
+            "executionStatus": "DISABLED",
+            "policyDecision": null,
+            "evaluationCount": 0,
+            "factDigest": null,
+            "resultDigest": "935978260446e76523faf9cff67cc215e783bcea442768f7cfe2780b9bba9a44",
+            "rawReportDigest": null,
+            "findingCount": 0,
+            "autoCloseHistoricalFindings": false,
+            "mappingStatus": "NO_IMPORT",
+            "reason": "NONCOMPLETED_STATE_PRESERVES_HISTORY"
+          },
+          {
+            "pluginId": "semgrep",
+            "executionStatus": "COMPLETED",
+            "policyDecision": "PASS",
+            "evaluationCount": 1,
+            "factDigest": "75a9c27cce2e5efcd26344daa7a75be17d844a84fe80d6b04c78c5c0aafabfb9",
+            "resultDigest": "38bfa9d93c3e071dc40833de6558d71862baba7daf9266bb9f6cdcdaedd3d3f8",
+            "rawReportDigest": "60f601e5f7b4ffe6137b601b6b094b9e49e7f891c5699e89772f0c2f875e6685",
+            "findingCount": 0,
+            "autoCloseHistoricalFindings": false,
+            "mappingStatus": "PREPARED",
+            "payloadDigest": "33eadf7834384bc78c34d4e845dc00cb9f7de27f61b908462d79e604370c8dca",
+            "idempotencyKey": "1b504becd7ead771f581b666a193d1c9bc3855a28aaf34e20f1845d520abe797"
+          },
+          {
+            "pluginId": "sonarqube",
+            "executionStatus": "DISABLED",
+            "policyDecision": null,
+            "evaluationCount": 0,
+            "factDigest": null,
+            "resultDigest": "d19305020d0c8b16749acd090fa973f4ad6482d04da3811c32ddbbdc8d8d0dd4",
+            "rawReportDigest": null,
+            "findingCount": 0,
+            "autoCloseHistoricalFindings": false,
+            "mappingStatus": "NO_IMPORT",
+            "reason": "NONCOMPLETED_STATE_PRESERVES_HISTORY"
+          },
+          {
+            "pluginId": "sops",
+            "executionStatus": "DISABLED",
+            "policyDecision": null,
+            "evaluationCount": 0,
+            "factDigest": null,
+            "resultDigest": "44845a4d553ac89c2d711291b9fec4b4c0dba662d28e4b9b7d1a9548f086b36a",
+            "rawReportDigest": null,
+            "findingCount": 0,
+            "autoCloseHistoricalFindings": false,
+            "mappingStatus": "NO_IMPORT",
+            "reason": "NONCOMPLETED_STATE_PRESERVES_HISTORY"
+          },
+          {
+            "pluginId": "trivy",
+            "executionStatus": "DISABLED",
+            "policyDecision": null,
+            "evaluationCount": 0,
+            "factDigest": null,
+            "resultDigest": "6153a39214d4cdaf1ac6fced77d1fee7bfa1c27bfb9cc665675815d11dde40f2",
+            "rawReportDigest": null,
+            "findingCount": 0,
+            "autoCloseHistoricalFindings": false,
+            "mappingStatus": "NO_IMPORT",
+            "reason": "NONCOMPLETED_STATE_PRESERVES_HISTORY"
+          },
+          {
+            "pluginId": "zap",
+            "executionStatus": "DISABLED",
+            "policyDecision": null,
+            "evaluationCount": 0,
+            "factDigest": null,
+            "resultDigest": "a5fb68bb3c0d34bf94126622225552d762de2ce992269151c8758c5d7343e337",
+            "rawReportDigest": null,
+            "findingCount": 0,
+            "autoCloseHistoricalFindings": false,
+            "mappingStatus": "NO_IMPORT",
+            "reason": "NONCOMPLETED_STATE_PRESERVES_HISTORY"
+          }
+        ],
+        "planStatus": "PREPARED_OFFLINE",
+        "temporaryPreparationRemoved": true,
+        "remoteDelivery": "NOT_TESTED",
+        "remoteIdempotency": "NOT_TESTED",
+        "httpRequestCount": 0,
+        "historyActions": [],
+        "receiptDigest": "564a7d6804bc72bca6e5bdf4d7c2b7b0d824964aa2df0e5703e2f220a3513c07"
+      }
+    ],
+    "deliveryStatus": "CANDIDATE_ONLY",
+    "candidateDeliveryAllowed": true,
+    "productionDeliveryCount": 0,
+    "lokiDelivery": {
+      "schemaVersion": 1,
+      "kind": "LokiCandidateDeliveryReceipt",
+      "consumerId": "loki-candidate",
+      "consumerVersion": "1.0.0-loki-candidate.1",
+      "runId": "attempt2-F-cosign-tampered",
+      "projectId": "java-fixture",
+      "resultDigests": {
+        "build-provenance": "f65b0de3a059ce75ffd9f74d3a34e5a1845e3ee9fb3be303527b856378bc71a4",
+        "cosign": "965e8bb1a20c4076b03d741c19082dad6d93da01f668eb80fc6de89d531cf334",
+        "falco": "099eab9e1ec67ad3938682ee9e3c3ac23f37a05538f0b2f9c52bf3e21d0359e4",
+        "gitleaks": "05ce6815127587000870f4f02f2738e9754a6e3305d8befc1561c9d0d0aa81df",
+        "kubescape": "0bd367393366d803c159df705dec7be1276f7998e57a696b4e3b3211ac864826",
+        "kyverno": "240cdbdebe17f7958b5ee44f3165a09168aa6fb0bdc4978d4b40c059d9ccbf13",
+        "provenance": "26da5037b7a185852a6e54c72974241fb74c5ca1f9fa2b5467f5d5bfb633d7be",
+        "sbom": "935978260446e76523faf9cff67cc215e783bcea442768f7cfe2780b9bba9a44",
+        "semgrep": "38bfa9d93c3e071dc40833de6558d71862baba7daf9266bb9f6cdcdaedd3d3f8",
+        "sonarqube": "d19305020d0c8b16749acd090fa973f4ad6482d04da3811c32ddbbdc8d8d0dd4",
+        "sops": "44845a4d553ac89c2d711291b9fec4b4c0dba662d28e4b9b7d1a9548f086b36a",
+        "trivy": "6153a39214d4cdaf1ac6fced77d1fee7bfa1c27bfb9cc665675815d11dde40f2",
+        "zap": "a5fb68bb3c0d34bf94126622225552d762de2ce992269151c8758c5d7343e337"
+      },
+      "artifactDigest": "69934c09bd960ae828a2b4dfce5a13b4868bb8e95fcd8b1bceb029677159592b",
+      "planDigest": "cd8e38546aff84ef746d5664d3bc866d49ad460760b35a86e0ccbce7fdf8e0a9",
+      "payloadDigest": "d91ae162e9835551895990025f8953aa506fc32fbe4919d4b1a9f1cdaaff7b47",
+      "eventIdentities": [
+        "cabda9f1dcd16fc5384ce9d08b5508563db0e175467fdff4b1a31d49da41b4b5",
+        "d157948976bcb1ccc9b56767bc70dcbb04ddfd96898b9bb336ca181513c51798",
+        "24dcdd8f50efd490120a555f20c0d067bd3e4fa79a7ae06c09a2785de093c305",
+        "37e0f3a858245c6a84f4e1c4d4b3029a7a402493c33aeb80f0652a4406e6b653",
+        "7acd04d5ef3a574966666bfaaf8ac96fa27b65e40258febb144f94ad527ee8e2",
+        "b3ffd1a2898e5eb438af3126f1f451b8524fbb8f1710aff6cee4b4bce4914f7b",
+        "58c956f69cd7732e981189f7290711d74ac78e34010551c0e12f5d93baae2cf7",
+        "b192046d28253f07964ab5cf4b23a81dbecc9bf5be6d283129a693c4cd219ad5",
+        "d1bbb9dfb10be1e470a3655dc59d434dc56f41b91beb643b0200cfb91e6386ca"
+      ],
+      "mode": "mock-http",
+      "targetIdentity": "loki-loopback-v1",
+      "timestamp": "2026-11-05T02:24:45.762Z",
+      "productionDelivery": false,
+      "realRemoteDelivery": "NOT_TESTED",
+      "remoteExactlyOnce": "NOT_VERIFIED",
+      "promotionAllowed": false,
+      "deliveryState": "ACKNOWLEDGED",
+      "httpStatus": 204,
+      "errorCategory": null,
+      "attempts": [
+        {
+          "attempt": 1,
+          "httpStatus": 204,
+          "deliveryState": "ACKNOWLEDGED",
+          "errorCategory": null,
+          "timestamp": "2026-11-05T02:24:45.805Z",
+          "requestBodySha256": "d91ae162e9835551895990025f8953aa506fc32fbe4919d4b1a9f1cdaaff7b47"
+        }
+      ],
+      "possibleDuplicates": false,
+      "httpRequestCount": 1,
+      "payloadSeal": "3959ec070c7bad85ad31c54c2f6d8a52bce754edb9269601ab8ed771390ab5d3",
+      "receiptDigest": "aaab533418796c118297e821ee90684d66557188f8ce33d32a6c7e8088e07124"
+    }
+  }
+}

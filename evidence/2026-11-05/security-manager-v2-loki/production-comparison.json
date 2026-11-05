@@ -1,0 +1,52 @@
+{
+  "classification": "BEFORE_FINAL_COMPARISON_WITH_PRESERVED_INTERMEDIATE_INCIDENT",
+  "checks": {
+    "deploymentUid": true,
+    "generation": true,
+    "specSha256": true,
+    "image": true,
+    "socket": true,
+    "dockerDaemon": true,
+    "trivyDbMetadata": true,
+    "dojo": true,
+    "jenkinsBuild270": true,
+    "finalPetclinic3Ready": true,
+    "finalHTTP200": true,
+    "finalArgoSyncedHealthy": true,
+    "finalThreeNodesReady": true
+  },
+  "before": "2026-11-05T02:00:30.404904+00:00",
+  "final": "2026-11-05T02:30:04.125459+00:00",
+  "beforeSnapshot": "production-before.json",
+  "finalSnapshot": "production-final.json",
+  "intermediateIncident": {
+    "present": true,
+    "uninterruptedHealthVerified": false,
+    "observedStatuses": [
+      502,
+      503
+    ],
+    "observedReadyReplicas": 0,
+    "argoStatus": "Unknown/Progressing",
+    "apiTimeoutSeconds": 25,
+    "devopsLoad1m": 52.96,
+    "rootCause": "NOT_DETERMINED",
+    "recovery": "OBSERVED_WITHOUT_REMEDIATION",
+    "evidence": [
+      "production-final-attempt1-error.json",
+      "observability-final.json",
+      "health-followup.json",
+      "health-followup-projection.json"
+    ]
+  },
+  "finalHealth": "VERIFIED_AT_SNAPSHOT_NOT_CONTINUOUS_STABILITY",
+  "productionChangesByThisRound": 0,
+  "releaseCount": 0,
+  "rolloutCount": 0,
+  "correction": {
+    "file": "health-followup-projection.json",
+    "field": "petclinic.specSha256",
+    "note": "Uses compact JSON serialization; cannot compare directly to baseline default-spaced JSON hash. Semantic spec hash using the baseline algorithm matches exactly.",
+    "baselineCompatibleSha256": "123ad729d83f3a7afc548a8c3071be70ff7ac8ed78b7333a296945b525552f4b"
+  }
+}

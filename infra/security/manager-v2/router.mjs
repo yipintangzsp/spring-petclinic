@@ -61,3 +61,23 @@ export async function routeResultsHttp(options){
  const blocked=!['ACKNOWLEDGED'].includes(httpDelivery.deliveryState)&&httpDelivery.redactedError!=='HTTP_DISABLED_BY_DEFAULT';
  return freeze({...offline,httpDelivery,deliveryStatus:blocked?'ERROR':offline.deliveryStatus,candidateDeliveryAllowed:!blocked&&offline.candidateDeliveryAllowed});
 }
+
+// Explicit Loki registration. Both existing routing entry points stay unchanged;
+// the same verified Result is projected, never scanned or evaluated again.
+export {LOKI_DEFINITION} from './consumers/loki.mjs';
+import {prepareLoki,publishLoki,createLokiTransport,LOKI_DEFINITION} from './consumers/loki.mjs';
+export async function routeResultsWithLoki(options){
+ keys(options,['run','artifactDirectory','expectedSealDigest','output','definitions','consumerOptions','transport','journalDirectory','lokiTransport','lokiOutput','expectedProjectId','priorLokiReceipts']);
+ const {lokiTransport=createLokiTransport(),lokiOutput,expectedProjectId,priorLokiReceipts=[],...base}=options;
+ const offline=options.transport?await routeResultsHttp(base):routeResults(base);
+ let lokiDelivery;
+ try{
+  const plan=prepareLoki({run:options.run,artifactDirectory:options.artifactDirectory,expectedSealDigest:options.expectedSealDigest,expectedProjectId,deliveryReceipts:[...offline.receipts,...(offline.httpDelivery?.receipts??[]),...priorLokiReceipts]});
+  lokiDelivery=await publishLoki(plan,{output:lokiOutput,transport:lokiTransport});
+ }catch(e){
+  const body={schemaVersion:1,kind:'LokiCandidateDeliveryReceipt',consumerId:LOKI_DEFINITION.consumerId,consumerVersion:LOKI_DEFINITION.consumerVersion,runId:options.run.summary.runId,projectId:options.run.summary.projectId,resultDigests:Object.fromEntries(options.run.summary.pluginResults.map(r=>[r.pluginId,r.resultDigest])),deliveryState:'ERROR',errorCategory:'LOKI_PREPARATION_OR_DELIVERY_FAILED',diagnosticCode:/^[A-Z_]{3,80}$/.test(e.code??'')?e.code:'INVALID_INPUT',timestamp:new Date().toISOString(),httpRequestCount:0,productionDelivery:false,promotionAllowed:false,realRemoteDelivery:'NOT_TESTED',remoteExactlyOnce:'NOT_VERIFIED'};
+  lokiDelivery=freeze({...body,receiptDigest:digest(body)});
+ }
+ const ok=['ACKNOWLEDGED','DRY_RUN','DISABLED'].includes(lokiDelivery.deliveryState);
+ return freeze({...offline,lokiDelivery,deliveryStatus:ok?offline.deliveryStatus:'ERROR',candidateDeliveryAllowed:ok&&offline.candidateDeliveryAllowed});
+}

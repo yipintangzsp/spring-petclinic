@@ -1,0 +1,162 @@
+{
+  "uptime": {
+    "exit": 0,
+    "stdout": " 10:27:18 up  2:17,  4 users,  load average: 52.96, 51.14, 39.27\n",
+    "stderr": ""
+  },
+  "memory": {
+    "exit": 0,
+    "stdout": "               total        used        free      shared  buff/cache   available\nMem:           21958       15213         251         159        6932        6745\nSwap:          12287        1883       10404\n",
+    "stderr": ""
+  },
+  "disk": {
+    "exit": 0,
+    "stdout": "Filesystem      Size  Used Avail Use% Mounted on\n/dev/vda2       252G  197G   43G  83% /\n",
+    "stderr": ""
+  },
+  "k3s": {
+    "exit": 0,
+    "stdout": "MainPID=1043\nNRestarts=0\nActiveState=active\nSubState=running\n",
+    "stderr": ""
+  },
+  "petclinicHTTP": {
+    "status": 503
+  },
+  "nodes": [
+    {
+      "name": "aliyun-worker",
+      "conditions": [
+        {
+          "type": "MemoryPressure",
+          "status": "False",
+          "reason": "KubeletHasSufficientMemory",
+          "lastTransitionTime": "2026-11-05T00:00:54Z"
+        },
+        {
+          "type": "DiskPressure",
+          "status": "False",
+          "reason": "KubeletHasNoDiskPressure",
+          "lastTransitionTime": "2026-11-05T00:00:54Z"
+        },
+        {
+          "type": "PIDPressure",
+          "status": "False",
+          "reason": "KubeletHasSufficientPID",
+          "lastTransitionTime": "2026-11-05T00:00:54Z"
+        },
+        {
+          "type": "Ready",
+          "status": "True",
+          "reason": "KubeletReady",
+          "lastTransitionTime": "2026-11-05T00:00:54Z"
+        }
+      ]
+    },
+    {
+      "name": "devops",
+      "conditions": [
+        {
+          "type": "MemoryPressure",
+          "status": "False",
+          "reason": "KubeletHasSufficientMemory",
+          "lastTransitionTime": "2026-11-05T02:20:52Z"
+        },
+        {
+          "type": "DiskPressure",
+          "status": "False",
+          "reason": "KubeletHasNoDiskPressure",
+          "lastTransitionTime": "2026-11-05T02:20:52Z"
+        },
+        {
+          "type": "PIDPressure",
+          "status": "False",
+          "reason": "KubeletHasSufficientPID",
+          "lastTransitionTime": "2026-11-05T02:20:52Z"
+        },
+        {
+          "type": "Ready",
+          "status": "True",
+          "reason": "KubeletReady",
+          "lastTransitionTime": "2026-11-05T02:26:05Z"
+        }
+      ]
+    },
+    {
+      "name": "ucloud-worker",
+      "conditions": [
+        {
+          "type": "MemoryPressure",
+          "status": "False",
+          "reason": "KubeletHasSufficientMemory",
+          "lastTransitionTime": "2026-11-05T01:22:45Z"
+        },
+        {
+          "type": "DiskPressure",
+          "status": "False",
+          "reason": "KubeletHasNoDiskPressure",
+          "lastTransitionTime": "2026-11-05T01:22:45Z"
+        },
+        {
+          "type": "PIDPressure",
+          "status": "False",
+          "reason": "KubeletHasSufficientPID",
+          "lastTransitionTime": "2026-11-05T01:22:45Z"
+        },
+        {
+          "type": "Ready",
+          "status": "True",
+          "reason": "KubeletReady",
+          "lastTransitionTime": "2026-11-05T01:22:45Z"
+        }
+      ]
+    }
+  ],
+  "petclinic": {
+    "uid": "ae889fa4-5f34-4c85-9bbb-73d80e5a0b1f",
+    "generation": 175,
+    "replicas": 3,
+    "readyReplicas": 0,
+    "availableReplicas": 0,
+    "specSha256": "edca3e3eefe7c6d7d89ac41b6870d4086a81d0aeab6775d7111847c48ec2cb9c",
+    "images": [
+      "core.harbor.domain/petclinic/petclinic@sha256:489cb821573ff1f98edd846d5949d74bf3391b24e2f1fe5bcfb71c6be0793137"
+    ]
+  },
+  "argo": {
+    "uid": "75c49abb-7bfa-4793-8096-0f1ac4a6b467",
+    "sync": {
+      "comparedTo": {
+        "destination": {
+          "namespace": "petclinic",
+          "server": "https://kubernetes.default.svc"
+        },
+        "source": {
+          "path": "k8s/production",
+          "repoURL": "http://gitlab-service.ns-devops.svc.cluster.local/root/petclinic-platform.git",
+          "targetRevision": "main"
+        }
+      },
+      "revision": "main",
+      "status": "Unknown"
+    },
+    "health": {
+      "lastTransitionTime": "2026-11-05T02:23:24Z",
+      "status": "Progressing"
+    },
+    "conditions": [
+      {
+        "lastTransitionTime": "2026-11-05T02:23:16Z",
+        "message": "Failed to load target state: failed to generate manifest for source 1 of 1: rpc error: code = Unavailable desc = connection error: desc = \"transport: Error while dialing: dial tcp 10.43.95.130:8081: connect: connection refused\"",
+        "type": "ComparisonError"
+      }
+    ]
+  },
+  "jenkins": {
+    "status": "UNKNOWN",
+    "errorClass": "RuntimeError"
+  },
+  "classification": "DERIVED_READ_ONLY_HEALTH_PROJECTION",
+  "source": "health-followup.json",
+  "rootCause": "NOT_DETERMINED",
+  "productionWrites": 0
+}

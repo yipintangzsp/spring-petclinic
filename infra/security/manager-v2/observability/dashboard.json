@@ -1,0 +1,435 @@
+{
+  "id": null,
+  "uid": "security-manager-v2-candidate",
+  "title": "DevSecOps Security Manager V2 Overview",
+  "description": "Importable Candidate. Offline query contract tested; no production import and no real Loki Push/query validation.",
+  "schemaVersion": 39,
+  "version": 1,
+  "editable": true,
+  "tags": [
+    "devsecops",
+    "candidate",
+    "not-production"
+  ],
+  "timezone": "browser",
+  "refresh": "",
+  "time": {
+    "from": "now-7d",
+    "to": "now"
+  },
+  "annotations": {
+    "list": []
+  },
+  "templating": {
+    "list": [
+      {
+        "name": "DS_LOKI",
+        "label": "Loki datasource",
+        "type": "datasource",
+        "query": "loki",
+        "current": {
+          "text": "Loki",
+          "value": "loki"
+        },
+        "options": []
+      },
+      {
+        "name": "project",
+        "label": "Project (body filter)",
+        "type": "custom",
+        "query": "java-fixture,service-fixture",
+        "multi": false,
+        "includeAll": false,
+        "current": {
+          "text": "java-fixture",
+          "value": "java-fixture"
+        },
+        "options": [
+          {
+            "text": "java-fixture",
+            "value": "java-fixture",
+            "selected": true
+          },
+          {
+            "text": "service-fixture",
+            "value": "service-fixture",
+            "selected": false
+          }
+        ]
+      },
+      {
+        "name": "run",
+        "label": "Exact runId",
+        "type": "textbox",
+        "multi": false,
+        "current": {
+          "text": "attempt2-H-gitleaks-fail",
+          "value": "attempt2-H-gitleaks-fail"
+        },
+        "options": []
+      },
+      {
+        "name": "resultDigest",
+        "label": "Exact resultDigest (provenance OR run)",
+        "type": "textbox",
+        "multi": false,
+        "current": {
+          "text": "",
+          "value": ""
+        },
+        "options": []
+      }
+    ]
+  },
+  "panels": [
+    {
+      "id": 1,
+      "title": "Plugin execution — selected run (REPLAY)",
+      "type": "logs",
+      "gridPos": {
+        "h": 10,
+        "w": 12,
+        "x": 0,
+        "y": 0
+      },
+      "description": "Execution state and Policy decision remain separate JSON fields; REPLAY, not a new scan.",
+      "datasource": {
+        "type": "loki",
+        "uid": "${DS_LOKI}"
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "datasource": {
+            "type": "loki",
+            "uid": "${DS_LOKI}"
+          },
+          "expr": "{service_name=\"security-manager-v2\",environment=\"validation\",schema_version=\"1\",job=\"devsecops-security-v2\"} | json eventType=\"eventType\", projectId=\"projectId\", runId=\"runId\", resultDigest=\"resultDigest\", artifactDigest=\"artifactDigest\", executionStatus=\"executionStatus\", policyDecision=\"policyDecision\", evaluationCount=\"evaluationCount\", findingCount=\"findingCount\", findingCountKnown=\"findingCountKnown\", highSeverityFindingCount=\"highSeverityFindingCount\", highSeverityCountKnown=\"highSeverityCountKnown\", consumerId=\"consumerId\", deliveryStatus=\"deliveryStatus\", deliveryOrigin=\"deliveryOrigin\", errorCategory=\"errorCategory\", sourceClassification=\"sourceClassification\", timestamp=\"timestamp\", pluginId=\"pluginId\" | __error__=\"\" | projectId=${project:json} | runId=${run:json} | eventType=\"PLUGIN_RESULT\"",
+          "queryType": "range",
+          "editorMode": "code",
+          "maxLines": 200,
+          "legendFormat": "execution {{plugin}} {{policy_decision}}"
+        }
+      ],
+      "options": {
+        "showTime": true,
+        "showLabels": false,
+        "wrapLogMessage": true,
+        "enableLogDetails": true,
+        "dedupStrategy": "exact",
+        "sortOrder": "Descending"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "noValue": "Unknown / No data",
+          "unit": "short"
+        },
+        "overrides": []
+      }
+    },
+    {
+      "id": 2,
+      "title": "Policy decisions — distinct plugins in selected run",
+      "type": "stat",
+      "gridPos": {
+        "h": 10,
+        "w": 12,
+        "x": 12,
+        "y": 0
+      },
+      "description": "One completed evaluation per plugin in exact selected project/run; duplicate deliveries do not increase counts.",
+      "datasource": {
+        "type": "loki",
+        "uid": "${DS_LOKI}"
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "datasource": {
+            "type": "loki",
+            "uid": "${DS_LOKI}"
+          },
+          "expr": "sum by (policy_decision) (max by (plugin, policy_decision) (max_over_time({service_name=\"security-manager-v2\",environment=\"validation\",schema_version=\"1\",job=\"devsecops-security-v2\"} | json eventType=\"eventType\", projectId=\"projectId\", runId=\"runId\", resultDigest=\"resultDigest\", artifactDigest=\"artifactDigest\", executionStatus=\"executionStatus\", policyDecision=\"policyDecision\", evaluationCount=\"evaluationCount\", findingCount=\"findingCount\", findingCountKnown=\"findingCountKnown\", highSeverityFindingCount=\"highSeverityFindingCount\", highSeverityCountKnown=\"highSeverityCountKnown\", consumerId=\"consumerId\", deliveryStatus=\"deliveryStatus\", deliveryOrigin=\"deliveryOrigin\", errorCategory=\"errorCategory\", sourceClassification=\"sourceClassification\", timestamp=\"timestamp\", pluginId=\"pluginId\" | __error__=\"\" | projectId=${project:json} | runId=${run:json} | eventType=\"PLUGIN_RESULT\" | policy_decision!=\"NONE\" | unwrap evaluationCount | __error__=\"\" [$__range])))",
+          "queryType": "instant",
+          "editorMode": "code",
+          "maxLines": 200,
+          "legendFormat": "policy {{plugin}} {{policy_decision}}"
+        }
+      ],
+      "options": {
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "textMode": "auto",
+        "colorMode": "none"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "noValue": "Unknown / No data",
+          "unit": "short"
+        },
+        "overrides": []
+      }
+    },
+    {
+      "id": 3,
+      "title": "Native findings — unknown is No data",
+      "type": "stat",
+      "gridPos": {
+        "h": 10,
+        "w": 12,
+        "x": 0,
+        "y": 10
+      },
+      "description": "Native count only. Disabled/error/not-scanned/Cosign produce no value, never zero. Only known native HIGH/CRITICAL. Gitleaks has no native severity; Semgrep ERROR is not silently HIGH.",
+      "datasource": {
+        "type": "loki",
+        "uid": "${DS_LOKI}"
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "datasource": {
+            "type": "loki",
+            "uid": "${DS_LOKI}"
+          },
+          "expr": "max by (plugin) (max_over_time({service_name=\"security-manager-v2\",environment=\"validation\",schema_version=\"1\",job=\"devsecops-security-v2\"} | json eventType=\"eventType\", projectId=\"projectId\", runId=\"runId\", resultDigest=\"resultDigest\", artifactDigest=\"artifactDigest\", executionStatus=\"executionStatus\", policyDecision=\"policyDecision\", evaluationCount=\"evaluationCount\", findingCount=\"findingCount\", findingCountKnown=\"findingCountKnown\", highSeverityFindingCount=\"highSeverityFindingCount\", highSeverityCountKnown=\"highSeverityCountKnown\", consumerId=\"consumerId\", deliveryStatus=\"deliveryStatus\", deliveryOrigin=\"deliveryOrigin\", errorCategory=\"errorCategory\", sourceClassification=\"sourceClassification\", timestamp=\"timestamp\", pluginId=\"pluginId\" | __error__=\"\" | projectId=${project:json} | runId=${run:json} | eventType=\"PLUGIN_RESULT\" | findingCountKnown=\"true\" | unwrap findingCount | __error__=\"\" [$__range]))",
+          "queryType": "instant",
+          "editorMode": "code",
+          "maxLines": 200,
+          "legendFormat": "findings {{plugin}} {{policy_decision}}"
+        },
+        {
+          "refId": "B",
+          "datasource": {
+            "type": "loki",
+            "uid": "${DS_LOKI}"
+          },
+          "expr": "max by (plugin) (max_over_time({service_name=\"security-manager-v2\",environment=\"validation\",schema_version=\"1\",job=\"devsecops-security-v2\"} | json eventType=\"eventType\", projectId=\"projectId\", runId=\"runId\", resultDigest=\"resultDigest\", artifactDigest=\"artifactDigest\", executionStatus=\"executionStatus\", policyDecision=\"policyDecision\", evaluationCount=\"evaluationCount\", findingCount=\"findingCount\", findingCountKnown=\"findingCountKnown\", highSeverityFindingCount=\"highSeverityFindingCount\", highSeverityCountKnown=\"highSeverityCountKnown\", consumerId=\"consumerId\", deliveryStatus=\"deliveryStatus\", deliveryOrigin=\"deliveryOrigin\", errorCategory=\"errorCategory\", sourceClassification=\"sourceClassification\", timestamp=\"timestamp\", pluginId=\"pluginId\" | __error__=\"\" | projectId=${project:json} | runId=${run:json} | eventType=\"PLUGIN_RESULT\" | highSeverityCountKnown=\"true\" | unwrap highSeverityFindingCount | __error__=\"\" [$__range]))",
+          "queryType": "instant",
+          "editorMode": "code",
+          "maxLines": 200,
+          "legendFormat": "high-findings {{plugin}} {{policy_decision}}"
+        }
+      ],
+      "options": {
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "textMode": "auto",
+        "colorMode": "none"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "noValue": "Unknown / No data",
+          "unit": "short"
+        },
+        "overrides": []
+      }
+    },
+    {
+      "id": 4,
+      "title": "Unavailable / disabled / execution errors",
+      "type": "logs",
+      "gridPos": {
+        "h": 10,
+        "w": 12,
+        "x": 12,
+        "y": 10
+      },
+      "description": "Absence of a row is no observation, not PASS.",
+      "datasource": {
+        "type": "loki",
+        "uid": "${DS_LOKI}"
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "datasource": {
+            "type": "loki",
+            "uid": "${DS_LOKI}"
+          },
+          "expr": "{service_name=\"security-manager-v2\",environment=\"validation\",schema_version=\"1\",job=\"devsecops-security-v2\"} | json eventType=\"eventType\", projectId=\"projectId\", runId=\"runId\", resultDigest=\"resultDigest\", artifactDigest=\"artifactDigest\", executionStatus=\"executionStatus\", policyDecision=\"policyDecision\", evaluationCount=\"evaluationCount\", findingCount=\"findingCount\", findingCountKnown=\"findingCountKnown\", highSeverityFindingCount=\"highSeverityFindingCount\", highSeverityCountKnown=\"highSeverityCountKnown\", consumerId=\"consumerId\", deliveryStatus=\"deliveryStatus\", deliveryOrigin=\"deliveryOrigin\", errorCategory=\"errorCategory\", sourceClassification=\"sourceClassification\", timestamp=\"timestamp\", pluginId=\"pluginId\" | __error__=\"\" | projectId=${project:json} | runId=${run:json} | eventType=\"PLUGIN_RESULT\" | executionStatus=~\"DISABLED|SKIPPED|NOT_CONFIGURED|UNSUPPORTED|ERROR|POLICY_ERROR\"",
+          "queryType": "range",
+          "editorMode": "code",
+          "maxLines": 200,
+          "legendFormat": "availability {{plugin}} {{policy_decision}}"
+        }
+      ],
+      "options": {
+        "showTime": true,
+        "showLabels": false,
+        "wrapLogMessage": true,
+        "enableLogDetails": true,
+        "dedupStrategy": "exact",
+        "sortOrder": "Descending"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "noValue": "Unknown / No data",
+          "unit": "short"
+        },
+        "overrides": []
+      }
+    },
+    {
+      "id": 5,
+      "title": "Router delivery — receipt origin required",
+      "type": "logs",
+      "gridPos": {
+        "h": 10,
+        "w": 12,
+        "x": 0,
+        "y": 20
+      },
+      "description": "Show Dojo/Loki receipt states and MOCK_HTTP/DRY_RUN/LOCAL_ONLY origin. No claim of real remote ACK. Loki cannot include its own final ACK in the initial Push. A later explicit batch may project that immutable receipt; no recursive auto-send.",
+      "datasource": {
+        "type": "loki",
+        "uid": "${DS_LOKI}"
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "datasource": {
+            "type": "loki",
+            "uid": "${DS_LOKI}"
+          },
+          "expr": "{service_name=\"security-manager-v2\",environment=\"validation\",schema_version=\"1\",job=\"devsecops-security-v2\"} | json eventType=\"eventType\", projectId=\"projectId\", runId=\"runId\", resultDigest=\"resultDigest\", artifactDigest=\"artifactDigest\", executionStatus=\"executionStatus\", policyDecision=\"policyDecision\", evaluationCount=\"evaluationCount\", findingCount=\"findingCount\", findingCountKnown=\"findingCountKnown\", highSeverityFindingCount=\"highSeverityFindingCount\", highSeverityCountKnown=\"highSeverityCountKnown\", consumerId=\"consumerId\", deliveryStatus=\"deliveryStatus\", deliveryOrigin=\"deliveryOrigin\", errorCategory=\"errorCategory\", sourceClassification=\"sourceClassification\", timestamp=\"timestamp\", pluginId=\"pluginId\" | __error__=\"\" | projectId=${project:json} | runId=${run:json} | eventType=\"CONSUMER_DELIVERY\"",
+          "queryType": "range",
+          "editorMode": "code",
+          "maxLines": 200,
+          "legendFormat": "delivery {{plugin}} {{policy_decision}}"
+        }
+      ],
+      "options": {
+        "showTime": true,
+        "showLabels": false,
+        "wrapLogMessage": true,
+        "enableLogDetails": true,
+        "dedupStrategy": "exact",
+        "sortOrder": "Descending"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "noValue": "Unknown / No data",
+          "unit": "short"
+        },
+        "overrides": []
+      }
+    },
+    {
+      "id": 6,
+      "title": "Project events — bounded log view",
+      "type": "logs",
+      "gridPos": {
+        "h": 10,
+        "w": 12,
+        "x": 12,
+        "y": 20
+      },
+      "description": "Selected project across runs; 200-row limit. Repeated rows are deliveries, not independent scans.",
+      "datasource": {
+        "type": "loki",
+        "uid": "${DS_LOKI}"
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "datasource": {
+            "type": "loki",
+            "uid": "${DS_LOKI}"
+          },
+          "expr": "{service_name=\"security-manager-v2\",environment=\"validation\",schema_version=\"1\",job=\"devsecops-security-v2\"} | json eventType=\"eventType\", projectId=\"projectId\", runId=\"runId\", resultDigest=\"resultDigest\", artifactDigest=\"artifactDigest\", executionStatus=\"executionStatus\", policyDecision=\"policyDecision\", evaluationCount=\"evaluationCount\", findingCount=\"findingCount\", findingCountKnown=\"findingCountKnown\", highSeverityFindingCount=\"highSeverityFindingCount\", highSeverityCountKnown=\"highSeverityCountKnown\", consumerId=\"consumerId\", deliveryStatus=\"deliveryStatus\", deliveryOrigin=\"deliveryOrigin\", errorCategory=\"errorCategory\", sourceClassification=\"sourceClassification\", timestamp=\"timestamp\", pluginId=\"pluginId\" | __error__=\"\" | projectId=${project:json} | eventType=\"PLUGIN_RESULT\"",
+          "queryType": "range",
+          "editorMode": "code",
+          "maxLines": 200,
+          "legendFormat": "project {{plugin}} {{policy_decision}}"
+        }
+      ],
+      "options": {
+        "showTime": true,
+        "showLabels": false,
+        "wrapLogMessage": true,
+        "enableLogDetails": true,
+        "dedupStrategy": "exact",
+        "sortOrder": "Descending"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "noValue": "Unknown / No data",
+          "unit": "short"
+        },
+        "overrides": []
+      }
+    },
+    {
+      "id": 7,
+      "title": "Result provenance — exact run or digest",
+      "type": "logs",
+      "gridPos": {
+        "h": 10,
+        "w": 12,
+        "x": 0,
+        "y": 30
+      },
+      "description": "Exact run or digest match, within project. No source snippets or secrets.",
+      "datasource": {
+        "type": "loki",
+        "uid": "${DS_LOKI}"
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "datasource": {
+            "type": "loki",
+            "uid": "${DS_LOKI}"
+          },
+          "expr": "{service_name=\"security-manager-v2\",environment=\"validation\",schema_version=\"1\",job=\"devsecops-security-v2\"} | json eventType=\"eventType\", projectId=\"projectId\", runId=\"runId\", resultDigest=\"resultDigest\", artifactDigest=\"artifactDigest\", executionStatus=\"executionStatus\", policyDecision=\"policyDecision\", evaluationCount=\"evaluationCount\", findingCount=\"findingCount\", findingCountKnown=\"findingCountKnown\", highSeverityFindingCount=\"highSeverityFindingCount\", highSeverityCountKnown=\"highSeverityCountKnown\", consumerId=\"consumerId\", deliveryStatus=\"deliveryStatus\", deliveryOrigin=\"deliveryOrigin\", errorCategory=\"errorCategory\", sourceClassification=\"sourceClassification\", timestamp=\"timestamp\", pluginId=\"pluginId\" | __error__=\"\" | projectId=${project:json} | (runId=${run:json} or resultDigest=${resultDigest:json})",
+          "queryType": "range",
+          "editorMode": "code",
+          "maxLines": 200,
+          "legendFormat": "provenance {{plugin}} {{policy_decision}}"
+        }
+      ],
+      "options": {
+        "showTime": true,
+        "showLabels": false,
+        "wrapLogMessage": true,
+        "enableLogDetails": true,
+        "dedupStrategy": "exact",
+        "sortOrder": "Descending"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "noValue": "Unknown / No data",
+          "unit": "short"
+        },
+        "overrides": []
+      }
+    },
+    {
+      "id": 8,
+      "title": "Candidate authority notice — static, not live",
+      "type": "text",
+      "gridPos": {
+        "h": 9,
+        "w": 12,
+        "x": 12,
+        "y": 30
+      },
+      "description": "",
+      "options": {
+        "mode": "markdown",
+        "content": "**CANDIDATE ONLY — static authority snapshot 2026-11-05**\n\nProduction Security Manager: **NOT_ACTIVE**. Canonical Runtime: **14/16**. Trivy: **INCOMPLETE**. DefectDojo real delivery / remote idempotency: **NOT_TESTED**. Loki real delivery / Grafana real query: **NOT_TESTED**. Summary V2 migration: **INCOMPLETE**. Original evidence integrity: **FAILED**.\n\nSource: versioned `status-authority.json`, approved Candidate request at baseline `3e46208b`. These are fixed review statements, not live metrics. HTTP Mock ACK does not mean Gate PASS. Empty query results mean no ingested observation. No production V1 logs are queried."
+      }
+    }
+  ]
+}

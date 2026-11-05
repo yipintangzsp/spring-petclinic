@@ -1,0 +1,58 @@
+[
+  {
+    "id": "execution",
+    "panel": 1,
+    "kind": "logs",
+    "expr": "{service_name=\"security-manager-v2\",environment=\"validation\",schema_version=\"1\",job=\"devsecops-security-v2\"} | json eventType=\"eventType\", projectId=\"projectId\", runId=\"runId\", resultDigest=\"resultDigest\", artifactDigest=\"artifactDigest\", executionStatus=\"executionStatus\", policyDecision=\"policyDecision\", evaluationCount=\"evaluationCount\", findingCount=\"findingCount\", findingCountKnown=\"findingCountKnown\", highSeverityFindingCount=\"highSeverityFindingCount\", highSeverityCountKnown=\"highSeverityCountKnown\", consumerId=\"consumerId\", deliveryStatus=\"deliveryStatus\", deliveryOrigin=\"deliveryOrigin\", errorCategory=\"errorCategory\", sourceClassification=\"sourceClassification\", timestamp=\"timestamp\", pluginId=\"pluginId\" | __error__=\"\" | projectId=${project:json} | runId=${run:json} | eventType=\"PLUGIN_RESULT\"",
+    "purpose": "Execution state and Policy decision remain separate JSON fields; REPLAY, not a new scan."
+  },
+  {
+    "id": "policy",
+    "panel": 2,
+    "kind": "metric",
+    "expr": "sum by (policy_decision) (max by (plugin, policy_decision) (max_over_time({service_name=\"security-manager-v2\",environment=\"validation\",schema_version=\"1\",job=\"devsecops-security-v2\"} | json eventType=\"eventType\", projectId=\"projectId\", runId=\"runId\", resultDigest=\"resultDigest\", artifactDigest=\"artifactDigest\", executionStatus=\"executionStatus\", policyDecision=\"policyDecision\", evaluationCount=\"evaluationCount\", findingCount=\"findingCount\", findingCountKnown=\"findingCountKnown\", highSeverityFindingCount=\"highSeverityFindingCount\", highSeverityCountKnown=\"highSeverityCountKnown\", consumerId=\"consumerId\", deliveryStatus=\"deliveryStatus\", deliveryOrigin=\"deliveryOrigin\", errorCategory=\"errorCategory\", sourceClassification=\"sourceClassification\", timestamp=\"timestamp\", pluginId=\"pluginId\" | __error__=\"\" | projectId=${project:json} | runId=${run:json} | eventType=\"PLUGIN_RESULT\" | policy_decision!=\"NONE\" | unwrap evaluationCount | __error__=\"\" [$__range])))",
+    "purpose": "One completed evaluation per plugin in exact selected project/run; duplicate deliveries do not increase counts."
+  },
+  {
+    "id": "findings",
+    "panel": 3,
+    "kind": "metric",
+    "expr": "max by (plugin) (max_over_time({service_name=\"security-manager-v2\",environment=\"validation\",schema_version=\"1\",job=\"devsecops-security-v2\"} | json eventType=\"eventType\", projectId=\"projectId\", runId=\"runId\", resultDigest=\"resultDigest\", artifactDigest=\"artifactDigest\", executionStatus=\"executionStatus\", policyDecision=\"policyDecision\", evaluationCount=\"evaluationCount\", findingCount=\"findingCount\", findingCountKnown=\"findingCountKnown\", highSeverityFindingCount=\"highSeverityFindingCount\", highSeverityCountKnown=\"highSeverityCountKnown\", consumerId=\"consumerId\", deliveryStatus=\"deliveryStatus\", deliveryOrigin=\"deliveryOrigin\", errorCategory=\"errorCategory\", sourceClassification=\"sourceClassification\", timestamp=\"timestamp\", pluginId=\"pluginId\" | __error__=\"\" | projectId=${project:json} | runId=${run:json} | eventType=\"PLUGIN_RESULT\" | findingCountKnown=\"true\" | unwrap findingCount | __error__=\"\" [$__range]))",
+    "purpose": "Native count only. Disabled/error/not-scanned/Cosign produce no value, never zero."
+  },
+  {
+    "id": "high-findings",
+    "panel": 3,
+    "kind": "metric",
+    "expr": "max by (plugin) (max_over_time({service_name=\"security-manager-v2\",environment=\"validation\",schema_version=\"1\",job=\"devsecops-security-v2\"} | json eventType=\"eventType\", projectId=\"projectId\", runId=\"runId\", resultDigest=\"resultDigest\", artifactDigest=\"artifactDigest\", executionStatus=\"executionStatus\", policyDecision=\"policyDecision\", evaluationCount=\"evaluationCount\", findingCount=\"findingCount\", findingCountKnown=\"findingCountKnown\", highSeverityFindingCount=\"highSeverityFindingCount\", highSeverityCountKnown=\"highSeverityCountKnown\", consumerId=\"consumerId\", deliveryStatus=\"deliveryStatus\", deliveryOrigin=\"deliveryOrigin\", errorCategory=\"errorCategory\", sourceClassification=\"sourceClassification\", timestamp=\"timestamp\", pluginId=\"pluginId\" | __error__=\"\" | projectId=${project:json} | runId=${run:json} | eventType=\"PLUGIN_RESULT\" | highSeverityCountKnown=\"true\" | unwrap highSeverityFindingCount | __error__=\"\" [$__range]))",
+    "purpose": "Only known native HIGH/CRITICAL. Gitleaks has no native severity; Semgrep ERROR is not silently HIGH."
+  },
+  {
+    "id": "availability",
+    "panel": 4,
+    "kind": "logs",
+    "expr": "{service_name=\"security-manager-v2\",environment=\"validation\",schema_version=\"1\",job=\"devsecops-security-v2\"} | json eventType=\"eventType\", projectId=\"projectId\", runId=\"runId\", resultDigest=\"resultDigest\", artifactDigest=\"artifactDigest\", executionStatus=\"executionStatus\", policyDecision=\"policyDecision\", evaluationCount=\"evaluationCount\", findingCount=\"findingCount\", findingCountKnown=\"findingCountKnown\", highSeverityFindingCount=\"highSeverityFindingCount\", highSeverityCountKnown=\"highSeverityCountKnown\", consumerId=\"consumerId\", deliveryStatus=\"deliveryStatus\", deliveryOrigin=\"deliveryOrigin\", errorCategory=\"errorCategory\", sourceClassification=\"sourceClassification\", timestamp=\"timestamp\", pluginId=\"pluginId\" | __error__=\"\" | projectId=${project:json} | runId=${run:json} | eventType=\"PLUGIN_RESULT\" | executionStatus=~\"DISABLED|SKIPPED|NOT_CONFIGURED|UNSUPPORTED|ERROR|POLICY_ERROR\"",
+    "purpose": "Absence of a row is no observation, not PASS."
+  },
+  {
+    "id": "delivery",
+    "panel": 5,
+    "kind": "logs",
+    "expr": "{service_name=\"security-manager-v2\",environment=\"validation\",schema_version=\"1\",job=\"devsecops-security-v2\"} | json eventType=\"eventType\", projectId=\"projectId\", runId=\"runId\", resultDigest=\"resultDigest\", artifactDigest=\"artifactDigest\", executionStatus=\"executionStatus\", policyDecision=\"policyDecision\", evaluationCount=\"evaluationCount\", findingCount=\"findingCount\", findingCountKnown=\"findingCountKnown\", highSeverityFindingCount=\"highSeverityFindingCount\", highSeverityCountKnown=\"highSeverityCountKnown\", consumerId=\"consumerId\", deliveryStatus=\"deliveryStatus\", deliveryOrigin=\"deliveryOrigin\", errorCategory=\"errorCategory\", sourceClassification=\"sourceClassification\", timestamp=\"timestamp\", pluginId=\"pluginId\" | __error__=\"\" | projectId=${project:json} | runId=${run:json} | eventType=\"CONSUMER_DELIVERY\"",
+    "purpose": "Show Dojo/Loki receipt states and MOCK_HTTP/DRY_RUN/LOCAL_ONLY origin. No claim of real remote ACK."
+  },
+  {
+    "id": "project",
+    "panel": 6,
+    "kind": "logs",
+    "expr": "{service_name=\"security-manager-v2\",environment=\"validation\",schema_version=\"1\",job=\"devsecops-security-v2\"} | json eventType=\"eventType\", projectId=\"projectId\", runId=\"runId\", resultDigest=\"resultDigest\", artifactDigest=\"artifactDigest\", executionStatus=\"executionStatus\", policyDecision=\"policyDecision\", evaluationCount=\"evaluationCount\", findingCount=\"findingCount\", findingCountKnown=\"findingCountKnown\", highSeverityFindingCount=\"highSeverityFindingCount\", highSeverityCountKnown=\"highSeverityCountKnown\", consumerId=\"consumerId\", deliveryStatus=\"deliveryStatus\", deliveryOrigin=\"deliveryOrigin\", errorCategory=\"errorCategory\", sourceClassification=\"sourceClassification\", timestamp=\"timestamp\", pluginId=\"pluginId\" | __error__=\"\" | projectId=${project:json} | eventType=\"PLUGIN_RESULT\"",
+    "purpose": "Selected project across runs; 200-row limit. Repeated rows are deliveries, not independent scans."
+  },
+  {
+    "id": "provenance",
+    "panel": 7,
+    "kind": "logs",
+    "expr": "{service_name=\"security-manager-v2\",environment=\"validation\",schema_version=\"1\",job=\"devsecops-security-v2\"} | json eventType=\"eventType\", projectId=\"projectId\", runId=\"runId\", resultDigest=\"resultDigest\", artifactDigest=\"artifactDigest\", executionStatus=\"executionStatus\", policyDecision=\"policyDecision\", evaluationCount=\"evaluationCount\", findingCount=\"findingCount\", findingCountKnown=\"findingCountKnown\", highSeverityFindingCount=\"highSeverityFindingCount\", highSeverityCountKnown=\"highSeverityCountKnown\", consumerId=\"consumerId\", deliveryStatus=\"deliveryStatus\", deliveryOrigin=\"deliveryOrigin\", errorCategory=\"errorCategory\", sourceClassification=\"sourceClassification\", timestamp=\"timestamp\", pluginId=\"pluginId\" | __error__=\"\" | projectId=${project:json} | (runId=${run:json} or resultDigest=${resultDigest:json})",
+    "purpose": "Exact run or digest match, within project. No source snippets or secrets."
+  }
+]
