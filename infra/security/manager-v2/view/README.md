@@ -35,3 +35,12 @@ Live Validation Results 独立于 Historical Replay Results。选择三个插件
 条件允许时现有 Manager 的实际平台预检将生成 UNSUPPORTED / Policy=null / evaluationCount=0 的 Candidate，使用本地 dry-run Router；资源预算不满足时更早返回 BLOCKED，只有审计摘要，没有 Result Digest 或扫描报告。二者都不是 REAL。
 
 运行 `node infra/security/manager-v2/view/actions-verify.mjs` 验证 HTTP 安全边界和六项 BLOCKED 持久化。浏览器自动化不可用，未声明实际点击按钮或完成 UI REAL 验收。用户可以在页面点击同一安全入口查看真实阻塞原因。停止/启动命令保持不变，历史证据只读展示保持可用。
+
+
+## 本机域名入口
+
+当前已验证 <http://security.devops.local:17862>，仅本机访问，属于带端口过渡入口。没有80端口代理。`/etc/hosts` 的本轮目标行是 `127.0.0.1 security.devops.local` 与 `::1 security.devops.local`；后者用于避免 macOS .local IPv6 查询等待。服务仍只监听127.0.0.1，IPv6首选客户端需要回退IPv4。Host/Origin按精确域名和端口允许，不使用通配。原localhost地址继续可用。
+
+原始hosts备份：`/private/etc/hosts.security-v2-20261105-0724.before`；补IPv6前备份：`/private/etc/hosts.security-v2-dual-loopback-20261105.before`。回滚用 `sudoedit /etc/hosts` 仅删除上述两行，再 `sudo dscacheutil -flushcache` 与 `sudo killall -HUP mDNSResponder`；不得覆盖其他域名。启动/停止/重启仍使用上面的control.mjs命令。
+
+Gitleaks Clean仍BLOCKED：当前预算与可信Darwin二进制/适配条件未满足，域名可用不代表真实扫描完成。详细事实见本轮 `evidence/2026-11-05/security-manager-v2-gitleaks-domain/REPORT.md`。

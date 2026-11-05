@@ -3,6 +3,7 @@ import fs from 'node:fs';
 import {randomBytes,timingSafeEqual} from 'node:crypto';
 import {overview} from './data.mjs';
 import {capabilities,submit,getRun,recentRuns} from './actions.mjs';
+import {localHost,localOrigin} from './origins.mjs';
 const csrf=randomBytes(32).toString('hex');
 const instance = process.env.SECURITY_VIEW_INSTANCE ?? 'foreground';
 const assets = new Map([['/', ['index.html','text/html; charset=utf-8']], ['/app.js',['app.js','text/javascript; charset=utf-8']], ['/style.css',['style.css','text/css; charset=utf-8']]]);
@@ -11,9 +12,9 @@ const server = http.createServer(async(req,res) => {
     'Content-Security-Policy':"default-src 'none'; script-src 'self'; style-src 'self'; connect-src 'self'; img-src 'self'; frame-ancestors 'none'; base-uri 'none'; form-action 'none'",
     'Referrer-Policy':'no-referrer'};
   const send=(code,type,body)=>{res.writeHead(code,{...headers,'Content-Type':type});res.end(req.method==='HEAD'?'':body);};
-  if (!['127.0.0.1:17862','localhost:17862'].includes(req.headers.host)) return send(403,'text/plain','Local host required');
+  if (!localHost(req.headers.host)) return send(403,'text/plain','Local host required');
   if (!['GET','HEAD','POST'].includes(req.method)) return send(405,'text/plain','Method not allowed');
-  if (req.headers.origin && !['http://127.0.0.1:17862','http://localhost:17862'].includes(req.headers.origin)) return send(403,'text/plain','Origin rejected');
+  if (req.headers.origin && !localOrigin(req.headers.origin)) return send(403,'text/plain','Origin rejected');
   try {
     const url = new URL(req.url,'http://127.0.0.1:17862');
     const json=(code,v)=>send(code,'application/json',JSON.stringify(v));
