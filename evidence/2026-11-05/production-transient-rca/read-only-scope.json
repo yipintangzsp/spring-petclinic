@@ -1,0 +1,38 @@
+{
+  "classification": "SOURCE_REVIEW_AND_OBSERVED_IDENTITY_BASELINE_NOT_GLOBAL_API_AUDIT",
+  "remoteExecution": "Existing strict-host-key SSH + sudo Python source on stdin; no remote uploads/files",
+  "remotePayloadSha256": {
+    "collect-inventory.py": "3ab88f19758098600a900b35a2deb3089264a49924f8b9b99e1b66cb6bdab11b",
+    "collect-journal.py": "2c67d98555fbdfc4ed98cf52c5d30a0ac532e1c23cde1bae1921ba3852692013",
+    "collect-prometheus.py": "9b82ab85bd54a1b3aaa812226fae12b6d5f07e6febc3c605f51b2b8208e47e90",
+    "collect-prometheus-followup.py": "8382de5d4d43432614947d460578b33395287bfd97d51850c405e6f682ce903a",
+    "collect-focused-metrics.py": "c557758b64a3130b2e54d7243a7186f0c46e104a3b6832565ab51430ca3ac16b",
+    "collect-containerd.py": "1895f147d1449e87af52f84f45ab00c6ee69a74840d95860fee5eac17f8c4641",
+    "collect-runtime-logs.py": "ac413ac3cfc7ac5045130865804fe30099cf338830a1da078a132aa1bbeeee38",
+    "collect-coverage.py": "5c2073328241dd8e99da9fb0df90acf6effb3f3101b9a842440f7f5ec34c91fb"
+  },
+  "allowedReadOperations": [
+    "kubectl get --raw (objects/log subresource)",
+    "journalctl bounded time/rows",
+    "systemctl show only",
+    "read existing containerd logs bounded bytes",
+    "Prometheus GET query/series/target APIs",
+    "Loki GET query_range",
+    "ip show / ss -s / df / free / uname / uptime",
+    "existing Jenkins helper exec + read-only Groovy via scriptText POST",
+    "Mac ps metadata and bounded unified log read"
+  ],
+  "productionMutationsInitiated": 0,
+  "rolloutCountVerifiedFromEvidence": 0,
+  "releaseCount": 0,
+  "pushCount": 0,
+  "securityScans": 0,
+  "newKubernetesResources": 0,
+  "productionFixes": 0,
+  "localWrites": "Only this new RCA directory, owned temporary preflight tree and local Git metadata",
+  "limitations": [
+    "Not a full cluster API audit and not a claim about every other actor",
+    "Current ps and snapshots cannot reconstruct historical per-process resource peaks",
+    "A failed syntax-only remote attempt is retained separately and was not used as runtime evidence"
+  ]
+}

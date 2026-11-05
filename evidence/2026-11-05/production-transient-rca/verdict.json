@@ -1,0 +1,51 @@
+{
+  "verdict": {
+    "PRODUCTION_TRANSIENT_INCIDENT": "CONFIRMED",
+    "INCIDENT_TIME_WINDOW": "2026-11-05T02:13:15.085838+00:00–2026-11-05T02:30:04.125459+00:00 (evidence envelope; precise HTTP outage boundaries UNKNOWN)",
+    "PETCLINIC_0_OF_3_CAUSE": "CONFIRMED",
+    "HTTP_502_503_CAUSE": "PROBABLE",
+    "ARGOCD_ABNORMALITY_CAUSE": "CONFIRMED",
+    "NODE_RESOURCE_CORRELATION": "CONFIRMED",
+    "LOKI_CANDIDATE_TEST_CAUSALITY": "UNKNOWN",
+    "ROOT_CAUSE": "UNDETERMINED",
+    "RECOVERY_MECHANISM": "CONFIRMED",
+    "CURRENT_PRODUCTION_HEALTH": "HEALTHY",
+    "PRODUCTION_FIX_REQUIRED": "UNDETERMINED",
+    "PRODUCTION_FIX_EXECUTED": "NO",
+    "EVIDENCE_WRITE_BOUNDARY": "VERIFIED",
+    "SECURITY_MANAGER_CANDIDATE": "VERIFIED",
+    "PRODUCTION_SECURITY_MANAGER": "NOT_ACTIVE",
+    "FINAL_WIRED_CAPABILITY": "14/16",
+    "ORIGINAL_EVIDENCE_INTEGRITY": "FAILED",
+    "RELEASE_COUNT": 0,
+    "ROLLOUT_COUNT": 0
+  },
+  "decisionCategory": "C: root trigger undetermined, currently recovered; no speculative production modification",
+  "rootCauseConfidence": "UNKNOWN",
+  "confirmedFailureMechanism": "same devops node runtime/PLEG stall + probe failures -> intentional JVM restarts and delayed recreation/cache sync; unusable Service backends; repo-server restart -> Argo comparison error",
+  "contributingFactors": [
+    {
+      "status": "CONFIRMED",
+      "factor": "All three PetClinic replicas on devops"
+    },
+    {
+      "status": "CONFIRMED",
+      "factor": "High guest CPU contention and missing observability during incident"
+    },
+    {
+      "status": "PROBABLE",
+      "factor": "CPU/scheduler contention contributed to runtime/API/probe delay; initiating task/process not identified"
+    }
+  ],
+  "testCausality": {
+    "directScannerOrPipelineProductionMutation": "NOT_SUPPORTED",
+    "onsetAfterTestExecution": "NOT_SUPPORTED; runtime/probe errors precede first Node-test dispatch",
+    "sharedPhysicalHost": "CONFIRMED by QEMU UUID",
+    "indirectHostResourceContribution": "UNKNOWN; historical per-test/host CPU memory IO not captured; idle-exit messages alone do not establish pressure causality"
+  },
+  "recurrenceRisk": {
+    "status": "POSSIBLE",
+    "explanation": "Same single-node failure domain remains; initiating source unknown. Current healthy snapshot is not a stability guarantee."
+  },
+  "scope": "Read-only incident analysis; candidate verification inherited, no security tests rerun; actual PetClinic rollout count verified from generation/RS/UID/spec and Argo log evidence."
+}

@@ -1,0 +1,503 @@
+{
+  "queryWindowUtc": [
+    "2026-11-05T02:05:00Z",
+    "2026-11-05T02:45:00Z"
+  ],
+  "timezone": "Asia/Shanghai = UTC+08:00",
+  "events": [
+    {
+      "timeUtc": "2026-11-05T02:00:30.404904+00:00",
+      "timeBeijing": "2026-11-05T10:00:30.404904+08:00",
+      "rawTime": "2026-11-05T02:00:30.404904+00:00",
+      "timestampKind": "SNAPSHOT_COMPLETED_AT",
+      "event": "生产基线3/3、HTTP200、Argo Synced/Healthy",
+      "component": "baseline",
+      "evidence": "../security-manager-v2-loki/production-before.json",
+      "impact": "故障前正常",
+      "confirmation": "CONFIRMED"
+    },
+    {
+      "timeUtc": "2026-11-05T02:13:15.085838+00:00",
+      "timeBeijing": "2026-11-05T10:13:15.085838+08:00",
+      "rawTime": "2026-11-05T02:13:15.085838+00:00",
+      "timestampKind": "SOURCE_EVENT",
+      "event": "本窗口首次取得本地API /metrics timeout/abort日志",
+      "component": "devops/k3s",
+      "evidence": "journal.json",
+      "impact": "本地控制节点已有响应延迟；不是精确业务故障起点",
+      "confirmation": "CONFIRMED"
+    },
+    {
+      "timeUtc": "2026-11-05T02:13:16.164476+00:00",
+      "timeBeijing": "2026-11-05T10:13:16.164476+08:00",
+      "rawTime": "2026-11-05T10:13:16.164476203+08:00",
+      "timestampKind": "SOURCE_EVENT",
+      "event": "containerd ExecSync 超时",
+      "component": "devops/containerd",
+      "evidence": "containerd.json",
+      "impact": "运行时调用异常先于本轮Node测试",
+      "confirmation": "CONFIRMED"
+    },
+    {
+      "timeUtc": "2026-11-05T02:15:05Z",
+      "timeBeijing": "2026-11-05T10:15:05+08:00",
+      "rawTime": "2026-11-05T02:15:05Z",
+      "timestampKind": "SOURCE_EVENT",
+      "event": "Liveness probe failed: Get \"http://10.42.0.46:8080/actuator/health/liveness\": context deadline exceeded (Client.Timeout exceeded while awaiting headers)",
+      "component": "petclinic-7b9fc47976-7gqqx",
+      "evidence": "inventory.json#/events",
+      "impact": "重启或启动受阻；Event createdAt=2026-11-05T02:22:21Z 是延迟持久化时间，不是发生时刻",
+      "confirmation": "CONFIRMED"
+    },
+    {
+      "timeUtc": "2026-11-05T02:15:09Z",
+      "timeBeijing": "2026-11-05T10:15:09+08:00",
+      "rawTime": "2026-11-05T02:15:09Z",
+      "timestampKind": "SOURCE_EVENT",
+      "event": "Liveness probe failed: Get \"http://10.42.0.44:8080/actuator/health/liveness\": context deadline exceeded (Client.Timeout exceeded while awaiting headers)",
+      "component": "petclinic-7b9fc47976-v7pbv",
+      "evidence": "inventory.json#/events",
+      "impact": "重启或启动受阻；Event createdAt=2026-11-05T02:25:28Z 是延迟持久化时间，不是发生时刻",
+      "confirmation": "CONFIRMED"
+    },
+    {
+      "timeUtc": "2026-11-05T02:15:09Z",
+      "timeBeijing": "2026-11-05T10:15:09+08:00",
+      "rawTime": "2026-11-05T02:15:09Z",
+      "timestampKind": "SOURCE_EVENT",
+      "event": "Liveness probe failed: Get \"http://10.42.0.57:8080/actuator/health/liveness\": context deadline exceeded (Client.Timeout exceeded while awaiting headers)",
+      "component": "petclinic-7b9fc47976-z9q2p",
+      "evidence": "inventory.json#/events",
+      "impact": "重启或启动受阻；Event createdAt=2026-11-05T02:25:27Z 是延迟持久化时间，不是发生时刻",
+      "confirmation": "CONFIRMED"
+    },
+    {
+      "timeUtc": "2026-11-05T02:16:53.940031+00:00",
+      "timeBeijing": "2026-11-05T10:16:53.940031+08:00",
+      "rawTime": "2026-11-05T02:16:53.940031+00:00",
+      "timestampKind": "APPROXIMATE_FROM_DURATION_NOT_AUTHORITATIVE_START",
+      "event": "Node测试 attempt1 约开始",
+      "component": "Darwin/macOS",
+      "evidence": "local-execution.json",
+      "impact": "Mock测试；开始时间由duration/mtime估算",
+      "confirmation": "PROBABLE"
+    },
+    {
+      "timeUtc": "2026-11-05T02:16:58.962721+00:00",
+      "timeBeijing": "2026-11-05T10:16:58.962721+08:00",
+      "rawTime": "2026-11-05T02:16:58.962721+00:00",
+      "timestampKind": "FILE_WRITE_AFTER_PROCESS_EXIT",
+      "event": "Node测试 attempt1 TAP写入完成",
+      "component": "Darwin/macOS",
+      "evidence": "local-execution.json",
+      "impact": "进程已退出，文件写入时刻不是精确退出时刻",
+      "confirmation": "CONFIRMED"
+    },
+    {
+      "timeUtc": "2026-11-05T02:18:03Z",
+      "timeBeijing": "2026-11-05T10:18:03+08:00",
+      "rawTime": "2026-11-05T02:18:03Z",
+      "timestampKind": "SOURCE_EVENT",
+      "event": "Container petclinic failed liveness probe, will be restarted",
+      "component": "petclinic-7b9fc47976-7gqqx",
+      "evidence": "inventory.json#/events",
+      "impact": "重启或启动受阻；Event createdAt=2026-11-05T02:27:52Z 是延迟持久化时间，不是发生时刻",
+      "confirmation": "CONFIRMED"
+    },
+    {
+      "timeUtc": "2026-11-05T02:18:03Z",
+      "timeBeijing": "2026-11-05T10:18:03+08:00",
+      "rawTime": "2026-11-05T02:18:03Z",
+      "timestampKind": "SOURCE_EVENT",
+      "event": "Container petclinic failed liveness probe, will be restarted",
+      "component": "petclinic-7b9fc47976-v7pbv",
+      "evidence": "inventory.json#/events",
+      "impact": "重启或启动受阻；Event createdAt=2026-11-05T02:27:51Z 是延迟持久化时间，不是发生时刻",
+      "confirmation": "CONFIRMED"
+    },
+    {
+      "timeUtc": "2026-11-05T02:18:03Z",
+      "timeBeijing": "2026-11-05T10:18:03+08:00",
+      "rawTime": "2026-11-05T02:18:03Z",
+      "timestampKind": "SOURCE_EVENT",
+      "event": "Container petclinic failed liveness probe, will be restarted",
+      "component": "petclinic-7b9fc47976-z9q2p",
+      "evidence": "inventory.json#/events",
+      "impact": "重启或启动受阻；Event createdAt=2026-11-05T02:27:52Z 是延迟持久化时间，不是发生时刻",
+      "confirmation": "CONFIRMED"
+    },
+    {
+      "timeUtc": "2026-11-05T02:18:29Z",
+      "timeBeijing": "2026-11-05T10:18:29+08:00",
+      "rawTime": "2026-11-05T02:18:29Z",
+      "timestampKind": "SOURCE_EVENT",
+      "event": "三个旧JVM lastState均退出143",
+      "component": "PetClinic on devops",
+      "evidence": "inventory.json#/pods",
+      "impact": "kubelet liveness重启，未见OOMKilled，不是Pod删除",
+      "confirmation": "CONFIRMED"
+    },
+    {
+      "timeUtc": "2026-11-05T02:18:47Z",
+      "timeBeijing": "2026-11-05T10:18:47+08:00",
+      "rawTime": "2026-11-05T02:18:47Z",
+      "timestampKind": "SOURCE_EVENT",
+      "event": "Error: failed to sync configmap cache: timed out waiting for the condition",
+      "component": "petclinic-7b9fc47976-z9q2p",
+      "evidence": "inventory.json#/events",
+      "impact": "重启或启动受阻；Event createdAt=2026-11-05T02:27:55Z 是延迟持久化时间，不是发生时刻",
+      "confirmation": "CONFIRMED"
+    },
+    {
+      "timeUtc": "2026-11-05T02:18:48Z",
+      "timeBeijing": "2026-11-05T10:18:48+08:00",
+      "rawTime": "2026-11-05T02:18:48Z",
+      "timestampKind": "SOURCE_EVENT",
+      "event": "Error: failed to sync configmap cache: timed out waiting for the condition",
+      "component": "petclinic-7b9fc47976-7gqqx",
+      "evidence": "inventory.json#/events",
+      "impact": "重启或启动受阻；Event createdAt=2026-11-05T02:27:55Z 是延迟持久化时间，不是发生时刻",
+      "confirmation": "CONFIRMED"
+    },
+    {
+      "timeUtc": "2026-11-05T02:18:48Z",
+      "timeBeijing": "2026-11-05T10:18:48+08:00",
+      "rawTime": "2026-11-05T02:18:48Z",
+      "timestampKind": "SOURCE_EVENT",
+      "event": "Error: failed to sync configmap cache: timed out waiting for the condition",
+      "component": "petclinic-7b9fc47976-v7pbv",
+      "evidence": "inventory.json#/events",
+      "impact": "重启或启动受阻；Event createdAt=2026-11-05T02:27:55Z 是延迟持久化时间，不是发生时刻",
+      "confirmation": "CONFIRMED"
+    },
+    {
+      "timeUtc": "2026-11-05T02:19:14.393501+00:00",
+      "timeBeijing": "2026-11-05T10:19:14.393501+08:00",
+      "rawTime": "2026-11-05T02:19:14.393501+00:00",
+      "timestampKind": "APPROXIMATE_FROM_DURATION_NOT_AUTHORITATIVE_START",
+      "event": "Node测试 attempt2 约开始",
+      "component": "Darwin/macOS",
+      "evidence": "local-execution.json",
+      "impact": "Mock测试；开始时间由duration/mtime估算",
+      "confirmation": "PROBABLE"
+    },
+    {
+      "timeUtc": "2026-11-05T02:19:51.926666+00:00",
+      "timeBeijing": "2026-11-05T10:19:51.926666+08:00",
+      "rawTime": "2026-11-05T02:19:51.926666+00:00",
+      "timestampKind": "FILE_WRITE_AFTER_PROCESS_EXIT",
+      "event": "Node测试 attempt2 TAP写入完成",
+      "component": "Darwin/macOS",
+      "evidence": "local-execution.json",
+      "impact": "进程已退出，文件写入时刻不是精确退出时刻",
+      "confirmation": "CONFIRMED"
+    },
+    {
+      "timeUtc": "2026-11-05T02:20:34.447898+00:00",
+      "timeBeijing": "2026-11-05T10:20:34.447898+08:00",
+      "rawTime": "2026-11-05T02:20:34.447898+00:00",
+      "timestampKind": "SOURCE_EVENT",
+      "event": "Node Ready=false，PLEG超过3分钟阈值",
+      "component": "devops/kubelet",
+      "evidence": "journal.json#/queries/1/rows/1836",
+      "impact": "同一节点3副本共享故障域",
+      "confirmation": "CONFIRMED"
+    },
+    {
+      "timeUtc": "2026-11-05T02:21:16.232589+00:00",
+      "timeBeijing": "2026-11-05T10:21:16.232589+08:00",
+      "rawTime": "2026-11-05T02:21:16.232589+00:00",
+      "timestampKind": "APPROXIMATE_FROM_DURATION_NOT_AUTHORITATIVE_START",
+      "event": "Node测试 attempt3 约开始",
+      "component": "Darwin/macOS",
+      "evidence": "local-execution.json",
+      "impact": "Mock测试；开始时间由duration/mtime估算",
+      "confirmation": "PROBABLE"
+    },
+    {
+      "timeUtc": "2026-11-05T02:21:22.519571+00:00",
+      "timeBeijing": "2026-11-05T10:21:22.519571+08:00",
+      "rawTime": "2026-11-05T02:21:22.519571+00:00",
+      "timestampKind": "FILE_WRITE_AFTER_PROCESS_EXIT",
+      "event": "Node测试 attempt3 TAP写入完成",
+      "component": "Darwin/macOS",
+      "evidence": "local-execution.json",
+      "impact": "进程已退出，文件写入时刻不是精确退出时刻",
+      "confirmation": "CONFIRMED"
+    },
+    {
+      "timeUtc": "2026-11-05T02:22:00+00:00",
+      "timeBeijing": "2026-11-05T10:22:00+08:00",
+      "rawTime": "2026-11-05T02:22:00+00:00",
+      "timestampKind": "PROMETHEUS_EVALUATION_TIME",
+      "event": "EndpointSlice已观测条件 {'true': 2, 'false': 1}",
+      "component": "Service discovery",
+      "evidence": "prometheus-followup.json#/queries/0",
+      "impact": "地址保留，Ready后端变化；非精确转换时刻",
+      "confirmation": "CONFIRMED"
+    },
+    {
+      "timeUtc": "2026-11-05T02:22:56.013Z",
+      "timeBeijing": "2026-11-05T10:22:56.013000+08:00",
+      "rawTime": "2026-11-05T02:22:56.013Z",
+      "timestampKind": "TOOL_ERROR_OBSERVATION_UPPER_BOUND",
+      "event": "已观察到HTTP502；实际请求在02:21:31.756Z至本时刻之间",
+      "component": "business HTTP",
+      "evidence": "http502-tool-observation.json",
+      "impact": "精确请求时刻缺失",
+      "confirmation": "CONFIRMED"
+    },
+    {
+      "timeUtc": "2026-11-05T02:23:29Z",
+      "timeBeijing": "2026-11-05T10:23:29+08:00",
+      "rawTime": "2026-11-05T02:23:29Z",
+      "timestampKind": "SOURCE_EVENT",
+      "event": "Error: failed to sync secret cache: timed out waiting for the condition",
+      "component": "petclinic-7b9fc47976-z9q2p",
+      "evidence": "inventory.json#/events",
+      "impact": "重启或启动受阻；Event createdAt=2026-11-05T02:27:58Z 是延迟持久化时间，不是发生时刻",
+      "confirmation": "CONFIRMED"
+    },
+    {
+      "timeUtc": "2026-11-05T02:24:31.286450+00:00",
+      "timeBeijing": "2026-11-05T10:24:31.286450+08:00",
+      "rawTime": "2026-11-05T02:24:31.286450+00:00",
+      "timestampKind": "APPROXIMATE_FROM_DURATION_NOT_AUTHORITATIVE_START",
+      "event": "Node测试 attempt4 约开始",
+      "component": "Darwin/macOS",
+      "evidence": "local-execution.json",
+      "impact": "Mock测试；开始时间由duration/mtime估算",
+      "confirmation": "PROBABLE"
+    },
+    {
+      "timeUtc": "2026-11-05T02:25:01.391735+00:00",
+      "timeBeijing": "2026-11-05T10:25:01.391735+08:00",
+      "rawTime": "2026-11-05T02:25:01.391735+00:00",
+      "timestampKind": "SOURCE_EVENT",
+      "event": "Node Ready=false，PLEG超过3分钟阈值",
+      "component": "devops/kubelet",
+      "evidence": "journal.json#/queries/1/rows/462",
+      "impact": "同一节点3副本共享故障域",
+      "confirmation": "CONFIRMED"
+    },
+    {
+      "timeUtc": "2026-11-05T02:25:11.237652+00:00",
+      "timeBeijing": "2026-11-05T10:25:11.237652+08:00",
+      "rawTime": "2026-11-05T02:25:11.237652+00:00",
+      "timestampKind": "FILE_WRITE_AFTER_PROCESS_EXIT",
+      "event": "Node测试 attempt4 TAP写入完成",
+      "component": "Darwin/macOS",
+      "evidence": "local-execution.json",
+      "impact": "进程已退出，文件写入时刻不是精确退出时刻",
+      "confirmation": "CONFIRMED"
+    },
+    {
+      "timeUtc": "2026-11-05T02:25:42Z",
+      "timeBeijing": "2026-11-05T10:25:42+08:00",
+      "rawTime": "2026-11-05T02:25:42Z",
+      "timestampKind": "SOURCE_EVENT",
+      "event": "同UID新容器启动",
+      "component": "petclinic-7b9fc47976-v7pbv",
+      "evidence": "inventory.json#/pods",
+      "impact": "kubelet自动重建容器",
+      "confirmation": "CONFIRMED"
+    },
+    {
+      "timeUtc": "2026-11-05T02:25:55Z",
+      "timeBeijing": "2026-11-05T10:25:55+08:00",
+      "rawTime": "2026-11-05T02:25:55Z",
+      "timestampKind": "SOURCE_EVENT",
+      "event": "同UID新容器启动",
+      "component": "petclinic-7b9fc47976-7gqqx",
+      "evidence": "inventory.json#/pods",
+      "impact": "kubelet自动重建容器",
+      "confirmation": "CONFIRMED"
+    },
+    {
+      "timeUtc": "2026-11-05T02:26:00+00:00",
+      "timeBeijing": "2026-11-05T10:26:00+08:00",
+      "rawTime": "2026-11-05T02:26:00+00:00",
+      "timestampKind": "PROMETHEUS_EVALUATION_TIME",
+      "event": "EndpointSlice已观测条件 {'false': 2, 'true': 1}",
+      "component": "Service discovery",
+      "evidence": "prometheus-followup.json#/queries/0",
+      "impact": "地址保留，Ready后端变化；非精确转换时刻",
+      "confirmation": "CONFIRMED"
+    },
+    {
+      "timeUtc": "2026-11-05T02:26:08Z",
+      "timeBeijing": "2026-11-05T10:26:08+08:00",
+      "rawTime": "2026-11-05T02:26:08Z",
+      "timestampKind": "SOURCE_EVENT",
+      "event": "同UID新容器启动",
+      "component": "petclinic-7b9fc47976-z9q2p",
+      "evidence": "inventory.json#/pods",
+      "impact": "kubelet自动重建容器",
+      "confirmation": "CONFIRMED"
+    },
+    {
+      "timeUtc": "2026-11-05T02:26:30+00:00",
+      "timeBeijing": "2026-11-05T10:26:30+08:00",
+      "rawTime": "2026-11-05T02:26:30+00:00",
+      "timestampKind": "PROMETHEUS_EVALUATION_TIME",
+      "event": "EndpointSlice已观测条件 {'false': 3}",
+      "component": "Service discovery",
+      "evidence": "prometheus-followup.json#/queries/0",
+      "impact": "地址保留，Ready后端变化；非精确转换时刻",
+      "confirmation": "CONFIRMED"
+    },
+    {
+      "timeUtc": "2026-11-05T02:27:35.066186+00:00",
+      "timeBeijing": "2026-11-05T10:27:35.066186+08:00",
+      "rawTime": "2026-11-05T02:27:35.066186+00:00",
+      "timestampKind": "ARTIFACT_WRITE_UPPER_BOUND",
+      "event": "503和Deployment 0/3已观察；实际GET在02:27:18.975195Z之后、本时刻之前",
+      "component": "business HTTP / API",
+      "evidence": "../security-manager-v2-loki/health-followup.json",
+      "impact": "不能把文件写入时间当503精确起点",
+      "confirmation": "CONFIRMED"
+    },
+    {
+      "timeUtc": "2026-11-05T02:27:44.052467+00:00",
+      "timeBeijing": "2026-11-05T10:27:44.052467+08:00",
+      "rawTime": "2026-11-05T02:27:44.052467+00:00",
+      "timestampKind": "APPROXIMATE_FROM_DURATION_NOT_AUTHORITATIVE_START",
+      "event": "Node测试 attempt5 约开始",
+      "component": "Darwin/macOS",
+      "evidence": "local-execution.json",
+      "impact": "Mock测试；开始时间由duration/mtime估算",
+      "confirmation": "PROBABLE"
+    },
+    {
+      "timeUtc": "2026-11-05T02:28:02Z",
+      "timeBeijing": "2026-11-05T10:28:02+08:00",
+      "rawTime": "2026-11-05T02:28:02Z",
+      "timestampKind": "SOURCE_EVENT",
+      "event": "Pod Ready恢复",
+      "component": "petclinic-7b9fc47976-v7pbv",
+      "evidence": "inventory.json#/pods",
+      "impact": "容器启动与探针恢复，不是新版本发布",
+      "confirmation": "CONFIRMED"
+    },
+    {
+      "timeUtc": "2026-11-05T02:28:03Z",
+      "timeBeijing": "2026-11-05T10:28:03+08:00",
+      "rawTime": "2026-11-05T02:28:03Z",
+      "timestampKind": "SOURCE_EVENT",
+      "event": "Pod Ready恢复",
+      "component": "petclinic-7b9fc47976-7gqqx",
+      "evidence": "inventory.json#/pods",
+      "impact": "容器启动与探针恢复，不是新版本发布",
+      "confirmation": "CONFIRMED"
+    },
+    {
+      "timeUtc": "2026-11-05T02:28:07.284960+00:00",
+      "timeBeijing": "2026-11-05T10:28:07.284960+08:00",
+      "rawTime": "2026-11-05T02:28:07.284960+00:00",
+      "timestampKind": "FILE_WRITE_AFTER_PROCESS_EXIT",
+      "event": "Node测试 attempt5 TAP写入完成",
+      "component": "Darwin/macOS",
+      "evidence": "local-execution.json",
+      "impact": "进程已退出，文件写入时刻不是精确退出时刻",
+      "confirmation": "CONFIRMED"
+    },
+    {
+      "timeUtc": "2026-11-05T02:28:10Z",
+      "timeBeijing": "2026-11-05T10:28:10+08:00",
+      "rawTime": "2026-11-05T02:28:10Z",
+      "timestampKind": "SOURCE_EVENT",
+      "event": "Pod Ready恢复",
+      "component": "petclinic-7b9fc47976-z9q2p",
+      "evidence": "inventory.json#/pods",
+      "impact": "容器启动与探针恢复，不是新版本发布",
+      "confirmation": "CONFIRMED"
+    },
+    {
+      "timeUtc": "2026-11-05T02:28:30+00:00",
+      "timeBeijing": "2026-11-05T10:28:30+08:00",
+      "rawTime": "2026-11-05T02:28:30+00:00",
+      "timestampKind": "PROMETHEUS_EVALUATION_TIME",
+      "event": "EndpointSlice已观测条件 {'true': 1, 'false': 2}",
+      "component": "Service discovery",
+      "evidence": "prometheus-followup.json#/queries/0",
+      "impact": "地址保留，Ready后端变化；非精确转换时刻",
+      "confirmation": "CONFIRMED"
+    },
+    {
+      "timeUtc": "2026-11-05T02:29:00+00:00",
+      "timeBeijing": "2026-11-05T10:29:00+08:00",
+      "rawTime": "2026-11-05T02:29:00+00:00",
+      "timestampKind": "PROMETHEUS_EVALUATION_TIME",
+      "event": "EndpointSlice已观测条件 {'true': 3}",
+      "component": "Service discovery",
+      "evidence": "prometheus-followup.json#/queries/0",
+      "impact": "地址保留，Ready后端变化；非精确转换时刻",
+      "confirmation": "CONFIRMED"
+    },
+    {
+      "timeUtc": "2026-11-05T02:30:04.125459+00:00",
+      "timeBeijing": "2026-11-05T10:30:04.125459+08:00",
+      "rawTime": "2026-11-05T02:30:04.125459+00:00",
+      "timestampKind": "SNAPSHOT_COMPLETED_AT",
+      "event": "3/3、HTTP200、Argo Synced/Healthy已复核",
+      "component": "baseline",
+      "evidence": "../security-manager-v2-loki/production-final.json",
+      "impact": "业务恢复已观察；非精确首次200时间",
+      "confirmation": "CONFIRMED"
+    },
+    {
+      "timeUtc": "2026-11-05T10:23:21.160989185+08:00",
+      "timeBeijing": "2026-11-05T10:23:21.160989+08:00",
+      "rawTime": "2026-11-05T02:23:21Z",
+      "timestampKind": "SOURCE_EVENT",
+      "event": "Updated sync status: Synced -> Unknown",
+      "component": "Argo petclinic",
+      "evidence": "runtime-logs.json#/podLogs/0/windowLines/722",
+      "impact": "状态/健康观测变化；无实际rollout",
+      "confirmation": "CONFIRMED"
+    },
+    {
+      "timeUtc": "2026-11-05T10:23:24.481090979+08:00",
+      "timeBeijing": "2026-11-05T10:23:24.481090+08:00",
+      "rawTime": "2026-11-05T02:23:24Z",
+      "timestampKind": "SOURCE_EVENT",
+      "event": "Updated health status: Healthy -> Progressing",
+      "component": "Argo petclinic",
+      "evidence": "runtime-logs.json#/podLogs/0/windowLines/727",
+      "impact": "状态/健康观测变化；无实际rollout",
+      "confirmation": "CONFIRMED"
+    },
+    {
+      "timeUtc": "2026-11-05T10:28:20.908210694+08:00",
+      "timeBeijing": "2026-11-05T10:28:20.908210+08:00",
+      "rawTime": "2026-11-05T02:28:20Z",
+      "timestampKind": "SOURCE_EVENT",
+      "event": "Updated sync status: Unknown -> Synced",
+      "component": "Argo petclinic",
+      "evidence": "runtime-logs.json#/podLogs/0/windowLines/1272",
+      "impact": "状态/健康观测变化；无实际rollout",
+      "confirmation": "CONFIRMED"
+    },
+    {
+      "timeUtc": "2026-11-05T10:28:20.980000232+08:00",
+      "timeBeijing": "2026-11-05T10:28:20.980000+08:00",
+      "rawTime": "2026-11-05T02:28:20Z",
+      "timestampKind": "SOURCE_EVENT",
+      "event": "Updated health status: Progressing -> Healthy",
+      "component": "Argo petclinic",
+      "evidence": "runtime-logs.json#/podLogs/0/windowLines/1273",
+      "impact": "状态/健康观测变化；无实际rollout",
+      "confirmation": "CONFIRMED"
+    }
+  ],
+  "preciseHttpOutageStartEnd": "UNKNOWN",
+  "first502ObservationIntervalUtc": [
+    "2026-11-05T02:21:31.756Z",
+    "2026-11-05T02:22:56.013Z"
+  ],
+  "first503ObservationIntervalUtc": [
+    "2026-11-05T02:27:18.975195Z",
+    "2026-11-05T02:27:35.066186Z"
+  ],
+  "causalityWarning": "Time overlap is not causality; sources preserve native timestamp, persistence, collection and evaluation distinctions."
+}
