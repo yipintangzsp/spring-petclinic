@@ -1,0 +1,891 @@
+{
+  "classification": "OFFLINE_MEASURED_DARWIN_NATIVE_AND_SYNTHETIC_LINUX_PROC",
+  "environment": {
+    "system": "Darwin",
+    "release": "27.2.0",
+    "machine": "arm64",
+    "cpuCount": 10,
+    "uid": 501,
+    "isRoot": false,
+    "python": "3.13.13",
+    "sandbox": "deny network; only disposable tree writable",
+    "sharedHostCaution": "macOS also hosts devops VM; no workload stress, native reads only, two bounded workers maximum"
+  },
+  "finalTests": {
+    "total": 43,
+    "pass": 42,
+    "fail": 0,
+    "error": 0,
+    "skip": [
+      {
+        "test": "test_native_linux_proc (__main__.Tests.test_native_linux_proc)",
+        "reason": "Non-production native Linux environment not available; fixture is not Linux native"
+      }
+    ]
+  },
+  "totalTestWallSeconds": 5.9473475409904495,
+  "guestFixture": {
+    "cpuSeconds": {
+      "n": 12,
+      "min": 0.038748,
+      "median": 0.044961499999999995,
+      "p95NearestRank": 0.047599,
+      "max": 0.047599
+    },
+    "maxRssBytes": {
+      "n": 12,
+      "min": 20447232,
+      "median": 20660224.0,
+      "p95NearestRank": 21004288,
+      "max": 21004288
+    },
+    "stdoutBytes": {
+      "n": 12,
+      "min": 2497,
+      "median": 2521.0,
+      "p95NearestRank": 2524,
+      "max": 2524
+    },
+    "wallSeconds": {
+      "n": 12,
+      "min": 0.25442075001774356,
+      "median": 0.262137937505031,
+      "p95NearestRank": 0.2678391250083223,
+      "max": 0.2678391250083223
+    },
+    "spawnWallSeconds": {
+      "n": 12,
+      "min": 0.0017698329756967723,
+      "median": 0.0020364164956845343,
+      "p95NearestRank": 0.0022544589592143893,
+      "max": 0.0022544589592143893
+    }
+  },
+  "hostNativeSelfPid": {
+    "cpuSeconds": {
+      "n": 6,
+      "min": 0.04151,
+      "median": 0.045669,
+      "p95NearestRank": 0.050573999999999994,
+      "max": 0.050573999999999994
+    },
+    "maxRssBytes": {
+      "n": 6,
+      "min": 20594688,
+      "median": 20807680.0,
+      "p95NearestRank": 21020672,
+      "max": 21020672
+    },
+    "stdoutBytes": {
+      "n": 6,
+      "min": 2603,
+      "median": 2645.0,
+      "p95NearestRank": 2659,
+      "max": 2659
+    },
+    "wallSeconds": {
+      "n": 6,
+      "min": 0.25990479200845584,
+      "median": 0.2635949370160233,
+      "p95NearestRank": 0.27424637496005744,
+      "max": 0.27424637496005744
+    },
+    "spawnWallSeconds": {
+      "n": 6,
+      "min": 0.00146341702202335,
+      "median": 0.0022149790020193905,
+      "p95NearestRank": 0.0038096660282462835,
+      "max": 0.0038096660282462835
+    }
+  },
+  "expectedFailures": {
+    "cpuSeconds": {
+      "n": 16,
+      "min": 0.016005,
+      "median": 0.020277,
+      "p95NearestRank": 0.05057099999999999,
+      "max": 0.05057099999999999
+    },
+    "maxRssBytes": {
+      "n": 16,
+      "min": 13516800,
+      "median": 14278656.0,
+      "p95NearestRank": 20955136,
+      "max": 20955136
+    },
+    "stdoutBytes": {
+      "n": 16,
+      "min": 0,
+      "median": 0.0,
+      "p95NearestRank": 1024,
+      "max": 1024
+    },
+    "wallSeconds": {
+      "n": 16,
+      "min": 0.03125087497755885,
+      "median": 0.038125646009575576,
+      "p95NearestRank": 2.5755288749933243,
+      "max": 2.5755288749933243
+    },
+    "spawnWallSeconds": {
+      "n": 16,
+      "min": 0.0015695830225013196,
+      "median": 0.0022937289904803038,
+      "p95NearestRank": 0.006747584033291787,
+      "max": 0.006747584033291787
+    }
+  },
+  "supervisorCpuSeconds": {
+    "n": 18,
+    "min": 0.003122999999999987,
+    "median": 0.004174499999999998,
+    "p95NearestRank": 0.02310999999999999,
+    "max": 0.02310999999999999
+  },
+  "allMeasuredLocalWorkersReaped": true,
+  "collectorExternalCommandsPerSample": 0,
+  "localSupervisorChildrenPerPair": 2,
+  "guestNativeLinux": "NOT_TESTED",
+  "productionOverhead": "NOT_TESTED",
+  "realSshTimeoutOrUnreachable": "NOT_TESTED; local exit255/timeouts exercise supervisor contract only",
+  "rows": [
+    {
+      "case": "test_cli_wall_timeout",
+      "side": "host",
+      "result": "FAIL",
+      "failure": "WORKER_NONZERO",
+      "cpuSeconds": 0.05057099999999999,
+      "maxRssBytes": 20955136,
+      "stdoutBytes": 886,
+      "stderrBytes": 0,
+      "wallSeconds": 2.5755288749933243,
+      "spawnWallSeconds": 0.004007750016171485,
+      "reaped": true,
+      "exit": 21,
+      "collectorMeasurement": {
+        "wallSeconds": 2.501865041,
+        "collectorCpuDeltaSeconds": 0.000562,
+        "processLifetimeCpuSeconds": 0.041564,
+        "maxRssBytes": 20955136,
+        "pidCap": 8,
+        "fileReadCapBytes": 16384,
+        "outputCapBytes": 32768
+      }
+    },
+    {
+      "case": "test_cli_wall_timeout",
+      "side": "guest",
+      "result": "FAIL",
+      "failure": "WORKER_NONZERO",
+      "cpuSeconds": 0.050384,
+      "maxRssBytes": 20905984,
+      "stdoutBytes": 898,
+      "stderrBytes": 0,
+      "wallSeconds": 2.5715407500392757,
+      "spawnWallSeconds": 0.006747584033291787,
+      "reaped": true,
+      "exit": -15,
+      "collectorMeasurement": {
+        "wallSeconds": 2.503171875,
+        "collectorCpuDeltaSeconds": 0.002375999999999996,
+        "processLifetimeCpuSeconds": 0.042384,
+        "maxRssBytes": 20905984,
+        "pidCap": 8,
+        "fileReadCapBytes": 16384,
+        "outputCapBytes": 32768
+      }
+    },
+    {
+      "case": "test_host_failure_cancels_peer",
+      "side": "host",
+      "result": "FAIL",
+      "failure": "WORKER_NONZERO",
+      "cpuSeconds": 0.019184,
+      "maxRssBytes": 14286848,
+      "stdoutBytes": 0,
+      "stderrBytes": 0,
+      "wallSeconds": 0.03334058297332376,
+      "spawnWallSeconds": 0.002086249995045364,
+      "reaped": true,
+      "exit": 7,
+      "collectorMeasurement": null
+    },
+    {
+      "case": "test_host_failure_cancels_peer",
+      "side": "guest",
+      "result": "FAIL",
+      "failure": "WORKER_NONZERO",
+      "cpuSeconds": 0.016005,
+      "maxRssBytes": 14123008,
+      "stdoutBytes": 0,
+      "stderrBytes": 0,
+      "wallSeconds": 0.03125087497755885,
+      "spawnWallSeconds": 0.0017400829819962382,
+      "reaped": true,
+      "exit": -15,
+      "collectorMeasurement": null
+    },
+    {
+      "case": "cli-guest",
+      "side": "host",
+      "result": "PASS",
+      "failure": null,
+      "cpuSeconds": 0.04554299999999999,
+      "maxRssBytes": 20692992,
+      "stdoutBytes": 2512,
+      "stderrBytes": 0,
+      "wallSeconds": 0.2678391250083223,
+      "spawnWallSeconds": 0.0022544589592143893,
+      "reaped": true,
+      "exit": 0,
+      "collectorMeasurement": {
+        "wallSeconds": 0.208016208,
+        "collectorCpuDeltaSeconds": 0.0025289999999999965,
+        "processLifetimeCpuSeconds": 0.041191,
+        "maxRssBytes": 20660224,
+        "pidCap": 8,
+        "fileReadCapBytes": 16384,
+        "outputCapBytes": 32768
+      }
+    },
+    {
+      "case": "cli-guest",
+      "side": "guest",
+      "result": "PASS",
+      "failure": null,
+      "cpuSeconds": 0.047599,
+      "maxRssBytes": 20529152,
+      "stdoutBytes": 2524,
+      "stderrBytes": 0,
+      "wallSeconds": 0.265574041986838,
+      "spawnWallSeconds": 0.0017698329756967723,
+      "reaped": true,
+      "exit": 0,
+      "collectorMeasurement": {
+        "wallSeconds": 0.203618542,
+        "collectorCpuDeltaSeconds": 0.0031839999999999993,
+        "processLifetimeCpuSeconds": 0.041416999999999995,
+        "maxRssBytes": 20512768,
+        "pidCap": 8,
+        "fileReadCapBytes": 16384,
+        "outputCapBytes": 32768
+      }
+    },
+    {
+      "case": "cli-guest",
+      "side": "host",
+      "result": "PASS",
+      "failure": null,
+      "cpuSeconds": 0.045566999999999996,
+      "maxRssBytes": 20791296,
+      "stdoutBytes": 2523,
+      "stderrBytes": 0,
+      "wallSeconds": 0.26472841697977856,
+      "spawnWallSeconds": 0.002231708960607648,
+      "reaped": true,
+      "exit": 0,
+      "collectorMeasurement": {
+        "wallSeconds": 0.205982084,
+        "collectorCpuDeltaSeconds": 0.003245999999999999,
+        "processLifetimeCpuSeconds": 0.040694999999999995,
+        "maxRssBytes": 20758528,
+        "pidCap": 8,
+        "fileReadCapBytes": 16384,
+        "outputCapBytes": 32768
+      }
+    },
+    {
+      "case": "cli-guest",
+      "side": "guest",
+      "result": "PASS",
+      "failure": null,
+      "cpuSeconds": 0.042025,
+      "maxRssBytes": 20840448,
+      "stdoutBytes": 2512,
+      "stderrBytes": 0,
+      "wallSeconds": 0.2624755830038339,
+      "spawnWallSeconds": 0.0021620000479742885,
+      "reaped": true,
+      "exit": 0,
+      "collectorMeasurement": {
+        "wallSeconds": 0.208240458,
+        "collectorCpuDeltaSeconds": 0.0025500000000000037,
+        "processLifetimeCpuSeconds": 0.038535,
+        "maxRssBytes": 20824064,
+        "pidCap": 8,
+        "fileReadCapBytes": 16384,
+        "outputCapBytes": 32768
+      }
+    },
+    {
+      "case": "cli-guest",
+      "side": "host",
+      "result": "PASS",
+      "failure": null,
+      "cpuSeconds": 0.045981999999999995,
+      "maxRssBytes": 20627456,
+      "stdoutBytes": 2497,
+      "stderrBytes": 0,
+      "wallSeconds": 0.2564465419854969,
+      "spawnWallSeconds": 0.00199087499640882,
+      "reaped": true,
+      "exit": 0,
+      "collectorMeasurement": {
+        "wallSeconds": 0.211225041,
+        "collectorCpuDeltaSeconds": 0.003171,
+        "processLifetimeCpuSeconds": 0.04035,
+        "maxRssBytes": 20627456,
+        "pidCap": 8,
+        "fileReadCapBytes": 16384,
+        "outputCapBytes": 32768
+      }
+    },
+    {
+      "case": "cli-guest",
+      "side": "guest",
+      "result": "PASS",
+      "failure": null,
+      "cpuSeconds": 0.045487999999999994,
+      "maxRssBytes": 20873216,
+      "stdoutBytes": 2520,
+      "stderrBytes": 0,
+      "wallSeconds": 0.25442075001774356,
+      "spawnWallSeconds": 0.0018881660071201622,
+      "reaped": true,
+      "exit": 0,
+      "collectorMeasurement": {
+        "wallSeconds": 0.209842,
+        "collectorCpuDeltaSeconds": 0.003819999999999997,
+        "processLifetimeCpuSeconds": 0.039764999999999995,
+        "maxRssBytes": 20840448,
+        "pidCap": 8,
+        "fileReadCapBytes": 16384,
+        "outputCapBytes": 32768
+      }
+    },
+    {
+      "case": "cli-guest",
+      "side": "host",
+      "result": "PASS",
+      "failure": null,
+      "cpuSeconds": 0.043035,
+      "maxRssBytes": 20447232,
+      "stdoutBytes": 2523,
+      "stderrBytes": 0,
+      "wallSeconds": 0.2618002920062281,
+      "spawnWallSeconds": 0.0020819579949602485,
+      "reaped": true,
+      "exit": 0,
+      "collectorMeasurement": {
+        "wallSeconds": 0.203524958,
+        "collectorCpuDeltaSeconds": 0.002577999999999997,
+        "processLifetimeCpuSeconds": 0.037834999999999994,
+        "maxRssBytes": 20398080,
+        "pidCap": 8,
+        "fileReadCapBytes": 16384,
+        "outputCapBytes": 32768
+      }
+    },
+    {
+      "case": "cli-guest",
+      "side": "guest",
+      "result": "PASS",
+      "failure": null,
+      "cpuSeconds": 0.040306999999999996,
+      "maxRssBytes": 20561920,
+      "stdoutBytes": 2522,
+      "stderrBytes": 0,
+      "wallSeconds": 0.2596905410173349,
+      "spawnWallSeconds": 0.001775125041604042,
+      "reaped": true,
+      "exit": 0,
+      "collectorMeasurement": {
+        "wallSeconds": 0.204173125,
+        "collectorCpuDeltaSeconds": 0.002252999999999998,
+        "processLifetimeCpuSeconds": 0.035783999999999996,
+        "maxRssBytes": 20529152,
+        "pidCap": 8,
+        "fileReadCapBytes": 16384,
+        "outputCapBytes": 32768
+      }
+    },
+    {
+      "case": "cli-guest",
+      "side": "host",
+      "result": "PASS",
+      "failure": null,
+      "cpuSeconds": 0.039914,
+      "maxRssBytes": 20627456,
+      "stdoutBytes": 2523,
+      "stderrBytes": 0,
+      "wallSeconds": 0.25811595894629136,
+      "spawnWallSeconds": 0.0020877919741906226,
+      "reaped": true,
+      "exit": 0,
+      "collectorMeasurement": {
+        "wallSeconds": 0.206556792,
+        "collectorCpuDeltaSeconds": 0.001566999999999999,
+        "processLifetimeCpuSeconds": 0.035234999999999995,
+        "maxRssBytes": 20594688,
+        "pidCap": 8,
+        "fileReadCapBytes": 16384,
+        "outputCapBytes": 32768
+      }
+    },
+    {
+      "case": "cli-guest",
+      "side": "guest",
+      "result": "PASS",
+      "failure": null,
+      "cpuSeconds": 0.038748,
+      "maxRssBytes": 20791296,
+      "stdoutBytes": 2512,
+      "stderrBytes": 0,
+      "wallSeconds": 0.2559953749878332,
+      "spawnWallSeconds": 0.0019451669650152326,
+      "reaped": true,
+      "exit": 0,
+      "collectorMeasurement": {
+        "wallSeconds": 0.201591708,
+        "collectorCpuDeltaSeconds": 0.0014930000000000013,
+        "processLifetimeCpuSeconds": 0.034598,
+        "maxRssBytes": 20758528,
+        "pidCap": 8,
+        "fileReadCapBytes": 16384,
+        "outputCapBytes": 32768
+      }
+    },
+    {
+      "case": "cli-host",
+      "side": "host",
+      "result": "PASS",
+      "failure": null,
+      "cpuSeconds": 0.044620999999999994,
+      "maxRssBytes": 20742144,
+      "stdoutBytes": 2645,
+      "stderrBytes": 0,
+      "wallSeconds": 0.2620593329775147,
+      "spawnWallSeconds": 0.0022001669858582318,
+      "reaped": true,
+      "exit": 0,
+      "collectorMeasurement": {
+        "wallSeconds": 0.204430417,
+        "collectorCpuDeltaSeconds": 0.0010300000000000031,
+        "processLifetimeCpuSeconds": 0.038201,
+        "maxRssBytes": 20725760,
+        "pidCap": 8,
+        "fileReadCapBytes": 16384,
+        "outputCapBytes": 32768
+      }
+    },
+    {
+      "case": "cli-host",
+      "side": "guest",
+      "result": "PASS",
+      "failure": null,
+      "cpuSeconds": 0.042637999999999995,
+      "maxRssBytes": 20725760,
+      "stdoutBytes": 2647,
+      "stderrBytes": 0,
+      "wallSeconds": 0.25990479200845584,
+      "spawnWallSeconds": 0.00146341702202335,
+      "reaped": true,
+      "exit": 0,
+      "collectorMeasurement": {
+        "wallSeconds": 0.203024583,
+        "collectorCpuDeltaSeconds": 0.0012170000000000028,
+        "processLifetimeCpuSeconds": 0.036778,
+        "maxRssBytes": 20709376,
+        "pidCap": 8,
+        "fileReadCapBytes": 16384,
+        "outputCapBytes": 32768
+      }
+    },
+    {
+      "case": "cli-host",
+      "side": "host",
+      "result": "PASS",
+      "failure": null,
+      "cpuSeconds": 0.046717,
+      "maxRssBytes": 20922368,
+      "stdoutBytes": 2633,
+      "stderrBytes": 0,
+      "wallSeconds": 0.26471629104344174,
+      "spawnWallSeconds": 0.002229791018180549,
+      "reaped": true,
+      "exit": 0,
+      "collectorMeasurement": {
+        "wallSeconds": 0.202078125,
+        "collectorCpuDeltaSeconds": 0.0010830000000000006,
+        "processLifetimeCpuSeconds": 0.039745,
+        "maxRssBytes": 20905984,
+        "pidCap": 8,
+        "fileReadCapBytes": 16384,
+        "outputCapBytes": 32768
+      }
+    },
+    {
+      "case": "cli-host",
+      "side": "guest",
+      "result": "PASS",
+      "failure": null,
+      "cpuSeconds": 0.04151,
+      "maxRssBytes": 21020672,
+      "stdoutBytes": 2645,
+      "stderrBytes": 0,
+      "wallSeconds": 0.2624735829886049,
+      "spawnWallSeconds": 0.00184524996438995,
+      "reaped": true,
+      "exit": 0,
+      "collectorMeasurement": {
+        "wallSeconds": 0.20747625,
+        "collectorCpuDeltaSeconds": 0.0010249999999999981,
+        "processLifetimeCpuSeconds": 0.037355,
+        "maxRssBytes": 21004288,
+        "pidCap": 8,
+        "fileReadCapBytes": 16384,
+        "outputCapBytes": 32768
+      }
+    },
+    {
+      "case": "cli-host",
+      "side": "host",
+      "result": "PASS",
+      "failure": null,
+      "cpuSeconds": 0.050573999999999994,
+      "maxRssBytes": 20873216,
+      "stdoutBytes": 2659,
+      "stderrBytes": 0,
+      "wallSeconds": 0.27424637496005744,
+      "spawnWallSeconds": 0.00257574999704957,
+      "reaped": true,
+      "exit": 0,
+      "collectorMeasurement": {
+        "wallSeconds": 0.205044833,
+        "collectorCpuDeltaSeconds": 0.0009849999999999998,
+        "processLifetimeCpuSeconds": 0.044579999999999995,
+        "maxRssBytes": 20856832,
+        "pidCap": 8,
+        "fileReadCapBytes": 16384,
+        "outputCapBytes": 32768
+      }
+    },
+    {
+      "case": "cli-host",
+      "side": "guest",
+      "result": "PASS",
+      "failure": null,
+      "cpuSeconds": 0.04833799999999999,
+      "maxRssBytes": 20594688,
+      "stdoutBytes": 2603,
+      "stderrBytes": 0,
+      "wallSeconds": 0.2716944580315612,
+      "spawnWallSeconds": 0.0038096660282462835,
+      "reaped": true,
+      "exit": 0,
+      "collectorMeasurement": {
+        "wallSeconds": 0.206463875,
+        "collectorCpuDeltaSeconds": 0.001236999999999995,
+        "processLifetimeCpuSeconds": 0.04368,
+        "maxRssBytes": 20578304,
+        "pidCap": 8,
+        "fileReadCapBytes": 16384,
+        "outputCapBytes": 32768
+      }
+    },
+    {
+      "case": "test_real_clock_only_handshake",
+      "side": "host",
+      "result": "PASS",
+      "failure": null,
+      "cpuSeconds": 0.044830999999999996,
+      "maxRssBytes": 20807680,
+      "stdoutBytes": 1013,
+      "stderrBytes": 0,
+      "wallSeconds": 0.06023216695757583,
+      "spawnWallSeconds": 0.0025095829623751342,
+      "reaped": true,
+      "exit": 0,
+      "collectorMeasurement": {
+        "wallSeconds": 0.000189,
+        "collectorCpuDeltaSeconds": 0.00019199999999999773,
+        "processLifetimeCpuSeconds": 0.041291999999999995,
+        "maxRssBytes": 20774912,
+        "pidCap": 8,
+        "fileReadCapBytes": 16384,
+        "outputCapBytes": 32768
+      }
+    },
+    {
+      "case": "test_real_clock_only_handshake",
+      "side": "guest",
+      "result": "PASS",
+      "failure": null,
+      "cpuSeconds": 0.042419,
+      "maxRssBytes": 20791296,
+      "stdoutBytes": 1004,
+      "stderrBytes": 0,
+      "wallSeconds": 0.05768358398927376,
+      "spawnWallSeconds": 0.0020590839558281004,
+      "reaped": true,
+      "exit": 0,
+      "collectorMeasurement": {
+        "wallSeconds": 0.000131875,
+        "collectorCpuDeltaSeconds": 0.00013400000000000217,
+        "processLifetimeCpuSeconds": 0.038986,
+        "maxRssBytes": 20758528,
+        "pidCap": 8,
+        "fileReadCapBytes": 16384,
+        "outputCapBytes": 32768
+      }
+    },
+    {
+      "case": "cli-guest",
+      "side": "host",
+      "result": "PASS",
+      "failure": null,
+      "cpuSeconds": 0.046694,
+      "maxRssBytes": 21004288,
+      "stdoutBytes": 2524,
+      "stderrBytes": 0,
+      "wallSeconds": 0.26512670901138335,
+      "spawnWallSeconds": 0.0022192500182427466,
+      "reaped": true,
+      "exit": 0,
+      "collectorMeasurement": {
+        "wallSeconds": 0.201892416,
+        "collectorCpuDeltaSeconds": 0.0016149999999999984,
+        "processLifetimeCpuSeconds": 0.042221999999999996,
+        "maxRssBytes": 20971520,
+        "pidCap": 8,
+        "fileReadCapBytes": 16384,
+        "outputCapBytes": 32768
+      }
+    },
+    {
+      "case": "cli-guest",
+      "side": "guest",
+      "result": "PASS",
+      "failure": null,
+      "cpuSeconds": 0.044434999999999995,
+      "maxRssBytes": 20611072,
+      "stdoutBytes": 2511,
+      "stderrBytes": 0,
+      "wallSeconds": 0.2629613750032149,
+      "spawnWallSeconds": 0.0018031660001724958,
+      "reaped": true,
+      "exit": 0,
+      "collectorMeasurement": {
+        "wallSeconds": 0.204361375,
+        "collectorCpuDeltaSeconds": 0.0017019999999999952,
+        "processLifetimeCpuSeconds": 0.039763,
+        "maxRssBytes": 20578304,
+        "pidCap": 8,
+        "fileReadCapBytes": 16384,
+        "outputCapBytes": 32768
+      }
+    },
+    {
+      "case": "test_stderr_privacy",
+      "side": "host",
+      "result": "FAIL",
+      "failure": "WORKER_NONZERO",
+      "cpuSeconds": 0.02053,
+      "maxRssBytes": 14270464,
+      "stdoutBytes": 0,
+      "stderrBytes": 16,
+      "wallSeconds": 0.035933875013142824,
+      "spawnWallSeconds": 0.0023316669976338744,
+      "reaped": true,
+      "exit": 1,
+      "collectorMeasurement": null
+    },
+    {
+      "case": "test_stderr_privacy",
+      "side": "guest",
+      "result": "FAIL",
+      "failure": "WORKER_NONZERO",
+      "cpuSeconds": 0.019059,
+      "maxRssBytes": 13631488,
+      "stdoutBytes": 0,
+      "stderrBytes": 0,
+      "wallSeconds": 0.03356983402045444,
+      "spawnWallSeconds": 0.0020324590150266886,
+      "reaped": true,
+      "exit": -15,
+      "collectorMeasurement": null
+    },
+    {
+      "case": "test_stream_output_cap",
+      "side": "host",
+      "result": "FAIL",
+      "failure": "OUTPUT_LIMIT",
+      "cpuSeconds": 0.020024,
+      "maxRssBytes": 14270464,
+      "stdoutBytes": 1024,
+      "stderrBytes": 0,
+      "wallSeconds": 0.03390337497694418,
+      "spawnWallSeconds": 0.0023299999884329736,
+      "reaped": true,
+      "exit": -15,
+      "collectorMeasurement": null
+    },
+    {
+      "case": "test_stream_output_cap",
+      "side": "guest",
+      "result": "FAIL",
+      "failure": "OUTPUT_LIMIT",
+      "cpuSeconds": 0.017627999999999998,
+      "maxRssBytes": 13516800,
+      "stdoutBytes": 0,
+      "stderrBytes": 0,
+      "wallSeconds": 0.03156683302950114,
+      "spawnWallSeconds": 0.002257457992527634,
+      "reaped": true,
+      "exit": -15,
+      "collectorMeasurement": null
+    },
+    {
+      "case": "test_term_ignored_escalates_exact_owned_pids",
+      "side": "host",
+      "result": "FAIL",
+      "failure": "WORKER_TIMEOUT",
+      "cpuSeconds": 0.027587,
+      "maxRssBytes": 15450112,
+      "stdoutBytes": 0,
+      "stderrBytes": 0,
+      "wallSeconds": 0.41631654201773927,
+      "spawnWallSeconds": 0.004175000009126961,
+      "reaped": true,
+      "exit": -9,
+      "collectorMeasurement": null
+    },
+    {
+      "case": "test_term_ignored_escalates_exact_owned_pids",
+      "side": "guest",
+      "result": "FAIL",
+      "failure": "WORKER_TIMEOUT",
+      "cpuSeconds": 0.026635,
+      "maxRssBytes": 15368192,
+      "stdoutBytes": 0,
+      "stderrBytes": 0,
+      "wallSeconds": 0.41203324997331947,
+      "spawnWallSeconds": 0.00391316699096933,
+      "reaped": true,
+      "exit": -9,
+      "collectorMeasurement": null
+    },
+    {
+      "case": "test_transport_timeout_contract_without_network",
+      "side": "host",
+      "result": "FAIL",
+      "failure": "WORKER_TIMEOUT",
+      "cpuSeconds": 0.018685999999999998,
+      "maxRssBytes": 14188544,
+      "stdoutBytes": 0,
+      "stderrBytes": 0,
+      "wallSeconds": 0.20944716600934044,
+      "spawnWallSeconds": 0.0020268330117687583,
+      "reaped": true,
+      "exit": -15,
+      "collectorMeasurement": null
+    },
+    {
+      "case": "test_transport_timeout_contract_without_network",
+      "side": "guest",
+      "result": "FAIL",
+      "failure": "WORKER_TIMEOUT",
+      "cpuSeconds": 0.019372999999999998,
+      "maxRssBytes": 14139392,
+      "stdoutBytes": 0,
+      "stderrBytes": 0,
+      "wallSeconds": 0.20744874997762963,
+      "spawnWallSeconds": 0.0015695830225013196,
+      "reaped": true,
+      "exit": -15,
+      "collectorMeasurement": null
+    },
+    {
+      "case": "test_unreachable_guest_contract_without_network",
+      "side": "host",
+      "result": "FAIL",
+      "failure": "WORKER_NONZERO",
+      "cpuSeconds": 0.021592,
+      "maxRssBytes": 14286848,
+      "stdoutBytes": 0,
+      "stderrBytes": 0,
+      "wallSeconds": 0.03683770803036168,
+      "spawnWallSeconds": 0.0028102080104872584,
+      "reaped": true,
+      "exit": 255,
+      "collectorMeasurement": null
+    },
+    {
+      "case": "test_unreachable_guest_contract_without_network",
+      "side": "guest",
+      "result": "FAIL",
+      "failure": "WORKER_NONZERO",
+      "cpuSeconds": 0.019131,
+      "maxRssBytes": 14172160,
+      "stdoutBytes": 0,
+      "stderrBytes": 0,
+      "wallSeconds": 0.03396637499099597,
+      "spawnWallSeconds": 0.0021494999527931213,
+      "reaped": true,
+      "exit": 255,
+      "collectorMeasurement": null
+    },
+    {
+      "case": "test_worker_error_json_exit_zero_not_pass",
+      "side": "host",
+      "result": "FAIL",
+      "failure": "WORKER_STATUS_INVALID",
+      "cpuSeconds": 0.027160999999999998,
+      "maxRssBytes": 15876096,
+      "stdoutBytes": 20,
+      "stderrBytes": 0,
+      "wallSeconds": 0.04188137501478195,
+      "spawnWallSeconds": 0.002407458028756082,
+      "reaped": true,
+      "exit": 0,
+      "collectorMeasurement": null
+    },
+    {
+      "case": "test_worker_error_json_exit_zero_not_pass",
+      "side": "guest",
+      "result": "FAIL",
+      "failure": "WORKER_STATUS_INVALID",
+      "cpuSeconds": 0.025908999999999998,
+      "maxRssBytes": 16023552,
+      "stdoutBytes": 20,
+      "stderrBytes": 0,
+      "wallSeconds": 0.03941358398878947,
+      "spawnWallSeconds": 0.002256334002595395,
+      "reaped": true,
+      "exit": 0,
+      "collectorMeasurement": null
+    }
+  ],
+  "attemptHistory": [
+    {
+      "attempt": 1,
+      "result": "FAIL",
+      "reason": "Host CPU_WINDOW_EMPTY with host_statistics, no fabricated utilization"
+    },
+    {
+      "attempt": 2,
+      "result": "38 PASS / 1 SKIP",
+      "reason": "host_processor_info used without budget increase"
+    },
+    {
+      "attempt": 3,
+      "result": "SYNTAX_ERROR",
+      "reason": "New test string quotation; no tests executed; retained"
+    },
+    {
+      "attempt": 4,
+      "result": "42 PASS / 1 SKIP",
+      "reason": "Final code incl clock-only handshake, status fail-closed and extra negatives"
+    }
+  ]
+}

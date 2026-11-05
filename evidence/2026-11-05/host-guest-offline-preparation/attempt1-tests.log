@@ -1,0 +1,56 @@
+test_cli_wall_timeout (__main__.Tests.test_cli_wall_timeout) ... ok
+test_clock_offset_noncomparable_monotonic (__main__.Tests.test_clock_offset_noncomparable_monotonic) ... ok
+test_clock_step (__main__.Tests.test_clock_step) ... ok
+test_clock_uncertainty (__main__.Tests.test_clock_uncertainty) ... ok
+test_clock_window_join (__main__.Tests.test_clock_window_join) ... ok
+test_cpu_psi_stop (__main__.Tests.test_cpu_psi_stop) ... ok
+test_fail_closed_no_retry (__main__.Tests.test_fail_closed_no_retry) ... ok
+test_fifo_no_block (__main__.Tests.test_fifo_no_block) ... ok
+test_file_size_limit (__main__.Tests.test_file_size_limit) ... ok
+test_host_failure_cancels_peer (__main__.Tests.test_host_failure_cancels_peer) ... ok
+test_interval_enforced (__main__.Tests.test_interval_enforced) ... ok
+test_missing_proc (__main__.Tests.test_missing_proc) ... ok
+test_multi_bounded_fixture_performance (__main__.Tests.test_multi_bounded_fixture_performance) ... ok
+test_native_host_actual_performance (__main__.Tests.test_native_host_actual_performance) ... FAIL
+test_native_linux_proc (__main__.Tests.test_native_linux_proc) ... skipped 'Non-production native Linux environment not available; fixture is not Linux native'
+test_no_discovery_or_external_commands (__main__.Tests.test_no_discovery_or_external_commands) ... ok
+test_no_online_entry (__main__.Tests.test_no_online_entry) ... ok
+test_nonfinite_metric (__main__.Tests.test_nonfinite_metric) ... ok
+test_output_encode_limit (__main__.Tests.test_output_encode_limit) ... ok
+test_parse_failure (__main__.Tests.test_parse_failure) ... ok
+test_permission_denial_real_filesystem (__main__.Tests.test_permission_denial_real_filesystem) ... ok
+test_pid_arg_injection (__main__.Tests.test_pid_arg_injection) ... ok
+test_pid_count_limit (__main__.Tests.test_pid_count_limit) ... ok
+test_pid_disappearance (__main__.Tests.test_pid_disappearance) ... ok
+test_pid_reuse (__main__.Tests.test_pid_reuse) ... ok
+test_plan_limits (__main__.Tests.test_plan_limits) ... ok
+test_pressure_stops_before_pid_read (__main__.Tests.test_pressure_stops_before_pid_read) ... ok
+test_raw_privacy_redaction (__main__.Tests.test_raw_privacy_redaction) ... ok
+test_session_budget (__main__.Tests.test_session_budget) ... ok
+test_single_guest_fixture_real_execution (__main__.Tests.test_single_guest_fixture_real_execution) ... ok
+test_stderr_privacy (__main__.Tests.test_stderr_privacy) ... ok
+test_stream_output_cap (__main__.Tests.test_stream_output_cap) ... ok
+test_strict_ssh_plan_no_execution (__main__.Tests.test_strict_ssh_plan_no_execution) ... ok
+test_symlink_directory_rejected (__main__.Tests.test_symlink_directory_rejected) ... ok
+test_symlink_file_rejected (__main__.Tests.test_symlink_file_rejected) ... ok
+test_term_ignored_escalates_exact_owned_pids (__main__.Tests.test_term_ignored_escalates_exact_owned_pids) ... ok
+test_total_output_bound (__main__.Tests.test_total_output_bound) ... ok
+test_transport_timeout_contract_without_network (__main__.Tests.test_transport_timeout_contract_without_network) ... ok
+test_unreachable_guest_contract_without_network (__main__.Tests.test_unreachable_guest_contract_without_network) ... ok
+
+======================================================================
+FAIL: test_native_host_actual_performance (__main__.Tests.test_native_host_actual_performance)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/private/var/folders/jc/_2vrrrl544v3287_9gs3ngxh0000gn/T/security-cosign-boundary-7x9i0i9x/test_sampler.py", line 43, in test_native_host_actual_performance
+    r=run_cli('host');self.assertEqual(r['status'],'PASS');self.assertEqual(r['workers']['host']['record']['classification'],'NATIVE_READ_ONLY_DARWIN')
+                      ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'FAIL' != 'PASS'
+- FAIL
++ PASS
+
+
+----------------------------------------------------------------------
+Ran 39 tests in 5.709s
+
+FAILED (failures=1, skipped=1)

@@ -1,0 +1,42 @@
+{
+  "verdict": {
+    "ORIGINAL_SAMPLER_OVERHEAD_ROOT_CAUSE": "UNKNOWN",
+    "GUEST_SAMPLER_IMPLEMENTATION": "INCOMPLETE",
+    "HOST_SAMPLER_IMPLEMENTATION": "VERIFIED",
+    "SAMPLER_ISOLATED_PERFORMANCE": "INCOMPLETE",
+    "HOST_GUEST_TIME_ALIGNMENT_CONTRACT": "VERIFIED",
+    "BOUNDED_EXECUTION_CONTRACT": "VERIFIED",
+    "SAMPLER_OUTPUT_LIMIT": "VERIFIED",
+    "SAMPLER_TIMEOUT_HANDLING": "VERIFIED",
+    "SAMPLER_CLEANUP": "VERIFIED",
+    "PRODUCTION_SAMPLER_OVERHEAD": "NOT_TESTED",
+    "HOST_GUEST_REAL_SYNCHRONIZED_CAPTURE": "NOT_TESTED",
+    "ROOT_CAUSE": "UNDETERMINED",
+    "PRODUCTION_FIX_EXECUTED": "NO",
+    "EVIDENCE_WRITE_BOUNDARY": "VERIFIED",
+    "SECURITY_MANAGER_CANDIDATE": "VERIFIED",
+    "PRODUCTION_SECURITY_MANAGER": "NOT_ACTIVE",
+    "FINAL_WIRED_CAPABILITY": "14/16",
+    "ORIGINAL_EVIDENCE_INTEGRITY": "FAILED",
+    "RELEASE_COUNT": 0,
+    "ROLLOUT_COUNT": 0
+  },
+  "scope": {
+    "guestImplementation": "Executable + synthetic proc cases pass; native non-production Linux still missing",
+    "hostImplementation": "Native Darwin read-only APIs, selected self PID; no new live QEMU evidence",
+    "performance": "Darwin/native and fixture measured; native Linux not available",
+    "timeAlignment": "Offline real local handshake + synthetic clock-bound tests, not real Host/Guest precision",
+    "timeoutAndCleanup": "Local owned audited no-fork Python workers + CLI SIGALRM; not arbitrary descendants or remote SSH cleanup proof",
+    "boundedExecution": "Offline Session/worker contracts; no production transport enabled",
+    "securityManager": "Inherited authority only; no new Security Manager validation",
+    "productionHealth": "Not freshly probed; inherit historical 11:37:48 healthy snapshot, do not claim current continuous health"
+  },
+  "unchangedContext": {
+    "NODE_HIGH_LOAD_SOURCE": "PARTIALLY_IDENTIFIED",
+    "MAC_HOST_CPU_CORRELATION": "UNKNOWN",
+    "QEMU_RESOURCE_CORRELATION": "UNKNOWN",
+    "LOKI_CANDIDATE_TEST_CAUSALITY": "UNKNOWN"
+  },
+  "onlineCalls": 0,
+  "nextUniqueAllowedAction": "Select an existing authorized non-production Linux context for native collector/permission/lifecycle validation. Do not launch production sampling."
+}

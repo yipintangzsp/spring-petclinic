@@ -1,0 +1,60 @@
+{
+  "classification": "HISTORICAL_REAL_RECEIPTS_PLUS_STATIC_CODE_INVENTORY_NOT_NEW_CAPTURE",
+  "sourceCommit": "879db238",
+  "totalObservationWallSeconds": 6.521004042006098,
+  "guest": {
+    "wallSeconds": 6.266488258001118,
+    "combinedSelfAndChildrenCpuSeconds": 1.03289466,
+    "selfOnlyCpuSeconds": "UNKNOWN",
+    "childCpuPerCommand": "UNKNOWN",
+    "maxRss": "UNKNOWN",
+    "selectedPidDeltaWindowSeconds": 2.0065496309998707,
+    "knownExternalCommandsFromExecutedCode": {
+      "ps": 2,
+      "vmstat": 1,
+      "kubectl": 3
+    },
+    "commandDurations": "UNKNOWN; no per-command timers"
+  },
+  "host": {
+    "wallSeconds": 4.274396124994382,
+    "combinedReportedCpuSeconds": 1.2226839999999999,
+    "accountingCaution": "time.process_time and RUSAGE_CHILDREN are process-wide, not isolated to the Host thread; concurrent SSH/parent work can overlap",
+    "selfOnlyCpuSeconds": "UNKNOWN",
+    "childCpuPerCommand": "UNKNOWN",
+    "maxRss": "UNKNOWN",
+    "knownExternalCommandsFromExecutedCode": {
+      "sysctl": 1,
+      "vm_stat": 2,
+      "ps": 3,
+      "top": 1
+    },
+    "correction": "7 host external invocations, not 8: sysctl1+vm_stat2+ps2+QEMU-args-ps1+top1",
+    "commandDurations": "UNKNOWN; fixed sleep requested=2s is not per-command elapsed"
+  },
+  "transport": {
+    "sshConnections": 1,
+    "sshConnectionWallSeconds": "UNKNOWN",
+    "remoteWaitSeconds": "UNKNOWN",
+    "remoteShellSudoStartup": "UNKNOWN",
+    "kubernetesApiPerCallWallSeconds": "UNKNOWN",
+    "businessHttpWallSeconds": "UNKNOWN",
+    "outputSerializationAndWriteCost": "UNKNOWN"
+  },
+  "historicalPrometheusBatch": {
+    "requestedAt": "2026-11-05T03:40:59.328488+00:00",
+    "completedAt": "2026-11-05T03:40:59.386921+00:00",
+    "batchWallSeconds": 0.058433,
+    "perQueryLatency": "UNKNOWN",
+    "notPartOfObservationDuration": true,
+    "scope": "This batch happened after observation stopped, not inside the 6.521s interval"
+  },
+  "rootCause": "UNKNOWN: total elapsed is not CPU; records cannot identify most expensive command",
+  "staticOptimizationTargets": [
+    "Remove full leader/thread ps traversals; use <=8 fixed PIDs",
+    "Remove external commands and Kubernetes/HTTP from collectors",
+    "Remove shared-thread child accounting; use per-owned-PID wait4",
+    "Keep no retries and shorten wall/CPU limits"
+  ],
+  "productionChanges": 0
+}
