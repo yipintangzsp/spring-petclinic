@@ -1,0 +1,75 @@
+{
+  "jenkins": {
+    "gitlabVersion": "19.2.0",
+    "project": {
+      "id": 12,
+      "namespace": {
+        "avatar_url": "https://www.gravatar.com/avatar/7ed0a1db665225ee10ce85f191328153997f0403edd8a27ee5d06f93c3ed8271?s=80&d=identicon",
+        "full_path": "root",
+        "id": 1,
+        "kind": "user",
+        "name": "Administrator",
+        "parent_id": null,
+        "path": "root",
+        "web_url": "http://gitlab-578fd9dcbb-rhbx8/root"
+      },
+      "path_with_namespace": "root/petclinic-platform",
+      "visibility": "private"
+    },
+    "existingTokens": [],
+    "mainProtection": [
+      {
+        "level": 40
+      }
+    ],
+    "writerCredentialAbsent": true,
+    "branch": "9f3124056fb078736b1898db45822cb0cedac109",
+    "trigger": "d21b1271982bd4d8d90857b889c312d522779fc2",
+    "demoBuild": 4
+  },
+  "host": {
+    "writerAccountAbsent": true,
+    "uid24022Free": true,
+    "gid24022Free": true,
+    "homeAbsent": true,
+    "entry": "\"\"\"Root-owned, unprivileged forced command. No shell or caller-supplied paths.\"\"\"\nimport os,sys,json,pathlib,subprocess,re,time,fcntl,resource,signal,hashlib\nROOT=pathlib.Path('/var/tmp/security-manager-gitleaks-v2-linux-20261105')\ndef reject(code):\n print(json.dumps({'error':code}),flush=True);raise SystemExit(2)\nif os.getuid()!=24021 or os.getgid()!=24021 or any(g!=24021 for g in os.getgroups()):reject('IDENTITY_REJECTED')\ncommand=os.environ.get('SSH_ORIGINAL_COMMAND','')\nm=re.fullmatch(r'(clean-v1|finding-v1) (web-[a-f0-9]{8}-[a-f0-9]{4}-4[a-f0-9]{3}-[89ab][a-f0-9]{3}-[a-f0-9]{12})',command)\nif not m:reject('FIXED_COMMAND_REQUIRED')\nfinding=m[1]=='finding-v1'\nrun=m[2]\n# No input is part of this protocol; the client must close stdin.\nimport select\nif not select.select([sys.stdin],[],[],2)[0] or sys.stdin.buffer.read(1):reject('INPUT_REJECTED')\nfor p in ['/run/docker.sock','/etc/rancher/k3s/k3s.yaml','/root/.ssh','/home/zhang/.ssh','/home/zhang/.kube/config','/var/run/secrets/kubernetes.io/serviceaccount/token']:\n if os.access(p,os.R_OK):reject('PRODUCTION_AUTHORITY_READABLE')\ndef trusted(p):\n s=p.lstat()\n if p.resolve()!=p or s.st_uid!=0 or s.st_mode&0o022:reject('UNTRUSTED_RELEASE')\n return s\ntrusted(ROOT);trusted(ROOT/'package');trusted(ROOT/'approval.json')\nmanifest=ROOT/'package-manifest.json';trusted(manifest)\nfor name,h in json.loads(manifest.read_text()).items():\n p=ROOT/'package'/name\n if pathlib.PurePosixPath(name).is_absolute() or '..' in pathlib.PurePosixPath(name).parts:reject('RELEASE_PATH_REJECTED')\n trusted(p)\n if hashlib.sha256(p.read_bytes()).hexdigest()!=h:reject('RELEASE_CHANGED')\nout=ROOT/'outputs';st=out.lstat()\nif out.resolve()!=out or st.st_uid!=24021 or st.st_mode&0o077:reject('OUTPUT_DOMAIN_REJECTED')\nlock=open(out/'execution.lock','a')\ntry:fcntl.flock(lock,fcntl.LOCK_EX|fcntl.LOCK_NB)\nexcept BlockingIOError:reject('EXECUTION_BUSY')\nif (out/run).exists():reject('RUN_ALREADY_EXISTS')\nif len(list(out.iterdir()))>=101:reject('OUTPUT_BUDGET_EXHAUSTED')\nmem=next(int(l.split()[1])*1024 for l in pathlib.Path('/proc/meminfo').read_text().splitlines() if l.startswith('MemAvailable:'))\ndisk=os.statvfs(out);free=disk.f_bavail*disk.f_frsize\ndef ticks():return [int(n) for n in pathlib.Path('/proc/stat').read_text().splitlines()[0].split()[1:9]]\na=ticks();time.sleep(.25);b=ticks();delta=[y-x for x,y in zip(a,b)];total=sum(delta)\nif total<=0:reject('RESOURCE_STATE_UNKNOWN_BLOCKED')\nbusy=100*(1-(delta[3]+delta[4])/total)\nbudget={'scope':'LINUX_GITLEAKS_FIXED_FIXTURE','availableMemoryBytes':mem,'availableDiskBytes':free,'cpuBusyPercent':busy,'minimumMemoryBytes':1073741824,'minimumDiskBytes':1073741824,'maxCpuBusyPercent':75}\nif mem<1073741824 or free<1073741824 or busy>75:reject('LINUX_RESOURCE_BUDGET_BLOCKED')\nresource.setrlimit(resource.RLIMIT_CORE,(0,0))\nresource.setrlimit(resource.RLIMIT_NOFILE,(128,128))\nresource.setrlimit(resource.RLIMIT_FSIZE,(1048576,1048576))\nresource.setrlimit(resource.RLIMIT_CPU,(20,25))\nenv={'PATH':'/usr/bin:/bin','HOME':str(out),'LANG':'C'}\nargv=['/usr/bin/setpriv','--no-new-privs','/usr/bin/env','-i',*[k+'='+v for k,v in env.items()],'/usr/bin/node','--max-old-space-size=128',str(ROOT/'package/infra/security/testing/gitleaks-linux-clean.mjs'),run]\nif finding:argv.append('controlled-finding')\np=subprocess.Popen(argv,cwd=ROOT/'package',env=env,stdin=subprocess.DEVNULL,stdout=subprocess.PIPE,stderr=subprocess.PIPE,start_new_session=True)\ndef children():\n found=[]\n for item in pathlib.Path('/proc').iterdir():\n  if not item.name.isdigit():continue\n  try:\n   if item.stat().st_uid!=24021:continue\n   if (item/'exe').resolve()==ROOT/'gitleaks':found.append(int(item.name))\n  except (OSError,RuntimeError):pass\n return found\ndef cancel(signum=None,frame=None):\n # The exclusive lock and dedicated UID bind these tool processes to this run.\n for pid in children():\n  try:os.killpg(pid,signal.SIGTERM)\n  except ProcessLookupError:pass\n try:os.killpg(p.pid,signal.SIGTERM)\n except ProcessLookupError:pass\nsignal.signal(signal.SIGTERM,cancel);signal.signal(signal.SIGHUP,cancel)\ntry:\n stdout,stderr=p.communicate(timeout=22)\nexcept subprocess.TimeoutExpired:\n cancel()\n try:p.communicate(timeout=2)\n except subprocess.TimeoutExpired:\n  for pid in children():\n   try:os.killpg(pid,signal.SIGKILL)\n   except ProcessLookupError:pass\n  try:os.killpg(p.pid,signal.SIGKILL)\n  except ProcessLookupError:pass\n  p.communicate(timeout=2)\n reject('EXECUTION_TIMEOUT')\nif children():cancel();reject('DESCENDANT_CLEANUP_FAILED')\nif p.returncode!=0 or stderr or len(stdout)>524288:reject('EXECUTION_OR_OUTPUT_REJECTED')\ntry:packet=json.loads(stdout)\nexcept (ValueError,UnicodeError):reject('RESULT_INVALID')\nif packet.get('runId')!=run or packet.get('kind')!=('RestrictedLinuxGitleaksFinding' if finding else 'RestrictedLinuxGitleaksClean'):reject('RESULT_BINDING_REJECTED')\npacket['budget']=budget\nsys.stdout.write(json.dumps(packet)+'\\n')\n",
+    "outputsMode": "0o700",
+    "outputExamples": [
+      {
+        "name": "web-adc7137f-f4a7-41da-96a3-42763168781d",
+        "mode": "0o700",
+        "uid": 24021
+      },
+      {
+        "name": "web-184eacbc-ac94-46bc-9e26-0085b1b92c47",
+        "mode": "0o700",
+        "uid": 24021
+      },
+      {
+        "name": "web-1a76a567-9c5a-4576-a5f3-23413ea16493",
+        "mode": "0o700",
+        "uid": 24021
+      },
+      {
+        "name": "web-655884ff-c600-400f-95e8-e7b92df6340a",
+        "mode": "0o700",
+        "uid": 24021
+      },
+      {
+        "name": "web-42d4689a-26a2-4d53-8911-af083ee7eb7d",
+        "mode": "0o700",
+        "uid": 24021
+      },
+      {
+        "name": "web-33827bf8-3b0f-4030-9152-e21fc5c5852d",
+        "mode": "0o700",
+        "uid": 24021
+      }
+    ],
+    "git": "git version 2.43.0",
+    "hostPublicKey": [
+      "ssh-ed25519",
+      "AAAAC3NzaC1lZDI1NTE5AAAAIOP2v7DiE6LrqVMUcIfy6qX9xDjk1Z4+ZblVBJE4k/6J"
+    ]
+  }
+}
