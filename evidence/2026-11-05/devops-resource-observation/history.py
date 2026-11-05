@@ -1,0 +1,25 @@
+"""Historical reads only after live sampler stopped. No new process sampling."""
+import json,urllib.request,urllib.parse,datetime
+now=lambda:datetime.datetime.now(datetime.timezone.utc).isoformat();op=urllib.request.build_opener(urllib.request.ProxyHandler({}));origin='http://10.43.111.46:9090';start='2026-11-05T02:05:00Z';end='2026-11-05T02:45:00Z';r={'classification':'EXISTING_PROMETHEUS_HISTORICAL_ANALYSIS_NOT_NEW_LIVE_SAMPLING','requestedAt':now(),'incidentWindow':[start,end],'queries':[],'instantAtObservation':[],'productionMutations':0}
+def get(path,params):
+ try:
+  res=op.open(origin+path+'?'+urllib.parse.urlencode(params,doseq=True),timeout=10);b=res.read(4*1024*1024+1);assert len(b)<=4*1024*1024,'RESPONSE_CAP';return {'httpStatus':res.status,'data':json.loads(b)}
+ except Exception as e:return {'errorClass':type(e).__name__,'httpStatus':getattr(e,'code',None)}
+n=get('/api/v1/label/__name__/values',{'start':start,'end':end});names=n.get('data',{}).get('data',[]);r['discoveredNames']=[v for v in names if any(s in v for s in ['node_procs','node_load','node_disk','cpu_cfs','process_cpu','process_start','namedprocess','containerd'])];r['discoveryHttpStatus']=n.get('httpStatus')
+queries=[('runnable','node_procs_running','node_procs_running{instance="10.0.0.3:9100"}'),('blocked','node_procs_blocked','node_procs_blocked{instance="10.0.0.3:9100"}'),('load5','node_load5','node_load5{instance="10.0.0.3:9100"}'),('non-idle','node_cpu_seconds_total','1 - avg by (instance) (rate(node_cpu_seconds_total{instance="10.0.0.3:9100",mode="idle"}[2m]))'),('disk-read-latency','node_disk_read_time_seconds_total','rate(node_disk_read_time_seconds_total{instance="10.0.0.3:9100",device="vda"}[2m]) / rate(node_disk_reads_completed_total{instance="10.0.0.3:9100",device="vda"}[2m])'),('disk-write-latency','node_disk_write_time_seconds_total','rate(node_disk_write_time_seconds_total{instance="10.0.0.3:9100",device="vda"}[2m]) / rate(node_disk_writes_completed_total{instance="10.0.0.3:9100",device="vda"}[2m])'),('throttle-seconds','container_cpu_cfs_throttled_seconds_total','sum by (namespace,pod) (rate(container_cpu_cfs_throttled_seconds_total{node="devops",container!="",container!="POD",pod!=""}[2m]))'),('throttle-period-ratio','container_cpu_cfs_throttled_periods_total','sum by (namespace,pod) (rate(container_cpu_cfs_throttled_periods_total{node="devops",container!="",container!="POD",pod!=""}[2m])) / sum by (namespace,pod) (rate(container_cpu_cfs_periods_total{node="devops",container!="",container!="POD",pod!=""}[2m]))')]
+for label,metric,q in queries:
+ if metric not in names:r['queries'].append({'name':label,'metric':metric,'status':'NOT_AVAILABLE_UNKNOWN_NOT_ZERO'});continue
+ r['queries'].append({'name':label,'metric':metric,'query':q,**get('/api/v1/query_range',{'query':q,'start':start,'end':end,'step':'30s'})})
+# Select actual process counter series, never sum duplicated K3s component endpoints.
+ss=get('/api/v1/series',{'match[]':'process_cpu_seconds_total','start':start,'end':end});rows=ss.get('data',{}).get('data',[]);r['processSeriesLabels']=rows
+selected=[s for s in rows if s.get('job')=='kubelet'and s.get('instance')=='10.0.0.3:10250']
+if selected:
+ q='rate(process_cpu_seconds_total{job="kubelet",instance="10.0.0.3:10250"}[2m])';r['queries'].append({'name':'k3s-process-cpu-kubelet-endpoint','query':q,'identityCaution':'K3s all-in-one PID; this is one endpoint, not independent components to sum',**get('/api/v1/query_range',{'query':q,'start':start,'end':end,'step':'30s'})})
+else:r['queries'].append({'name':'k3s-process-cpu-kubelet-endpoint','status':'NO_MATCHING_PROCESS_COUNTER_UNKNOWN_NOT_ZERO'})
+for label,q in [('load-recent','node_load1{instance="10.0.0.3:9100"}'),('runnable-recent','node_procs_running{instance="10.0.0.3:9100"}'),('blocked-recent','node_procs_blocked{instance="10.0.0.3:9100"}')]:
+ r['queries'].append({'name':label,'query':q,'window':'30 minutes of existing data before observation; not a 30-minute process observation',**get('/api/v1/query_range',{'query':q,'start':'2026-11-05T03:07:41Z','end':'2026-11-05T03:37:41Z','step':'60s'})})
+# Existing samples at the exact first observation time map UIDs/resources without more kubectl calls.
+t='2026-11-05T03:37:42Z'
+for name,q in [('pod-info','kube_pod_info{node="devops"}'),('requests','kube_pod_container_resource_requests{node="devops"}'),('limits','kube_pod_container_resource_limits{node="devops"}'),('container-cpu-at-observation','sum by (namespace,pod,node) (rate(container_cpu_usage_seconds_total{node="devops",container!="",container!="POD",pod!=""}[2m]))'),('container-throttle-at-observation','sum by (namespace,pod) (rate(container_cpu_cfs_throttled_periods_total{node="devops",container!="",container!="POD",pod!=""}[2m])) / sum by (namespace,pod) (rate(container_cpu_cfs_periods_total{node="devops",container!="",container!="POD",pod!=""}[2m]))')]:
+ r['instantAtObservation'].append({'name':name,'query':q,'evaluationTime':t,'note':'Historical instant query; 2m rates and scrape freshness are not synchronous PID windows',**get('/api/v1/query',{'query':q,'time':t})})
+r['completedAt']=now();print(json.dumps(r))

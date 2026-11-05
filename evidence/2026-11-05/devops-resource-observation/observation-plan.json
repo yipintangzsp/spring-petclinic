@@ -1,0 +1,25 @@
+{
+  "classification": "BOUNDED_READ_ONLY_PLAN",
+  "startedAt": "2026-11-05T03:37:41.756214+00:00",
+  "plannedOffsetsSeconds": [
+    0,
+    120,
+    240,
+    360,
+    480,
+    600
+  ],
+  "hardMaximumSeconds": 1800,
+  "guestCommands": "proc reads, one ps leader/thread traversal, vmstat 1 3, <=4 Kubernetes GETs, one business GET per sample",
+  "hostCommands": "ps CPU deltas, vm_stat, sysctl, top -l2; never memory_pressure allocation",
+  "noHistoricalSnapshotSubstitution": true,
+  "severeStopThresholds": {
+    "guestLoad1PerVcpu": 8,
+    "guestCpuPsiSomeAvg10Percent": 70,
+    "memorySomeAvg10Percent": 20,
+    "ioFullAvg10Percent": 30,
+    "zeroReadyOrHttp502503": "stop",
+    "samplerCpuSecondsPerSampleMax": 1
+  },
+  "productionMutationsAllowed": false
+}

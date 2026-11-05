@@ -1,0 +1,2283 @@
+{
+  "classification": "OFFLINE_SOURCE_BACKED_ANALYSIS_NOT_RECONSTRUCTED_INCIDENT_PROCESS_SNAPSHOT",
+  "historicalStatistics": [
+    {
+      "queryName": "runnable",
+      "query": "node_procs_running{instance=\"10.0.0.3:9100\"}",
+      "status": "RETURNED_DATA",
+      "series": [
+        {
+          "labels": {
+            "__name__": "node_procs_running",
+            "container": "node-exporter",
+            "endpoint": "http-metrics",
+            "instance": "10.0.0.3:9100",
+            "job": "node-exporter",
+            "namespace": "monitoring",
+            "pod": "kube-stack-prometheus-node-exporter-rq7tc",
+            "service": "kube-stack-prometheus-node-exporter"
+          },
+          "min": 1.0,
+          "max": 68.0,
+          "minEvaluationTime": "2026-11-05T02:08:00+00:00",
+          "maxEvaluationTime": "2026-11-05T02:23:30+00:00",
+          "validPoints": 66,
+          "firstEvaluationTime": "2026-11-05T02:05:00+00:00",
+          "lastEvaluationTime": "2026-11-05T02:45:00+00:00",
+          "missingIntervals": [
+            [
+              "2026-11-05T02:14:30+00:00",
+              "2026-11-05T02:20:30+00:00"
+            ],
+            [
+              "2026-11-05T02:21:00+00:00",
+              "2026-11-05T02:22:00+00:00"
+            ],
+            [
+              "2026-11-05T02:24:00+00:00",
+              "2026-11-05T02:25:00+00:00"
+            ],
+            [
+              "2026-11-05T02:25:00+00:00",
+              "2026-11-05T02:26:00+00:00"
+            ],
+            [
+              "2026-11-05T02:27:30+00:00",
+              "2026-11-05T02:28:30+00:00"
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "queryName": "blocked",
+      "query": "node_procs_blocked{instance=\"10.0.0.3:9100\"}",
+      "status": "RETURNED_DATA",
+      "series": [
+        {
+          "labels": {
+            "__name__": "node_procs_blocked",
+            "container": "node-exporter",
+            "endpoint": "http-metrics",
+            "instance": "10.0.0.3:9100",
+            "job": "node-exporter",
+            "namespace": "monitoring",
+            "pod": "kube-stack-prometheus-node-exporter-rq7tc",
+            "service": "kube-stack-prometheus-node-exporter"
+          },
+          "min": 0.0,
+          "max": 1.0,
+          "minEvaluationTime": "2026-11-05T02:05:00+00:00",
+          "maxEvaluationTime": "2026-11-05T02:14:30+00:00",
+          "validPoints": 66,
+          "firstEvaluationTime": "2026-11-05T02:05:00+00:00",
+          "lastEvaluationTime": "2026-11-05T02:45:00+00:00",
+          "missingIntervals": [
+            [
+              "2026-11-05T02:14:30+00:00",
+              "2026-11-05T02:20:30+00:00"
+            ],
+            [
+              "2026-11-05T02:21:00+00:00",
+              "2026-11-05T02:22:00+00:00"
+            ],
+            [
+              "2026-11-05T02:24:00+00:00",
+              "2026-11-05T02:25:00+00:00"
+            ],
+            [
+              "2026-11-05T02:25:00+00:00",
+              "2026-11-05T02:26:00+00:00"
+            ],
+            [
+              "2026-11-05T02:27:30+00:00",
+              "2026-11-05T02:28:30+00:00"
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "queryName": "load5",
+      "query": "node_load5{instance=\"10.0.0.3:9100\"}",
+      "status": "RETURNED_DATA",
+      "series": [
+        {
+          "labels": {
+            "__name__": "node_load5",
+            "container": "node-exporter",
+            "endpoint": "http-metrics",
+            "instance": "10.0.0.3:9100",
+            "job": "node-exporter",
+            "namespace": "monitoring",
+            "pod": "kube-stack-prometheus-node-exporter-rq7tc",
+            "service": "kube-stack-prometheus-node-exporter"
+          },
+          "min": 2.05,
+          "max": 77.98,
+          "minEvaluationTime": "2026-11-05T02:05:30+00:00",
+          "maxEvaluationTime": "2026-11-05T02:20:30+00:00",
+          "validPoints": 66,
+          "firstEvaluationTime": "2026-11-05T02:05:00+00:00",
+          "lastEvaluationTime": "2026-11-05T02:45:00+00:00",
+          "missingIntervals": [
+            [
+              "2026-11-05T02:14:30+00:00",
+              "2026-11-05T02:20:30+00:00"
+            ],
+            [
+              "2026-11-05T02:21:00+00:00",
+              "2026-11-05T02:22:00+00:00"
+            ],
+            [
+              "2026-11-05T02:24:00+00:00",
+              "2026-11-05T02:25:00+00:00"
+            ],
+            [
+              "2026-11-05T02:25:00+00:00",
+              "2026-11-05T02:26:00+00:00"
+            ],
+            [
+              "2026-11-05T02:27:30+00:00",
+              "2026-11-05T02:28:30+00:00"
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "queryName": "non-idle",
+      "query": "1 - avg by (instance) (rate(node_cpu_seconds_total{instance=\"10.0.0.3:9100\",mode=\"idle\"}[2m]))",
+      "status": "RETURNED_DATA",
+      "series": [
+        {
+          "labels": {
+            "instance": "10.0.0.3:9100"
+          },
+          "min": 0.2592222222222249,
+          "max": 0.9959444444444431,
+          "minEvaluationTime": "2026-11-05T02:39:00+00:00",
+          "maxEvaluationTime": "2026-11-05T02:21:30+00:00",
+          "validPoints": 71,
+          "firstEvaluationTime": "2026-11-05T02:05:00+00:00",
+          "lastEvaluationTime": "2026-11-05T02:45:00+00:00",
+          "missingIntervals": [
+            [
+              "2026-11-05T02:15:30+00:00",
+              "2026-11-05T02:21:00+00:00"
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "queryName": "disk-read-latency",
+      "query": "rate(node_disk_read_time_seconds_total{instance=\"10.0.0.3:9100\",device=\"vda\"}[2m]) / rate(node_disk_reads_completed_total{instance=\"10.0.0.3:9100\",device=\"vda\"}[2m])",
+      "status": "RETURNED_DATA",
+      "series": [
+        {
+          "labels": {
+            "container": "node-exporter",
+            "device": "vda",
+            "endpoint": "http-metrics",
+            "instance": "10.0.0.3:9100",
+            "job": "node-exporter",
+            "namespace": "monitoring",
+            "pod": "kube-stack-prometheus-node-exporter-rq7tc",
+            "service": "kube-stack-prometheus-node-exporter"
+          },
+          "min": 0.00024636946977371605,
+          "max": 0.02663959390862939,
+          "minEvaluationTime": "2026-11-05T02:33:30+00:00",
+          "maxEvaluationTime": "2026-11-05T02:26:00+00:00",
+          "validPoints": 71,
+          "firstEvaluationTime": "2026-11-05T02:05:00+00:00",
+          "lastEvaluationTime": "2026-11-05T02:45:00+00:00",
+          "missingIntervals": [
+            [
+              "2026-11-05T02:15:30+00:00",
+              "2026-11-05T02:21:00+00:00"
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "queryName": "disk-write-latency",
+      "query": "rate(node_disk_write_time_seconds_total{instance=\"10.0.0.3:9100\",device=\"vda\"}[2m]) / rate(node_disk_writes_completed_total{instance=\"10.0.0.3:9100\",device=\"vda\"}[2m])",
+      "status": "RETURNED_DATA",
+      "series": [
+        {
+          "labels": {
+            "container": "node-exporter",
+            "device": "vda",
+            "endpoint": "http-metrics",
+            "instance": "10.0.0.3:9100",
+            "job": "node-exporter",
+            "namespace": "monitoring",
+            "pod": "kube-stack-prometheus-node-exporter-rq7tc",
+            "service": "kube-stack-prometheus-node-exporter"
+          },
+          "min": 0.0012447074891873088,
+          "max": 0.018659624413145583,
+          "minEvaluationTime": "2026-11-05T02:39:00+00:00",
+          "maxEvaluationTime": "2026-11-05T02:26:00+00:00",
+          "validPoints": 71,
+          "firstEvaluationTime": "2026-11-05T02:05:00+00:00",
+          "lastEvaluationTime": "2026-11-05T02:45:00+00:00",
+          "missingIntervals": [
+            [
+              "2026-11-05T02:15:30+00:00",
+              "2026-11-05T02:21:00+00:00"
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "queryName": "throttle-seconds",
+      "query": null,
+      "status": "NOT_AVAILABLE_UNKNOWN_NOT_ZERO",
+      "series": []
+    },
+    {
+      "queryName": "throttle-period-ratio",
+      "query": "sum by (namespace,pod) (rate(container_cpu_cfs_throttled_periods_total{node=\"devops\",container!=\"\",container!=\"POD\",pod!=\"\"}[2m])) / sum by (namespace,pod) (rate(container_cpu_cfs_periods_total{node=\"devops\",container!=\"\",container!=\"POD\",pod!=\"\"}[2m]))",
+      "status": "RETURNED_DATA",
+      "series": [
+        {
+          "labels": {
+            "namespace": "ns-devops",
+            "pod": "jenkins-build-log-filebeat-kafka-7868f4dbf7-hrgzg"
+          },
+          "min": 0.15625,
+          "max": 0.7647058823529412,
+          "minEvaluationTime": "2026-11-05T02:40:00+00:00",
+          "maxEvaluationTime": "2026-11-05T02:15:30+00:00",
+          "validPoints": 60,
+          "firstEvaluationTime": "2026-11-05T02:05:00+00:00",
+          "lastEvaluationTime": "2026-11-05T02:45:00+00:00",
+          "missingIntervals": [
+            [
+              "2026-11-05T02:16:00+00:00",
+              "2026-11-05T02:27:00+00:00"
+            ]
+          ]
+        },
+        {
+          "labels": {
+            "namespace": "petclinic",
+            "pod": "petclinic-7b9fc47976-z9q2p"
+          },
+          "min": 0.0,
+          "max": 0.7231404958677685,
+          "minEvaluationTime": "2026-11-05T02:09:30+00:00",
+          "maxEvaluationTime": "2026-11-05T02:28:30+00:00",
+          "validPoints": 60,
+          "firstEvaluationTime": "2026-11-05T02:05:00+00:00",
+          "lastEvaluationTime": "2026-11-05T02:45:00+00:00",
+          "missingIntervals": [
+            [
+              "2026-11-05T02:16:00+00:00",
+              "2026-11-05T02:27:00+00:00"
+            ]
+          ]
+        },
+        {
+          "labels": {
+            "namespace": "petclinic",
+            "pod": "petclinic-7b9fc47976-v7pbv"
+          },
+          "min": 0.0,
+          "max": 0.6949704698420652,
+          "minEvaluationTime": "2026-11-05T02:05:00+00:00",
+          "maxEvaluationTime": "2026-11-05T02:27:00+00:00",
+          "validPoints": 60,
+          "firstEvaluationTime": "2026-11-05T02:05:00+00:00",
+          "lastEvaluationTime": "2026-11-05T02:45:00+00:00",
+          "missingIntervals": [
+            [
+              "2026-11-05T02:16:00+00:00",
+              "2026-11-05T02:27:00+00:00"
+            ]
+          ]
+        },
+        {
+          "labels": {
+            "namespace": "petclinic",
+            "pod": "petclinic-7b9fc47976-7gqqx"
+          },
+          "min": 0.0025974025974025974,
+          "max": 0.6931818181818182,
+          "minEvaluationTime": "2026-11-05T02:45:00+00:00",
+          "maxEvaluationTime": "2026-11-05T02:26:30+00:00",
+          "validPoints": 61,
+          "firstEvaluationTime": "2026-11-05T02:05:00+00:00",
+          "lastEvaluationTime": "2026-11-05T02:45:00+00:00",
+          "missingIntervals": [
+            [
+              "2026-11-05T02:16:00+00:00",
+              "2026-11-05T02:26:30+00:00"
+            ]
+          ]
+        },
+        {
+          "labels": {
+            "namespace": "argocd",
+            "pod": "argocd-application-controller-0"
+          },
+          "min": 0.014844804318488529,
+          "max": 0.5932584269662922,
+          "minEvaluationTime": "2026-11-05T02:33:00+00:00",
+          "maxEvaluationTime": "2026-11-05T02:14:30+00:00",
+          "validPoints": 61,
+          "firstEvaluationTime": "2026-11-05T02:05:00+00:00",
+          "lastEvaluationTime": "2026-11-05T02:45:00+00:00",
+          "missingIntervals": [
+            [
+              "2026-11-05T02:16:00+00:00",
+              "2026-11-05T02:26:30+00:00"
+            ]
+          ]
+        },
+        {
+          "labels": {
+            "namespace": "ns-devops",
+            "pod": "jenkins-build-log-filebeat-es-65699f8fd9-ks2h4"
+          },
+          "min": 0.1724137931034483,
+          "max": 0.5172413793103449,
+          "minEvaluationTime": "2026-11-05T02:39:30+00:00",
+          "maxEvaluationTime": "2026-11-05T02:15:30+00:00",
+          "validPoints": 60,
+          "firstEvaluationTime": "2026-11-05T02:05:00+00:00",
+          "lastEvaluationTime": "2026-11-05T02:45:00+00:00",
+          "missingIntervals": [
+            [
+              "2026-11-05T02:16:00+00:00",
+              "2026-11-05T02:27:00+00:00"
+            ]
+          ]
+        },
+        {
+          "labels": {
+            "namespace": "cook",
+            "pod": "cook-blackbox-847b6b89f-r2zzg"
+          },
+          "min": 0.0,
+          "max": 0.3819444444444444,
+          "minEvaluationTime": "2026-11-05T02:39:00+00:00",
+          "maxEvaluationTime": "2026-11-05T02:15:00+00:00",
+          "validPoints": 60,
+          "firstEvaluationTime": "2026-11-05T02:05:00+00:00",
+          "lastEvaluationTime": "2026-11-05T02:45:00+00:00",
+          "missingIntervals": [
+            [
+              "2026-11-05T02:16:00+00:00",
+              "2026-11-05T02:27:00+00:00"
+            ]
+          ]
+        },
+        {
+          "labels": {
+            "namespace": "ns-devops",
+            "pod": "portainer-687ffb46f7-zr77p"
+          },
+          "min": 0.0,
+          "max": 0.25,
+          "minEvaluationTime": "2026-11-05T02:05:00+00:00",
+          "maxEvaluationTime": "2026-11-05T02:27:00+00:00",
+          "validPoints": 60,
+          "firstEvaluationTime": "2026-11-05T02:05:00+00:00",
+          "lastEvaluationTime": "2026-11-05T02:45:00+00:00",
+          "missingIntervals": [
+            [
+              "2026-11-05T02:16:00+00:00",
+              "2026-11-05T02:27:00+00:00"
+            ]
+          ]
+        },
+        {
+          "labels": {
+            "namespace": "default",
+            "pod": "kibana-687c479669-vrx77"
+          },
+          "min": 0.0,
+          "max": 0.21928460342146192,
+          "minEvaluationTime": "2026-11-05T02:31:30+00:00",
+          "maxEvaluationTime": "2026-11-05T02:29:00+00:00",
+          "validPoints": 60,
+          "firstEvaluationTime": "2026-11-05T02:05:00+00:00",
+          "lastEvaluationTime": "2026-11-05T02:45:00+00:00",
+          "missingIntervals": [
+            [
+              "2026-11-05T02:16:00+00:00",
+              "2026-11-05T02:27:00+00:00"
+            ]
+          ]
+        },
+        {
+          "labels": {
+            "namespace": "monitoring",
+            "pod": "alertmanager-platform-0"
+          },
+          "min": 0.0,
+          "max": 0.13333333333333333,
+          "minEvaluationTime": "2026-11-05T02:05:00+00:00",
+          "maxEvaluationTime": "2026-11-05T02:16:00+00:00",
+          "validPoints": 61,
+          "firstEvaluationTime": "2026-11-05T02:05:00+00:00",
+          "lastEvaluationTime": "2026-11-05T02:45:00+00:00",
+          "missingIntervals": [
+            [
+              "2026-11-05T02:16:00+00:00",
+              "2026-11-05T02:26:30+00:00"
+            ]
+          ]
+        },
+        {
+          "labels": {
+            "namespace": "cert-manager",
+            "pod": "cert-manager-webhook-67cdc4d5ff-qwb9b"
+          },
+          "min": 0.0,
+          "max": 0.1,
+          "minEvaluationTime": "2026-11-05T02:05:00+00:00",
+          "maxEvaluationTime": "2026-11-05T02:27:00+00:00",
+          "validPoints": 60,
+          "firstEvaluationTime": "2026-11-05T02:05:00+00:00",
+          "lastEvaluationTime": "2026-11-05T02:45:00+00:00",
+          "missingIntervals": [
+            [
+              "2026-11-05T02:16:00+00:00",
+              "2026-11-05T02:27:00+00:00"
+            ]
+          ]
+        },
+        {
+          "labels": {
+            "namespace": "petclinic",
+            "pod": "clinic-message-worker-b887b9bbb-m6zld"
+          },
+          "min": 0.0,
+          "max": 0.09090909090909091,
+          "minEvaluationTime": "2026-11-05T02:06:30+00:00",
+          "maxEvaluationTime": "2026-11-05T02:15:30+00:00",
+          "validPoints": 61,
+          "firstEvaluationTime": "2026-11-05T02:05:00+00:00",
+          "lastEvaluationTime": "2026-11-05T02:45:00+00:00",
+          "missingIntervals": [
+            [
+              "2026-11-05T02:16:00+00:00",
+              "2026-11-05T02:26:30+00:00"
+            ]
+          ]
+        },
+        {
+          "labels": {
+            "namespace": "devops-lab",
+            "pod": "tls-lab-9c5dc65fb-stvwc"
+          },
+          "min": 0.0,
+          "max": 0.08333333333333333,
+          "minEvaluationTime": "2026-11-05T02:05:00+00:00",
+          "maxEvaluationTime": "2026-11-05T02:15:30+00:00",
+          "validPoints": 61,
+          "firstEvaluationTime": "2026-11-05T02:05:00+00:00",
+          "lastEvaluationTime": "2026-11-05T02:45:00+00:00",
+          "missingIntervals": [
+            [
+              "2026-11-05T02:16:00+00:00",
+              "2026-11-05T02:26:30+00:00"
+            ]
+          ]
+        },
+        {
+          "labels": {
+            "namespace": "cert-manager",
+            "pod": "cert-manager-cainjector-7879fccd84-qz7cr"
+          },
+          "min": 0.0,
+          "max": 0.06250394861535222,
+          "minEvaluationTime": "2026-11-05T02:07:00+00:00",
+          "maxEvaluationTime": "2026-11-05T02:27:00+00:00",
+          "validPoints": 60,
+          "firstEvaluationTime": "2026-11-05T02:05:00+00:00",
+          "lastEvaluationTime": "2026-11-05T02:45:00+00:00",
+          "missingIntervals": [
+            [
+              "2026-11-05T02:16:00+00:00",
+              "2026-11-05T02:27:00+00:00"
+            ]
+          ]
+        },
+        {
+          "labels": {
+            "namespace": "sonarqube",
+            "pod": "sonarqube-sonarqube-0"
+          },
+          "min": 0.0,
+          "max": 0.053140096618357495,
+          "minEvaluationTime": "2026-11-05T02:05:30+00:00",
+          "maxEvaluationTime": "2026-11-05T02:16:00+00:00",
+          "validPoints": 60,
+          "firstEvaluationTime": "2026-11-05T02:05:00+00:00",
+          "lastEvaluationTime": "2026-11-05T02:45:00+00:00",
+          "missingIntervals": [
+            [
+              "2026-11-05T02:16:00+00:00",
+              "2026-11-05T02:27:00+00:00"
+            ]
+          ]
+        },
+        {
+          "labels": {
+            "namespace": "cert-manager",
+            "pod": "cert-manager-699c74778d-ggp9m"
+          },
+          "min": 0.0,
+          "max": 0.05123332786560465,
+          "minEvaluationTime": "2026-11-05T02:05:00+00:00",
+          "maxEvaluationTime": "2026-11-05T02:27:00+00:00",
+          "validPoints": 60,
+          "firstEvaluationTime": "2026-11-05T02:05:00+00:00",
+          "lastEvaluationTime": "2026-11-05T02:45:00+00:00",
+          "missingIntervals": [
+            [
+              "2026-11-05T02:16:00+00:00",
+              "2026-11-05T02:27:00+00:00"
+            ]
+          ]
+        },
+        {
+          "labels": {
+            "namespace": "monitoring",
+            "pod": "otel-collector-84f8575866-l6vrx"
+          },
+          "min": 0.0,
+          "max": 0.046511627906976744,
+          "minEvaluationTime": "2026-11-05T02:05:00+00:00",
+          "maxEvaluationTime": "2026-11-05T02:28:30+00:00",
+          "validPoints": 61,
+          "firstEvaluationTime": "2026-11-05T02:05:00+00:00",
+          "lastEvaluationTime": "2026-11-05T02:45:00+00:00",
+          "missingIntervals": [
+            [
+              "2026-11-05T02:16:00+00:00",
+              "2026-11-05T02:26:30+00:00"
+            ]
+          ]
+        },
+        {
+          "labels": {
+            "namespace": "monitoring",
+            "pod": "kube-stack-grafana-7ff6b767dd-tk6pq"
+          },
+          "min": 0.0,
+          "max": 0.045081967213114756,
+          "minEvaluationTime": "2026-11-05T02:26:30+00:00",
+          "maxEvaluationTime": "2026-11-05T02:14:00+00:00",
+          "validPoints": 61,
+          "firstEvaluationTime": "2026-11-05T02:05:00+00:00",
+          "lastEvaluationTime": "2026-11-05T02:45:00+00:00",
+          "missingIntervals": [
+            [
+              "2026-11-05T02:16:00+00:00",
+              "2026-11-05T02:26:30+00:00"
+            ]
+          ]
+        },
+        {
+          "labels": {
+            "namespace": "rollouts-lab",
+            "pod": "argo-rollouts-7c97f7549c-vf6nq"
+          },
+          "min": 0.0,
+          "max": 0.033310928553647,
+          "minEvaluationTime": "2026-11-05T02:05:00+00:00",
+          "maxEvaluationTime": "2026-11-05T02:27:00+00:00",
+          "validPoints": 60,
+          "firstEvaluationTime": "2026-11-05T02:05:00+00:00",
+          "lastEvaluationTime": "2026-11-05T02:45:00+00:00",
+          "missingIntervals": [
+            [
+              "2026-11-05T02:16:00+00:00",
+              "2026-11-05T02:27:00+00:00"
+            ]
+          ]
+        },
+        {
+          "labels": {
+            "namespace": "harbor",
+            "pod": "harbor-registry-5d4c9f9f96-z5vw5"
+          },
+          "min": 0.0,
+          "max": 0.029713035613284533,
+          "minEvaluationTime": "2026-11-05T02:06:00+00:00",
+          "maxEvaluationTime": "2026-11-05T02:27:30+00:00",
+          "validPoints": 60,
+          "firstEvaluationTime": "2026-11-05T02:05:00+00:00",
+          "lastEvaluationTime": "2026-11-05T02:45:00+00:00",
+          "missingIntervals": [
+            [
+              "2026-11-05T02:16:00+00:00",
+              "2026-11-05T02:27:00+00:00"
+            ]
+          ]
+        },
+        {
+          "labels": {
+            "namespace": "devsecops-system",
+            "pod": "kyverno-admission-controller-848fb9647d-8s5zj"
+          },
+          "min": 0.0,
+          "max": 0.026365348399246705,
+          "minEvaluationTime": "2026-11-05T02:05:00+00:00",
+          "maxEvaluationTime": "2026-11-05T02:14:00+00:00",
+          "validPoints": 61,
+          "firstEvaluationTime": "2026-11-05T02:05:00+00:00",
+          "lastEvaluationTime": "2026-11-05T02:45:00+00:00",
+          "missingIntervals": [
+            [
+              "2026-11-05T02:16:00+00:00",
+              "2026-11-05T02:26:30+00:00"
+            ]
+          ]
+        },
+        {
+          "labels": {
+            "namespace": "cook",
+            "pod": "cook-58b5b57884-qr7tp"
+          },
+          "min": 0.0,
+          "max": 0.024965781549411443,
+          "minEvaluationTime": "2026-11-05T02:05:00+00:00",
+          "maxEvaluationTime": "2026-11-05T02:15:30+00:00",
+          "validPoints": 61,
+          "firstEvaluationTime": "2026-11-05T02:05:00+00:00",
+          "lastEvaluationTime": "2026-11-05T02:45:00+00:00",
+          "missingIntervals": [
+            [
+              "2026-11-05T02:16:00+00:00",
+              "2026-11-05T02:26:30+00:00"
+            ]
+          ]
+        },
+        {
+          "labels": {
+            "namespace": "devsecops-system",
+            "pod": "platform-falco-fwwfd"
+          },
+          "min": 0.0,
+          "max": 0.02430133657351154,
+          "minEvaluationTime": "2026-11-05T02:06:30+00:00",
+          "maxEvaluationTime": "2026-11-05T02:28:00+00:00",
+          "validPoints": 61,
+          "firstEvaluationTime": "2026-11-05T02:05:00+00:00",
+          "lastEvaluationTime": "2026-11-05T02:45:00+00:00",
+          "missingIntervals": [
+            [
+              "2026-11-05T02:16:00+00:00",
+              "2026-11-05T02:26:30+00:00"
+            ]
+          ]
+        },
+        {
+          "labels": {
+            "namespace": "data-infra",
+            "pod": "rabbitmq-0"
+          },
+          "min": 0.0,
+          "max": 0.017094017094017096,
+          "minEvaluationTime": "2026-11-05T02:05:00+00:00",
+          "maxEvaluationTime": "2026-11-05T02:15:30+00:00",
+          "validPoints": 60,
+          "firstEvaluationTime": "2026-11-05T02:05:00+00:00",
+          "lastEvaluationTime": "2026-11-05T02:45:00+00:00",
+          "missingIntervals": [
+            [
+              "2026-11-05T02:16:00+00:00",
+              "2026-11-05T02:27:00+00:00"
+            ]
+          ]
+        },
+        {
+          "labels": {
+            "namespace": "monitoring",
+            "pod": "loki-0"
+          },
+          "min": 0.0,
+          "max": 0.010638297872340425,
+          "minEvaluationTime": "2026-11-05T02:05:30+00:00",
+          "maxEvaluationTime": "2026-11-05T02:15:00+00:00",
+          "validPoints": 60,
+          "firstEvaluationTime": "2026-11-05T02:05:00+00:00",
+          "lastEvaluationTime": "2026-11-05T02:45:00+00:00",
+          "missingIntervals": [
+            [
+              "2026-11-05T02:16:00+00:00",
+              "2026-11-05T02:27:00+00:00"
+            ]
+          ]
+        },
+        {
+          "labels": {
+            "namespace": "ns-bigdata",
+            "pod": "spark-operator-webhook-7f97c86cc7-z7lz2"
+          },
+          "min": 0.0,
+          "max": 0.00361697199664639,
+          "minEvaluationTime": "2026-11-05T02:05:00+00:00",
+          "maxEvaluationTime": "2026-11-05T02:27:30+00:00",
+          "validPoints": 61,
+          "firstEvaluationTime": "2026-11-05T02:05:00+00:00",
+          "lastEvaluationTime": "2026-11-05T02:45:00+00:00",
+          "missingIntervals": [
+            [
+              "2026-11-05T02:16:00+00:00",
+              "2026-11-05T02:26:30+00:00"
+            ]
+          ]
+        },
+        {
+          "labels": {
+            "namespace": "ns-data",
+            "pod": "mysql-replica-65bfcddfc9-pd4fq"
+          },
+          "min": 0.0,
+          "max": 0.0013154524509558817,
+          "minEvaluationTime": "2026-11-05T02:05:00+00:00",
+          "maxEvaluationTime": "2026-11-05T02:14:00+00:00",
+          "validPoints": 60,
+          "firstEvaluationTime": "2026-11-05T02:05:00+00:00",
+          "lastEvaluationTime": "2026-11-05T02:45:00+00:00",
+          "missingIntervals": [
+            [
+              "2026-11-05T02:16:00+00:00",
+              "2026-11-05T02:27:00+00:00"
+            ]
+          ]
+        },
+        {
+          "labels": {
+            "namespace": "harbor",
+            "pod": "harbor-trivy-0"
+          },
+          "min": 0.0,
+          "max": 0.0,
+          "minEvaluationTime": "2026-11-05T02:05:00+00:00",
+          "maxEvaluationTime": "2026-11-05T02:05:00+00:00",
+          "validPoints": 61,
+          "firstEvaluationTime": "2026-11-05T02:05:00+00:00",
+          "lastEvaluationTime": "2026-11-05T02:45:00+00:00",
+          "missingIntervals": [
+            [
+              "2026-11-05T02:16:00+00:00",
+              "2026-11-05T02:26:30+00:00"
+            ]
+          ]
+        },
+        {
+          "labels": {
+            "namespace": "ns-apps",
+            "pod": "hello-app-6796587b9f-pvqsv"
+          },
+          "min": 0.0,
+          "max": 0.0,
+          "minEvaluationTime": "2026-11-05T02:05:00+00:00",
+          "maxEvaluationTime": "2026-11-05T02:05:00+00:00",
+          "validPoints": 61,
+          "firstEvaluationTime": "2026-11-05T02:05:00+00:00",
+          "lastEvaluationTime": "2026-11-05T02:45:00+00:00",
+          "missingIntervals": [
+            [
+              "2026-11-05T02:16:00+00:00",
+              "2026-11-05T02:26:30+00:00"
+            ]
+          ]
+        },
+        {
+          "labels": {
+            "namespace": "ns-bigdata",
+            "pod": "kafka-5dc9ddf5fc-dqd4d"
+          },
+          "min": 0.0,
+          "max": 0.0,
+          "minEvaluationTime": "2026-11-05T02:05:00+00:00",
+          "maxEvaluationTime": "2026-11-05T02:05:00+00:00",
+          "validPoints": 60,
+          "firstEvaluationTime": "2026-11-05T02:05:00+00:00",
+          "lastEvaluationTime": "2026-11-05T02:45:00+00:00",
+          "missingIntervals": [
+            [
+              "2026-11-05T02:16:00+00:00",
+              "2026-11-05T02:27:00+00:00"
+            ]
+          ]
+        },
+        {
+          "labels": {
+            "namespace": "ns-bigdata",
+            "pod": "spark-operator-controller-69dc785995-5jzdc"
+          },
+          "min": 0.0,
+          "max": 0.0,
+          "minEvaluationTime": "2026-11-05T02:05:00+00:00",
+          "maxEvaluationTime": "2026-11-05T02:05:00+00:00",
+          "validPoints": 60,
+          "firstEvaluationTime": "2026-11-05T02:05:00+00:00",
+          "lastEvaluationTime": "2026-11-05T02:45:00+00:00",
+          "missingIntervals": [
+            [
+              "2026-11-05T02:16:00+00:00",
+              "2026-11-05T02:27:00+00:00"
+            ]
+          ]
+        },
+        {
+          "labels": {
+            "namespace": "ns-devops",
+            "pod": "flaresolverr-df88978dd-cpmfg"
+          },
+          "min": 0.0,
+          "max": 0.0,
+          "minEvaluationTime": "2026-11-05T02:05:00+00:00",
+          "maxEvaluationTime": "2026-11-05T02:05:00+00:00",
+          "validPoints": 23,
+          "firstEvaluationTime": "2026-11-05T02:05:00+00:00",
+          "lastEvaluationTime": "2026-11-05T02:16:00+00:00",
+          "missingIntervals": []
+        },
+        {
+          "labels": {
+            "namespace": "ns-devops",
+            "pod": "gitlab-runner-54d84c66f-h7djt"
+          },
+          "min": 0.0,
+          "max": 0.0,
+          "minEvaluationTime": "2026-11-05T02:05:00+00:00",
+          "maxEvaluationTime": "2026-11-05T02:05:00+00:00",
+          "validPoints": 61,
+          "firstEvaluationTime": "2026-11-05T02:05:00+00:00",
+          "lastEvaluationTime": "2026-11-05T02:45:00+00:00",
+          "missingIntervals": [
+            [
+              "2026-11-05T02:16:00+00:00",
+              "2026-11-05T02:26:30+00:00"
+            ]
+          ]
+        },
+        {
+          "labels": {
+            "namespace": "ns-devops",
+            "pod": "jenkins-59c6dd9f5c-dw6kg"
+          },
+          "min": 0.0,
+          "max": 0.0,
+          "minEvaluationTime": "2026-11-05T02:05:00+00:00",
+          "maxEvaluationTime": "2026-11-05T02:05:00+00:00",
+          "validPoints": 60,
+          "firstEvaluationTime": "2026-11-05T02:05:00+00:00",
+          "lastEvaluationTime": "2026-11-05T02:45:00+00:00",
+          "missingIntervals": [
+            [
+              "2026-11-05T02:16:00+00:00",
+              "2026-11-05T02:27:00+00:00"
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "queryName": "k3s-process-cpu-kubelet-endpoint",
+      "query": "rate(process_cpu_seconds_total{job=\"kubelet\",instance=\"10.0.0.3:10250\"}[2m])",
+      "status": "RETURNED_DATA",
+      "series": [
+        {
+          "labels": {
+            "endpoint": "https-metrics",
+            "instance": "10.0.0.3:10250",
+            "job": "kubelet",
+            "metrics_path": "/metrics",
+            "namespace": "kube-system",
+            "node": "devops",
+            "service": "kube-stack-kube-prometheus-kubelet"
+          },
+          "min": 0.27777777777777773,
+          "max": 1.3794310284485771,
+          "minEvaluationTime": "2026-11-05T02:38:30+00:00",
+          "maxEvaluationTime": "2026-11-05T02:15:00+00:00",
+          "validPoints": 55,
+          "firstEvaluationTime": "2026-11-05T02:05:00+00:00",
+          "lastEvaluationTime": "2026-11-05T02:45:00+00:00",
+          "missingIntervals": [
+            [
+              "2026-11-05T02:15:00+00:00",
+              "2026-11-05T02:28:30+00:00"
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "queryName": "load-recent",
+      "query": "node_load1{instance=\"10.0.0.3:9100\"}",
+      "status": "RETURNED_DATA",
+      "series": [
+        {
+          "labels": {
+            "__name__": "node_load1",
+            "container": "node-exporter",
+            "endpoint": "http-metrics",
+            "instance": "10.0.0.3:9100",
+            "job": "node-exporter",
+            "namespace": "monitoring",
+            "pod": "kube-stack-prometheus-node-exporter-rq7tc",
+            "service": "kube-stack-prometheus-node-exporter"
+          },
+          "min": 1.35,
+          "max": 6.1,
+          "minEvaluationTime": "2026-11-05T03:18:41+00:00",
+          "maxEvaluationTime": "2026-11-05T03:14:41+00:00",
+          "validPoints": 31,
+          "firstEvaluationTime": "2026-11-05T03:07:41+00:00",
+          "lastEvaluationTime": "2026-11-05T03:37:41+00:00",
+          "missingIntervals": []
+        }
+      ]
+    },
+    {
+      "queryName": "runnable-recent",
+      "query": "node_procs_running{instance=\"10.0.0.3:9100\"}",
+      "status": "RETURNED_DATA",
+      "series": [
+        {
+          "labels": {
+            "__name__": "node_procs_running",
+            "container": "node-exporter",
+            "endpoint": "http-metrics",
+            "instance": "10.0.0.3:9100",
+            "job": "node-exporter",
+            "namespace": "monitoring",
+            "pod": "kube-stack-prometheus-node-exporter-rq7tc",
+            "service": "kube-stack-prometheus-node-exporter"
+          },
+          "min": 1.0,
+          "max": 19.0,
+          "minEvaluationTime": "2026-11-05T03:14:41+00:00",
+          "maxEvaluationTime": "2026-11-05T03:31:41+00:00",
+          "validPoints": 31,
+          "firstEvaluationTime": "2026-11-05T03:07:41+00:00",
+          "lastEvaluationTime": "2026-11-05T03:37:41+00:00",
+          "missingIntervals": []
+        }
+      ]
+    },
+    {
+      "queryName": "blocked-recent",
+      "query": "node_procs_blocked{instance=\"10.0.0.3:9100\"}",
+      "status": "RETURNED_DATA",
+      "series": [
+        {
+          "labels": {
+            "__name__": "node_procs_blocked",
+            "container": "node-exporter",
+            "endpoint": "http-metrics",
+            "instance": "10.0.0.3:9100",
+            "job": "node-exporter",
+            "namespace": "monitoring",
+            "pod": "kube-stack-prometheus-node-exporter-rq7tc",
+            "service": "kube-stack-prometheus-node-exporter"
+          },
+          "min": 0.0,
+          "max": 0.0,
+          "minEvaluationTime": "2026-11-05T03:07:41+00:00",
+          "maxEvaluationTime": "2026-11-05T03:07:41+00:00",
+          "validPoints": 31,
+          "firstEvaluationTime": "2026-11-05T03:07:41+00:00",
+          "lastEvaluationTime": "2026-11-05T03:37:41+00:00",
+          "missingIntervals": []
+        }
+      ]
+    }
+  ],
+  "currentProcessContainerJoin": [
+    {
+      "pid": 1043,
+      "ppid": 1,
+      "state": "Ssl",
+      "psLifetimeCpuPercent": 55.0,
+      "psMemoryPercent": 6.9,
+      "comm": "k3s-server",
+      "cpuWindowSeconds": 2.0065496309998707,
+      "cpuCoresDuringWindow": 0.2691186859559094,
+      "cgroup": "0::/system.slice/k3s.service\n",
+      "podUidFromCgroup": null,
+      "podIdentity": null,
+      "resourceValuesFromHistoricalKSM": null,
+      "twoMinuteContainerCpuRateFromProm": null,
+      "twoMinuteThrottlePeriodRatioFromProm": null,
+      "association": "HOST_SERVICE",
+      "timeCaution": "PID ~2s interval vs Prometheus historical evaluation/2m rates; do not equate exact instantaneous values"
+    },
+    {
+      "pid": 25250,
+      "ppid": 19211,
+      "state": "Sl",
+      "psLifetimeCpuPercent": 10.0,
+      "psMemoryPercent": 7.1,
+      "comm": "java",
+      "cpuWindowSeconds": 2.0065496309998707,
+      "cpuCoresDuringWindow": 0.05482047306509265,
+      "cgroup": "0::/kubepods.slice/kubepods-burstable.slice/kubepods-burstable-pod12cdfb93_e6d1_4c30_b71e_a23bf9f07ee8.slice/cri-containerd-09817e5f652fe79343d681653b0ca93c892cd98630b2d058fd5681dca1b03b90.scope\n",
+      "podUidFromCgroup": "12cdfb93-e6d1-4c30-b71e-a23bf9f07ee8",
+      "podIdentity": {
+        "namespace": "default",
+        "pod": "elasticsearch-6dddd94847-wtb9z",
+        "uid": "12cdfb93-e6d1-4c30-b71e-a23bf9f07ee8",
+        "node": "devops"
+      },
+      "resourceValuesFromHistoricalKSM": {
+        "requests": [
+          {
+            "container": "elasticsearch",
+            "resource": "memory",
+            "unit": "byte",
+            "value": "1073741824"
+          }
+        ],
+        "limits": [
+          {
+            "container": "elasticsearch",
+            "resource": "memory",
+            "unit": "byte",
+            "value": "2147483648"
+          }
+        ]
+      },
+      "twoMinuteContainerCpuRateFromProm": "0.04674180123508972",
+      "twoMinuteThrottlePeriodRatioFromProm": null,
+      "association": "CGROUP_UID_MATCH",
+      "timeCaution": "PID ~2s interval vs Prometheus historical evaluation/2m rates; do not equate exact instantaneous values"
+    },
+    {
+      "pid": 22733,
+      "ppid": 22708,
+      "state": "Sl",
+      "psLifetimeCpuPercent": 1.8,
+      "psMemoryPercent": 2.4,
+      "comm": "java",
+      "cpuWindowSeconds": 2.0065496309998707,
+      "cpuCoresDuringWindow": 0.04983679369553877,
+      "cgroup": "0::/kubepods.slice/kubepods-burstable.slice/kubepods-burstable-pod0c3828da_1606_4264_8b8f_c486b610a68c.slice/cri-containerd-d7be98d6b44bb268da9205a9ed1d0b5694f6cd14fc3b693ed40ef70de6721a2e.scope\n",
+      "podUidFromCgroup": "0c3828da-1606-4264-8b8f-c486b610a68c",
+      "podIdentity": {
+        "namespace": "ns-devops",
+        "pod": "jenkins-59c6dd9f5c-dw6kg",
+        "uid": "0c3828da-1606-4264-8b8f-c486b610a68c",
+        "node": "devops"
+      },
+      "resourceValuesFromHistoricalKSM": {
+        "requests": [
+          {
+            "container": "jenkins",
+            "resource": "cpu",
+            "unit": "core",
+            "value": "0.5"
+          },
+          {
+            "container": "jenkins",
+            "resource": "memory",
+            "unit": "byte",
+            "value": "1073741824"
+          }
+        ],
+        "limits": [
+          {
+            "container": "jenkins",
+            "resource": "cpu",
+            "unit": "core",
+            "value": "2"
+          },
+          {
+            "container": "jenkins",
+            "resource": "memory",
+            "unit": "byte",
+            "value": "3221225472"
+          }
+        ]
+      },
+      "twoMinuteContainerCpuRateFromProm": "0.009249966747106868",
+      "twoMinuteThrottlePeriodRatioFromProm": "0",
+      "association": "CGROUP_UID_MATCH",
+      "timeCaution": "PID ~2s interval vs Prometheus historical evaluation/2m rates; do not equate exact instantaneous values"
+    },
+    {
+      "pid": 11838,
+      "ppid": 11520,
+      "state": "Sl",
+      "psLifetimeCpuPercent": 4.3,
+      "psMemoryPercent": 3.9,
+      "comm": "MainThread",
+      "cpuWindowSeconds": 2.0065496309998707,
+      "cpuCoresDuringWindow": 0.04485311432598489,
+      "cgroup": "0::/kubepods.slice/kubepods-burstable.slice/kubepods-burstable-pod7a61d8e9_e483_4447_ac4b_d3dab00f0647.slice/cri-containerd-258f45fc82c69b792da673661729f361fb03cc7342f1749addd029ae9d2c11a4.scope\n",
+      "podUidFromCgroup": "7a61d8e9-e483-4447-ac4b-d3dab00f0647",
+      "podIdentity": {
+        "namespace": "default",
+        "pod": "kibana-687c479669-vrx77",
+        "uid": "7a61d8e9-e483-4447-ac4b-d3dab00f0647",
+        "node": "devops"
+      },
+      "resourceValuesFromHistoricalKSM": {
+        "requests": [
+          {
+            "container": "kibana",
+            "resource": "cpu",
+            "unit": "core",
+            "value": "0.05"
+          },
+          {
+            "container": "kibana",
+            "resource": "memory",
+            "unit": "byte",
+            "value": "536870912"
+          }
+        ],
+        "limits": [
+          {
+            "container": "kibana",
+            "resource": "memory",
+            "unit": "byte",
+            "value": "2147483648"
+          },
+          {
+            "container": "kibana",
+            "resource": "cpu",
+            "unit": "core",
+            "value": "0.5"
+          }
+        ]
+      },
+      "twoMinuteContainerCpuRateFromProm": "0.022670740826463934",
+      "twoMinuteThrottlePeriodRatioFromProm": "0.004897159647404506",
+      "association": "CGROUP_UID_MATCH",
+      "timeCaution": "PID ~2s interval vs Prometheus historical evaluation/2m rates; do not equate exact instantaneous values"
+    },
+    {
+      "pid": 22005,
+      "ppid": 16582,
+      "state": "Ssl",
+      "psLifetimeCpuPercent": 14.9,
+      "psMemoryPercent": 5.5,
+      "comm": "prometheus",
+      "cpuWindowSeconds": 2.0065496309998707,
+      "cpuCoresDuringWindow": 0.03488575558687714,
+      "cgroup": "0::/kubepods.slice/kubepods-burstable.slice/kubepods-burstable-pod5bd05d0b_9ac0_438e_96e9_91d76fbd2267.slice/cri-containerd-6571f89e841bf894bca72e1d9767811c686d560751e20808bedb5870f1ba056e.scope\n",
+      "podUidFromCgroup": "5bd05d0b-9ac0-438e-96e9-91d76fbd2267",
+      "podIdentity": {
+        "namespace": "monitoring",
+        "pod": "prometheus-kube-stack-kube-prometheus-prometheus-0",
+        "uid": "5bd05d0b-9ac0-438e-96e9-91d76fbd2267",
+        "node": "devops"
+      },
+      "resourceValuesFromHistoricalKSM": {
+        "requests": [
+          {
+            "container": "prometheus",
+            "resource": "memory",
+            "unit": "byte",
+            "value": "419430400"
+          }
+        ],
+        "limits": []
+      },
+      "twoMinuteContainerCpuRateFromProm": "0.12994271984226066",
+      "twoMinuteThrottlePeriodRatioFromProm": null,
+      "association": "CGROUP_UID_MATCH",
+      "timeCaution": "PID ~2s interval vs Prometheus historical evaluation/2m rates; do not equate exact instantaneous values"
+    },
+    {
+      "pid": 413932,
+      "ppid": 17800,
+      "state": "Rsl",
+      "psLifetimeCpuPercent": 7.2,
+      "psMemoryPercent": 0.4,
+      "comm": "falco",
+      "cpuWindowSeconds": 2.0065496309998707,
+      "cpuCoresDuringWindow": 0.03488575558687714,
+      "cgroup": "0::/kubepods.slice/kubepods-burstable.slice/kubepods-burstable-poddb37cfe6_5b99_46db_8aac_e86f0e6f6bc8.slice/cri-containerd-65d8af0a8c8fccf4ae5a1c4a4ecfcaac664d27427a109250c54ed506498c57cd.scope\n",
+      "podUidFromCgroup": "db37cfe6-5b99-46db-8aac-e86f0e6f6bc8",
+      "podIdentity": {
+        "namespace": "devsecops-system",
+        "pod": "platform-falco-fwwfd",
+        "uid": "db37cfe6-5b99-46db-8aac-e86f0e6f6bc8",
+        "node": "devops"
+      },
+      "resourceValuesFromHistoricalKSM": {
+        "requests": [
+          {
+            "container": "falco",
+            "resource": "memory",
+            "unit": "byte",
+            "value": "268435456"
+          },
+          {
+            "container": "falco",
+            "resource": "cpu",
+            "unit": "core",
+            "value": "0.1"
+          }
+        ],
+        "limits": [
+          {
+            "container": "falco",
+            "resource": "cpu",
+            "unit": "core",
+            "value": "0.5"
+          },
+          {
+            "container": "falco",
+            "resource": "memory",
+            "unit": "byte",
+            "value": "536870912"
+          }
+        ]
+      },
+      "twoMinuteContainerCpuRateFromProm": "0.05937027062046472",
+      "twoMinuteThrottlePeriodRatioFromProm": "0.0009267840593141798",
+      "association": "CGROUP_UID_MATCH",
+      "timeCaution": "PID ~2s interval vs Prometheus historical evaluation/2m rates; do not equate exact instantaneous values"
+    },
+    {
+      "pid": 20538,
+      "ppid": 18637,
+      "state": "Ssl",
+      "psLifetimeCpuPercent": 2.6,
+      "psMemoryPercent": 1.0,
+      "comm": "grafana",
+      "cpuWindowSeconds": 2.0065496309998707,
+      "cpuCoresDuringWindow": 0.03488575558687714,
+      "cgroup": "0::/kubepods.slice/kubepods-burstable.slice/kubepods-burstable-pod03c7022f_998e_4afa_9a7d_7b0debe26990.slice/cri-containerd-d2994b501ba99c0d1c18fc8bedf2dc4095ed9e01796f5a8c1417af302ae42138.scope\n",
+      "podUidFromCgroup": "03c7022f-998e-4afa-9a7d-7b0debe26990",
+      "podIdentity": {
+        "namespace": "monitoring",
+        "pod": "kube-stack-grafana-7ff6b767dd-tk6pq",
+        "uid": "03c7022f-998e-4afa-9a7d-7b0debe26990",
+        "node": "devops"
+      },
+      "resourceValuesFromHistoricalKSM": {
+        "requests": [
+          {
+            "container": "grafana",
+            "resource": "cpu",
+            "unit": "core",
+            "value": "0.05"
+          },
+          {
+            "container": "grafana",
+            "resource": "memory",
+            "unit": "byte",
+            "value": "268435456"
+          }
+        ],
+        "limits": [
+          {
+            "container": "grafana",
+            "resource": "cpu",
+            "unit": "core",
+            "value": "0.5"
+          },
+          {
+            "container": "grafana",
+            "resource": "memory",
+            "unit": "byte",
+            "value": "805306368"
+          }
+        ]
+      },
+      "twoMinuteContainerCpuRateFromProm": "0.025022321934423896",
+      "twoMinuteThrottlePeriodRatioFromProm": "0.0028598665395614875",
+      "association": "CGROUP_UID_MATCH",
+      "timeCaution": "PID ~2s interval vs Prometheus historical evaluation/2m rates; do not equate exact instantaneous values"
+    },
+    {
+      "pid": 2597,
+      "ppid": 1043,
+      "state": "Sl",
+      "psLifetimeCpuPercent": 10.5,
+      "psMemoryPercent": 1.0,
+      "comm": "containerd",
+      "cpuWindowSeconds": 2.0065496309998707,
+      "cpuCoresDuringWindow": 0.02990207621732326,
+      "cgroup": "0::/system.slice/k3s.service\n",
+      "podUidFromCgroup": null,
+      "podIdentity": null,
+      "resourceValuesFromHistoricalKSM": null,
+      "twoMinuteContainerCpuRateFromProm": null,
+      "twoMinuteThrottlePeriodRatioFromProm": null,
+      "association": "HOST_SERVICE",
+      "timeCaution": "PID ~2s interval vs Prometheus historical evaluation/2m rates; do not equate exact instantaneous values"
+    },
+    {
+      "pid": 425497,
+      "ppid": 16216,
+      "state": "Ssl",
+      "psLifetimeCpuPercent": 2.6,
+      "psMemoryPercent": 1.9,
+      "comm": "java",
+      "cpuWindowSeconds": 2.0065496309998707,
+      "cpuCoresDuringWindow": 0.019934717478215506,
+      "cgroup": "0::/kubepods.slice/kubepods-burstable.slice/kubepods-burstable-podd82f840e_aaea_40f9_b877_4628dcc2522f.slice/cri-containerd-5f87fec89305737a3ead1061fc3d6744d21dca59b3c4504ce166a5947fc82ddf.scope\n",
+      "podUidFromCgroup": "d82f840e-aaea-40f9-b877-4628dcc2522f",
+      "podIdentity": {
+        "namespace": "petclinic",
+        "pod": "petclinic-7b9fc47976-v7pbv",
+        "uid": "d82f840e-aaea-40f9-b877-4628dcc2522f",
+        "node": "devops"
+      },
+      "resourceValuesFromHistoricalKSM": {
+        "requests": [
+          {
+            "container": "petclinic",
+            "resource": "cpu",
+            "unit": "core",
+            "value": "0.1"
+          },
+          {
+            "container": "petclinic",
+            "resource": "memory",
+            "unit": "byte",
+            "value": "536870912"
+          }
+        ],
+        "limits": [
+          {
+            "container": "petclinic",
+            "resource": "cpu",
+            "unit": "core",
+            "value": "0.5"
+          },
+          {
+            "container": "petclinic",
+            "resource": "memory",
+            "unit": "byte",
+            "value": "805306368"
+          }
+        ]
+      },
+      "twoMinuteContainerCpuRateFromProm": "0.009132119194834407",
+      "twoMinuteThrottlePeriodRatioFromProm": "0.011111111111111112",
+      "association": "CGROUP_UID_MATCH",
+      "timeCaution": "PID ~2s interval vs Prometheus historical evaluation/2m rates; do not equate exact instantaneous values"
+    },
+    {
+      "pid": 13136,
+      "ppid": 12947,
+      "state": "Sl",
+      "psLifetimeCpuPercent": 2.1,
+      "psMemoryPercent": 0.3,
+      "comm": "filebeat",
+      "cpuWindowSeconds": 2.0065496309998707,
+      "cpuCoresDuringWindow": 0.019934717478215506,
+      "cgroup": "0::/kubepods.slice/kubepods-besteffort.slice/kubepods-besteffort-pod08007366_76e9_4147_9ff3_ed7110d51bdf.slice/cri-containerd-440f13eefdc0638440981c73b6220c215d1bbf0156436a2b206570027e5cbbe5.scope\n",
+      "podUidFromCgroup": "08007366-76e9-4147-9ff3-ed7110d51bdf",
+      "podIdentity": {
+        "namespace": "default",
+        "pod": "filebeat-gcwjg",
+        "uid": "08007366-76e9-4147-9ff3-ed7110d51bdf",
+        "node": "devops"
+      },
+      "resourceValuesFromHistoricalKSM": null,
+      "twoMinuteContainerCpuRateFromProm": "0.01790667712084237",
+      "twoMinuteThrottlePeriodRatioFromProm": null,
+      "association": "CGROUP_UID_MATCH",
+      "timeCaution": "PID ~2s interval vs Prometheus historical evaluation/2m rates; do not equate exact instantaneous values"
+    },
+    {
+      "pid": 23969,
+      "ppid": 23052,
+      "state": "Sl",
+      "psLifetimeCpuPercent": 1.8,
+      "psMemoryPercent": 2.3,
+      "comm": "java",
+      "cpuWindowSeconds": 2.0065496309998707,
+      "cpuCoresDuringWindow": 0.019934717478215506,
+      "cgroup": "0::/kubepods.slice/kubepods-burstable.slice/kubepods-burstable-podc514d98a_d857_4b92_97d7_0ca1f07277a3.slice/cri-containerd-97a23bb84222da909f9960a9a8c78ec51b1b37ac0612f4f3ca3f7069294c2122.scope\n",
+      "podUidFromCgroup": "c514d98a-d857-4b92-97d7-0ca1f07277a3",
+      "podIdentity": {
+        "namespace": "sonarqube",
+        "pod": "sonarqube-sonarqube-0",
+        "uid": "c514d98a-d857-4b92-97d7-0ca1f07277a3",
+        "node": "devops"
+      },
+      "resourceValuesFromHistoricalKSM": {
+        "requests": [
+          {
+            "container": "sonarqube",
+            "resource": "cpu",
+            "unit": "core",
+            "value": "0.5"
+          },
+          {
+            "container": "sonarqube",
+            "resource": "ephemeral_storage",
+            "unit": "byte",
+            "value": "1536000000"
+          },
+          {
+            "container": "sonarqube",
+            "resource": "memory",
+            "unit": "byte",
+            "value": "1073741824"
+          }
+        ],
+        "limits": [
+          {
+            "container": "sonarqube",
+            "resource": "cpu",
+            "unit": "core",
+            "value": "0.8"
+          },
+          {
+            "container": "sonarqube",
+            "resource": "ephemeral_storage",
+            "unit": "byte",
+            "value": "10737418240"
+          },
+          {
+            "container": "sonarqube",
+            "resource": "memory",
+            "unit": "byte",
+            "value": "3221225472"
+          }
+        ]
+      },
+      "twoMinuteContainerCpuRateFromProm": "0.030424594105250738",
+      "twoMinuteThrottlePeriodRatioFromProm": "0",
+      "association": "CGROUP_UID_MATCH",
+      "timeCaution": "PID ~2s interval vs Prometheus historical evaluation/2m rates; do not equate exact instantaneous values"
+    },
+    {
+      "pid": 19800,
+      "ppid": 19419,
+      "state": "Ssl",
+      "psLifetimeCpuPercent": 2.8,
+      "psMemoryPercent": 2.1,
+      "comm": "java",
+      "cpuWindowSeconds": 2.0065496309998707,
+      "cpuCoresDuringWindow": 0.01495103810866163,
+      "cgroup": "0::/kubepods.slice/kubepods-burstable.slice/kubepods-burstable-pod879ae607_5b3a_4483_a606_c4b1df974d28.slice/cri-containerd-283cac45a438e19398bb858a3370600444303e252993a1ff5d8575b655b381ea.scope\n",
+      "podUidFromCgroup": "879ae607-5b3a-4483-a606-c4b1df974d28",
+      "podIdentity": {
+        "namespace": "ns-bigdata",
+        "pod": "kafka-5dc9ddf5fc-dqd4d",
+        "uid": "879ae607-5b3a-4483-a606-c4b1df974d28",
+        "node": "devops"
+      },
+      "resourceValuesFromHistoricalKSM": {
+        "requests": [
+          {
+            "container": "kafka",
+            "resource": "cpu",
+            "unit": "core",
+            "value": "0.25"
+          },
+          {
+            "container": "kafka",
+            "resource": "memory",
+            "unit": "byte",
+            "value": "1073741824"
+          }
+        ],
+        "limits": [
+          {
+            "container": "kafka",
+            "resource": "cpu",
+            "unit": "core",
+            "value": "1"
+          },
+          {
+            "container": "kafka",
+            "resource": "memory",
+            "unit": "byte",
+            "value": "1073741824"
+          }
+        ]
+      },
+      "twoMinuteContainerCpuRateFromProm": "0.019339001281368035",
+      "twoMinuteThrottlePeriodRatioFromProm": "0",
+      "association": "CGROUP_UID_MATCH",
+      "timeCaution": "PID ~2s interval vs Prometheus historical evaluation/2m rates; do not equate exact instantaneous values"
+    },
+    {
+      "pid": 29255,
+      "ppid": 22835,
+      "state": "Sl",
+      "psLifetimeCpuPercent": 1.7,
+      "psMemoryPercent": 2.9,
+      "comm": "java",
+      "cpuWindowSeconds": 2.0065496309998707,
+      "cpuCoresDuringWindow": 0.01495103810866163,
+      "cgroup": "0::/kubepods.slice/kubepods-burstable.slice/kubepods-burstable-podc514d98a_d857_4b92_97d7_0ca1f07277a3.slice/cri-containerd-97a23bb84222da909f9960a9a8c78ec51b1b37ac0612f4f3ca3f7069294c2122.scope\n",
+      "podUidFromCgroup": "c514d98a-d857-4b92-97d7-0ca1f07277a3",
+      "podIdentity": {
+        "namespace": "sonarqube",
+        "pod": "sonarqube-sonarqube-0",
+        "uid": "c514d98a-d857-4b92-97d7-0ca1f07277a3",
+        "node": "devops"
+      },
+      "resourceValuesFromHistoricalKSM": {
+        "requests": [
+          {
+            "container": "sonarqube",
+            "resource": "cpu",
+            "unit": "core",
+            "value": "0.5"
+          },
+          {
+            "container": "sonarqube",
+            "resource": "ephemeral_storage",
+            "unit": "byte",
+            "value": "1536000000"
+          },
+          {
+            "container": "sonarqube",
+            "resource": "memory",
+            "unit": "byte",
+            "value": "1073741824"
+          }
+        ],
+        "limits": [
+          {
+            "container": "sonarqube",
+            "resource": "cpu",
+            "unit": "core",
+            "value": "0.8"
+          },
+          {
+            "container": "sonarqube",
+            "resource": "ephemeral_storage",
+            "unit": "byte",
+            "value": "10737418240"
+          },
+          {
+            "container": "sonarqube",
+            "resource": "memory",
+            "unit": "byte",
+            "value": "3221225472"
+          }
+        ]
+      },
+      "twoMinuteContainerCpuRateFromProm": "0.030424594105250738",
+      "twoMinuteThrottlePeriodRatioFromProm": "0",
+      "association": "CGROUP_UID_MATCH",
+      "timeCaution": "PID ~2s interval vs Prometheus historical evaluation/2m rates; do not equate exact instantaneous values"
+    },
+    {
+      "pid": 15340,
+      "ppid": 14214,
+      "state": "Ssl",
+      "psLifetimeCpuPercent": 1.6,
+      "psMemoryPercent": 0.4,
+      "comm": "loki",
+      "cpuWindowSeconds": 2.0065496309998707,
+      "cpuCoresDuringWindow": 0.01495103810866163,
+      "cgroup": "0::/kubepods.slice/kubepods-burstable.slice/kubepods-burstable-pod54cc1da9_cd7d_4118_9b7a_b9ae843b7818.slice/cri-containerd-ea89fd7818104dd2c9351049ee265cfec45d08499803ff8156a381b280943796.scope\n",
+      "podUidFromCgroup": "54cc1da9-cd7d-4118-9b7a-b9ae843b7818",
+      "podIdentity": {
+        "namespace": "monitoring",
+        "pod": "loki-0",
+        "uid": "54cc1da9-cd7d-4118-9b7a-b9ae843b7818",
+        "node": "devops"
+      },
+      "resourceValuesFromHistoricalKSM": {
+        "requests": [
+          {
+            "container": "loki",
+            "resource": "cpu",
+            "unit": "core",
+            "value": "0.05"
+          },
+          {
+            "container": "loki",
+            "resource": "memory",
+            "unit": "byte",
+            "value": "134217728"
+          }
+        ],
+        "limits": [
+          {
+            "container": "loki",
+            "resource": "cpu",
+            "unit": "core",
+            "value": "0.5"
+          },
+          {
+            "container": "loki",
+            "resource": "memory",
+            "unit": "byte",
+            "value": "536870912"
+          }
+        ]
+      },
+      "twoMinuteContainerCpuRateFromProm": "0.014276027155318116",
+      "twoMinuteThrottlePeriodRatioFromProm": "0",
+      "association": "CGROUP_UID_MATCH",
+      "timeCaution": "PID ~2s interval vs Prometheus historical evaluation/2m rates; do not equate exact instantaneous values"
+    },
+    {
+      "pid": 11224,
+      "ppid": 10991,
+      "state": "Sl",
+      "psLifetimeCpuPercent": 6.1,
+      "psMemoryPercent": 2.4,
+      "comm": "argocd-applicat",
+      "cpuWindowSeconds": 2.0065496309998707,
+      "cpuCoresDuringWindow": 0.009967358739107753,
+      "cgroup": "0::/kubepods.slice/kubepods-burstable.slice/kubepods-burstable-pod873cae8f_8e63_4c7b_945b_834df486fe0c.slice/cri-containerd-26d03ef30d5c1de697e5f03b0e83311d5e975d2bcbaee1b17b0d35e1dabdcab8.scope\n",
+      "podUidFromCgroup": "873cae8f-8e63-4c7b-945b-834df486fe0c",
+      "podIdentity": {
+        "namespace": "argocd",
+        "pod": "argocd-application-controller-0",
+        "uid": "873cae8f-8e63-4c7b-945b-834df486fe0c",
+        "node": "devops"
+      },
+      "resourceValuesFromHistoricalKSM": {
+        "requests": [
+          {
+            "container": "argocd-application-controller",
+            "resource": "cpu",
+            "unit": "core",
+            "value": "0.05"
+          },
+          {
+            "container": "argocd-application-controller",
+            "resource": "memory",
+            "unit": "byte",
+            "value": "402653184"
+          }
+        ],
+        "limits": [
+          {
+            "container": "argocd-application-controller",
+            "resource": "cpu",
+            "unit": "core",
+            "value": "0.5"
+          },
+          {
+            "container": "argocd-application-controller",
+            "resource": "memory",
+            "unit": "byte",
+            "value": "805306368"
+          }
+        ]
+      },
+      "twoMinuteContainerCpuRateFromProm": "0.07951933701657389",
+      "twoMinuteThrottlePeriodRatioFromProm": "0.16415868673050615",
+      "association": "CGROUP_UID_MATCH",
+      "timeCaution": "PID ~2s interval vs Prometheus historical evaluation/2m rates; do not equate exact instantaneous values"
+    },
+    {
+      "pid": 426025,
+      "ppid": 17105,
+      "state": "Ssl",
+      "psLifetimeCpuPercent": 2.4,
+      "psMemoryPercent": 1.9,
+      "comm": "java",
+      "cpuWindowSeconds": 2.0065496309998707,
+      "cpuCoresDuringWindow": 0.009967358739107753,
+      "cgroup": "0::/kubepods.slice/kubepods-burstable.slice/kubepods-burstable-pod32543aa9_4b6f_418f_be1b_3795796f37b6.slice/cri-containerd-7dbbb6eb348f02b9e3732c23a8b47dd5d1e20db23170c05574025762be65da42.scope\n",
+      "podUidFromCgroup": "32543aa9-4b6f-418f-be1b-3795796f37b6",
+      "podIdentity": {
+        "namespace": "petclinic",
+        "pod": "petclinic-7b9fc47976-7gqqx",
+        "uid": "32543aa9-4b6f-418f-be1b-3795796f37b6",
+        "node": "devops"
+      },
+      "resourceValuesFromHistoricalKSM": {
+        "requests": [
+          {
+            "container": "petclinic",
+            "resource": "cpu",
+            "unit": "core",
+            "value": "0.1"
+          },
+          {
+            "container": "petclinic",
+            "resource": "memory",
+            "unit": "byte",
+            "value": "536870912"
+          }
+        ],
+        "limits": [
+          {
+            "container": "petclinic",
+            "resource": "cpu",
+            "unit": "core",
+            "value": "0.5"
+          },
+          {
+            "container": "petclinic",
+            "resource": "memory",
+            "unit": "byte",
+            "value": "805306368"
+          }
+        ]
+      },
+      "twoMinuteContainerCpuRateFromProm": "0.007831359780484633",
+      "twoMinuteThrottlePeriodRatioFromProm": "0.00303951367781155",
+      "association": "CGROUP_UID_MATCH",
+      "timeCaution": "PID ~2s interval vs Prometheus historical evaluation/2m rates; do not equate exact instantaneous values"
+    },
+    {
+      "pid": 32097,
+      "ppid": 22835,
+      "state": "Sl",
+      "psLifetimeCpuPercent": 0.7,
+      "psMemoryPercent": 1.0,
+      "comm": "java",
+      "cpuWindowSeconds": 2.0065496309998707,
+      "cpuCoresDuringWindow": 0.009967358739107753,
+      "cgroup": "0::/kubepods.slice/kubepods-burstable.slice/kubepods-burstable-podc514d98a_d857_4b92_97d7_0ca1f07277a3.slice/cri-containerd-97a23bb84222da909f9960a9a8c78ec51b1b37ac0612f4f3ca3f7069294c2122.scope\n",
+      "podUidFromCgroup": "c514d98a-d857-4b92-97d7-0ca1f07277a3",
+      "podIdentity": {
+        "namespace": "sonarqube",
+        "pod": "sonarqube-sonarqube-0",
+        "uid": "c514d98a-d857-4b92-97d7-0ca1f07277a3",
+        "node": "devops"
+      },
+      "resourceValuesFromHistoricalKSM": {
+        "requests": [
+          {
+            "container": "sonarqube",
+            "resource": "cpu",
+            "unit": "core",
+            "value": "0.5"
+          },
+          {
+            "container": "sonarqube",
+            "resource": "ephemeral_storage",
+            "unit": "byte",
+            "value": "1536000000"
+          },
+          {
+            "container": "sonarqube",
+            "resource": "memory",
+            "unit": "byte",
+            "value": "1073741824"
+          }
+        ],
+        "limits": [
+          {
+            "container": "sonarqube",
+            "resource": "cpu",
+            "unit": "core",
+            "value": "0.8"
+          },
+          {
+            "container": "sonarqube",
+            "resource": "ephemeral_storage",
+            "unit": "byte",
+            "value": "10737418240"
+          },
+          {
+            "container": "sonarqube",
+            "resource": "memory",
+            "unit": "byte",
+            "value": "3221225472"
+          }
+        ]
+      },
+      "twoMinuteContainerCpuRateFromProm": "0.030424594105250738",
+      "twoMinuteThrottlePeriodRatioFromProm": "0",
+      "association": "CGROUP_UID_MATCH",
+      "timeCaution": "PID ~2s interval vs Prometheus historical evaluation/2m rates; do not equate exact instantaneous values"
+    },
+    {
+      "pid": 29710,
+      "ppid": 29418,
+      "state": "Sl",
+      "psLifetimeCpuPercent": 16.6,
+      "psMemoryPercent": 4.5,
+      "comm": "ruby",
+      "cpuWindowSeconds": 2.0065496309998707,
+      "cpuCoresDuringWindow": 0.004983679369553877,
+      "cgroup": "0::/kubepods.slice/kubepods-burstable.slice/kubepods-burstable-pod35d32613_03fe_42d1_a4ea_8433e0e7df00.slice/cri-containerd-2088f3d4b44afb33ab29500dcda47b295b87ed3daa68060c917db20928d5dede.scope\n",
+      "podUidFromCgroup": "35d32613-03fe-42d1-a4ea-8433e0e7df00",
+      "podIdentity": {
+        "namespace": "ns-devops",
+        "pod": "gitlab-578fd9dcbb-rhbx8",
+        "uid": "35d32613-03fe-42d1-a4ea-8433e0e7df00",
+        "node": "devops"
+      },
+      "resourceValuesFromHistoricalKSM": {
+        "requests": [
+          {
+            "container": "gitlab",
+            "resource": "cpu",
+            "unit": "core",
+            "value": "0.25"
+          },
+          {
+            "container": "gitlab",
+            "resource": "memory",
+            "unit": "byte",
+            "value": "2684354560"
+          }
+        ],
+        "limits": [
+          {
+            "container": "gitlab",
+            "resource": "memory",
+            "unit": "byte",
+            "value": "4294967296"
+          }
+        ]
+      },
+      "twoMinuteContainerCpuRateFromProm": "0.18384321790795266",
+      "twoMinuteThrottlePeriodRatioFromProm": null,
+      "association": "CGROUP_UID_MATCH",
+      "timeCaution": "PID ~2s interval vs Prometheus historical evaluation/2m rates; do not equate exact instantaneous values"
+    },
+    {
+      "pid": 29075,
+      "ppid": 29073,
+      "state": "Ssl",
+      "psLifetimeCpuPercent": 3.9,
+      "psMemoryPercent": 4.5,
+      "comm": "ruby",
+      "cpuWindowSeconds": 2.0065496309998707,
+      "cpuCoresDuringWindow": 0.004983679369553877,
+      "cgroup": "0::/kubepods.slice/kubepods-burstable.slice/kubepods-burstable-pod35d32613_03fe_42d1_a4ea_8433e0e7df00.slice/cri-containerd-2088f3d4b44afb33ab29500dcda47b295b87ed3daa68060c917db20928d5dede.scope\n",
+      "podUidFromCgroup": "35d32613-03fe-42d1-a4ea-8433e0e7df00",
+      "podIdentity": {
+        "namespace": "ns-devops",
+        "pod": "gitlab-578fd9dcbb-rhbx8",
+        "uid": "35d32613-03fe-42d1-a4ea-8433e0e7df00",
+        "node": "devops"
+      },
+      "resourceValuesFromHistoricalKSM": {
+        "requests": [
+          {
+            "container": "gitlab",
+            "resource": "cpu",
+            "unit": "core",
+            "value": "0.25"
+          },
+          {
+            "container": "gitlab",
+            "resource": "memory",
+            "unit": "byte",
+            "value": "2684354560"
+          }
+        ],
+        "limits": [
+          {
+            "container": "gitlab",
+            "resource": "memory",
+            "unit": "byte",
+            "value": "4294967296"
+          }
+        ]
+      },
+      "twoMinuteContainerCpuRateFromProm": "0.18384321790795266",
+      "twoMinuteThrottlePeriodRatioFromProm": null,
+      "association": "CGROUP_UID_MATCH",
+      "timeCaution": "PID ~2s interval vs Prometheus historical evaluation/2m rates; do not equate exact instantaneous values"
+    },
+    {
+      "pid": 426970,
+      "ppid": 18903,
+      "state": "Ssl",
+      "psLifetimeCpuPercent": 2.4,
+      "psMemoryPercent": 1.9,
+      "comm": "java",
+      "cpuWindowSeconds": 2.0065496309998707,
+      "cpuCoresDuringWindow": 0.004983679369553877,
+      "cgroup": "0::/kubepods.slice/kubepods-burstable.slice/kubepods-burstable-pod3134d6ae_f33d_4a8e_9d61_ea9fae117db6.slice/cri-containerd-c66dc2231c983ac732aa81907b5d3da64c8f83abc34c07a0e60c012799b821aa.scope\n",
+      "podUidFromCgroup": "3134d6ae-f33d-4a8e-9d61-ea9fae117db6",
+      "podIdentity": {
+        "namespace": "petclinic",
+        "pod": "petclinic-7b9fc47976-z9q2p",
+        "uid": "3134d6ae-f33d-4a8e-9d61-ea9fae117db6",
+        "node": "devops"
+      },
+      "resourceValuesFromHistoricalKSM": {
+        "requests": [
+          {
+            "container": "petclinic",
+            "resource": "cpu",
+            "unit": "core",
+            "value": "0.1"
+          },
+          {
+            "container": "petclinic",
+            "resource": "memory",
+            "unit": "byte",
+            "value": "536870912"
+          }
+        ],
+        "limits": [
+          {
+            "container": "petclinic",
+            "resource": "cpu",
+            "unit": "core",
+            "value": "0.5"
+          },
+          {
+            "container": "petclinic",
+            "resource": "memory",
+            "unit": "byte",
+            "value": "805306368"
+          }
+        ]
+      },
+      "twoMinuteContainerCpuRateFromProm": "0.008821391454965364",
+      "twoMinuteThrottlePeriodRatioFromProm": "0.005194805194805195",
+      "association": "CGROUP_UID_MATCH",
+      "timeCaution": "PID ~2s interval vs Prometheus historical evaluation/2m rates; do not equate exact instantaneous values"
+    },
+    {
+      "pid": 23052,
+      "ppid": 22835,
+      "state": "Sl",
+      "psLifetimeCpuPercent": 0.1,
+      "psMemoryPercent": 0.4,
+      "comm": "java",
+      "cpuWindowSeconds": 2.0065496309998707,
+      "cpuCoresDuringWindow": 0.004983679369553877,
+      "cgroup": "0::/kubepods.slice/kubepods-burstable.slice/kubepods-burstable-podc514d98a_d857_4b92_97d7_0ca1f07277a3.slice/cri-containerd-97a23bb84222da909f9960a9a8c78ec51b1b37ac0612f4f3ca3f7069294c2122.scope\n",
+      "podUidFromCgroup": "c514d98a-d857-4b92-97d7-0ca1f07277a3",
+      "podIdentity": {
+        "namespace": "sonarqube",
+        "pod": "sonarqube-sonarqube-0",
+        "uid": "c514d98a-d857-4b92-97d7-0ca1f07277a3",
+        "node": "devops"
+      },
+      "resourceValuesFromHistoricalKSM": {
+        "requests": [
+          {
+            "container": "sonarqube",
+            "resource": "cpu",
+            "unit": "core",
+            "value": "0.5"
+          },
+          {
+            "container": "sonarqube",
+            "resource": "ephemeral_storage",
+            "unit": "byte",
+            "value": "1536000000"
+          },
+          {
+            "container": "sonarqube",
+            "resource": "memory",
+            "unit": "byte",
+            "value": "1073741824"
+          }
+        ],
+        "limits": [
+          {
+            "container": "sonarqube",
+            "resource": "cpu",
+            "unit": "core",
+            "value": "0.8"
+          },
+          {
+            "container": "sonarqube",
+            "resource": "ephemeral_storage",
+            "unit": "byte",
+            "value": "10737418240"
+          },
+          {
+            "container": "sonarqube",
+            "resource": "memory",
+            "unit": "byte",
+            "value": "3221225472"
+          }
+        ]
+      },
+      "twoMinuteContainerCpuRateFromProm": "0.030424594105250738",
+      "twoMinuteThrottlePeriodRatioFromProm": "0",
+      "association": "CGROUP_UID_MATCH",
+      "timeCaution": "PID ~2s interval vs Prometheus historical evaluation/2m rates; do not equate exact instantaneous values"
+    },
+    {
+      "pid": 640925,
+      "ppid": 640920,
+      "state": "R",
+      "psLifetimeCpuPercent": 300.0,
+      "psMemoryPercent": 0.0,
+      "comm": "ps",
+      "cpuWindowSeconds": 2.0065496309998707,
+      "cpuCoresDuringWindow": null,
+      "cgroup": null,
+      "podUidFromCgroup": null,
+      "podIdentity": null,
+      "resourceValuesFromHistoricalKSM": null,
+      "twoMinuteContainerCpuRateFromProm": null,
+      "twoMinuteThrottlePeriodRatioFromProm": null,
+      "association": "HOST_SERVICE",
+      "timeCaution": "PID ~2s interval vs Prometheus historical evaluation/2m rates; do not equate exact instantaneous values"
+    },
+    {
+      "pid": 640908,
+      "ppid": 640804,
+      "state": "Sl",
+      "psLifetimeCpuPercent": 150.0,
+      "psMemoryPercent": 0.5,
+      "comm": "kubectl",
+      "cpuWindowSeconds": 2.0065496309998707,
+      "cpuCoresDuringWindow": null,
+      "cgroup": null,
+      "podUidFromCgroup": null,
+      "podIdentity": null,
+      "resourceValuesFromHistoricalKSM": null,
+      "twoMinuteContainerCpuRateFromProm": null,
+      "twoMinuteThrottlePeriodRatioFromProm": null,
+      "association": "HOST_SERVICE",
+      "timeCaution": "PID ~2s interval vs Prometheus historical evaluation/2m rates; do not equate exact instantaneous values"
+    },
+    {
+      "pid": 640920,
+      "ppid": 640914,
+      "state": "S",
+      "psLifetimeCpuPercent": 57.1,
+      "psMemoryPercent": 0.0,
+      "comm": "python3",
+      "cpuWindowSeconds": 2.0065496309998707,
+      "cpuCoresDuringWindow": 0.0,
+      "cgroup": "0::/user.slice/user-1000.slice/session-2684.scope\n",
+      "podUidFromCgroup": null,
+      "podIdentity": null,
+      "resourceValuesFromHistoricalKSM": null,
+      "twoMinuteContainerCpuRateFromProm": null,
+      "twoMinuteThrottlePeriodRatioFromProm": null,
+      "association": "HOST_SERVICE",
+      "timeCaution": "PID ~2s interval vs Prometheus historical evaluation/2m rates; do not equate exact instantaneous values"
+    },
+    {
+      "pid": 640804,
+      "ppid": 1,
+      "state": "Ss",
+      "psLifetimeCpuPercent": 9.7,
+      "psMemoryPercent": 0.1,
+      "comm": "python3",
+      "cpuWindowSeconds": 2.0065496309998707,
+      "cpuCoresDuringWindow": null,
+      "cgroup": null,
+      "podUidFromCgroup": null,
+      "podIdentity": null,
+      "resourceValuesFromHistoricalKSM": null,
+      "twoMinuteContainerCpuRateFromProm": null,
+      "twoMinuteThrottlePeriodRatioFromProm": null,
+      "association": "HOST_SERVICE",
+      "timeCaution": "PID ~2s interval vs Prometheus historical evaluation/2m rates; do not equate exact instantaneous values"
+    },
+    {
+      "pid": 640860,
+      "ppid": 1042,
+      "state": "Ss",
+      "psLifetimeCpuPercent": 4.3,
+      "psMemoryPercent": 0.0,
+      "comm": "sshd",
+      "cpuWindowSeconds": 2.0065496309998707,
+      "cpuCoresDuringWindow": 0.0,
+      "cgroup": "0::/user.slice/user-1000.slice/session-2684.scope\n",
+      "podUidFromCgroup": null,
+      "podIdentity": null,
+      "resourceValuesFromHistoricalKSM": null,
+      "twoMinuteContainerCpuRateFromProm": null,
+      "twoMinuteThrottlePeriodRatioFromProm": null,
+      "association": "HOST_SERVICE",
+      "timeCaution": "PID ~2s interval vs Prometheus historical evaluation/2m rates; do not equate exact instantaneous values"
+    },
+    {
+      "pid": 1023,
+      "ppid": 1,
+      "state": "Ssl",
+      "psLifetimeCpuPercent": 1.1,
+      "psMemoryPercent": 0.3,
+      "comm": "dockerd",
+      "cpuWindowSeconds": 2.0065496309998707,
+      "cpuCoresDuringWindow": 0.0,
+      "cgroup": "0::/system.slice/docker.service\n",
+      "podUidFromCgroup": null,
+      "podIdentity": null,
+      "resourceValuesFromHistoricalKSM": null,
+      "twoMinuteContainerCpuRateFromProm": null,
+      "twoMinuteThrottlePeriodRatioFromProm": null,
+      "association": "HOST_SERVICE",
+      "timeCaution": "PID ~2s interval vs Prometheus historical evaluation/2m rates; do not equate exact instantaneous values"
+    },
+    {
+      "pid": 767,
+      "ppid": 1,
+      "state": "Ssl",
+      "psLifetimeCpuPercent": 0.8,
+      "psMemoryPercent": 0.2,
+      "comm": "containerd",
+      "cpuWindowSeconds": 2.0065496309998707,
+      "cpuCoresDuringWindow": 0.0,
+      "cgroup": "0::/system.slice/containerd.service\n",
+      "podUidFromCgroup": null,
+      "podIdentity": null,
+      "resourceValuesFromHistoricalKSM": null,
+      "twoMinuteContainerCpuRateFromProm": null,
+      "twoMinuteThrottlePeriodRatioFromProm": null,
+      "association": "HOST_SERVICE",
+      "timeCaution": "PID ~2s interval vs Prometheus historical evaluation/2m rates; do not equate exact instantaneous values"
+    },
+    {
+      "pid": 22835,
+      "ppid": 19926,
+      "state": "Ssl",
+      "psLifetimeCpuPercent": 0.2,
+      "psMemoryPercent": 0.4,
+      "comm": "java",
+      "cpuWindowSeconds": 2.0065496309998707,
+      "cpuCoresDuringWindow": 0.0,
+      "cgroup": "0::/kubepods.slice/kubepods-burstable.slice/kubepods-burstable-podc514d98a_d857_4b92_97d7_0ca1f07277a3.slice/cri-containerd-97a23bb84222da909f9960a9a8c78ec51b1b37ac0612f4f3ca3f7069294c2122.scope\n",
+      "podUidFromCgroup": "c514d98a-d857-4b92-97d7-0ca1f07277a3",
+      "podIdentity": {
+        "namespace": "sonarqube",
+        "pod": "sonarqube-sonarqube-0",
+        "uid": "c514d98a-d857-4b92-97d7-0ca1f07277a3",
+        "node": "devops"
+      },
+      "resourceValuesFromHistoricalKSM": {
+        "requests": [
+          {
+            "container": "sonarqube",
+            "resource": "cpu",
+            "unit": "core",
+            "value": "0.5"
+          },
+          {
+            "container": "sonarqube",
+            "resource": "ephemeral_storage",
+            "unit": "byte",
+            "value": "1536000000"
+          },
+          {
+            "container": "sonarqube",
+            "resource": "memory",
+            "unit": "byte",
+            "value": "1073741824"
+          }
+        ],
+        "limits": [
+          {
+            "container": "sonarqube",
+            "resource": "cpu",
+            "unit": "core",
+            "value": "0.8"
+          },
+          {
+            "container": "sonarqube",
+            "resource": "ephemeral_storage",
+            "unit": "byte",
+            "value": "10737418240"
+          },
+          {
+            "container": "sonarqube",
+            "resource": "memory",
+            "unit": "byte",
+            "value": "3221225472"
+          }
+        ]
+      },
+      "twoMinuteContainerCpuRateFromProm": "0.030424594105250738",
+      "twoMinuteThrottlePeriodRatioFromProm": "0",
+      "association": "CGROUP_UID_MATCH",
+      "timeCaution": "PID ~2s interval vs Prometheus historical evaluation/2m rates; do not equate exact instantaneous values"
+    }
+  ],
+  "pairedWindows": {
+    "guest": [
+      "2026-11-05T03:37:41.988125+00:00",
+      "2026-11-05T03:37:48.254616+00:00"
+    ],
+    "host": [
+      "2026-11-05T03:37:41.760528+00:00",
+      "2026-11-05T03:37:46.034910+00:00"
+    ],
+    "overlap": "Collection windows overlap; CPU subwindows are nearby, not identical instants"
+  },
+  "currentHealth": {
+    "at": "2026-11-05T03:37:48.254616+00:00",
+    "readyPetclinic": 3,
+    "http": {
+      "status": 200,
+      "at": "2026-11-05T03:37:48.254105+00:00"
+    },
+    "argo": {
+      "sync": "Synced",
+      "health": "Healthy",
+      "conditions": null
+    },
+    "podUidsAndRestartsUnchangedFromRCA": true
+  },
+  "pressureClassification": {
+    "historicalRunnableMax": 68,
+    "historicalIoBlockedMax": 1,
+    "currentThreadStateCounts": {
+      "S": 2839,
+      "I": 78,
+      "R": 3,
+      "Z": 4
+    },
+    "currentKernelBefore": {
+      "cpu": [
+        1715856,
+        98,
+        594036,
+        4050423,
+        19791,
+        0,
+        23712,
+        0,
+        0,
+        0
+      ],
+      "procs_running": 2,
+      "procs_blocked": 0
+    },
+    "currentKernelAfter": {
+      "cpu": [
+        1716051,
+        98,
+        594150,
+        4051416,
+        19793,
+        0,
+        23715,
+        0,
+        0,
+        0
+      ],
+      "procs_running": 2,
+      "procs_blocked": 0
+    },
+    "historicalAllDStateTasks": "UNKNOWN; IO-blocked gauge is not a full historical per-thread D-state inventory",
+    "historicalTriggerProcess": "UNKNOWN"
+  },
+  "samplingOverhead": {
+    "guestCpuSeconds": 1.03289466,
+    "guestWallSeconds": 6.266488258001118,
+    "hostCpuSeconds": 1.2226839999999999,
+    "hostWallSeconds": 4.274396124994382,
+    "thresholdCpuSecondsPerSample": 1,
+    "hardStopTriggered": true,
+    "interpretation": "Conservative self-imposed budget exceeded, not proof sampler caused production pressure. Host process/child CPU accounting is not isolated per thread. No threshold relaxation or restart."
+  },
+  "limitations": [
+    "Only one current paired snapshot; planned cadence not achieved; no periodicity claim.",
+    "Critical incident scrape gaps prevent per-process attribution; current values are not incident values.",
+    "CFS period-throttled ratio is not CPU time lost and does not establish the initial trigger.",
+    "K3s process metric via kubelet is all-in-one PID; component endpoints must not be summed.",
+    "Block-device read/write service-time rates are not application filesystem tail latency.",
+    "Mac CPU/memory/QEMU facts are current; no equivalent incident-time process telemetry exists.",
+    "Historical process-exporter/containerd-specific CPU sources not established; current PID deltas are separate evidence."
+  ]
+}
