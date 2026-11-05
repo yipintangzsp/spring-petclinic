@@ -315,3 +315,60 @@ claimed. Every prepared payload remains Candidate-only with Promotion BLOCKED.
 Regressions use the existing OS write sandbox and unique temporary copies. Do not
 run historical fixed-output suites from the workspace root. Previous original
 integrity remains FAILED; Runtime is 14/16, no production Summary V2 migration.
+
+### DefectDojo HTTP Consumer Candidate（2026-11-05）
+
+显式入口是同一 Router 中的 `routeResultsHttp`。它先复用原 `routeResults` 的
+Artifact/Summary/Result 校验和离线 Consumer，再调用 HTTP Transport；原同步入口、
+默认 Consumer 列表、Finding Mapping、Policy 和生产导入脚本不变。
+
+`createHttpTransport()` 默认关闭。当前受信任目标表只有两个 **本地 Mock** 项，
+均固定为 `http://127.0.0.1:32185`，Product/Engagement 数字只是 Mock fixture，
+不是现有 Dojo 中的真实对象。`realTargets=[]`，没有真实投递授权；任意 URL、
+Product ID、重定向、内联 Token、自定义 fetch 均不能通过调用参数注入。
+
+凭据只从当前 UID 所有、仅 owner 可读（0400/0600）、无软/硬链接且父目录仅 owner 可访问的运行时文件读取。
+本阶段只接受 `SMV2_MOCK_TOKEN_` 前缀的 disposable Token；它不是生产凭据。
+Transport 的可序列化句柄不包含 Token，复制句柄也不能取得发送能力。
+真实目标及凭据接入仍需下一阶段单独审查，不能只改一个 CLI 参数。
+
+```sh
+# 仅在明确启动的隔离 Mock Server 下运行；不是实际 Dojo 导入命令。
+node infra/security/manager-v2/consumers/dojo-http-cli.mjs \
+  --artifact /absolute/sealed/candidate \
+  --seal-digest <verified-seal-sha256> \
+  --output /absolute/private/prepared \
+  --journal /absolute/private/delivery-journal \
+  --enable-mock-http true \
+  --target dojo-loopback-java-v1 \
+  --credential-file /absolute/private/runtime-credential
+```
+
+HTTP 使用安装版 3.4.301 声明的 multipart `POST /api/v2/import-scan/`、
+`Generic Findings Import`，明确发送两个 `close_old_findings=false`、
+`auto_create_context=false`、`push_to_jira=false`、`deduplication_execution_mode=sync`。
+Import Serializer 没有声明 description/do_not_reactivate，故不发送它们；
+后者只属于 Reimport，且 Reimport 默认 close-old=true，因此本轮完全不开放该写路径。
+以 `build_id=smv2-<requestDigest>`、`version=<payloadDigest>` 和固定 Test 标题进行绑定；
+确认回执还必须核对 Test→Engagement→Product，以及实际 Finding 身份/字段。
+
+最多3次只读 GET 重试，指数退避，默认请求超时2秒，最多10秒；单报告最多32条/64KiB，
+multipart 最多80KiB，响应最多128KiB，查询最多100条且必须无下一页。
+POST **不自动重试**。429 标记 RETRYABLE_FAILURE，但重发前仍须只读核对。
+409、500/503、超时、连接丢失、坏响应、202 未完成等均不冒充成功。
+
+独立 journal 以追加、排他创建、摘要链和 fsync 保留 PREPARED/SENT/ACKNOWLEDGED/
+REJECTED/RETRYABLE_FAILURE/UNKNOWN_REMOTE_STATE；SENT 意图先持久化再派发。
+已确认的同一请求可复用本地回执；不确定请求即使查询到完全匹配的对象，仍保持
+UNKNOWN_REMOTE_STATE，只输出只读观察证据，不再 POST。journal 损坏或锁残留必须人工检查，
+不自动删锁或修复历史。Consumer 的失败不能改变 scanner 状态或原 Policy Decision。
+
+限制：同一 journal 的并发锁只是本机保护。两个独立 journal 同时查询无结果再导入仍有竞态；
+测试专门复现了这个限制。当前 API 源码未证明存在请求级原子幂等契约，
+`unique_id_from_tool` 也不等于服务器去重保证。远程幂等和实际 Dojo 导入仍 NOT_TESTED。
+
+本轮证据位于 `evidence/2026-11-05/security-manager-v2-dojo-http/`。
+真实实例未认证 GET 返回403，未使用管理员 Token 或数据库旁路查询，
+非生产 Product/Engagement/身份都未获证明。生产配置、V1 Summary、14/16 和
+`ORIGINAL_EVIDENCE_INTEGRITY=FAILED` 保持原状。关闭 HTTP 功能只需继续使用原同步 Router；
+不需要删除任何 Kubernetes 资源或回滚生产部署。

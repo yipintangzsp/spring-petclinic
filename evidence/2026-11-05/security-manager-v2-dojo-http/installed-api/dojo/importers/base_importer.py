@@ -1,0 +1,1778 @@
+import base64
+import binascii
+import logging
+import re
+import time
+from contextlib import contextmanager
+from functools import wraps
+from itertools import batched
+from pathlib import Path
+
+from django.conf import settings
+from django.core.exceptions import ValidationError
+from django.core.files.base import ContentFile
+from django.core.files.uploadedfile import TemporaryUploadedFile
+from django.db import (
+    DEFAULT_DB_ALIAS,
+    DatabaseError,
+    IntegrityError,
+    OperationalError,
+    connections,
+    router,
+    transaction,
+)
+from django.db.models import Q
+from django.db.models.signals import m2m_changed, post_save, pre_save
+from django.urls import reverse
+from django.utils import timezone
+from django.utils.timezone import make_aware
+
+import dojo.finding.helper as finding_helper
+import dojo.risk_acceptance.helper as ra_helper
+from dojo.celery_dispatch import dojo_dispatch_task
+from dojo.db_utils import is_foreign_key_conflict, is_transient_db_conflict
+from dojo.finding.cwe import finding_cwe_labels
+from dojo.importers.import_lock import lock_tests_under_import, unlock_tests_under_import
+from dojo.importers.options import ImporterOptions
+from dojo.jira import services as jira_services
+from dojo.jira.services import is_keep_in_sync
+from dojo.location.feature import locations_enabled
+from dojo.location.models import Location, LocationFindingReference
+from dojo.models import (
+    DEDUPLICATION_EXECUTION_MODE_ASYNC_WAIT,
+    DEDUPLICATION_EXECUTION_MODE_SYNC,
+    # Import History States
+    IMPORT_CLOSED_FINDING,
+    IMPORT_CREATED_FINDING,
+    IMPORT_REACTIVATED_FINDING,
+    IMPORT_UNTOUCHED_FINDING,
+    # Finding Severities
+    SEVERITIES,
+    BurpRawRequestResponse,
+    Endpoint,
+    Endpoint_Status,
+    Engagement,
+    FileUpload,
+    Finding,
+    Finding_CWE,
+    Notes,
+    System_Settings,
+    Test,
+    Test_Import,
+    Test_Import_Finding_Action,
+    Test_Type,
+)
+from dojo.notifications.helper import async_create_notification
+from dojo.tags.utils import bulk_add_tags_to_instances
+from dojo.tools import tool_issue_updater
+from dojo.tools.factory import get_parser
+from dojo.tools.parser_test import ParserTest
+from dojo.tools.utils import drop_ambiguous_repeated_unique_ids
+from dojo.utils import max_safe
+from dojo.vulnerability.manager import VulnerabilityIdManager
+
+logger = logging.getLogger(__name__)
+
+
+def deleted_target_message(instance) -> str:
+    return (
+        f"The {instance._meta.verbose_name} this scan was being imported into "
+        f"(id {instance.pk}) was deleted while the scan was being processed, so "
+        f"the import could not be completed. Nothing was imported. Re-run the "
+        f"import against a {instance._meta.verbose_name} that still exists."
+    )
+
+
+# PostgreSQL's DETAIL for a foreign-key violation on insert/update names the missing row.
+_MISSING_REFERENCED_ROW = re.compile(
+    r'Key \((?P<column>[^)]+)\)=\((?P<value>[^)]*)\) is not present in table "(?P<table>[^"]+)"',
+)
+
+
+def _missing_referenced_row(exception):
+    """Return (table, key) of the row a foreign-key violation says is missing, or None."""
+    detail = getattr(getattr(exception.__cause__, "diag", None), "message_detail", None) or str(exception)
+    match = _MISSING_REFERENCED_ROW.search(detail)
+    return (match["table"], match["value"]) if match else None
+
+
+def findings_deleted_message(test) -> str:
+    return (
+        f"Findings this scan was writing were deleted while the scan was being processed (for "
+        f"example because test {test.pk}, or its engagement or product, is being deleted), so the "
+        f"import could not be completed. Re-run the import once the delete has finished."
+    )
+
+
+def reports_a_deleted_target(process_scan):
+    """
+    Turn the foreign-key failure an import hits when its test is deleted mid-run into a clear error.
+
+    An import writes a batch's child rows (endpoint or location statuses, tags, vulnerability ids,
+    finding groups) well after it created or matched the findings they belong to. A delete in
+    between -- of the test by a user, cascading from its engagement or product, or the API's
+    asynchronous delete, which removes a test's findings in chunks and the test row last -- removes
+    those findings, and the next of those writes fails on its foreign key with a PostgreSQL
+    constraint name that says nothing about why. The import cannot complete: report that, the way
+    save_without_resurrecting does for the test itself.
+
+    Only a violation naming a finding or test that no longer exists is translated; one naming a row
+    that is still there is a genuine bug and is re-raised unchanged. Only the failure path pays for
+    the existence check.
+    """
+
+    @wraps(process_scan)
+    def wrapper(self, *args, **kwargs):
+        try:
+            with self.import_lock_scope():
+                return process_scan(self, *args, **kwargs)
+        except IntegrityError as exception:
+            test = getattr(self, "test", None)
+            missing = _missing_referenced_row(exception) if is_foreign_key_conflict(exception) else None
+            models_by_table = {Finding._meta.db_table: Finding, Test._meta.db_table: Test}
+            if test is None or test.pk is None or missing is None or missing[0] not in models_by_table:
+                raise
+            try:
+                referenced_row_exists = models_by_table[missing[0]].objects.filter(pk=missing[1]).exists()
+                test_exists = Test.objects.filter(pk=test.pk).exists()
+            except DatabaseError:
+                # An aborted enclosing transaction cannot answer; the original error is the report.
+                raise exception from None
+            if referenced_row_exists:
+                raise
+            message = findings_deleted_message(test) if test_exists else deleted_target_message(test)
+            raise ValidationError(message) from exception
+
+    return wrapper
+
+
+# Number of times update_test_tags() re-runs Test.tags.set() when it loses a race against
+# tagulous' cleanup of unused tag rows (see set_test_tags_safe for the full explanation).
+TEST_TAG_SET_MAX_ATTEMPTS = 3
+
+
+class Parser:
+
+    """
+    This class is used as an alias to a given parser
+    and is purely for the sake of type hinting
+    """
+
+    @staticmethod
+    def get_findings(scan_type: str, test: Test) -> list[Finding]:
+        """
+        Stub function to make the hinting happier. The actual class
+        is loosely obligated to have this function defined.
+
+        TODO This should be enforced in the future, but here is not the place
+        TODO once this enforced, this stub class should be removed
+        """
+
+
+def _lock_test_tag_rows(test, tag_names):
+    """
+    Lock, in ascending id order, every tag row ``test.tags.set(tag_names)`` is about to update.
+
+    That is the test's current tags (whose counts go down) and the existing tags among
+    ``tag_names`` (whose counts go up). Tags that do not exist yet are created by the set()
+    itself as new rows, which no other transaction can hold. FOR NO KEY UPDATE is the lock
+    the count UPDATE takes anyway, so this changes only when the locks are taken, not which.
+    """
+    manager = test.tags
+    tag_model = manager.tag_model
+    lookup = "name" if manager.tag_options.case_sensitive else "name__iexact"
+    rows = Q(pk__in=manager.all().values("pk"))
+    for name in tag_names:
+        rows |= Q(**{lookup: name})
+    return list(
+        tag_model.objects
+        .select_for_update(no_key=True)
+        .filter(rows)
+        .order_by("pk")
+        .values_list("pk", flat=True),
+    )
+
+
+class BaseImporter(ImporterOptions):
+
+    """
+    A collection of utilities used by various importers within DefectDojo.
+    Some of these commonalities may be fully used by children importers,
+    or even extended
+    """
+
+    def __init__(
+        self,
+        *args: list,
+        **kwargs: dict,
+    ):
+        """
+        Initializing or constructing this parent class is prohibited
+        and will raise a `NotImplemented` exception
+        """
+        ImporterOptions.__init__(self, *args, **kwargs)
+        # Write seam: buffers the Vulnerability entity + FindingVulnerabilityReference rows,
+        # flushed at the batch boundary.
+        self.vulnerability_id_manager = VulnerabilityIdManager()
+        self.pending_cwes: list[Finding_CWE] = []
+        self.pending_cwe_deletes: list[int] = []
+        self.pending_burp_rr: list[BurpRawRequestResponse] = []
+        # Handles for async post-processing tasks to await in 'async_wait' mode.
+        # Set after ImporterOptions.__init__ so it stays out of field_names
+        # (and the compress/decompress cycle used for async dispatch).
+        self.post_processing_results = []
+        # Whether deduplication is known to be finished by the time the response
+        # is built. True for 'sync' (ran inline) and for 'async_wait' when all
+        # batches completed within the timeout; False for 'async' (dispatched,
+        # not awaited) or when an 'async_wait' join timed out/errored.
+        self.deduplication_complete = False
+        # Set by update_timestamps() when it moves the engagement's target end, which is
+        # the only field of the engagement the importer ever changes. The closing
+        # write-back skips the engagement unless this is True -- see process_scan().
+        self.engagement_target_end_updated = False
+
+    def post_processing_dispatch_kwargs(self, **kwargs):
+        """
+        Translate the resolved import execution mode into the force flags that
+        dojo_dispatch_task understands:
+        - SYNC: run inline in the web process (force_sync).
+        - ASYNC_WAIT: guarantee background dispatch (force_async) so we get a
+          handle to await, regardless of the user's profile mode.
+        - ASYNC (default): preserve historical behavior, honoring any externally
+          supplied force_sync and the user's sync mode via we_want_async.
+        """
+        if self.deduplication_execution_mode == DEDUPLICATION_EXECUTION_MODE_SYNC:
+            return {"force_sync": True}
+        if self.deduplication_execution_mode == DEDUPLICATION_EXECUTION_MODE_ASYNC_WAIT:
+            return {"force_async": True}
+        return {"force_sync": kwargs.get("force_sync", False)}
+
+    def record_post_processing_result(self, result):
+        """
+        Remember an async post-processing dispatch handle so it can be awaited
+        later when running in the 'async_wait' execution mode. No-op for the
+        other modes (no handle is recorded by the caller).
+        """
+        if not hasattr(self, "post_processing_results"):
+            self.post_processing_results = []
+        if result is not None:
+            self.post_processing_results.append(result)
+
+    def wait_for_post_processing(self):
+        """
+        Block until the deduplication (and other batch) post-processing tasks
+        dispatched during this import have finished, so notifications and the
+        returned statistics reflect the deduplicated state.
+
+        Only relevant in the 'async_wait' execution mode; bounded by
+        settings.DEDUPLICATION_ASYNC_WAIT_TIMEOUT so a stuck/missing worker degrades
+        to the historical (respond-anyway) behavior instead of hanging.
+        """
+        if self.deduplication_execution_mode == DEDUPLICATION_EXECUTION_MODE_SYNC:
+            # Batches ran inline during process_findings, so dedup is already done.
+            self.deduplication_complete = True
+            return
+        if self.deduplication_execution_mode != DEDUPLICATION_EXECUTION_MODE_ASYNC_WAIT:
+            # 'async': post-processing was dispatched but is not awaited.
+            self.deduplication_complete = False
+            return
+        results = getattr(self, "post_processing_results", None) or []
+        if not results:
+            # Nothing was dispatched (e.g. empty import) — dedup is trivially done.
+            self.deduplication_complete = True
+            return
+        timeout = getattr(settings, "DEDUPLICATION_ASYNC_WAIT_TIMEOUT", 60)
+        logger.debug("async_wait: waiting for %d post-processing task(s) (timeout=%ss)", len(results), timeout)
+        start = time.monotonic()
+        success = True
+        for result in results:
+            if result is None or not hasattr(result, "get"):
+                continue
+            try:
+                result.get(timeout=timeout, propagate=False)
+            except Exception as e:
+                logger.warning(
+                    "async_wait: error/timeout after %.2fs waiting for post-processing task: %s",
+                    time.monotonic() - start, e,
+                )
+                success = False
+        elapsed = time.monotonic() - start
+        logger.debug("async_wait: waited %.2fs for %d post-processing task(s) (success=%s)", elapsed, len(results), success)
+        self.deduplication_complete = success
+        self.post_processing_results = []
+
+    def check_child_implementation_exception(self):
+        """
+        This is a helper function for a quick check to ensure that the methods of the
+        BaseImporter are not being used directly
+        """
+        if isinstance(self, BaseImporter):
+            msg = (
+                "The BaseImporter class must not be used directly. "
+                "Please use a class that extends the BaseImporter class."
+            )
+            raise NotImplementedError(msg)
+
+    def process_scan(
+        self,
+        scan: TemporaryUploadedFile,
+        *args: list,
+        **kwargs: dict,
+    ) -> tuple[Test, int, int, int, int, int, Test_Import]:
+        """
+        A helper method that executes the entire import process in a single method.
+        This includes parsing the file, processing the findings, and returning the
+        statistics from the import
+        """
+        self.check_child_implementation_exception()
+
+    def process_findings(
+        self,
+        parsed_findings: list[Finding],
+        **kwargs: dict,
+    ) -> list[Finding]:
+        """
+        Make the conversion from unsaved Findings in memory to Findings that are saved in the
+        database with and ID associated with them. This processor will also save any associated
+        objects such as locations, vulnerability IDs, and request/response pairs
+        """
+        self.check_child_implementation_exception()
+
+    def close_old_findings(
+        self,
+        findings: list[Finding],
+        **kwargs: dict,
+    ) -> list[Finding]:
+        """
+        Identify any findings that have been imported before,
+        but are no longer present in later reports so that
+        we can automatically close them as "implied mitigated"
+
+        This function will vary by importer, so it is marked as
+        abstract with a prohibitive exception raised if the
+        method is attempted to to be used by the BaseImporter class
+        """
+        self.check_child_implementation_exception()
+
+    def get_parser(self) -> Parser:
+        """
+        Returns the correct parser based on the the test type supplied. If a test type
+        is supplied that does not have a parser created for it, an exception is raised
+        from the factory `get_parser` function
+        """
+        return get_parser(self.scan_type)
+
+    def process_scan_file(
+        self,
+        scan: TemporaryUploadedFile,
+    ) -> TemporaryUploadedFile:
+        """
+        Make any preprocessing actions or changes on the report before submitting
+        to the parser to generate findings from the file
+        """
+        return scan
+
+    def parse_findings_static_test_type(
+        self,
+        scan: TemporaryUploadedFile,
+        parser: Parser,
+    ) -> list[Finding]:
+        """
+        Parse the scan report submitted with the parser class and generate some findings
+        that are not saved to the database yet. This step is crucial in determining if
+        there are any errors in the parser before creating any new resources
+        """
+        # Ensure that a test is present when calling this method as there are cases where
+        # the test will be created by this function in a child class
+        if self.test is None or not isinstance(self.test, Test):
+            msg = "A test must be supplied to parse the file"
+            raise ValidationError(msg)
+        try:
+            findings = parser.get_findings(scan, self.test)
+        except ValueError as e:
+            logger.warning(e)
+            raise ValidationError(e)
+        return self.finalize_parsed_findings(findings)
+
+    def group_parsed_findings(self, findings: list[Finding]) -> list[Finding]:
+        """
+        Regroup one report's parsed findings before anything else reads them. Override seam.
+
+        Runs once per parsed report (per test, for parsers that return several), before
+        hashing and before repeated tool ids are dropped. Open source keeps the parser's own
+        grouping, so this returns ``findings`` unchanged.
+        """
+        return findings
+
+    def finalize_parsed_findings(self, findings: list[Finding] | None) -> list[Finding] | None:
+        """
+        Apply the importer's rules to one report's parsed findings: regroup, then drop repeated tool ids.
+
+        A parser whose reports can carry one tool id on several findings (SARIF reports a result's
+        id at each of its locations) marks the findings it emits, and an id that still repeats
+        after regrouping cannot identify one finding, so it is cleared on every finding that
+        carries it (``dojo.tools.utils.drop_ambiguous_repeated_unique_ids``).
+        """
+        if findings is None:
+            return findings
+        return drop_ambiguous_repeated_unique_ids(self.group_parsed_findings(findings))
+
+    def parse_dynamic_test_type_tests(
+        self,
+        scan: TemporaryUploadedFile,
+        parser: Parser,
+    ) -> list[Test]:
+        """Use the API configuration object to get the tests to be used by the parser"""
+        try:
+            return parser.get_tests(self.scan_type, scan)
+        except ValueError as e:
+            logger.warning(e)
+            raise ValidationError(e)
+
+    def consolidate_dynamic_tests(self, tests: list[Test]) -> list[Finding]:
+        parsed_findings = []
+        # Make sure we have at least one test returned
+        if len(tests) == 0:
+            logger.info(f"No tests found in import for {self.scan_type}")
+            # A report that describes no tests is a report with no findings, not a failure: every
+            # later step (dedupe algorithm, close-old-findings bookkeeping, timestamps, product
+            # grading) still needs a Test to work against, so self.test must never be left unset.
+            #
+            # On reimport the caller supplied the Test being reimported into; clearing it here made
+            # the whole rest of the reimport operate on None and surfaced as a 500 for what is a
+            # valid empty report. On import there is no Test yet and none can be named from the
+            # report, so fall back to the scan type exactly as the static-test-type path does.
+            if not self.test:
+                self.create_test(self.scan_type)
+            return parsed_findings
+        # for now we only consider the first test in the list and artificially aggregate all findings of all tests
+        # this is the same as the old behavior as current import/reimporter implementation doesn't handle the case
+        # when there is more than 1 test
+        #
+        # we also aggregate the label of the Test_type to show the user the original self.scan_type
+        # only if they are different. This is to support meta format like SARIF
+        # so a report that have the label 'CodeScanner' will be changed to 'CodeScanner Scan (SARIF)'
+        test_raw = tests[0]
+        # Create a new test if it has not already been created
+        if not self.test:
+            # Resolve the Test_Type name from the report's type (idempotent: a type that already
+            # carries the " (scan_type)" suffix is used verbatim rather than doubled)
+            self.test = self.create_test(self.resolve_dynamic_test_type_name(test_raw.type))
+        else:
+            # During reimport, validate that the test_type matches the incoming report.
+            # Accept either the current (idempotent) name or the legacy name the pre-patch code
+            # produced, so reimports into tests created before the doubling fix keep working.
+            #
+            # The bare scan type is accepted too. A report that declares no tests names no tool
+            # either, so the Test created for it falls back to the scan type; the same is true of
+            # a Test created outside the dynamic path. The check exists to stop a report from a
+            # different tool being reimported into a Test, and the bare scan type carries no tool
+            # identity to conflict with. The historical name is kept rather than rewritten, as it
+            # is for the legacy name above.
+            expected_test_type_name = self.resolve_dynamic_test_type_name(test_raw.type)
+            legacy_test_type_name = self.legacy_dynamic_test_type_name(test_raw.type)
+            if self.test.test_type.name not in {expected_test_type_name, legacy_test_type_name, self.scan_type}:
+                msg = (
+                    f"Test type mismatch: Test {self.test.id} has test_type '{self.test.test_type.name}', "
+                    f"but the report contains test_type '{expected_test_type_name}'. "
+                    f"Reimport with matching test_type or create a new test."
+                )
+                raise ValidationError(msg)
+        # This part change the name of the Test
+        # we get it from the data of the parser
+        # Update the test and test type with meta from the raw test
+        self.update_test_from_internal_test(test_raw)
+        self.update_test_type_from_internal_test(test_raw)
+        # Aggregate all of the findings into a single place
+        parsed_findings = []
+        for test_raw in tests:
+            parsed_findings.extend(self.finalize_parsed_findings(test_raw.findings) or [])
+        return parsed_findings
+
+    def parse_findings_dynamic_test_type(
+        self,
+        scan: TemporaryUploadedFile,
+        parser: Parser,
+    ) -> list[Finding]:
+        """
+        Use the API configuration object to get the tests to be used by the parser
+        to dump findings into
+
+        This version of this function is intended to be extended by children classes
+        """
+        tests = self.parse_dynamic_test_type_tests(scan, parser)
+        return self.consolidate_dynamic_tests(tests)
+
+    def parse_findings(
+        self,
+        scan: TemporaryUploadedFile,
+        parser: Parser,
+    ) -> list[Finding]:
+        """
+        Determine how to parse the findings based on the presence of the
+        `get_tests` function on the parser object
+        """
+        # Attempt any preprocessing before generating findings
+        scan = self.process_scan_file(scan)
+        start_time = time.perf_counter()
+        if hasattr(parser, "get_tests"):
+            parsed_findings = self.parse_findings_dynamic_test_type(scan, parser)
+        else:
+            parsed_findings = self.parse_findings_static_test_type(scan, parser)
+        elapsed_time = time.perf_counter() - start_time
+        logger.info(f"Parsing findings took {elapsed_time:.2f} seconds ({len(parsed_findings) if parsed_findings else 0} findings parsed)")
+        return parsed_findings
+
+    def determine_deduplication_algorithm(self) -> str:
+        """
+        Determines what dedupe algorithm to use for the Test being processed.
+        Overridden in Pro.
+        :return: A string representing the dedupe algorithm to use.
+        """
+        return self.test.deduplication_algorithm
+
+    def update_test_meta(self):
+        """
+        Update the test with some values stored in the kwargs dict. The common
+        fields used today are `version`, `branch_tag`, `build_id`, and `commit_hash`
+        """
+        # Add the extra fields to the test if they are specified here
+        if not self.version.isspace():
+            self.test.version = self.version
+        if not self.branch_tag.isspace():
+            self.test.branch_tag = self.branch_tag
+        if not self.build_id.isspace():
+            self.test.build_id = self.build_id
+        if not self.commit_hash.isspace():
+            self.test.commit_hash = self.commit_hash
+
+    def update_timestamps(self):
+        """
+        Update the target end dates for tests as imports are occurring:
+        - Import
+          - Updates to the test target date are largely non impacting.
+            However, there is a possibility that the engagement is a CI/CD
+            engagement, so the target end should be updated
+        - Reimport
+          - Updates to the test target date are very important as we are
+            constantly reusing the same test over and over
+          - In the (likely) event the engagement is a CI/CD type, the target
+            end date should be updated as well
+        """
+        # Update the target end of the engagement if it is a CI/CD engagement
+        # If the supplied scan date is greater than the current configured
+        # target end date on the engagement
+        if self.test.engagement.engagement_type == "CI/CD":
+            engagement_target_end = max_safe(
+                [self.scan_date.date(), self.test.engagement.target_end],
+            )
+            # target_end is the only engagement field the importer touches, so recording
+            # whether it actually moved is enough to tell the closing write-back whether
+            # the engagement needs saving at all. Anything else that starts mutating the
+            # engagement mid-import has to flag itself here too, or it will not be saved.
+            if engagement_target_end != self.test.engagement.target_end:
+                self.test.engagement.target_end = engagement_target_end
+                self.engagement_target_end_updated = True
+        # Set the target end date on the test in a similar fashion
+        max_test_start_date = max_safe([self.scan_date, self.test.target_end])
+        # Quick check to make sure we have a datetime that is timezone aware
+        # so that we can suppress naive datetime warnings
+        if not max_test_start_date.tzinfo:
+            max_test_start_date = make_aware(max_test_start_date)
+        self.test.target_end = max_test_start_date
+
+    def update_test_tags(self):
+        """
+        Update the list of tags on the test if they are supplied
+        at import time
+        """
+        # Make sure the list is not empty as we do not want to overwrite
+        # any existing tags
+        if self.tags is not None and len(self.tags) > 0:
+            self.set_test_tags_safe()
+
+    def set_test_tags_safe(self):
+        """
+        Set the test's tags, retrying if a concurrent import races tagulous' tag cleanup.
+
+        Tagulous deletes tag rows whose reference count reaches zero. When two imports that
+        share a tag run at the same time, one can delete the ``dojo_tagulous_test_tags`` row
+        that the other's ``dojo_test_tags`` insert references, so the M2M write fails the
+        (deferred) foreign key check at commit with an IntegrityError -- surfacing as
+        ``Key (tagulous_test_tags_id)=(...) is not present in table
+        "dojo_tagulous_test_tags"``. Re-running ``.set()`` re-creates the vanished tag via
+        tagulous get_or_create and re-inserts the row, so a bounded retry clears the race.
+
+        The importer runs with no surrounding atomic block (no ATOMIC_REQUESTS, no atomic
+        around process_scan), so each attempt is wrapped in its own transaction: a losing
+        attempt rolls back cleanly and the next one starts fresh. Setting tags must never
+        fail an import whose findings are already saved, so a write that still fails after
+        every attempt is logged and swallowed -- the same way finding/endpoint tag writes
+        already tolerate this race in add_tags_safe().
+
+        Tagulous' ``set()`` also updates each tag's reference count row one at a time, in
+        the order the tags were supplied, and the transaction holds each of those row locks
+        until it commits. Two imports writing an overlapping tag set in different orders
+        could each hold a row the other needed, and Postgres aborted one with ``deadlock
+        detected ... in relation "dojo_tagulous_test_tags"``. Every row the write will
+        update is therefore locked up front in ascending id order (see
+        _lock_test_tag_rows), the same ordering bulk_add_tags_to_instances and
+        bulk_remove_all_tags use for finding tags. A deadlock or serialization failure
+        that still happens against some other writer is retried like the IntegrityError;
+        any other OperationalError is raised.
+        """
+        test_id = getattr(self.test, "id", None)
+        tag_names = sorted(self.tags)
+        for attempt in range(1, TEST_TAG_SET_MAX_ATTEMPTS + 1):
+            try:
+                with transaction.atomic():
+                    _lock_test_tag_rows(self.test, tag_names)
+                    self.test.tags.set(tag_names)
+            except OperationalError as e:
+                if not is_transient_db_conflict(e):
+                    raise
+                if attempt < TEST_TAG_SET_MAX_ATTEMPTS:
+                    logger.warning(
+                        "Transient DB conflict setting tags on test %s (attempt %d/%d), retrying: %s",
+                        test_id, attempt, TEST_TAG_SET_MAX_ATTEMPTS, e,
+                    )
+                    continue
+                logger.error(
+                    "Failed to set tags on test %s after %d attempts; leaving tags unchanged: %s",
+                    test_id, TEST_TAG_SET_MAX_ATTEMPTS, e,
+                )
+            except IntegrityError as e:
+                if attempt < TEST_TAG_SET_MAX_ATTEMPTS:
+                    logger.warning(
+                        "IntegrityError setting tags on test %s (attempt %d/%d), retrying: %s",
+                        test_id, attempt, TEST_TAG_SET_MAX_ATTEMPTS, e,
+                    )
+                    continue
+                logger.error(
+                    "Failed to set tags on test %s after %d attempts; leaving tags unchanged: %s",
+                    test_id, TEST_TAG_SET_MAX_ATTEMPTS, e,
+                )
+            return
+
+    def apply_import_tags_for_batch(self, findings: list[Finding]) -> None:
+        """
+        Apply import-time tags to a batch of already-saved findings and their endpoints.
+
+        Called per batch inside process_findings(), before post_process_findings_batch is
+        dispatched, so that rules/deduplication tasks see the import tags on the findings.
+        """
+        if not findings or not self.tags:
+            return
+        if self.apply_tags_to_findings:
+            try:
+                bulk_add_tags_to_instances(
+                    tag_or_tags=self.tags,
+                    instances=findings,
+                    tag_field_name="tags",
+                )
+            except IntegrityError:
+                for finding in findings:
+                    for tag in self.tags:
+                        self.add_tags_safe(finding, tag)
+        if self.apply_tags_to_endpoints:
+            locations_qs = self.location_handler.get_locations_for_tagging(findings)
+            try:
+                bulk_add_tags_to_instances(
+                    tag_or_tags=self.tags,
+                    instances=locations_qs,
+                    tag_field_name="tags",
+                )
+            except IntegrityError:
+                for finding in findings:
+                    for location in self.location_handler.get_location_tag_fallback(finding):
+                        for tag in self.tags:
+                            self.add_tags_safe(location, tag)
+
+    def update_import_history(
+        self,
+        new_findings: list[int] | None = None,
+        closed_findings: list[int] | None = None,
+        reactivated_findings: list[int] | None = None,
+        untouched_findings: list[int] | None = None,
+    ) -> Test_Import:
+        """Creates a record of the import or reimport operation that has occurred."""
+        # Quick fail check to determine if we even wanted this
+        if settings.TRACK_IMPORT_HISTORY is False:
+            return None
+
+        if untouched_findings is None:
+            untouched_findings = []
+        if reactivated_findings is None:
+            reactivated_findings = []
+        if closed_findings is None:
+            closed_findings = []
+        if new_findings is None:
+            new_findings = []
+
+        # Log the current state of what has occurred in case there could be
+        # deviation from what is displayed in the view
+        logger.debug(
+            f"new: {len(new_findings)} "
+            f"closed: {len(closed_findings)} "
+            f"reactivated: {len(reactivated_findings)} "
+            f"untouched: {len(untouched_findings)} ",
+        )
+        # Create a dictionary to stuff into the test import object
+        import_settings = {}
+        import_settings["active"] = self.active
+        import_settings["verified"] = self.verified
+        import_settings["minimum_severity"] = self.minimum_severity
+        import_settings["close_old_findings"] = self.close_old_findings_toggle
+        import_settings["push_to_jira"] = self.push_to_jira
+        import_settings["tags"] = self.tags
+        import_settings["scan_date"] = self.scan_date.isoformat() if self.scan_date_override else None
+        import_settings["service"] = self.service
+        import_settings["close_old_findings_product_scope"] = self.close_old_findings_product_scope
+        import_settings["do_not_reactivate"] = self.do_not_reactivate
+        import_settings["apply_tags_to_findings"] = self.apply_tags_to_findings
+        import_settings["apply_tags_to_endpoints"] = self.apply_tags_to_endpoints
+        import_settings["group_by"] = self.group_by
+        import_settings["create_finding_groups_for_all_findings"] = self.create_finding_groups_for_all_findings
+        if len(self.endpoints_to_add) > 0:
+            import_settings.update(self.location_handler.serialize_extra_locations(self.endpoints_to_add))
+        # Persist through an overridable hook so a subclass can redirect the write (below).
+        return self._persist_import_history(
+            import_settings,
+            new_findings,
+            closed_findings,
+            reactivated_findings,
+            untouched_findings,
+        )
+
+    def _persist_import_history(
+        self,
+        import_settings: dict,
+        new_findings: list[int],
+        closed_findings: list[int],
+        reactivated_findings: list[int],
+        untouched_findings: list[int],
+    ) -> Test_Import:
+        """
+        Persist the import-history write: the Test_Import row plus one
+        Test_Import_Finding_Action per affected finding, and return the Test_Import.
+
+        Factored out of update_import_history as an OVERRIDABLE extension point. The default is
+        the Django ORM write; a subclass may redirect the write elsewhere (e.g. delegate it to
+        another service) without reimplementing the settings-building and list-normalization that
+        update_import_history has already done. update_import_history has also already applied the
+        TRACK_IMPORT_HISTORY gate, so this is only reached when history is being recorded.
+        """
+        # Create the test import object
+        test_import = Test_Import.objects.create(
+            test=self.test,
+            import_settings=import_settings,
+            version=self.version,
+            branch_tag=self.branch_tag,
+            build_id=self.build_id,
+            commit_hash=self.commit_hash,
+            type=self.import_type,
+        )
+
+        # Create a history record for each finding
+        finding_action_mappings = [
+            (closed_findings, IMPORT_CLOSED_FINDING),
+            (new_findings, IMPORT_CREATED_FINDING),
+            (reactivated_findings, IMPORT_REACTIVATED_FINDING),
+            (untouched_findings, IMPORT_UNTOUCHED_FINDING),
+        ]
+
+        # In longer running imports it can happen that the async_dupe_delete task removes a finding before the history record is created
+        # We filter out these findings here to avoid FK violations (IntegrityError)
+        dropped_finding_ids = self.deleted_finding_ids({
+            finding_id for list_, _ in finding_action_mappings for finding_id in list_
+        })
+
+        # Collect all import history records, skipping the findings that are gone
+        import_history_records = []
+        for finding_ids, action in finding_action_mappings:
+            import_history_records.extend(
+                Test_Import_Finding_Action(
+                    test_import=test_import,
+                    finding_id=finding_id,
+                    action=action,
+                )
+                for finding_id in finding_ids
+                if finding_id is not None and finding_id not in dropped_finding_ids
+            )
+
+        # Bulk create all at once and let Django handle batching internally.
+        # Still in even more rare cases a finding can be deleted once we arrive here.
+        # If any integrity error occurs, fall back to inserting all records individually.
+        # The bulk_create is atomic so all batches will succeed or all will fail/rollback
+        try:
+            # keep bulk failure contained so fallback can proceed in TestCase transaction
+            Test_Import_Finding_Action.objects.bulk_create(
+                import_history_records,
+                ignore_conflicts=True,
+                batch_size=100,
+            )
+        except IntegrityError:
+            logger.warning("IntegrityError occurred while bulk creating Test_Import_Finding_Actions, falling back to individual inserts")
+            for record in import_history_records:
+                self.create_import_history_record_safe(record)
+
+        return test_import
+
+    def create_import_history_record_safe(
+        self,
+        test_import_finding_action,
+    ):
+        """Creates an import history record, while catching any IntegrityErrors that might happen because of the background job having deleted a finding"""
+        logger.debug(f"creating Test_Import_Finding_Action for finding_id: {test_import_finding_action.finding_id} action: {test_import_finding_action.action}")
+        try:
+            test_import_finding_action.save()
+        except (IntegrityError, ValueError) as e:
+            # This try catch makes us look we don't know what we're doing, but in https://github.com/DefectDojo/django-DefectDojo/issues/6217 we decided that for now this is the best solution
+            logger.warning("Error creating Test_Import_Finding_Action: %s", e)
+            logger.debug("Error creating Test_Import_Finding_Action, finding marked as duplicate and deleted ?")
+
+    def add_tags_safe(
+        self,
+        finding_or_location: Finding | Location | Endpoint,
+        tag,
+    ):
+        """Adds tags to a finding, location, or endpoint, while catching any IntegrityErrors that might happen because of the background job having deleted a finding"""
+        if isinstance(finding_or_location, Finding):
+            msg = "finding"
+        elif isinstance(finding_or_location, Location):
+            msg = "location"
+            # TODO: Delete this after the move to Locations
+        elif isinstance(finding_or_location, Endpoint):
+            msg = "endpoint"
+        else:
+            msg = f"finding_or_location must be a Finding, Location or Endpoint object not {type(finding_or_location)}"
+            raise TypeError(msg)
+
+        logger.debug(f"adding tag: {tag} to " + msg + f"{finding_or_location.id}")
+
+        try:
+            finding_or_location.tags.add(tag)
+        except IntegrityError as e:
+            # This try catch makes us look we don't know what we're doing, but in https://github.com/DefectDojo/django-DefectDojo/issues/6217 we decided that for now this is the best solution
+            logger.warning("Error adding tag: %s", e)
+            logger.debug("Error adding tag, finding marked as duplicate and deleted ?")
+
+    def construct_imported_message(
+        self,
+        finding_count: int = 0,
+        new_finding_count: int = 0,
+        closed_finding_count: int = 0,
+        reactivated_finding_count: int = 0,
+        untouched_finding_count: int = 0,
+    ) -> str:
+        """
+        Constructs a success message to be displayed on screen in the UI as a digest for the user.
+        This digest includes counts for the findings in the following status:
+        - Created: New findings that have not been created before
+        - Closed: Findings that were not detected in the report any longer, so the original was closed
+        - Reactivated: Findings that were once closed, but has reappeared in the report again
+        - Untouched: Findings that have not changed between now, and the last import/reimport
+        """
+        # Only construct this message if there is any change in finding status
+        if finding_count > 0:
+            # Set the base message to indicate how many findings were parsed from the report
+            message = f"{self.scan_type} processed a total of {finding_count} findings"
+            if self.import_type == Test_Import.IMPORT_TYPE:
+                # Check for close old findings context to determine if more detail should be added
+                if self.close_old_findings_toggle:
+                    message += f" and closed {closed_finding_count} findings"
+            if self.import_type == Test_Import.REIMPORT_TYPE:
+                # Add more details for any status changes recorded
+                if new_finding_count:
+                    message += f" created {new_finding_count} findings"
+                if closed_finding_count:
+                    message += f" closed {closed_finding_count} findings"
+                if reactivated_finding_count:
+                    message += f" reactivated {reactivated_finding_count} findings"
+                if untouched_finding_count:
+                    message += f" did not touch {untouched_finding_count} findings"
+            # Drop a period at the end
+            message += "."
+        else:
+            # Set the message to convey that all findings processed are identical to the last time an import/reimport occurred
+            message = "No findings were added/updated/closed/reactivated as the report is empty or the findings in Defect Dojo are identical to those in the uploaded report."
+
+        return message
+
+    @staticmethod
+    def _is_vanished_row_error(exception: DatabaseError) -> bool:
+        """
+        Return True when `exception` is Django reporting that a forced UPDATE matched no rows.
+
+        Model.save_base raises a bare DatabaseError for this; every genuine database
+        failure arrives as a subclass (IntegrityError, OperationalError, DataError, ...),
+        so the exact class is the discriminator and the message only a second opinion.
+        Classifying on the exception rather than with a follow-up query matters: a real
+        failure can leave the connection in an aborted transaction, where the query would
+        raise in turn and bury the error that actually needs reporting.
+        """
+        return type(exception) is DatabaseError and "did not affect any rows" in str(exception)
+
+    @contextmanager
+    def import_lock_scope(self):
+        """
+        Hold the import lock taken by lock_test_under_import until the outermost scope exits.
+
+        process_scan opens one; a caller that goes on writing this import's findings after
+        process_scan returns opens its own around the call, and the lock is held until that one
+        exits. See dojo.importers.import_lock.
+        """
+        depth = getattr(self, "_import_lock_depth", 0)
+        self._import_lock_depth = depth + 1
+        try:
+            yield
+        finally:
+            self._import_lock_depth = depth
+            if depth == 0:
+                unlock_tests_under_import(getattr(self, "_import_locked_tests", []))
+                self._import_locked_tests = []
+
+    def lock_test_under_import(self, test: Test) -> None:
+        """
+        Tell the excess-duplicate delete this test is being imported, until the import ends.
+
+        Call before the first finding is created or matched. Waits if a delete is removing this
+        test's duplicates right now, so the import starts from what that delete left.
+        """
+        if getattr(self, "_import_lock_depth", 0) == 0:
+            msg = "lock_test_under_import must run inside import_lock_scope"
+            raise RuntimeError(msg)
+        locked = getattr(self, "_import_locked_tests", [])
+        if test is None or test.pk is None or test.pk in locked:
+            return
+        self._import_locked_tests = locked + lock_tests_under_import([test.pk])
+
+    def save_matched_finding(self, finding: Finding, *, no_options: bool = False) -> bool:
+        """
+        Save a finding this import matched earlier in the run, unless it has been deleted since.
+
+        A reimport matches report rows against findings it loaded at the start of a batch, and a
+        report can carry several rows for one finding (one per CVE for the same package, say), each
+        of which saves it again. If the finding is deleted in between -- by a user or client
+        deleting it through the API, a test or engagement delete, or the excess-duplicate delete --
+        a plain save() finds no row to UPDATE and falls back to an INSERT that re-creates it from the
+        stale in-memory copy, and a companion saved first (or a deferred field read on the way)
+        fails instead. force_update=True turns that into an error the vanished-row check
+        recognises, from the same statement, so nothing is re-created.
+
+        Returns False when the finding is gone: the caller skips the rest of its handling for that
+        finding and the import carries on with the others.
+        """
+        save = finding.save_no_options if no_options else finding.save
+        try:
+            save(force_update=True)
+        except type(finding).DoesNotExist:
+            pass  # a deferred field read found the row gone before the UPDATE ran
+        except DatabaseError as exception:
+            if not self._is_vanished_row_error(exception):
+                raise
+        else:
+            return True
+        using = finding._state.db or DEFAULT_DB_ALIAS
+        if connections[using].in_atomic_block:
+            transaction.set_rollback(False, using=using)
+        logger.info("Finding %s was deleted while this import was processing it; leaving it deleted", finding.pk)
+        return False
+
+    def save_without_resurrecting(self, instance: Engagement | Test) -> None:
+        """
+        Persist an import target, refusing to re-create it if it was deleted mid-import.
+
+        Model.save() on an instance whose primary key is already set issues an UPDATE, and
+        Django falls back to an INSERT when that UPDATE matches no rows. The importer loads
+        its test and engagement at the start of a run that can take minutes, so a delete
+        landing mid-run turns a routine write-back into an INSERT that re-creates the
+        deleted row from the stale in-memory copy. That surfaced two ways:
+
+        - The parent went with it (an engagement delete cascades to its tests), so the
+          INSERT carried a dangling foreign key. Because Django declares its foreign keys
+          DEFERRABLE INITIALLY DEFERRED, the violation is only raised at COMMIT, well past
+          any handler that knew what the import was doing, and the caller got an opaque 500
+          naming a PostgreSQL constraint instead of the reason the import failed.
+        - The parent survived, so the INSERT succeeded and silently resurrected a row the
+          user had deleted, without the findings and history that were cascaded away with it.
+
+        Neither is a save the importer should be making: the target of the import is gone,
+        so the import cannot complete. Fail with a message that says exactly that.
+
+        force_update=True is what detects it. Django then raises instead of falling back to
+        an INSERT, and it does so from the same statement that would have done the damage,
+        so a delete committing mid-check cannot slip past -- which a separate "does the row
+        still exist" SELECT could not promise, and which costs no query at all rather than
+        one per save.
+        """
+        if instance.pk is None:
+            # An insert, so there is nothing to resurrect, and Django cannot force an
+            # update without a primary key.
+            instance.save()
+            return
+
+        try:
+            instance.save(force_update=True)
+        except DatabaseError as exception:
+            if not self._is_vanished_row_error(exception):
+                raise
+            # The UPDATE itself succeeded -- it simply matched no rows -- so nothing needs
+            # rolling back. Django marks the transaction for rollback regardless, because
+            # Model.save_base wraps the write in mark_for_rollback_on_error, and that flag
+            # would make the caller's failure handling raise TransactionManagementError
+            # instead of recording why the import failed. Clear it so the caller can still
+            # use its connection. No-op outside a transaction, which is where the importer
+            # runs today (no ATOMIC_REQUESTS, no atomic block around process_scan).
+            using = instance._state.db or DEFAULT_DB_ALIAS
+            if connections[using].in_atomic_block:
+                transaction.set_rollback(False, using=using)
+            raise ValidationError(deleted_target_message(instance)) from exception
+
+    def update_test_progress(
+        self,
+        percentage_value: int = 100,
+    ):
+        """
+        This function is added to the async queue at the end of all finding import tasks
+        and after location task, so this should only run after all the other ones are done.
+        Its purpose is to update the percent completion of the test to 100 percent
+        """
+        self.test.percent_complete = percentage_value
+        self.save_without_resurrecting(self.test)
+
+    def resolve_dynamic_test_type_name(self, raw_type: str | None) -> str:
+        """
+        Compute the Test_Type name for a dynamic-test-type report (e.g. Generic, SARIF).
+
+        - No type, or type already equals the scan type -> use the scan type as-is.
+        - Type already carries the scan-type suffix (e.g. "Prisma Cloud (Generic Findings
+          Import)") -> use it verbatim. This keeps the composition idempotent and prevents
+          doubled names like "X (scan_type) Scan (scan_type)".
+        - Type plus a " Scan" suffix already equals the scan type (e.g. type "Horusec" with
+          scan_type "Horusec Scan") -> use the scan type as-is. This preserves the behavior of
+          dynamic parsers whose scan_type already ends in " Scan" (Horusec, AWS Security Hub,
+          Rusty Hog, ...) so their Test_Type name is not doubled into "Horusec Scan (Horusec Scan)".
+        - Otherwise -> the intentional "{type} Scan ({scan_type})" format (also used by SARIF,
+          so a report labeled 'CodeScanner' becomes 'CodeScanner Scan (SARIF)').
+        """
+        if not raw_type or raw_type == self.scan_type:
+            return self.scan_type
+        if raw_type.endswith(f" ({self.scan_type})"):
+            return raw_type
+        if f"{raw_type} Scan" == self.scan_type:
+            return self.scan_type
+        return f"{raw_type} Scan ({self.scan_type})"
+
+    def legacy_dynamic_test_type_name(self, raw_type: str | None) -> str:
+        """
+        Reproduce the name the pre-idempotency code produced. Used only for the reimport
+        compatibility check so reimports into existing (pre-patch) tests whose test_type
+        already has a doubled suffix keep working instead of raising a mismatch error.
+        """
+        if not raw_type or raw_type == self.scan_type:
+            return self.scan_type
+        name = f"{raw_type} Scan"
+        if name != self.scan_type:
+            name = f"{name} ({self.scan_type})"
+        return name
+
+    def get_or_create_test_type(
+        self,
+        test_type_name: str,
+    ) -> Test_Type:
+        """
+        Ensures that a test type exists for a given test. This function can be called
+        in the following circumstances:
+        - Ensuring a test type exists for import
+        - Ensuring a test type exists for reimport with auto-create context
+        - Creating a new test type for dynamic test types such as generic and sarif
+        """
+        test_type, created = Test_Type.objects.get_or_create(name=test_type_name)
+        if created:
+            logger.info(f"Created new Test_Type with name {test_type.name} because a report is being imported")
+            test_type.dynamically_generated = True
+            test_type.save()
+        return test_type
+
+    def update_test_from_internal_test(self, internal_test: ParserTest) -> None:
+        if (description := getattr(internal_test, "description", None)) is not None:
+            self.test.description = description
+        if (version := getattr(internal_test, "version", None)) is not None:
+            self.test.version = version
+        self.test.save()
+
+    def update_test_type_from_internal_test(self, internal_test: ParserTest) -> None:
+        if (static_tool := getattr(internal_test, "static_tool", None)) is not None:
+            self.test.test_type.static_tool = static_tool
+        if (dynamic_tool := getattr(internal_test, "dynamic_tool", None)) is not None:
+            self.test.test_type.dynamic_tool = dynamic_tool
+        self.test.test_type.save()
+
+    def verify_tool_configuration_from_test(self):
+        """
+        Verify that the Tool_Configuration supplied along with the
+        test is found on the product. If not, then raise a validation
+        error that will bubble up back to the user
+
+        if f there is a case where the Tool_Configuration supplied to
+        this function does not match the one saved on the test, then
+        we will user the one supplied rather than the one on the test.
+        """
+        # Do not bother with any of the verification if a Tool_Configuration is not supplied
+        if self.api_scan_configuration is None:
+            # Return early as there is no value in validating further
+            return
+        # Validate that the test has a value
+        if self.test is not None:
+            # Make sure the Tool_Configuration is connected to the product that the test is
+            if self.api_scan_configuration.product != self.test.engagement.product:
+                msg = "API Scan Configuration has to be from same product as the Test"
+                raise ValidationError(msg)
+            # If the Tool_Configuration on the test is not the same as the one supplied, then lets
+            # use the one that is supplied
+            if self.test.api_scan_configuration != self.api_scan_configuration:
+                self.test.api_scan_configuration = self.api_scan_configuration
+                self.test.save()
+
+    def verify_tool_configuration_from_engagement(self):
+        """
+        Verify that the Tool_Configuration supplied along with the
+        engagement is found on the product. If not, then raise a validation
+        error that will bubble up back to the user
+
+        if there is a case where the Tool_Configuration supplied to
+        this function does not match the one saved on the engagement, then
+        we will user the one supplied rather than the one on the engagement.
+        """
+        # Do not bother with any of the verification if a Tool_Configuration is not supplied
+        if self.api_scan_configuration is None:
+            # Return early as there is no value in validating further
+            return
+        # Validate that the engagement has a value
+        if self.engagement is not None:
+            # Make sure the Tool_Configuration is connected to the engagement that the test is
+            if self.api_scan_configuration.product != self.engagement.product:
+                msg = "API Scan Configuration has to be from same product as the Engagement"
+                raise ValidationError(msg)
+
+    def sanitize_severity(
+        self,
+        finding: Finding,
+    ) -> Finding:
+        """
+        Sanitization on the finding severity such that only the following
+        severities may be set on the finding:
+        - Critical, High, Medium, Low, Info
+        There is a simple conversion process to convert any of the following
+        to a value of Info
+        - info, informational, Informational, None, none
+        Severity matching is case-insensitive, so values such as "medium" or
+        "CRITICAL" are normalized to their supported form ("Medium", "Critical").
+        If the severity is still not recognized, raise a ValidationError
+        explaining as such
+        """
+        # Checks around Informational/Info severity
+        starts_with_info = finding.severity.lower().startswith("info")
+        lower_none = finding.severity.lower() == "none"
+        not_info = finding.severity != "Info"
+        # Make the comparisons
+        if not_info and (starts_with_info or lower_none):
+            # Correct the severity
+            finding.severity = "Info"
+        # Normalize the case of any remaining severity so that a value like
+        # "medium" is accepted as the supported "Medium" instead of rejected
+        if finding.severity not in SEVERITIES:
+            canonical_severities = {severity.lower(): severity for severity in SEVERITIES}
+            finding.severity = canonical_severities.get(finding.severity.lower(), finding.severity)
+        # Ensure the final severity is one of the supported options
+        if finding.severity not in SEVERITIES:
+            msg = (
+                f'Finding severity "{finding.severity}" is not supported. '
+                f"Any of the following are supported: {SEVERITIES}."
+            )
+            raise ValidationError(msg)
+        # Set the numerical severity on the finding based on the cleaned severity
+        finding.numerical_severity = Finding.get_numerical_severity(finding.severity)
+        # Return the finding if all else is good
+        return finding
+
+    def persist_new_findings(self, prepared_findings: list[Finding]) -> list[Finding]:
+        """
+        Persist a batch of new findings that have already been fully prepared
+        (scalar overrides applied, hash_code computed) and have no primary key yet.
+
+        Default: an ordinary per-instance save, in the order given. Exists as an
+        override seam so a downstream edition can swap the write strategy (e.g. a
+        bulk insert) without reimplementing the grouping/tagging/location/
+        vulnerability-id processing that runs on the returned, now-saved findings.
+        """
+        for finding in prepared_findings:
+            finding.save_no_options()
+        return prepared_findings
+
+    def process_finding_groups(
+        self,
+        finding: Finding,
+        group_names_to_findings_dict: dict,
+    ) -> bool:
+        """
+        Determines how to handle an incoming finding with respect to grouping
+        if finding groups are enabled, use the supplied grouping mechanism to
+        store a reference of how the finding should be grouped.
+
+        Returns True if the finding was added to a group, False otherwise.
+        """
+        if self.findings_groups_enabled and self.group_by:
+            # If finding groups are enabled, group all findings by group name
+            name = finding_helper.get_group_by_group_name(finding, self.group_by)
+            if name is not None:
+                if name in group_names_to_findings_dict:
+                    group_names_to_findings_dict[name].append(finding)
+                else:
+                    group_names_to_findings_dict[name] = [finding]
+                return True
+        return False
+
+    def process_request_response_pairs(
+        self,
+        finding: Finding,
+    ) -> None:
+        """
+        Search the unsaved finding for the following attributes to determine
+        if the data can be saved to the finding
+        - unsaved_req_resp
+        - unsaved_request
+        - unsaved_response
+        Create BurpRawRequestResponse objects linked to the finding without
+        returning the finding afterward
+        """
+        for req_resp in getattr(finding, "unsaved_req_resp", []):
+            # A dynamic-scan parser can emit a pair whose request or response is missing
+            # (for example a request that produced no response), leaving "req"/"resp" as
+            # None. base64.b64encode(None.encode(...)) then raised
+            # "AttributeError: 'NoneType' object has no attribute 'encode'" and killed the
+            # whole import task. Coerce a missing side to an empty string so the pair is
+            # still stored, matching the unsaved_request/unsaved_response path below that
+            # already tolerates a missing value.
+            request = req_resp.get("req") or ""
+            response = req_resp.get("resp") or ""
+            self.pending_burp_rr.append(BurpRawRequestResponse(
+                finding=finding,
+                burpRequestBase64=base64.b64encode(request.encode("utf-8")),
+                burpResponseBase64=base64.b64encode(response.encode("utf-8")),
+            ))
+
+        unsaved_request = getattr(finding, "unsaved_request", None)
+        unsaved_response = getattr(finding, "unsaved_response", None)
+        if unsaved_request is not None and unsaved_response is not None:
+            self.pending_burp_rr.append(BurpRawRequestResponse(
+                finding=finding,
+                burpRequestBase64=base64.b64encode(unsaved_request.encode()),
+                burpResponseBase64=base64.b64encode(unsaved_response.encode()),
+            ))
+
+    def deleted_finding_ids(self, finding_ids: set[int]) -> set[int]:
+        """
+        Of the given finding ids, the ones whose finding row is gone.
+
+        The importer's seam onto finding_helper.deleted_finding_ids -- kept as a method so
+        the flush paths and update_import_history share one lookup and a subclass has a
+        single place to override. See drop_rows_for_deleted_findings() for why the buffers
+        need this at all.
+        """
+        return finding_helper.deleted_finding_ids(finding_ids)
+
+    def drop_rows_for_deleted_findings(self, rows: list, deleted_finding_ids: set[int] | None = None) -> list:
+        """
+        Return only the buffered child rows whose finding still exists.
+
+        Child rows are buffered while a batch of up to a thousand findings is processed
+        and inserted in bulk at the batch boundary, so a finding stays referenced by the
+        buffer for as long as the rest of its batch takes. A finding row can go away
+        inside that window: the excess-duplicate cleanup task deletes findings, and so
+        does a user deleting findings or a delete cascading from a test or engagement.
+        The buffered row then points at a primary key that is no longer in dojo_finding.
+
+        Because Django declares its foreign keys DEFERRABLE INITIALLY DEFERRED, that
+        insert does not fail where it is issued. PostgreSQL raises it at COMMIT, past
+        every handler that knew what the import was doing, so the whole import dies with
+        an IntegrityError naming a database constraint and takes the rest of the batch --
+        findings that were perfectly fine -- with it.
+
+        A finding that is gone has nothing to own these rows, so dropping just those rows
+        is the correct outcome, and it costs one indexed primary-key lookup per flush.
+        Rows whose finding id is not resolvable yet are left alone: bulk_create fills the
+        id in from the related object, and reporting on them is its job, not this guard's.
+
+        Callers that flush several buffers at one boundary resolve the deleted ids once and
+        pass them in, so the whole boundary still costs a single lookup.
+        """
+        finding_ids = {row.finding_id for row in rows if row.finding_id is not None}
+        if not finding_ids:
+            return rows
+        # Narrow a caller-supplied set to this buffer with a new set rather than in place:
+        # the caller reuses its set for the other buffers at the same flush boundary.
+        if deleted_finding_ids is None:
+            dropped_finding_ids = self.deleted_finding_ids(finding_ids)
+        else:
+            dropped_finding_ids = deleted_finding_ids & finding_ids
+        if not dropped_finding_ids:
+            return rows
+        logger.warning(
+            "skipping %s row(s) buffered for %s finding(s) deleted during the import: %s",
+            sum(1 for row in rows if row.finding_id in dropped_finding_ids),
+            len(dropped_finding_ids),
+            sorted(dropped_finding_ids),
+        )
+        return [row for row in rows if row.finding_id not in dropped_finding_ids]
+
+    def flush_burp_request_response(self) -> None:
+        if self.pending_burp_rr:
+            rows = self.drop_rows_for_deleted_findings(self.pending_burp_rr)
+            if rows:
+                BurpRawRequestResponse.objects.bulk_create(rows, batch_size=1000)
+            self.pending_burp_rr.clear()
+
+    def process_locations(
+        self,
+        finding: Finding,
+        extra_locations_to_add: list | None = None,
+    ) -> None:
+        """
+        Record locations/endpoints from the finding + any form-added extras.
+        Flushed to DB by location_handler.persist().
+        """
+        self.location_handler.record_for_finding(finding, extra_locations_to_add)
+
+    def sanitize_vulnerability_ids(self, finding) -> None:
+        """Remove undisired vulnerability id values"""
+        if finding.unsaved_vulnerability_ids:
+            # A vulnerability id is expected to be a string. A parser (notably
+            # Generic Findings Import, which passes "vulnerability_ids" through
+            # unchanged) can supply a non-string entry such as a dict; drop those
+            # instead of raising AttributeError on .strip().
+            finding.unsaved_vulnerability_ids = [
+                vulnerability_id
+                for vulnerability_id in finding.unsaved_vulnerability_ids
+                if isinstance(vulnerability_id, str) and vulnerability_id.strip()
+            ]
+
+    def process_cve(
+        self,
+        finding: Finding,
+    ) -> Finding:
+        """Ensure cve is set from the unsaved_vulnerability_ids field, or vice versa."""
+        # Synchronize the cve field with the unsaved_vulnerability_ids
+        # We do this to be as flexible as possible to handle the fields until
+        # the cve field is not needed anymore and can be removed.
+        # Remove undisired vulnerability ids
+        self.sanitize_vulnerability_ids(finding)
+        # A cve that is not a non-empty string is malformed input (same rule as
+        # sanitize_vulnerability_ids). Normalize it to None so it is not re-added to
+        # unsaved_vulnerability_ids below, where a non-string value would otherwise
+        # crash the dedup hash and the reimport reconciler.
+        if not (isinstance(finding.cve, str) and finding.cve.strip()):
+            finding.cve = None
+        if finding.unsaved_vulnerability_ids and finding.cve:
+            # Make sure the first entry of the list is the value of the cve field
+            finding.unsaved_vulnerability_ids.insert(0, finding.cve)
+        elif finding.unsaved_vulnerability_ids and not finding.cve:
+            # If the cve field is not set, use the first entry of the list to set it
+            finding.cve = finding.unsaved_vulnerability_ids[0]
+        elif not finding.unsaved_vulnerability_ids and finding.cve:
+            # If there is no list, make one with the value of the cve field
+            finding.unsaved_vulnerability_ids = [finding.cve]
+
+        return finding
+
+    def store_vulnerability_ids(
+        self,
+        finding: Finding,
+    ) -> Finding:
+        """
+        Accumulate a finding's vulnerability-id references for bulk insert at the batch boundary.
+        Call flush_vulnerability_ids() to persist.
+        """
+        self.sanitize_vulnerability_ids(finding)
+        vulnerability_ids_to_process = list(dict.fromkeys(finding.unsaved_vulnerability_ids or []))
+        vulnerability_ids_to_process = [x for x in vulnerability_ids_to_process if x.strip()]
+        self.vulnerability_id_manager.record(finding, vulnerability_ids_to_process)
+        if vulnerability_ids_to_process:
+            finding.cve = vulnerability_ids_to_process[0]
+        else:
+            finding.cve = None
+        self.store_cwes(finding)
+        return finding
+
+    def finding_cwe_values(self, finding: Finding) -> list[str]:
+        """Canonical CWE-<n> labels: the primary Finding.cwe plus any parser-supplied unsaved_cwes."""
+        return finding_cwe_labels(finding.cwe, getattr(finding, "unsaved_cwes", None))
+
+    def store_cwes(self, finding: Finding) -> None:
+        """Accumulate Finding_CWE rows for bulk insert at the batch boundary (via flush_vulnerability_ids)."""
+        self.pending_cwes.extend([
+            Finding_CWE(finding=finding, cwe=cwe) for cwe in self.finding_cwe_values(finding)
+        ])
+
+    def reconcile_cwes(self, finding: Finding) -> None:
+        """Accumulate a delete+insert of Finding_CWE rows for a reimported finding when its CWEs changed."""
+        new_cwes = set(self.finding_cwe_values(finding))
+        # finding_cwe_set is prefetched on reimport candidates (build_candidate_scope_queryset).
+        # A finding that has not been written yet has no persisted CWEs, and reading the reverse
+        # relation on it raises ("instance needs to have a primary key value before this
+        # relationship can be used"). Treating it as empty is exact rather than a workaround:
+        # there are no rows to compare against, so every parsed CWE is new. This lets an importer
+        # that buffers inserts reconcile a finding's CWEs before flushing the buffer.
+        existing_cwes = {row.cwe for row in finding.finding_cwe_set.all()} if finding.pk else set()
+        if existing_cwes == new_cwes:
+            return
+        # Nothing to delete for a finding with no row yet; appending None would put a NULL in the
+        # filter that flush_vulnerability_ids() builds.
+        if finding.pk:
+            self.pending_cwe_deletes.append(finding.id)
+        self.pending_cwes.extend([Finding_CWE(finding=finding, cwe=cwe) for cwe in new_cwes])
+
+    def flush_vulnerability_ids(self) -> None:
+        """Flush the vulnerability-id buffers, then the Finding_CWE buffers, and clear."""
+        # Every buffer flushed at this boundary hangs off a finding that may have been
+        # deleted since it was buffered, so resolve the deleted ids once (one lookup for
+        # the whole boundary) and drop those rows -- see drop_rows_for_deleted_findings().
+        deleted_finding_ids = self.deleted_finding_ids(
+            {
+                finding.id
+                for finding, _ in self.vulnerability_id_manager.pending
+                if finding.id is not None
+            }
+            | {row.finding_id for row in self.pending_cwes if row.finding_id is not None},
+        )
+        if deleted_finding_ids:
+            self.vulnerability_id_manager.drop_findings(deleted_finding_ids)
+        # Vulnerability entity + FindingVulnerabilityReference rows, in one transaction.
+        self.vulnerability_id_manager.flush()
+        # CWE buffers ride the same flush boundary as before (not owned by the manager).
+        if self.pending_cwe_deletes:
+            Finding_CWE.objects.filter(finding_id__in=self.pending_cwe_deletes).delete()
+            self.pending_cwe_deletes.clear()
+        if self.pending_cwes:
+            rows = self.drop_rows_for_deleted_findings(self.pending_cwes, deleted_finding_ids)
+            if rows:
+                Finding_CWE.objects.bulk_create(rows, batch_size=1000, ignore_conflicts=True)
+            self.pending_cwes.clear()
+
+    def process_files(
+        self,
+        finding: Finding,
+    ) -> None:
+        """
+        Some parsers may supply files in the form of base64 encoded blobs,
+        so lets save them in the form of an attached file on the finding
+        object
+        """
+        if finding.unsaved_files:
+            title_max_length = FileUpload._meta.get_field("title").max_length
+            for unsaved_file in finding.unsaved_files:
+                title = unsaved_file.get("title") or "<No title>"
+                if len(title) > title_max_length:
+                    # Keep the extension, which is what the file type check reads.
+                    suffix = Path(title).suffix[-20:]
+                    title = title[:title_max_length - len(suffix)] + suffix
+                try:
+                    data = base64.b64decode(unsaved_file.get("data") or "", validate=True)
+                except (binascii.Error, ValueError):
+                    logger.warning("Skipping attachment %r on finding %r: the data is not valid base64", title, finding.title)
+                    continue
+                # Always a fresh row. Matching on title alone reused whatever
+                # FileUpload already happened to carry that name — including one
+                # attached to a finding in an unrelated product — and the save()
+                # below then repointed it at this scan's content, so the other
+                # finding silently started serving this file instead of its own.
+                file_upload = FileUpload(title=title)
+                try:
+                    # The same file type rules as an upload through the UI or API.
+                    file_upload.clean()
+                except ValidationError as e:
+                    logger.warning("Skipping attachment %r on finding %r: %s", title, finding.title, e)
+                    continue
+                file_upload.save()
+                file_upload.file.save(title, ContentFile(data))
+                file_upload.save()
+                finding.files.add(file_upload)
+
+    def mitigate_finding(
+        self,
+        finding: Finding,
+        note_message: str,
+        *,
+        finding_groups_enabled: bool,
+        product_grading_option: bool = True,
+    ) -> None:
+        """
+        Mitigates a finding, all location statuses, leaves a note on the finding
+        with a record of what happened, and then saves the finding. Changes to
+        this finding will also be synced with some ticket tracking system as well
+        as groups
+        """
+        finding.active = False
+        finding.is_mitigated = True
+        if not finding.mitigated:
+            finding.mitigated = self.scan_date
+        finding.mitigated_by = self.user
+        finding.notes.create(
+            author=self.user,
+            entry=note_message,
+        )
+        # Remove risk acceptance if present (vulnerability is now fixed)
+        # risk_unaccept will check if finding.risk_accepted is True before proceeding
+        ra_helper.risk_unaccept(
+            self.user, finding, perform_save=False, post_comments=False,
+            source="reimport", reason="the scan no longer reports this finding",
+        )
+        self.location_handler.record_mitigations_for_finding(finding, self.user)
+        # to avoid pushing a finding group multiple times, we push those outside of the loop
+        if finding_groups_enabled and finding.finding_group:
+            # don't try to dedupe findings that we are closing
+            finding.save(dedupe_option=False, product_grading_option=product_grading_option)
+        else:
+            finding.save(dedupe_option=False, push_to_jira=(self.push_to_jira or is_keep_in_sync(finding, prefetched_jira_instance=self.jira_instance)), product_grading_option=product_grading_option)
+
+    def mitigate_findings(
+        self,
+        findings: list[Finding],
+        note_message: str,
+        *,
+        finding_groups_enabled: bool,
+        product_grading_option: bool = True,
+    ) -> None:
+        """
+        Set-based mitigate_finding() for many findings at once.
+
+        Each finding ends up exactly as mitigate_finding() leaves it: the same fields,
+        the same note, the same location/endpoint statuses, the same pre_save and
+        post_save signals (Finding.save()'s own receivers, the status bookkeeping, search
+        indexing and any plugin's), the same m2m_changed for the note, and the same
+        post-save work (tool issue updater, JIRA push, product grading). What changes is
+        the cost: notes, statuses and the Finding rows are written with a fixed number of
+        statements per chunk instead of about a dozen queries per finding.
+
+        Findings are expected as loaded from the database (no unsaved edits): only the
+        columns this method, save()'s derived fields or a pre_save receiver changed are
+        written, together with the status columns.
+        """
+        if not findings:
+            return
+        db = router.db_for_write(Finding)
+        written = [f for f in Finding._meta.concrete_fields if not f.primary_key]
+        loaded = [
+            {f.attname: finding.__dict__[f.attname] for f in written if f.attname in finding.__dict__}
+            for finding in findings
+        ]
+        # mitigate_finding() decides the JIRA push before it saves, so decide it here too
+        push_to_jira = []
+        for finding in findings:
+            finding.active = False
+            finding.is_mitigated = True
+            if not finding.mitigated:
+                finding.mitigated = self.scan_date
+            finding.mitigated_by = self.user
+            in_pushed_group = finding_groups_enabled and finding.finding_group
+            push_to_jira.append(
+                not in_pushed_group
+                and (self.push_to_jira or is_keep_in_sync(finding, prefetched_jira_instance=self.jira_instance)),
+            )
+        # One transaction from the first write to the last post_save: if anything raises part way
+        # (a receiver, a write), nothing is left closed without its post-processing. The old
+        # per-finding path saved and post-processed each finding together, so a later run
+        # retried whatever it had not reached; a half-written batch would instead be skipped as
+        # already mitigated.
+        with transaction.atomic():
+            self._add_note_to_findings(findings, note_message, db)
+            for finding in findings:
+                # Remove risk acceptance if present (vulnerability is now fixed)
+                # risk_unaccept will check if finding.risk_accepted is True before proceeding
+                ra_helper.risk_unaccept(
+                    self.user, finding, perform_save=False, post_comments=False,
+                    source="reimport", reason="the scan no longer reports this finding",
+                )
+            self.location_handler.record_mitigations_for_findings(findings, self.user)
+
+            # What Finding.save() derives before writing the row
+            ids_with_locations = self._finding_ids_with_locations([f.id for f in findings if f.file_path is not None])
+            for finding in findings:
+                finding.derive_persisted_fields(dedupe_option=False, is_new_finding=False)
+                if finding.file_path is not None:
+                    finding.static_finding = True
+                    if finding.id not in ids_with_locations:
+                        finding.dynamic_finding = False
+                finding.set_sla_expiration_date()
+            for finding in findings:
+                pre_save.send(sender=Finding, instance=finding, raw=False, using=db, update_fields=None)
+            now = timezone.now()
+            changed = {"active", "is_mitigated", "mitigated", "mitigated_by", "risk_accepted", "last_status_update", "updated"}
+            for finding, before in zip(findings, loaded, strict=True):
+                finding.updated = now  # auto_now, which bulk_update does not apply
+                changed.update(f.name for f in written if f.attname in before and finding.__dict__.get(f.attname) != before[f.attname])
+            Finding.objects.bulk_update(findings, sorted(changed), batch_size=self.MITIGATE_FINDINGS_BATCH_SIZE)
+            for finding in findings:
+                post_save.send(sender=Finding, instance=finding, created=False, update_fields=None, raw=False, using=db)
+
+        # Finding.save()'s post-processing (post_process_finding_save with dedupe off)
+        system_settings = System_Settings.objects.get()
+        if system_settings.false_positive_history:
+            if system_settings.enable_deduplication:
+                logger.warning("skipping false positive history because deduplication is also enabled")
+            else:
+                # Per finding on purpose: the batch variant leaves the other findings of the
+                # batch out of each other's history, which closing one at a time does not.
+                for finding in findings:
+                    finding_helper.do_false_positive_history(finding)
+        for finding in findings:
+            tool_issue_updater.async_tool_issue_update(finding)
+        if product_grading_option and system_settings.enable_product_grade:
+            for product_id in {finding.test.engagement.product_id for finding in findings}:
+                finding_helper.schedule_product_grade(product_id)
+        for finding, push in zip(findings, push_to_jira, strict=True):
+            if not push:
+                continue
+            if finding.has_jira_issue or not finding.finding_group:
+                jira_services.push(finding)
+            elif finding.finding_group:
+                jira_services.push(finding.finding_group)
+
+    # Rows per UPDATE when mitigate_findings() writes the findings back.
+    MITIGATE_FINDINGS_BATCH_SIZE = 500
+
+    def _add_note_to_findings(self, findings: list[Finding], note_message: str, db: str) -> None:
+        """
+        Give each finding its own note, as finding.notes.create() does, in bulk.
+
+        The bulk inserts bypass the signals create() sends, so they are sent here: save
+        signals for each note and m2m_changed for each link, so a receiver (pushing notes
+        to an issue tracker, for example) sees every note it would have seen one at a time.
+        """
+        notes = [Notes(author=self.user, entry=note_message) for _ in findings]
+        for note in notes:
+            pre_save.send(sender=Notes, instance=note, raw=False, using=db, update_fields=None)
+        Notes.objects.bulk_create(notes, batch_size=self.MITIGATE_FINDINGS_BATCH_SIZE)
+        for note in notes:
+            post_save.send(sender=Notes, instance=note, created=True, update_fields=None, raw=False, using=db)
+        through = Finding.notes.through
+        pairs = list(zip(findings, notes, strict=True))
+        for finding, note in pairs:
+            m2m_changed.send(sender=through, action="pre_add", instance=finding, reverse=False, model=Notes, pk_set={note.id}, using=db)
+        through.objects.bulk_create(
+            [through(finding_id=finding.id, notes_id=note.id) for finding, note in pairs],
+            batch_size=self.MITIGATE_FINDINGS_BATCH_SIZE,
+            ignore_conflicts=True,
+        )
+        for finding, note in pairs:
+            m2m_changed.send(sender=through, action="post_add", instance=finding, reverse=False, model=Notes, pk_set={note.id}, using=db)
+
+    @staticmethod
+    def _finding_ids_with_locations(finding_ids: list[int]) -> set[int]:
+        """The ids, of these, whose finding has a location (or, before Locations, an endpoint)."""
+        model = LocationFindingReference if locations_enabled() else Endpoint_Status
+        found: set[int] = set()
+        for chunk in batched(finding_ids, BaseImporter.MITIGATE_FINDINGS_BATCH_SIZE, strict=False):
+            # order_by() drops the default ordering, which would make DISTINCT per row
+            found.update(model.objects.filter(finding_id__in=chunk).order_by().values_list("finding_id", flat=True).distinct())
+        return found
+
+    def notify_scan_added(
+        self,
+        test,
+        updated_count,
+        new_findings=None,
+        findings_mitigated=None,
+        findings_reactivated=None,
+        findings_untouched=None,
+    ):
+        """
+        new_findings/findings_mitigated/findings_reactivated/findings_untouched are
+        ids, not instances (M1) -- nothing here needs a live Finding until the
+        notification is actually built, and then only a capped, ordered slice of it
+        (a reimport that touches thousands of findings should not template all of
+        them into an email/webhook body).
+        """
+        if findings_untouched is None:
+            findings_untouched = []
+        if findings_reactivated is None:
+            findings_reactivated = []
+        if findings_mitigated is None:
+            findings_mitigated = []
+        if new_findings is None:
+            new_findings = []
+        logger.debug("Scan added notifications")
+
+        # When deduplication has finished (synchronous mode, or async_wait after the
+        # join), the ids collected during matching still reflect pre-dedup reality
+        # because deduplication runs on separately-fetched instances. Split each list
+        # of ids into "real" and duplicate ids from a fresh query so the notification
+        # reflects post-dedup reality instead of counting/listing deduplicated
+        # findings as brand new. In plain async mode dedup has not run yet, so we
+        # leave the lists untouched (best-effort, historical behavior).
+        findings_new_duplicate_ids: list[int] = []
+        findings_reactivated_duplicate_ids: list[int] = []
+        findings_untouched_duplicate_ids: list[int] = []
+        if getattr(self, "deduplication_complete", False):
+            all_ids = [*new_findings, *findings_reactivated, *findings_untouched]
+            duplicate_ids = set()
+            if all_ids:
+                duplicate_ids = set(
+                    Finding.objects.filter(id__in=all_ids, duplicate=True).values_list("id", flat=True),
+                )
+
+            def _split(ids):
+                kept = [i for i in ids if i not in duplicate_ids]
+                duplicates = [i for i in ids if i in duplicate_ids]
+                return kept, duplicates
+
+            new_findings, findings_new_duplicate_ids = _split(new_findings)
+            findings_reactivated, findings_reactivated_duplicate_ids = _split(findings_reactivated)
+            findings_untouched, findings_untouched_duplicate_ids = _split(findings_untouched)
+            # Recompute the headline count to exclude findings that turned out to be
+            # duplicates of an existing finding (they are not genuinely new activity).
+            updated_count = len(new_findings) + len(findings_reactivated) + len(findings_mitigated)
+
+        max_findings = settings.NOTIFICATION_SCAN_ADDED_MAX_FINDINGS
+
+        def _capped(ids):
+            # The capped, severity-ordered slice the notification lists, as ids: the
+            # worker loads the findings, so the request never builds the message.
+            if not ids:
+                return []
+            return list(
+                Finding.objects.filter(id__in=ids)
+                .order_by("numerical_severity")
+                .values_list("id", flat=True)[:max_findings],
+            )
+
+        title = (
+            f"Created/Updated {updated_count} findings for {test.engagement.product}: {test.engagement.name}: {test}"
+        )
+
+        # Dispatched like every other notification, so the fan-out to recipients (one
+        # alert, mail, Slack message... per user) runs in the worker, not in the import
+        # request. Under block_execution it still runs inline, as before.
+        dojo_dispatch_task(
+            async_create_notification,
+            event="scan_added_empty" if updated_count == 0 else "scan_added",
+            title=title,
+            finding_count=updated_count,
+            test_id=test.id,
+            engagement_id=test.engagement_id,
+            product_id=test.engagement.product_id,
+            # Findings deduplicated during post-processing, split by their import action.
+            # Populated only once deduplication has completed (sync / async_wait).
+            finding_ids={
+                "findings_new": _capped(new_findings),
+                "findings_mitigated": _capped(findings_mitigated),
+                "findings_reactivated": _capped(findings_reactivated),
+                "findings_untouched": _capped(findings_untouched),
+                "findings_new_duplicate": _capped(findings_new_duplicate_ids),
+                "findings_reactivated_duplicate": _capped(findings_reactivated_duplicate_ids),
+                "findings_untouched_duplicate": _capped(findings_untouched_duplicate_ids),
+            },
+            url=reverse("view_test", args=(test.id,)),
+            url_api=reverse("test-detail", args=(test.id,)),
+        )

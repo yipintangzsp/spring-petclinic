@@ -1,3 +1,4 @@
+import {createHttpTransport,deliverHttpCandidate,HTTP_CONSUMER} from './consumers/dojo-http.mjs';
 import {DEFINITION as DOJO,prepareDefectDojo,publishDefectDojo} from './consumers/defectdojo.mjs';
 import fs from 'node:fs';import path from 'node:path';
 import {keys,identity} from './config.mjs';import {artifactStore,verifyArtifact,verifyResult} from './result.mjs';
@@ -45,4 +46,18 @@ export function routeResults({run,artifactDirectory,expectedSealDigest,output,de
  }
  const blocked=receipts.some(r=>['ERROR','NOT_CONFIGURED'].includes(r.deliveryDecision));
  return freeze({receipts,deliveryStatus:blocked?'ERROR':'CANDIDATE_ONLY',candidateDeliveryAllowed:!blocked,productionDeliveryCount:0});
+}
+
+// Explicit async Candidate extension; legacy routeResults/default registry remain
+// synchronous/offline. A genuine transport handle is required to send HTTP.
+export async function routeResultsHttp(options){
+ keys(options,['run','artifactDirectory','expectedSealDigest','output','definitions','consumerOptions','transport','journalDirectory']);
+ const {transport=createHttpTransport(),journalDirectory,...offlineOptions}=options;
+ const offline=routeResults({...offlineOptions,definitions:options.definitions??[...CONSUMERS.filter(c=>c.consumerId!=='defectdojo-future'),DOJO]});
+ let httpDelivery;
+ if(!offline.candidateDeliveryAllowed)httpDelivery={consumerId:HTTP_CONSUMER.consumerId,deliveryState:'NOT_SENT',redactedError:'OFFLINE_PREPARATION_BLOCKED',httpRequestCount:0,receipts:[],realRemoteDelivery:'NOT_TESTED',remoteIdempotency:'NOT_TESTED'};
+ else try{httpDelivery=await deliverHttpCandidate({run:options.run,artifactDirectory:options.artifactDirectory,expectedSealDigest:options.expectedSealDigest,transport,journalDirectory});}
+ catch(e){httpDelivery={consumerId:HTTP_CONSUMER.consumerId,deliveryState:'NOT_SENT',redactedError:/^[A-Z_]{3,80}$/.test(e.code??'')?e.code:'HTTP_CANDIDATE_REJECTED',httpRequestCount:0,receipts:[],realRemoteDelivery:'NOT_TESTED',remoteIdempotency:'NOT_TESTED'};}
+ const blocked=!['ACKNOWLEDGED'].includes(httpDelivery.deliveryState)&&httpDelivery.redactedError!=='HTTP_DISABLED_BY_DEFAULT';
+ return freeze({...offline,httpDelivery,deliveryStatus:blocked?'ERROR':offline.deliveryStatus,candidateDeliveryAllowed:!blocked&&offline.candidateDeliveryAllowed});
 }

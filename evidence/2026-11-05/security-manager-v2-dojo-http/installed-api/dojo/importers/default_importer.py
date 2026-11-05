@@ -1,0 +1,517 @@
+import logging
+
+from django.conf import settings
+from django.core.files.uploadedfile import TemporaryUploadedFile
+from django.db.models.query_utils import Q
+from django.urls import reverse
+
+from dojo.celery_dispatch import dojo_dispatch_task
+from dojo.finding import helper as finding_helper
+from dojo.importers.base_importer import BaseImporter, Parser, reports_a_deleted_target
+from dojo.importers.base_location_manager import LocationHandler
+from dojo.importers.options import ImporterOptions
+from dojo.jira import services as jira_services
+from dojo.models import (
+    DEDUPLICATION_EXECUTION_MODE_ASYNC_WAIT,
+    Engagement,
+    Finding,
+    Test,
+    Test_Import,
+)
+from dojo.notifications.helper import async_create_notification
+from dojo.tags import inheritance as tag_inheritance
+from dojo.tags.inheritance import apply_inherited_tags_for_findings
+from dojo.tags.utils import bulk_apply_parser_tags
+from dojo.utils import get_full_url, perform_product_grading
+from dojo.validators import clean_tags
+
+logger = logging.getLogger(__name__)
+deduplicationLogger = logging.getLogger("dojo.specific-loggers.deduplication")
+
+
+class DefaultImporterOptions(ImporterOptions):
+    def validate_engagement(
+        self,
+        *args: list,
+        **kwargs: dict,
+    ):
+        return self.validate(
+            "engagement",
+            expected_types=[Engagement],
+            required=True,
+            default=None,
+            **kwargs,
+        )
+
+
+class DefaultImporter(BaseImporter, DefaultImporterOptions):
+
+    """
+    The classic importer process used by DefectDojo
+
+    This Importer is intended to be used when auditing the history
+    of findings at a given point in time is required
+    """
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(
+            self,
+            *args,
+            import_type=Test_Import.IMPORT_TYPE,
+            **kwargs,
+        )
+        self.location_handler = LocationHandler(self.engagement.product)
+
+    def create_test(
+        self,
+        test_type_name: str,
+    ) -> Test:
+        """
+        Create a fresh test object to be used by the importer. This
+        new test will be attached to the supplied engagement with the
+        supplied user being marked as the lead of the test
+        """
+        self.test = Test.objects.create(
+            title=self.test_title,
+            engagement=self.engagement,
+            lead=self.lead,
+            environment=self.environment,
+            test_type=self.get_or_create_test_type(test_type_name),
+            scan_type=self.scan_type,
+            target_start=self.scan_date,
+            target_end=self.scan_date,
+            percent_complete=50,
+            version=self.version,
+            branch_tag=self.branch_tag,
+            build_id=self.build_id,
+            commit_hash=self.commit_hash,
+            api_scan_configuration=self.api_scan_configuration,
+            tags=self.tags,
+        )
+        return self.test
+
+    @reports_a_deleted_target
+    def process_scan(
+        self,
+        scan: TemporaryUploadedFile,
+        *args: list,
+        **kwargs: dict,
+    ) -> tuple[Test, int, int, int, int, int, Test_Import]:
+        """
+        The full step process of taking a scan report, and converting it to
+        findings in the database. This entails the the following actions:
+        - Verify the API scan configuration (if supplied)
+        - Parser the findings
+        - Process the findings
+        - Update the timestamps on the test
+        - Update/Create import history objects
+        - Send out notifications
+        - Update the test progress
+        """
+        logger.debug(f"IMPORT_SCAN: parameters: {locals()}")
+        # Validate the Tool_Configuration
+        self.verify_tool_configuration_from_engagement()
+        # Fetch the parser based upon the string version of the scan type
+        parser = self.get_parser()
+        # Get the findings from the parser based on what methods the parser supplies
+        # This could either mean traditional file parsing, or API pull parsing
+        # Note: for fresh imports, parse_findings() calls create_test() internally,
+        # so self.test is guaranteed to be set after this call.
+        parsed_findings = self.parse_findings(scan, parser) or []
+        # The excess-duplicate delete leaves the duplicates of a test being imported alone.
+        self.lock_test_under_import(self.test)
+        new_findings = self.process_findings(parsed_findings, **kwargs)
+        # Close any old findings in the processed list if the the user specified for that
+        # to occur in the form that is then passed to the kwargs
+        closed_findings = self.close_old_findings(self.test.finding_set.all(), **kwargs)
+        # Update the timestamps of the test object by looking at the findings imported
+        self.update_timestamps()
+        # Update the test meta
+        self.update_test_meta()
+        # Save the test for changes to take affect. The engagement is only written back
+        # when update_timestamps() actually moved its target end (CI/CD engagements whose
+        # target end the scan date pushes out); for every other import there is nothing to
+        # write, and saving it anyway costs a full UPDATE plus the SELECT its pre_save
+        # receiver issues. A deleted engagement is still caught, by the test save above:
+        # deleting an engagement cascades to its tests.
+        self.save_without_resurrecting(self.test)
+        if self.engagement_target_end_updated:
+            self.save_without_resurrecting(self.test.engagement)
+        # update_import_history()/notify_scan_added() take ids (M1); this path still
+        # builds new_findings/closed_findings as instances internally, so adapt at
+        # the boundary rather than reshape process_findings()/close_old_findings().
+        new_finding_ids = [f.id for f in new_findings]
+        closed_finding_ids = [f.id for f in closed_findings]
+        # Create a test import history object to record the flags sent to the importer
+        # This operation will return None if the user does not have the import history
+        # feature enabled
+        test_import_history = self.update_import_history(
+            new_findings=new_finding_ids,
+            closed_findings=closed_finding_ids,
+        )
+        # In 'async_wait' mode, block until background deduplication has finished
+        # so notifications and statistics reflect the deduplicated state.
+        self.wait_for_post_processing()
+
+        # Send out some notifications to the user
+        logger.debug("IMPORT_SCAN: Generating notifications")
+        dojo_dispatch_task(
+            async_create_notification,
+            event="test_added",
+            title=f"Test created for {self.test.engagement.product}: {self.test.engagement.name}: {self.test}",
+            test_id=self.test.id,
+            engagement_id=self.test.engagement_id,
+            product_id=self.test.engagement.product_id,
+            url=reverse("view_test", args=(self.test.id,)),
+            url_api=reverse("test-detail", args=(self.test.id,)),
+        )
+        updated_count = len(new_finding_ids) + len(closed_finding_ids)
+        self.notify_scan_added(
+            self.test,
+            updated_count,
+            new_findings=new_finding_ids,
+            findings_mitigated=closed_finding_ids,
+        )
+        # Update the test progress to reflect that the import has completed
+        logger.debug("IMPORT_SCAN: Updating Test progress")
+        self.update_test_progress()
+        logger.debug("IMPORT_SCAN: Done")
+        return self.test, 0, len(new_findings), len(closed_findings), 0, 0, test_import_history
+
+    def process_findings(
+        self,
+        parsed_findings: list[Finding],
+        **kwargs: dict,
+    ) -> list[Finding]:
+        # Whole hot loop runs under `batch_mode()`: per-row inheritance signals
+        # for the findings/endpoints/locations created below are suppressed.
+        # Inheritance is then applied in bulk per-batch (right before
+        # `post_process_findings_batch` dispatch) so rules/dedup see inherited
+        # tags on `finding.tags`.
+        with tag_inheritance.suppress_tag_inheritance():
+            return self._process_findings_internal(parsed_findings, **kwargs)
+
+    def _process_findings_internal(
+        self,
+        parsed_findings: list[Finding],
+        **kwargs: dict,
+    ) -> list[Finding]:
+        # Batched post-processing (no chord): dispatch a task per 1000 findings or on final finding.
+        # Each entry carries the finding's own push_to_jira flag: grouped findings are pushed to
+        # JIRA as a group after the loop, so their individual push is suppressed while ungrouped
+        # findings in the same batch must still be pushed. The batch is partitioned by flag at
+        # dispatch time instead of applying one finding's flag to the whole batch.
+        batch_finding_ids: list[tuple[int, bool]] = []
+        batch_findings: list[Finding] = []
+        batch_max_size = getattr(settings, "IMPORT_REIMPORT_DEDUPE_BATCH_SIZE", 1000)
+
+        """
+        Saves findings in memory that were parsed from the scan report into the database.
+        This process involves first saving associated objects such as locations, files,
+        vulnerability IDs, and request response pairs. Once all that has been completed,
+        the finding may be appended to a new or existing group based upon user selection
+        at import time
+        """
+        new_findings = []
+        findings_with_parser_tags: list[tuple] = []
+        logger.debug("starting import of %i parsed findings.", len(parsed_findings) if parsed_findings else 0)
+        group_names_to_findings_dict = {}
+
+        # Pre-sanitize and filter by minimum severity
+        cleaned_findings = []
+        for raw_finding in parsed_findings or []:
+            sanitized = self.sanitize_severity(raw_finding)
+            if Finding.SEVERITIES[sanitized.severity] > Finding.SEVERITIES[self.minimum_severity]:
+                logger.debug("skipping finding due to minimum severity filter (finding=%s severity=%s min=%s)", sanitized.title, sanitized.severity, self.minimum_severity)
+                continue
+            cleaned_findings.append(sanitized)
+
+        for batch_start in range(0, len(cleaned_findings), batch_max_size):
+            batch_end = min(batch_start + batch_max_size, len(cleaned_findings))
+            is_final_batch = batch_end == len(cleaned_findings)
+
+            # Prepare this batch's findings (scalar overrides, tag merge, hash_code) before
+            # any of them are persisted, so persist_new_findings() can write the whole batch
+            # in one call instead of one row at a time.
+            prepared_findings = []
+            for unsaved_finding in cleaned_findings[batch_start:batch_end]:
+                # Some parsers provide "mitigated" field but do not set timezone (because they are probably not available in the report)
+                # Finding.mitigated is DateTimeField and it requires timezone
+                if unsaved_finding.mitigated and not unsaved_finding.mitigated.tzinfo:
+                    unsaved_finding.mitigated = unsaved_finding.mitigated.replace(tzinfo=self.now.tzinfo)
+                # Set some explicit fields on the finding
+                unsaved_finding.test = self.test
+                unsaved_finding.reporter = self.user
+                unsaved_finding.last_reviewed_by = self.user
+                unsaved_finding.last_reviewed = self.now
+                logger.debug("process_parsed_finding: unique_id_from_tool: %s, hash_code: %s, active from report: %s, verified from report: %s", unsaved_finding.unique_id_from_tool, unsaved_finding.hash_code, unsaved_finding.active, unsaved_finding.verified)
+                # indicates an override. Otherwise, do not change the value of unsaved_finding.active
+                if self.active is not None:
+                    unsaved_finding.active = self.active
+                # indicates an override. Otherwise, do not change the value of verified
+                if self.verified is not None:
+                    unsaved_finding.verified = self.verified
+                # scan_date was provided, override value from parser
+                if self.scan_date_override:
+                    unsaved_finding.date = self.scan_date.date()
+                if self.service is not None:
+                    unsaved_finding.service = self.service
+
+                # Parsers shouldn't use the tags field, and use unsaved_tags instead.
+                # Merge any tags set by parser into unsaved_tags
+                tags_from_parser = unsaved_finding.tags if isinstance(unsaved_finding.tags, list) else []
+                unsaved_tags_from_parser = unsaved_finding.unsaved_tags if isinstance(unsaved_finding.unsaved_tags, list) else []
+                merged_tags = unsaved_tags_from_parser + tags_from_parser
+                if merged_tags:
+                    unsaved_finding.unsaved_tags = merged_tags
+                unsaved_finding.tags = None
+                finding = self.process_cve(unsaved_finding)
+                # Normalize the locations/endpoints before they are hashed. Cleaning rewrites the
+                # canonical string form (a leading "/" is stripped from the path, a leading "?" from
+                # the query, the port is coerced to an int), so hashing before cleaning would make
+                # import store a different hash_code than reimport computes for the same report -
+                # reimport cleans first (see DefaultReImporter._process_findings_internal).
+                self.location_handler.clean_unsaved(finding)
+                # Calculate hash_code before saving based on unsaved_endpoints/unsaved_locations and unsaved_vulnerability_ids
+                finding.set_hash_code(True)
+                prepared_findings.append(finding)
+
+            # postprocessing will be done after processing related fields like locations, vulnerability ids, etc.
+            saved_findings = self.persist_new_findings(prepared_findings)
+
+            for saved_finding in saved_findings:
+                finding = saved_finding
+                # Determine how the finding should be grouped
+                finding_will_be_grouped = self.process_finding_groups(
+                    finding,
+                    group_names_to_findings_dict,
+                )
+                # Process any request/response pairs
+                self.process_request_response_pairs(finding)
+                self.process_locations(finding, self.endpoints_to_add)
+                # Parsers must use unsaved_tags to store tags, so we can clean them.
+                # Accumulate for bulk application after the loop (O(unique_tags) instead of O(N·T)).
+                cleaned_tags = clean_tags(finding.unsaved_tags)
+                if isinstance(cleaned_tags, list):
+                    findings_with_parser_tags.append((finding, cleaned_tags))
+                elif isinstance(cleaned_tags, str):
+                    findings_with_parser_tags.append((finding, [cleaned_tags]))
+                # Process any files
+                self.process_files(finding)
+                # Process vulnerability IDs
+                finding = self.store_vulnerability_ids(finding)
+                # Categorize this finding as a new one
+                new_findings.append(finding)
+                # all data is already saved on the finding, we only need to trigger post processing in batches
+                logger.debug("process_findings: self.push_to_jira=%s, self.findings_groups_enabled=%s, self.group_by=%s",
+                             self.push_to_jira, self.findings_groups_enabled, self.group_by)
+                push_to_jira = self.push_to_jira and ((not self.findings_groups_enabled or not self.group_by) or not finding_will_be_grouped)
+                logger.debug("process_findings: computed push_to_jira=%s", push_to_jira)
+                batch_finding_ids.append((finding.id, push_to_jira))
+                batch_findings.append(finding)
+
+            # Persist locations/endpoints and dispatch post-processing for this batch
+            self.location_handler.persist()
+            self.flush_vulnerability_ids()
+            self.flush_burp_request_response()
+            # Apply parser-supplied tags for this batch before post-processing starts,
+            # so rules/deduplication tasks see the tags already on the findings.
+            bulk_apply_parser_tags(findings_with_parser_tags)
+            findings_with_parser_tags.clear()
+            # Apply import-time tags before post-processing so rules/deduplication see them.
+            self.apply_import_tags_for_batch(batch_findings)
+            # Apply inherited Product tags to this batch's findings (and
+            # their endpoints/locations) BEFORE post_process_findings_batch
+            # dispatches, so rules/dedup see inherited tags on .tags.
+            apply_inherited_tags_for_findings(batch_findings)
+            batch_findings.clear()
+            # Partition the batch by each finding's own push_to_jira flag so one
+            # finding's grouping state is not applied to the whole batch. Uniform
+            # batches (grouping disabled, or push_to_jira off) stay a single dispatch.
+            finding_ids_by_push: dict[bool, list[int]] = {}
+            for finding_id, finding_push_to_jira in batch_finding_ids:
+                finding_ids_by_push.setdefault(finding_push_to_jira, []).append(finding_id)
+            batch_finding_ids.clear()
+            for push_to_jira_batch, finding_ids_batch in finding_ids_by_push.items():
+                logger.debug("process_findings: dispatching batch with push_to_jira=%s (batch_size=%d, is_final=%s)",
+                             push_to_jira_batch, len(finding_ids_batch), is_final_batch)
+                result = dojo_dispatch_task(
+                    finding_helper.post_process_findings_batch,
+                    finding_ids_batch,
+                    dedupe_option=True,
+                    rules_option=True,
+                    product_grading_option=True,
+                    issue_updater_option=True,
+                    push_to_jira=push_to_jira_batch,
+                    # 'async_wait' joins on this dispatch via AsyncResult.get(), so its
+                    # result must be stored despite the global CELERY_TASK_IGNORE_RESULT.
+                    **({"ignore_result": False} if self.deduplication_execution_mode == DEDUPLICATION_EXECUTION_MODE_ASYNC_WAIT else {}),
+                    **self.post_processing_dispatch_kwargs(**kwargs),
+                )
+                if self.deduplication_execution_mode == DEDUPLICATION_EXECUTION_MODE_ASYNC_WAIT:
+                    self.record_post_processing_result(result)
+
+            # No chord: tasks are dispatched immediately above per batch
+
+        finding_helper.add_findings_to_auto_groups(
+            group_names_to_findings_dict,
+            self.group_by,
+            create_finding_groups_for_all_findings=self.create_finding_groups_for_all_findings,
+            **kwargs,
+        )
+        for findings in group_names_to_findings_dict.values():
+            if self.push_to_jira:
+                if findings[0].finding_group is not None:
+                    jira_services.push(findings[0].finding_group)
+                else:
+                    jira_services.push(findings[0])
+            else:
+                logger.debug("push_to_jira is False, not pushing to JIRA")
+
+        # Note: All chord batching is now handled within the loop above
+
+        # Always perform an initial grading, even though it might get overwritten later.
+        perform_product_grading(self.test.engagement.product)
+
+        return new_findings
+
+    def get_close_old_findings_queryset(self, new_hash_codes, new_unique_ids_from_tool):
+        """
+        Build queryset of findings that would be closed, without closing them.
+
+        Reusable by preview engines to count findings that would be closed.
+        """
+        # Get the initial filtered list of old findings to be closed without
+        # considering the scope of the product or engagement
+        # Include both active findings and risk-accepted findings (which have active=False)
+        # Risk-accepted findings should be closed if the vulnerability is actually fixed
+        old_findings = Finding.objects.filter(
+            Q(active=True) | Q(risk_accepted=True),
+            test__test_type=self.test.test_type,
+        ).exclude(test=self.test)
+        # Filter further based on the deduplication algorithm set on the test
+        self.deduplication_algorithm = self.determine_deduplication_algorithm()
+        if self.deduplication_algorithm in {"hash_code", "legacy"}:
+            old_findings = old_findings.exclude(
+                hash_code__in=new_hash_codes,
+            )
+        if self.deduplication_algorithm == "unique_id_from_tool":
+            old_findings = old_findings.exclude(
+                unique_id_from_tool__in=new_unique_ids_from_tool,
+            )
+        if self.deduplication_algorithm == "unique_id_from_tool_or_hash_code":
+            old_findings = old_findings.exclude(
+                (Q(hash_code__isnull=False) & Q(hash_code__in=new_hash_codes))
+                | (
+                    Q(unique_id_from_tool__isnull=False)
+                    & Q(unique_id_from_tool__in=new_unique_ids_from_tool)
+                ),
+            )
+        # Accommodate for product scope or engagement scope
+        if self.close_old_findings_product_scope:
+            old_findings = old_findings.filter(test__engagement__product=self.test.engagement.product)
+        else:
+            old_findings = old_findings.filter(test__engagement=self.test.engagement)
+        # Use the service to differentiate further
+        if self.service is not None:
+            old_findings = old_findings.filter(service=self.service)
+        else:
+            old_findings = old_findings.filter(Q(service__isnull=True) | Q(service__exact=""))
+        return old_findings
+
+    def close_old_findings(
+        self,
+        findings: list[Finding],
+        **kwargs: dict,
+    ) -> list[Finding]:
+        """
+        Closes old findings based on a hash code match at either the product
+        or the engagement scope. Closing an old finding entails setting the
+        finding to mitigated status, setting all location statuses to mitigated,
+        as well as leaving a not on the finding indicating that it was mitigated
+        because the vulnerability is no longer present in the submitted scan report.
+        """
+        # First check if close old findings is desired
+        if not self.close_old_findings_toggle:
+            return []
+
+        logger.debug("IMPORT_SCAN: Closing findings no longer present in scan report")
+        # Remove all the findings that are coming from the report already mitigated
+        new_hash_codes = []
+        new_unique_ids_from_tool = []
+        for finding in findings.values("is_mitigated", "hash_code", "unique_id_from_tool"):
+            # Do not process closed findings in the report
+            if finding.get("is_mitigated", False):
+                continue
+            # Grab the hash code
+            if (hash_code := finding.get("hash_code")) is not None:
+                new_hash_codes.append(hash_code)
+            if (unique_id_from_tool := finding.get("unique_id_from_tool")) is not None:
+                new_unique_ids_from_tool.append(unique_id_from_tool)
+        # jira_issue and the group's are read for every finding to decide the JIRA push, and
+        # the test chain for its SLA and tool issue updater
+        old_findings = (
+            self.get_close_old_findings_queryset(new_hash_codes, new_unique_ids_from_tool)
+            .select_related("jira_issue", "test__test_type", "test__engagement__product")
+            .prefetch_related("finding_group_set__jira_issue")
+        )
+        # Update the status of the findings and any locations
+        url = str(get_full_url(reverse("view_test", args=(self.test.id,))))
+        test_title = str(self.test.title)
+        self.mitigate_findings(
+            list(old_findings),
+            (
+                'This Finding has been automatically closed by the Test: \n "' + test_title + '"\n' + url +
+                "\n\nThis is because this Finding is not present anymore in recent scans."
+            ),
+            finding_groups_enabled=self.findings_groups_enabled,
+            product_grading_option=False,
+        )
+        # Persist any accumulated location/endpoint status changes
+        self.location_handler.persist()
+        self.flush_vulnerability_ids()
+        # push finding groups to jira since we only only want to push whole groups
+        # We dont check if the finding jira sync is applicable quite yet until we can get in the loop
+        # but this is a way to at least make it that far
+        if self.findings_groups_enabled and (self.push_to_jira or getattr(self.jira_instance, "finding_jira_sync", False)):
+            for finding_group in {finding.finding_group for finding in old_findings if finding.finding_group is not None}:
+                # Check the push_to_jira flag again to potentially shorty circuit without checking for existing findings
+                if self.push_to_jira or jira_services.is_keep_in_sync(finding_group, prefetched_jira_instance=self.jira_instance):
+                    jira_services.push(finding_group)
+
+        # Calculate grade once after all findings have been closed
+        if old_findings:
+            perform_product_grading(self.test.engagement.product)
+
+        return old_findings
+
+    def parse_findings_static_test_type(
+        self,
+        scan: TemporaryUploadedFile,
+        parser: Parser,
+    ) -> list[Finding]:
+        """
+        Creates a test object as part of the import process as there is not one present
+        at the time of import. Once the test is created, proceed with the traditional
+        file import as usual from the base class
+        """
+        # by default test_type == scan_type
+        # Create a new test if it has not already been created
+        if not self.test:
+            self.test = self.create_test(self.scan_type)
+        logger.debug("IMPORT_SCAN: Parse findings")
+        # Use the parent method for the rest of this
+        return super().parse_findings_static_test_type(scan, parser)
+
+    def parse_findings_dynamic_test_type(
+        self,
+        scan: TemporaryUploadedFile,
+        parser: Parser,
+    ) -> list[Finding]:
+        """
+        Uses the parser to fetch any tests that may have been created
+        by the API based parser, aggregates all findings from each test
+        into a single test, and then renames the test is applicable
+        """
+        logger.debug("IMPORT_SCAN parser v2: Create Test and parse findings")
+        return super().parse_findings_dynamic_test_type(scan, parser)
