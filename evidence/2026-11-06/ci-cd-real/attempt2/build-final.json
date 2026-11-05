@@ -1,0 +1,53 @@
+{
+  "build": {
+    "number": 6,
+    "building": false,
+    "result": "SUCCESS",
+    "url": "http://jenkins.devops.local/job/security-gitlab-push-demo/6/",
+    "startedAt": 1793917303948,
+    "duration": 31280,
+    "causes": [
+      {
+        "type": "com.dabsquared.gitlabjenkins.cause.GitLabWebHookCause",
+        "after": "41413cc9bc1a5037f50a76f71b57118e10b90366",
+        "branch": "security-demo/gitlab-push-20261105"
+      }
+    ],
+    "tail": "[...truncated 52 lines...]\nRunning on Jenkins in /var/jenkins_home/workspace/security-gitlab-push-demo\n[Pipeline] {\n[Pipeline] dir\nRunning in /var/jenkins_home/workspace/security-gitlab-push-demo/gitops-cd-6\n[Pipeline] {\n[Pipeline] script\n[Pipeline] {\n[Pipeline] unstash\n[Pipeline] withCredentials\nMasking supported pattern matches of $DEMO_WRITER_KEY\n[Pipeline] {\n[Pipeline] sh\nGITOPS_UPDATED_COMMIT b57561908b454b89eb93b4ae35a74666371a5e1d\nGITOPS_WAIT {\"observedAt\":\"2026-11-05T22:21:51.378Z\",\"argoRevision\":\"8be6c988f4cc0419d04992761e9cb5765e78cff3\",\"sync\":\"Synced\",\"health\":\"Healthy\",\"value\":\"baseline\",\"configMapUid\":\"f9280a4d-242c-4c8d-a056-79e48a4d3f0a\",\"resourceVersion\":\"17907133\"}\nGITOPS_REVERT_COMMIT 77198db8dc5b84e6fc4d1df46f4a65b2541c0591\nGITOPS_WAIT {\"observedAt\":\"2026-11-05T22:22:04.172Z\",\"argoRevision\":\"b57561908b454b89eb93b4ae35a74666371a5e1d\",\"sync\":\"Synced\",\"health\":\"Healthy\",\"value\":\"updated\",\"configMapUid\":\"f9280a4d-242c-4c8d-a056-79e48a4d3f0a\",\"resourceVersion\":\"17908137\"}\nCI_CD_VERIFIED {\"runId\":\"web-30b8a083-8652-4653-a8e1-dd93be2f3e55\",\"updateCommit\":\"b57561908b454b89eb93b4ae35a74666371a5e1d\",\"restoreCommit\":\"77198db8dc5b84e6fc4d1df46f4a65b2541c0591\",\"resultDigest\":\"231c2d7cd98956d6fddab5685a905443fd0d243b48a628c0f1e945ab34361753\"}\n[Pipeline] }\n[Pipeline] // withCredentials\n[Pipeline] readJSON\n[Pipeline] archiveArtifacts\nArchiving artifacts\n[Pipeline] deleteDir\n[Pipeline] }\n[Pipeline] // script\n[Pipeline] }\n[Pipeline] // dir\n[Pipeline] }\n[Pipeline] // node\n[Pipeline] }\n[Pipeline] // stage\n[Pipeline] stage\n[Pipeline] { (Demo Publish)\n[Pipeline] echo\nNonproduction ConfigMap GitOps demonstration completed and restored; no production release\n[Pipeline] }\n[Pipeline] // stage\n[Pipeline] }\n[Pipeline] // timeout\n[Pipeline] End of Pipeline\nFinished: SUCCESS",
+    "artifacts": [
+      "evidence/artifact/build-provenance.result.json",
+      "evidence/artifact/candidate-seal.json",
+      "evidence/artifact/candidate-summary.json",
+      "evidence/artifact/cosign.result.json",
+      "evidence/artifact/effective-config.json",
+      "evidence/artifact/falco.result.json",
+      "evidence/artifact/gitleaks.facts.json",
+      "evidence/artifact/gitleaks.raw.json",
+      "evidence/artifact/gitleaks.result.json",
+      "evidence/artifact/gitleaks.runtime-facts.json",
+      "evidence/artifact/kubescape.result.json",
+      "evidence/artifact/kyverno.result.json",
+      "evidence/artifact/provenance.result.json",
+      "evidence/artifact/sbom.result.json",
+      "evidence/artifact/semgrep.result.json",
+      "evidence/artifact/sonarqube.result.json",
+      "evidence/artifact/sops.result.json",
+      "evidence/artifact/trivy.result.json",
+      "evidence/artifact/zap.result.json",
+      "evidence/jenkins-gitleaks-receipt.json",
+      "evidence/jenkins-gitops-receipt.json"
+    ]
+  },
+  "events": [
+    {
+      "id": 341,
+      "status": "200",
+      "createdAt": "2026-11-05T22:21:36.007Z",
+      "after": "41413cc9bc1a5037f50a76f71b57118e10b90366",
+      "ref": "refs/heads/security-demo/gitlab-push-20261105",
+      "project": 12
+    }
+  ],
+  "queue": false,
+  "productionBuild": 270
+}

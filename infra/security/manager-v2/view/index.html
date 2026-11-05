@@ -8,6 +8,55 @@
 <section class="metrics" aria-label="平台边界"><div><span>PRODUCTION MANAGER</span><strong id="production">UNAVAILABLE</strong><small>生产尚未激活</small></div><div><span>CANONICAL RUNTIME</span><strong id="runtime">—</strong><small>Trivy / Dojo 尚未闭环</small></div><div><span>HISTORICAL INTEGRITY</span><strong id="integrity">UNAVAILABLE</strong><small>当前哈希匹配不修复历史完整性</small></div><div><span>PAGE BEHAVIOR</span><strong>CONTROLLED</strong><small>单插件 · 固定场景 · 无发布</small></div></section>
 <!-- PETCLINIC_PIPELINE_OVERVIEW_BEGIN -->
 <section id="pipeline-overview">
+<!-- CI_CD_SAME_RUN_BEGIN -->
+<article id="ci-cd-same-run" class="consumer" aria-labelledby="ci-cd-title">
+<div class="card-top"><h3 id="ci-cd-title">CI → CD · 同次真实安全门禁与 GitOps</h3><span class="tag real">VERIFIED · Jenkins #6 SUCCESS</span></div>
+<p>GitLab 测试分支 Push → Webhook #5 / Event #341 → Jenkins → 真实 Gitleaks → Policy PASS → 服务端验证并消费一次性回执 → 固定 GitOps 更新 → Argo 自动同步 → Kubernetes updated → Git Revert → baseline。</p>
+<p class="muted">HISTORICAL · 以下均来自同一 Build / Run 的真实执行归档，非实时查询。完成时间：<time>2026-11-05T22:22:14.218Z</time>；构建耗时 31280 ms。刷新页面不会重新执行。</p>
+<div class="card-row"><span>Trigger Commit</span><b>41413cc9bc1a5037f50a76f71b57118e10b90366</b></div>
+<p><a href="http://gitlab.devops.local/root/petclinic-platform/-/commit/41413cc9bc1a5037f50a76f71b57118e10b90366">查看触发提交</a> · <a href="http://jenkins.devops.local/job/security-gitlab-push-demo/6/">Jenkins #6 · SUCCESS</a> · <a href="http://jenkins.devops.local/job/security-gitlab-push-demo/6/console">真实构建日志</a></p>
+<div class="card-row"><span>Gitleaks Run ID</span><b>web-30b8a083-8652-4653-a8e1-dd93be2f3e55</b></div>
+<div class="card-row"><span>真实退出码 / Finding / Policy 求值次数</span><b>0 / 0 / 1</b></div>
+<div class="card-row"><span>Policy Decision</span><b>PASS · REAL_CONTROLLED_EXECUTION</b></div>
+<div class="card-row"><span>Result Digest</span><b>231c2d7cd98956d6fddab5685a905443fd0d243b48a628c0f1e945ab34361753</b></div>
+<div class="card-row"><span>服务端 Gate 回执验证</span><b>VERIFIED · 固定 Clean 场景 / PASS / 未过期 / 单次消费 / 同 Run 与 Build 绑定</b></div>
+<div class="card-row"><span>Receipt ID</span><b>e7a4d00fe7cae63b1ed8a5aa485875ba1de2b8e6c4afaf88</b></div>
+<div class="card-row"><span>Receipt Digest</span><b>207f68a0f035ec28ef468566b01ecdeebbbc065e752f5edcba094df3de406abc</b></div>
+<div class="card-row"><span>可信来源</span><b>UID 24021 扫描服务端生成 · 0440 只读回执 · UID 24022 无创建/修改权限</b></div>
+<div class="consumer-grid">
+<div class="consumer"><h4>GitOps Update → Kubernetes updated</h4>
+<p><a href="http://gitlab.devops.local/root/petclinic-platform/-/commit/b57561908b454b89eb93b4ae35a74666371a5e1d"><code>b57561908b454b89eb93b4ae35a74666371a5e1d</code></a></p>
+<div class="card-row"><span>Argo Revision</span><b>b57561908b454b89eb93b4ae35a74666371a5e1d</b></div>
+<div class="card-row"><span>Argo 状态</span><b>Synced / Healthy</b></div>
+<div class="card-row"><span>实际 ConfigMap 值</span><b>updated</b></div>
+<div class="card-row"><span>resourceVersion</span><b>17908137</b></div>
+<p>实际采集：<time>2026-11-05T22:22:01.428Z</time></p></div>
+<div class="consumer"><h4>GitOps Revert → Kubernetes baseline</h4>
+<p><a href="http://gitlab.devops.local/root/petclinic-platform/-/commit/77198db8dc5b84e6fc4d1df46f4a65b2541c0591"><code>77198db8dc5b84e6fc4d1df46f4a65b2541c0591</code></a></p>
+<div class="card-row"><span>Argo Revision</span><b>77198db8dc5b84e6fc4d1df46f4a65b2541c0591</b></div>
+<div class="card-row"><span>Argo 状态</span><b>Synced / Healthy</b></div>
+<div class="card-row"><span>实际 ConfigMap 值</span><b>baseline</b></div>
+<div class="card-row"><span>resourceVersion</span><b>17908187</b></div>
+<p>实际采集：<time>2026-11-05T22:22:14.218Z</time></p></div>
+</div>
+<div class="card-row"><span>同一个 ConfigMap UID</span><b>f9280a4d-242c-4c8d-a056-79e48a4d3f0a</b></div>
+<p><a href="http://gitlab.devops.local/root/petclinic-platform/-/tree/security-demo/gitops-20261105">演示 GitOps 分支</a> · <a href="http://argocd.devops.local/">Argo CD：选择 petclinic-gitops-demo</a> · <a href="http://jenkins.devops.local/job/security-gitlab-push-demo/6/artifact/evidence/jenkins-gitleaks-receipt.json">同次 Gate 归档</a> · <a href="http://jenkins.devops.local/job/security-gitlab-push-demo/6/artifact/evidence/jenkins-gitops-receipt.json">同次 CD 归档</a></p>
+<details><summary>权限负例、通知来源和首次失败记录</summary>
+<p>实际拒绝：Finding FAIL、伪造 PASS、篡改摘要、过期回执、重复消费、任意 Git 命令、字段/引用注入、提权、PTY 和端口转发。项目 Token 对其他私有仓库的 receive-pack 授权请求为 401。</p>
+<p>main：固定入口拒绝任意 Git 命令；GitLab 身份仅 Developer 30，main 仍要求 Maintainer 40。未向 main 发起写入。凭据名称不等于 Job 级隔离；既有 built-in 的 Docker 权限未被用于执行或提权。</p>
+<p>Gate 后由 Jenkins 向现有 Argo 原生 webhook 发出固定分支通知，使用与 Application 一致的内部仓库 web_url。此通知不冒充 GitLab 投递证据；原始触发由 GitLab Event #341 与 Jenkins GitLabWebHookCause 证明。</p>
+<p><a href="http://jenkins.devops.local/job/security-gitlab-push-demo/5/">首次尝试 #5 · FAILURE</a>：等待窗口未覆盖 Argo 缓存检测，已生成 Revert 并恢复。修复原生通知后 #6 完成完整闭环。#5 不计为本次成功证据，也未与 #6 拼接。</p>
+<p>补验推送前一次旧 bundle 路径校验被拦截，未发生 Push；修正路径后才推送固定提交。所有旧记录保留。</p>
+<p>授权撤销已实际验证：本次临时 GitLab Token 已撤销，随后 receive-pack 返回 401；服务端 Token 文件已删除。此一次性演示已结束，后续写入需新的显式短期授权，不会自动重复执行。</p>
+</details>
+<p>生产核对时间：2026-11-05T22:25:01.215899+00:00。PetClinic 3/3、HTTP 200、三节点 Ready、Argo Synced/Healthy；生产 Deployment、GitOps main、Jenkins #270、V1 Summary、Docker Socket 0660 均保持原状。生产 Security Manager NOT_ACTIVE；Canonical Runtime 14/16；Release=0 / Rollout=0。</p>
+<p class="source-path">evidence/2026-11-06/ci-cd-real/attempt2/verified.json · SHA256 3fe96332942ef7d0f5623c90dd5f242d761ce78d0ca16fb76053285c1218d321</p>
+<p class="source-path">evidence/2026-11-06/ci-cd-real/attempt2/result.json · SHA256 d49a1715cce8b37e15594571028753718797a34cbefa84bf72fc64a5d4e08e7e</p>
+<p class="source-path">evidence/2026-11-06/ci-cd-real/attempt2/final-check.json · SHA256 6ca455747bfc12aa3970277f81a940f36b9b9187d279b30747455d5882bedcaa</p>
+<p class="source-path">evidence/2026-11-06/ci-cd-real/attempt2/negative-replay.json · SHA256 2b1f719584b8630715ca8423f1f8983ae7dfd8187cbba09b7900c3cd19b48d00</p>
+<p class="source-path">evidence/2026-11-06/ci-cd-real/attempt2/revocation.json · SHA256 0b5cb69a4cdec15ef370ccc9b0cbf7d86901c2260116bb452a2b79cc49437b97</p>
+</article>
+<!-- CI_CD_SAME_RUN_END -->
 <!-- GITOPS_DEMO_RESULT_BEGIN -->
 <article id="gitops-demo-result" class="consumer" aria-labelledby="gitops-demo-title">
 <div class="card-top"><h3 id="gitops-demo-title">GitOps Demo Result · 真实变更与恢复</h3><span class="tag real">VERIFIED · REAL GITOPS</span></div>

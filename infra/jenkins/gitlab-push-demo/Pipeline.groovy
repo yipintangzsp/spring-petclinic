@@ -5,7 +5,7 @@ pipeline {
     skipDefaultCheckout(true)
     disableConcurrentBuilds()
     disableRestartFromStage()
-    timeout(time: 4, unit: 'MINUTES')
+    timeout(time: 10, unit: 'MINUTES')
   }
   stages {
     stage('Verify GitLab Push Identity') {
@@ -75,13 +75,60 @@ NODE
               }
               if (receipt.policyDecision != 'PASS') { error('Gitleaks Policy gate blocked Demo Publish') }
               echo 'GITLEAKS_REAL_GATE PASS runId=' + receipt.runId + ' resultDigest=' + receipt.resultDigest
+              stash name: 'same-build-clean-gate', includes: 'evidence/jenkins-gitleaks-receipt.json,trusted-package.b64'
             } finally { deleteDir() }
           }
         }
       }
     }
+    stage('Restricted GitOps Update and Restore') {
+      agent { label 'built-in' }
+      steps {
+        dir("gitops-cd-${env.BUILD_NUMBER}") {
+          script {
+            try {
+              unstash 'same-build-clean-gate'
+              withCredentials([sshUserPrivateKey(credentialsId: 'security-gitops-demo-ssh', keyFileVariable: 'DEMO_WRITER_KEY')]) {
+                sh label: 'Gate-authorized nonproduction GitOps change and restore', script: '''#!/bin/sh
+set +x
+set -eu
+umask 077
+/usr/bin/env -i PATH=/usr/bin:/bin LANG=C DEMO_WRITER_KEY="$DEMO_WRITER_KEY" DEMO_JOB="$JOB_NAME" DEMO_BUILD="$BUILD_NUMBER" DEMO_COMMIT="$gitlabAfter" /usr/bin/node --max-old-space-size=96 --input-type=module <<'NODE'
+import fs from 'node:fs';
+import path from 'node:path';
+import {gunzipSync} from 'node:zlib';
+import {createHash} from 'node:crypto';
+import {spawnSync} from 'node:child_process';
+const check=ok=>{if(!ok)throw Error('TRUSTED_CD_PACKAGE_REJECTED');};
+check(fs.realpathSync('.')===process.cwd()&&fs.statSync('.').uid===process.getuid());
+const packed=fs.readFileSync('trusted-package.b64','utf8');check(packed.length<262144&&/^[A-Za-z0-9+/]+={0,2}$/.test(packed));
+const bytes=Buffer.from(packed,'base64');check(createHash('sha256').update(bytes).digest('hex')==='@TRUSTED_PACKAGE_SHA@');
+const contents=JSON.parse(gunzipSync(bytes,{maxOutputLength:1048576}));check(Object.keys(contents).length>0&&Object.keys(contents).length<120);
+fs.mkdirSync('release',{mode:0o700});
+for(const [name,text]of Object.entries(contents)){
+ check(name.startsWith('infra/')&&name.split('/').every(p=>/^[a-zA-Z0-9_.-]+$/.test(p)&&!['.','..'].includes(p))&&typeof text==='string');
+ const file=path.join('release',name);fs.mkdirSync(path.dirname(file),{recursive:true,mode:0o700});fs.writeFileSync(file,text,{flag:'wx',mode:0o400});
+}
+const result=spawnSync('/usr/bin/node',['--max-old-space-size=96','release/infra/jenkins/gitlab-push-demo/run-cd.mjs'],{env:process.env,stdio:'inherit',timeout:550000});
+check(result.status===0);
+NODE
+'''
+              }
+              def cd = readJSON file: 'evidence/jenkins-gitops-receipt.json', returnPojo: true
+              if (cd.status != 'SUCCESS' || cd.triggerCommit != env.gitlabAfter || cd.build.toString() != env.BUILD_NUMBER ||
+                  cd.policyDecision != 'PASS' || cd.updated.verified != true || cd.restored.verified != true) {
+                error('Exact same-build GitOps update and restore required')
+              }
+            } finally {
+              archiveArtifacts artifacts: 'evidence/**', allowEmptyArchive: true
+              deleteDir()
+            }
+          }
+        }
+      }
+    }
     stage('Demo Publish') {
-      steps { echo 'Demo Publish reached; no image, GitOps or deployment action' }
+      steps { echo 'Nonproduction ConfigMap GitOps demonstration completed and restored; no production release' }
     }
   }
 }

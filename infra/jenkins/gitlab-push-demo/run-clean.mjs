@@ -34,10 +34,16 @@ try{
 const scan=acceptLinuxGitleaksPacket(packet,'clean',runId,path.resolve('evidence'));
 required(scan.scannerExecuted===true&&scan.scannerExitCode===0&&scan.findingsCount===0&&
  scan.evaluationCount===1&&scan.policyDecision==='PASS'&&scan.cleanup==='VERIFIED','CLEAN_EVIDENCE_REQUIRED');
+const gateReceipt=packet.gateReceipt;
+required(gateReceipt?.kind==='ServerGitleaksGateReceipt'&&gateReceipt.runId===runId&&gateReceipt.scenarioId==='clean'&&
+ gateReceipt.policyDecision==='PASS'&&gateReceipt.resultDigest===scan.resultDigest&&gateReceipt.evaluationCount===1&&
+ /^[a-f0-9]{48}$/.test(gateReceipt.receiptId),'SERVER_GATE_RECEIPT_REQUIRED');
+const {receiptDigest:proofHash,...proofBody}=gateReceipt;
+required(digest(proofBody)===proofHash,'SERVER_GATE_RECEIPT_DIGEST');
 const body={kind:'JenkinsGitLabGitleaksEvidence',classification:'REAL_CONTROLLED_EXECUTION',
  job:process.env.DEMO_JOB,build:Number(process.env.DEMO_BUILD),commit:process.env.DEMO_COMMIT,
  branch:'security-demo/gitlab-push-20261105',dispatchStartedAt:start,dispatchCompletedAt:new Date().toISOString(),
- runId,scenarioId:'clean',...scan,releaseCount:0,rolloutCount:0};
+ runId,scenarioId:'clean',...scan,gateReceipt,releaseCount:0,rolloutCount:0};
 const receipt={...body,receiptDigest:digest(body)};
 fs.writeFileSync('evidence/jenkins-gitleaks-receipt.json',JSON.stringify(receipt,null,2)+'\n',{flag:'wx',mode:0o400});
 console.log(JSON.stringify({runId,scannerExitCode:scan.scannerExitCode,findingsCount:scan.findingsCount,
