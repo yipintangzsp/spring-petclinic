@@ -1,0 +1,25 @@
+{
+  "job": "security-gitlab-push-demo",
+  "reviewedFixedStageLines": [
+    "stage('Verify GitLab Push Identity') {",
+    "stage('Restricted Gitleaks and Policy Gate') {",
+    "withCredentials([sshUserPrivateKey(credentialsId: 'security-gitleaks-demo-ssh',",
+    "stage('Demo Publish') {",
+    "steps { echo 'Demo Publish reached; no image, GitOps or deployment action' }"
+  ],
+  "main": {
+    "name": "main",
+    "allowForcePush": false,
+    "pushAccess": [
+      {
+        "level": 40,
+        "description": "Maintainers",
+        "deployKeyId": null,
+        "userId": null,
+        "groupId": null
+      }
+    ]
+  },
+  "metadataCaveat": "The earlier hasGitOpsStage substring field is not proof of a GitOps stage. Use these exact stage lines instead.",
+  "writes": 0
+}

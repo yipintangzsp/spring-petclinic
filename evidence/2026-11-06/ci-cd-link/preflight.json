@@ -1,0 +1,193 @@
+{
+  "jenkins": {
+    "observedAt": "2026-11-05T21:42:47Z",
+    "demo": {
+      "name": "security-gitlab-push-demo",
+      "lastBuild": 4,
+      "result": "SUCCESS",
+      "building": false,
+      "definitionSha256": "a15fa7e99e760a6640207deff84b098cd92c25d2a61cae80aefaf88fe022820c",
+      "boundCredentialIds": [],
+      "hasGitOpsStage": true,
+      "hasEchoOnlyDemoPublish": true,
+      "sandbox": true
+    },
+    "availableCredentialMetadata": [
+      {
+        "id": "harbor-creds",
+        "type": "com.cloudbees.plugins.credentials.impl.UsernamePasswordCredentialsImpl",
+        "scope": "GLOBAL",
+        "username": "admin"
+      },
+      {
+        "id": "gitlab-creds",
+        "type": "com.cloudbees.plugins.credentials.impl.UsernamePasswordCredentialsImpl",
+        "scope": "GLOBAL",
+        "username": "root"
+      },
+      {
+        "id": "sonar-token",
+        "type": "org.jenkinsci.plugins.plaincredentials.impl.StringCredentialsImpl",
+        "scope": "GLOBAL",
+        "username": null
+      },
+      {
+        "id": "gitlab-root-auth",
+        "type": "com.cloudbees.plugins.credentials.impl.UsernamePasswordCredentialsImpl",
+        "scope": "GLOBAL",
+        "username": "root"
+      },
+      {
+        "id": "b70d910e-ab4d-4903-8ad3-8d4ab431b6db",
+        "type": "com.cloudbees.plugins.credentials.impl.UsernamePasswordCredentialsImpl",
+        "scope": "GLOBAL",
+        "username": "root"
+      },
+      {
+        "id": "github-petclinic-ssh",
+        "type": "com.cloudbees.jenkins.plugins.sshcredentials.impl.BasicSSHUserPrivateKey",
+        "scope": "GLOBAL",
+        "username": "git"
+      },
+      {
+        "id": "cook-gitlab-webhook",
+        "type": "org.jenkinsci.plugins.plaincredentials.impl.StringCredentialsImpl",
+        "scope": "GLOBAL",
+        "username": null
+      },
+      {
+        "id": "platform-business-age",
+        "type": "org.jenkinsci.plugins.plaincredentials.impl.FileCredentialsImpl",
+        "scope": "GLOBAL",
+        "username": null
+      },
+      {
+        "id": "platform-signing-age",
+        "type": "org.jenkinsci.plugins.plaincredentials.impl.FileCredentialsImpl",
+        "scope": "GLOBAL",
+        "username": null
+      },
+      {
+        "id": "defectdojo-api-token",
+        "type": "org.jenkinsci.plugins.plaincredentials.impl.StringCredentialsImpl",
+        "scope": "GLOBAL",
+        "username": null
+      },
+      {
+        "id": "security-gitleaks-demo-ssh",
+        "type": "com.cloudbees.jenkins.plugins.sshcredentials.impl.BasicSSHUserPrivateKey",
+        "scope": "GLOBAL",
+        "username": "security-gitleaks"
+      }
+    ],
+    "readOnlyGitlabIdentity": {
+      "username": "root",
+      "isAdmin": true
+    },
+    "triggerBranchHead": "d21b1271982bd4d8d90857b889c312d522779fc2",
+    "gitopsBranchHead": "9f3124056fb078736b1898db45822cb0cedac109",
+    "main": "340ef4b8c74e3c2a5820da8d98b0f134283bb8d9",
+    "hooks": [
+      {
+        "id": 4,
+        "url": "http://jenkins.ns-devops.svc.cluster.local:8080/project/petclinic-ci",
+        "push": true,
+        "branch": "main"
+      },
+      {
+        "id": 5,
+        "url": "http://jenkins.ns-devops.svc.cluster.local:8080/project/security-gitlab-push-demo",
+        "push": true,
+        "branch": "security-demo/gitlab-push-20261105"
+      }
+    ],
+    "production": {
+      "lastBuild": 270,
+      "result": "SUCCESS",
+      "definitionSha256": "abedd817048170dcf0833853d3820347341a91bd77501a77a2fcf10fb07a8f25",
+      "summarySha256": "ec9ee51a06d4b9f61c6c0eaf50b374d1e25e6d3ca687908b7596d3a2c794f5d8"
+    },
+    "writes": 0,
+    "buildsStarted": 0
+  },
+  "host": {
+    "observedAt": "2026-11-05T21:42:49.611121+00:00",
+    "gitopsDemo": {
+      "applicationUid": "14cddc81-ea96-4789-ba3d-268423a876d9",
+      "source": {
+        "directory": {
+          "include": "configmap.yaml"
+        },
+        "path": "infra/devops-lab/gitops-demo",
+        "repoURL": "http://gitlab-service.ns-devops.svc.cluster.local/root/petclinic-platform.git",
+        "targetRevision": "security-demo/gitops-20261105"
+      },
+      "destination": {
+        "namespace": "devsecops-test",
+        "server": "https://kubernetes.default.svc"
+      },
+      "syncPolicy": {
+        "automated": {
+          "allowEmpty": false,
+          "prune": false,
+          "selfHeal": true
+        },
+        "syncOptions": [
+          "CreateNamespace=false"
+        ]
+      },
+      "revision": "9f3124056fb078736b1898db45822cb0cedac109",
+      "sync": "Synced",
+      "health": "Healthy",
+      "resources": [
+        {
+          "kind": "ConfigMap",
+          "name": "petclinic-gitops-demo",
+          "namespace": "devsecops-test",
+          "status": "Synced",
+          "version": "v1"
+        }
+      ],
+      "configMapUid": "f9280a4d-242c-4c8d-a056-79e48a4d3f0a",
+      "resourceVersion": "17829883",
+      "data": {
+        "demo-stage": "baseline"
+      }
+    },
+    "restrictedAccount": {
+      "uid": 24021,
+      "forcedCommandRestrictions": [
+        "restrict,command=\"/usr/bin/python3 -I /var/tmp/security-manager-gitleaks-v2-linux-20261105/ssh-entry.py\"",
+        "restrict,command=\"/usr/bin/python3 -I /var/tmp/security-manager-gitleaks-v2-linux-20261105/ssh-entry.py\""
+      ],
+      "entrySha256": "19e5f5192215c1074e3140b2ff0d344b2c795814a6e5f46a59f57000b6659788",
+      "entryMentionsGitPush": false,
+      "possibleExistingGitOpsEntrypoints": [],
+      "securityOrGitOpsAccountNames": [
+        "security-gitleaks"
+      ]
+    },
+    "production": {
+      "uid": "ae889fa4-5f34-4c85-9bbb-73d80e5a0b1f",
+      "generation": 175,
+      "specSha256": "123ad729d83f3a7afc548a8c3071be70ff7ac8ed78b7333a296945b525552f4b",
+      "ready": 3,
+      "desired": 3,
+      "image": [
+        "core.harbor.domain/petclinic/petclinic@sha256:489cb821573ff1f98edd846d5949d74bf3391b24e2f1fe5bcfb71c6be0793137"
+      ],
+      "argoRevision": "340ef4b8c74e3c2a5820da8d98b0f134283bb8d9",
+      "argoSync": "Synced",
+      "argoHealth": "Healthy",
+      "argoSpecSha256": "00e16a65e6d0ae9743afee12d8d71ceb525d93cd514abc7fa90ae88cc0d49c3a",
+      "http": 200,
+      "nodes": {
+        "aliyun-worker": "True",
+        "devops": "True",
+        "ucloud-worker": "True"
+      },
+      "dockerSocketMode": "0660"
+    },
+    "writes": 0
+  }
+}
