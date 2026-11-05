@@ -1,0 +1,229 @@
+{
+  "observedAt": "2026-11-05T14:37:22.984222+00:00",
+  "classification": "LIVE_READ_ONLY_QUERY_SNAPSHOT",
+  "argo": {
+    "source": {
+      "path": "k8s/production",
+      "repoURL": "http://gitlab-service.ns-devops.svc.cluster.local/root/petclinic-platform.git",
+      "targetRevision": "main"
+    },
+    "destination": {
+      "namespace": "petclinic",
+      "server": "https://kubernetes.default.svc"
+    },
+    "sync": {
+      "comparedTo": {
+        "destination": {
+          "namespace": "petclinic",
+          "server": "https://kubernetes.default.svc"
+        },
+        "source": {
+          "path": "k8s/production",
+          "repoURL": "http://gitlab-service.ns-devops.svc.cluster.local/root/petclinic-platform.git",
+          "targetRevision": "main"
+        }
+      },
+      "revision": "340ef4b8c74e3c2a5820da8d98b0f134283bb8d9",
+      "status": "Synced"
+    },
+    "health": {
+      "lastTransitionTime": "2026-11-05T02:28:20Z",
+      "status": "Healthy"
+    },
+    "reconciledAt": "2026-11-05T14:35:27Z",
+    "operationPhase": "Succeeded",
+    "lastSyncRevision": "340ef4b8c74e3c2a5820da8d98b0f134283bb8d9",
+    "history": [
+      {
+        "deployStartedAt": "2026-10-27T05:05:28Z",
+        "deployedAt": "2026-10-27T05:05:52Z",
+        "id": 113,
+        "initiatedBy": {
+          "automated": true
+        },
+        "revision": "f8a123695c0900edca8be0508033cd79c7807d89",
+        "source": {
+          "path": "k8s/production",
+          "repoURL": "http://gitlab-service.ns-devops.svc.cluster.local/root/petclinic-platform.git",
+          "targetRevision": "main"
+        }
+      },
+      {
+        "deployStartedAt": "2026-10-29T10:34:29Z",
+        "deployedAt": "2026-10-29T10:34:38Z",
+        "id": 114,
+        "initiatedBy": {
+          "automated": true
+        },
+        "revision": "340ef4b8c74e3c2a5820da8d98b0f134283bb8d9",
+        "source": {
+          "path": "k8s/production",
+          "repoURL": "http://gitlab-service.ns-devops.svc.cluster.local/root/petclinic-platform.git",
+          "targetRevision": "main"
+        }
+      }
+    ]
+  },
+  "deployment": {
+    "uid": "ae889fa4-5f34-4c85-9bbb-73d80e5a0b1f",
+    "generation": 175,
+    "revision": "164",
+    "observedGeneration": 175,
+    "ready": 3,
+    "desired": 3,
+    "containers": [
+      {
+        "name": "petclinic",
+        "image": "core.harbor.domain/petclinic/petclinic@sha256:489cb821573ff1f98edd846d5949d74bf3391b24e2f1fe5bcfb71c6be0793137"
+      }
+    ]
+  },
+  "nodes": {
+    "aliyun-worker": {
+      "arch": "amd64",
+      "os": "linux",
+      "ready": "True"
+    },
+    "devops": {
+      "arch": "arm64",
+      "os": "linux",
+      "ready": "True"
+    },
+    "ucloud-worker": {
+      "arch": "amd64",
+      "os": "linux",
+      "ready": "True"
+    }
+  },
+  "pods": [
+    {
+      "name": "petclinic-7b9fc47976-7gqqx",
+      "uid": "32543aa9-4b6f-418f-be1b-3795796f37b6",
+      "node": "devops",
+      "deletionTimestamp": null,
+      "phase": "Running",
+      "owners": [
+        {
+          "apiVersion": "apps/v1",
+          "blockOwnerDeletion": true,
+          "controller": true,
+          "kind": "ReplicaSet",
+          "name": "petclinic-7b9fc47976",
+          "uid": "facbd854-4200-485b-97df-e9f3d19b18b3"
+        }
+      ],
+      "containers": [
+        {
+          "name": "petclinic",
+          "desiredImage": "core.harbor.domain/petclinic/petclinic@sha256:489cb821573ff1f98edd846d5949d74bf3391b24e2f1fe5bcfb71c6be0793137",
+          "running": {
+            "image": "sha256:1b6fa16a54e62ff016e32426541af2740ee908c4c2ee70d8b80d432c6eee7ece",
+            "imageID": "127.0.0.1:30050/petclinic/petclinic@sha256:489cb821573ff1f98edd846d5949d74bf3391b24e2f1fe5bcfb71c6be0793137",
+            "ready": true,
+            "restartCount": 6,
+            "startedAt": "2026-11-05T02:25:55Z"
+          }
+        }
+      ]
+    },
+    {
+      "name": "petclinic-7b9fc47976-v7pbv",
+      "uid": "d82f840e-aaea-40f9-b877-4628dcc2522f",
+      "node": "devops",
+      "deletionTimestamp": null,
+      "phase": "Running",
+      "owners": [
+        {
+          "apiVersion": "apps/v1",
+          "blockOwnerDeletion": true,
+          "controller": true,
+          "kind": "ReplicaSet",
+          "name": "petclinic-7b9fc47976",
+          "uid": "facbd854-4200-485b-97df-e9f3d19b18b3"
+        }
+      ],
+      "containers": [
+        {
+          "name": "petclinic",
+          "desiredImage": "core.harbor.domain/petclinic/petclinic@sha256:489cb821573ff1f98edd846d5949d74bf3391b24e2f1fe5bcfb71c6be0793137",
+          "running": {
+            "image": "sha256:1b6fa16a54e62ff016e32426541af2740ee908c4c2ee70d8b80d432c6eee7ece",
+            "imageID": "127.0.0.1:30050/petclinic/petclinic@sha256:489cb821573ff1f98edd846d5949d74bf3391b24e2f1fe5bcfb71c6be0793137",
+            "ready": true,
+            "restartCount": 8,
+            "startedAt": "2026-11-05T02:25:42Z"
+          }
+        }
+      ]
+    },
+    {
+      "name": "petclinic-7b9fc47976-z9q2p",
+      "uid": "3134d6ae-f33d-4a8e-9d61-ea9fae117db6",
+      "node": "devops",
+      "deletionTimestamp": null,
+      "phase": "Running",
+      "owners": [
+        {
+          "apiVersion": "apps/v1",
+          "blockOwnerDeletion": true,
+          "controller": true,
+          "kind": "ReplicaSet",
+          "name": "petclinic-7b9fc47976",
+          "uid": "facbd854-4200-485b-97df-e9f3d19b18b3"
+        }
+      ],
+      "containers": [
+        {
+          "name": "petclinic",
+          "desiredImage": "core.harbor.domain/petclinic/petclinic@sha256:489cb821573ff1f98edd846d5949d74bf3391b24e2f1fe5bcfb71c6be0793137",
+          "running": {
+            "image": "sha256:1b6fa16a54e62ff016e32426541af2740ee908c4c2ee70d8b80d432c6eee7ece",
+            "imageID": "127.0.0.1:30050/petclinic/petclinic@sha256:489cb821573ff1f98edd846d5949d74bf3391b24e2f1fe5bcfb71c6be0793137",
+            "ready": true,
+            "restartCount": 6,
+            "startedAt": "2026-11-05T02:26:08Z"
+          }
+        }
+      ]
+    }
+  ],
+  "endpoints": [
+    {
+      "addresses": [
+        "10.42.0.57"
+      ],
+      "conditions": {
+        "ready": true,
+        "serving": true,
+        "terminating": false
+      },
+      "pod": "petclinic-7b9fc47976-z9q2p"
+    },
+    {
+      "addresses": [
+        "10.42.0.46"
+      ],
+      "conditions": {
+        "ready": true,
+        "serving": true,
+        "terminating": false
+      },
+      "pod": "petclinic-7b9fc47976-7gqqx"
+    },
+    {
+      "addresses": [
+        "10.42.0.44"
+      ],
+      "conditions": {
+        "ready": true,
+        "serving": true,
+        "terminating": false
+      },
+      "pod": "petclinic-7b9fc47976-v7pbv"
+    }
+  ],
+  "http": 200,
+  "dockerSocketMode": "0660",
+  "release": 0,
+  "rollout": 0
+}

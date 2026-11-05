@@ -11,6 +11,37 @@
 <div class="section-heading"><div><span class="eyebrow">PETCLINIC DEVSECOPS</span><h2>PetClinic Pipeline Overview</h2></div><span class="tag replay">HISTORICAL · 只读快照</span></div>
 <p class="muted">采集时间：<time datetime="2026-11-05T10:37:17.395314+00:00">2026-11-05 18:37:17 +08:00</time>。刷新只重新读取本地记录，不触发扫描、构建或生产查询。</p>
 <p class="muted">GitLab → Jenkins / Security Gate → Harbor 候选镜像 · GitOps → Argo CD → Kubernetes。下列分段证据不代表同轮生产发布。</p>
+<!-- CANDIDATE_RUNNING_BEGIN -->
+<article id="candidate-running" class="consumer">
+<div class="card-top"><h3>Candidate vs Running Deployment</h3><span class="tag replay">NOT_DEPLOYED</span></div>
+<p>候选镜像尚未部署；当前 GitOps 期望与 Kubernetes 实际运行一致。Argo CD Healthy 仅描述当前部署，不能证明候选镜像已上线。</p>
+<p>以下为本轮 LIVE 只读查询形成的有时间标记的快照；刷新页面只读取本地记录，不重查生产，不触发 Sync 或 Rollout。归档历史为 HISTORICAL。</p>
+<table><thead><tr><th>追溯字段</th><th>真实值</th><th>来源 / 采集时间（UTC）</th></tr></thead><tbody>
+<tr><td>Harbor Candidate Tag</td><td>petclinic/petclinic:0.10.0-ci-1000002</td><td>LIVE 查询快照<br>2026-11-05T14:38:45Z</td></tr>
+<tr><td>Candidate OCI Index Digest</td><td>sha256:2fbaea65ab030c56c60c62e3ee9fbe362deb8bbbb8216a891ef4c7bbbcea6d55</td><td>LIVE 查询快照<br>2026-11-05T14:38:45Z</td></tr>
+<tr><td>GitOps 仓库 / 文件</td><td>root/petclinic-platform · main · k8s/production/petclinic.yaml</td><td>LIVE 查询快照<br>2026-11-05T14:38:45Z</td></tr>
+<tr><td>GitOps 当前 HEAD / Desired Revision</td><td>340ef4b8c74e3c2a5820da8d98b0f134283bb8d9</td><td>LIVE 查询快照<br>2026-11-05T14:38:45Z</td></tr>
+<tr><td>GitOps Desired Image</td><td>core.harbor.domain/petclinic/petclinic@sha256:489cb821573ff1f98edd846d5949d74bf3391b24e2f1fe5bcfb71c6be0793137</td><td>LIVE 查询快照<br>2026-11-05T14:38:45Z</td></tr>
+<tr><td>Argo CD Synced Revision</td><td>340ef4b8c74e3c2a5820da8d98b0f134283bb8d9</td><td>LIVE 查询快照<br>2026-11-05T14:37:22.984222+00:00</td></tr>
+<tr><td>Argo CD Sync / Health</td><td>Synced / Healthy</td><td>LIVE 查询快照<br>2026-11-05T14:37:22.984222+00:00</td></tr>
+<tr><td>Deployment Image</td><td>core.harbor.domain/petclinic/petclinic@sha256:489cb821573ff1f98edd846d5949d74bf3391b24e2f1fe5bcfb71c6be0793137</td><td>LIVE 查询快照<br>2026-11-05T14:37:22.984222+00:00</td></tr>
+<tr><td>Ready / Endpoints / HTTP</td><td>3/3 · 3 Ready Endpoints · HTTP 200</td><td>LIVE 查询快照<br>2026-11-05T14:37:22.984222+00:00</td></tr>
+<tr><td>Desired vs Running</td><td>MATCHED · GitOps / Deployment / 三个实际 Image ID 一致</td><td>LIVE 查询快照<br>2026-11-05T14:37:22.984222+00:00</td></tr>
+<tr><td>Candidate vs Running</td><td>NOT_DEPLOYED · 候选 Index 未被当前 GitOps / Deployment / Pod 引用</td><td>LIVE 查询快照<br>2026-11-05T14:37:22.984222+00:00</td></tr>
+</tbody></table><h4>Pod 实际运行记录</h4>
+<div class="card-row"><span>petclinic-7b9fc47976-7gqqx<br>devops / arm64 · Ready</span><b>127.0.0.1:30050/petclinic/petclinic@sha256:489cb821573ff1f98edd846d5949d74bf3391b24e2f1fe5bcfb71c6be0793137</b></div>
+<div class="card-row"><span>petclinic-7b9fc47976-v7pbv<br>devops / arm64 · Ready</span><b>127.0.0.1:30050/petclinic/petclinic@sha256:489cb821573ff1f98edd846d5949d74bf3391b24e2f1fe5bcfb71c6be0793137</b></div>
+<div class="card-row"><span>petclinic-7b9fc47976-z9q2p<br>devops / arm64 · Ready</span><b>127.0.0.1:30050/petclinic/petclinic@sha256:489cb821573ff1f98edd846d5949d74bf3391b24e2f1fe5bcfb71c6be0793137</b></div>
+<p>以上三个 Image ID 的来源：LIVE Kubernetes 查询快照 · 2026-11-05T14:37:22.984222+00:00。Image ID 报告的是 OCI Index；镜像仓库别名虽不同，Digest 相同。</p>
+<details><summary>多架构 Digest 对照（避免将 Index 与平台子 Manifest 误判）</summary>
+<p>amd64 · Candidate Manifest: sha256:2bd9c1c445afbf55e390bfc41910551c32e09913143f7a137038cc87941b7c94<br>Running Manifest: sha256:ab79439f86cef8a02bb7103d07736397c7c6589c938bcfebf91f18b615480508</p>
+<p>arm64 · Candidate Manifest: sha256:06a515708b6783db7d545544bbefb02e9f94abfc0fdf13a7355ccbe2deb3ed42<br>Running Manifest: sha256:956525e00136b8a553564a2a8ef2be4347b791c1e938499c25e3588eb5ad14f2</p>
+<p>当前三个 Pod 位于 arm64 节点，其运行配置 Digest 为 sha256:1b6fa16a54e62ff016e32426541af2740ee908c4c2ee70d8b80d432c6eee7ece，与当前 ARM64 Manifest 的 config.digest 相同。Index 和平台 Manifest 原始响应的 SHA256 已核验；未知架构的 attestation 条目未被当作运行镜像。</p></details>
+<p><a href="http://harbor.devops.local/api/v2.0/projects/petclinic/repositories/petclinic/artifacts/sha256:2fbaea65ab030c56c60c62e3ee9fbe362deb8bbbb8216a891ef4c7bbbcea6d55">Harbor 候选精确 Digest（需登录）</a> · <a href="http://harbor.devops.local/api/v2.0/projects/petclinic/repositories/petclinic/artifacts/sha256:489cb821573ff1f98edd846d5949d74bf3391b24e2f1fe5bcfb71c6be0793137">Harbor 当前运行镜像（需登录）</a> · <a href="http://gitlab.devops.local/root/petclinic-platform/-/blob/340ef4b8c74e3c2a5820da8d98b0f134283bb8d9/k8s/production/petclinic.yaml">GitOps 已同步提交中的原始 YAML</a> · <a href="http://argocd.devops.local/">Argo CD（选择 petclinic）</a> · <a href="http://petclinic.devops.local/">PetClinic</a> · <a href="http://jenkins.devops.local/job/petclinic-ci/270/artifact/.devsecops/gates/Read-Only-Release-Verification.txt">HISTORICAL · #270 只读部署验收归档</a></p>
+<p>历史归档 exit_code=0 仅供追溯，不代替本轮当前状态；未将安全演示 #4 或候选构建 #2 当作一次生产发布。未执行发布；Release=0 / Rollout=0。</p>
+<p class="source-path">evidence/2026-11-05/candidate-running/verified.json · SHA256 8c3d8215b4bf09fd889344b3dd2c3be73af2b7b35d046efa8ee93f7567392247</p>
+</article>
+<!-- CANDIDATE_RUNNING_END -->
 <!-- BUILD_HARBOR_LINK_BEGIN -->
 <article id="build-harbor-link" class="consumer">
 <div class="card-top"><h3>安全构建 → Harbor 镜像 · 真实可追溯关联</h3><span class="tag real">VERIFIED · HISTORICAL + LIVE QUERY SNAPSHOT</span></div>
@@ -152,7 +183,7 @@
 <p>LIVE=无。页面展示真实历史归档与带时间的当前状态快照，不冒充实时跨系统查询。</p>
 <p>已证明：GitLab Commit → 候选构建 #2 → 候选镜像 → #270 安全审计/构建证明校验。</p>
 <p>已证明：GitOps Revision → Argo CD Synced/Healthy → 当前 PetClinic 3/3；两段证据不是同一次端到端生产发布。</p>
-<p>仍未验证：生产 main 分支 Push 自动触发、候选镜像晋升为当前运行镜像、完整同次发布链、Harbor 登录后的 artifact 内容。</p>
+<p>当前候选镜像未部署（本轮已查证）。仍未验证：生产 main 分支 Push 自动发布、候选镜像晋升流程、完整同次生产发布链。Harbor 精确 Digest 的已授权查询与当前运行追溯见上方。</p>
 <p>Gitleaks Clean #2 / Finding #3 的 Jenkins 门禁演示独立保留；Production Manager NOT_ACTIVE，Canonical Runtime 14/16。</p>
 <p class="source-path">evidence/2026-11-05/petclinic-pipeline-overview/read-only-sources.json · SHA256 7cf7c5463ad37f64d31d2ab1f271e2c8d53185320ff2952fbd02e379cd45737b</p>
 <p class="source-path">evidence/2026-11-05/petclinic-pipeline-overview/links-observability.json · SHA256 3299ef14041409a241ce04ccf928c75e91fadf988d94d1a808c4c79f0cd77b37</p>
