@@ -1,0 +1,125 @@
+{
+  "gitlab": {
+    "commitProofs": [
+      {
+        "commit": "ff8d4e36f82167c34593b148b4f0f49f6a71fc74",
+        "parents": [],
+        "title": "demo: GitOps baseline [skip ci]",
+        "message": "demo: GitOps baseline [skip ci]\n",
+        "committedAt": "2026-11-06T00:01:20.000+08:00",
+        "paths": [
+          "infra/devops-lab/gitops-demo/configmap.yaml"
+        ]
+      },
+      {
+        "commit": "b0c27267b81aa62c7d127db4b1469bbd1794f095",
+        "parents": [
+          "ff8d4e36f82167c34593b148b4f0f49f6a71fc74"
+        ],
+        "title": "demo: GitOps updated [skip ci]",
+        "message": "demo: GitOps updated [skip ci]\n",
+        "committedAt": "2026-11-06T00:01:20.000+08:00",
+        "paths": [
+          "infra/devops-lab/gitops-demo/configmap.yaml"
+        ]
+      },
+      {
+        "commit": "9f3124056fb078736b1898db45822cb0cedac109",
+        "parents": [
+          "b0c27267b81aa62c7d127db4b1469bbd1794f095"
+        ],
+        "title": "Revert \"demo: GitOps updated [skip ci]\"",
+        "message": "Revert \"demo: GitOps updated [skip ci]\"\n\nThis reverts commit b0c27267b81aa62c7d127db4b1469bbd1794f095.\n",
+        "committedAt": "2026-11-06T00:01:21.000+08:00",
+        "paths": [
+          "infra/devops-lab/gitops-demo/configmap.yaml"
+        ]
+      }
+    ],
+    "branchHead": "9f3124056fb078736b1898db45822cb0cedac109",
+    "productionMain": "340ef4b8c74e3c2a5820da8d98b0f134283bb8d9",
+    "pipelines": [
+      {
+        "id": 425,
+        "status": "skipped",
+        "sha": "9f3124056fb078736b1898db45822cb0cedac109"
+      },
+      {
+        "id": 424,
+        "status": "skipped",
+        "sha": "b0c27267b81aa62c7d127db4b1469bbd1794f095"
+      },
+      {
+        "id": 423,
+        "status": "skipped",
+        "sha": "ff8d4e36f82167c34593b148b4f0f49f6a71fc74"
+      }
+    ],
+    "productionJenkins": {
+      "number": 270,
+      "result": "SUCCESS",
+      "definitionUnchanged": true,
+      "v1SummaryUnchanged": true
+    }
+  },
+  "host": {
+    "observedAt": "2026-11-05T16:11:16.719129+00:00",
+    "production": {
+      "uid": "ae889fa4-5f34-4c85-9bbb-73d80e5a0b1f",
+      "generation": 175,
+      "specSha256": "123ad729d83f3a7afc548a8c3071be70ff7ac8ed78b7333a296945b525552f4b",
+      "ready": 3,
+      "desired": 3,
+      "image": [
+        "core.harbor.domain/petclinic/petclinic@sha256:489cb821573ff1f98edd846d5949d74bf3391b24e2f1fe5bcfb71c6be0793137"
+      ],
+      "argoRevision": "340ef4b8c74e3c2a5820da8d98b0f134283bb8d9",
+      "argoSync": "Synced",
+      "argoHealth": "Healthy",
+      "argoSpecSha256": "00e16a65e6d0ae9743afee12d8d71ceb525d93cd514abc7fa90ae88cc0d49c3a",
+      "nodes": {
+        "aliyun-worker": "True",
+        "devops": "True",
+        "ucloud-worker": "True"
+      },
+      "http": 200,
+      "dockerSocketMode": "0660"
+    },
+    "demo": {
+      "revision": "9f3124056fb078736b1898db45822cb0cedac109",
+      "sync": "Synced",
+      "health": "Healthy",
+      "history": [
+        {
+          "revision": "ff8d4e36f82167c34593b148b4f0f49f6a71fc74",
+          "deployedAt": "2026-11-05T16:04:24Z"
+        },
+        {
+          "revision": "b0c27267b81aa62c7d127db4b1469bbd1794f095",
+          "deployedAt": "2026-11-05T16:06:51Z"
+        },
+        {
+          "revision": "9f3124056fb078736b1898db45822cb0cedac109",
+          "deployedAt": "2026-11-05T16:10:14Z"
+        }
+      ],
+      "resourceCount": 1,
+      "configMapValue": "baseline",
+      "configMapUid": "f9280a4d-242c-4c8d-a056-79e48a4d3f0a",
+      "namespacePodCount": 0
+    }
+  },
+  "configMapSameUid": true,
+  "threeDistinctResourceVersions": true,
+  "verdict": {
+    "GITOPS_DEMO_REAL_CHANGE": "VERIFIED",
+    "ARGOCD_SYNC": "VERIFIED",
+    "KUBERNETES_STATE_CHANGE": "VERIFIED",
+    "GITOPS_RESTORE": "VERIFIED",
+    "PRODUCTION_PETCLINIC_UNCHANGED": "YES"
+  },
+  "actualGitPushes": 3,
+  "configMapDirectWrites": 0,
+  "productionRelease": false,
+  "productionRollout": false
+}

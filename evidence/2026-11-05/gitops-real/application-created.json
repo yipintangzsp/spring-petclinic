@@ -1,0 +1,33 @@
+{
+  "createdAt": "2026-11-05T16:04:22.833199+00:00",
+  "namespace": "argocd",
+  "name": "petclinic-gitops-demo",
+  "uid": "14cddc81-ea96-4789-ba3d-268423a876d9",
+  "spec": {
+    "destination": {
+      "namespace": "devsecops-test",
+      "server": "https://kubernetes.default.svc"
+    },
+    "project": "default",
+    "source": {
+      "directory": {
+        "include": "configmap.yaml",
+        "recurse": false
+      },
+      "path": "infra/devops-lab/gitops-demo",
+      "repoURL": "http://gitlab-service.ns-devops.svc.cluster.local/root/petclinic-platform.git",
+      "targetRevision": "security-demo/gitops-20261105"
+    },
+    "syncPolicy": {
+      "automated": {
+        "allowEmpty": false,
+        "prune": false,
+        "selfHeal": true
+      },
+      "syncOptions": [
+        "CreateNamespace=false"
+      ]
+    }
+  },
+  "configMapDirectWrite": false
+}

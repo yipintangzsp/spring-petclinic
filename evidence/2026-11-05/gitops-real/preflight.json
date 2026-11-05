@@ -1,0 +1,98 @@
+{
+  "gitlab": {
+    "project": "root/petclinic-platform",
+    "projectId": 12,
+    "branch": "security-demo/gitops-20261105",
+    "branchExists": false,
+    "main": "340ef4b8c74e3c2a5820da8d98b0f134283bb8d9",
+    "autoDevops": true,
+    "hooks": [
+      {
+        "id": 4,
+        "branch": "main",
+        "strategy": "wildcard",
+        "push": true
+      },
+      {
+        "id": 5,
+        "branch": "security-demo/gitlab-push-20261105",
+        "strategy": "wildcard",
+        "push": true
+      }
+    ],
+    "productionJobLastBuild": 270,
+    "productionJobBuilding": false
+  },
+  "host": {
+    "observedAt": "2026-11-05T16:00:08.427370+00:00",
+    "namespace": {
+      "name": "devsecops-test",
+      "uid": "1b48e5bf-f2cd-4c3e-af6f-ff794250428b",
+      "phase": "Active"
+    },
+    "rights": {
+      "createApplication": true,
+      "createConfigMap": true,
+      "readConfigMap": true
+    },
+    "appProject": {
+      "clusterResourceWhitelist": [
+        {
+          "group": "*",
+          "kind": "*"
+        }
+      ],
+      "destinations": [
+        {
+          "namespace": "*",
+          "server": "*"
+        }
+      ],
+      "sourceRepos": [
+        "*"
+      ]
+    },
+    "quota": [
+      {
+        "hard": {
+          "limits.cpu": "500m",
+          "limits.memory": "512Mi",
+          "persistentvolumeclaims": "0",
+          "pods": "1",
+          "requests.cpu": "100m",
+          "requests.memory": "256Mi"
+        },
+        "used": {
+          "limits.cpu": "0",
+          "limits.memory": "0",
+          "persistentvolumeclaims": "0",
+          "pods": "0",
+          "requests.cpu": "0",
+          "requests.memory": "0"
+        }
+      }
+    ],
+    "production": {
+      "uid": "ae889fa4-5f34-4c85-9bbb-73d80e5a0b1f",
+      "generation": 175,
+      "specSha256": "123ad729d83f3a7afc548a8c3071be70ff7ac8ed78b7333a296945b525552f4b",
+      "ready": 3,
+      "desired": 3,
+      "image": [
+        "core.harbor.domain/petclinic/petclinic@sha256:489cb821573ff1f98edd846d5949d74bf3391b24e2f1fe5bcfb71c6be0793137"
+      ],
+      "argoRevision": "340ef4b8c74e3c2a5820da8d98b0f134283bb8d9",
+      "argoSync": "Synced",
+      "argoHealth": "Healthy",
+      "argoSpecSha256": "00e16a65e6d0ae9743afee12d8d71ceb525d93cd514abc7fa90ae88cc0d49c3a",
+      "nodes": {
+        "aliyun-worker": "True",
+        "devops": "True",
+        "ucloud-worker": "True"
+      },
+      "http": 200,
+      "dockerSocketMode": "0660"
+    },
+    "writes": 0
+  }
+}

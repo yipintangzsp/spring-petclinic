@@ -1,0 +1,78 @@
+--- a/infra/security/manager-v2/view/index.html
++++ b/infra/security/manager-v2/view/index.html
+@@ -12,38 +12,39 @@
+ <article id="gitops-demo-result" class="consumer" aria-labelledby="gitops-demo-title">
+-<div class="card-top"><h3 id="gitops-demo-title">GitOps Demo Result · 状态查看与排障</h3><span class="tag warn">REAL CHANGE · INCOMPLETE</span></div>
+-<p>本轮交付只读查看入口，未执行新的 GitOps 变更或恢复。现有非生产 devops-tls-lab / rollouts-lab 均跟踪生产仓库 main；本轮禁止推送该分支。没有已接通获准测试分支的 Application，不能用直接 kubectl 修改冒充 GitOps。</p>
+-<p class="muted">HISTORICAL · 本轮真实 Kubernetes GET 快照：<time>2026-11-05T15:51:14.281460+00:00</time>。不是实时订阅；刷新只重新读取本地记录。下方链接可进入原系统查看当前状态。</p>
+-<div class="card-row"><span>本轮演示对象 / 新 Git Commit</span><b>NONE · 未选择可授权写入的独立对象 / NONE</b></div>
+-<div class="card-row"><span>生产 GitOps 已同步 Revision</span><b>340ef4b8c74e3c2a5820da8d98b0f134283bb8d9</b></div>
+-<div class="card-row"><span>Argo CD / Kubernetes</span><b>Synced / Healthy · Ready 3/3 · Ready Endpoints 3 · HTTP 200</b></div>
+-<div class="card-row"><span>当前运行镜像</span><b>core.harbor.domain/petclinic/petclinic@sha256:489cb821573ff1f98edd846d5949d74bf3391b24e2f1fe5bcfb71c6be0793137</b></div>
+-<div class="card-row"><span>本轮 Kubernetes 变更 / 恢复 Commit</span><b>NOT_EXECUTED / NONE · 保持原状，不宣称完成恢复演练</b></div>
+-<div class="card-row"><span>三节点 Ready</span><b>aliyun-worker=True · devops=True · ucloud-worker=True</b></div>
+-<details open><summary>1 · 打开原系统，核对期望状态与实际状态</summary>
+-<p><a href="http://argocd.devops.local/">Argo CD：选择 petclinic，查看 SYNC STATUS / APP HEALTH / HISTORY</a></p>
+-<p><a href="http://gitlab.devops.local/root/petclinic-platform/-/blob/340ef4b8c74e3c2a5820da8d98b0f134283bb8d9/k8s/production/petclinic.yaml">GitLab：查看 Argo 已同步 Revision 的原始 Deployment</a></p>
+-<p><a href="http://petclinic.devops.local/">PetClinic：实际打开业务页面</a></p>
+-<p><a href="http://grafana.devops.local/d/devsecops-control">Grafana：已有安全看板（登录后查看）</a></p>
+-<p><a href="http://grafana.devops.local/explore">Grafana Explore：选择 Loki 查看 PetClinic 日志</a></p>
+-<p>Argo 与 Grafana 可能要求登录。登录页可达不等于已验证登录后的面板或权限。此处没有同步、重启或发布按钮。</p></details>
+-<details><summary>2 · 查看真实 Pod 状态与已有同步历史</summary>
+-<div class="card-row"><span>petclinic-7b9fc47976-7gqqx</span><b>devops · Running · Ready True · Restarts 6</b></div>
+-<div class="card-row"><span>petclinic-7b9fc47976-v7pbv</span><b>devops · Running · Ready True · Restarts 8</b></div>
+-<div class="card-row"><span>petclinic-7b9fc47976-z9q2p</span><b>devops · Running · Ready True · Restarts 6</b></div>
+-<p>HISTORICAL · Argo history #111 · 2026-10-26T18:32:33Z · <code>713314b3b6076fde2354f373b696f8dd99eb7f6b</code></p>
+-<p>HISTORICAL · Argo history #112 · 2026-10-26T19:36:27Z · <code>deeb40746d86040d396321d70f91d4859d392ad7</code></p>
+-<p>HISTORICAL · Argo history #113 · 2026-10-27T05:05:52Z · <code>f8a123695c0900edca8be0508033cd79c7807d89</code></p>
+-<p>HISTORICAL · Argo history #114 · 2026-10-29T10:34:38Z · <code>340ef4b8c74e3c2a5820da8d98b0f134283bb8d9</code></p>
+-<p>以上为已有真实部署历史，不是本轮新发布，也不证明执行过本轮恢复。当前 Warning Event 数量：0（仅 Kubernetes 现存记录，不代表历史从未出现故障）。</p></details>
+-<details><summary>3 · 在已有授权管理终端执行只读排障命令</summary>
+-<p>页面本身不执行这些命令，不接收凭据。请在已有 kubeconfig 的管理终端运行。</p>
+-<pre><code>kubectl get application petclinic -n argocd -o wide
+-kubectl get application petclinic -n argocd -o jsonpath=&#x27;{.status.sync.revision}{&quot;\n&quot;}{.status.sync.status}{&quot; / &quot;}{.status.health.status}{&quot;\n&quot;}&#x27;
+-kubectl get deployment petclinic -n petclinic -o wide
+-kubectl get pods -n petclinic -l app=petclinic -o wide
+-kubectl get endpointslices -n petclinic -l kubernetes.io/service-name=petclinic
+-kubectl get events -n petclinic --field-selector type=Warning --sort-by=.lastTimestamp</code></pre>
+-<p>Grafana Explore 的 Loki 查询：<code>{namespace="petclinic"}</code>。先核对时间窗口，再查日志；不要仅凭 Pod Running 或 Argo Healthy 判断候选镜像已部署。</p></details>
+-<p class="source-path">evidence/2026-11-05/gitops-demo/observation.json · SHA256 17bbeafcefb155449491916a2174c2ed98b0c70b19d97ea21d3b8ec7d3708666</p>
+-<p>唯一演示阻塞：缺少已获准测试分支与非生产 Application 的 GitOps 绑定。本轮未新建 Application、修改目标分支或推送任何分支。生产发布 0 / Rollout 0。</p>
++<div class="card-top"><h3 id="gitops-demo-title">GitOps Demo Result · 真实变更与恢复</h3><span class="tag real">VERIFIED · REAL GITOPS</span></div>
++<p>三次真实 Git Push → Argo 自动同步 → 同一个 Kubernetes ConfigMap：<strong>baseline → updated → baseline</strong>。最后一次为真实 git revert，不是直接 kubectl 修改、重置历史或模拟状态。</p>
++<p class="muted">HISTORICAL · 同一演示的真实执行归档。最终只读核对：<time>2026-11-05T16:11:16.719129+00:00</time>。刷新仅重新读取本地记录，不触发同步、扫描或推送。</p>
++<div class="card-row"><span>演示对象</span><b>devsecops-test / ConfigMap petclinic-gitops-demo</b></div>
++<div class="card-row"><span>独立 Application / 最终状态</span><b>petclinic-gitops-demo · Synced / Healthy · 仅管理 1 个 ConfigMap</b></div>
++<div class="card-row"><span>固定分支 / 目录</span><b>security-demo/gitops-20261105 / infra/devops-lab/gitops-demo</b></div>
++<div class="gitops-table-wrap"><table><thead><tr><th>阶段 / 实际值</th><th>Git Commit / Argo Revision</th><th>Kubernetes 取证</th></tr></thead><tbody>
++<tr><td><strong>Baseline</strong><br><code>demo-stage=baseline</code></td><td><a href="http://gitlab.devops.local/root/petclinic-platform/-/commit/ff8d4e36f82167c34593b148b4f0f49f6a71fc74"><code>ff8d4e36f82167c34593b148b4f0f49f6a71fc74</code></a><br>Argo: <code>ff8d4e36f82167c34593b148b4f0f49f6a71fc74</code><br>Synced / Healthy</td><td><time>2026-11-05T16:05:28.274299+00:00</time><br>resourceVersion: 17828643<br>同步完成：2026-11-05T16:04:27Z</td></tr>
++<tr><td><strong>Updated</strong><br><code>demo-stage=updated</code></td><td><a href="http://gitlab.devops.local/root/petclinic-platform/-/commit/b0c27267b81aa62c7d127db4b1469bbd1794f095"><code>b0c27267b81aa62c7d127db4b1469bbd1794f095</code></a><br>Argo: <code>b0c27267b81aa62c7d127db4b1469bbd1794f095</code><br>Synced / Healthy</td><td><time>2026-11-05T16:06:55.441913+00:00</time><br>resourceVersion: 17829166<br>同步完成：2026-11-05T16:06:51Z</td></tr>
++<tr><td><strong>Restored · Git Revert</strong><br><code>demo-stage=baseline</code></td><td><a href="http://gitlab.devops.local/root/petclinic-platform/-/commit/9f3124056fb078736b1898db45822cb0cedac109"><code>9f3124056fb078736b1898db45822cb0cedac109</code></a><br>Argo: <code>9f3124056fb078736b1898db45822cb0cedac109</code><br>Synced / Healthy</td><td><time>2026-11-05T16:10:17.485971+00:00</time><br>resourceVersion: 17829883<br>同步完成：2026-11-05T16:10:16Z</td></tr>
++</tbody></table></div>
++<div class="card-row"><span>同一 ConfigMap UID</span><b>f9280a4d-242c-4c8d-a056-79e48a4d3f0a</b></div>
++<div class="card-row"><span>实际变化证据</span><b>UID 相同；3 个不同 resourceVersion；3 个准确匹配的 Argo 同步 Revision</b></div>
++<div class="card-row"><span>最终 GitOps Revision</span><b>9f3124056fb078736b1898db45822cb0cedac109</b></div>
++<div class="card-row"><span>恢复验证</span><b>VERIFIED · baseline/revert Git tree 相同，集群实际值恢复 baseline</b></div>
++<p><a href="http://gitlab.devops.local/root/petclinic-platform/-/tree/security-demo/gitops-20261105">GitLab 演示分支与唯一 Manifest</a> · <a href="http://argocd.devops.local/">打开 Argo CD，选择 petclinic-gitops-demo</a> · <a href="http://petclinic.devops.local/">生产 PetClinic</a></p>
++<p>Argo CD 首页可达；现有应用深链直接 GET 返回 404，使用首页选择上述应用即可查看详情。本轮没有修改 Argo 路由。GitLab / Argo 可能需要登录。</p>
++<details><summary>查看 Argo 实际 OutOfSync → Synced 过程</summary>
++<p>updated · 2026-11-05T16:06:46.716039+00:00 · Synced · <code>ff8d4e36f82167c34593b148b4f0f49f6a71fc74</code> · Kubernetes value=baseline</p>
++<p>updated · 2026-11-05T16:06:51.096989+00:00 · OutOfSync · <code>b0c27267b81aa62c7d127db4b1469bbd1794f095</code> · Kubernetes value=baseline</p>
++<p>updated · 2026-11-05T16:06:55.441874+00:00 · Synced · <code>b0c27267b81aa62c7d127db4b1469bbd1794f095</code> · Kubernetes value=updated</p>
++<p>restored · 2026-11-05T16:10:08.539786+00:00 · Synced · <code>b0c27267b81aa62c7d127db4b1469bbd1794f095</code> · Kubernetes value=updated</p>
++<p>restored · 2026-11-05T16:10:13.048265+00:00 · OutOfSync · <code>9f3124056fb078736b1898db45822cb0cedac109</code> · Kubernetes value=updated</p>
++<p>restored · 2026-11-05T16:10:17.485927+00:00 · Synced · <code>9f3124056fb078736b1898db45822cb0cedac109</code> · Kubernetes value=baseline</p>
++</details>
++<details><summary>只读复核命令与隔离范围</summary><pre><code>kubectl get application petclinic-gitops-demo -n argocd -o wide
++kubectl get application petclinic-gitops-demo -n argocd -o jsonpath=&#x27;{.status.sync.revision}{&quot;\n&quot;}{.status.sync.status}{&quot; / &quot;}{.status.health.status}{&quot;\n&quot;}&#x27;
++kubectl get configmap petclinic-gitops-demo -n devsecops-test -o jsonpath=&#x27;{.data.demo-stage}{&quot;\n&quot;}{.metadata.uid}{&quot;\n&quot;}{.metadata.resourceVersion}{&quot;\n&quot;}&#x27;
++kubectl get pods -n devsecops-test</code></pre>
++<p>固定仓库 / 分支 / 目录 / Namespace / ConfigMap；Prune=false；无删除 finalizer。复用已有 Namespace，未创建 Pod、Secret、权限或控制器。当前保留 Application 和恢复 baseline 的 ConfigMap，供查看和学习。</p>
++<p>GitLab Auto DevOps 已通过 ci.skip 与 [skip ci] 阻止执行。三次对应 Pipeline 均 SKIPPED，Jenkins petclinic-ci 仍为 #270 SUCCESS。</p>
++<p>一次回滚推送在 Git 输出采集校验阶段被拦截，尚未执行 push；修复输出读取竞态、重新核对远端分支后完成原 Revert Commit。失败记录保留，未跳过任何 Manifest/分支校验。</p></details>
++<p>生产最终核对：PetClinic 3/3、HTTP 200、三节点 Ready、Argo Synced/Healthy。Deployment UID / generation / spec / image、生产 Argo spec / revision、Jenkins 定义、V1 Summary 和 Docker Socket 0660 均未变化。生产发布 0 / Rollout 0。</p>
++<p class="source-path">evidence/2026-11-05/gitops-real/baseline.json · SHA256 e862865f0e1b282a7f1ff1211d3c3868cc5182c9a4cc7207083b5b9c5209bd11</p>
++<p class="source-path">evidence/2026-11-05/gitops-real/updated.json · SHA256 ce2d61a8e5c6b8e23fee8c68f5c42e1a5582d6bb5f88a1dfe91c91f03dd960ee</p>
++<p class="source-path">evidence/2026-11-05/gitops-real/restored.json · SHA256 c59f3314f8dbe840f1a9565ed739fc80cfcae3c5afa7832ccb9e65a98a6937d6</p>
++<p class="source-path">evidence/2026-11-05/gitops-real/verified.json · SHA256 4670a437f95e330501db2d4ace8ba2c0b1ac8daa08df35aa4eb0b3e69584e7ef</p>
+ </article>

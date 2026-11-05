@@ -1,0 +1,37 @@
+{
+  "apiVersion": "argoproj.io/v1alpha1",
+  "kind": "Application",
+  "metadata": {
+    "name": "petclinic-gitops-demo",
+    "namespace": "argocd",
+    "labels": {
+      "petclinic.devops.local/scope": "non-production-gitops-demo"
+    }
+  },
+  "spec": {
+    "project": "default",
+    "source": {
+      "repoURL": "http://gitlab-service.ns-devops.svc.cluster.local/root/petclinic-platform.git",
+      "targetRevision": "security-demo/gitops-20261105",
+      "path": "infra/devops-lab/gitops-demo",
+      "directory": {
+        "recurse": false,
+        "include": "configmap.yaml"
+      }
+    },
+    "destination": {
+      "server": "https://kubernetes.default.svc",
+      "namespace": "devsecops-test"
+    },
+    "syncPolicy": {
+      "automated": {
+        "prune": false,
+        "selfHeal": true,
+        "allowEmpty": false
+      },
+      "syncOptions": [
+        "CreateNamespace=false"
+      ]
+    }
+  }
+}
