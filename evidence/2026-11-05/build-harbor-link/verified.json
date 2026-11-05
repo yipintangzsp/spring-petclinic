@@ -1,0 +1,118 @@
+{
+  "observedAt": "2026-11-05T14:24:40Z",
+  "classification": "HISTORICAL",
+  "commit": "9a78cc89f22fa98fb1ffcc43e2ae279299471793",
+  "commitBuildGateLink": "VERIFIED",
+  "buildImageDigestLink": "VERIFIED",
+  "securityBuild": {
+    "job": "petclinic-ci",
+    "number": 270,
+    "result": "SUCCESS",
+    "timestamp": 1793330238408,
+    "duration": 623562,
+    "url": "http://jenkins.devops.local/job/petclinic-ci/270/",
+    "commit": "9a78cc89f22fa98fb1ffcc43e2ae279299471793",
+    "gate": "PASS",
+    "mode": "enforce",
+    "gateEvidence": {
+      "name": "Security Gate",
+      "startNode": "289",
+      "endNode": "292",
+      "completed": true,
+      "errorOnStart": false,
+      "errorOnEnd": false
+    },
+    "source": "9a78cc89f22fa98fb1ffcc43e2ae279299471793",
+    "summaryRecordedAt": "2026-10-30T03:27:41.202Z",
+    "summarySha256": "ec9ee51a06d4b9f61c6c0eaf50b374d1e25e6d3ca687908b7596d3a2c794f5d8",
+    "auditTargetImage": "core.harbor.domain/petclinic/petclinic@sha256:2fbaea65ab030c56c60c62e3ee9fbe362deb8bbbb8216a891ef4c7bbbcea6d55",
+    "gitleaksFindings": 0
+  },
+  "imageBuild": {
+    "job": "petclinic-candidate-build",
+    "number": 2,
+    "result": "SUCCESS",
+    "timestamp": 1793330023380,
+    "duration": 184512,
+    "url": "http://jenkins.devops.local/job/petclinic-candidate-build/2/",
+    "commit": "9a78cc89f22fa98fb1ffcc43e2ae279299471793",
+    "buildType": "petclinic-maven-buildx-v1",
+    "startedAt": "2026-10-30T03:14:20.429Z",
+    "completedAt": "2026-10-30T03:16:28.097Z",
+    "signedBuildStatementVerified": true,
+    "buildMetadataSha256": "2bd5d0251899753f26a42c6d679c16c8e47cb048c3c4a5e742645d506a6babc2"
+  },
+  "harbor": {
+    "http": 200,
+    "id": 690,
+    "digest": "sha256:2fbaea65ab030c56c60c62e3ee9fbe362deb8bbbb8216a891ef4c7bbbcea6d55",
+    "repositoryId": 45,
+    "type": "IMAGE",
+    "mediaType": "application/vnd.oci.image.index.v1+json",
+    "size": 483416402,
+    "pushTime": "2026-10-30T03:16:39.550Z",
+    "tags": [
+      {
+        "name": "0.10.0-ci-1000002",
+        "pushTime": "2026-10-30T03:16:39.729Z"
+      }
+    ],
+    "extraAttributes": null,
+    "labels": null,
+    "references": [
+      {
+        "digest": "sha256:2bd9c1c445afbf55e390bfc41910551c32e09913143f7a137038cc87941b7c94",
+        "platform": {
+          "OsFeatures": null,
+          "architecture": "amd64",
+          "os": "linux"
+        }
+      },
+      {
+        "digest": "sha256:06a515708b6783db7d545544bbefb02e9f94abfc0fdf13a7355ccbe2deb3ed42",
+        "platform": {
+          "OsFeatures": null,
+          "architecture": "arm64",
+          "os": "linux"
+        }
+      },
+      {
+        "digest": "sha256:10b60976eaa032fa7e3d1f11366550907a618f76235a210d9fa9222f04a2f879",
+        "platform": {
+          "OsFeatures": null,
+          "architecture": "unknown",
+          "os": "unknown"
+        }
+      },
+      {
+        "digest": "sha256:ce3beb81951da3bd3bf5420429a440aa42c46e556a4dc7314dd479361f9b4abd",
+        "platform": {
+          "OsFeatures": null,
+          "architecture": "unknown",
+          "os": "unknown"
+        }
+      }
+    ],
+    "source": "LIVE_QUERY",
+    "queryObservedAt": "2026-11-05T14:24:40Z",
+    "repository": "petclinic/petclinic",
+    "tag": "0.10.0-ci-1000002",
+    "uiUrl": "http://harbor.devops.local/harbor/projects",
+    "apiUrl": "http://harbor.devops.local/api/v2.0/projects/petclinic/repositories/petclinic/artifacts/sha256:2fbaea65ab030c56c60c62e3ee9fbe362deb8bbbb8216a891ef4c7bbbcea6d55"
+  },
+  "signedSecurityValidationVerified": true,
+  "publicKeySha256": "490c048d85da66076c2c152fdc313930af5e9f309d64a75b3d5be7216dcf50f8",
+  "binding": "Two explicitly separate historical jobs linked by signed build provenance and #270 exact auditTargetImage; not one image-producing job.",
+  "exclusions": [
+    "Not security-gitlab-push-demo #4",
+    "Not the current deployed runtimeImage",
+    "No V2 Runtime 16/16 claim"
+  ],
+  "negativeChecks": {
+    "wrongCommit": "REJECTED",
+    "wrongDigest": "REJECTED"
+  },
+  "newBuildRequired": false,
+  "releaseCount": 0,
+  "rolloutCount": 0
+}
