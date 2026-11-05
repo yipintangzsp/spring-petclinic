@@ -1,0 +1,57 @@
+{
+  "job": {
+    "name": "security-gitlab-push-demo",
+    "lastBuild": 2,
+    "result": "SUCCESS",
+    "script": "// Trusted inline definition: no agent, checkout, shell, credential or publication.\npipeline {\n  agent none\n  options {\n    skipDefaultCheckout(true)\n    disableConcurrentBuilds()\n    disableRestartFromStage()\n    timeout(time: 2, unit: 'MINUTES')\n  }\n  stages {\n    stage('Verify GitLab Push Identity') {\n      steps {\n        script {\n          def causes = currentBuild.getBuildCauses('com.dabsquared.gitlabjenkins.cause.GitLabWebHookCause')\n          if (causes.size() != 1) { error('Only a real GitLab webhook cause is accepted') }\n          // Installed plugin does not export cause.data to the Pipeline JSON wrapper.\n          // Authenticate the original hook and pin its actual repository, branch and commit.\n          if (env.gitlabSourceRepoHttpUrl != 'http://gitlab-578fd9dcbb-rhbx8/root/petclinic-platform.git' ||\n              env.gitlabActionType != 'PUSH' ||\n              env.gitlabSourceBranch != 'security-demo/gitlab-push-20261105' ||\n              env.gitlabAfter != '37e28037c1d10ec74b5cb8acb212b1ccf4ee7b4b') {\n            error('Unexpected project, event, fixed branch or commit')\n          }\n          currentBuild.description = 'GitLab Push / project 12 / ' + env.gitlabAfter\n          echo 'GITLAB_PUSH_ACCEPTED project=12 branch=security-demo/gitlab-push-20261105 commit=' + env.gitlabAfter\n        }\n      }\n    }\n    stage('Non-production Verification') {\n      steps { echo 'SUCCESS: fixed documentation push verified; no checkout, shell, scanner, build, registry or deployment action' }\n    }\n  }\n}\n",
+    "sandbox": true,
+    "triggers": [
+      {
+        "type": "com.dabsquared.gitlabjenkins.GitLabPushTrigger",
+        "include": "security-demo/gitlab-push-20261105",
+        "secretConfigured": true
+      }
+    ]
+  },
+  "previousGitleaksDemo": {
+    "name": "security-gitleaks-demo",
+    "lastBuild": 3,
+    "description": "Isolated Gitleaks gate demonstration. Requires the bounded Mac operator dispatcher. Only fixed Clean and Finding fixtures. Demo Publish has no external side effects."
+  },
+  "availableScannerCredentials": [
+    {
+      "id": "github-petclinic-ssh",
+      "type": "com.cloudbees.jenkins.plugins.sshcredentials.impl.BasicSSHUserPrivateKey",
+      "username": "git"
+    }
+  ],
+  "jenkinsSshDirectoryEntries": [
+    "known_hosts",
+    "config.bak-petclinic-20261002-empty",
+    "known_hosts.old",
+    "config"
+  ],
+  "hooks": [
+    {
+      "id": 4,
+      "url": "http://jenkins.ns-devops.svc.cluster.local:8080/project/petclinic-ci",
+      "branch": "main",
+      "push": true
+    },
+    {
+      "id": 5,
+      "url": "http://jenkins.ns-devops.svc.cluster.local:8080/project/security-gitlab-push-demo",
+      "branch": "security-demo/gitlab-push-20261105",
+      "push": true
+    }
+  ],
+  "branch": "37e28037c1d10ec74b5cb8acb212b1ccf4ee7b4b",
+  "production": {
+    "lastBuild": 270,
+    "result": "SUCCESS"
+  },
+  "project": {
+    "id": 12,
+    "path": "root/petclinic-platform"
+  }
+}

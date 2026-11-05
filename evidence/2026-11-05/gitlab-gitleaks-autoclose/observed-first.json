@@ -1,0 +1,93 @@
+{
+  "observedAt": "2026-11-05T14:07:48Z",
+  "deliveries": [
+    {
+      "id": 338,
+      "createdAt": "2026-11-05T14:06:51.076Z",
+      "url": "http://jenkins.ns-devops.svc.cluster.local:8080/project/security-gitlab-push-demo",
+      "httpStatus": "200",
+      "trigger": "push_hooks",
+      "executionDuration": 0.07800100700114854,
+      "eventUuid": "aa87e041-08d7-40e8-9553-a802a454b6f8",
+      "webhookUuid": "4783faad-3826-4843-bc64-27bb83188095",
+      "projectId": 12,
+      "ref": "refs/heads/security-demo/gitlab-push-20261105",
+      "after": "d21b1271982bd4d8d90857b889c312d522779fc2",
+      "before": "37e28037c1d10ec74b5cb8acb212b1ccf4ee7b4b"
+    },
+    {
+      "id": 337,
+      "createdAt": "2026-11-05T12:01:27.309Z",
+      "url": "http://jenkins.ns-devops.svc.cluster.local:8080/project/security-gitlab-push-demo",
+      "httpStatus": "200",
+      "trigger": "push_hooks",
+      "executionDuration": 0.16086462100065546,
+      "eventUuid": "12aa3766-973d-4c19-b76d-37b08c9a6281",
+      "webhookUuid": "9e38af83-aa82-4b8c-a08b-516b17cd07f3",
+      "projectId": 12,
+      "ref": "refs/heads/security-demo/gitlab-push-20261105",
+      "after": "37e28037c1d10ec74b5cb8acb212b1ccf4ee7b4b",
+      "before": "0000000000000000000000000000000000000000"
+    },
+    {
+      "id": 336,
+      "createdAt": "2026-11-05T11:54:48.192Z",
+      "url": "http://jenkins.ns-devops.svc.cluster.local:8080/project/security-gitlab-push-demo",
+      "httpStatus": "200",
+      "trigger": "push_hooks",
+      "executionDuration": 0.5231549330055714,
+      "eventUuid": "f68f002b-71a4-4cbd-86f0-c91acf0ca6e1",
+      "webhookUuid": "9f8798ba-97dc-4d35-a6f4-4ce78106fb55",
+      "projectId": 12,
+      "ref": "refs/heads/security-demo/gitlab-push-20261105",
+      "after": "37e28037c1d10ec74b5cb8acb212b1ccf4ee7b4b",
+      "before": "0000000000000000000000000000000000000000"
+    }
+  ],
+  "build": {
+    "number": 3,
+    "result": "FAILURE",
+    "building": false,
+    "startedAt": 1793887619778,
+    "duration": 2919,
+    "url": "http://jenkins.devops.local/job/security-gitlab-push-demo/3/",
+    "causes": [
+      "com.dabsquared.gitlabjenkins.cause.GitLabWebHookCause"
+    ],
+    "cause": {
+      "projectId": 12,
+      "branch": "security-demo/gitlab-push-20261105",
+      "action": "PUSH",
+      "after": "d21b1271982bd4d8d90857b889c312d522779fc2",
+      "before": "37e28037c1d10ec74b5cb8acb212b1ccf4ee7b4b"
+    },
+    "console": "Started by GitLab push by Administrator\n[Pipeline] Start of Pipeline\n[Pipeline] timeout\nTimeout set to expire in 4 min 0 sec\n[Pipeline] {\n[Pipeline] stage\n[Pipeline] { (Verify GitLab Push Identity)\n[Pipeline] script\n[Pipeline] {\n[Pipeline] echo\nGITLAB_PUSH_ACCEPTED project=12 branch=security-demo/gitlab-push-20261105 commit=d21b1271982bd4d8d90857b889c312d522779fc2\n[Pipeline] }\n[Pipeline] // script\n[Pipeline] }\n[Pipeline] // stage\n[Pipeline] stage\n[Pipeline] { (Restricted Gitleaks and Policy Gate)\n[Pipeline] node\nRunning on Jenkins in /var/jenkins_home/workspace/security-gitlab-push-demo\n[Pipeline] {\n[Pipeline] script\n[Pipeline] {\n[Pipeline] dir\nRunning in /var/jenkins_home/workspace/security-gitlab-push-demo/gitleaks-clean-3\n[Pipeline] {\n[Pipeline] writeFile\n[Pipeline] withCredentials\nMasking supported pattern matches of $DEMO_SSH_KEY\n[Pipeline] {\n[Pipeline] sh\nfile:///var/jenkins_home/workspace/security-gitlab-push-demo/gitleaks-clean-3/[eval1]:6\nconst check=(ok)=>{if(!ok)throw Error('TRUSTED_DISPATCH_PACKAGE_REJECTED');};\n                                ^\n\nError: TRUSTED_DISPATCH_PACKAGE_REJECTED\n    at check (file:///var/jenkins_home/workspace/security-gitlab-push-demo/gitleaks-clean-3/[eval1]:6:33)\n    at file:///var/jenkins_home/workspace/security-gitlab-push-demo/gitleaks-clean-3/[eval1]:16:2\n    at ModuleJob.run (node:internal/modules/esm/module_job:263:25)\n    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)\n    at async ModuleLoader.eval (node:internal/modules/esm/loader:217:24)\n    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:117:5)\n\nNode.js v20.19.2\n[Pipeline] }\n[Pipeline] // withCredentials\n[Pipeline] deleteDir\n[Pipeline] }\n[Pipeline] // dir\n[Pipeline] }\n[Pipeline] // script\n[Pipeline] }\n[Pipeline] // node\n[Pipeline] }\n[Pipeline] // stage\n[Pipeline] stage\n[Pipeline] { (Demo Publish)\nStage \"Demo Publish\" skipped due to earlier failure(s)\n[Pipeline] getContext\n[Pipeline] }\n[Pipeline] // stage\n[Pipeline] }\n[Pipeline] // timeout\n[Pipeline] End of Pipeline\nERROR: script returned exit code 1\nFinished: FAILURE"
+  },
+  "commit": {
+    "id": "d21b1271982bd4d8d90857b889c312d522779fc2",
+    "parents": [
+      "37e28037c1d10ec74b5cb8acb212b1ccf4ee7b4b"
+    ],
+    "title": "demo: automatically verify restricted Gitleaks Clean",
+    "committedAt": "2026-11-05T21:58:14.000+08:00"
+  },
+  "changedPaths": [
+    "docs/security-demo-gitlab-push.md"
+  ],
+  "gitlabBranchPipelines": [],
+  "main": "340ef4b8c74e3c2a5820da8d98b0f134283bb8d9",
+  "productionJob": {
+    "lastBuild": 270,
+    "building": false,
+    "result": "SUCCESS",
+    "definitionSha256": "abedd817048170dcf0833853d3820347341a91bd77501a77a2fcf10fb07a8f25",
+    "summarySha256": "ec9ee51a06d4b9f61c6c0eaf50b374d1e25e6d3ca687908b7596d3a2c794f5d8"
+  },
+  "existingHook": {
+    "branch_filter_strategy": "wildcard",
+    "id": 4,
+    "push_events": true,
+    "push_events_branch_filter": "main",
+    "url": "http://jenkins.ns-devops.svc.cluster.local:8080/project/petclinic-ci"
+  }
+}

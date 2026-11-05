@@ -1,0 +1,24 @@
+{
+  "strictHostKeyChecking": true,
+  "trustedHostKeyReused": true,
+  "credential": "security-gitleaks-demo-ssh",
+  "results": [
+    {
+      "test": "arbitraryCommand",
+      "exit": 2,
+      "output": "{\"error\": \"FIXED_COMMAND_REQUIRED\"}\n"
+    },
+    {
+      "test": "pty",
+      "exit": 255,
+      "output": "PTY allocation request failed on channel 0\n"
+    },
+    {
+      "test": "directForward",
+      "exit": 255,
+      "output": "channel 0: open failed: administratively prohibited: open failed\nstdio forwarding failed\n"
+    }
+  ],
+  "scannerStarted": false,
+  "privateKeyExported": false
+}

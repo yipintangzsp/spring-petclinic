@@ -1,0 +1,108 @@
+{
+  "jenkins": {
+    "demo": {
+      "lastBuild": 2,
+      "result": "SUCCESS",
+      "definitionSha256": "162c615cef5470d5266be2c2dd2625d26e4d8d27893112c7c212fb7ba8a5504b",
+      "scriptSha256": "bd7f530a82331d748e3e6e008ed460e7f2b4cea689ed06761e8bfccc1d2142b7",
+      "sandbox": true,
+      "triggers": [
+        {
+          "type": "com.dabsquared.gitlabjenkins.GitLabPushTrigger",
+          "include": "security-demo/gitlab-push-20261105",
+          "secretConfigured": true
+        }
+      ]
+    },
+    "newCredentialAbsent": true,
+    "requiredPlugins": {
+      "credentials-binding": true,
+      "ssh-credentials": true,
+      "workflow-basic-steps": true,
+      "pipeline-utility-steps": true
+    },
+    "realm": "hudson.security.HudsonPrivateSecurityRealm",
+    "signup": false,
+    "users": [
+      {
+        "id": "admin",
+        "local": true
+      },
+      {
+        "id": "codex-platform",
+        "local": false
+      },
+      {
+        "id": "heil16070",
+        "local": false
+      },
+      {
+        "id": "jenkins-petclinic-ci",
+        "local": false
+      },
+      {
+        "id": "shiwu6437",
+        "local": false
+      },
+      {
+        "id": "SYSTEM",
+        "local": false
+      }
+    ],
+    "hooks": [
+      {
+        "id": 4,
+        "url": "http://jenkins.ns-devops.svc.cluster.local:8080/project/petclinic-ci",
+        "branch": "main",
+        "push": true
+      },
+      {
+        "id": 5,
+        "url": "http://jenkins.ns-devops.svc.cluster.local:8080/project/security-gitlab-push-demo",
+        "branch": "security-demo/gitlab-push-20261105",
+        "push": true
+      }
+    ],
+    "branchHead": "37e28037c1d10ec74b5cb8acb212b1ccf4ee7b4b",
+    "main": "340ef4b8c74e3c2a5820da8d98b0f134283bb8d9",
+    "production": {
+      "lastBuild": 270,
+      "result": "SUCCESS",
+      "definitionSha256": "abedd817048170dcf0833853d3820347341a91bd77501a77a2fcf10fb07a8f25",
+      "summarySha256": "ec9ee51a06d4b9f61c6c0eaf50b374d1e25e6d3ca687908b7596d3a2c794f5d8"
+    }
+  },
+  "host": {
+    "host": "devops",
+    "arch": "aarch64",
+    "account": {
+      "uid": 24021,
+      "gid": 24021,
+      "home": "/var/lib/security-gitleaks"
+    },
+    "authorizedKeys": {
+      "mode": "0o640",
+      "uid": 0,
+      "gid": 24021,
+      "sha256": "11163198d33eb5465e439db8995069e109a8ff8e81e3d15d796c8224f2d9c452"
+    },
+    "sshDirectory": {
+      "mode": "0o750",
+      "uid": 0,
+      "gid": 24021,
+      "sha256": null
+    },
+    "forcedEntry": {
+      "mode": "0o444",
+      "uid": 0,
+      "gid": 0,
+      "sha256": "19e5f5192215c1074e3140b2ff0d344b2c795814a6e5f46a59f57000b6659788"
+    },
+    "hostKeyType": "ssh-ed25519",
+    "hostKey": "AAAAC3NzaC1lZDI1NTE5AAAAIOP2v7DiE6LrqVMUcIfy6qX9xDjk1Z4+ZblVBJE4k/6J",
+    "memAvailableKiB": 5845960,
+    "freeTmpBytes": 45914820608,
+    "socketMode": "0o660"
+  },
+  "trustedHostKeyVerified": true
+}

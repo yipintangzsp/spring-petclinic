@@ -11,6 +11,27 @@
 <div class="section-heading"><div><span class="eyebrow">PETCLINIC DEVSECOPS</span><h2>PetClinic Pipeline Overview</h2></div><span class="tag replay">HISTORICAL · 只读快照</span></div>
 <p class="muted">采集时间：<time datetime="2026-11-05T10:37:17.395314+00:00">2026-11-05 18:37:17 +08:00</time>。刷新只重新读取本地记录，不触发扫描、构建或生产查询。</p>
 <p class="muted">GitLab → Jenkins / Security Gate → Harbor 候选镜像 · GitOps → Argo CD → Kubernetes。下列分段证据不代表同轮生产发布。</p>
+<!-- GITLAB_GITLEAKS_AUTOCLOSE_BEGIN -->
+<article id="gitlab-gitleaks-autoclose" class="consumer">
+<div class="card-top"><h3>GitLab → Jenkins → Gitleaks → Policy Gate</h3><span class="tag real">HISTORICAL · REAL SCAN</span></div>
+<p>本轮真实自动化闭环：固定测试分支 Push 经 GitLab Webhook 触发 Jenkins，受限 Linux 账户执行 Clean Fixture，既有 Policy Engine 单次求值。下列是本轮归档结果，刷新页面不会重新扫描。</p>
+<div class="card-row"><span>固定测试分支</span><b>security-demo/gitlab-push-20261105</b></div>
+<div class="card-row"><span>GitLab Commit</span><b>d21b1271982bd4d8d90857b889c312d522779fc2</b></div>
+<div class="card-row"><span>真实 Push / 自动触发</span><b>1 次 Push；Hook #5；原始投递 #338 HTTP 200 → 同事件重投 #339 HTTP 200</b></div>
+<div class="card-row"><span>Jenkins 结果</span><b>security-gitlab-push-demo #4 · SUCCESS</b></div>
+<div class="card-row"><span>Linux 执行身份</span><b>security-gitleaks (UID/GID 24021) · devops/192.168.64.11</b></div>
+<div class="card-row"><span>Gitleaks 版本 / 退出码 / Findings</span><b>v8.30.1 / 0 / 0</b></div>
+<div class="card-row"><span>Execution / Policy / 求值次数</span><b>REAL · COMPLETED / PASS / 1</b></div>
+<div class="card-row"><span>Run ID</span><b>web-655884ff-c600-400f-95e8-e7b92df6340a</b></div>
+<div class="card-row"><span>Result Digest</span><b>789a123c845eb9eff0f123e8f13cc637fff1af004d8db6e1674bb1e78f78d506</b></div>
+<div class="card-row"><span>扫描时间（UTC）</span><b>2026-11-05T14:09:43.711Z → 2026-11-05T14:09:43.757Z</b></div>
+<div class="card-row"><span>Demo Publish</span><b>EXECUTED · 仅 echo；无镜像、GitOps 或部署操作</b></div>
+<p><a href="http://gitlab.devops.local/root/petclinic-platform/-/commit/d21b1271982bd4d8d90857b889c312d522779fc2">本轮 GitLab 测试提交</a> · <a href="http://jenkins.devops.local/job/security-gitlab-push-demo/4/">Jenkins #4 · SUCCESS</a> · <a href="http://jenkins.devops.local/job/security-gitlab-push-demo/4/console">真实构建日志</a> · <a href="http://jenkins.devops.local/job/security-gitlab-push-demo/4/artifact/evidence/jenkins-gitleaks-receipt.json">构建归档与 Digest</a></p>
+<p>首次自动构建 #3 在扫描前被代码包范围检查阻断（多带入本地 opt-in 配置）。修正打包范围后，GitLab 重投同一真实 Push，自动产生 #4；没有第二次 Push，也没有调用 Jenkins Build API。<a href="http://jenkins.devops.local/job/security-gitlab-push-demo/3/">保留首次失败 #3</a>。</p>
+<p>凭据名称不构成 Job 级隔离。主要权限边界为服务端 SSH 强制命令；built-in 现有 Docker 等效权限残余风险仍然存在。生产 Security Manager NOT_ACTIVE；Canonical Runtime 14/16；无生产发布。</p>
+<p class="source-path">evidence/2026-11-05/gitlab-gitleaks-autoclose/verified.json · SHA256 f4a166b550dcc8d579073926ff39d02a76fb3cbe9d0f816cf6ac32aef0aa5076</p>
+</article>
+<!-- GITLAB_GITLEAKS_AUTOCLOSE_END -->
 <!-- GITLAB_PUSH_DEMO_BEGIN -->
 <article id="gitlab-push-demo" class="consumer">
 <div class="card-top"><h3>GitLab Push → Jenkins · 隔离分支真实验证</h3><span class="tag real">HISTORICAL · REAL EVENT</span></div>
@@ -24,7 +45,7 @@
 <div class="card-row"><span>首次自动构建</span><b>#1 · FAILURE · 2026-11-05 19:54:53 +08:00</b></div>
 <div class="card-row"><span>修复后 GitLab 重投构建</span><b>#2 · SUCCESS · 2026-11-05 20:01:33 +08:00</b></div>
 <div class="card-row"><span>Commit ↔ Build 校验</span><b>37e28037c1d10ec74b5cb8acb212b1ccf4ee7b4b</b></div>
-<div class="card-row"><span>执行边界</span><b>agent none；无 checkout / Shell / 扫描 / 镜像发布 / 部署</b></div>
+<div class="card-row"><span>#1/#2 当时执行边界</span><b>agent none；当时未执行扫描；后续 #4 的受限扫描见上方记录</b></div>
 <p><a href="http://gitlab.devops.local/root/petclinic-platform/-/commit/37e28037c1d10ec74b5cb8acb212b1ccf4ee7b4b">GitLab 测试提交</a> · <a href="http://jenkins.devops.local/job/security-gitlab-push-demo/1/">首次自动触发 #1 · FAILURE</a> · <a href="http://jenkins.devops.local/job/security-gitlab-push-demo/2/">修复后事件重投 #2 · SUCCESS</a></p>
 <p>首次失败为演示定义读取了当前插件未导出的 cause.data；已改用相同事件实际提供的固定仓库、分支及 Commit 变量。原始失败与投递记录均保留。成功仅证明此隔离测试分支，不代表生产 main 自动发布已验收。</p>
 <details><summary>GitLab 投递证据</summary>

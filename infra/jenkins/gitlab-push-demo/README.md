@@ -45,3 +45,51 @@ Rollback, if separately desired: remove only webhook 5 and this demo Job after
 ensuring no build is running. Do not alter hook 4 or production Jobs. The branch
 remains as evidence; deleting it is a separate Git write and was not performed.
 No production rollback is needed. No release or rollout.
+
+## Restricted real Gitleaks closure (2026-11-05)
+
+The current definition extends the existing demo Job, rather than creating a
+second scanner/Policy implementation. It binds only the dedicated credential
+`security-gitleaks-demo-ssh`, with its private key handled by Jenkins credentials
+binding. Its key on devops is restricted by the existing server-side forced
+command, `restrict`, no PTY and no forwarding. The credential store has no
+Job-level isolation; the credential name and docker group are not security
+boundaries. Jenkins built-in retains its pre-existing root-equivalent Docker
+access; it executes only fixed reviewed dispatcher code, never repository code.
+The actual scanner runs as UID/GID 24021 with no Docker/Kubernetes authority.
+
+One additional authorized documentation-only Push advanced only the same test
+branch to `d21b1271982bd4d8d90857b889c312d522779fc2`. Delivery 338 HTTP 200
+started #3, which failed before scanning: the dependency packer included the
+local opt-in file and the infra-only boundary rejected it. The correction only
+excluded non-infra files from packaging. GitLab resent its unchanged stored Push
+(event 339 HTTP 200), automatically starting [#4 SUCCESS](http://jenkins.devops.local/job/security-gitlab-push-demo/4/).
+No Jenkins Build API or second Push was used in this round.
+
+#4 performed a real fixed Clean scan over SSH, Gitleaks exit 0, zero findings,
+Policy PASS, evaluationCount 1. Run ID:
+`web-655884ff-c600-400f-95e8-e7b92df6340a`.
+Result Digest:
+`789a123c845eb9eff0f123e8f13cc637fff1af004d8db6e1674bb1e78f78d506`.
+The echo-only Demo Publish executed; no production publication happened.
+
+`run-clean.mjs` is a fixed dispatcher and reuses `acceptLinuxGitleaksPacket`
+from the existing Web adapter for all sealed/raw/result/identity verification.
+The SSH recipient produces Policy once; receipt validation never evaluates it.
+The package is hash-pinned, shipped inline in the sandboxed fixed Pipeline,
+unpacked into an exclusive demo workspace, then removed after JSON archiving.
+No scripts from the GitLab commit are run. Source template placeholders are
+rendered by the task's installation script, not external Job parameters.
+
+Source evidence: `evidence/2026-11-05/gitlab-gitleaks-autoclose/verified.json`.
+The existing Pipeline Overview displays it as HISTORICAL / REAL controlled scan,
+with the commit, webhook delivery, #3 failure, #4 result and archived receipt.
+Earlier independent Finding #3 under `security-gitleaks-demo` remains separate;
+it is not a GitLab-triggered Finding claim.
+
+Rollback: wait for this demo to be idle, restore its exact private pre-change
+config backup (path/hash in job-installed.json), remove only the newly appended
+public key and delete only `security-gitleaks-demo-ssh`. Preserve existing Mac
+key, account, forced entrypoint and old histories. The authorized_keys backup is
+root-private on devops; no credential private key is in the repository. No sshd,
+Docker, production service, Gate or workload restart is required.

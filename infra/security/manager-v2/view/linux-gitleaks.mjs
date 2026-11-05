@@ -49,6 +49,14 @@ export async function runLinuxGitleaks(scenarioId,runId,dir,signal){
    'EXECUTION_TIMEOUT','EXECUTION_OR_OUTPUT_REJECTED','DESCENDANT_CLEANUP_FAILED','PRODUCTION_AUTHORITY_READABLE'].includes(remoteCode))throw fault(remoteCode);
   throw fault('LINUX_GITLEAKS_TRANSPORT_ERROR');
  }
+ return acceptLinuxGitleaksPacket(packet,scenarioId,runId,dir);
+}
+// The existing sealed-result validation is shared with the trusted Jenkins dispatcher.
+// This function consumes facts; it never scans or evaluates Policy.
+export function acceptLinuxGitleaksPacket(packet,scenarioId,runId,dir){
+ check(scenarioId==='clean'||scenarioId==='controlled-finding');
+ check(/^web-[a-f0-9]{8}-[a-f0-9]{4}-4[a-f0-9]{3}-[89ab][a-f0-9]{3}-[a-f0-9]{12}$/.test(runId));
+ const finding=scenarioId==='controlled-finding';
  check(packet?.schemaVersion===1&&packet.kind===(finding?'RestrictedLinuxGitleaksFinding':'RestrictedLinuxGitleaksClean')&&
   packet.runId===runId&&packet.scenarioId===scenarioId&&packet.executionHost===linuxHost);
  const r=packet.result,f=r?.runtimeFacts,i=f?.identity;verifyResult(r);
