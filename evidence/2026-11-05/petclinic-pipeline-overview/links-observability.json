@@ -1,0 +1,92 @@
+{
+  "links": {
+    "security": {
+      "url": "http://security.devops.local:17862",
+      "http": 200,
+      "curlExit": 0,
+      "classification": "HTTP_REACHABLE",
+      "authenticatedContentVerified": true
+    },
+    "gitlab": {
+      "url": "http://gitlab.devops.local/root/petclinic-platform",
+      "http": 302,
+      "curlExit": 0,
+      "classification": "HTTP_REACHABLE",
+      "authenticatedContentVerified": false
+    },
+    "commit": {
+      "url": "http://gitlab.devops.local/root/petclinic-platform/-/commit/9a78cc89f22fa98fb1ffcc43e2ae279299471793",
+      "http": 302,
+      "curlExit": 0,
+      "classification": "HTTP_REACHABLE",
+      "authenticatedContentVerified": false
+    },
+    "jenkins": {
+      "url": "http://jenkins.devops.local/job/petclinic-ci/270/",
+      "http": 403,
+      "curlExit": 0,
+      "classification": "HTTP_REACHABLE",
+      "authenticatedContentVerified": false
+    },
+    "harbor": {
+      "url": "http://harbor.devops.local/harbor/projects",
+      "http": 200,
+      "curlExit": 0,
+      "classification": "HTTP_REACHABLE",
+      "authenticatedContentVerified": false
+    },
+    "argocd": {
+      "url": "http://argocd.devops.local/applications/argocd/petclinic",
+      "http": 404,
+      "curlExit": 0,
+      "classification": "HTTP_REACHABLE",
+      "authenticatedContentVerified": false
+    },
+    "grafana": {
+      "url": "http://grafana.devops.local/d/devsecops-control",
+      "http": 302,
+      "curlExit": 0,
+      "classification": "HTTP_REACHABLE",
+      "authenticatedContentVerified": false
+    },
+    "petclinic": {
+      "url": "http://petclinic.devops.local/",
+      "http": 200,
+      "curlExit": 0,
+      "classification": "HTTP_REACHABLE",
+      "authenticatedContentVerified": true
+    }
+  },
+  "observability": {
+    "loki": {
+      "http": 200,
+      "status": "success",
+      "streams": 1,
+      "query": "{namespace=\"petclinic\"}",
+      "windowSeconds": 300,
+      "limit": 1
+    },
+    "prometheus": {
+      "http": 200,
+      "status": "success",
+      "targets": [
+        {
+          "job": "petclinic",
+          "up": "1"
+        },
+        {
+          "job": "petclinic",
+          "up": "1"
+        },
+        {
+          "job": "petclinic",
+          "up": "1"
+        }
+      ]
+    },
+    "grafanaProvisionedDashboard": {
+      "uid": "devsecops-control",
+      "title": "DevSecOps \u2014 admission and scan evidence"
+    }
+  }
+}

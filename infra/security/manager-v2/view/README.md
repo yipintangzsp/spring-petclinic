@@ -51,3 +51,14 @@ Gitleaks Clean仍BLOCKED：当前预算与可信Darwin二进制/适配条件未�
 Gitleaks 改为 `mac-budget.mjs`：当前 Mac CPU ticks 差分得到忙碌比例；`vm_stat` 的 free+file-backed 页估算可回收内存；`statfs.bavail*bsize` 为可用磁盘；内核原生 memory-pressure enum 必须 NORMAL=0。不能把 dispatch 的 NORMAL bit=1 混入该 enum。内存与磁盘准入值仍各512MiB，CPU忙碌上限75%。load average只作诊断，不再代替CPU利用率。其他插件分支保持不变。
 
 本轮真实域名请求仍因内核2/URGENT压力拒绝；没有执行工具或产生真实扫描Result。只获取官方固定版本公共资产清单，未安装/执行新工具。可信Mac工具与原生适配尚未完成，不能以修正预算代替扫描成功。详见 `evidence/2026-11-05/security-manager-v2-mac-admission/REPORT.md`。
+
+
+## PetClinic Pipeline Overview（2026-11-05）
+
+同一页面 <http://security.devops.local:17862#pipeline-overview> 增加七项真实来源概览：GitLab 提交、Jenkins #270、安全 Gate、候选构建 #2 与镜像、Argo CD、Kubernetes、Grafana/Loki。全部标为 HISTORICAL 并显示数据时点；本轮没有 LIVE 自动跨系统查询。页面刷新不采集生产数据，不持有生产凭证，无新增后端或服务重启。
+
+历史记录证明候选构建与 #270 的构建证明校验；当前只读快照证明 GitOps revision、Synced/Healthy 和 PetClinic 3/3。候选镜像不同于运行镜像，不能将两段拼成同轮发布。当前 Job 固定审计提交，最近八次均为手动触发；GitLab Push Trigger 存在不等于自动触发验收通过。本轮未推送、未触发构建或部署。
+
+全部导航经过实际 HTTP 检查；GitLab/Grafana 重定向登录，Jenkins 匿名返回403、已有授权身份读取归档返回200。Argo CD 应用深链404，因此使用已验证200的首页。Harbor页面200，但匿名artifact API401，镜像关联依据已归档构建证明，未冒充Registry实时读取。Prometheus三个PetClinic target UP，Loki最近五分钟有日志；不将日志原文放入页面。
+
+定向验收及来源：evidence/2026-11-05/petclinic-pipeline-overview/acceptance.json、pipeline-snapshot.json。保留原有真实 Gitleaks PASS/FAIL 和 Jenkins #2/#3 链接。回滚仅移除 index.html 中 PETCLINIC_PIPELINE_OVERVIEW 标记之间的段落及新增导航链接，不影响生产或其他页面功能。

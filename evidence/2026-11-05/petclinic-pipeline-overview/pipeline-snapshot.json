@@ -1,0 +1,285 @@
+{
+  "kind": "PetClinicPipelineOverviewSnapshot",
+  "classification": "HISTORICAL",
+  "capturedAt": "2026-11-05T10:37:17.395314+00:00",
+  "cards": [
+    {
+      "title": "GitLab · 项目与构建提交",
+      "classification": "HISTORICAL",
+      "observedAt": "2026-10-30T03:17:18.408000+00:00",
+      "rows": [
+        [
+          "项目",
+          "root/petclinic-platform"
+        ],
+        [
+          "构建实际检出的 Commit",
+          "9a78cc89f22fa98fb1ffcc43e2ae279299471793"
+        ],
+        [
+          "GitLab Push Trigger",
+          "com.dabsquared.gitlabjenkins.GitLabPushTrigger"
+        ],
+        [
+          "自动触发验收",
+          "UNAVAILABLE · 本次未发送 Push；#270 为 UserIdCause"
+        ]
+      ],
+      "links": [
+        {
+          "label": "GitLab 项目",
+          "url": "http://gitlab.devops.local/root/petclinic-platform",
+          "http": 302,
+          "note": "HTTP reachable; authentication may be required"
+        },
+        {
+          "label": "查看 #270 对应提交",
+          "url": "http://gitlab.devops.local/root/petclinic-platform/-/commit/9a78cc89f22fa98fb1ffcc43e2ae279299471793",
+          "http": 302,
+          "note": "HTTP reachable; authentication may be required"
+        }
+      ],
+      "note": "SCM 当前固定到审计提交，非跟踪 main。项目 API 匿名返回 404；不据此推断项目不存在或自动触发已通过。"
+    },
+    {
+      "title": "Jenkins · 最近主作业构建",
+      "classification": "HISTORICAL",
+      "observedAt": "2026-10-30T03:17:18.408000+00:00",
+      "rows": [
+        [
+          "作业",
+          "petclinic-ci #270"
+        ],
+        [
+          "结果",
+          "SUCCESS"
+        ],
+        [
+          "定义",
+          "Jenkinsfile.security-audit"
+        ],
+        [
+          "本次只读查询确认的最近构建",
+          "#270"
+        ],
+        [
+          "构建类型",
+          "candidate-security-validation"
+        ]
+      ],
+      "links": [
+        {
+          "label": "打开 Jenkins #270",
+          "url": "http://jenkins.devops.local/job/petclinic-ci/270/",
+          "http": 403,
+          "note": "HTTP reachable; authentication may be required"
+        }
+      ],
+      "note": "这是已完成的安全审计构建，不是本轮新发布；其记录不能替代当前生产镜像的构建与晋升证明。"
+    },
+    {
+      "title": "Security Gate · 已归档实际结果",
+      "classification": "HISTORICAL",
+      "observedAt": "2026-10-30T03:27:41.202Z",
+      "rows": [
+        [
+          "Source Gate 原始 status",
+          "success"
+        ],
+        [
+          "Source Gate 阻断项",
+          "0"
+        ],
+        [
+          "V1 Summary Gitleaks status",
+          "success"
+        ],
+        [
+          "V1 Summary Gitleaks blocking count",
+          "0"
+        ],
+        [
+          "模式 / Profile",
+          "enforce / java-web"
+        ]
+      ],
+      "links": [
+        {
+          "label": "原始 V1 Summary（需 Jenkins 登录）",
+          "url": "http://jenkins.devops.local/job/petclinic-ci/270/artifact/.devsecops/security-summary.json",
+          "http": 403
+        },
+        {
+          "label": "原始 Source Gate（需 Jenkins 登录）",
+          "url": "http://jenkins.devops.local/job/petclinic-ci/270/artifact/.devsecops/source-gate.json",
+          "http": 403
+        }
+      ],
+      "note": "数值与字段语义保留原样；下方 Gitleaks Clean/Finding 是独立受控运行，不能拼成本审计构建。"
+    },
+    {
+      "title": "Harbor · 候选镜像构建关联",
+      "classification": "HISTORICAL",
+      "observedAt": "2026-10-30T03:13:43.380000+00:00",
+      "rows": [
+        [
+          "真实构建",
+          "petclinic-candidate-build #2 · SUCCESS"
+        ],
+        [
+          "源 Commit",
+          "9a78cc89f22fa98fb1ffcc43e2ae279299471793"
+        ],
+        [
+          "候选镜像",
+          "core.harbor.domain/petclinic/petclinic@sha256:2fbaea65ab030c56c60c62e3ee9fbe362deb8bbbb8216a891ef4c7bbbcea6d55"
+        ],
+        [
+          "#270 build-attestation-verification",
+          "success"
+        ]
+      ],
+      "links": [
+        {
+          "label": "候选镜像真实构建 #2",
+          "url": "http://jenkins.devops.local/job/petclinic-candidate-build/2/",
+          "http": 403
+        },
+        {
+          "label": "Harbor 镜像仓库",
+          "url": "http://harbor.devops.local/harbor/projects",
+          "http": 200,
+          "note": "HTTP reachable; authentication may be required"
+        }
+      ],
+      "note": "候选镜像与运行镜像不同。当前 Harbor artifact 匿名 API 返回 401；不能声称已实时核验 Registry 内容。"
+    },
+    {
+      "title": "Argo CD · GitOps 部署快照",
+      "classification": "HISTORICAL",
+      "observedAt": "2026-11-05T10:37:17.395314+00:00",
+      "rows": [
+        [
+          "同步 / 健康",
+          "Synced / Healthy"
+        ],
+        [
+          "GitOps Revision",
+          "340ef4b8c74e3c2a5820da8d98b0f134283bb8d9"
+        ],
+        [
+          "清单路径 / 分支",
+          "k8s/production / main"
+        ],
+        [
+          "最近部署时间",
+          "2026-10-29T10:34:38Z"
+        ]
+      ],
+      "links": [
+        {
+          "label": "Argo CD 首页（选择 petclinic）",
+          "url": "http://argocd.devops.local/",
+          "http": 200
+        }
+      ],
+      "note": "只读 Kubernetes Application 对象。首页 HTTP 200；原应用深链返回 404，改用既有首页，未修改 Argo CD。"
+    },
+    {
+      "title": "Kubernetes · PetClinic 部署快照",
+      "classification": "HISTORICAL",
+      "observedAt": "2026-11-05T10:37:17.395314+00:00",
+      "rows": [
+        [
+          "Ready / Desired",
+          "3 / 3"
+        ],
+        [
+          "Node Ready",
+          "aliyun-worker=True · devops=True · ucloud-worker=True"
+        ],
+        [
+          "Pod 分布",
+          "devops · devops · devops"
+        ],
+        [
+          "运行镜像 Digest",
+          "core.harbor.domain/petclinic/petclinic@sha256:489cb821573ff1f98edd846d5949d74bf3391b24e2f1fe5bcfb71c6be0793137"
+        ],
+        [
+          "业务 HTTP",
+          "200"
+        ]
+      ],
+      "links": [
+        {
+          "label": "打开 PetClinic",
+          "url": "http://petclinic.devops.local/",
+          "http": 200,
+          "note": "HTTP reachable; authentication may be required"
+        }
+      ],
+      "note": "页面不连接 Kubernetes API。以上为采集时快照；刷新页面不会重查集群，也不会部署。"
+    },
+    {
+      "title": "Grafana / Loki · 可观测性快照",
+      "classification": "HISTORICAL",
+      "observedAt": "2026-11-05T10:37:17.395314+00:00",
+      "rows": [
+        [
+          "已部署 Grafana UID",
+          "devsecops-control"
+        ],
+        [
+          "Prometheus PetClinic UP",
+          "3 / 3"
+        ],
+        [
+          "Loki 查询结果",
+          "success · 1 stream"
+        ],
+        [
+          "Loki 查询",
+          "{namespace=\"petclinic\"} · 最近 5 分钟 · limit=1"
+        ]
+      ],
+      "links": [
+        {
+          "label": "Grafana 现有安全看板",
+          "url": "http://grafana.devops.local/d/devsecops-control",
+          "http": 302,
+          "note": "HTTP reachable; authentication may be required"
+        },
+        {
+          "label": "Grafana Explore（选择 Loki）",
+          "url": "http://grafana.devops.local/explore",
+          "http": 302
+        }
+      ],
+      "note": "Loki 原始日志不进入页面。Grafana 导航需要登录；未声称已验证登录后的面板查询。"
+    }
+  ],
+  "limits": [
+    "LIVE=无。页面展示真实历史归档与带时间的当前状态快照，不冒充实时跨系统查询。",
+    "已证明：GitLab Commit → 候选构建 #2 → 候选镜像 → #270 安全审计/构建证明校验。",
+    "已证明：GitOps Revision → Argo CD Synced/Healthy → 当前 PetClinic 3/3；两段证据不是同一次端到端生产发布。",
+    "未验证：本次 GitLab Push 自动触发、候选镜像晋升为当前运行镜像、完整同次发布链、Harbor 登录后的 artifact 内容。",
+    "Gitleaks Clean #2 / Finding #3 的 Jenkins 门禁演示独立保留；Production Manager NOT_ACTIVE，Canonical Runtime 14/16。"
+  ],
+  "sources": [
+    {
+      "path": "evidence/2026-11-05/petclinic-pipeline-overview/read-only-sources.json",
+      "sha256": "7cf7c5463ad37f64d31d2ab1f271e2c8d53185320ff2952fbd02e379cd45737b"
+    },
+    {
+      "path": "evidence/2026-11-05/petclinic-pipeline-overview/links-observability.json",
+      "sha256": "3299ef14041409a241ce04ccf928c75e91fadf988d94d1a808c4c79f0cd77b37"
+    },
+    {
+      "path": "evidence/2026-11-05/petclinic-pipeline-overview/security-navigation.json",
+      "sha256": "b4c5f61d62b10541d12ce7d04da9e7ad44ef47d4a23ed72a875f736c31b37466"
+    }
+  ],
+  "releaseCount": 0,
+  "rolloutCount": 0
+}
