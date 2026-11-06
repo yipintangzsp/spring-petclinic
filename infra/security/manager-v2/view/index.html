@@ -9,7 +9,20 @@
 <!-- PETCLINIC_PIPELINE_OVERVIEW_BEGIN -->
 <section id="candidate-overview">
 <div class="section-heading"><div><span class="eyebrow">EXISTING CANDIDATE / UNIFIED VIEW</span><h2>插件、策略与结果出口</h2></div><span class="tag neutral">PRODUCTION NOT_ACTIVE</span></div>
-<p class="muted">读取既有 Registry 和已封存 Artifact。开关来自所选历史场景，只读展示；REAL 描述当时真实执行，REPLAY 描述当前查看方式。不会改变配置或生产 Gate。</p>
+<p class="muted">复用既有 Registry 与已封存 Artifact。管理区只影响当前非生产受控验证；归档开关仍为历史只读记录。REAL 描述真实执行，REPLAY 描述历史查看方式，生产 Gate 不受影响。</p>
+<!-- CANDIDATE_CONTROLS_BEGIN -->
+<article id="candidate-controls" class="consumer" aria-labelledby="controls-title">
+<div class="card-top"><h3 id="controls-title">当前非生产有效配置</h3><span class="tag neutral">LOCAL CANDIDATE ONLY</span></div>
+<p>仅影响下次本机页面受控验证；不改变生产 Jenkins Gate。下方 Registry 的归档开关仍是历史只读配置。</p>
+<form id="control-form">
+<div class="select-row"><label><input id="control-enabled" type="checkbox"> 全局启用</label><label>Security Level <select id="control-level"><option value="low">low</option><option value="standard">standard（默认）</option><option value="strict">strict</option></select></label></div>
+<div class="registry-table-wrap"><table><thead><tr><th>插件</th><th>当前开关</th><th>配置来源 / 禁用原因</th><th>最近一次 REAL / Policy</th></tr></thead><tbody id="control-rows"></tbody></table></div>
+<p class="muted">沿用现有 Policy：既有强制 FAIL 不因 low 降级。当前固定高危 Finding 在 low / standard / strict 下可保持 FAIL；页面会展示真实结果。</p>
+<div class="select-row"><button id="save-controls" type="submit" disabled>保存非生产配置</button><button id="reset-controls" type="button" disabled>恢复演示默认配置</button></div>
+</form><p id="controls-message" role="status" aria-live="polite">正在读取当前配置…</p>
+<details><summary>有效配置、来源与继承 / 操作记录</summary><pre id="effective-controls"></pre></details>
+</article>
+<!-- CANDIDATE_CONTROLS_END -->
 <div id="candidate-components" class="consumer-grid" aria-live="polite"></div>
 <div class="section-heading"><h3>Plugin Registry · 当前定义与归档配置</h3><a href="#scenario">切换历史场景查看 Enabled / Disabled</a></div>
 <p id="registry-scope" class="muted">正在读取 Registry…</p>

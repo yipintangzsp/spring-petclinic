@@ -12,6 +12,7 @@ import {digest} from '../../summary-v2/codec.mjs';
 import {linuxReady,runLinuxGitleaks,linuxHost,cleanIdentity} from './linux-gitleaks.mjs';
 import {semgrepReady,runLinuxSemgrep,semgrepHost,semgrepIdentity} from './linux-semgrep.mjs';
 import {cosignReady,runLinuxCosign,cosignHost,cosignIdentity} from './linux-cosign.mjs';
+import {currentControls,writeControls} from './controls.mjs';
 const ids=['gitleaks','semgrep','cosign'],scenarios=['clean','controlled-finding'];
 const directory=path.join(root,'.devsecops/security-view-runs-v1');
 const identifier=/^web-[a-f0-9-]{36}$/;
@@ -22,10 +23,12 @@ function init(){const parent=path.dirname(directory),s=fs.lstatSync(parent);if(f
 function read(p){const fd=fs.openSync(p,fs.constants.O_RDONLY|fs.constants.O_NOFOLLOW);try{const s=fs.fstatSync(fd);if(!s.isFile()||s.uid!==process.getuid()||s.nlink!==1||s.size>128*1024)throw fault('INVALID_RUN_RECORD',503);return JSON.parse(fs.readFileSync(fd,'utf8'));}finally{fs.closeSync(fd);}}
 function save(p,value){const fd=fs.openSync(p,fs.constants.O_WRONLY|fs.constants.O_CREAT|fs.constants.O_EXCL|fs.constants.O_NOFOLLOW,0o400);try{fs.writeFileSync(fd,JSON.stringify(value,null,2)+'\n');fs.fsyncSync(fd);}finally{fs.closeSync(fd);}}
 export function capabilities(){
- const ready=linuxReady();
+ const ready=linuxReady(),control=currentControls();
+ const enabled=id=>control.settings.enabled&&control.settings.plugins[id].enabled;
  return {observedAt:new Date().toISOString(),platform:process.platform,arch:process.arch,uid:process.getuid(),groups:process.getgroups(),nodeVersion:process.version,
   executionLocation:ready||semgrepReady()||cosignReady()?'LINUX_RESTRICTED':'MAC_ONLY',maxConcurrent:1,timeoutMs:30000,
-  plugins:ids.map(pluginId=>pluginId==='gitleaks'&&ready?{pluginId,state:'READY',runner:'gitleaks-real',
+  configurationRevision:control.revision,securityLevel:control.settings.securityLevel,
+  plugins:ids.map(pluginId=>!enabled(pluginId)?{pluginId,state:'DISABLED',reason:control.settings.enabled?'PLUGIN_DISABLED':'MASTER_DISABLED',configurationRevision:control.revision,configurationSource:control.source,scenarios}:pluginId==='gitleaks'&&ready?{pluginId,state:'READY',runner:'gitleaks-real',
    reason:null,toolVersion:'8.30.1',toolVersionObservation:'PINNED',fixtureStatus:'FIXED_NON_PRODUCTION_FIXTURES',
    executionHost:linuxHost,executionIdentity:cleanIdentity,scenarios}:
    pluginId==='semgrep'&&semgrepReady()?{pluginId,state:'READY',runner:'semgrep-real',reason:null,toolVersion:'1.182.1',toolVersionObservation:'PINNED',fixtureStatus:'FIXED_NON_PRODUCTION_FIXTURES',executionHost:semgrepHost,executionIdentity:semgrepIdentity,scenarios}:
@@ -34,6 +37,7 @@ export function capabilities(){
    reason:'REAL_SCANNER_REQUIRES_APPROVED_LINUX_IDENTITY',toolVersion:null,toolVersionObservation:'NOT_EXECUTED',
    fixtureStatus:'NO_APPROVED_EXECUTOR',scenarios:pluginId==='gitleaks'?['clean']:scenarios})};
 }
+export function updateControls(input,reset=false){if(active)throw fault('RUN_ALREADY_ACTIVE',409);return writeControls(input,reset);}
 export function validateRequest(value){if(!value||typeof value!=='object'||Array.isArray(value)||Object.keys(value).sort().join(',')!=='pluginId,scenarioId'||!ids.includes(value.pluginId)||!scenarios.includes(value.scenarioId))throw fault('INVALID_FIXED_RUN_REQUEST');return value;}
 export function getRun(runId){
  if(!identifier.test(runId))throw fault('INVALID_RUN_ID');init();const dir=path.join(directory,runId);
@@ -49,31 +53,41 @@ export function submit(value){
  validateRequest(value);init();
  if(active)throw fault('RUN_ALREADY_ACTIVE',409);
  if(fs.readdirSync(directory).length>=100)throw fault('LOCAL_RECORD_BUDGET_EXHAUSTED',429);
+ const control=currentControls();
+ const configurationSnapshot={revision:control.revision,updatedAt:control.updatedAt,settings:control.settings,source:control.source,configurationOrigins:control.effectiveConfig.configurationOrigins,effectiveConfigDigest:control.effectiveConfig.effectiveConfigDigest};
+ const enabled=control.settings.enabled&&control.settings.plugins[value.pluginId].enabled;
  const runId='web-'+randomUUID(),dir=path.join(directory,runId);fs.mkdirSync(dir,{mode:0o700});safeDir(dir);
  const remote=value.pluginId==='gitleaks'&&linuxReady()||value.pluginId==='semgrep'&&semgrepReady()||value.pluginId==='cosign'&&cosignReady();
- const request={runId,...value,startedAt:new Date().toISOString(),kind:'LocalValidationRequest',executionLocation:remote?'LINUX_RESTRICTED':'MAC_ONLY'};
+ const request={runId,...value,configurationSnapshot,securityLevel:control.settings.securityLevel,startedAt:new Date().toISOString(),kind:'LocalValidationRequest',executionLocation:!enabled?'NO_EXECUTION':remote?'LINUX_RESTRICTED':'MAC_ONLY'};
  save(path.join(dir,'request.json'),request);active=runId;
  setImmediate(async()=>{
   const start=performance.now();const controller=new AbortController();const timer=setTimeout(()=>controller.abort(),30000);let result,budget=null,attempted=false;
   try{
+   if(!enabled){
+    const registry=realThreePluginsRegistry();
+    const run=await runCandidate({registry,runId,projectId:'web-controlled-fixture',context:{platform:process.platform,capabilities:{}},inputs:{},config:{security:{enabled:control.settings.enabled,globalMode:'audit',securityLevel:control.settings.securityLevel,profile:'java-web',plugins:Object.fromEntries(registry.ids().map(id=>[id,{enabled:false}]))}},output:path.join(dir,'artifact')});
+    const selected=run.gate[value.pluginId];
+    if(selected.executionStatus!=='DISABLED'||selected.evaluationCount!==0||selected.policyDecision!==null)throw fault('DISABLED_CONTRACT_FAILED');
+    result={...request,state:'DISABLED',evidenceClass:'NOT_TESTED',managerExecutionStatus:'DISABLED',reason:control.settings.enabled?'PLUGIN_DISABLED':'MASTER_DISABLED',scannerExecuted:false,remoteInvocationCount:0,policyDecision:null,evaluationCount:0,resultDigest:selected.resultDigest,artifactDigest:run.artifact.sealDigest,source:path.relative(root,path.join(dir,'artifact',value.pluginId+'.result.json'))};return;
+   }
    if(process.platform!=='darwin'||process.getuid()===0)throw fault('LOCAL_MAC_IDENTITY_REQUIRED');
    if(value.pluginId==='gitleaks'){
     if(!remote)throw fault('LINUX_GITLEAKS_NOT_CONFIGURED_BLOCKED');
     attempted=true;
-    result={...request,...await runLinuxGitleaks(value.scenarioId,runId,dir,controller.signal),
+    result={...request,...await runLinuxGitleaks(value.scenarioId,runId,dir,controller.signal,control.settings.securityLevel),
      source:path.relative(root,path.join(dir,'artifact','gitleaks.result.json'))};
     return;
    }
    if(value.pluginId==='semgrep'){
     if(!remote)throw fault('LINUX_SEMGREP_NOT_CONFIGURED_BLOCKED');
     attempted=true;
-    result={...request,...await runLinuxSemgrep(value.scenarioId,runId,dir,controller.signal),source:path.relative(root,path.join(dir,'artifact','semgrep.result.json'))};
+    result={...request,...await runLinuxSemgrep(value.scenarioId,runId,dir,controller.signal,control.settings.securityLevel),source:path.relative(root,path.join(dir,'artifact','semgrep.result.json'))};
     return;
    }
    if(value.pluginId==='cosign'){
     if(!remote)throw fault('LINUX_COSIGN_NOT_CONFIGURED_BLOCKED');
     attempted=true;
-    result={...request,...await runLinuxCosign(value.scenarioId,runId,dir,controller.signal),source:path.relative(root,path.join(dir,'artifact','cosign.result.json'))};
+    result={...request,...await runLinuxCosign(value.scenarioId,runId,dir,controller.signal,control.settings.securityLevel),source:path.relative(root,path.join(dir,'artifact','cosign.result.json'))};
     return;
    }
    const disk=fs.statfsSync(directory);budget={load1:os.loadavg()[0],cpuCount:os.cpus().length,freeMemory:os.freemem(),freeDisk:Number(disk.bavail)*Number(disk.bsize)};

@@ -37,12 +37,12 @@ function renderCandidate(){
  const cards=[];
  const card=(title,label,fields,description,src)=>{const c=el('article',undefined,'consumer');const top=el('div',undefined,'card-top');top.append(el('h3',title),el('span',label,'tag '+(label==='BLOCKED'?'warn':'neutral')));c.append(top,...fields.map(([k,v])=>row(k,v)),el('p',description));if(src)source(c,src);cards.push(c);return c;};
  const liveSemgrep=liveCapabilities?.plugins.find(p=>p.pluginId==='semgrep');
- const admission=liveSemgrep?.state==='READY'?{state:'READY / WEB_REAL',reason:liveSemgrep.executionIdentity,observedAt:liveCapabilities.observedAt}:data.semgrepAdmission??{};
+ const admission=liveSemgrep?{state:liveSemgrep.state==='READY'?'READY / WEB_REAL':liveSemgrep.state,reason:liveSemgrep.reason??liveSemgrep.executionIdentity,observedAt:liveCapabilities.observedAt}:data.semgrepAdmission??{};
  const semgrepHistory=data.runs.flatMap(r=>r.plugins.filter(p=>p.pluginId==='semgrep'&&p.evidenceClass==='REAL'&&p.executionStatus==='COMPLETED').map(p=>({runId:r.runId,...p})));
  const semgrepCard=card('Semgrep · 当前执行准入',admission.state??'UNAVAILABLE',[
   ['新执行结果',liveSemgrep?.state==='READY'?'下方真实执行记录（REAL）':'NOT_EXECUTED'],['受限入口',admission.reason??'UNAVAILABLE'],
   ['已有真实历史',`PASS ${semgrepHistory.filter(p=>p.policyDecision==='PASS').length} / FAIL ${semgrepHistory.filter(p=>p.policyDecision==='FAIL').length}`],['准入采集时间',time(admission.observedAt)]],
-  liveSemgrep?.state==='READY'?'专用受限 Linux 入口，固定 Clean / Finding；新结果见下方真实执行记录。Jenkins NOT_CONFIGURED，生产 NOT_ACTIVE。':'历史 Runner / 规则 / Fixture 已开发，当前入口未获准或不可用。',admission.source);
+  liveSemgrep?.state==='READY'?'专用受限 Linux 入口，固定 Clean / Finding；新结果见下方真实执行记录。Jenkins NOT_CONFIGURED，生产 NOT_ACTIVE。':liveSemgrep?.state==='DISABLED'?'当前非生产配置已禁用；执行账户与工具保留，重新启用后生效。':'历史 Runner / 规则 / Fixture 已开发，当前入口未获准或不可用。',admission.source);
  const semgrepNew=el('a','运行并查看 Semgrep REAL 结果');semgrepNew.href='#live-validation';semgrepCard.append(semgrepNew);
  const semgrepLink=el('a','查看历史 Semgrep Finding → FAIL');semgrepLink.href='#plugins';semgrepLink.addEventListener('click',()=>{if(data.runs.some(r=>r.runId==='attempt2-G-semgrep-fail')){$('scenario').value='attempt2-G-semgrep-fail';renderRun();}});semgrepCard.append(semgrepLink);
  const g=data.grafana??{};
@@ -95,7 +95,7 @@ async function load(){
   finally{$('refresh').disabled=false;}
 }
 $('scenario').addEventListener('change',renderRun);$('refresh').addEventListener('click',load);load();
-let sessionToken=null,liveCapabilities=null,liveBusy=false;
+let sessionToken=null,liveCapabilities=null,liveBusy=false,currentConfig=null,latestRuns=[];
 async function api(url,options){const r=await fetch(url,{cache:'no-store',...options});const v=await r.json();if(!r.ok)throw Error(v.error??v.reason??'HTTP '+r.status);return v;}
 function capabilityText(){
  const c=liveCapabilities?.plugins.find(p=>p.pluginId===$('live-plugin').value);
@@ -117,7 +117,7 @@ function renderLive(runs){
  const card=el('article',undefined,'consumer');card.dataset.runId=r.runId;
  const label=r.pluginId==='cosign'?'Cosign '+(r.scenarioId==='clean'?'Valid':'Invalid / Tampered'):r.pluginId==='gitleaks'?'Gitleaks '+(r.scenarioId==='clean'?'Clean':'Finding'):r.pluginId+' / '+r.scenarioId;
  const top=el('div',undefined,'card-top');top.append(el('h3',label),el('span',r.evidenceClass,'tag '+(r.evidenceClass==='REAL'?'real':'neutral')));
- card.append(top,el('div',r.state,'delivery'),row('Policy Decision',r.policyDecision??'未求值'),row('Run ID',r.runId),row('开始',time(r.scannerStartedAt??r.startedAt)),row('完成',time(r.scannerCompletedAt??r.completedAt)),row('耗时',r.durationMs==null?'—':r.durationMs+' ms'),row('Policy 求值次数',r.evaluationCount??0));
+ card.append(top,el('div',r.state,'delivery'),row('Policy Decision',r.policyDecision??'未求值'),row('Run ID',r.runId),row('开始',time(r.scannerStartedAt??r.startedAt)),row('完成',time(r.scannerCompletedAt??r.completedAt)),row('耗时',r.durationMs==null?'—':r.durationMs+' ms'),row('Policy 求值次数',r.evaluationCount??0),row('实际 Security Level',r.securityLevel??'standard（历史固定）'),row('配置 Revision',r.configurationSnapshot?.revision??'历史配置'),row('配置来源',r.configurationSnapshot?.source?.kind??'HISTORICAL'));
  if(r.scannerExecuted===true)card.append(row('执行主机',r.executionHost),row('执行身份',r.executionIdentity),row('扫描工具',r.toolVersion),row('退出码',r.scannerExitCode));
  if(r.pluginId==='cosign'&&r.scannerExecuted===true)card.append(row('验签范围','受控离线 Blob，非生产镜像信任'),row('验签结果',r.verificationStatus),row('被验证对象 Digest',r.verifiedObjectDigest),row('受控公钥 Digest',r.trustPublicKeyDigest),row('验签输出',r.verificationReason));
  if(Number.isSafeInteger(r.findingsCount))card.append(row('实际命中',r.findingsCount));
@@ -129,8 +129,8 @@ function renderLive(runs){
  if(r.source)card.append(el('code',r.source,'source-path'));else card.append(el('p','没有已验证的扫描报告或 Policy Result。'));
  return card;
 }));}
-async function refreshLive(){const v=await api('/api/runs');renderLive(v.runs);}
-async function initializeLive(){try{liveCapabilities=await api('/api/plugins');sessionToken=liveCapabilities.csrfToken;await refreshLive();capabilityText();}catch(e){$('live-message').textContent='UNAVAILABLE: '+e.message;}}
+async function refreshLive(){const v=await api('/api/runs');latestRuns=v.runs;renderLive(v.runs);renderControls();}
+async function initializeLive(){try{liveCapabilities=await api('/api/plugins');sessionToken=liveCapabilities.csrfToken;await refreshLive();await loadControls();capabilityText();}catch(e){$('live-message').textContent='UNAVAILABLE: '+e.message;}}
 $('live-plugin').addEventListener('change',capabilityText);
 $('run-validation').addEventListener('click',async()=>{
  if(liveBusy||!sessionToken)return;liveBusy=true;$('run-validation').disabled=true;$('live-message').textContent='正在提交并检查固定 Runner 执行条件…';
@@ -140,4 +140,27 @@ $('run-validation').addEventListener('click',async()=>{
  }catch(e){$('live-message').textContent='请求失败：'+e.message;}
  finally{liveBusy=false;capabilityText();}
 });
+function renderControls(){
+ if(!currentConfig)return;
+ const s=currentConfig.settings;
+ $('control-enabled').checked=s.enabled;$('control-level').value=s.securityLevel;
+ $('control-rows').replaceChildren(...['gitleaks','semgrep','cosign'].map(id=>{
+  const tr=el('tr');tr.append(el('td',id));const cell=el('td'),input=el('input');input.type='checkbox';input.id='control-'+id;input.checked=s.plugins[id].enabled;input.setAttribute('aria-label',id+' candidate enabled');cell.append(input,el('span',s.plugins[id].enabled?' ENABLED':' DISABLED'));tr.append(cell);
+  tr.append(el('td',currentConfig.source.kind+' · '+(!s.enabled?'MASTER_DISABLED':!s.plugins[id].enabled?'PLUGIN_DISABLED':'ENABLED')));
+  const last=latestRuns.find(r=>r.pluginId===id&&r.evidenceClass==='REAL'&&r.state==='COMPLETED');tr.append(el('td',last?last.policyDecision+' / '+(last.securityLevel??'standard')+' · '+time(last.scannerCompletedAt)+' · '+last.runId:'NOT_TESTED'));return tr;
+ }));
+ $('effective-controls').textContent=JSON.stringify({scope:currentConfig.scope,revision:currentConfig.revision,updatedAt:currentConfig.updatedAt,settings:s,source:currentConfig.source,configurationOrigins:currentConfig.effectiveConfig.configurationOrigins,effectiveSecurityLevel:currentConfig.effectiveConfig.effectiveSecurityLevel,appliedOverrides:currentConfig.effectiveConfig.appliedOverrides,effectivePolicy:Object.fromEntries(['gitleaks','semgrep','cosign'].map(id=>[id,currentConfig.effectiveConfig.effectivePolicy[id]])),history:currentConfig.history},null,2);
+ $('save-controls').disabled=false;$('reset-controls').disabled=false;
+}
+async function loadControls(){currentConfig=await api('/api/config');renderControls();$('controls-message').textContent='已加载 Revision '+currentConfig.revision+' · '+(currentConfig.updatedAt?time(currentConfig.updatedAt):'演示默认配置')+' · 生产 NOT_ACTIVE';}
+async function saveControls(reset=false){
+ if(!currentConfig||!sessionToken||liveBusy)return;
+ const settings={enabled:$('control-enabled').checked,securityLevel:$('control-level').value,plugins:Object.fromEntries(['gitleaks','semgrep','cosign'].map(id=>[id,{enabled:$('control-'+id).checked}]))};
+ $('save-controls').disabled=true;$('reset-controls').disabled=true;
+ try{currentConfig=await api(reset?'/api/config/reset':'/api/config',{method:'POST',headers:{'Content-Type':'application/json','X-CSRF-Token':sessionToken},body:JSON.stringify(reset?{revision:currentConfig.revision}:{revision:currentConfig.revision,settings})});renderControls();liveCapabilities=await api('/api/plugins');sessionToken=liveCapabilities.csrfToken;capabilityText();$('controls-message').textContent='保存成功 · Revision '+currentConfig.revision+' · '+time(currentConfig.updatedAt)+' · 下次受控验证生效';}
+ catch(e){$('controls-message').textContent='保存失败：'+e.message+'。未确认生效，请重新读取配置。';}
+ finally{$('save-controls').disabled=false;$('reset-controls').disabled=false;}
+}
+$('control-form').addEventListener('submit',e=>{e.preventDefault();saveControls();});
+$('reset-controls').addEventListener('click',()=>saveControls(true));
 initializeLive();

@@ -34,14 +34,15 @@ function decode(data){
  check(typeof data==='string'&&data.length<=175000&&/^[A-Za-z0-9+/]+={0,2}$/.test(data));
  const bytes=Buffer.from(data,'base64');check(bytes.toString('base64')===data&&bytes.length<=128*1024);return bytes;
 }
-export async function runLinuxGitleaks(scenarioId,runId,dir,signal){
+export async function runLinuxGitleaks(scenarioId,runId,dir,signal,securityLevel='standard'){
+ if(!['low','standard','strict'].includes(securityLevel))throw fault('INVALID_CANDIDATE_SECURITY_LEVEL');
  if(!linuxReady())throw fault('LINUX_GITLEAKS_NOT_CONFIGURED_BLOCKED');
  check(scenarioId==='clean'||scenarioId==='controlled-finding');
  const finding=scenarioId==='controlled-finding';
  check(/^web-[a-f0-9]{8}-[a-f0-9]{4}-4[a-f0-9]{3}-[89ab][a-f0-9]{3}-[a-f0-9]{12}$/.test(runId));
  let packet;
  try{
-  const {stdout}=await exec('/usr/bin/ssh',[...args,(finding?'finding-v1 ':'clean-v1 ')+runId],{signal,timeout:29000,maxBuffer:524288,env:{PATH:'/usr/bin:/bin',LANG:'C'}});
+  const {stdout}=await exec('/usr/bin/ssh',[...args,(finding?'finding-v1 ':'clean-v1 ')+runId+' '+securityLevel],{signal,timeout:29000,maxBuffer:524288,env:{PATH:'/usr/bin:/bin',LANG:'C'}});
   packet=JSON.parse(stdout);
  }catch(e){
   let remoteCode;try{remoteCode=JSON.parse(e.stdout).error;}catch{}
@@ -49,17 +50,17 @@ export async function runLinuxGitleaks(scenarioId,runId,dir,signal){
    'EXECUTION_TIMEOUT','EXECUTION_OR_OUTPUT_REJECTED','DESCENDANT_CLEANUP_FAILED','PRODUCTION_AUTHORITY_READABLE'].includes(remoteCode))throw fault(remoteCode);
   throw fault('LINUX_GITLEAKS_TRANSPORT_ERROR');
  }
- return acceptLinuxGitleaksPacket(packet,scenarioId,runId,dir);
+ return acceptLinuxGitleaksPacket(packet,scenarioId,runId,dir,securityLevel);
 }
 // The existing sealed-result validation is shared with the trusted Jenkins dispatcher.
 // This function consumes facts; it never scans or evaluates Policy.
-export function acceptLinuxGitleaksPacket(packet,scenarioId,runId,dir){
+export function acceptLinuxGitleaksPacket(packet,scenarioId,runId,dir,securityLevel='standard'){
  check(scenarioId==='clean'||scenarioId==='controlled-finding');
  check(/^web-[a-f0-9]{8}-[a-f0-9]{4}-4[a-f0-9]{3}-[89ab][a-f0-9]{3}-[a-f0-9]{12}$/.test(runId));
  const finding=scenarioId==='controlled-finding';
  check(packet?.schemaVersion===1&&packet.kind===(finding?'RestrictedLinuxGitleaksFinding':'RestrictedLinuxGitleaksClean')&&
   packet.runId===runId&&packet.scenarioId===scenarioId&&packet.executionHost===linuxHost);
- const r=packet.result,f=r?.runtimeFacts,i=f?.identity;verifyResult(r);
+ const r=packet.result,f=r?.runtimeFacts,i=f?.identity;verifyResult(r);check(['low','standard','strict'].includes(securityLevel)&&r.securityLevel===securityLevel&&r.policy?.securityLevel===securityLevel&&r.policy?.evaluation?.securityLevel===securityLevel);
  check(r.runId===runId&&r.pluginId==='gitleaks'&&r.projectId===(finding?'java-fixture':'python-fixture')&&r.executionStatus==='COMPLETED'&&r.evaluationCount===1&&
   r.policyDecision===r.oldGateDecision&&r.policyDecision===(finding?'FAIL':'PASS')&&packet.policyEvaluationCount===1&&packet.executionCounts?.scans===1);
  check(f.classification==='REAL_CONTROLLED_EXECUTION'&&f.validationRunId===runId&&f.sourceDir.path===workspace+(finding?'/source-java':'/source-python')&&
@@ -103,7 +104,7 @@ export function acceptLinuxGitleaksPacket(packet,scenarioId,runId,dir){
  return {state:r.executionStatus,evidenceClass:'REAL',managerExecutionStatus:r.executionStatus,reason:null,scannerExecuted:true,
   scannerExitCode:f.command.exitStatus,toolVersion:f.tool.observedVersion,toolSha256:f.tool.sha256,executionHost:linuxHost,
   findingsCount:f.findingsCount,findingRules:[...new Set(raw.map(x=>x.RuleID))],
-  executionIdentity:cleanIdentity,policyDecision:r.policyDecision,evaluationCount:r.evaluationCount,resultDigest:r.resultDigest,
+  executionIdentity:cleanIdentity,securityLevel:r.securityLevel,effectivePolicy:r.policy.effectivePolicy,appliedOverrides:r.policy.appliedOverrides,policyDecision:r.policyDecision,evaluationCount:r.evaluationCount,resultDigest:r.resultDigest,
   artifactDigest:packet.artifactDigest,rawReportDigest:r.rawReportDigest,factDigest:r.factDigest,router,
   scannerStartedAt:f.startedAt,scannerCompletedAt:f.completedAt,cleanup:r.cleanup.status};
 }

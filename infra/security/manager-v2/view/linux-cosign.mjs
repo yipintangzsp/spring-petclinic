@@ -20,17 +20,18 @@ const args=['-F','/dev/null','-T','-n','-i',key,'-o','BatchMode=yes','-o','Ident
  '-o','StrictHostKeyChecking=yes','-o','UpdateHostKeys=no','-o','UserKnownHostsFile='+known,'-o','GlobalKnownHostsFile=/dev/null',
  '-o','HostKeyAlias=192.168.1.58','-o','ClearAllForwardings=yes','-o','ConnectTimeout=5','-o','ConnectionAttempts=1',
  '-o','ServerAliveInterval=4','-o','ServerAliveCountMax=2','security-cosign@192.168.64.11'];
-export async function runLinuxCosign(scenarioId,runId,dir,signal){
+export async function runLinuxCosign(scenarioId,runId,dir,signal,securityLevel='standard'){
+ if(!['low','standard','strict'].includes(securityLevel))throw fault('INVALID_CANDIDATE_SECURITY_LEVEL');
  if(!cosignReady())throw fault('LINUX_COSIGN_NOT_CONFIGURED_BLOCKED');
  check(['clean','controlled-finding'].includes(scenarioId)&&/^web-[a-f0-9]{8}-[a-f0-9]{4}-4[a-f0-9]{3}-[89ab][a-f0-9]{3}-[a-f0-9]{12}$/.test(runId));
- let packet;try{const {stdout}=await exec('/usr/bin/ssh',[...args,(scenarioId==='clean'?'valid-v1 ':'invalid-v1 ')+runId],{signal,timeout:29000,maxBuffer:524288,env:{PATH:'/usr/bin:/bin',LANG:'C'}});packet=JSON.parse(stdout);}
+ let packet;try{const {stdout}=await exec('/usr/bin/ssh',[...args,(scenarioId==='clean'?'valid-v1 ':'invalid-v1 ')+runId+' '+securityLevel],{signal,timeout:29000,maxBuffer:524288,env:{PATH:'/usr/bin:/bin',LANG:'C'}});packet=JSON.parse(stdout);}
  catch(e){let code;try{code=JSON.parse(e.stdout).error;}catch{}
   throw fault(['LINUX_RESOURCE_BUDGET_BLOCKED','RESOURCE_STATE_UNKNOWN_BLOCKED','EXECUTION_BUSY','OUTPUT_BUDGET_EXHAUSTED','EXECUTION_TIMEOUT','EXECUTION_OR_OUTPUT_REJECTED','DESCENDANT_CLEANUP_FAILED','PRODUCTION_AUTHORITY_READABLE'].includes(code)?code:'LINUX_COSIGN_TRANSPORT_ERROR');}
- return acceptLinuxCosignPacket(packet,scenarioId,runId,dir);
+ return acceptLinuxCosignPacket(packet,scenarioId,runId,dir,securityLevel);
 }
-export function acceptLinuxCosignPacket(packet,scenarioId,runId,dir){
+export function acceptLinuxCosignPacket(packet,scenarioId,runId,dir,securityLevel='standard'){
  check(['clean','controlled-finding'].includes(scenarioId)&&packet?.schemaVersion===1&&packet.kind==='RestrictedLinuxCosign'&&packet.runId===runId&&packet.scenarioId===scenarioId&&packet.executionHost===cosignHost);
- const r=packet.result,f=r?.runtimeFacts,i=f?.identity;verifyResult(r);
+ const r=packet.result,f=r?.runtimeFacts,i=f?.identity;verifyResult(r);check(['low','standard','strict'].includes(securityLevel)&&r.securityLevel===securityLevel&&r.policy?.securityLevel===securityLevel&&r.policy?.evaluation?.securityLevel===securityLevel);
  check(r.runId===runId&&r.pluginId==='cosign'&&r.projectId==='java-fixture'&&r.executionStatus==='COMPLETED'&&r.evaluationCount===1&&packet.policyEvaluationCount===1&&packet.executionCounts?.verifications===1&&packet.executionCounts?.commands===2&&r.policyDecision===r.oldGateDecision&&r.policyDecision===(scenarioId==='clean'?'PASS':'FAIL'));
  const invalid=scenarioId==='controlled-finding',objectName='java-fixture-'+(invalid?'tampered':'valid');
  const objectSha=invalid?'90564abcbe4aa3395e7ceb7ab598778b1e64a299d285a7097afe94e0e2e2f480':'d6d0bbaaef787bd7de7d776ca408060d4745b01e6136843505558caf6231aaca';
@@ -60,6 +61,6 @@ export function acceptLinuxCosignPacket(packet,scenarioId,runId,dir){
  return {state:'COMPLETED',evidenceClass:'REAL',managerExecutionStatus:r.executionStatus,reason:null,scannerExecuted:true,scannerExitCode:f.command.exitStatus,
  toolVersion:JSON.parse(f.toolVersionObservation.stdout).gitVersion,toolSha256:f.tool.sha256,executionHost:cosignHost,executionIdentity:cosignIdentity,
  verificationStatus:invalid?'REJECTED':'VERIFIED',verificationReason:raw.command.stderr.slice(-800),verifiedObjectDigest:'sha256:'+objectSha,trustPublicKeyDigest:'sha256:'+f.trust.publicKeySha256,
- policyDecision:r.policyDecision,evaluationCount:r.evaluationCount,resultDigest:r.resultDigest,artifactDigest:packet.artifactDigest,rawReportDigest:r.rawReportDigest,factDigest:r.factDigest,router,
+ securityLevel:r.securityLevel,effectivePolicy:r.policy.effectivePolicy,appliedOverrides:r.policy.appliedOverrides,policyDecision:r.policyDecision,evaluationCount:r.evaluationCount,resultDigest:r.resultDigest,artifactDigest:packet.artifactDigest,rawReportDigest:r.rawReportDigest,factDigest:r.factDigest,router,
  scannerStartedAt:f.startedAt,scannerCompletedAt:f.completedAt,cleanup:r.cleanup.status};
 }

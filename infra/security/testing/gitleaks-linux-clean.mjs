@@ -9,8 +9,9 @@ import {verifyArtifact} from '../manager-v2/result.mjs';
 import {routeResults} from '../manager-v2/router.mjs';
 const root='/var/tmp/security-manager-gitleaks-v2-linux-20261105';
 const runId=process.argv[2];
-assert(process.argv.length===3||(process.argv.length===4&&process.argv[3]==='controlled-finding'));
-const finding=process.argv.length===4;
+assert(process.argv.length===3||process.argv.length===4&&process.argv[3]==='controlled-finding'||process.argv.length===5&&['clean','controlled-finding'].includes(process.argv[3]));
+const securityLevel=process.argv[4]??'standard';assert(['low','standard','strict'].includes(securityLevel));
+const finding=process.argv[3]==='controlled-finding';
 const scenarioId=finding?'controlled-finding':'clean';
 const projectId=finding?'java-fixture':'python-fixture',profile=finding?'java-web':'python-api';
 assert.match(runId,/^web-[a-f0-9]{8}-[a-f0-9]{4}-4[a-f0-9]{3}-[89ab][a-f0-9]{3}-[a-f0-9]{12}$/);
@@ -24,7 +25,7 @@ const output=path.join(approval.outputRoot,runId);fs.mkdirSync(output,{mode:0o70
 const registry=realGitleaksRegistry(),controller=new AbortController();
 const cancel=()=>controller.abort();process.on('SIGTERM',cancel);process.on('SIGHUP',cancel);
 const run=await runCandidate({runId,projectId,registry,signal:controller.signal,
- config:{security:{enabled:true,globalMode:'audit',securityLevel:'standard',profile,plugins:Object.fromEntries(registry.ids().map(id=>[id,{enabled:id==='gitleaks'}]))}},
+ config:{security:{enabled:true,globalMode:'audit',securityLevel,profile,plugins:Object.fromEntries(registry.ids().map(id=>[id,{enabled:id==='gitleaks'}]))}},
  context:{platform:'linux',capabilities:Object.fromEntries(['SOURCE_DIR','GITLEAKS_TOOL','TRUSTED_VALIDATION_WORKSPACE'].map(c=>[c,{state:'AVAILABLE'}]))},
  inputs:{gitleaks:{approvalFile,sourceDir:source.sourceDir}},output:output+'/artifact'});
 const r=run.gate.gitleaks;verifyArtifact(output+'/artifact',run.artifact.sealDigest);

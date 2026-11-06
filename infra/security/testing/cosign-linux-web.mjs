@@ -7,8 +7,8 @@ import {cosignExecutionCounts} from '../manager-v2/cosign-real.mjs';
 import {verifyArtifact} from '../manager-v2/result.mjs';
 import {routeResults} from '../manager-v2/router.mjs';
 const root='/var/tmp/security-manager-gitleaks-cosign-web-20261106';
-const [runId,scenarioId]=process.argv.slice(2);
-assert.equal(process.argv.length,4);
+const [runId,scenarioId,securityLevel='standard']=process.argv.slice(2);
+assert([4,5].includes(process.argv.length));assert(['low','standard','strict'].includes(securityLevel));
 assert.match(runId,/^web-[a-f0-9]{8}-[a-f0-9]{4}-4[a-f0-9]{3}-[89ab][a-f0-9]{3}-[a-f0-9]{12}$/);
 assert(['clean','controlled-finding'].includes(scenarioId));
 const invalid=scenarioId==='controlled-finding',approvalFile=root+'/cosign-approval.json',a=JSON.parse(fs.readFileSync(approvalFile));
@@ -18,7 +18,7 @@ const output=a.outputRoot+'/'+runId;fs.mkdirSync(output,{mode:0o700});
 const registry=realThreePluginsRegistry(),controller=new AbortController();
 process.on('SIGTERM',()=>controller.abort());process.on('SIGHUP',()=>controller.abort());
 const run=await runCandidate({runId,projectId:'java-fixture',registry,signal:controller.signal,
- config:{security:{enabled:true,globalMode:'audit',securityLevel:'standard',profile:'java-web',plugins:Object.fromEntries(registry.ids().map(id=>[id,{enabled:id==='cosign'}]))}},
+ config:{security:{enabled:true,globalMode:'audit',securityLevel,profile:'java-web',plugins:Object.fromEntries(registry.ids().map(id=>[id,{enabled:id==='cosign'}]))}},
  context:{platform:'linux',capabilities:Object.fromEntries(registry.get('cosign').requiredCapabilities.map(c=>[c,{state:'AVAILABLE'}]))},
  inputs:{cosign:{approvalFile,objectId}},output:output+'/artifact'});
 const r=run.gate.cosign;verifyArtifact(output+'/artifact',run.artifact.sealDigest);

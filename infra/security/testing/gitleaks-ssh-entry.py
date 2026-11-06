@@ -5,10 +5,11 @@ def reject(code):
  print(json.dumps({'error':code}),flush=True);raise SystemExit(2)
 if os.getuid()!=24021 or os.getgid()!=24021 or any(g!=24021 for g in os.getgroups()):reject('IDENTITY_REJECTED')
 command=os.environ.get('SSH_ORIGINAL_COMMAND','')
-m=re.fullmatch(r'(clean-v1|finding-v1) (web-[a-f0-9]{8}-[a-f0-9]{4}-4[a-f0-9]{3}-[89ab][a-f0-9]{3}-[a-f0-9]{12})',command)
+m=re.fullmatch(r'(clean-v1|finding-v1) (web-[a-f0-9]{8}-[a-f0-9]{4}-4[a-f0-9]{3}-[89ab][a-f0-9]{3}-[a-f0-9]{12})(?: (low|standard|strict))?',command)
 if not m:reject('FIXED_COMMAND_REQUIRED')
 finding=m[1]=='finding-v1'
 run=m[2]
+level=m[3] or 'standard'
 # No input is part of this protocol; the client must close stdin.
 import select
 if not select.select([sys.stdin],[],[],2)[0] or sys.stdin.buffer.read(1):reject('INPUT_REJECTED')
@@ -46,7 +47,7 @@ resource.setrlimit(resource.RLIMIT_FSIZE,(1048576,1048576))
 resource.setrlimit(resource.RLIMIT_CPU,(20,25))
 env={'PATH':'/usr/bin:/bin','HOME':str(out),'LANG':'C'}
 argv=['/usr/bin/setpriv','--no-new-privs','/usr/bin/env','-i',*[k+'='+v for k,v in env.items()],'/usr/bin/node','--max-old-space-size=128',str(ROOT/'package/infra/security/testing/gitleaks-linux-clean.mjs'),run]
-if finding:argv.append('controlled-finding')
+argv.extend(['controlled-finding' if finding else 'clean',level])
 p=subprocess.Popen(argv,cwd=ROOT/'package',env=env,stdin=subprocess.DEVNULL,stdout=subprocess.PIPE,stderr=subprocess.PIPE,start_new_session=True)
 def children():
  found=[]
