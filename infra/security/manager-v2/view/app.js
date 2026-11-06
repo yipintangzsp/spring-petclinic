@@ -57,6 +57,13 @@ function renderCandidate(){
  for(const c of data.consumers??[])card(c.name+' Consumer',c.availability==='AVAILABLE'?'MOCK / CANDIDATE':'UNAVAILABLE',[
   ['协议回执',c.deliveryState],['真实远端投递',c.realRemoteDelivery],['生产投递数',c.productionDeliveryCount],['协议测试时间',time(c.timestamp)]],
   '此历史回执来自 HTTP 协议模拟，不代表真实远端投递。真实 Loki 查询证据见 Grafana 卡片；DefectDojo 仍为 MOCK。',c.source);
+ const dj=data.dojoReal??{};
+ card('DefectDojo · 真实漏洞治理',dj.state??'NOT_TESTED',[
+  ['来源插件',dj.pluginId??'UNAVAILABLE'],['真实历史 Run ID',dj.runId??'UNAVAILABLE'],['原 Policy',dj.policyDecision??'UNAVAILABLE'],
+  ['已映射 Finding',dj.findingCount??'UNAVAILABLE'],['原生严重级别 → Dojo 映射',dj.sourceSeverities?dj.sourceSeverities.join(', ')+' → '+dj.dojoSeverities.join(', '):'UNAVAILABLE'],
+  ['Product / Engagement',dj.productId==null?'NOT_CREATED':`${dj.productId} / ${dj.engagementId}`],['Finding ID',dj.findingIds?.length?dj.findingIds.join(', '):'NOT_CREATED'],
+  ['真实查询回验',dj.queryState??'NOT_TESTED'],['来源执行时间',time(dj.executionTime)],['本次核查时间',time(dj.observedAt)]],
+  dj.state==='BLOCKED'?'已有真实 Semgrep Finding 已由现有 Consumer 离线映射；尚无隔离 DEMO 上下文与仅该范围可写的身份授权，因此未投递。下方历史 MOCK 回执不代表真实漏洞治理。':'尚未验证真实远端治理。',dj.source);
  const ci=data.ciCd??{};
  const chain=card('Jenkins / GitOps 闭环',ci.availability==='UNAVAILABLE'?'UNAVAILABLE':'HISTORICAL / REAL',[
   ['构建',ci.build==null?'UNAVAILABLE':'#'+ci.build+' SUCCESS'],['同次 Run ID',ci.runId],['Policy',ci.policyDecision],['实际变化',ci.updatedValue&&ci.restoredValue?ci.updatedValue+' → '+ci.restoredValue:'UNAVAILABLE'],['完成时间',time(ci.completedAt)]],

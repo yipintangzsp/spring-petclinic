@@ -111,6 +111,11 @@ export function overview() {
   let dojo;
   try { const s=read(evidence+'security-manager-v2-dojo-http/verdict.json'); dojo={httpAdapter:s.value.verdict.DEFECTDOJO_HTTP_ADAPTER,realDelivery:s.value.verdict.DEFECTDOJO_REAL_REMOTE_DELIVERY,source:{path:s.path,sha256:s.sha256}}; }
   catch(e) { dojo={httpAdapter:'UNAVAILABLE',realDelivery:'UNAVAILABLE',reason:safeError(e)}; }
+  let dojoReal;
+  try{const src=read('evidence/2026-11-06/dojo-real-delivery/state.json');const {receiptDigest,...v}=src.value;
+    if(digest(v)!==receiptDigest||v.kind!=='DefectDojoRealDeliveryState'||v.state!=='BLOCKED'||!id(v.runId)||!hash(v.resultDigest)||v.productionGovernanceMutations!==0)throw Error('DOJO_REAL_STATE_INVALID');
+    dojoReal={...v,source:{path:src.path,sha256:src.sha256}};
+  }catch(e){dojoReal={state:'NOT_TESTED',reason:safeError(e)};}
   let registryView,grafana,ciCd,semgrepAdmission;
   try{const src=readCode('infra/security/manager-v2/registry.mjs');registryView={kind:'EXISTING_CODE_OWNED_REGISTRY',classification:'CANDIDATE',source:src,
     entries:realThreePluginsRegistry().all().map(p=>({pluginId:p.pluginId,pluginVersion:p.pluginVersion,runner:p.runner,executionMode:p.executionMode,defaultEnabled:p.enabled,requiredCapabilities:p.requiredCapabilities,supportedProfiles:p.supportedProfiles,timeoutMs:p.timeout}))};}
@@ -135,7 +140,7 @@ export function overview() {
   catch(e){ciCd={availability:'UNAVAILABLE',reason:safeError(e)};}
   try{const src=read('evidence/2026-11-06/view-candidate-integration/state.json');semgrepAdmission={...src.value.semgrep,observedAt:src.value.observedAt,classification:'HISTORICAL',source:{path:src.path,sha256:src.sha256}};}
   catch(e){semgrepAdmission={availability:'UNAVAILABLE',reason:safeError(e)};}
-  return {kind:'SecurityManagerReadOnlyView', servedAt:new Date().toISOString(),registry:registryView,grafana,ciCd,semgrepAdmission,
+  return {kind:'SecurityManagerReadOnlyView', servedAt:new Date().toISOString(),registry:registryView,grafana,ciCd,semgrepAdmission,dojoReal,
     mode:'REPLAY', liveScan:false, baseline, dojo, runs:catalog.map(run),
     consumers:[consumer('security-manager-v2-loki/loki-protocol-samples-attempt5/A-three-valid.json','Loki'),
       consumer('security-manager-v2-dojo-http/samples-attempt5/gitleaks-success.json','DefectDojo')],
