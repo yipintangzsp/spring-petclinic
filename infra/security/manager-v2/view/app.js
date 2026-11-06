@@ -47,12 +47,16 @@ function renderCandidate(){
  const semgrepLink=el('a','查看历史 Semgrep Finding → FAIL');semgrepLink.href='#plugins';semgrepLink.addEventListener('click',()=>{if(data.runs.some(r=>r.runId==='attempt2-G-semgrep-fail')){$('scenario').value='attempt2-G-semgrep-fail';renderRun();}});semgrepCard.append(semgrepLink);
  const g=data.grafana??{};
  const grafanaCard=card('Grafana Dashboard',g.classification??'UNAVAILABLE',[
-  ['Candidate UID',g.uid],['已有面板',g.panelCount],['真实查询',g.realQuery],['导入状态',g.importState],['生产激活',g.productionActivation]],
-  '复用既有八面板 Candidate，尚无本轮导入或真实查询证据。原生产 Grafana 看板与此 Candidate 分开展示。',g.source);
+  ['Dashboard UID',g.uid],['已有面板',g.panelCount],['真实查询',g.realQuery],['导入状态',g.importState],['生产激活',g.productionActivation],
+  ['有数据的查询面板',g.dataPanelCount==null?'NOT_TESTED':`${g.dataPanelCount} / ${g.queryPanelCount}（另有 1 个静态说明）`],
+  ['已查回 Run ID',g.runId??'NOT_TESTED'],['Result Digest',g.resultDigest??'NOT_TESTED'],
+  ['扫描执行时间',time(g.executionTime)],['查询验证时间',time(g.verifiedAt)]],
+  g.importState==='VERIFIED'?'独立 Folder 中的八面板 Dashboard；已通过 Grafana 实际查询 Loki。同一真实受控扫描的历史归档重放，保留原执行时间，本轮未重新扫描。无数据的面板显示 No data；生产 Manager 未激活。':'复用既有八面板 Candidate，尚无已验证的导入或真实查询证据。',g.source);
+ if(g.url){const a=el('a','打开 Grafana V2 Dashboard（需登录 Grafana）');a.href=g.url;grafanaCard.append(a);source(grafanaCard,g.querySource);}
  if(g.download){const a=el('a','打开既有 Dashboard JSON');a.href=g.download;grafanaCard.append(a);}
  for(const c of data.consumers??[])card(c.name+' Consumer',c.availability==='AVAILABLE'?'MOCK / CANDIDATE':'UNAVAILABLE',[
   ['协议回执',c.deliveryState],['真实远端投递',c.realRemoteDelivery],['生产投递数',c.productionDeliveryCount],['协议测试时间',time(c.timestamp)]],
-  '已有 HTTP 协议模拟结果，显示原始回执；没有向生产 Loki / DefectDojo 写入。',c.source);
+  '此历史回执来自 HTTP 协议模拟，不代表真实远端投递。真实 Loki 查询证据见 Grafana 卡片；DefectDojo 仍为 MOCK。',c.source);
  const ci=data.ciCd??{};
  const chain=card('Jenkins / GitOps 闭环',ci.availability==='UNAVAILABLE'?'UNAVAILABLE':'HISTORICAL / REAL',[
   ['构建',ci.build==null?'UNAVAILABLE':'#'+ci.build+' SUCCESS'],['同次 Run ID',ci.runId],['Policy',ci.policyDecision],['实际变化',ci.updatedValue&&ci.restoredValue?ci.updatedValue+' → '+ci.restoredValue:'UNAVAILABLE'],['完成时间',time(ci.completedAt)]],
@@ -84,7 +88,7 @@ function render(){
   for(const c of data.consumers){const card=el('article',undefined,'consumer');const top=el('div',undefined,'card-top');top.append(el('h3',c.name),el('span','MOCK','tag mock'));card.append(top,el('div',c.deliveryState??'UNAVAILABLE','delivery'),el('p','历史回执 · 不向真实远端投递'));
     card.append(row('Router',c.routerState),row('记录 Run ID',c.runId),row('真实远端投递',c.realRemoteDelivery),row('生产投递数',c.productionDeliveryCount),row('HTTP 状态',c.httpStatus),row('记录时间',time(c.timestamp)));
     const details=el('details');details.append(el('summary','查看投递证据来源'));source(details,c.source);if(c.receiptDigest)details.append(el('p','Receipt digest: '+c.receiptDigest));if(c.reason)details.append(el('p',c.reason));card.append(details);$('consumer-grid').append(card);}
-  const limits=[['Trivy Runtime',data.baseline.TRIVY_RUNTIME_FACT_CAPTURE],['DefectDojo Candidate HTTP / 真实投递',`${data.dojo.httpAdapter} / ${data.dojo.realDelivery}`],['DefectDojo Runtime',data.baseline.DEFECTDOJO_RUNTIME_FACT_CAPTURE],['Jenkins V2 Real CI',data.baseline.JENKINS_REAL_CI],['Grafana V2 真实查询',data.baseline.GRAFANA_REAL_QUERY],['Summary V2 Migration',data.baseline.SUMMARY_V2_MIGRATION]];
+  const limits=[['Trivy Runtime',data.baseline.TRIVY_RUNTIME_FACT_CAPTURE],['DefectDojo Candidate HTTP / 真实投递',`${data.dojo.httpAdapter} / ${data.dojo.realDelivery}`],['DefectDojo Runtime',data.baseline.DEFECTDOJO_RUNTIME_FACT_CAPTURE],['Jenkins V2 Real CI',data.baseline.JENKINS_REAL_CI],['Grafana V2 真实查询',data.grafana?.realQuery??data.baseline.GRAFANA_REAL_QUERY],['Summary V2 Migration',data.baseline.SUMMARY_V2_MIGRATION]];
   $('limits').replaceChildren(...limits.map(([name,value])=>{const r=el('div',undefined,'limit');r.append(el('strong',name),el('span',value??'UNAVAILABLE'));return r;}));
   $('read-at').textContent='本页读取时间 '+time(data.servedAt);
 }

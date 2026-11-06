@@ -118,6 +118,15 @@ export function overview() {
   try{const src=read('infra/security/manager-v2/observability/dashboard.json');grafana={classification:'CANDIDATE',uid:id(src.value.uid),title:String(src.value.title),panelCount:src.value.panels.length,
     panelTitles:src.value.panels.map(p=>String(p.title)),realQuery:baseline.GRAFANA_REAL_QUERY??'UNAVAILABLE',productionActivation:baseline.PRODUCTION_SECURITY_MANAGER??'UNAVAILABLE',importState:'UNVERIFIED',download:'/candidate-dashboard.json',source:{path:src.path,sha256:src.sha256}};}
   catch(e){grafana={availability:'UNAVAILABLE',reason:safeError(e)};}
+  try{const src=read('evidence/2026-11-06/grafana-v2-real/view-receipt.json');const {receiptDigest,...v}=src.value;
+    if(digest(v)!==receiptDigest||v.kind!=='GrafanaRealQueryReceipt'||v.dashboardUid!=='security-manager-v2-candidate'||
+      v.dashboardUrl!=='http://grafana.devops.local/d/security-manager-v2-candidate/devsecops-security-manager-v2-overview'||
+      v.dashboardApiStatus!==200||v.grafanaQueryApiStatus!==200||v.matchingRunObserved!==true||!hash(v.resultDigest)||!id(v.runId))throw Error('GRAFANA_QUERY_RECEIPT_INVALID');
+    grafana={...grafana,classification:'HISTORICAL / REAL_QUERY',uid:v.dashboardUid,url:v.dashboardUrl,folderUid:id(v.folderUid),
+      importState:'VERIFIED',realQuery:'VERIFIED',runId:v.runId,resultDigest:v.resultDigest,verifiedAt:iso(new Date(v.verifiedAt).toISOString()),executionTime:iso(v.executionTime),
+      sourceClassification:id(v.sourceClassification),dataPanelCount:v.dataPanelCount,queryPanelCount:v.queryPanelCount,panelResults:v.panelResults,
+      productionActivation:'NOT_ACTIVE',querySource:{path:src.path,sha256:src.sha256}};
+  }catch(e){if(e.code!=='ENOENT')grafana={...grafana,realQuery:'UNAVAILABLE',queryReason:safeError(e)};}
   try{const src=read('evidence/2026-11-06/ci-cd-real/attempt2/result.json');const v=src.value,{receiptDigest,...body}=v;
     if(digest(body)!==receiptDigest||v.status!=='SUCCESS'||!v.updated?.verified||!v.restored?.verified||v.policyDecision!=='PASS')throw Error('CI_CD_RECEIPT_INVALID');
     ciCd={classification:'HISTORICAL',evidenceClass:'REAL',build:v.build,runId:id(v.runId),triggerCommit:id(v.triggerCommit),policyDecision:v.policyDecision,resultDigest:hash(v.resultDigest),completedAt:iso(v.completedAt),
