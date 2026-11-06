@@ -1,0 +1,212 @@
+{
+  "runId": "web-6dbc4f41-3d82-4a6c-8b1c-b12f928c4f25",
+  "pluginId": "sbom",
+  "scenarioId": "clean",
+  "projectId": "java-sbom-demo",
+  "configurationSnapshot": {
+    "revision": 10,
+    "updatedAt": "2026-11-06T12:16:47.798Z",
+    "settings": {
+      "enabled": true,
+      "securityLevel": "standard",
+      "plugins": {
+        "gitleaks": {
+          "enabled": true
+        },
+        "semgrep": {
+          "enabled": true
+        },
+        "cosign": {
+          "enabled": true
+        },
+        "sbom": {
+          "enabled": true
+        }
+      }
+    },
+    "source": {
+      "kind": "LOCAL_EXPLICIT_OVERRIDE",
+      "path": ".devsecops/security-view-controls-v1.json",
+      "settingsDigest": "73672d3b82b9d30f4aa029cb9b002308d583a03d6687c2dd779073a407e966f8"
+    },
+    "configurationOrigins": [
+      {
+        "layer": "global",
+        "securityLevel": "standard",
+        "policyVersion": "baseline-v1"
+      },
+      {
+        "layer": "registryDefaults",
+        "plugins": {
+          "build-provenance": {
+            "enabled": false
+          },
+          "cosign": {
+            "enabled": true
+          },
+          "falco": {
+            "enabled": false
+          },
+          "gitleaks": {
+            "enabled": true
+          },
+          "kubescape": {
+            "enabled": false
+          },
+          "kyverno": {
+            "enabled": false
+          },
+          "provenance": {
+            "enabled": false
+          },
+          "sbom": {
+            "enabled": true
+          },
+          "semgrep": {
+            "enabled": true
+          },
+          "sonarqube": {
+            "enabled": false
+          },
+          "sops": {
+            "enabled": false
+          },
+          "trivy": {
+            "enabled": false
+          },
+          "zap": {
+            "enabled": false
+          }
+        }
+      },
+      {
+        "layer": "globalExplicit",
+        "values": {
+          "enabled": true,
+          "securityLevel": "standard",
+          "plugins": {
+            "gitleaks": {
+              "enabled": true
+            },
+            "semgrep": {
+              "enabled": true
+            },
+            "cosign": {
+              "enabled": true
+            },
+            "sbom": {
+              "enabled": true
+            }
+          },
+          "globalMode": "audit",
+          "profile": "java-web",
+          "policyVersion": "baseline-v1"
+        }
+      },
+      {
+        "layer": "profile",
+        "values": {}
+      },
+      {
+        "layer": "project",
+        "values": {}
+      }
+    ],
+    "effectiveConfigDigest": "03107c0f243b05d437bb8e3ba16ef56fb2163ca293fa43fdbe2b2baef16cf064"
+  },
+  "securityLevel": "standard",
+  "startedAt": "2026-11-06T13:13:23.062Z",
+  "kind": "LocalValidationRequest",
+  "executionLocation": "LINUX_RESTRICTED",
+  "state": "COMPLETED",
+  "evidenceClass": "REAL",
+  "scannerExecuted": true,
+  "policyDecision": "PASS",
+  "evaluationCount": 1,
+  "resultDigest": "09126c9b8cb645e34644169ae47340acd7abe7c158f6f76edcc5362997df3945",
+  "artifactDigest": "6a379dcb6fa0053a8788253aab152f16be7fe2eb7f8cf35f3e2d732328246dc5",
+  "source": ".devsecops/security-view-runs-v1/web-6dbc4f41-3d82-4a6c-8b1c-b12f928c4f25/artifact/sbom.result.json",
+  "reason": null,
+  "executionDiagnostic": {
+    "schemaVersion": 1,
+    "kind": "RestrictedLinuxSbomReceipt",
+    "projectId": "java-sbom-demo",
+    "runId": "web-6dbc4f41-3d82-4a6c-8b1c-b12f928c4f25",
+    "uid": 993,
+    "gid": 984,
+    "toolVersion": "2.9.3",
+    "runnerSha256": "cf23fe5ef6eee1b0b7757eef7d5834f0c179076e35f3f0bf2724c59d88151419",
+    "startedAtMs": 1793970803968,
+    "exitCode": 0,
+    "stage": "COMPLETED",
+    "goal": "org.cyclonedx:cyclonedx-maven-plugin:2.9.3:makeAggregateBom",
+    "repositoryMode": "LOCAL_FILE_MIRROR_PRIVATE_RUN_CACHE",
+    "error": null,
+    "logSha256": "35ee0cc6ac2a7c6ba791c454d0f3b868728a77a77fb0733a1b25564133cfb248",
+    "logBytes": 1479,
+    "missingCoordinates": [],
+    "generationInvocations": 1,
+    "cleanup": "VERIFIED",
+    "resourceBudget": {
+      "memAvailableKiB": 6252704,
+      "load1": 2.9375,
+      "freeBytes": 44934045696
+    },
+    "sourceArtifactSha256": "cac4cdce5296a6d6bc31477e9a7feca0a30d9797129da11c9c9d8883a4c55cc2",
+    "processStartedAtMs": 1793970803971,
+    "processCompletedAtMs": 1793970809560,
+    "sbomSha256": "2456c26bdb23806b0c697d44f128d889541ad0d2fd68c3505d3350f7177a006c",
+    "componentCount": 11,
+    "completedAtMs": 1793970809589
+  },
+  "scannerExitCode": 0,
+  "toolVersion": "2.9.3",
+  "executionIdentity": "security-sbom",
+  "executionHost": "devops/192.168.64.11",
+  "sourceArtifactSha256": "cac4cdce5296a6d6bc31477e9a7feca0a30d9797129da11c9c9d8883a4c55cc2",
+  "sbomSha256": "2456c26bdb23806b0c697d44f128d889541ad0d2fd68c3505d3350f7177a006c",
+  "sbomFormat": "CycloneDX",
+  "sbomSpecVersion": "1.6",
+  "componentCount": 11,
+  "scope": "APPLICATION_MAVEN_DEPENDENCIES_ONLY",
+  "commitSha": null,
+  "buildId": null,
+  "scannerStartedAt": "2026-11-06T13:13:23.968Z",
+  "scannerCompletedAt": "2026-11-06T13:13:29.573Z",
+  "router": [
+    {
+      "consumerId": "dry-run",
+      "deliveryDecision": "DRY_RUN"
+    },
+    {
+      "consumerId": "local-evidence",
+      "deliveryDecision": "DELIVERED_LOCAL_ONLY"
+    }
+  ],
+  "cleanup": "VERIFIED",
+  "lokiDelivery": {
+    "consumerId": "loki-candidate",
+    "automatic": true,
+    "sourceClassification": "REAL_CONTROLLED_EXECUTION",
+    "runId": "web-6dbc4f41-3d82-4a6c-8b1c-b12f928c4f25",
+    "resultDigest": "09126c9b8cb645e34644169ae47340acd7abe7c158f6f76edcc5362997df3945",
+    "pushState": "ACKNOWLEDGED",
+    "pushHttpStatus": 204,
+    "receiptDigest": "5e8e1f7acca5754b054c22bff8b1ac44f5a3d5c38a5d33b15af698b5f026a38e",
+    "httpRequestCount": 1,
+    "queryState": "VERIFIED",
+    "state": "DELIVERED",
+    "reason": null,
+    "deliveryAt": "2026-11-06T13:13:29.901Z",
+    "grafanaUrl": "http://grafana.devops.local/d/security-manager-v2-candidate/devsecops-security-manager-v2-overview?var-DS_LOKI=loki&var-project=java-sbom-demo&var-run=web-6dbc4f41-3d82-4a6c-8b1c-b12f928c4f25&var-resultDigest=09126c9b8cb645e34644169ae47340acd7abe7c158f6f76edcc5362997df3945&from=1793970749614&to=1793971109614",
+    "receiptSource": "loki-delivery/router-receipt.json",
+    "queryAt": "2026-11-06T13:13:29.941Z",
+    "queryHttpStatus": 200,
+    "matchedEvents": 1
+  },
+  "completedAt": "2026-11-06T13:13:29.943Z",
+  "durationMs": 6874,
+  "releaseCount": 0,
+  "rolloutCount": 0,
+  "auditDigest": "1f026b1a5ac7b79b47504583bdfb4132f9f9bb8b0b1c47d6f17d5bc2ff8502cf"
+}

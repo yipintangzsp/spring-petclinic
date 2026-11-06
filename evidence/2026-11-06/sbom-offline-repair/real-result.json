@@ -1,0 +1,182 @@
+{
+  "runId": "web-6ee759b5-0b8e-4c1f-814b-9ff503810891",
+  "pluginId": "sbom",
+  "scenarioId": "clean",
+  "projectId": "java-sbom-demo",
+  "configurationSnapshot": {
+    "revision": 10,
+    "updatedAt": "2026-11-06T12:16:47.798Z",
+    "settings": {
+      "enabled": true,
+      "securityLevel": "standard",
+      "plugins": {
+        "gitleaks": {
+          "enabled": true
+        },
+        "semgrep": {
+          "enabled": true
+        },
+        "cosign": {
+          "enabled": true
+        },
+        "sbom": {
+          "enabled": true
+        }
+      }
+    },
+    "source": {
+      "kind": "LOCAL_EXPLICIT_OVERRIDE",
+      "path": ".devsecops/security-view-controls-v1.json",
+      "settingsDigest": "73672d3b82b9d30f4aa029cb9b002308d583a03d6687c2dd779073a407e966f8"
+    },
+    "configurationOrigins": [
+      {
+        "layer": "global",
+        "securityLevel": "standard",
+        "policyVersion": "baseline-v1"
+      },
+      {
+        "layer": "registryDefaults",
+        "plugins": {
+          "build-provenance": {
+            "enabled": false
+          },
+          "cosign": {
+            "enabled": true
+          },
+          "falco": {
+            "enabled": false
+          },
+          "gitleaks": {
+            "enabled": true
+          },
+          "kubescape": {
+            "enabled": false
+          },
+          "kyverno": {
+            "enabled": false
+          },
+          "provenance": {
+            "enabled": false
+          },
+          "sbom": {
+            "enabled": true
+          },
+          "semgrep": {
+            "enabled": true
+          },
+          "sonarqube": {
+            "enabled": false
+          },
+          "sops": {
+            "enabled": false
+          },
+          "trivy": {
+            "enabled": false
+          },
+          "zap": {
+            "enabled": false
+          }
+        }
+      },
+      {
+        "layer": "globalExplicit",
+        "values": {
+          "enabled": true,
+          "securityLevel": "standard",
+          "plugins": {
+            "gitleaks": {
+              "enabled": true
+            },
+            "semgrep": {
+              "enabled": true
+            },
+            "cosign": {
+              "enabled": true
+            },
+            "sbom": {
+              "enabled": true
+            }
+          },
+          "globalMode": "audit",
+          "profile": "java-web",
+          "policyVersion": "baseline-v1"
+        }
+      },
+      {
+        "layer": "profile",
+        "values": {}
+      },
+      {
+        "layer": "project",
+        "values": {}
+      }
+    ],
+    "effectiveConfigDigest": "03107c0f243b05d437bb8e3ba16ef56fb2163ca293fa43fdbe2b2baef16cf064"
+  },
+  "securityLevel": "standard",
+  "startedAt": "2026-11-06T13:09:43.477Z",
+  "kind": "LocalValidationRequest",
+  "executionLocation": "LINUX_RESTRICTED",
+  "state": "ERROR",
+  "evidenceClass": "NOT_TESTED",
+  "scannerExecuted": false,
+  "policyDecision": null,
+  "evaluationCount": 0,
+  "resultDigest": "f2f8718bb41ddaccac6f23196e8907268004470db06852ae7eb56ed19e723d25",
+  "artifactDigest": "46f439d34afa5f7733707d3a0c0695d00394cd1e9e9d26fe118a7a8981240086",
+  "source": ".devsecops/security-view-runs-v1/web-6ee759b5-0b8e-4c1f-814b-9ff503810891/artifact/sbom.result.json",
+  "reason": "RUNNER_SCANNER_ERROR",
+  "executionDiagnostic": {
+    "cleanup": "VERIFIED",
+    "completedAtMs": 1793970584592,
+    "error": "LINUX_RESOURCE_BUDGET_BLOCKED",
+    "exitCode": null,
+    "generationInvocations": 0,
+    "gid": 984,
+    "goal": "org.cyclonedx:cyclonedx-maven-plugin:2.9.3:makeAggregateBom",
+    "kind": "RestrictedLinuxSbomReceipt",
+    "logBytes": 0,
+    "logSha256": null,
+    "missingCoordinates": [],
+    "projectId": "java-sbom-demo",
+    "repositoryMode": "LOCAL_FILE_MIRROR_PRIVATE_RUN_CACHE",
+    "runId": "web-6ee759b5-0b8e-4c1f-814b-9ff503810891",
+    "runnerSha256": "e57a7351c062e1ec42ac46db909792165ac34e3581e1a7355081cd05c6aa39bf",
+    "schemaVersion": 1,
+    "stage": "PREREQUISITE",
+    "startedAtMs": 1793970584592,
+    "toolVersion": "2.9.3",
+    "uid": 993
+  },
+  "scannerExitCode": null,
+  "toolVersion": null,
+  "executionIdentity": "security-sbom",
+  "executionHost": "devops/192.168.64.11",
+  "sourceArtifactSha256": null,
+  "sbomSha256": null,
+  "sbomFormat": null,
+  "sbomSpecVersion": null,
+  "componentCount": null,
+  "scope": "APPLICATION_MAVEN_DEPENDENCIES_ONLY",
+  "commitSha": null,
+  "buildId": null,
+  "scannerStartedAt": null,
+  "scannerCompletedAt": null,
+  "router": [
+    {
+      "consumerId": "dry-run",
+      "deliveryDecision": "DRY_RUN"
+    },
+    {
+      "consumerId": "local-evidence",
+      "deliveryDecision": "DELIVERED_LOCAL_ONLY"
+    }
+  ],
+  "cleanup": "JOINED_OR_NOT_STARTED",
+  "completedAt": "2026-11-06T13:09:44.657Z",
+  "durationMs": 1172,
+  "releaseCount": 0,
+  "rolloutCount": 0,
+  "auditDigest": "5842f9869951a556bfa5eddeaf5f98f6713e28ff27a270f5b8e6f186693daf46"
+}

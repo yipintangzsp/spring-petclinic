@@ -86,10 +86,12 @@ export function submit(value){
     const cfg=sbomProjects()[value.projectId],registry=realManagedRegistry();if(cfg.blockedReason)throw fault(cfg.blockedReason);attempted=true;
     const run=await runCandidate({registry,runId,projectId:value.projectId,context:{platform:process.platform,capabilities:{SBOM_FILE:{state:'AVAILABLE'}}},inputs:{sbom:{fixtureId:cfg.fixtureId}},config:{security:{enabled:true,globalMode:'audit',securityLevel:control.settings.securityLevel,profile:cfg.profile,plugins:Object.fromEntries(registry.ids().map(id=>[id,{enabled:id==='sbom'}]))}},output:path.join(dir,'artifact'),signal:controller.signal});
     const selected=run.gate.sbom,f=selected.runtimeFacts;
+    const diagnostic=f?.diagnostic??(fs.existsSync(path.join(dir,'artifact/sbom.execution-error.json'))?read(path.join(dir,'artifact/sbom.execution-error.json')).diagnostic:null);
+    const prerequisiteBlocked=diagnostic?.generationInvocations===0&&diagnostic.error?.endsWith('_BLOCKED');
     fs.mkdirSync(path.join(dir,'router'),{mode:0o700});
     const routed=routeResults({run,artifactDirectory:path.join(dir,'artifact'),expectedSealDigest:run.artifact.sealDigest,output:path.join(dir,'router'),definitions:CONSUMERS.filter(c=>c.consumerId!=='defectdojo-future')});
-    result={...request,state:selected.executionStatus,evidenceClass:f?'REAL':'NOT_TESTED',scannerExecuted:!!f,policyDecision:selected.policyDecision,evaluationCount:selected.evaluationCount,resultDigest:selected.resultDigest,artifactDigest:run.artifact.sealDigest,source:path.relative(root,path.join(dir,'artifact/sbom.result.json')),reason:selected.failureReason,
-     scannerExitCode:f?.exitCode??null,toolVersion:f?.tool.version??null,executionIdentity:'security-sbom',executionHost:'devops/192.168.64.11',sourceArtifactSha256:f?.sourceArtifactSha256??null,sbomSha256:f?.sbomSha256??null,sbomFormat:f?.format??null,sbomSpecVersion:f?.specVersion??null,componentCount:f?.componentCount??null,scope:cfg.scope,commitSha:cfg.commitSha,buildId:cfg.buildId,scannerStartedAt:f?.startedAt??null,scannerCompletedAt:f?.completedAt??null,router:routed.receipts.map(r=>({consumerId:r.consumerId,deliveryDecision:r.deliveryDecision})),cleanup:selected.cleanup?.status??'NOT_VERIFIED'};return;
+    result={...request,state:prerequisiteBlocked?'BLOCKED':selected.executionStatus,evidenceClass:f?'REAL':'NOT_TESTED',scannerExecuted:!!f||diagnostic?.generationInvocations===1,policyDecision:selected.policyDecision,evaluationCount:selected.evaluationCount,resultDigest:selected.resultDigest,artifactDigest:run.artifact.sealDigest,source:path.relative(root,path.join(dir,'artifact/sbom.result.json')),reason:prerequisiteBlocked?diagnostic.error:selected.failureReason,
+     executionDiagnostic:diagnostic,scannerExitCode:f?.exitCode??diagnostic?.exitCode??null,toolVersion:f?.tool.version??null,executionIdentity:'security-sbom',executionHost:'devops/192.168.64.11',sourceArtifactSha256:f?.sourceArtifactSha256??null,sbomSha256:f?.sbomSha256??null,sbomFormat:f?.format??null,sbomSpecVersion:f?.specVersion??null,componentCount:f?.componentCount??null,scope:cfg.scope,commitSha:cfg.commitSha,buildId:cfg.buildId,scannerStartedAt:f?.startedAt??null,scannerCompletedAt:f?.completedAt??null,router:routed.receipts.map(r=>({consumerId:r.consumerId,deliveryDecision:r.deliveryDecision})),cleanup:selected.cleanup?.status??'NOT_VERIFIED'};return;
    }
    if(process.platform!=='darwin'||process.getuid()===0)throw fault('LOCAL_MAC_IDENTITY_REQUIRED');
    if(value.pluginId==='gitleaks'){
@@ -128,7 +130,7 @@ export function submit(value){
   finally{
    clearTimeout(timer);
    if(result?.state==='COMPLETED'&&result.evidenceClass==='REAL'){
-    try{result.lokiDelivery=value.pluginId==='sbom'?{consumerId:'loki-candidate',automatic:false,state:'NOT_TESTED',queryState:'NOT_TESTED',reason:'SBOM_EVENT_SCHEMA_NOT_REGISTERED'}:await deliverRunToLoki(result,dir);}
+    try{result.lokiDelivery=await deliverRunToLoki(result,dir);}
     catch(e){result.lokiDelivery={consumerId:'loki-candidate',automatic:true,state:'FAILED',queryState:'NOT_VERIFIED',runId,
       resultDigest:result.resultDigest,reason:/^[A-Z_]{3,80}$/.test(e.code??'')?e.code:'LOKI_AUTO_DELIVERY_FAILED'};}
    }
