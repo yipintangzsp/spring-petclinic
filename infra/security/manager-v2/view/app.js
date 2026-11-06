@@ -129,6 +129,11 @@ function renderLive(runs){
  if(r.evidenceClass==='REAL'&&r.scenarioId==='controlled-finding'&&r.policyDecision==='FAIL')card.append(el('p',r.pluginId==='cosign'?'固定篡改材料验签被拒绝。FAIL 是预期的安全判定，执行器正常完成。':'检测到受控 Finding。FAIL 是预期的策略判定，扫描正常完成。'));
  if(r.reason)card.append(el('p','原因：'+r.reason));
  if(r.resultDigest)card.append(el('span',r.evidenceClass==='REAL'?'Result Digest':'预检 Result Digest','detail-label'),el('code',r.resultDigest));
+ if(r.lokiDelivery){const l=r.lokiDelivery;
+  card.append(row('Loki 自动投递',l.state),row('Loki Push',l.pushHttpStatus??l.pushState??'NOT_SENT'),row('同 Run 查询',l.queryState),row('查询时间',time(l.queryAt)));
+  if(l.reason)card.append(row('投递原因',l.reason));
+  if(l.grafanaUrl?.startsWith('http://grafana.devops.local/d/security-manager-v2-candidate/')){const a=el('a','在 Grafana 查看此次 Run');a.href=l.grafanaUrl;card.append(a);}
+ }else card.append(row('本轮自动 Loki 投递','NOT_TESTED（历史记录）'));
  if(r.auditDigest)card.append(el('p','Audit Digest: '+r.auditDigest));
  if(r.source)card.append(el('code',r.source,'source-path'));else card.append(el('p','没有已验证的扫描报告或 Policy Result。'));
  return card;

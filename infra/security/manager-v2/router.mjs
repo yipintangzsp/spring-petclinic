@@ -67,12 +67,12 @@ export async function routeResultsHttp(options){
 export {LOKI_DEFINITION} from './consumers/loki.mjs';
 import {prepareLoki,publishLoki,createLokiTransport,LOKI_DEFINITION} from './consumers/loki.mjs';
 export async function routeResultsWithLoki(options){
- keys(options,['run','artifactDirectory','expectedSealDigest','output','definitions','consumerOptions','transport','journalDirectory','lokiTransport','lokiOutput','expectedProjectId','priorLokiReceipts']);
- const {lokiTransport=createLokiTransport(),lokiOutput,expectedProjectId,priorLokiReceipts=[],...base}=options;
+ keys(options,['run','artifactDirectory','expectedSealDigest','output','definitions','consumerOptions','transport','journalDirectory','lokiTransport','lokiOutput','expectedProjectId','priorLokiReceipts','singlePluginId','freshRunId']);
+ const {lokiTransport=createLokiTransport(),lokiOutput,expectedProjectId,priorLokiReceipts=[],singlePluginId=null,freshRunId=null,...base}=options;
  const offline=options.transport?await routeResultsHttp(base):routeResults(base);
  let lokiDelivery;
  try{
-  const plan=prepareLoki({run:options.run,artifactDirectory:options.artifactDirectory,expectedSealDigest:options.expectedSealDigest,expectedProjectId,deliveryReceipts:[...offline.receipts,...(offline.httpDelivery?.receipts??[]),...priorLokiReceipts]});
+  const plan=prepareLoki({run:options.run,artifactDirectory:options.artifactDirectory,expectedSealDigest:options.expectedSealDigest,expectedProjectId,singlePluginId,freshRunId,deliveryReceipts:[...offline.receipts,...(offline.httpDelivery?.receipts??[]),...priorLokiReceipts]});
   lokiDelivery=await publishLoki(plan,{output:lokiOutput,transport:lokiTransport});
  }catch(e){
   const body={schemaVersion:1,kind:'LokiCandidateDeliveryReceipt',consumerId:LOKI_DEFINITION.consumerId,consumerVersion:LOKI_DEFINITION.consumerVersion,runId:options.run.summary.runId,projectId:options.run.summary.projectId,resultDigests:Object.fromEntries(options.run.summary.pluginResults.map(r=>[r.pluginId,r.resultDigest])),deliveryState:'ERROR',errorCategory:'LOKI_PREPARATION_OR_DELIVERY_FAILED',diagnosticCode:/^[A-Z_]{3,80}$/.test(e.code??'')?e.code:'INVALID_INPUT',timestamp:new Date().toISOString(),httpRequestCount:0,productionDelivery:false,promotionAllowed:false,realRemoteDelivery:'NOT_TESTED',remoteExactlyOnce:'NOT_VERIFIED'};

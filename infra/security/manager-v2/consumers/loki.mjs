@@ -39,7 +39,7 @@ export function validateLokiEvent(e){
  iso(e.timestamp);identity(e.runId);identity(e.projectId);identity(e.profile);version(e.managerVersion);if(e.pluginVersion!==null)version(e.pluginVersion);
  must(LOKI_SCHEMA.plugins.includes(e.pluginId)&&(e.executionStatus===null||LOKI_SCHEMA.executionStatuses.includes(e.executionStatus))&&(e.policyDecision===null||LOKI_SCHEMA.policyDecisions.includes(e.policyDecision)),'EVENT_STATUS');
  must(e.policyVersion==='baseline-v1'&&hex(e.artifactDigest)&&hex(e.summaryDigest)&&[e.factDigest,e.resultDigest,e.sourceReceiptDigest].every(x=>x===null||hex(x)),'EVENT_DIGEST_OR_POLICY');
- must(typeof e.securityEnabled==='boolean'&&['audit','off','enforce'].includes(e.globalMode)&&[0,1].includes(e.evaluationCount)&&e.productionEvidence===false&&e.promotionStatus==='BLOCKED'&&e.sourceClassification==='SEALED_ARTIFACT_REPLAY_NOT_NEW_SCAN','EVENT_SCOPE');
+ must(typeof e.securityEnabled==='boolean'&&['audit','off','enforce'].includes(e.globalMode)&&[0,1].includes(e.evaluationCount)&&e.productionEvidence===false&&e.promotionStatus==='BLOCKED'&&['SEALED_ARTIFACT_REPLAY_NOT_NEW_SCAN','REAL_CONTROLLED_EXECUTION'].includes(e.sourceClassification),'EVENT_SCOPE');
  must(LOKI_SCHEMA.deliveryStatuses.includes(e.deliveryStatus)&&(e.errorCategory===null||LOKI_SCHEMA.errorCategories.includes(e.errorCategory))&&['PREPARATION','LOCAL_ONLY','DRY_RUN','MOCK_HTTP','UNKNOWN'].includes(e.deliveryOrigin),'EVENT_DELIVERY');
  must(e.consumerId===null||['dry-run','local-evidence','defectdojo-candidate','defectdojo-http-candidate','defectdojo-future','loki-candidate'].includes(e.consumerId),'EVENT_CONSUMER');
  must(e.eventIdentity===eventId(e)&&Array.isArray(e.evidenceRef)&&e.evidenceRef.length<=3&&e.evidenceRef.every(r=>same(Object.keys(r).sort(),['digest','kind'])&&['RESULT','FACT','SUMMARY'].includes(r.kind)&&hex(r.digest)),'EVENT_REFERENCE');
@@ -62,16 +62,19 @@ function receiptForSource(receipt,summary){
  let origin=receipt.kind==='DefectDojoHttpDeliveryReceipt'?'MOCK_HTTP':receipt.kind==='LokiCandidateDeliveryReceipt'?receipt.mode==='mock-http'?'MOCK_HTTP':receipt.mode==='dry-run'?'DRY_RUN':'UNKNOWN':['DRY_RUN','OFFLINE_PAYLOAD_PREPARED'].includes(status)?'DRY_RUN':'LOCAL_ONLY';
  return {status,consumerId,origin,receiptDigest,timestamp:receipt.timestamp??null,pluginId:receipt.pluginId??null,resultDigest:receipt.resultDigest??null};
 }
-export function prepareLoki({run,artifactDirectory,expectedSealDigest,expectedProjectId,deliveryReceipts=[]}){
+export function prepareLoki({run,artifactDirectory,expectedSealDigest,expectedProjectId,deliveryReceipts=[],singlePluginId=null,freshRunId=null}){
  const dir=path.resolve(artifactDirectory);must(fs.realpathSync(dir)===dir,'ARTIFACT_DIRECTORY_BOUNDARY');verifyArtifact(dir,expectedSealDigest);
  const summary=run.summary,seal=JSON.parse(fs.readFileSync(path.join(dir,'candidate-seal.json')));must(same(summary,JSON.parse(fs.readFileSync(path.join(dir,'candidate-summary.json'))))&&summary.kind==='SecuritySummaryCandidate'&&summary.productionEvidence===false&&summary.promotion?.status==='BLOCKED','CANDIDATE_SUMMARY_BINDING');
  identity(summary.projectId);identity(summary.runId);identity(summary.profile);version(summary.managerVersion);must(summary.projectId===expectedProjectId,'LOKI_PROJECT_MISMATCH');must(Array.isArray(deliveryReceipts)&&deliveryReceipts.length<=12,'DELIVERY_RECEIPT_LIMIT');
  const ids=new Set();for(const r of summary.pluginResults){verifyResult(r);must(r.projectId===summary.projectId&&r.runId===summary.runId&&!ids.has(r.pluginId),'RESULT_SCOPE_BINDING');ids.add(r.pluginId);}
- const chosen=summary.pluginResults.filter(r=>LOKI_SCHEMA.plugins.includes(r.pluginId)&&r.pluginId!=='manager');must(chosen.length>0,'NO_OBSERVABLE_PLUGIN');
+ must(singlePluginId===null||['gitleaks','semgrep','cosign'].includes(singlePluginId),'LOKI_PLUGIN_SELECTION_REJECTED');
+ must(freshRunId===null||freshRunId===summary.runId&&singlePluginId!==null,'LOKI_FRESH_RUN_BINDING');
+ const chosen=summary.pluginResults.filter(r=>(singlePluginId===null||r.pluginId===singlePluginId)&&LOKI_SCHEMA.plugins.includes(r.pluginId)&&r.pluginId!=='manager');must(chosen.length>0,'NO_OBSERVABLE_PLUGIN');
+ if(freshRunId!==null)must(chosen.every(r=>r.executionStatus==='COMPLETED'&&r.runtimeFacts?.classification==='REAL_CONTROLLED_EXECUTION'&&r.runtimeFacts.validationRunId===freshRunId&&Date.now()-Date.parse(r.completedAt)>=0&&Date.now()-Date.parse(r.completedAt)<300000),'LOKI_FRESH_EXECUTION_EVIDENCE_REQUIRED');
  const end=chosen.map(r=>iso(r.completedAt)).sort().at(-1),summaryDigest=digest(summary),events=[];
  function make(r,eventType='PLUGIN_RESULT',extra={}){
   must(r.securityEnabled===summary.securityEnabled&&r.globalMode===summary.globalMode&&r.managerVersion===summary.managerVersion,'RESULT_CONFIGURATION_BINDING');
-  const e={schemaVersion:1,eventType,timestamp:iso(r.completedAt),timestampBasis:'RESULT_COMPLETED_AT',runId:summary.runId,projectId:summary.projectId,profile:summary.profile,managerVersion:summary.managerVersion,pluginId:r.pluginId,pluginVersion:r.pluginVersion,executionStatus:r.executionStatus,policyDecision:r.policyDecision,policyVersion:r.policyVersion,factDigest:r.factDigest,resultDigest:r.resultDigest,artifactDigest:expectedSealDigest,summaryDigest,evidenceRef:[{kind:'RESULT',digest:r.resultDigest},...(r.factDigest?[{kind:'FACT',digest:r.factDigest}]:[])],deliveryStatus:'PREPARED',errorCategory:safeError(r),sourceClassification:'SEALED_ARTIFACT_REPLAY_NOT_NEW_SCAN',productionEvidence:false,securityEnabled:summary.securityEnabled,globalMode:summary.globalMode,evaluationCount:r.evaluationCount,promotionStatus:summary.promotion.status,consumerId:null,sourceReceiptDigest:null,deliveryOrigin:'PREPARATION',...counts(dir,seal,r),...extra};e.eventIdentity=eventId(e);validateLokiEvent(e);return e;
+  const e={schemaVersion:1,eventType,timestamp:iso(r.completedAt),timestampBasis:'RESULT_COMPLETED_AT',runId:summary.runId,projectId:summary.projectId,profile:summary.profile,managerVersion:summary.managerVersion,pluginId:r.pluginId,pluginVersion:r.pluginVersion,executionStatus:r.executionStatus,policyDecision:r.policyDecision,policyVersion:r.policyVersion,factDigest:r.factDigest,resultDigest:r.resultDigest,artifactDigest:expectedSealDigest,summaryDigest,evidenceRef:[{kind:'RESULT',digest:r.resultDigest},...(r.factDigest?[{kind:'FACT',digest:r.factDigest}]:[])],deliveryStatus:'PREPARED',errorCategory:safeError(r),sourceClassification:freshRunId?'REAL_CONTROLLED_EXECUTION':'SEALED_ARTIFACT_REPLAY_NOT_NEW_SCAN',productionEvidence:false,securityEnabled:summary.securityEnabled,globalMode:summary.globalMode,evaluationCount:r.evaluationCount,promotionStatus:summary.promotion.status,consumerId:null,sourceReceiptDigest:null,deliveryOrigin:'PREPARATION',...counts(dir,seal,r),...extra};e.eventIdentity=eventId(e);validateLokiEvent(e);return e;
  }
  for(const r of chosen)events.push(make(r));
  for(const receipt of deliveryReceipts){const c=receiptForSource(receipt,summary);
@@ -79,7 +82,7 @@ export function prepareLoki({run,artifactDirectory,expectedSealDigest,expectedPr
   must(!c.pluginId||selected.length===1&&selected[0].resultDigest===c.resultDigest,'DELIVERY_PLUGIN_RESULT_BINDING');
   for(const r of selected)events.push(make(r,'CONSUMER_DELIVERY',{timestamp:c.timestamp?iso(c.timestamp):r.completedAt,timestampBasis:c.timestamp?'SOURCE_RECEIPT_TIMESTAMP':'RESULT_COMPLETION_RECEIPT_TIME_UNAVAILABLE',deliveryStatus:c.status,errorCategory:['ERROR','REJECTED','RETRYABLE_FAILURE','UNKNOWN_REMOTE_STATE','DISABLED'].includes(c.status)?({ERROR:'CONSUMER_ERROR',REJECTED:'DELIVERY_REJECTED',RETRYABLE_FAILURE:'DELIVERY_RETRYABLE',UNKNOWN_REMOTE_STATE:'DELIVERY_UNKNOWN',DISABLED:'CONSUMER_DISABLED'})[c.status]:null,consumerId:c.consumerId,sourceReceiptDigest:c.receiptDigest,deliveryOrigin:c.origin}));
  }
- const manager={...make(chosen[0]),eventType:'PROMOTION_STATUS',timestamp:end,timestampBasis:'LAST_RESULT_COMPLETED_AT',pluginId:'manager',pluginVersion:null,executionStatus:null,policyDecision:null,factDigest:null,resultDigest:null,evaluationCount:0,evidenceRef:[{kind:'SUMMARY',digest:summaryDigest}],errorCategory:null,findingCount:null,findingCountKnown:false,highSeverityFindingCount:null,highSeverityCountKnown:false,nativeSeverityCounts:null,findingEvidenceStatus:'NOT_APPLICABLE'};manager.eventIdentity=eventId(manager);validateLokiEvent(manager);events.push(manager);
+ const manager={...make(chosen[0]),eventType:'PROMOTION_STATUS',timestamp:end,timestampBasis:'LAST_RESULT_COMPLETED_AT',pluginId:'manager',pluginVersion:null,executionStatus:null,policyDecision:null,factDigest:null,resultDigest:null,evaluationCount:0,evidenceRef:[{kind:'SUMMARY',digest:summaryDigest}],errorCategory:null,findingCount:null,findingCountKnown:false,highSeverityFindingCount:null,highSeverityCountKnown:false,nativeSeverityCounts:null,findingEvidenceStatus:'NOT_APPLICABLE'};manager.eventIdentity=eventId(manager);validateLokiEvent(manager);if(singlePluginId===null)events.push(manager);
  const unique=new Map();for(const e of events){if(unique.has(e.eventIdentity))must(same(unique.get(e.eventIdentity),e),'EVENT_IDENTITY_COLLISION');else unique.set(e.eventIdentity,e);}
  const final=[...unique.values()].sort((a,b)=>a.timestamp.localeCompare(b.timestamp)||a.eventIdentity.localeCompare(b.eventIdentity));must(final.length<=LOKI_SCHEMA.limits.maxEvents,'EVENT_BATCH_LIMIT');
  const streams=new Map();for(const e of final){const stream=labels(e),key=canonical(stream);if(!streams.has(key))streams.set(key,{stream,values:[]});streams.get(key).values.push([ns(e.timestamp),canonical(e)]);}
@@ -98,14 +101,14 @@ export function validateLokiPush(payload,{nowMs=null}={}){
 }
 export function createLokiTransport(options={}){
  objectKeys(options,['mode','enabled','targetId','timeoutMs','maxAttempts','backoffMs']);const {mode='dry-run',enabled=true,targetId=null,timeoutMs=1000,maxAttempts=3,backoffMs=25}=options;
- must(typeof enabled==='boolean'&&['dry-run','mock-http'].includes(mode),'LOKI_MODE_INVALID');
- if(mode==='mock-http')must(targetId==='loki-loopback-v1','LOKI_TARGET_NOT_ALLOWLISTED');else must(targetId===null,'LOKI_TARGET_NOT_ALLOWLISTED');
+ must(typeof enabled==='boolean'&&['dry-run','mock-http','real-http'].includes(mode),'LOKI_MODE_INVALID');
+ if(mode==='mock-http')must(targetId==='loki-loopback-v1','LOKI_TARGET_NOT_ALLOWLISTED');else if(mode==='real-http')must(targetId==='existing-security-loki-v1','LOKI_TARGET_NOT_ALLOWLISTED');else must(targetId===null,'LOKI_TARGET_NOT_ALLOWLISTED');
  must(Number.isInteger(timeoutMs)&&timeoutMs>=20&&timeoutMs<=5000&&Number.isInteger(maxAttempts)&&maxAttempts>=1&&maxAttempts<=3&&Number.isInteger(backoffMs)&&backoffMs>=1&&backoffMs<=1000,'LOKI_HTTP_BUDGET');
  const t=freeze({kind:'LokiCandidateTransport',enabled,mode});transports.set(t,{mode,enabled,targetId,timeoutMs,maxAttempts,backoffMs});return t;
 }
 function push(bytes,state){return new Promise(resolve=>{
  let connected=false,done=false,size=0;const finish=r=>{if(!done){done=true;clearTimeout(timer);resolve(r);}};
- const req=http.request({hostname:'127.0.0.1',port:32187,path:'/loki/api/v1/push',method:'POST',agent:false,maxHeaderSize:8192,headers:{'Content-Type':'application/json','Content-Length':bytes.length}},res=>{
+ const req=http.request({hostname:'127.0.0.1',port:state.mode==='real-http'?32189:32187,path:'/loki/api/v1/push',method:'POST',agent:false,maxHeaderSize:8192,headers:{'Content-Type':'application/json','Content-Length':bytes.length}},res=>{
   res.on('data',b=>{size+=b.length;if(size>8192){finish({status:res.statusCode,error:'RESPONSE_TOO_LARGE',connected});res.destroy();}});
   res.on('aborted',()=>finish({status:res.statusCode,error:'RESPONSE_LOST',connected}));res.on('error',()=>finish({status:res.statusCode,error:'RESPONSE_LOST',connected}));res.on('end',()=>finish({status:res.statusCode,error:null,connected}));
  });const timer=setTimeout(()=>{finish({status:null,error:'TIMEOUT',connected});req.destroy();},state.timeoutMs);
@@ -113,7 +116,7 @@ function push(bytes,state){return new Promise(resolve=>{
 });}
 export async function publishLoki(plan,{output,transport=createLokiTransport()}={}){
  must(plans.has(plan),'TRUSTED_LOKI_PLAN_REQUIRED');const state=transports.get(transport);must(state,'TRUSTED_LOKI_TRANSPORT_REQUIRED');validateLokiPush(plan.payload);
- const common={schemaVersion:1,kind:'LokiCandidateDeliveryReceipt',consumerId:LOKI_DEFINITION.consumerId,consumerVersion:LOKI_DEFINITION.consumerVersion,runId:plan.runId,projectId:plan.projectId,resultDigests:plan.resultDigests,artifactDigest:plan.artifactDigest,planDigest:plan.planDigest,payloadDigest:plan.payloadDigest,eventIdentities:plan.events.map(e=>e.eventIdentity),mode:state.mode,targetIdentity:state.mode==='mock-http'?'loki-loopback-v1':'LOCAL_ONLY',timestamp:new Date().toISOString(),productionDelivery:false,realRemoteDelivery:'NOT_TESTED',remoteExactlyOnce:'NOT_VERIFIED',promotionAllowed:false};
+ const common={schemaVersion:1,kind:'LokiCandidateDeliveryReceipt',consumerId:LOKI_DEFINITION.consumerId,consumerVersion:LOKI_DEFINITION.consumerVersion,runId:plan.runId,projectId:plan.projectId,resultDigests:plan.resultDigests,artifactDigest:plan.artifactDigest,planDigest:plan.planDigest,payloadDigest:plan.payloadDigest,eventIdentities:plan.events.map(e=>e.eventIdentity),mode:state.mode,targetIdentity:state.mode==='real-http'?'existing-security-loki-v1':state.mode==='mock-http'?'loki-loopback-v1':'LOCAL_ONLY',timestamp:new Date().toISOString(),productionDelivery:state.mode==='real-http',realRemoteDelivery:'NOT_TESTED',remoteExactlyOnce:'NOT_VERIFIED',promotionAllowed:false};
  function receipt(deliveryState,extra={}){const b={...common,deliveryState,httpStatus:null,errorCategory:null,attempts:[],possibleDuplicates:false,httpRequestCount:0,...extra};return freeze({...b,receiptDigest:digest(b)});}
  if(!state.enabled)return receipt('DISABLED');
  must(typeof output==='string'&&path.isAbsolute(output)&&fs.realpathSync(output)===output,'LOKI_OUTPUT_BOUNDARY');
@@ -130,7 +133,7 @@ export async function publishLoki(plan,{output,transport=createLokiTransport()}=
   const retryable=[429,500,502,503,504].includes(status)||!r.connected&&r.error==='CONNECTION_REFUSED';
   const deliveryState=ack?'ACKNOWLEDGED':retryable?'RETRYABLE_FAILURE':r.error||status>=200&&status<300?'UNKNOWN_REMOTE_STATE':'REJECTED';
   attempts.push({attempt:n,httpStatus:status,deliveryState,errorCategory:r.error??(ack?null:retryable?'HTTP_RETRYABLE':'HTTP_REJECTED'),timestamp:new Date().toISOString(),requestBodySha256:sha(bytes)});
-  if(ack)return receipt('ACKNOWLEDGED',{httpStatus:status,payloadSeal,attempts,possibleDuplicates:n>1,httpRequestCount:n});
+  if(ack)return receipt('ACKNOWLEDGED',{realRemoteDelivery:state.mode==='real-http'?'ACKNOWLEDGED_QUERY_NOT_VERIFIED':'NOT_TESTED',httpStatus:status,payloadSeal,attempts,possibleDuplicates:n>1,httpRequestCount:n});
   if(!retryable||n===state.maxAttempts)return receipt(deliveryState,{httpStatus:status,errorCategory:r.error??(retryable?'HTTP_RETRYABLE':'HTTP_REJECTED'),payloadSeal,attempts,possibleDuplicates:n>1||r.connected&&(status>=500||Boolean(r.error)),httpRequestCount:n});
   await new Promise(resolve=>setTimeout(resolve,Math.min(state.backoffMs*2**(n-1),1000)));
  }

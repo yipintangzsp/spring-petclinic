@@ -13,6 +13,7 @@ import {linuxReady,runLinuxGitleaks,linuxHost,cleanIdentity} from './linux-gitle
 import {semgrepReady,runLinuxSemgrep,semgrepHost,semgrepIdentity} from './linux-semgrep.mjs';
 import {cosignReady,runLinuxCosign,cosignHost,cosignIdentity} from './linux-cosign.mjs';
 import {currentControls,writeControls} from './controls.mjs';
+import {deliverRunToLoki} from './loki-delivery.mjs';
 const ids=['gitleaks','semgrep','cosign'],scenarios=['clean','controlled-finding'];
 const directory=path.join(root,'.devsecops/security-view-runs-v1');
 const identifier=/^web-[a-f0-9-]{36}$/;
@@ -106,6 +107,11 @@ export function submit(value){
   }catch(e){result={...request,state:e.code?.includes('BLOCKED')||e.code==='LOCAL_MAC_IDENTITY_REQUIRED'?'BLOCKED':'ERROR',evidenceClass:'NOT_TESTED',reason:/^[A-Z_]+$/.test(e.code??'')?e.code:'LOCAL_VALIDATION_ERROR',policyDecision:null,evaluationCount:0,resultDigest:null,scannerExecuted:attempted?null:false,budget};}
   finally{
    clearTimeout(timer);
+   if(result?.state==='COMPLETED'&&result.evidenceClass==='REAL'){
+    try{result.lokiDelivery=await deliverRunToLoki(result,dir);}
+    catch(e){result.lokiDelivery={consumerId:'loki-candidate',automatic:true,state:'FAILED',queryState:'NOT_VERIFIED',runId,
+      resultDigest:result.resultDigest,reason:/^[A-Z_]{3,80}$/.test(e.code??'')?e.code:'LOKI_AUTO_DELIVERY_FAILED'};}
+   }
    try{const body={...result,completedAt:new Date().toISOString(),durationMs:Math.round(performance.now()-start),cleanup:result?.cleanup??(attempted?'NOT_VERIFIED':'NO_SCANNER_STARTED'),releaseCount:0,rolloutCount:0};save(path.join(dir,'result.json'),{...body,auditDigest:digest(body)});}catch{console.error('LOCAL_RUN_PERSISTENCE_FAILED');}finally{active=null;}
   }
  });
