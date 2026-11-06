@@ -36,12 +36,14 @@ function renderCandidate(){
  const selected=data.runs.find(r=>r.runId===$('scenario').value),cfg=selected?.configuration;
  const cards=[];
  const card=(title,label,fields,description,src)=>{const c=el('article',undefined,'consumer');const top=el('div',undefined,'card-top');top.append(el('h3',title),el('span',label,'tag '+(label==='BLOCKED'?'warn':'neutral')));c.append(top,...fields.map(([k,v])=>row(k,v)),el('p',description));if(src)source(c,src);cards.push(c);return c;};
- const admission=data.semgrepAdmission??{};
+ const liveSemgrep=liveCapabilities?.plugins.find(p=>p.pluginId==='semgrep');
+ const admission=liveSemgrep?.state==='READY'?{state:'READY / WEB_REAL',reason:liveSemgrep.executionIdentity,observedAt:liveCapabilities.observedAt}:data.semgrepAdmission??{};
  const semgrepHistory=data.runs.flatMap(r=>r.plugins.filter(p=>p.pluginId==='semgrep'&&p.evidenceClass==='REAL'&&p.executionStatus==='COMPLETED').map(p=>({runId:r.runId,...p})));
  const semgrepCard=card('Semgrep · 当前执行准入',admission.state??'UNAVAILABLE',[
-  ['本轮新执行',admission.newExecution===true?'REAL':'NOT_EXECUTED'],['受限入口',admission.reason??'UNAVAILABLE'],
+  ['新执行结果',liveSemgrep?.state==='READY'?'下方真实执行记录（REAL）':'NOT_EXECUTED'],['受限入口',admission.reason??'UNAVAILABLE'],
   ['已有真实历史',`PASS ${semgrepHistory.filter(p=>p.policyDecision==='PASS').length} / FAIL ${semgrepHistory.filter(p=>p.policyDecision==='FAIL').length}`],['准入采集时间',time(admission.observedAt)]],
-  '历史 Runner / 规则 / Fixture 已开发。历史执行目录已清理，当前无独立获批 Semgrep 入口。Gitleaks 授权不覆盖 Semgrep；本轮不产生新的 Run ID 或 Digest。',admission.source);
+  liveSemgrep?.state==='READY'?'专用受限 Linux 入口，固定 Clean / Finding；新结果见下方真实执行记录。Jenkins NOT_CONFIGURED，生产 NOT_ACTIVE。':'历史 Runner / 规则 / Fixture 已开发，当前入口未获准或不可用。',admission.source);
+ const semgrepNew=el('a','运行并查看 Semgrep REAL 结果');semgrepNew.href='#live-validation';semgrepCard.append(semgrepNew);
  const semgrepLink=el('a','查看历史 Semgrep Finding → FAIL');semgrepLink.href='#plugins';semgrepLink.addEventListener('click',()=>{if(data.runs.some(r=>r.runId==='attempt2-G-semgrep-fail')){$('scenario').value='attempt2-G-semgrep-fail';renderRun();}});semgrepCard.append(semgrepLink);
  const g=data.grafana??{};
  const grafanaCard=card('Grafana Dashboard',g.classification??'UNAVAILABLE',[
@@ -66,7 +68,7 @@ function renderCandidate(){
   const tr=el('tr');const name=el('td');name.append(el('strong',p.pluginId),el('div',p.runner+' · '+p.executionMode,'muted'));tr.append(name);
   const enabled=cfg?.plugins?.[p.pluginId]?.enabled;const flag=el('td');if(typeof enabled==='boolean'){const input=el('input');input.type='checkbox';input.checked=enabled;input.disabled=true;input.setAttribute('aria-label',p.pluginId+' historical enabled');flag.append(input,el('span',enabled?' ENABLED':' DISABLED'));}else flag.textContent='UNAVAILABLE';tr.append(flag);
   const saved=selected?.artifact?.statuses?.[p.pluginId];tr.append(el('td',saved?`${saved.executionStatus} / ${saved.policyDecision??'未求值'}`:'NOT_TESTED'));
-  const live=liveCapabilities?.plugins.find(x=>x.pluginId===p.pluginId);tr.append(el('td',live?live.state+' · '+(live.reason??live.executionIdentity??'已配置受限入口'):'NOT_CONFIGURED · 无页面执行入口'));return tr;
+  const live=liveCapabilities?.plugins.find(x=>x.pluginId===p.pluginId);tr.append(el('td',live?live.state+' · '+(live.reason??live.executionIdentity??'已配置受限入口')+' · '+(p.pluginId==='gitleaks'?'Jenkins #6 HISTORICAL':'Jenkins NOT_CONFIGURED')+' · Production NOT_ACTIVE':'NOT_CONFIGURED · 无页面执行入口'));return tr;
  }));
  $('registry-source').replaceChildren();source($('registry-source'),data.registry?.source);if(cfg)source($('registry-source'),cfg.source);
 }
@@ -105,16 +107,16 @@ function capabilityText(){
  renderCandidate();
 }
 function renderLive(runs){
- const comparison=['clean','controlled-finding'].map(s=>runs.find(r=>r.pluginId==='gitleaks'&&r.scenarioId===s&&r.evidenceClass==='REAL'&&r.state==='COMPLETED')).filter(Boolean);
+ const comparison=['gitleaks','semgrep'].flatMap(id=>['clean','controlled-finding'].map(s=>runs.find(r=>r.pluginId===id&&r.scenarioId===s&&r.evidenceClass==='REAL'&&r.state==='COMPLETED'))).filter(Boolean);
  $('live-results').replaceChildren(...[...comparison,...runs.filter(r=>!comparison.includes(r))].map(r=>{
  const card=el('article',undefined,'consumer');card.dataset.runId=r.runId;
  const label=r.pluginId==='gitleaks'?'Gitleaks '+(r.scenarioId==='clean'?'Clean':'Finding'):r.pluginId+' / '+r.scenarioId;
  const top=el('div',undefined,'card-top');top.append(el('h3',label),el('span',r.evidenceClass,'tag '+(r.evidenceClass==='REAL'?'real':'neutral')));
  card.append(top,el('div',r.state,'delivery'),row('Policy Decision',r.policyDecision??'未求值'),row('Run ID',r.runId),row('开始',time(r.scannerStartedAt??r.startedAt)),row('完成',time(r.scannerCompletedAt??r.completedAt)),row('耗时',r.durationMs==null?'—':r.durationMs+' ms'),row('Policy 求值次数',r.evaluationCount??0));
- if(r.scannerExecuted===true)card.append(row('执行主机',r.executionHost),row('执行身份',r.executionIdentity),row('Gitleaks',r.toolVersion),row('退出码',r.scannerExitCode));
+ if(r.scannerExecuted===true)card.append(row('执行主机',r.executionHost),row('执行身份',r.executionIdentity),row('扫描工具',r.toolVersion),row('退出码',r.scannerExitCode));
  if(Number.isSafeInteger(r.findingsCount))card.append(row('实际命中',r.findingsCount));
  if(r.findingRules?.length)card.append(row('检测规则',r.findingRules.join(', ')));
- if(r.evidenceClass==='REAL'&&r.scenarioId==='controlled-finding'&&r.policyDecision==='FAIL')card.append(el('p','检测到受控假凭证。FAIL 是预期的策略判定，扫描正常完成。'));
+ if(r.evidenceClass==='REAL'&&r.scenarioId==='controlled-finding'&&r.policyDecision==='FAIL')card.append(el('p','检测到受控 Finding。FAIL 是预期的策略判定，扫描正常完成。'));
  if(r.reason)card.append(el('p','原因：'+r.reason));
  if(r.resultDigest)card.append(el('span',r.evidenceClass==='REAL'?'Result Digest':'预检 Result Digest','detail-label'),el('code',r.resultDigest));
  if(r.auditDigest)card.append(el('p','Audit Digest: '+r.auditDigest));
