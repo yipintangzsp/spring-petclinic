@@ -101,22 +101,28 @@ function capabilityText(){
  const c=liveCapabilities?.plugins.find(p=>p.pluginId===$('live-plugin').value);
  $('live-capability').textContent=c?[c.pluginId+': '+c.state,c.reason,c.executionHost,c.executionIdentity,'工具版本：'+(c.toolVersion??'未验证')].filter(Boolean).join(' · '):'UNAVAILABLE';
  const selected=$('live-scenario').value;
- $('live-scenario').replaceChildren(...(c?.scenarios??[]).map(id=>{const o=el('option',id==='clean'?'Clean':'Controlled Finding');o.value=id;return o;}));
+ $('live-scenario').replaceChildren(...(c?.scenarios??[]).map(id=>{const o=el('option',c?.pluginId==='cosign'?(id==='clean'?'Valid Signature':'Invalid / Tampered Signature'):(id==='clean'?'Clean':'Controlled Finding'));o.value=id;return o;}));
  if(c?.scenarios.includes(selected))$('live-scenario').value=selected;
  $('run-validation').disabled=liveBusy||c?.state!=='READY';
  renderCandidate();
 }
 function renderLive(runs){
- const comparison=['gitleaks','semgrep'].flatMap(id=>['clean','controlled-finding'].map(s=>runs.find(r=>r.pluginId===id&&r.scenarioId===s&&r.evidenceClass==='REAL'&&r.state==='COMPLETED'))).filter(Boolean);
- $('live-results').replaceChildren(...[...comparison,...runs.filter(r=>!comparison.includes(r))].map(r=>{
+ const comparison=['gitleaks','semgrep','cosign'].flatMap(id=>['clean','controlled-finding'].map(s=>runs.find(r=>r.pluginId===id&&r.scenarioId===s&&r.evidenceClass==='REAL'&&r.state==='COMPLETED'))).filter(Boolean);
+ const matrix=el('article',undefined,'consumer');matrix.id='three-plugin-real-status';
+ matrix.append(el('h3','三个插件 · 真实受控执行'),el('p','仅从已完成的 REAL 记录读取判定；各记录时间、Run ID 与摘要见下方。生产 NOT_ACTIVE。'));
+ const table=el('table');const head=el('tr');for(const label of ['Plugin','Clean / Valid','Finding / Invalid','当前入口'])head.append(el('th',label));table.append(head);
+ for(const id of ['gitleaks','semgrep','cosign']){const tr=el('tr');tr.append(el('td',id));for(const scenario of ['clean','controlled-finding']){const result=comparison.find(r=>r.pluginId===id&&r.scenarioId===scenario);const cell=el('td',result?'REAL / '+result.policyDecision:'NOT_TESTED');if(result)cell.title=result.runId+' · '+time(result.scannerCompletedAt);tr.append(cell);}tr.append(el('td',liveCapabilities?.plugins.find(p=>p.pluginId===id)?.state??'UNAVAILABLE'));table.append(tr);}
+ matrix.append(table);
+ $('live-results').replaceChildren(matrix,...[...comparison,...runs.filter(r=>!comparison.includes(r))].map(r=>{
  const card=el('article',undefined,'consumer');card.dataset.runId=r.runId;
- const label=r.pluginId==='gitleaks'?'Gitleaks '+(r.scenarioId==='clean'?'Clean':'Finding'):r.pluginId+' / '+r.scenarioId;
+ const label=r.pluginId==='cosign'?'Cosign '+(r.scenarioId==='clean'?'Valid':'Invalid / Tampered'):r.pluginId==='gitleaks'?'Gitleaks '+(r.scenarioId==='clean'?'Clean':'Finding'):r.pluginId+' / '+r.scenarioId;
  const top=el('div',undefined,'card-top');top.append(el('h3',label),el('span',r.evidenceClass,'tag '+(r.evidenceClass==='REAL'?'real':'neutral')));
  card.append(top,el('div',r.state,'delivery'),row('Policy Decision',r.policyDecision??'未求值'),row('Run ID',r.runId),row('开始',time(r.scannerStartedAt??r.startedAt)),row('完成',time(r.scannerCompletedAt??r.completedAt)),row('耗时',r.durationMs==null?'—':r.durationMs+' ms'),row('Policy 求值次数',r.evaluationCount??0));
  if(r.scannerExecuted===true)card.append(row('执行主机',r.executionHost),row('执行身份',r.executionIdentity),row('扫描工具',r.toolVersion),row('退出码',r.scannerExitCode));
+ if(r.pluginId==='cosign'&&r.scannerExecuted===true)card.append(row('验签范围','受控离线 Blob，非生产镜像信任'),row('验签结果',r.verificationStatus),row('被验证对象 Digest',r.verifiedObjectDigest),row('受控公钥 Digest',r.trustPublicKeyDigest),row('验签输出',r.verificationReason));
  if(Number.isSafeInteger(r.findingsCount))card.append(row('实际命中',r.findingsCount));
  if(r.findingRules?.length)card.append(row('检测规则',r.findingRules.join(', ')));
- if(r.evidenceClass==='REAL'&&r.scenarioId==='controlled-finding'&&r.policyDecision==='FAIL')card.append(el('p','检测到受控 Finding。FAIL 是预期的策略判定，扫描正常完成。'));
+ if(r.evidenceClass==='REAL'&&r.scenarioId==='controlled-finding'&&r.policyDecision==='FAIL')card.append(el('p',r.pluginId==='cosign'?'固定篡改材料验签被拒绝。FAIL 是预期的安全判定，执行器正常完成。':'检测到受控 Finding。FAIL 是预期的策略判定，扫描正常完成。'));
  if(r.reason)card.append(el('p','原因：'+r.reason));
  if(r.resultDigest)card.append(el('span',r.evidenceClass==='REAL'?'Result Digest':'预检 Result Digest','detail-label'),el('code',r.resultDigest));
  if(r.auditDigest)card.append(el('p','Audit Digest: '+r.auditDigest));

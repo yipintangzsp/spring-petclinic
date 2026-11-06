@@ -11,6 +11,7 @@ import {verifyArtifact,verifyResult} from '../result.mjs';
 import {digest} from '../../summary-v2/codec.mjs';
 import {linuxReady,runLinuxGitleaks,linuxHost,cleanIdentity} from './linux-gitleaks.mjs';
 import {semgrepReady,runLinuxSemgrep,semgrepHost,semgrepIdentity} from './linux-semgrep.mjs';
+import {cosignReady,runLinuxCosign,cosignHost,cosignIdentity} from './linux-cosign.mjs';
 const ids=['gitleaks','semgrep','cosign'],scenarios=['clean','controlled-finding'];
 const directory=path.join(root,'.devsecops/security-view-runs-v1');
 const identifier=/^web-[a-f0-9-]{36}$/;
@@ -23,11 +24,12 @@ function save(p,value){const fd=fs.openSync(p,fs.constants.O_WRONLY|fs.constants
 export function capabilities(){
  const ready=linuxReady();
  return {observedAt:new Date().toISOString(),platform:process.platform,arch:process.arch,uid:process.getuid(),groups:process.getgroups(),nodeVersion:process.version,
-  executionLocation:ready||semgrepReady()?'LINUX_RESTRICTED':'MAC_ONLY',maxConcurrent:1,timeoutMs:30000,
+  executionLocation:ready||semgrepReady()||cosignReady()?'LINUX_RESTRICTED':'MAC_ONLY',maxConcurrent:1,timeoutMs:30000,
   plugins:ids.map(pluginId=>pluginId==='gitleaks'&&ready?{pluginId,state:'READY',runner:'gitleaks-real',
    reason:null,toolVersion:'8.30.1',toolVersionObservation:'PINNED',fixtureStatus:'FIXED_NON_PRODUCTION_FIXTURES',
    executionHost:linuxHost,executionIdentity:cleanIdentity,scenarios}:
    pluginId==='semgrep'&&semgrepReady()?{pluginId,state:'READY',runner:'semgrep-real',reason:null,toolVersion:'1.182.1',toolVersionObservation:'PINNED',fixtureStatus:'FIXED_NON_PRODUCTION_FIXTURES',executionHost:semgrepHost,executionIdentity:semgrepIdentity,scenarios}:
+   pluginId==='cosign'&&cosignReady()?{pluginId,state:'READY',runner:'cosign-real',reason:null,toolVersion:'3.1.4',toolVersionObservation:'PINNED',fixtureStatus:'FIXED_NON_PRODUCTION_SIGNATURE_FIXTURES',executionHost:cosignHost,executionIdentity:cosignIdentity,scenarios}:
    {pluginId,state:'BLOCKED',runner:realThreePluginsRegistry().get(pluginId).runner,
    reason:'REAL_SCANNER_REQUIRES_APPROVED_LINUX_IDENTITY',toolVersion:null,toolVersionObservation:'NOT_EXECUTED',
    fixtureStatus:'NO_APPROVED_EXECUTOR',scenarios:pluginId==='gitleaks'?['clean']:scenarios})};
@@ -48,7 +50,7 @@ export function submit(value){
  if(active)throw fault('RUN_ALREADY_ACTIVE',409);
  if(fs.readdirSync(directory).length>=100)throw fault('LOCAL_RECORD_BUDGET_EXHAUSTED',429);
  const runId='web-'+randomUUID(),dir=path.join(directory,runId);fs.mkdirSync(dir,{mode:0o700});safeDir(dir);
- const remote=value.pluginId==='gitleaks'&&linuxReady()||value.pluginId==='semgrep'&&semgrepReady();
+ const remote=value.pluginId==='gitleaks'&&linuxReady()||value.pluginId==='semgrep'&&semgrepReady()||value.pluginId==='cosign'&&cosignReady();
  const request={runId,...value,startedAt:new Date().toISOString(),kind:'LocalValidationRequest',executionLocation:remote?'LINUX_RESTRICTED':'MAC_ONLY'};
  save(path.join(dir,'request.json'),request);active=runId;
  setImmediate(async()=>{
@@ -66,6 +68,12 @@ export function submit(value){
     if(!remote)throw fault('LINUX_SEMGREP_NOT_CONFIGURED_BLOCKED');
     attempted=true;
     result={...request,...await runLinuxSemgrep(value.scenarioId,runId,dir,controller.signal),source:path.relative(root,path.join(dir,'artifact','semgrep.result.json'))};
+    return;
+   }
+   if(value.pluginId==='cosign'){
+    if(!remote)throw fault('LINUX_COSIGN_NOT_CONFIGURED_BLOCKED');
+    attempted=true;
+    result={...request,...await runLinuxCosign(value.scenarioId,runId,dir,controller.signal),source:path.relative(root,path.join(dir,'artifact','cosign.result.json'))};
     return;
    }
    const disk=fs.statfsSync(directory);budget={load1:os.loadavg()[0],cpuCount:os.cpus().length,freeMemory:os.freemem(),freeDisk:Number(disk.bavail)*Number(disk.bsize)};
