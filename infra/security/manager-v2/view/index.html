@@ -1,12 +1,21 @@
 <!doctype html>
 <html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Security Manager V2 · Evidence Console</title><link rel="stylesheet" href="/style.css"><script src="/app.js" defer></script></head>
 <body><div class="shell">
-<aside><a class="brand" href="/" aria-label="Security Manager 首页"><span class="mark">S∕</span><span>DEVSECOPS<br><strong>SECURITY LAB</strong></span></a><div class="side-label">EVIDENCE CONSOLE</div><nav><a href="#pipeline-overview">00 &nbsp; 流水线总览</a><a class="active" href="#overview">01 &nbsp; 安全验证</a><a href="#plugins">02 &nbsp; 插件结果</a><a href="#consumers">03 &nbsp; 结果出口</a><a href="#boundaries">04 &nbsp; 能力边界</a></nav><div class="side-bottom"><span class="small-dot"></span> LOCAL · VALIDATION<br><span>127.0.0.1 / Mac</span><p>受控验证入口<br>不连接生产 API<br>不产生发布</p></div></aside>
+<aside><a class="brand" href="/" aria-label="Security Manager 首页"><span class="mark">S∕</span><span>DEVSECOPS<br><strong>SECURITY LAB</strong></span></a><div class="side-label">EVIDENCE CONSOLE</div><nav><a href="#candidate-overview">候选能力总览</a><a href="#pipeline-overview">00 &nbsp; 流水线总览</a><a class="active" href="#overview">01 &nbsp; 安全验证</a><a href="#plugins">02 &nbsp; 插件结果</a><a href="#consumers">03 &nbsp; 结果出口</a><a href="#boundaries">04 &nbsp; 能力边界</a></nav><div class="side-bottom"><span class="small-dot"></span> LOCAL · VALIDATION<br><span>127.0.0.1 / Mac</span><p>受控验证入口<br>不连接生产 API<br>不产生发布</p></div></aside>
 <main id="overview"><header><span>PLATFORM ENGINEERING <span class="slash">/</span> SECURITY</span><span class="pill">CANDIDATE V2</span></header>
 <div class="intro"><div><div class="eyebrow">SECURITY MANAGER / 验证结果台</div><h1>让每个判断，<br>都有据可查<span class="accent">。</span></h1><p>已有受控执行的安全结果、策略判定与证据链。</p></div><div class="intro-note"><span class="tag replay">REPLAY</span><strong>历史证据，只读展示</strong><p>REAL 表示记录来自真实受控执行。<br>下方历史区不启动扫描；本轮操作见 Live Validation。</p></div></div>
 <div id="error" class="error" role="alert" hidden></div>
 <section class="metrics" aria-label="平台边界"><div><span>PRODUCTION MANAGER</span><strong id="production">UNAVAILABLE</strong><small>生产尚未激活</small></div><div><span>CANONICAL RUNTIME</span><strong id="runtime">—</strong><small>Trivy / Dojo 尚未闭环</small></div><div><span>HISTORICAL INTEGRITY</span><strong id="integrity">UNAVAILABLE</strong><small>当前哈希匹配不修复历史完整性</small></div><div><span>PAGE BEHAVIOR</span><strong>CONTROLLED</strong><small>单插件 · 固定场景 · 无发布</small></div></section>
 <!-- PETCLINIC_PIPELINE_OVERVIEW_BEGIN -->
+<section id="candidate-overview">
+<div class="section-heading"><div><span class="eyebrow">EXISTING CANDIDATE / UNIFIED VIEW</span><h2>插件、策略与结果出口</h2></div><span class="tag neutral">PRODUCTION NOT_ACTIVE</span></div>
+<p class="muted">读取既有 Registry 和已封存 Artifact。开关来自所选历史场景，只读展示；REAL 描述当时真实执行，REPLAY 描述当前查看方式。不会改变配置或生产 Gate。</p>
+<div id="candidate-components" class="consumer-grid" aria-live="polite"></div>
+<div class="section-heading"><h3>Plugin Registry · 当前定义与归档配置</h3><a href="#scenario">切换历史场景查看 Enabled / Disabled</a></div>
+<p id="registry-scope" class="muted">正在读取 Registry…</p>
+<div class="registry-table-wrap"><table><thead><tr><th>插件 / Runner</th><th>归档开关</th><th>归档执行 / Policy</th><th>新执行能力</th></tr></thead><tbody id="registry-rows"></tbody></table></div>
+<details><summary>Registry / Artifact 的真实来源</summary><div id="registry-source"></div></details>
+</section>
 <section id="pipeline-overview">
 <!-- CI_CD_SAME_RUN_BEGIN -->
 <article id="ci-cd-same-run" class="consumer" aria-labelledby="ci-cd-title">
@@ -281,7 +290,7 @@ kubectl get pods -n devsecops-test</code></pre>
 </details></section>
 <!-- PETCLINIC_PIPELINE_OVERVIEW_END -->
 <section id="live-validation">
-<div class="section-heading"><div><span class="eyebrow">LIVE VALIDATION RESULTS</span><h2>Gitleaks 真实扫描 · PASS / FAIL 对照</h2></div><span class="tag neutral">LINUX · 单并发</span></div>
+<div class="section-heading"><div><span class="eyebrow">LIVE VALIDATION RESULTS</span><h2>受控真实执行 · 能力准入与 PASS / FAIL</h2></div><span class="tag neutral">LINUX · 单并发</span></div>
 <p class="muted">仅接受固定插件和固定场景。安全条件不足时返回 BLOCKED，不会重放历史记录充当真实执行。FAIL 表示发现被策略阻止，ERROR 才表示执行错误。</p>
 <div class="select-row live-controls"><label>插件<select id="live-plugin"><option value="gitleaks">Gitleaks</option><option value="semgrep">Semgrep</option><option value="cosign">Cosign</option></select></label><label>场景<select id="live-scenario"><option value="clean">Clean</option><option value="controlled-finding">Controlled Finding</option></select></label><button id="run-validation" type="button" disabled>运行受控验证</button></div>
 <p id="live-capability" class="muted">正在检查执行条件…</p><p id="live-message" role="status" aria-live="polite"></p><div id="live-results" class="consumer-grid"></div>

@@ -23,9 +23,52 @@ function renderRun(){
     const d=el('div',undefined,'digest');d.append(el('span','RESULT DIGEST','detail-label'),el('code',p.resultDigest??'UNAVAILABLE'));card.append(d);
     const details=el('details');details.append(el('summary','证据与执行范围'));
     for(const [key,value] of [['范围',p.executionScope],['Raw report SHA-256',p.rawReportDigest],['Fact digest',p.factDigest],['校验',p.integrity],['原因',p.failureReason??p.reason]])if(value)details.append(el('p',`${key}: ${value}`));
+    if(p.policy){details.append(el('p',`Policy ${p.policy.policyVersion??'UNAVAILABLE'} / ${p.policy.securityLevel??'UNAVAILABLE'} / ${p.policy.profile??'UNAVAILABLE'}`));const policy=el('details');policy.append(el('summary','已有 effectivePolicy / appliedOverrides'),el('pre',JSON.stringify({effectivePolicy:p.policy.effectivePolicy,appliedOverrides:p.policy.appliedOverrides,factDigest:p.policy.factDigest},null,2)));details.append(policy);}
     source(details,p.source);card.append(details);$('plugin-grid').append(card);
   }
   $('source').replaceChildren();source($('source'),r.source);
+  if(r.configuration){$('source').append(el('p','Effective Config · 已验证 seal 绑定'));source($('source'),r.configuration.source);}
+  if(r.artifact){$('source').append(el('p','Candidate Summary / Artifact Seal · '+r.artifact.fileCount+' 个归档文件'));source($('source'),r.artifact.seal);}
+  renderCandidate();
+}
+function renderCandidate(){
+ if(!data)return;
+ const selected=data.runs.find(r=>r.runId===$('scenario').value),cfg=selected?.configuration;
+ const cards=[];
+ const card=(title,label,fields,description,src)=>{const c=el('article',undefined,'consumer');const top=el('div',undefined,'card-top');top.append(el('h3',title),el('span',label,'tag '+(label==='BLOCKED'?'warn':'neutral')));c.append(top,...fields.map(([k,v])=>row(k,v)),el('p',description));if(src)source(c,src);cards.push(c);return c;};
+ const admission=data.semgrepAdmission??{};
+ const semgrepHistory=data.runs.flatMap(r=>r.plugins.filter(p=>p.pluginId==='semgrep'&&p.evidenceClass==='REAL'&&p.executionStatus==='COMPLETED').map(p=>({runId:r.runId,...p})));
+ const semgrepCard=card('Semgrep · 当前执行准入',admission.state??'UNAVAILABLE',[
+  ['本轮新执行',admission.newExecution===true?'REAL':'NOT_EXECUTED'],['受限入口',admission.reason??'UNAVAILABLE'],
+  ['已有真实历史',`PASS ${semgrepHistory.filter(p=>p.policyDecision==='PASS').length} / FAIL ${semgrepHistory.filter(p=>p.policyDecision==='FAIL').length}`],['准入采集时间',time(admission.observedAt)]],
+  '历史 Runner / 规则 / Fixture 已开发。历史执行目录已清理，当前无独立获批 Semgrep 入口。Gitleaks 授权不覆盖 Semgrep；本轮不产生新的 Run ID 或 Digest。',admission.source);
+ const semgrepLink=el('a','查看历史 Semgrep Finding → FAIL');semgrepLink.href='#plugins';semgrepLink.addEventListener('click',()=>{if(data.runs.some(r=>r.runId==='attempt2-G-semgrep-fail')){$('scenario').value='attempt2-G-semgrep-fail';renderRun();}});semgrepCard.append(semgrepLink);
+ const g=data.grafana??{};
+ const grafanaCard=card('Grafana Dashboard',g.classification??'UNAVAILABLE',[
+  ['Candidate UID',g.uid],['已有面板',g.panelCount],['真实查询',g.realQuery],['导入状态',g.importState],['生产激活',g.productionActivation]],
+  '复用既有八面板 Candidate，尚无本轮导入或真实查询证据。原生产 Grafana 看板与此 Candidate 分开展示。',g.source);
+ if(g.download){const a=el('a','打开既有 Dashboard JSON');a.href=g.download;grafanaCard.append(a);}
+ for(const c of data.consumers??[])card(c.name+' Consumer',c.availability==='AVAILABLE'?'MOCK / CANDIDATE':'UNAVAILABLE',[
+  ['协议回执',c.deliveryState],['真实远端投递',c.realRemoteDelivery],['生产投递数',c.productionDeliveryCount],['协议测试时间',time(c.timestamp)]],
+  '已有 HTTP 协议模拟结果，显示原始回执；没有向生产 Loki / DefectDojo 写入。',c.source);
+ const ci=data.ciCd??{};
+ const chain=card('Jenkins / GitOps 闭环',ci.availability==='UNAVAILABLE'?'UNAVAILABLE':'HISTORICAL / REAL',[
+  ['构建',ci.build==null?'UNAVAILABLE':'#'+ci.build+' SUCCESS'],['同次 Run ID',ci.runId],['Policy',ci.policyDecision],['实际变化',ci.updatedValue&&ci.restoredValue?ci.updatedValue+' → '+ci.restoredValue:'UNAVAILABLE'],['完成时间',time(ci.completedAt)]],
+  '同次真实闭环来自既有 #6；本轮未重新触发。完整 Commit、Argo Revision 与原始链接见下方 Pipeline Overview。',ci.source);
+ if(ci.buildUrl){const a=el('a','打开实际 Jenkins Build');a.href=ci.buildUrl;chain.append(a);}
+ const configCard=card('Candidate Summary / Policy',cfg?'HISTORICAL':'UNAVAILABLE',[
+  ['Run ID',selected?.runId],['配置',cfg?`${cfg.enabled?'ENABLED':'DISABLED'} / ${cfg.globalMode}`:'UNAVAILABLE'],['Policy',cfg?`${cfg.policyVersion} / ${cfg.securityLevel} / ${cfg.profile}`:'UNAVAILABLE'],['原综合判定',selected?.overallDecision],['Artifact 文件数',selected?.artifact?.fileCount]],
+  '读取原 Summary、原 Policy Decision 和 seal；不重新求值，不把 Disabled / Error / Blocked 改成 PASS。',cfg?.source);
+ const a=el('a','查看统一只读 API');a.href='/api/overview';configCard.append(a);
+ $('candidate-components').replaceChildren(...cards);
+ $('registry-scope').textContent=cfg?`HISTORICAL / REPLAY · ${selected.runId} · ${cfg.profile} · ${cfg.policyVersion} · 当前读到的 Registry 定义不等于获准在线执行。`:'UNAVAILABLE：所选记录缺少已验证配置，不能推断开关。';
+ $('registry-rows').replaceChildren(...(data.registry?.entries??[]).map(p=>{
+  const tr=el('tr');const name=el('td');name.append(el('strong',p.pluginId),el('div',p.runner+' · '+p.executionMode,'muted'));tr.append(name);
+  const enabled=cfg?.plugins?.[p.pluginId]?.enabled;const flag=el('td');if(typeof enabled==='boolean'){const input=el('input');input.type='checkbox';input.checked=enabled;input.disabled=true;input.setAttribute('aria-label',p.pluginId+' historical enabled');flag.append(input,el('span',enabled?' ENABLED':' DISABLED'));}else flag.textContent='UNAVAILABLE';tr.append(flag);
+  const saved=selected?.artifact?.statuses?.[p.pluginId];tr.append(el('td',saved?`${saved.executionStatus} / ${saved.policyDecision??'未求值'}`:'NOT_TESTED'));
+  const live=liveCapabilities?.plugins.find(x=>x.pluginId===p.pluginId);tr.append(el('td',live?live.state+' · '+(live.reason??live.executionIdentity??'已配置受限入口'):'NOT_CONFIGURED · 无页面执行入口'));return tr;
+ }));
+ $('registry-source').replaceChildren();source($('registry-source'),data.registry?.source);if(cfg)source($('registry-source'),cfg.source);
 }
 function render(){
   const selected=$('scenario').value;
@@ -59,6 +102,7 @@ function capabilityText(){
  $('live-scenario').replaceChildren(...(c?.scenarios??[]).map(id=>{const o=el('option',id==='clean'?'Clean':'Controlled Finding');o.value=id;return o;}));
  if(c?.scenarios.includes(selected))$('live-scenario').value=selected;
  $('run-validation').disabled=liveBusy||c?.state!=='READY';
+ renderCandidate();
 }
 function renderLive(runs){
  const comparison=['clean','controlled-finding'].map(s=>runs.find(r=>r.pluginId==='gitleaks'&&r.scenarioId===s&&r.evidenceClass==='REAL'&&r.state==='COMPLETED')).filter(Boolean);

@@ -4,6 +4,8 @@ import path from 'node:path';
 import {fileURLToPath} from 'node:url';
 import {createHash} from 'node:crypto';
 import {verifyResult} from '../result.mjs';
+import {realThreePluginsRegistry} from '../registry.mjs';
+import {digest} from '../../summary-v2/codec.mjs';
 export const root = fileURLToPath(new URL('../../../../', import.meta.url));
 const evidence = 'evidence/2026-11-05/';
 const runs = evidence + 'security-manager-v2-cosign-real/real-linux/outputs/';
@@ -40,6 +42,8 @@ function run([runId, label]) {
     if (seal.value.files?.['candidate-summary.json']?.sha256 !== summary.sha256) throw Error('SUMMARY_SEAL_MISMATCH');
     const s = summary.value;
     if (s.runId !== runId || s.productionEvidence !== false || s.kind !== 'SecuritySummaryCandidate') throw Error('SOURCE_IDENTITY_MISMATCH');
+    const config=read(relative+'effective-config.json');
+    if(seal.value.files?.['effective-config.json']?.sha256!==config.sha256 || config.value.effectiveConfigDigest!==s.effectiveConfigDigest)throw Error('CONFIG_SEAL_MISMATCH');
     const plugins = ['gitleaks', 'semgrep', 'cosign'].map(pluginId => {
       try {
         const saved = read(relative + pluginId + '.result.json');
@@ -61,6 +65,8 @@ function run([runId, label]) {
           executionScope: id(p.executionScope), startedAt: iso(p.startedAt), completedAt: iso(p.completedAt),
           resultDigest: hash(p.resultDigest), rawReportDigest: hash(p.rawReportDigest), factDigest: hash(p.factDigest),
           failureReason: id(p.failureReason), evaluationCount: p.evaluationCount,
+          policy:{policyVersion:id(p.policy?.policyVersion),securityLevel:id(p.policy?.securityLevel),profile:id(p.policy?.profile),
+            effectivePolicy:p.policy?.effectivePolicy??null,appliedOverrides:p.policy?.appliedOverrides??[],factDigest:hash(p.factDigest)},
           source: {path: saved.path, sha256: saved.sha256}, integrity: 'HASH_MATCH'};
       } catch (e) { return {pluginId, availability: 'UNAVAILABLE', executionStatus: 'UNAVAILABLE', policyDecision: null, reason: safeError(e)}; }
     });
@@ -68,7 +74,13 @@ function run([runId, label]) {
       overallDecision: status(s.overallDecision, ['PASS','WARN','FAIL','ERROR','POLICY_ERROR','DISABLED','BLOCKED']),
       globalMode: id(s.globalMode), securityLevel: id(s.securityLevel), policyVersion: id(s.policyVersion), profile: id(s.profile),
       source: {path: summary.path, sha256: summary.sha256}, sealSha256: seal.sha256,
-      plugins, completedAt: plugins.map(p => p.completedAt).filter(Boolean).sort().at(-1) ?? null};
+      plugins,configuration:{enabled:config.value.enabled,globalMode:id(config.value.globalMode),securityLevel:id(config.value.securityLevel),profile:id(config.value.profile),
+        policyVersion:id(config.value.policyVersion),effectiveConfigDigest:hash(config.value.effectiveConfigDigest),
+        plugins:Object.fromEntries(Object.entries(config.value.plugins??{}).filter(([key])=>realThreePluginsRegistry().ids().includes(key)).map(([key,value])=>[key,{enabled:typeof value.enabled==='boolean'?value.enabled:null}])),
+        source:{path:config.path,sha256:config.sha256}},
+      artifact:{summary:{path:summary.path,sha256:summary.sha256},seal:{path:seal.path,sha256:seal.sha256},fileCount:Object.keys(seal.value.files??{}).length,
+        statuses:Object.fromEntries((s.pluginResults??[]).map(p=>[p.pluginId,{executionStatus:status(p.executionStatus,['COMPLETED','DISABLED','SKIPPED','NOT_CONFIGURED','UNSUPPORTED','POLICY_ERROR','ERROR']),policyDecision:p.policyDecision==null?null:status(p.policyDecision,['PASS','WARN','FAIL'])}]))},
+      completedAt: plugins.map(p => p.completedAt).filter(Boolean).sort().at(-1) ?? null};
   } catch (e) { return {runId, label, availability: 'UNAVAILABLE', reason: safeError(e), plugins: ['gitleaks','semgrep','cosign'].map(pluginId => ({pluginId, availability:'UNAVAILABLE', policyDecision:null, reason:safeError(e)}))}; }
 }
 function safeError(e) {
@@ -99,9 +111,25 @@ export function overview() {
   let dojo;
   try { const s=read(evidence+'security-manager-v2-dojo-http/verdict.json'); dojo={httpAdapter:s.value.verdict.DEFECTDOJO_HTTP_ADAPTER,realDelivery:s.value.verdict.DEFECTDOJO_REAL_REMOTE_DELIVERY,source:{path:s.path,sha256:s.sha256}}; }
   catch(e) { dojo={httpAdapter:'UNAVAILABLE',realDelivery:'UNAVAILABLE',reason:safeError(e)}; }
-  return {kind:'SecurityManagerReadOnlyView', servedAt:new Date().toISOString(),
+  let registryView,grafana,ciCd,semgrepAdmission;
+  try{const src=readCode('infra/security/manager-v2/registry.mjs');registryView={kind:'EXISTING_CODE_OWNED_REGISTRY',classification:'CANDIDATE',source:src,
+    entries:realThreePluginsRegistry().all().map(p=>({pluginId:p.pluginId,pluginVersion:p.pluginVersion,runner:p.runner,executionMode:p.executionMode,defaultEnabled:p.enabled,requiredCapabilities:p.requiredCapabilities,supportedProfiles:p.supportedProfiles,timeoutMs:p.timeout}))};}
+  catch(e){registryView={availability:'UNAVAILABLE',reason:safeError(e),entries:[]};}
+  try{const src=read('infra/security/manager-v2/observability/dashboard.json');grafana={classification:'CANDIDATE',uid:id(src.value.uid),title:String(src.value.title),panelCount:src.value.panels.length,
+    panelTitles:src.value.panels.map(p=>String(p.title)),realQuery:baseline.GRAFANA_REAL_QUERY??'UNAVAILABLE',productionActivation:baseline.PRODUCTION_SECURITY_MANAGER??'UNAVAILABLE',importState:'UNVERIFIED',download:'/candidate-dashboard.json',source:{path:src.path,sha256:src.sha256}};}
+  catch(e){grafana={availability:'UNAVAILABLE',reason:safeError(e)};}
+  try{const src=read('evidence/2026-11-06/ci-cd-real/attempt2/result.json');const v=src.value,{receiptDigest,...body}=v;
+    if(digest(body)!==receiptDigest||v.status!=='SUCCESS'||!v.updated?.verified||!v.restored?.verified||v.policyDecision!=='PASS')throw Error('CI_CD_RECEIPT_INVALID');
+    ciCd={classification:'HISTORICAL',evidenceClass:'REAL',build:v.build,runId:id(v.runId),triggerCommit:id(v.triggerCommit),policyDecision:v.policyDecision,resultDigest:hash(v.resultDigest),completedAt:iso(v.completedAt),
+      updateCommit:id(v.update.afterCommit),restoreCommit:id(v.restore.afterCommit),updatedValue:v.updated.value,restoredValue:v.restored.value,
+      buildUrl:'http://jenkins.devops.local/job/security-gitlab-push-demo/'+v.build+'/',source:{path:src.path,sha256:src.sha256}};}
+  catch(e){ciCd={availability:'UNAVAILABLE',reason:safeError(e)};}
+  try{const src=read('evidence/2026-11-06/view-candidate-integration/state.json');semgrepAdmission={...src.value.semgrep,observedAt:src.value.observedAt,classification:'HISTORICAL',source:{path:src.path,sha256:src.sha256}};}
+  catch(e){semgrepAdmission={availability:'UNAVAILABLE',reason:safeError(e)};}
+  return {kind:'SecurityManagerReadOnlyView', servedAt:new Date().toISOString(),registry:registryView,grafana,ciCd,semgrepAdmission,
     mode:'REPLAY', liveScan:false, baseline, dojo, runs:catalog.map(run),
     consumers:[consumer('security-manager-v2-loki/loki-protocol-samples-attempt5/A-three-valid.json','Loki'),
       consumer('security-manager-v2-dojo-http/samples-attempt5/gitleaks-success.json','DefectDojo')],
     notices:['已有受控真实执行记录的只读展示；当前没有扫描任务。','Consumer 使用独立历史 Run ID，不能与所选插件记录拼为同轮运行。','当前文件哈希匹配不等于恢复历史证据完整性。']};
 }
+function readCode(relative){const full=path.join(root,relative);if(fs.realpathSync(full)!==full)throw Error('SOURCE_SYMLINK_REJECTED');return {path:relative,sha256:sha(fs.readFileSync(full))};}

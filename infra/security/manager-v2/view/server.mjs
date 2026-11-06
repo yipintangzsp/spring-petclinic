@@ -6,7 +6,7 @@ import {capabilities,submit,getRun,recentRuns} from './actions.mjs';
 import {localHost,localOrigin} from './origins.mjs';
 const csrf=randomBytes(32).toString('hex');
 const instance = process.env.SECURITY_VIEW_INSTANCE ?? 'foreground';
-const assets = new Map([['/', ['index.html','text/html; charset=utf-8']], ['/app.js',['app.js','text/javascript; charset=utf-8']], ['/style.css',['style.css','text/css; charset=utf-8']]]);
+const assets = new Map([['/', ['index.html','text/html; charset=utf-8']], ['/app.js',['app.js','text/javascript; charset=utf-8']], ['/style.css',['style.css','text/css; charset=utf-8']], ['/candidate-dashboard.json',['../observability/dashboard.json','application/json; charset=utf-8']]]);
 const server = http.createServer(async(req,res) => {
   const headers = {'Cache-Control':'no-store','X-Content-Type-Options':'nosniff',
     'Content-Security-Policy':"default-src 'none'; script-src 'self'; style-src 'self'; connect-src 'self'; img-src 'self'; frame-ancestors 'none'; base-uri 'none'; form-action 'none'",
