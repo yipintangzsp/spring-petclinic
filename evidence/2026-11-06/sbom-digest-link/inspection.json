@@ -1,0 +1,216 @@
+{
+  "queriedAt": "2026-11-06T09:34:31Z",
+  "candidate": {
+    "indexDigest": "sha256:2fbaea65ab030c56c60c62e3ee9fbe362deb8bbbb8216a891ef4c7bbbcea6d55",
+    "sourceCommit": "9a78cc89f22fa98fb1ffcc43e2ae279299471793",
+    "build": 2,
+    "jarSha256": "7f5d49a65149d25d16e38dbf7c5d0c2686ac8a15ab53c2d1a05c1575f44a8100",
+    "contextJar": {
+      "name": "target/spring-petclinic-4.0.0-SNAPSHOT.jar",
+      "sha256": "7f5d49a65149d25d16e38dbf7c5d0c2686ac8a15ab53c2d1a05c1575f44a8100"
+    },
+    "completedAt": "2026-10-30T03:16:28.097Z",
+    "platforms": [
+      "linux/amd64",
+      "linux/arm64"
+    ],
+    "provenanceContainsSbomReference": false
+  },
+  "sbom": {
+    "job": "petclinic-ci",
+    "build": 270,
+    "summary": {
+      "path": ".devsecops/sbom-summary.json",
+      "sha256": "ac293906389458abc9a94148cdaef429ec2c8072902531a78721e74f9e674e2b",
+      "body": {
+        "components": 143,
+        "createdAt": "2026-10-30T03:17:44.212Z",
+        "dependencyNodes": 144,
+        "format": "CycloneDX",
+        "packagedJarEntry": "META-INF/sbom/application.cdx.json",
+        "scope": "Maven production dependencies; not OS packages, scanner or all platform images",
+        "sha256": "b0a9ab3d854212e8ff6ace34cfd683775ce32cac955b9d41e038dca78dc2b3f3",
+        "source": "9a78cc89f22fa98fb1ffcc43e2ae279299471793",
+        "specVersion": "1.6",
+        "status": "success"
+      }
+    },
+    "actualSha256": "b0a9ab3d854212e8ff6ace34cfd683775ce32cac955b9d41e038dca78dc2b3f3",
+    "bomFormat": "CycloneDX",
+    "specVersion": "1.6",
+    "components": 143,
+    "subject": {
+      "bom-ref": "pkg:maven/org.springframework.samples/spring-petclinic@4.0.0-SNAPSHOT?type=jar",
+      "description": "Parent pom providing dependency and plugin management for applications built with Maven",
+      "externalReferences": [
+        {
+          "type": "website",
+          "url": "https://spring.io/projects/spring-boot/spring-petclinic"
+        },
+        {
+          "type": "vcs",
+          "url": "https://github.com/spring-projects/spring-boot/spring-petclinic"
+        }
+      ],
+      "group": "org.springframework.samples",
+      "licenses": [
+        {
+          "license": {
+            "id": "Apache-2.0"
+          }
+        }
+      ],
+      "name": "spring-petclinic",
+      "purl": "pkg:maven/org.springframework.samples/spring-petclinic@4.0.0-SNAPSHOT?type=jar",
+      "type": "application",
+      "version": "4.0.0-SNAPSHOT"
+    },
+    "metadataProperties": [
+      {
+        "name": "maven.goal",
+        "value": "makeAggregateBom"
+      },
+      {
+        "name": "maven.scopes",
+        "value": "compile,provided,runtime,system"
+      },
+      {
+        "name": "cdx:reproducible",
+        "value": "enabled"
+      }
+    ]
+  },
+  "possibleBindingDocuments": [
+    {
+      "path": ".devsecops/build-compilation.json",
+      "securityBuild": null,
+      "candidateBuild": {
+        "path": ".devsecops/build-compilation.json",
+        "sha256": "e5bb28ffec4edafbd41561bbf9a80cb775e761f3205f2527a8064b308a18b50a",
+        "body": {
+          "builder": {
+            "buildNumber": 2,
+            "identity": "http://jenkins.devops.local/job/petclinic-candidate-build"
+          },
+          "finishedAt": "2026-10-30T03:14:37.853Z",
+          "jarSha256": "7f5d49a65149d25d16e38dbf7c5d0c2686ac8a15ab53c2d1a05c1575f44a8100",
+          "mavenDependencies": "Not hermetic: existing Maven repository and pom resolution; no SLSA level claimed",
+          "source": {
+            "commit": "9a78cc89f22fa98fb1ffcc43e2ae279299471793",
+            "repository": "http://gitlab-service.ns-devops.svc.cluster.local/root/petclinic-platform.git"
+          },
+          "sourceCommit": "9a78cc89f22fa98fb1ffcc43e2ae279299471793",
+          "startedAt": "2026-10-30T03:14:20.429Z"
+        }
+      }
+    },
+    {
+      "path": ".devsecops/candidate-sbom.json",
+      "securityBuild": null,
+      "candidateBuild": null
+    },
+    {
+      "path": ".devsecops/sbom-verification.json",
+      "securityBuild": null,
+      "candidateBuild": null
+    },
+    {
+      "path": ".devsecops/build-attestation-verification.json",
+      "securityBuild": {
+        "path": ".devsecops/build-attestation-verification.json",
+        "sha256": "fb2c9fb066562c524429cd8bc74e2155e0ef593b83f8a14469197564ae10bab3",
+        "body": {
+          "candidateImage": "core.harbor.domain/petclinic/petclinic@sha256:2fbaea65ab030c56c60c62e3ee9fbe362deb8bbbb8216a891ef4c7bbbcea6d55",
+          "expected": {
+            "buildNumber": "2",
+            "builder": "http://jenkins.devops.local/job/petclinic-candidate-build",
+            "commit": "9a78cc89f22fa98fb1ffcc43e2ae279299471793",
+            "image": "core.harbor.domain/petclinic/petclinic@sha256:2fbaea65ab030c56c60c62e3ee9fbe362deb8bbbb8216a891ef4c7bbbcea6d55",
+            "repository": "http://gitlab-service.ns-devops.svc.cluster.local/root/petclinic-platform.git"
+          },
+          "status": "success",
+          "temporaryPrivateFilesRemoved": true,
+          "tests": [
+            {
+              "case": "correct",
+              "result": "PASS"
+            },
+            {
+              "case": "digest",
+              "result": "REJECTED"
+            },
+            {
+              "case": "source",
+              "result": "REJECTED"
+            },
+            {
+              "case": "builder",
+              "result": "REJECTED"
+            },
+            {
+              "case": "tampered",
+              "result": "REJECTED"
+            }
+          ]
+        }
+      },
+      "candidateBuild": {
+        "path": ".devsecops/build-attestation-verification.json",
+        "sha256": "fb2c9fb066562c524429cd8bc74e2155e0ef593b83f8a14469197564ae10bab3",
+        "body": {
+          "candidateImage": "core.harbor.domain/petclinic/petclinic@sha256:2fbaea65ab030c56c60c62e3ee9fbe362deb8bbbb8216a891ef4c7bbbcea6d55",
+          "expected": {
+            "buildNumber": "2",
+            "builder": "http://jenkins.devops.local/job/petclinic-candidate-build",
+            "commit": "9a78cc89f22fa98fb1ffcc43e2ae279299471793",
+            "image": "core.harbor.domain/petclinic/petclinic@sha256:2fbaea65ab030c56c60c62e3ee9fbe362deb8bbbb8216a891ef4c7bbbcea6d55",
+            "repository": "http://gitlab-service.ns-devops.svc.cluster.local/root/petclinic-platform.git"
+          },
+          "status": "success",
+          "temporaryPrivateFilesRemoved": true,
+          "tests": [
+            {
+              "case": "correct",
+              "result": "PASS"
+            },
+            {
+              "case": "digest",
+              "result": "REJECTED"
+            },
+            {
+              "case": "source",
+              "result": "REJECTED"
+            },
+            {
+              "case": "builder",
+              "result": "REJECTED"
+            },
+            {
+              "case": "tampered",
+              "result": "REJECTED"
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "archiveAvailability": {
+    "candidateBuild": [
+      ".candidate-preflight.json",
+      ".devsecops/build-attestation-envelope.json",
+      ".devsecops/build-attestation-verification.json",
+      ".devsecops/build-compilation.json",
+      ".devsecops/build-provenance.json",
+      "target/platform/image-build-metadata.json"
+    ],
+    "securityBuild": [
+      ".devsecops/build-provenance-status.json",
+      ".devsecops/gates/sbom.log",
+      ".devsecops/provenance-status.json",
+      ".devsecops/provenance.json",
+      ".devsecops/sbom-summary.json",
+      ".devsecops/sbom.json"
+    ]
+  },
+  "newOperations": 0
+}

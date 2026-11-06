@@ -1,0 +1,13 @@
+# SBOM digest association: UNVERIFIED
+
+The actual Jenkins archives confirm candidate build #2 produced the exact index and both platform manifests. Signed build provenance binds its JAR SHA256 `7f5d49a65149d25d16e38dbf7c5d0c2686ac8a15ab53c2d1a05c1575f44a8100` to its build context, but contains no SBOM reference/hash. The JAR SHA above is shown from the actual inspection.json; this explanatory text is not a verification source.
+
+The #270 CycloneDX 1.6 SBOM has 143 Maven components, SHA256 `b0a9ab3d854212e8ff6ace34cfd683775ce32cac955b9d41e038dca78dc2b3f3`; its recorded creation follows candidate compilation/image build. Its summary has no JAR SHA256; the candidate build archives no SBOM/JAR/tar export; neither archive has candidate-sbom.json. The existing sbom-verify.mjs reads a newly packaged local JAR and checks local Maven output; it does not prove bytes inside the earlier candidate digest. Same source commit is insufficient. The exact missing edge is candidate image/JAR material → extracted SBOM bytes/hash.
+
+No new verifier or generator was introduced. Registry already has sbom, but runner=blocked / PREFLIGHT_ONLY. Existing Candidate config/core global OFF, mode OFF, and plugin OFF were tested with the SBOM-only existing registry: DISABLED, zero Policy evaluations, no raw report. Enabled without a runner remains NOT_CONFIGURED. Web controls currently support gitleaks/semgrep/cosign only. Therefore plugin integration is INCOMPLETE; switch verification covers the existing core only. Actual digest-mismatch execution test is NOT_TESTED because there is no candidate-binding verifier. No synthetic success was claimed.
+
+Existing Result/Artifact/Router/core/policy/registry contracts were not changed. Only the existing read-only Supply Chain view adds a digest-checked review snapshot with the missing evidence and plugin limits. No new execution path or PetClinic-specific executor/config interface is added. Historical evidence remains viewable irrespective of execution switch state.
+
+Potential future bounded path: retrieve exact-digest immutable image material read-only, prove platform manifest/layer hashes, extract existing packaged SBOM in a controlled resource-budgeted environment, then integrate via existing plugin contracts and project configuration. This was assessed but not executed; no rebuild, layer download, full scan, Registry write or new permission was used.
+
+Cosign MISSING, release NOT_APPROVED, candidate NOT_DEPLOYED unchanged. Page/API HTTP 200; production healthy and configuration unchanged. Original evidence integrity remains FAILED, production Manager NOT_ACTIVE, runtime14/16. Rollback: revert this view-only commit and restart managed local page after no active run; no production rollback required.

@@ -122,6 +122,10 @@ export function overview() {
     if(digest(v)!==receiptDigest||v.kind!=='SupplyChainSecuritySnapshot'||v.candidateDigest!=='sha256:2fbaea65ab030c56c60c62e3ee9fbe362deb8bbbb8216a891ef4c7bbbcea6d55'||v.release!==0||v.rollout!==0||v.sbom.candidateDigestBinding!=='UNVERIFIED')throw Error('SUPPLY_CHAIN_RECEIPT_INVALID');
     supplyChain={...v,source:{path:src.path,sha256:src.sha256}};
   }catch(e){supplyChain={availability:'UNAVAILABLE',reason:safeError(e)};}
+  try{const src=read('evidence/2026-11-06/sbom-digest-link/review.json');const {receiptDigest,...v}=src.value;
+    if(digest(v)!==receiptDigest||v.kind!=='SbomDigestBindingReview'||v.status!=='UNVERIFIED'||v.candidateDigest!==supplyChain.candidateDigest||v.sbomSha256!==supplyChain.sbom.sha256)throw Error('SBOM_REVIEW_BINDING_INVALID');
+    supplyChain.sbom={...supplyChain.sbom,bindingReview:{...v,source:{path:src.path,sha256:src.sha256}}};
+  }catch(e){if(e.code!=='ENOENT'&&supplyChain)supplyChain.sbomReviewError=safeError(e);}
   let registryView,grafana,ciCd,semgrepAdmission;
   try{const src=readCode('infra/security/manager-v2/registry.mjs');registryView={kind:'EXISTING_CODE_OWNED_REGISTRY',classification:'CANDIDATE',source:src,
     entries:realThreePluginsRegistry().all().map(p=>({pluginId:p.pluginId,pluginVersion:p.pluginVersion,runner:p.runner,executionMode:p.executionMode,defaultEnabled:p.enabled,requiredCapabilities:p.requiredCapabilities,supportedProfiles:p.supportedProfiles,timeoutMs:p.timeout}))};}

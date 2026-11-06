@@ -76,6 +76,10 @@ function renderCandidate(){
   '候选构建、安全验收为两个独立历史 Job，通过精确 Digest 与 Commit 关联。143 个组件来自 #270 的历史 Maven SBOM，未证明是此候选镜像的内部 SBOM。独立 Cosign Fixture PASS 不用于此候选的签名或批准。',sc.source);
  if(sc.sbom){const details=el('details');details.append(el('summary','查看真实历史 SBOM 组件（前 '+sc.sbom.components.length+' / '+sc.sbom.componentCount+'，候选绑定 UNVERIFIED）'),el('p',sc.sbom.reason),row('SBOM SHA256',sc.sbom.sha256));
   for(const c of sc.sbom.components)details.append(el('p',c.name+' @ '+c.version),el('code',c.purl??'PURL_UNAVAILABLE'));supply.append(details);}
+ if(sc.sbom?.bindingReview){const br=sc.sbom.bindingReview,details=el('details');details.append(el('summary','SBOM Digest 关联核查：'+br.status),
+  row('候选构建 JAR SHA256',br.candidateJarSha256),row('历史 SBOM SHA256',br.sbomSha256),row('候选构建完成',time(br.candidateBuildCompletedAt)),row('历史 SBOM 生成',time(br.sbomGeneratedAt)),
+  row('插件执行入口',br.pluginRunner),row('网页 SBOM 开关',br.webSwitch),el('p','现有 Core 的全局/单插件关闭路径已验证零扫描、零求值；SBOM 真实执行接线仍为 INCOMPLETE。'));
+  for(const gap of br.missingEvidence)details.append(el('p','缺失：'+gap));source(details,br.source);supply.append(details);}
  if(sc.deployment)supply.append(row('当前运行 Image ID',sc.deployment.runningImageIds.join(' · ')));
  for(const link of sc.links??[]){const a=el('a',link.label);a.href=link.url;supply.append(a);}
  const ci=data.ciCd??{};
