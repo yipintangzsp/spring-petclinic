@@ -112,8 +112,9 @@ export function overview() {
   try { const s=read(evidence+'security-manager-v2-dojo-http/verdict.json'); dojo={httpAdapter:s.value.verdict.DEFECTDOJO_HTTP_ADAPTER,realDelivery:s.value.verdict.DEFECTDOJO_REAL_REMOTE_DELIVERY,source:{path:s.path,sha256:s.sha256}}; }
   catch(e) { dojo={httpAdapter:'UNAVAILABLE',realDelivery:'UNAVAILABLE',reason:safeError(e)}; }
   let dojoReal;
-  try{const src=read('evidence/2026-11-06/dojo-real-delivery/state.json');const {receiptDigest,...v}=src.value;
-    if(digest(v)!==receiptDigest||v.kind!=='DefectDojoRealDeliveryState'||v.state!=='BLOCKED'||!id(v.runId)||!hash(v.resultDigest)||v.productionGovernanceMutations!==0)throw Error('DOJO_REAL_STATE_INVALID');
+  try{let src;try{try{src=read('evidence/2026-11-06/dojo-real-execution/delivered-state.json');}catch(e){if(e.code!=='ENOENT')throw e;src=read('evidence/2026-11-06/dojo-real-execution/state.json');}}catch(e){if(e.code!=='ENOENT')throw e;src=read('evidence/2026-11-06/dojo-real-delivery/state.json');}const {receiptDigest,...v}=src.value;
+    if(digest(v)!==receiptDigest||v.kind!=='DefectDojoRealDeliveryState'||!['BLOCKED','DELIVERED'].includes(v.state)||!id(v.runId)||!hash(v.resultDigest)||v.productionGovernanceMutations!==0)throw Error('DOJO_REAL_STATE_INVALID');
+    if(v.state==='DELIVERED'&&(v.queryState!=='VERIFIED'||v.productId!==7||v.engagementId!==4||v.findingIds?.length!==2||v.findingUrls?.some((url,i)=>url!=='http://defectdojo.devops.local/finding/'+v.findingIds[i])))throw Error('DOJO_REAL_BINDING_INVALID');
     dojoReal={...v,source:{path:src.path,sha256:src.sha256}};
   }catch(e){dojoReal={state:'NOT_TESTED',reason:safeError(e)};}
   let registryView,grafana,ciCd,semgrepAdmission;

@@ -1,0 +1,93 @@
+{
+  "user": {
+    "id": 7,
+    "username": "security-manager-v2-demo",
+    "isStaff": false,
+    "isSuperuser": false,
+    "groupCount": 0,
+    "modelPermissionCount": 0,
+    "authorizedProducts": [
+      7
+    ]
+  },
+  "product": {
+    "id": 7,
+    "name": "Security Manager V2 DEMO NON-PRODUCTION",
+    "productType": {
+      "id": 2,
+      "name": "DevSecOps"
+    }
+  },
+  "engagement": {
+    "id": 4,
+    "name": "Semgrep Controlled Findings DEMO NON-PRODUCTION",
+    "product": 7
+  },
+  "scopeApiEvidence": [
+    {
+      "method": "GET",
+      "path": "/api/v2/products/7/",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/api/v2/products/?limit=100",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/api/v2/products/1/",
+      "status": 404
+    },
+    {
+      "method": "GET",
+      "path": "/api/v2/products/2/",
+      "status": 404
+    },
+    {
+      "method": "GET",
+      "path": "/api/v2/engagements/1/",
+      "status": 404
+    },
+    {
+      "method": "GET",
+      "path": "/api/v2/engagements/2/",
+      "status": 404
+    },
+    {
+      "method": "POST",
+      "path": "/api/v2/engagements/",
+      "status": 201
+    },
+    {
+      "method": "GET",
+      "path": "/api/v2/engagements/4/",
+      "status": 200
+    }
+  ],
+  "preexistingGovernanceBaseline": {
+    "Product": {
+      "count": 2,
+      "sha256": "f849a85ad42b8650819d72dbbd6c14fdea24dc1133eacecdd0e4a5a752eedcb6"
+    },
+    "Engagement": {
+      "count": 2,
+      "sha256": "daaa743acbe99b6edb3f2450ea3dd3cd1a9face670815f0c8d48523272a54e1f"
+    },
+    "Test": {
+      "count": 35,
+      "sha256": "c566550f4dcd1de9f7f2b15196e64e8354554c16cbcb3a27ff74265ac392aa31"
+    },
+    "Finding": {
+      "count": 6627,
+      "sha256": "964345f0ee25fa3d5f16dab2ee96dc9c76ed0fb8046398393b55b884a699b479"
+    }
+  },
+  "shortTermPolicy": "REVOKE_AND_DELETE_KEYCHAIN_AFTER_CONTROLLED_EXECUTION",
+  "credentialReference": {
+    "store": "macOS Login Keychain",
+    "service": "petclinic-security-manager-v2-defectdojo",
+    "account": "security-manager-v2-demo"
+  },
+  "createdAt": "2026-11-06T08:55:33.046934+00:00"
+}
