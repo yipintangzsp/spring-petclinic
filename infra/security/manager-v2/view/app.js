@@ -65,6 +65,19 @@ function renderCandidate(){
   ['真实查询回验',dj.queryState??'NOT_TESTED'],['来源执行时间',time(dj.executionTime)],['本次核查时间',time(dj.observedAt)]],
   dj.state==='DELIVERED'?'真实历史 Semgrep Artifact 已导入独立 DEMO，并查询回两条 Finding。ERROR 是原生严重级别，High 是既有 Dojo 治理映射。同日志幂等重投未发送 HTTP；短期 Token 已撤销。':dj.reason==='DEVOPS_MANAGEMENT_AND_DEFECTDOJO_UNREACHABLE'?'DEMO 初始化已获批准；当前 devops SSH 与 DefectDojo HTTP 不可达，尚未执行远端初始化或创建 Token。未写入漏洞记录，生产健康暂时无法验证。':dj.state==='BLOCKED'?'已有真实 Semgrep Finding 已由现有 Consumer 离线映射；尚无隔离 DEMO 上下文与仅该范围可写的身份授权，因此未投递。下方历史 MOCK 回执不代表真实漏洞治理。':'尚未验证真实远端治理。',dj.source);
  if(dj.state==='DELIVERED')for(const [i,url]of(dj.findingUrls??[]).entries()){const a=el('a','打开 DefectDojo Finding #'+dj.findingIds[i]);a.href=url;dojoCard.append(a);}
+ const sc=data.supplyChain??{};
+ const supply=card('Supply Chain Security',sc.harborStatus??'UNAVAILABLE',[
+  ['Harbor Candidate',sc.repository?sc.repository+':'+sc.tag:'UNAVAILABLE'],['Image Digest',sc.candidateDigest],
+  ['镜像构建（HISTORICAL）',sc.build?sc.build.job+' #'+sc.build.number+' / '+sc.build.status:'UNAVAILABLE'],['GitLab Commit',sc.commit],
+  ['Build Provenance',sc.provenance?.status],['Security Gate（HISTORICAL）',sc.securityGate?sc.securityGate.decision+' / '+sc.securityGate.mode+' / '+sc.securityGate.action:'UNAVAILABLE'],
+  ['候选镜像 SBOM 绑定',sc.sbom?.candidateDigestBinding],['可用历史 SBOM',sc.sbom?sc.sbom.format+' '+sc.sbom.specVersion+' / '+sc.sbom.componentCount+' Maven 组件 / '+sc.sbom.status:'UNAVAILABLE'],
+  ['候选 Cosign 签名',sc.signature?.status],['候选实际验签',sc.signature?.cosignVerification],['Release Approval',sc.releaseApproval?.status],
+  ['Kubernetes Deployment',sc.deployment?.status],['只读采集时间',time(sc.observedAt)]],
+  '候选构建、安全验收为两个独立历史 Job，通过精确 Digest 与 Commit 关联。143 个组件来自 #270 的历史 Maven SBOM，未证明是此候选镜像的内部 SBOM。独立 Cosign Fixture PASS 不用于此候选的签名或批准。',sc.source);
+ if(sc.sbom){const details=el('details');details.append(el('summary','查看真实历史 SBOM 组件（前 '+sc.sbom.components.length+' / '+sc.sbom.componentCount+'，候选绑定 UNVERIFIED）'),el('p',sc.sbom.reason),row('SBOM SHA256',sc.sbom.sha256));
+  for(const c of sc.sbom.components)details.append(el('p',c.name+' @ '+c.version),el('code',c.purl??'PURL_UNAVAILABLE'));supply.append(details);}
+ if(sc.deployment)supply.append(row('当前运行 Image ID',sc.deployment.runningImageIds.join(' · ')));
+ for(const link of sc.links??[]){const a=el('a',link.label);a.href=link.url;supply.append(a);}
  const ci=data.ciCd??{};
  const chain=card('Jenkins / GitOps 闭环',ci.availability==='UNAVAILABLE'?'UNAVAILABLE':'HISTORICAL / REAL',[
   ['构建',ci.build==null?'UNAVAILABLE':'#'+ci.build+' SUCCESS'],['同次 Run ID',ci.runId],['Policy',ci.policyDecision],['实际变化',ci.updatedValue&&ci.restoredValue?ci.updatedValue+' → '+ci.restoredValue:'UNAVAILABLE'],['完成时间',time(ci.completedAt)]],

@@ -117,6 +117,11 @@ export function overview() {
     if(v.state==='DELIVERED'&&(v.queryState!=='VERIFIED'||v.productId!==7||v.engagementId!==4||v.findingIds?.length!==2||v.findingUrls?.some((url,i)=>url!=='http://defectdojo.devops.local/finding/'+v.findingIds[i])))throw Error('DOJO_REAL_BINDING_INVALID');
     dojoReal={...v,source:{path:src.path,sha256:src.sha256}};
   }catch(e){dojoReal={state:'NOT_TESTED',reason:safeError(e)};}
+  let supplyChain;
+  try{const src=read('evidence/2026-11-06/supply-chain-view/snapshot.json');const {receiptDigest,...v}=src.value;
+    if(digest(v)!==receiptDigest||v.kind!=='SupplyChainSecuritySnapshot'||v.candidateDigest!=='sha256:2fbaea65ab030c56c60c62e3ee9fbe362deb8bbbb8216a891ef4c7bbbcea6d55'||v.release!==0||v.rollout!==0||v.sbom.candidateDigestBinding!=='UNVERIFIED')throw Error('SUPPLY_CHAIN_RECEIPT_INVALID');
+    supplyChain={...v,source:{path:src.path,sha256:src.sha256}};
+  }catch(e){supplyChain={availability:'UNAVAILABLE',reason:safeError(e)};}
   let registryView,grafana,ciCd,semgrepAdmission;
   try{const src=readCode('infra/security/manager-v2/registry.mjs');registryView={kind:'EXISTING_CODE_OWNED_REGISTRY',classification:'CANDIDATE',source:src,
     entries:realThreePluginsRegistry().all().map(p=>({pluginId:p.pluginId,pluginVersion:p.pluginVersion,runner:p.runner,executionMode:p.executionMode,defaultEnabled:p.enabled,requiredCapabilities:p.requiredCapabilities,supportedProfiles:p.supportedProfiles,timeoutMs:p.timeout}))};}
@@ -141,7 +146,7 @@ export function overview() {
   catch(e){ciCd={availability:'UNAVAILABLE',reason:safeError(e)};}
   try{const src=read('evidence/2026-11-06/view-candidate-integration/state.json');semgrepAdmission={...src.value.semgrep,observedAt:src.value.observedAt,classification:'HISTORICAL',source:{path:src.path,sha256:src.sha256}};}
   catch(e){semgrepAdmission={availability:'UNAVAILABLE',reason:safeError(e)};}
-  return {kind:'SecurityManagerReadOnlyView', servedAt:new Date().toISOString(),registry:registryView,grafana,ciCd,semgrepAdmission,dojoReal,
+  return {kind:'SecurityManagerReadOnlyView', servedAt:new Date().toISOString(),registry:registryView,grafana,ciCd,semgrepAdmission,dojoReal,supplyChain,
     mode:'REPLAY', liveScan:false, baseline, dojo, runs:catalog.map(run),
     consumers:[consumer('security-manager-v2-loki/loki-protocol-samples-attempt5/A-three-valid.json','Loki'),
       consumer('security-manager-v2-dojo-http/samples-attempt5/gitleaks-success.json','DefectDojo')],
