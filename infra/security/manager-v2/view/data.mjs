@@ -4,7 +4,7 @@ import path from 'node:path';
 import {fileURLToPath} from 'node:url';
 import {createHash} from 'node:crypto';
 import {verifyResult} from '../result.mjs';
-import {realThreePluginsRegistry} from '../registry.mjs';
+import {realManagedRegistry} from '../registry.mjs';
 import {digest} from '../../summary-v2/codec.mjs';
 export const root = fileURLToPath(new URL('../../../../', import.meta.url));
 const evidence = 'evidence/2026-11-05/';
@@ -76,7 +76,7 @@ function run([runId, label]) {
       source: {path: summary.path, sha256: summary.sha256}, sealSha256: seal.sha256,
       plugins,configuration:{enabled:config.value.enabled,globalMode:id(config.value.globalMode),securityLevel:id(config.value.securityLevel),profile:id(config.value.profile),
         policyVersion:id(config.value.policyVersion),effectiveConfigDigest:hash(config.value.effectiveConfigDigest),
-        plugins:Object.fromEntries(Object.entries(config.value.plugins??{}).filter(([key])=>realThreePluginsRegistry().ids().includes(key)).map(([key,value])=>[key,{enabled:typeof value.enabled==='boolean'?value.enabled:null}])),
+        plugins:Object.fromEntries(Object.entries(config.value.plugins??{}).filter(([key])=>realManagedRegistry().ids().includes(key)).map(([key,value])=>[key,{enabled:typeof value.enabled==='boolean'?value.enabled:null}])),
         source:{path:config.path,sha256:config.sha256}},
       artifact:{summary:{path:summary.path,sha256:summary.sha256},seal:{path:seal.path,sha256:seal.sha256},fileCount:Object.keys(seal.value.files??{}).length,
         statuses:Object.fromEntries((s.pluginResults??[]).map(p=>[p.pluginId,{executionStatus:status(p.executionStatus,['COMPLETED','DISABLED','SKIPPED','NOT_CONFIGURED','UNSUPPORTED','POLICY_ERROR','ERROR']),policyDecision:p.policyDecision==null?null:status(p.policyDecision,['PASS','WARN','FAIL'])}]))},
@@ -128,7 +128,7 @@ export function overview() {
   }catch(e){if(e.code!=='ENOENT'&&supplyChain)supplyChain.sbomReviewError=safeError(e);}
   let registryView,grafana,ciCd,semgrepAdmission;
   try{const src=readCode('infra/security/manager-v2/registry.mjs');registryView={kind:'EXISTING_CODE_OWNED_REGISTRY',classification:'CANDIDATE',source:src,
-    entries:realThreePluginsRegistry().all().map(p=>({pluginId:p.pluginId,pluginVersion:p.pluginVersion,runner:p.runner,executionMode:p.executionMode,defaultEnabled:p.enabled,requiredCapabilities:p.requiredCapabilities,supportedProfiles:p.supportedProfiles,timeoutMs:p.timeout}))};}
+    entries:realManagedRegistry().all().map(p=>({pluginId:p.pluginId,pluginVersion:p.pluginVersion,runner:p.runner,executionMode:p.executionMode,defaultEnabled:p.enabled,requiredCapabilities:p.requiredCapabilities,supportedProfiles:p.supportedProfiles,timeoutMs:p.timeout}))};}
   catch(e){registryView={availability:'UNAVAILABLE',reason:safeError(e),entries:[]};}
   try{const src=read('infra/security/manager-v2/observability/dashboard.json');grafana={classification:'CANDIDATE',uid:id(src.value.uid),title:String(src.value.title),panelCount:src.value.panels.length,
     panelTitles:src.value.panels.map(p=>String(p.title)),realQuery:baseline.GRAFANA_REAL_QUERY??'UNAVAILABLE',productionActivation:baseline.PRODUCTION_SECURITY_MANAGER??'UNAVAILABLE',importState:'UNVERIFIED',download:'/candidate-dashboard.json',source:{path:src.path,sha256:src.sha256}};}

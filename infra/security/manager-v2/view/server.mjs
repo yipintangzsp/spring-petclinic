@@ -1,11 +1,16 @@
 import http from 'node:http';
 import fs from 'node:fs';
+import path from 'node:path';
+import {root} from './data.mjs';
+import {sbomProjects} from '../sbom-real.mjs';
 import {randomBytes,timingSafeEqual} from 'node:crypto';
 import {overview} from './data.mjs';
 import {capabilities,submit,getRun,recentRuns,updateControls} from './actions.mjs';
 import {currentControls} from './controls.mjs';
 import {localHost,localOrigin} from './origins.mjs';
 const csrf=randomBytes(32).toString('hex');
+const projectTokens=Object.fromEntries(Object.keys(sbomProjects()).map(p=>[p,randomBytes(32).toString('hex')]));
+const authorized=(req,project)=>typeof req.headers['x-project-token']==='string'&&projectTokens[project]===req.headers['x-project-token'];
 const instance = process.env.SECURITY_VIEW_INSTANCE ?? 'foreground';
 const assets = new Map([['/', ['index.html','text/html; charset=utf-8']], ['/app.js',['app.js','text/javascript; charset=utf-8']], ['/style.css',['style.css','text/css; charset=utf-8']], ['/candidate-dashboard.json',['../observability/dashboard.json','application/json; charset=utf-8']]]);
 const server = http.createServer(async(req,res) => {
@@ -31,12 +36,21 @@ const server = http.createServer(async(req,res) => {
       let value;try{value=JSON.parse(Buffer.concat(chunks).toString('utf8'));}catch{return json(400,{error:'INVALID_JSON'});}
       if(url.pathname==='/api/config')return json(200,updateControls(value));
       if(url.pathname==='/api/config/reset')return json(200,updateControls(value,true));
+      if(value.pluginId==='sbom'&&!authorized(req,value.projectId))return json(403,{error:'PROJECT_NOT_AUTHORIZED'});
       return json(202,submit(value));
     }
     if(url.pathname==='/api/config')return json(200,currentControls());
     if(url.pathname==='/api/plugins')return json(200,{...capabilities(),csrfToken:csrf});
-    if(url.pathname==='/api/runs')return json(200,{runs:recentRuns()});
-    if(url.pathname.startsWith('/api/runs/'))return json(200,getRun(url.pathname.slice('/api/runs/'.length)));
+    if(url.pathname==='/api/sbom/session')return json(200,{projects:Object.keys(projectTokens).map(projectId=>({projectId,projectToken:projectTokens[projectId]}))});
+    if(url.pathname==='/api/runs')return json(200,{runs:recentRuns().filter(r=>r.pluginId!=='sbom'||authorized(req,r.projectId))});
+    if(url.pathname.startsWith('/api/projects/')){
+      const m=url.pathname.match(/^\/api\/projects\/([a-zA-Z0-9_.-]+)\/runs\/(web-[a-f0-9-]{36})\/sbom$/);
+      if(!m||!authorized(req,m[1]))return json(403,{error:'PROJECT_NOT_AUTHORIZED'});
+      const r=getRun(m[2]);if(r.pluginId!=='sbom'||r.projectId!==m[1])return json(403,{error:'PROJECT_NOT_AUTHORIZED'});
+      if(r.state!=='COMPLETED')return json(409,{error:'SBOM_NOT_AVAILABLE'});
+      return send(200,'application/json',fs.readFileSync(path.join(root,'.devsecops/security-view-runs-v1',r.runId,'artifact/sbom.raw.json')));
+    }
+    if(url.pathname.startsWith('/api/runs/')){const r=getRun(url.pathname.slice('/api/runs/'.length));if(r.pluginId==='sbom'&&!authorized(req,r.projectId))return json(403,{error:'PROJECT_NOT_AUTHORIZED'});return json(200,r);}
     if (url.pathname==='/api/health') return send(200,'application/json',JSON.stringify({service:'security-manager-v2-readonly',instance,pid:process.pid}));
     if (url.pathname==='/api/overview') return send(200,'application/json',JSON.stringify(overview()));
     const asset = assets.get(url.pathname);

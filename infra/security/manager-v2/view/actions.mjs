@@ -5,7 +5,7 @@ import os from 'node:os';
 import {randomUUID} from 'node:crypto';
 import {root} from './data.mjs';
 import {runCandidate} from '../core.mjs';
-import {realThreePluginsRegistry} from '../registry.mjs';
+import {realManagedRegistry} from '../registry.mjs';
 import {routeResults,CONSUMERS} from '../router.mjs';
 import {verifyArtifact,verifyResult} from '../result.mjs';
 import {digest} from '../../summary-v2/codec.mjs';
@@ -13,8 +13,9 @@ import {linuxReady,runLinuxGitleaks,linuxHost,cleanIdentity} from './linux-gitle
 import {semgrepReady,runLinuxSemgrep,semgrepHost,semgrepIdentity} from './linux-semgrep.mjs';
 import {cosignReady,runLinuxCosign,cosignHost,cosignIdentity} from './linux-cosign.mjs';
 import {currentControls,writeControls} from './controls.mjs';
+import {sbomProjects,sbomReady} from '../sbom-real.mjs';
 import {deliverRunToLoki} from './loki-delivery.mjs';
-const ids=['gitleaks','semgrep','cosign'],scenarios=['clean','controlled-finding'];
+const ids=['gitleaks','semgrep','cosign','sbom'],scenarios=['clean','controlled-finding'];
 const directory=path.join(root,'.devsecops/security-view-runs-v1');
 const identifier=/^web-[a-f0-9-]{36}$/;
 let active=null;
@@ -27,23 +28,32 @@ export function capabilities(){
  const ready=linuxReady(),control=currentControls();
  const enabled=id=>control.settings.enabled&&control.settings.plugins[id].enabled;
  return {observedAt:new Date().toISOString(),platform:process.platform,arch:process.arch,uid:process.getuid(),groups:process.getgroups(),nodeVersion:process.version,
-  executionLocation:ready||semgrepReady()||cosignReady()?'LINUX_RESTRICTED':'MAC_ONLY',maxConcurrent:1,timeoutMs:30000,
+  executionLocation:ready||semgrepReady()||cosignReady()?'LINUX_RESTRICTED':'MAC_ONLY',maxConcurrent:1,timeoutMs:90000,
   configurationRevision:control.revision,securityLevel:control.settings.securityLevel,
-  plugins:ids.map(pluginId=>!enabled(pluginId)?{pluginId,state:'DISABLED',reason:control.settings.enabled?'PLUGIN_DISABLED':'MASTER_DISABLED',configurationRevision:control.revision,configurationSource:control.source,scenarios}:pluginId==='gitleaks'&&ready?{pluginId,state:'READY',runner:'gitleaks-real',
+  plugins:ids.map(pluginId=>pluginId==='sbom'?{pluginId,state:!enabled(pluginId)?'DISABLED':sbomReady()?'READY':'BLOCKED',reason:!enabled(pluginId)?'PLUGIN_DISABLED':sbomReady()?null:Object.values(sbomProjects())[0]?.blockedReason??'SBOM_EXECUTOR_UNAVAILABLE',toolVersion:'2.9.3',executionHost:'devops/192.168.64.11',executionIdentity:'security-sbom',scenarios:['clean'],projects:Object.keys(sbomProjects())}:!enabled(pluginId)?{pluginId,state:'DISABLED',reason:control.settings.enabled?'PLUGIN_DISABLED':'MASTER_DISABLED',configurationRevision:control.revision,configurationSource:control.source,scenarios}:pluginId==='gitleaks'&&ready?{pluginId,state:'READY',runner:'gitleaks-real',
    reason:null,toolVersion:'8.30.1',toolVersionObservation:'PINNED',fixtureStatus:'FIXED_NON_PRODUCTION_FIXTURES',
    executionHost:linuxHost,executionIdentity:cleanIdentity,scenarios}:
    pluginId==='semgrep'&&semgrepReady()?{pluginId,state:'READY',runner:'semgrep-real',reason:null,toolVersion:'1.182.1',toolVersionObservation:'PINNED',fixtureStatus:'FIXED_NON_PRODUCTION_FIXTURES',executionHost:semgrepHost,executionIdentity:semgrepIdentity,scenarios}:
    pluginId==='cosign'&&cosignReady()?{pluginId,state:'READY',runner:'cosign-real',reason:null,toolVersion:'3.1.4',toolVersionObservation:'PINNED',fixtureStatus:'FIXED_NON_PRODUCTION_SIGNATURE_FIXTURES',executionHost:cosignHost,executionIdentity:cosignIdentity,scenarios}:
-   {pluginId,state:'BLOCKED',runner:realThreePluginsRegistry().get(pluginId).runner,
+   {pluginId,state:'BLOCKED',runner:realManagedRegistry().get(pluginId).runner,
    reason:'REAL_SCANNER_REQUIRES_APPROVED_LINUX_IDENTITY',toolVersion:null,toolVersionObservation:'NOT_EXECUTED',
    fixtureStatus:'NO_APPROVED_EXECUTOR',scenarios:pluginId==='gitleaks'?['clean']:scenarios})};
 }
 export function updateControls(input,reset=false){if(active)throw fault('RUN_ALREADY_ACTIVE',409);return writeControls(input,reset);}
-export function validateRequest(value){if(!value||typeof value!=='object'||Array.isArray(value)||Object.keys(value).sort().join(',')!=='pluginId,scenarioId'||!ids.includes(value.pluginId)||!scenarios.includes(value.scenarioId))throw fault('INVALID_FIXED_RUN_REQUEST');return value;}
+export function validateRequest(value){if(!value||typeof value!=='object'||Array.isArray(value)||!['pluginId,scenarioId','pluginId,projectId,scenarioId'].includes(Object.keys(value).sort().join(','))||!ids.includes(value.pluginId)||!scenarios.includes(value.scenarioId))throw fault('INVALID_FIXED_RUN_REQUEST');if(value.pluginId==='sbom'&&(!sbomProjects()[value.projectId]||value.scenarioId!=='clean')||value.pluginId!=='sbom'&&value.projectId!==undefined)throw fault('PROJECT_NOT_AUTHORIZED',403);return value;}
 export function getRun(runId){
  if(!identifier.test(runId))throw fault('INVALID_RUN_ID');init();const dir=path.join(directory,runId);
  if(!fs.existsSync(dir))throw fault('RUN_NOT_FOUND',404);safeDir(dir);const request=read(path.join(dir,'request.json'));
- if(!fs.existsSync(path.join(dir,'result.json')))return {...request,state:active===runId?'RUNNING':'ERROR',evidenceClass:'NOT_TESTED',reason:active===runId?null:'SERVER_INTERRUPTED_BEFORE_COMPLETION',policyDecision:null};
+ if(!fs.existsSync(path.join(dir,'result.json'))){
+  // Read the sealed failure without rewriting the original request or evidence.
+  if(active!==runId&&request.pluginId==='sbom'&&fs.existsSync(path.join(dir,'artifact/candidate-seal.json'))){
+   const seal=read(path.join(dir,'artifact/candidate-seal.json')),sealDigest=digest(seal);verifyArtifact(path.join(dir,'artifact'),sealDigest);
+   const p=read(path.join(dir,'artifact/sbom.result.json'));verifyResult(p);
+   if(p.runId!==runId||p.projectId!==request.projectId)throw fault('RUN_BINDING_MISMATCH',503);
+   if(p.executionStatus==='ERROR')return {...request,state:'ERROR',evidenceClass:'NOT_TESTED',reason:p.failureReason,policyDecision:p.policyDecision,evaluationCount:p.evaluationCount,resultDigest:p.resultDigest,artifactDigest:sealDigest,completedAt:p.completedAt,recordSource:'SEALED_FAILURE_ARTIFACT',cleanup:p.cleanup?.status??'NOT_VERIFIED'};
+  }
+  return {...request,state:active===runId?'RUNNING':'ERROR',evidenceClass:'NOT_TESTED',reason:active===runId?null:'SERVER_INTERRUPTED_BEFORE_COMPLETION',policyDecision:null};
+ }
  const result=read(path.join(dir,'result.json'));const {auditDigest,...body}=result;
  if(digest(body)!==auditDigest)throw fault('RUN_RECORD_DIGEST_MISMATCH',503);
  if(result.artifactDigest){verifyArtifact(path.join(dir,'artifact'),result.artifactDigest);const p=read(path.join(dir,'artifact',request.pluginId+'.result.json'));verifyResult(p);if(p.resultDigest!==result.resultDigest||p.runId!==runId)throw fault('RUN_BINDING_MISMATCH',503);}
@@ -58,18 +68,28 @@ export function submit(value){
  const configurationSnapshot={revision:control.revision,updatedAt:control.updatedAt,settings:control.settings,source:control.source,configurationOrigins:control.effectiveConfig.configurationOrigins,effectiveConfigDigest:control.effectiveConfig.effectiveConfigDigest};
  const enabled=control.settings.enabled&&control.settings.plugins[value.pluginId].enabled;
  const runId='web-'+randomUUID(),dir=path.join(directory,runId);fs.mkdirSync(dir,{mode:0o700});safeDir(dir);
- const remote=value.pluginId==='gitleaks'&&linuxReady()||value.pluginId==='semgrep'&&semgrepReady()||value.pluginId==='cosign'&&cosignReady();
+ const remote=value.pluginId==='gitleaks'&&linuxReady()||value.pluginId==='semgrep'&&semgrepReady()||value.pluginId==='cosign'&&cosignReady()||value.pluginId==='sbom'&&sbomReady();
  const request={runId,...value,configurationSnapshot,securityLevel:control.settings.securityLevel,startedAt:new Date().toISOString(),kind:'LocalValidationRequest',executionLocation:!enabled?'NO_EXECUTION':remote?'LINUX_RESTRICTED':'MAC_ONLY'};
  save(path.join(dir,'request.json'),request);active=runId;
  setImmediate(async()=>{
-  const start=performance.now();const controller=new AbortController();const timer=setTimeout(()=>controller.abort(),30000);let result,budget=null,attempted=false;
+  const start=performance.now();const controller=new AbortController();const timer=setTimeout(()=>controller.abort(),value.pluginId==='sbom'?90000:30000);let result,budget=null,attempted=false;
   try{
+   if(!enabled&&value.pluginId==='sbom'){result={...request,state:'DISABLED',evidenceClass:'NOT_TESTED',reason:'PLUGIN_DISABLED',scannerExecuted:false,remoteInvocationCount:0,policyDecision:null,evaluationCount:0,resultDigest:null,artifactDigest:null};return;}
    if(!enabled){
-    const registry=realThreePluginsRegistry();
+    const registry=realManagedRegistry();
     const run=await runCandidate({registry,runId,projectId:'web-controlled-fixture',context:{platform:process.platform,capabilities:{}},inputs:{},config:{security:{enabled:control.settings.enabled,globalMode:'audit',securityLevel:control.settings.securityLevel,profile:'java-web',plugins:Object.fromEntries(registry.ids().map(id=>[id,{enabled:false}]))}},output:path.join(dir,'artifact')});
     const selected=run.gate[value.pluginId];
     if(selected.executionStatus!=='DISABLED'||selected.evaluationCount!==0||selected.policyDecision!==null)throw fault('DISABLED_CONTRACT_FAILED');
     result={...request,state:'DISABLED',evidenceClass:'NOT_TESTED',managerExecutionStatus:'DISABLED',reason:control.settings.enabled?'PLUGIN_DISABLED':'MASTER_DISABLED',scannerExecuted:false,remoteInvocationCount:0,policyDecision:null,evaluationCount:0,resultDigest:selected.resultDigest,artifactDigest:run.artifact.sealDigest,source:path.relative(root,path.join(dir,'artifact',value.pluginId+'.result.json'))};return;
+   }
+   if(value.pluginId==='sbom'){
+    const cfg=sbomProjects()[value.projectId],registry=realManagedRegistry();if(cfg.blockedReason)throw fault(cfg.blockedReason);attempted=true;
+    const run=await runCandidate({registry,runId,projectId:value.projectId,context:{platform:process.platform,capabilities:{SBOM_FILE:{state:'AVAILABLE'}}},inputs:{sbom:{fixtureId:cfg.fixtureId}},config:{security:{enabled:true,globalMode:'audit',securityLevel:control.settings.securityLevel,profile:cfg.profile,plugins:Object.fromEntries(registry.ids().map(id=>[id,{enabled:id==='sbom'}]))}},output:path.join(dir,'artifact'),signal:controller.signal});
+    const selected=run.gate.sbom,f=selected.runtimeFacts;
+    fs.mkdirSync(path.join(dir,'router'),{mode:0o700});
+    const routed=routeResults({run,artifactDirectory:path.join(dir,'artifact'),expectedSealDigest:run.artifact.sealDigest,output:path.join(dir,'router'),definitions:CONSUMERS.filter(c=>c.consumerId!=='defectdojo-future')});
+    result={...request,state:selected.executionStatus,evidenceClass:f?'REAL':'NOT_TESTED',scannerExecuted:!!f,policyDecision:selected.policyDecision,evaluationCount:selected.evaluationCount,resultDigest:selected.resultDigest,artifactDigest:run.artifact.sealDigest,source:path.relative(root,path.join(dir,'artifact/sbom.result.json')),reason:selected.failureReason,
+     scannerExitCode:f?.exitCode??null,toolVersion:f?.tool.version??null,executionIdentity:'security-sbom',executionHost:'devops/192.168.64.11',sourceArtifactSha256:f?.sourceArtifactSha256??null,sbomSha256:f?.sbomSha256??null,sbomFormat:f?.format??null,sbomSpecVersion:f?.specVersion??null,componentCount:f?.componentCount??null,scope:cfg.scope,commitSha:cfg.commitSha,buildId:cfg.buildId,scannerStartedAt:f?.startedAt??null,scannerCompletedAt:f?.completedAt??null,router:routed.receipts.map(r=>({consumerId:r.consumerId,deliveryDecision:r.deliveryDecision})),cleanup:selected.cleanup?.status??'NOT_VERIFIED'};return;
    }
    if(process.platform!=='darwin'||process.getuid()===0)throw fault('LOCAL_MAC_IDENTITY_REQUIRED');
    if(value.pluginId==='gitleaks'){
@@ -93,7 +113,7 @@ export function submit(value){
    }
    const disk=fs.statfsSync(directory);budget={load1:os.loadavg()[0],cpuCount:os.cpus().length,freeMemory:os.freemem(),freeDisk:Number(disk.bavail)*Number(disk.bsize)};
    if(budget.load1>budget.cpuCount*.75||budget.freeMemory<512*1024**2||budget.freeDisk<512*1024**2)throw fault('LOCAL_RESOURCE_BUDGET_BLOCKED');
-   const registry=realThreePluginsRegistry();
+   const registry=realManagedRegistry();
    // Actual platform, unavailable capabilities, no fabricated Linux identity or facts.
    const run=await runCandidate({registry,runId,projectId:'web-controlled-fixture',context:{platform:process.platform,capabilities:{}},inputs:{},
     config:{security:{enabled:true,globalMode:'audit',securityLevel:'standard',profile:'java-web',plugins:Object.fromEntries(registry.ids().map(id=>[id,{enabled:id===value.pluginId}]))}},output:path.join(dir,'artifact'),signal:controller.signal});
@@ -108,7 +128,7 @@ export function submit(value){
   finally{
    clearTimeout(timer);
    if(result?.state==='COMPLETED'&&result.evidenceClass==='REAL'){
-    try{result.lokiDelivery=await deliverRunToLoki(result,dir);}
+    try{result.lokiDelivery=value.pluginId==='sbom'?{consumerId:'loki-candidate',automatic:false,state:'NOT_TESTED',queryState:'NOT_TESTED',reason:'SBOM_EVENT_SCHEMA_NOT_REGISTERED'}:await deliverRunToLoki(result,dir);}
     catch(e){result.lokiDelivery={consumerId:'loki-candidate',automatic:true,state:'FAILED',queryState:'NOT_VERIFIED',runId,
       resultDigest:result.resultDigest,reason:/^[A-Z_]{3,80}$/.test(e.code??'')?e.code:'LOKI_AUTO_DELIVERY_FAILED'};}
    }

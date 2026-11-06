@@ -1,6 +1,7 @@
 import {configuration,identity,keys} from './config.mjs';
 import {registry as makeRegistry,capabilityCheck} from './registry.mjs';
 import {executeArchive} from './archive.mjs';
+import {executeRealSbom} from './sbom-real.mjs';
 import {executeRealCosign} from './cosign-real.mjs';
 import {executeRealSemgrep} from './semgrep-real.mjs';
 import {executeRealGitleaks} from './gitleaks-real.mjs';
@@ -23,7 +24,7 @@ export async function runCandidate({config={},runId,projectId,context={platform:
    else{
     let execution;
     try{
-     execution=p.runner==='cosign-real'?await executeRealCosign(p,inputs[p.pluginId],{signal,projectId,runId}):p.runner==='semgrep-real'?await executeRealSemgrep(p,inputs[p.pluginId],{signal,projectId,runId}):p.runner==='gitleaks-real'?await executeRealGitleaks(p,inputs[p.pluginId],{signal,projectId,runId}):await executeArchive(p,inputs[p.pluginId],{signal});
+     execution=p.runner==='sbom-real'?await executeRealSbom(p,inputs[p.pluginId],{signal,projectId,runId}):p.runner==='cosign-real'?await executeRealCosign(p,inputs[p.pluginId],{signal,projectId,runId}):p.runner==='semgrep-real'?await executeRealSemgrep(p,inputs[p.pluginId],{signal,projectId,runId}):p.runner==='gitleaks-real'?await executeRealGitleaks(p,inputs[p.pluginId],{signal,projectId,runId}):await executeArchive(p,inputs[p.pluginId],{signal});
      if(execution.fact.component!==p.policyAdapter||execution.factDigest!==digest(execution.fact))fail('normalizer/adapter mismatch');
      store.putRaw(p.pluginId+'.raw.json',execution.rawReportBytesUtf8);
      const policy=await owner.evaluateOnce(p.pluginId,execution.fact);
