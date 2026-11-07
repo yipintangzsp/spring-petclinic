@@ -1,6 +1,6 @@
 """Fixed authorized source phase; Git objects verified before existing Manager runner."""
 import pathlib,os,sys,json,subprocess,hashlib,io,tarfile,gzip,shutil,tempfile,re,time,fcntl,signal,resource,importlib.util
-ROOT=pathlib.Path('/var/tmp/security-manager-gitleaks-recovery-20261107')
+ROOT=pathlib.Path('/var/tmp/security-manager-gitleaks-final-20261107')
 def fail(code):
  if 'run'in globals()and(ROOT/'outputs').is_dir():
   f=ROOT/'outputs'/(run+'-stages.jsonl')

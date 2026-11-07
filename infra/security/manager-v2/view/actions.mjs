@@ -57,6 +57,12 @@ export function getRun(runId){
  const result=read(path.join(dir,'result.json'));const {auditDigest,...body}=result;
  if(digest(body)!==auditDigest)throw fault('RUN_RECORD_DIGEST_MISMATCH',503);
  if(result.artifactDigest){verifyArtifact(path.join(dir,'artifact'),result.artifactDigest);const p=read(path.join(dir,'artifact',request.pluginId+'.result.json'));verifyResult(p);if(p.resultDigest!==result.resultDigest||p.runId!==runId)throw fault('RUN_BINDING_MISMATCH',503);}
+ const diagnosticPath=path.join(dir,'execution-diagnostic.json');
+ if(result.state==='ERROR'&&fs.existsSync(diagnosticPath)){
+  const {diagnosticDigest,...d}=read(diagnosticPath);
+  if(digest(d)!==diagnosticDigest||d.runId!==runId||d.relatedResultAuditDigest!==auditDigest||!Array.isArray(d.stages)||d.stages.length>32)throw fault('EXECUTION_DIAGNOSTIC_BINDING',503);
+  return {...result,executionDiagnostic:d};
+ }
  return result;
 }
 export function recentRuns(){init();return fs.readdirSync(directory).filter(n=>identifier.test(n)).sort().map(n=>getRun(n)).sort((a,b)=>b.startedAt.localeCompare(a.startedAt));}
