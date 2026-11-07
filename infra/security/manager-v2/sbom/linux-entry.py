@@ -14,7 +14,8 @@ def atomic_receipt(run_id,value):
  return sha(data)
 def main():
  cmd=os.environ.get('SSH_ORIGINAL_COMMAND','').split()
- if len(cmd)!=3 or cmd[0]!='generate-v1' or cmd[1]!='java-sbom-demo' or not re.fullmatch(r'web-[a-f0-9-]{36}',cmd[2]):raise RuntimeError('FIXED_COMMAND_ONLY')
+ catalog=json.loads((ROOT/'project-catalog.json').read_text())
+ if len(cmd)!=3 or cmd[0]!='generate-v1' or cmd[1]not in catalog or not re.fullmatch(r'web-[a-f0-9-]{36}',cmd[2]):raise RuntimeError('FIXED_COMMAND_ONLY')
  run_id=cmd[2];started=time.time();work=None;p=None;packet=None
  receipt={'schemaVersion':1,'kind':'RestrictedLinuxSbomReceipt','projectId':cmd[1],'runId':run_id,'uid':os.getuid(),'gid':os.getgid(),'toolVersion':'2.9.3','runnerSha256':sha(pathlib.Path(__file__).read_bytes()),'startedAtMs':int(started*1000),'exitCode':None,'stage':'PREREQUISITE','goal':'org.cyclonedx:cyclonedx-maven-plugin:2.9.3:makeAggregateBom','repositoryMode':'LOCAL_FILE_MIRROR_PRIVATE_RUN_CACHE','error':None,'logSha256':None,'logBytes':0,'missingCoordinates':[],'generationInvocations':0,'cleanup':'NOT_VERIFIED'}
  try:
@@ -28,7 +29,13 @@ def main():
   if len(mirrors)!=1 or mirrors[0].findtext('mirrorOf')!='*' or mirrors[0].findtext('url')!=(ROOT/'repository').as_uri():raise RuntimeError('REPOSITORY_SOURCE_NOT_LOCAL')
   plugin=ROOT/'repository/org/cyclonedx/cyclonedx-maven-plugin/2.9.3/cyclonedx-maven-plugin-2.9.3.jar'
   if sha(plugin.read_bytes())!=TOOL_SHA:raise RuntimeError('TOOL_SHA_MISMATCH')
-  pom=(ROOT/'fixture/pom.xml').read_bytes();expected=json.loads((ROOT/'approval.json').read_text())
+  expected=catalog[cmd[1]];relative=pathlib.PurePosixPath(expected['fixturePath'])
+  if relative.is_absolute()or '..'in relative.parts:raise RuntimeError('INPUT_PATH_REJECTED')
+  source=ROOT.joinpath(relative)
+  if source.is_symlink()or source.resolve()!=source or not source.is_relative_to(ROOT):raise RuntimeError('INPUT_PATH_REJECTED')
+  st=source.stat()
+  if st.st_uid!=0 or st.st_mode&0o022:raise RuntimeError('INPUT_OWNERSHIP_REJECTED')
+  pom=source.read_bytes()
   if sha(pom)!=expected['sourceArtifactSha256']:raise RuntimeError('INPUT_SHA_MISMATCH')
   receipt['sourceArtifactSha256']=sha(pom)
   if len(list(OUT.iterdir()))>=10 or len(list(RECEIPTS.iterdir()))>=50:raise RuntimeError('RUN_BUDGET_EXHAUSTED')

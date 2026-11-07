@@ -124,7 +124,15 @@ async function load(){
   finally{$('refresh').disabled=false;}
 }
 $('scenario').addEventListener('change',renderRun);$('refresh').addEventListener('click',load);load();
-let sbomProjectSession=null;
+let sbomProjectSession=null,projectSessions=[],projectState=null;
+const projectPanel=el('div',undefined,'consumer'),projectLabel=el('label','SBOM 项目 '),projectSelect=el('select'),projectEnabled=el('input'),projectSave=el('button','保存本项目 SBOM 开关'),projectInfo=el('p');
+projectSelect.id='sbom-project';projectEnabled.type='checkbox';projectEnabled.id='project-sbom-enabled';projectSave.type='button';projectLabel.append(projectSelect);projectPanel.append(el('h3','项目级 SBOM 管理'),projectLabel,el('label',' 本项目 SBOM '),projectEnabled,projectSave,projectInfo);$('control-rows').closest('.registry-table-wrap').before(projectPanel);
+async function loadProjectControls(){
+ if(!sbomProjectSession){projectSave.disabled=true;projectEnabled.disabled=true;projectInfo.textContent='本机操作员授权：在仓库运行 node infra/security/manager-v2/view/control.mjs open。长期凭据只保存在受保护文件；登录票据一次有效、30 秒失效。';return;}
+ projectState=await api('/api/projects/'+sbomProjectSession.projectId+'/config');projectEnabled.disabled=false;projectEnabled.checked=projectState.sbomEnabled;projectSave.disabled=false;projectInfo.textContent=projectState.projectId+' · 项目开关 '+(projectState.sbomEnabled?'ON':'OFF')+' · 实际 '+(projectState.effectiveEnabled?'ENABLED':'DISABLED')+' · '+projectState.source+' · '+projectState.securityLevel;
+}
+projectSelect.addEventListener('change',async()=>{sbomProjectSession=projectSessions.find(p=>p.projectId===projectSelect.value)??null;try{await loadProjectControls();liveCapabilities=await api('/api/plugins');await refreshLive();capabilityText();}catch(e){projectInfo.textContent=e.message;}});
+projectSave.addEventListener('click',async()=>{if(!sbomProjectSession||!projectState)return;try{await api('/api/projects/'+sbomProjectSession.projectId+'/config',{method:'POST',headers:{'Content-Type':'application/json','X-CSRF-Token':sessionToken},body:JSON.stringify({revision:projectState.revision,sbomEnabled:projectEnabled.checked})});await loadProjectControls();liveCapabilities=await api('/api/plugins');capabilityText();}catch(e){projectInfo.textContent=e.message;}});
 let sessionToken=null,liveCapabilities=null,liveBusy=false,currentConfig=null,latestRuns=[];
 async function api(url,options){const r=await fetch(url,{cache:'no-store',...options,headers:{...(sbomProjectSession?{'X-Project-Token':sbomProjectSession.projectToken}:{}),...options?.headers}});const v=await r.json();if(!r.ok)throw Error(v.error??v.reason??'HTTP '+r.status);return v;}
 function capabilityText(){
@@ -133,7 +141,7 @@ function capabilityText(){
  const selected=$('live-scenario').value;
  $('live-scenario').replaceChildren(...(c?.scenarios??[]).map(id=>{const o=el('option',c?.pluginId==='cosign'?(id==='clean'?'Valid Signature':'Invalid / Tampered Signature'):(id==='clean'?'Clean':'Controlled Finding'));o.value=id;return o;}));
  if(c?.scenarios.includes(selected))$('live-scenario').value=selected;
- $('run-validation').disabled=liveBusy||c?.state!=='READY';
+ $('run-validation').disabled=liveBusy||c?.state!=='READY'||(c?.pluginId==='sbom'&&!sbomProjectSession);if(c?.pluginId==='sbom')$('live-capability').textContent+=' · 当前项目：'+(sbomProjectSession?.projectId??'尚未授权');
  renderCandidate();
 }
 function renderLive(runs){
@@ -150,7 +158,7 @@ function renderLive(runs){
  card.append(top,el('div',r.state,'delivery'),row('Policy Decision',r.policyDecision??'未求值'),row('Run ID',r.runId),row('开始',time(r.scannerStartedAt??r.startedAt)),row('完成',time(r.scannerCompletedAt??r.completedAt)),row('耗时',r.durationMs==null?'—':r.durationMs+' ms'),row('Policy 求值次数',r.evaluationCount??0),row('实际 Security Level',r.securityLevel??'standard（历史固定）'),row('配置 Revision',r.configurationSnapshot?.revision??'历史配置'),row('配置来源',r.configurationSnapshot?.source?.kind??'HISTORICAL'));
  if(r.scannerExecuted===true)card.append(row('执行主机',r.executionHost),row('执行身份',r.executionIdentity),row('扫描工具',r.toolVersion),row('退出码',r.scannerExitCode));
  if(r.pluginId==='sbom'){
-  card.append(row('Project ID',r.projectId),row('Runner',r.executionIdentity),row('工具版本',r.toolVersion),row('生成退出码',r.scannerExitCode),row('Result Router',(r.router??[]).map(x=>x.consumerId+': '+x.deliveryDecision).join(' / ')||'NOT_TESTED'),row('Source Artifact SHA256',r.sourceArtifactSha256),row('SBOM SHA256',r.sbomSha256),row('格式',r.sbomFormat?r.sbomFormat+' '+r.sbomSpecVersion:'NOT_GENERATED'),row('实际组件数',r.componentCount),row('范围',r.scope),el('p','固定非生产应用依赖 Fixture；不关联任何 Harbor 候选镜像。'));
+  card.append(row('Project ID',r.projectId),row('记录来源',r.evidenceClass==='REAL'?'HISTORICAL · 已完成的真实受控执行':'NOT_TESTED · 未完成真实生成'),row('Runner',r.executionIdentity),row('工具版本',r.toolVersion),row('生成退出码',r.scannerExitCode),row('Result Router',(r.router??[]).map(x=>x.consumerId+': '+x.deliveryDecision).join(' / ')||'NOT_TESTED'),row('Source Artifact SHA256',r.sourceArtifactSha256),row('SBOM SHA256',r.sbomSha256),row('格式',r.sbomFormat?r.sbomFormat+' '+r.sbomSpecVersion:'NOT_GENERATED'),row('实际组件数',r.componentCount),row('范围',r.scope),el('p','固定非生产应用依赖 Fixture；不关联任何 Harbor 候选镜像。'));
   if(r.executionDiagnostic){const diagnostic=el('details');diagnostic.append(el('summary','执行诊断（退出码 / 阶段 / 清理）'),el('pre',JSON.stringify(r.executionDiagnostic,null,2)));card.append(diagnostic);}
   if(r.state==='COMPLETED'){const button=el('button','读取原始 SBOM / 展开组件');button.type='button';button.addEventListener('click',async()=>{try{const response=await fetch('/api/projects/'+encodeURIComponent(r.projectId)+'/runs/'+r.runId+'/sbom',{cache:'no-store',headers:{'X-Project-Token':sbomProjectSession.projectToken}});if(!response.ok)throw Error('SBOM_DOWNLOAD_'+response.status);const raw=await response.text(),bom=JSON.parse(raw);const d=el('details');d.open=true;d.append(el('summary','CycloneDX · '+bom.components.length+' 个真实组件'));for(const c of bom.components)d.append(el('p',c.name+' @ '+c.version),el('code',c.purl??'PURL_UNAVAILABLE'));const download=el('a','下载本次 CycloneDX JSON');const objectUrl=URL.createObjectURL(new Blob([raw],{type:'application/json'}));download.href=objectUrl;download.download=r.runId+'-sbom.json';d.append(download);card.append(d);button.disabled=true;}catch(e){button.textContent='读取失败：'+e.message;}});card.append(button);}
  }
@@ -170,7 +178,11 @@ function renderLive(runs){
  return card;
 }));}
 async function refreshLive(){const v=await api('/api/runs');latestRuns=v.runs;renderLive(v.runs);renderControls();}
-async function initializeLive(){try{const ps=await api('/api/sbom/session');sbomProjectSession=ps.projects[0];const sbomOption=el('option','SBOM · CycloneDX');sbomOption.value='sbom';$('live-plugin').append(sbomOption);liveCapabilities=await api('/api/plugins');sessionToken=liveCapabilities.csrfToken;await refreshLive();await loadControls();capabilityText();}catch(e){$('live-message').textContent='UNAVAILABLE: '+e.message;}}
+async function initializeLive(){try{
+ const catalog=await api('/api/sbom/projects');try{projectSessions=(await api('/api/sbom/session')).projects;}catch{projectSessions=[];}
+ projectSelect.replaceChildren(...catalog.projects.map(p=>{const o=el('option',p.displayName+' · '+p.projectId);o.value=p.projectId;return o;}));sbomProjectSession=projectSessions.find(p=>p.projectId===projectSelect.value)??null;
+ const sbomOption=el('option','SBOM · CycloneDX');sbomOption.value='sbom';$('live-plugin').append(sbomOption);liveCapabilities=await api('/api/plugins');sessionToken=liveCapabilities.csrfToken;await refreshLive();try{await loadControls();}catch{$('controls-message').textContent='全局管理需要本机操作员授权。';}await loadProjectControls();capabilityText();
+ }catch(e){$('live-message').textContent='UNAVAILABLE: '+e.message;}}
 $('live-plugin').addEventListener('change',capabilityText);
 $('run-validation').addEventListener('click',async()=>{
  if(liveBusy||!sessionToken)return;liveBusy=true;$('run-validation').disabled=true;$('live-message').textContent='正在提交并检查固定 Runner 执行条件…';
@@ -192,7 +204,7 @@ function renderControls(){
  $('effective-controls').textContent=JSON.stringify({scope:currentConfig.scope,revision:currentConfig.revision,updatedAt:currentConfig.updatedAt,settings:s,source:currentConfig.source,configurationOrigins:currentConfig.effectiveConfig.configurationOrigins,effectiveSecurityLevel:currentConfig.effectiveConfig.effectiveSecurityLevel,appliedOverrides:currentConfig.effectiveConfig.appliedOverrides,effectivePolicy:Object.fromEntries(['gitleaks','semgrep','cosign','sbom'].map(id=>[id,currentConfig.effectiveConfig.effectivePolicy[id]])),history:currentConfig.history},null,2);
  $('save-controls').disabled=false;$('reset-controls').disabled=false;
 }
-async function loadControls(){currentConfig=await api('/api/config');renderControls();$('controls-message').textContent='已加载 Revision '+currentConfig.revision+' · '+(currentConfig.updatedAt?time(currentConfig.updatedAt):'演示默认配置')+' · 生产 NOT_ACTIVE';}
+async function loadControls(){currentConfig=await api('/api/config');renderControls();await loadProjectControls();$('controls-message').textContent='已加载 Revision '+currentConfig.revision+' · '+(currentConfig.updatedAt?time(currentConfig.updatedAt):'演示默认配置')+' · 生产 NOT_ACTIVE';}
 async function saveControls(reset=false){
  if(!currentConfig||!sessionToken||liveBusy)return;
  const settings={enabled:$('control-enabled').checked,securityLevel:$('control-level').value,plugins:Object.fromEntries(['gitleaks','semgrep','cosign','sbom'].map(id=>[id,{enabled:$('control-'+id).checked}]))};

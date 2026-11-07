@@ -6,11 +6,12 @@ import {sbomProjects} from '../sbom-real.mjs';
 import {randomBytes,timingSafeEqual} from 'node:crypto';
 import {overview} from './data.mjs';
 import {capabilities,submit,getRun,recentRuns,updateControls} from './actions.mjs';
-import {currentControls} from './controls.mjs';
+import {currentControls,projectControls,writeProjectControls} from './controls.mjs';
+import {projectAccess} from './project-access.mjs';
 import {localHost,localOrigin} from './origins.mjs';
 const csrf=randomBytes(32).toString('hex');
-const projectTokens=Object.fromEntries(Object.keys(sbomProjects()).map(p=>[p,randomBytes(32).toString('hex')]));
-const authorized=(req,project)=>typeof req.headers['x-project-token']==='string'&&projectTokens[project]===req.headers['x-project-token'];
+const access=projectAccess();
+const authorized=access.authorized;
 const instance = process.env.SECURITY_VIEW_INSTANCE ?? 'foreground';
 const assets = new Map([['/', ['index.html','text/html; charset=utf-8']], ['/app.js',['app.js','text/javascript; charset=utf-8']], ['/style.css',['style.css','text/css; charset=utf-8']], ['/candidate-dashboard.json',['../observability/dashboard.json','application/json; charset=utf-8']]]);
 const server = http.createServer(async(req,res) => {
@@ -26,7 +27,7 @@ const server = http.createServer(async(req,res) => {
     const json=(code,v)=>send(code,'application/json',JSON.stringify(v));
     if(req.headers['sec-fetch-site']&& !['same-origin','none'].includes(req.headers['sec-fetch-site']))return json(403,{error:'CROSS_SITE_REJECTED'});
     if(req.method==='POST'){
-      if(!['/api/run','/api/config','/api/config/reset'].includes(url.pathname))return json(405,{error:'READ_ONLY_ROUTE'});
+      if(!['/api/run','/api/config','/api/config/reset','/api/sbom/operator-ticket'].includes(url.pathname)&&!/^\/api\/projects\/[A-Za-z0-9_.-]+\/config$/.test(url.pathname))return json(405,{error:'READ_ONLY_ROUTE'});
       const token=req.headers['x-csrf-token'];
       if(req.headers.origin!=='http://'+req.headers.host||typeof token!=='string'||token.length!==csrf.length||!timingSafeEqual(Buffer.from(token),Buffer.from(csrf)))return json(403,{error:'LOCAL_SESSION_REQUIRED'});
       if(req.headers['content-type']!=='application/json')return json(415,{error:'JSON_REQUIRED'});
@@ -34,15 +35,23 @@ const server = http.createServer(async(req,res) => {
       let bytes=0;const chunks=[];
       for await(const c of req){bytes+=c.length;if(bytes>1024){json(413,{error:'BODY_TOO_LARGE'});return;}chunks.push(c);}
       let value;try{value=JSON.parse(Buffer.concat(chunks).toString('utf8'));}catch{return json(400,{error:'INVALID_JSON'});}
+      if(url.pathname==='/api/sbom/operator-ticket'){if(Object.keys(value).length)return json(400,{error:'INVALID_TICKET_REQUEST'});const ticket=access.ticket(req);return ticket?json(200,{ticket,expiresInSeconds:30}):json(403,{error:'LOCAL_OPERATOR_REQUIRED'});}
+      const projectConfig=url.pathname.match(/^\/api\/projects\/([A-Za-z0-9_.-]+)\/config$/);
+      if(projectConfig){if(!authorized(req,projectConfig[1]))return json(403,{error:'PROJECT_NOT_AUTHORIZED'});return json(200,writeProjectControls(projectConfig[1],value));}
+      if(['/api/config','/api/config/reset'].includes(url.pathname)&&!access.operator(req))return json(403,{error:'LOCAL_OPERATOR_REQUIRED'});
       if(url.pathname==='/api/config')return json(200,updateControls(value));
       if(url.pathname==='/api/config/reset')return json(200,updateControls(value,true));
       if(value.pluginId==='sbom'&&!authorized(req,value.projectId))return json(403,{error:'PROJECT_NOT_AUTHORIZED'});
       return json(202,submit(value));
     }
-    if(url.pathname==='/api/config')return json(200,currentControls());
-    if(url.pathname==='/api/plugins')return json(200,{...capabilities(),csrfToken:csrf});
-    if(url.pathname==='/api/sbom/session')return json(200,{projects:Object.keys(projectTokens).map(projectId=>({projectId,projectToken:projectTokens[projectId]}))});
-    if(url.pathname==='/api/runs')return json(200,{runs:recentRuns().filter(r=>r.pluginId!=='sbom'||authorized(req,r.projectId))});
+    if(url.pathname==='/operator-login'){const cookie=access.consume(url.searchParams.get('ticket'));if(!cookie)return json(403,{error:'INVALID_OR_EXPIRED_LOCAL_TICKET'});res.writeHead(303,{...headers,'Set-Cookie':cookie,Location:'/#candidate-overview'});return res.end();}
+    if(url.pathname==='/api/config'){if(!access.operator(req))return json(403,{error:'LOCAL_OPERATOR_REQUIRED'});return json(200,currentControls());}
+    if(url.pathname==='/api/plugins')return json(200,{...capabilities(access.project(req)),csrfToken:csrf});
+    if(url.pathname==='/api/sbom/projects')return json(200,{projects:Object.entries(sbomProjects()).map(([projectId,p])=>({projectId,displayName:p.displayName}))});
+    if(url.pathname==='/api/sbom/session'){const projects=access.sessions(req);return projects?json(200,{projects}):json(403,{error:'LOCAL_OPERATOR_OR_PROJECT_IDENTITY_REQUIRED'});}
+    if(url.pathname==='/api/runs')return json(200,{runs:recentRuns().filter(r=>r.pluginId==='sbom'?authorized(req,r.projectId)&&(!access.project(req)||access.project(req)===r.projectId):!access.project(req)||access.operator(req)).slice(0,20)});
+    const configMatch=url.pathname.match(/^\/api\/projects\/([A-Za-z0-9_.-]+)\/config$/);
+    if(configMatch){if(!authorized(req,configMatch[1]))return json(403,{error:'PROJECT_NOT_AUTHORIZED'});return json(200,projectControls(configMatch[1]));}
     if(url.pathname.startsWith('/api/projects/')){
       const m=url.pathname.match(/^\/api\/projects\/([a-zA-Z0-9_.-]+)\/runs\/(web-[a-f0-9-]{36})\/sbom$/);
       if(!m||!authorized(req,m[1]))return json(403,{error:'PROJECT_NOT_AUTHORIZED'});
@@ -50,7 +59,7 @@ const server = http.createServer(async(req,res) => {
       if(r.state!=='COMPLETED')return json(409,{error:'SBOM_NOT_AVAILABLE'});
       return send(200,'application/json',fs.readFileSync(path.join(root,'.devsecops/security-view-runs-v1',r.runId,'artifact/sbom.raw.json')));
     }
-    if(url.pathname.startsWith('/api/runs/')){const r=getRun(url.pathname.slice('/api/runs/'.length));if(r.pluginId==='sbom'&&!authorized(req,r.projectId))return json(403,{error:'PROJECT_NOT_AUTHORIZED'});return json(200,r);}
+    if(url.pathname.startsWith('/api/runs/')){const r=getRun(url.pathname.slice('/api/runs/'.length));if(r.pluginId==='sbom'&&!authorized(req,r.projectId)||r.pluginId!=='sbom'&&access.project(req)&&!access.operator(req))return json(403,{error:'PROJECT_NOT_AUTHORIZED'});return json(200,r);}
     if (url.pathname==='/api/health') return send(200,'application/json',JSON.stringify({service:'security-manager-v2-readonly',instance,pid:process.pid}));
     if (url.pathname==='/api/overview') return send(200,'application/json',JSON.stringify(overview()));
     const asset = assets.get(url.pathname);

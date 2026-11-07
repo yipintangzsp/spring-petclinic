@@ -1,0 +1,55 @@
+{
+  "projects": {
+    "java-sbom-demo": {
+      "runId": "web-6dbc4f41-3d82-4a6c-8b1c-b12f928c4f25",
+      "sha256": "2456c26bdb23806b0c697d44f128d889541ad0d2fd68c3505d3350f7177a006c",
+      "components": 11,
+      "inputSha256": "cac4cdce5296a6d6bc31477e9a7feca0a30d9797129da11c9c9d8883a4c55cc2",
+      "source": "HISTORICAL_UNCHANGED"
+    },
+    "java-sbom-demo-b": {
+      "runId": "web-b52dbc8e-b584-4c0d-ad53-1c01ce116ddf",
+      "sha256": "807fe308306f5f47ea40f3d7cc01e46b79612669485940b74ceaf2c08e46ee5a",
+      "components": 11,
+      "inputSha256": "e38d3b93f3fb56bcc948c2adeb32143f0afae26493a422360f2f2f806e568238",
+      "source": "REAL_BROWSER_EXECUTION"
+    }
+  },
+  "policy": "PASS",
+  "evaluationCount": 1,
+  "router": [
+    {
+      "consumerId": "dry-run",
+      "deliveryDecision": "DRY_RUN"
+    },
+    {
+      "consumerId": "local-evidence",
+      "deliveryDecision": "DELIVERED_LOCAL_ONLY"
+    }
+  ],
+  "loki": {
+    "consumerId": "loki-candidate",
+    "automatic": true,
+    "sourceClassification": "REAL_CONTROLLED_EXECUTION",
+    "runId": "web-b52dbc8e-b584-4c0d-ad53-1c01ce116ddf",
+    "resultDigest": "8934062feabe4c5b7ef1bc508af1237a8a0a32798a599d80016a4264209ff074",
+    "pushState": "ACKNOWLEDGED",
+    "pushHttpStatus": 204,
+    "receiptDigest": "c4af94bf6f19846230440d1dbc8ed49581aff841525b334ee2c27cc652b5cf5a",
+    "httpRequestCount": 1,
+    "queryState": "VERIFIED",
+    "state": "DELIVERED",
+    "reason": null,
+    "deliveryAt": "2026-11-07T01:35:38.793Z",
+    "grafanaUrl": "http://grafana.devops.local/d/security-manager-v2-candidate/devsecops-security-manager-v2-overview?var-DS_LOKI=loki&var-project=java-sbom-demo-b&var-run=web-b52dbc8e-b584-4c0d-ad53-1c01ce116ddf&var-resultDigest=8934062feabe4c5b7ef1bc508af1237a8a0a32798a599d80016a4264209ff074&from=1794015278519&to=1794015638519",
+    "receiptSource": "loki-delivery/router-receipt.json",
+    "queryAt": "2026-11-07T01:35:38.935Z",
+    "queryHttpStatus": 200,
+    "matchedEvents": 1
+  },
+  "projectArtifactCrossReadDenials": 5,
+  "restartPersistence": true,
+  "browserClick": "VERIFIED",
+  "release": 0,
+  "rollout": 0
+}

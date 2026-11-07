@@ -1,7 +1,9 @@
 import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
-import {spawn} from 'node:child_process';
+import {spawn,execFile} from 'node:child_process';
+import {promisify} from 'node:util';
+import {accessCredentials} from './project-access.mjs';
 import {randomUUID,createHash} from 'node:crypto';
 const here=fs.realpathSync(new URL('.',import.meta.url));
 const state=path.join(os.tmpdir(),`security-v2-view-${process.getuid()}-${createHash('sha256').update(here).digest('hex').slice(0,12)}`);
@@ -33,5 +35,12 @@ const action=process.argv[2]??'status';
 if(action==='restart'){await stop();await start();}
 else if(action==='start')await start();
 else if(action==='stop')await stop();
+else if(action==='open'){
+ await start();const base='http://127.0.0.1:17862',s=await(await fetch(base+'/api/plugins')).json();
+ const r=await fetch(base+'/api/sbom/operator-ticket',{method:'POST',headers:{Origin:base,'Content-Type':'application/json','X-CSRF-Token':s.csrfToken,Authorization:'Bearer '+accessCredentials().operatorToken},body:'{}'});
+ if(!r.ok)throw Error('Local operator authorization failed');const {ticket}=await r.json();
+ await promisify(execFile)('/usr/bin/open',['http://security.devops.local:17862/operator-login?ticket='+ticket]);
+ console.log('Opened authorized local page: http://security.devops.local:17862/#candidate-overview');
+}
 else if(action==='status')console.log(await health()??'STOPPED');
-else throw Error('Use start | stop | restart | status');
+else throw Error('Use start | stop | restart | status | open');

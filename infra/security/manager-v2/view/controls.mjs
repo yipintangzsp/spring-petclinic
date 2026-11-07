@@ -24,17 +24,29 @@ function raw(){
  if(present.isSymbolicLink())throw error('INVALID_CONTROL_STORAGE',503);
  const fd=fs.openSync(file,fs.constants.O_RDONLY|fs.constants.O_NOFOLLOW);
  try{const s=fs.fstatSync(fd);if(!s.isFile()||s.uid!==process.getuid()||s.nlink!==1||(s.mode&0o077)||s.size>128*1024)throw error('INVALID_CONTROL_STORAGE',503);
- const r=JSON.parse(fs.readFileSync(fd,'utf8'));if(r.schemaVersion!==1||!Number.isSafeInteger(r.revision)||r.revision<1||!Array.isArray(r.history)||r.history.length!==r.revision||r.history.length>100||digest(r.settings)!==r.settingsDigest)throw error('INVALID_CONTROL_STORAGE',503);resolve(r.settings);return r;
+ const r=JSON.parse(fs.readFileSync(fd,'utf8'));if(r.schemaVersion!==1||!Number.isSafeInteger(r.revision)||r.revision<1||!Array.isArray(r.history)||r.history.length!==r.revision||r.history.length>100||digest(r.settings)!==r.settingsDigest)throw error('INVALID_CONTROL_STORAGE',503);resolve(r.settings);projectOverrides(r);return r;
  }catch(e){if(e.code?.startsWith('INVALID_'))throw e;throw error('INVALID_CONTROL_STORAGE',503);}finally{fs.closeSync(fd);}
 }
+function projectDefinitions(){return JSON.parse(fs.readFileSync(new URL('../sbom/projects.json',import.meta.url))).projects;}
+function projectOverrides(r){const v=r.projectOverrides??{};for(const [id,o]of Object.entries(v)){if(!Object.hasOwn(projectDefinitions(),id)||!exact(o,['plugins'])||!exact(o.plugins,['sbom'])||!exact(o.plugins.sbom,['enabled'])||o.plugins.sbom.enabled!==false)throw error('INVALID_PROJECT_OVERRIDE');}if(r.projectOverridesDigest!==undefined&&digest(v)!==r.projectOverridesDigest)throw error('INVALID_PROJECT_OVERRIDE');return v;}
+export function projectControls(projectId){if(!Object.hasOwn(projectDefinitions(),projectId))throw error('PROJECT_NOT_AUTHORIZED',403);const r=raw(),settings=normalize(r.settings),overrides=projectOverrides(r),enabled=overrides[projectId]?.plugins.sbom.enabled??true,registry=realManagedRegistry();return {projectId,revision:r.revision,sbomEnabled:enabled,effectiveEnabled:settings.enabled&&settings.plugins.sbom.enabled&&enabled,securityLevel:settings.securityLevel,source:enabled?'INHERITED_GLOBAL':'PROJECT_OVERRIDE',updatedAt:r.updatedAt,effectiveConfig:configuration({security:{...settings,globalMode:'audit',profile:projectDefinitions()[projectId].profile,policyVersion:'baseline-v1'},projectOverrides:overrides},projectId,registry.ids(),Object.fromEntries(registry.ids().map(id=>[id,managedPlugins.includes(id)])))};}
 export function currentControls(){const r=raw();return {...r,settings:normalize(r.settings),scope:'LOCAL_NON_PRODUCTION_CANDIDATE_ONLY',source:{kind:r.revision?'LOCAL_EXPLICIT_OVERRIDE':'DEMO_DEFAULT','path':'.devsecops/security-view-controls-v1.json',settingsDigest:digest(r.settings)},effectiveConfig:resolve(r.settings)};}
 export function writeControls(input,reset=false){
  if(!exact(input,reset?['revision']:['revision','settings'])||!Number.isSafeInteger(input.revision))throw error('INVALID_CONTROL_REQUEST');
  const previous=raw();if(input.revision!==previous.revision)throw error('CONFIG_REVISION_CONFLICT',409);
- if(previous.revision>=100)throw error('CONFIG_HISTORY_BUDGET_EXHAUSTED',429);
  const settings=reset?demoDefaults():structuredClone(input.settings);resolve(settings);
+ return persist(previous,settings,projectOverrides(previous),reset?'RESTORE_DEMO_DEFAULTS':'SAVE_CANDIDATE_SETTINGS');
+}
+export function writeProjectControls(projectId,input){
+ if(!Object.hasOwn(projectDefinitions(),projectId)||!exact(input,['revision','sbomEnabled'])||typeof input.sbomEnabled!=='boolean')throw error('INVALID_PROJECT_CONTROL_REQUEST');
+ const previous=raw();if(previous.revision!==input.revision)throw error('CONFIG_REVISION_CONFLICT',409);
+ const overrides=structuredClone(projectOverrides(previous));if(input.sbomEnabled)delete overrides[projectId];else overrides[projectId]={plugins:{sbom:{enabled:false}}};
+ persist(previous,normalize(previous.settings),overrides,'SAVE_PROJECT_SBOM_'+projectId);return projectControls(projectId);
+}
+function persist(previous,settings,overrides,action){
+ if(previous.revision>=100)throw error('CONFIG_HISTORY_BUDGET_EXHAUSTED',429);
  const now=new Date().toISOString(),revision=previous.revision+1,settingsDigest=digest(settings);
- const record={schemaVersion:1,revision,updatedAt:now,settings,settingsDigest,history:[...previous.history,{revision,at:now,action:reset?'RESTORE_DEMO_DEFAULTS':'SAVE_CANDIDATE_SETTINGS',previousDigest:digest(previous.settings),settingsDigest,settings:structuredClone(settings)}]};
+ const record={schemaVersion:1,revision,updatedAt:now,settings,settingsDigest,projectOverrides:overrides,projectOverridesDigest:digest(overrides),history:[...previous.history,{revision,at:now,action,previousDigest:digest(previous.settings),settingsDigest,settings:structuredClone(settings),projectOverridesDigest:digest(overrides)}]};
  const dir=parent(),tmp=path.join(dir,'.security-controls-'+randomUUID());let fd;
  try{fd=fs.openSync(tmp,fs.constants.O_WRONLY|fs.constants.O_CREAT|fs.constants.O_EXCL|fs.constants.O_NOFOLLOW,0o600);fs.writeFileSync(fd,JSON.stringify(record,null,2)+'\n');fs.fsyncSync(fd);fs.closeSync(fd);fd=undefined;fs.renameSync(tmp,file);const d=fs.openSync(dir,fs.constants.O_RDONLY);try{fs.fsyncSync(d);}finally{fs.closeSync(d);}}
  finally{if(fd!==undefined)fs.closeSync(fd);if(fs.existsSync(tmp))fs.unlinkSync(tmp);}
