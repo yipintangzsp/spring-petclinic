@@ -1,6 +1,6 @@
 """Fixed authorized source phase; Git objects verified before existing Manager runner."""
 import pathlib,os,sys,json,subprocess,hashlib,io,tarfile,gzip,shutil,tempfile,re,time,fcntl,signal,resource,importlib.util
-ROOT=pathlib.Path('/var/tmp/security-manager-gitleaks-final-20261107')
+ROOT=pathlib.Path('/var/tmp/security-manager-gitleaks-timeout60-20261107')
 def fail(code):
  if 'run'in globals()and(ROOT/'outputs').is_dir():
   f=ROOT/'outputs'/(run+'-stages.jsonl')
@@ -96,10 +96,11 @@ try:
  batch=git(base+['cat-file','--batch'],cfg['limits']['expandedBytes']+cfg['limits']['files']*128,(''.join(entries[p]['oid']+'\n'for p in sorted(entries))).encode());archive=mod.canonical_blob_archive(entries,batch,cfg['limits']);del batch
  proof=mod.materialize_verified_archive(archive,entries,source,cfg['limits']);proof.update({'budgetScope':cfg['budgetScope'],'gitEntries':entries,'commitSha':sha,'rootTreeOid':tree,'projectId':cfg['projectId'],'repository':cfg['sourceRepository'],'branch':cfg['branch']});(work/'source-proof.json').write_text(json.dumps(proof));shutil.rmtree(gitdir);del archive
  (ROOT/'outputs'/(run+'-stages.jsonl')).write_text(json.dumps({'runId':run,'stage':'SOURCE_READY','time':time.strftime('%Y-%m-%dT%H:%M:%SZ',time.gmtime()),'exitCode':None,'errorCategory':None,'summary':None})+'\n')
+ (ROOT/'outputs'/(run+'-source-metadata.json')).write_text(json.dumps({k:v for k,v in proof.items()if k not in ['gitEntries','files']}))
  stage='SCANNER'
  env={'PATH':'/usr/bin:/bin','HOME':str(work),'LANG':'C'}
  child=subprocess.Popen(['/usr/bin/setpriv','--no-new-privs','/usr/bin/env','-i',*[k+'='+v for k,v in env.items()],'/usr/bin/node','--max-old-space-size=128',str(ROOT/'package/infra/security/manager-v2/ci/commit-run.mjs'),run,level],cwd=ROOT/'package',env=env,stdin=subprocess.DEVNULL,stdout=subprocess.PIPE,stderr=subprocess.PIPE,start_new_session=True)
- try:out,err=child.communicate(timeout=25)
+ try:out,err=child.communicate(timeout=cfg['executionBudget']['managerProcessTimeoutMs']/1000)
  except subprocess.TimeoutExpired:os.killpg(child.pid,signal.SIGTERM);child.communicate(timeout=3);raise RuntimeError('RUNNER_TIMEOUT')
  if child.returncode or len(out)>2*1024*1024:
   (ROOT/'outputs'/(run+'-process.json')).write_text(json.dumps({'exitCode':child.returncode,'stderrSha256':hashlib.sha256(err).hexdigest(),'stderrBytes':len(err),'stdoutBytes':len(out)}));raise RuntimeError('RUNNER_OR_COLLECTION_ERROR')

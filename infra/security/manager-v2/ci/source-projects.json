@@ -1,9 +1,20 @@
 {
-  "defaults": {"files":1500,"archiveBytes":33554432,"expandedBytes":100663296,"fileBytes":4194304},
+  "defaults": {
+    "files": 1500,
+    "archiveBytes": 33554432,
+    "expandedBytes": 100663296,
+    "fileBytes": 4194304
+  },
   "projectOverrides": {
     "python-fixture": {
-      "fileOverrides": {"infra/security/controller.json":8388608},
-      "scope": "SINGLE_APPROVED_COMMIT_ONLY"
+      "fileOverrides": {
+        "infra/security/controller.json": 8388608
+      },
+      "scope": "SINGLE_APPROVED_COMMIT_ONLY",
+      "executionBudget": {
+        "scanTimeoutMs": 60000,
+        "managerProcessTimeoutMs": 75000
+      }
     }
   }
 }

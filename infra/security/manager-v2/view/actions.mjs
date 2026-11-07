@@ -78,7 +78,7 @@ export function submit(value,ciContext=null){
  const request={runId,...value,...(ciContext?{projectId:ciContext.projectId,ciContext}:{}),configurationSnapshot,securityLevel:control.settings.securityLevel,startedAt:new Date().toISOString(),kind:'LocalValidationRequest',executionLocation:!enabled?'NO_EXECUTION':remote?'LINUX_RESTRICTED':'MAC_ONLY'};
  save(path.join(dir,'request.json'),request);active=runId;
  setImmediate(async()=>{
-  const start=performance.now();const controller=new AbortController();const timer=setTimeout(()=>controller.abort(),value.pluginId==='sbom'||ciContext?.sourceMode==='REAL_COMMIT_SNAPSHOT'?90000:30000);let result,budget=null,attempted=false;
+  const start=performance.now();const controller=new AbortController();const timer=setTimeout(()=>controller.abort(),ciContext?.sourceMode==='REAL_COMMIT_SNAPSHOT'?150000:value.pluginId==='sbom'?90000:30000);let result,budget=null,attempted=false;
   try{
    if(!enabled&&value.pluginId==='sbom'){result={...request,state:'DISABLED',evidenceClass:'NOT_TESTED',reason:!control.settings.enabled?'MASTER_DISABLED':!control.settings.plugins.sbom.enabled?'PLUGIN_DISABLED':'PROJECT_PLUGIN_DISABLED',scannerExecuted:false,remoteInvocationCount:0,policyDecision:null,evaluationCount:0,resultDigest:null,artifactDigest:null};return;}
    if(!enabled){

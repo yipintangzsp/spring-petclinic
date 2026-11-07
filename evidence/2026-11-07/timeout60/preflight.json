@@ -1,0 +1,80 @@
+{
+  "input": {
+    "valid": true,
+    "files": 830,
+    "bytes": 46162841,
+    "scans": 0,
+    "toolExecutable": true
+  },
+  "budget": {
+    "schemaVersion": 1,
+    "kind": "ResourceBudgetObservation",
+    "host": "devops",
+    "uid": 24021,
+    "gid": 24021,
+    "groups": [
+      24021
+    ],
+    "cgroup": "0::/user.slice/user-24021.slice/session-6952.scope",
+    "startedAt": "2026-11-07T08:35:06.578579+00:00",
+    "completedAt": "2026-11-07T08:35:06.830711+00:00",
+    "thresholds": {
+      "memBytesMin": 1073741824,
+      "diskBytesMin": 1073741824,
+      "cpuBusyPctMax": 75
+    },
+    "observed": {
+      "memAvailableBytes": 6031183872,
+      "diskAvailableBytes": 44428447744,
+      "availableInodes": 15325479,
+      "cpuBusyPct": 35.71428571428571,
+      "cpuTicksBefore": [
+        3313711,
+        1897,
+        1454320,
+        25132801,
+        66992,
+        0,
+        53184,
+        0
+      ],
+      "cpuTicksAfter": [
+        3313756,
+        1897,
+        1454325,
+        25132891,
+        66992,
+        0,
+        53184,
+        0
+      ],
+      "sampleSeconds": 0.2510585819982225
+    },
+    "blockedConditions": {
+      "memAvailable": false,
+      "diskAvailable": false,
+      "cpuBusy": false
+    },
+    "preflight": "PASS",
+    "sources": {
+      "memory": "/proc/meminfo MemAvailable kB * 1024",
+      "disk": "statvfs f_bavail * f_frsize via shutil.disk_usage",
+      "cpu": "/proc/stat first8 counters; idle+iowait;250ms"
+    },
+    "scannerStarted": false,
+    "newRun": false
+  },
+  "toolVersion": "v8.30.1",
+  "executionBudget": {
+    "scanTimeoutMs": 60000,
+    "managerProcessTimeoutMs": 75000
+  },
+  "sourceSha256": "943967bd6eab180d71f9b1c8e197fdad9c89148b0fec4c69f5a6d2d32d124c03",
+  "archiveBytes": 25992794,
+  "noScannerInvocations": true,
+  "outputWritable": true,
+  "commitSha": "a69104ba1bf88b74cc57a420888ee692b88c8c48",
+  "controllerIncluded": true,
+  "diagnosticModulePresent": true,
+  "preflight": "PASS"
+}

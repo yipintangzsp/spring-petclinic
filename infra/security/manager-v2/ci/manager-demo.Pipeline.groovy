@@ -1,6 +1,6 @@
 pipeline {
  agent none
- options { skipDefaultCheckout(true); disableConcurrentBuilds(); disableRestartFromStage(); timeout(time: 3, unit: 'MINUTES') }
+ options { skipDefaultCheckout(true); disableConcurrentBuilds(); disableRestartFromStage(); timeout(time: 4, unit: 'MINUTES') }
  stages {
   stage('Verify GitLab Webhook') {
    steps { script {
@@ -26,7 +26,7 @@ const key=process.env.CI_SSH_KEY,st=fs.lstatSync(key);if(!st.isFile()||st.uid!==
 fs.mkdirSync('evidence',{mode:0o700});fs.writeFileSync('known_hosts','192.168.1.58 ssh-ed25519 @HOST_KEY@'+String.fromCharCode(10),{flag:'wx',mode:0o400});
 const v={projectId:'python-fixture',sourceRepository:'http://gitlab.devops.local/root/petclinic-platform.git',commitSha:'@COMMIT@',ciProvider:'jenkins',jobId:process.env.CI_JOB,buildId:Number(process.env.CI_BUILD),trigger:'gitlab-webhook',pluginId:'gitleaks',scenarioId:'clean'};
 const args=['-F','/dev/null','-T','-i',key,'-o','BatchMode=yes','-o','IdentitiesOnly=yes','-o','IdentityAgent=none','-o','StrictHostKeyChecking=yes','-o','UpdateHostKeys=no','-o','HostKeyAlias=192.168.1.58','-o','UserKnownHostsFile='+path.resolve('known_hosts'),'-o','GlobalKnownHostsFile=/dev/null','-o','ClearAllForwardings=yes','-o','ConnectTimeout=5','security-gitleaks@192.168.64.11','manager-ci-v1'];
-let text,status=0;try{text=execFileSync('/usr/bin/ssh',args,{input:JSON.stringify(v),encoding:'utf8',timeout:110000,maxBuffer:16384,env:{PATH:'/usr/bin:/bin',LANG:'C'}});}catch(e){text=e.stdout||'{"error":"CI_TRANSPORT_ERROR"}';status=1;}
+let text,status=0;try{text=execFileSync('/usr/bin/ssh',args,{input:JSON.stringify(v),encoding:'utf8',timeout:190000,maxBuffer:16384,env:{PATH:'/usr/bin:/bin',LANG:'C'}});}catch(e){text=e.stdout||'{"error":"CI_TRANSPORT_ERROR"}';status=1;}
 const result=JSON.parse(text);fs.writeFileSync('evidence/security-manager-result.json',JSON.stringify(result,null,2),{flag:'wx',mode:0o400});console.log(JSON.stringify({runId:result.runId,state:result.state,policyDecision:result.policyDecision,resultDigest:result.resultDigest}));if(result.state!=='COMPLETED'||result.evidenceClass!=='REAL'||result.evaluationCount!==1||!['PASS','FAIL'].includes(result.policyDecision))process.exit(1);
 NODE
 '''

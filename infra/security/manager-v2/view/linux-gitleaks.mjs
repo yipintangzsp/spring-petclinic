@@ -54,7 +54,7 @@ export async function runLinuxGitleaks(scenarioId,runId,dir,signal,securityLevel
 }
 export async function runLinuxCommitSnapshot(context,runId,dir,signal,securityLevel='standard'){
  if(!linuxReady()||!/^[a-f0-9]{40}$/.test(context.commitSha)||!/^web-[a-f0-9-]{36}$/.test(runId)||!['low','standard','strict'].includes(securityLevel))throw fault('SOURCE_REQUEST_REJECTED');
- let packet;try{const {stdout}=await exec('/usr/bin/ssh',[...args,'commit-v1 '+runId+' '+securityLevel],{signal,timeout:85000,maxBuffer:2*1024*1024,env:{PATH:'/usr/bin:/bin',LANG:'C'}});packet=JSON.parse(stdout);}catch(e){let code;try{code=JSON.parse(e.stdout).error;}catch{}throw fault(/^(?:SOURCE_[A-Z_]+|RUNNER_[A-Z_]+|LINUX_RESOURCE_BUDGET_BLOCKED)$/.test(code??'')?code:'SOURCE_TRANSPORT_ERROR');}
+ let packet;try{const {stdout}=await exec('/usr/bin/ssh',[...args,'commit-v1 '+runId+' '+securityLevel],{signal,timeout:135000,maxBuffer:2*1024*1024,env:{PATH:'/usr/bin:/bin',LANG:'C'}});packet=JSON.parse(stdout);}catch(e){let code;try{code=JSON.parse(e.stdout).error;}catch{}throw fault(/^(?:SOURCE_[A-Z_]+|RUNNER_[A-Z_]+|LINUX_RESOURCE_BUDGET_BLOCKED)$/.test(code??'')?code:'SOURCE_TRANSPORT_ERROR');}
  return acceptLinuxGitleaksPacket(packet,'commit-snapshot',runId,dir,securityLevel,context);
 }
 // The existing sealed-result validation is shared with the trusted Jenkins dispatcher.
@@ -69,7 +69,7 @@ export function acceptLinuxGitleaksPacket(packet,scenarioId,runId,dir,securityLe
  const r=packet.result,f=r?.runtimeFacts,i=f?.identity;verifyResult(r);check(['low','standard','strict'].includes(securityLevel)&&r.securityLevel===securityLevel&&r.policy?.securityLevel===securityLevel&&r.policy?.evaluation?.securityLevel===securityLevel);
  check(r.runId===runId&&r.pluginId==='gitleaks'&&r.projectId===(commit?sourceContext.projectId:finding?'java-fixture':'python-fixture')&&r.executionStatus==='COMPLETED'&&r.evaluationCount===1&&
   r.policyDecision===r.oldGateDecision&&(commit?['PASS','FAIL'].includes(r.policyDecision):r.policyDecision===(finding?'FAIL':'PASS'))&&packet.policyEvaluationCount===1&&packet.executionCounts?.scans===1);
- check(f.classification==='REAL_CONTROLLED_EXECUTION'&&f.validationRunId===runId&&(commit?f.sourceDir.path==='/var/tmp/security-manager-gitleaks-final-20261107/outputs/source-'+runId+'/source':f.sourceDir.path===workspace+(finding?'/source-java':'/source-python'))&&
+ check(f.classification==='REAL_CONTROLLED_EXECUTION'&&f.validationRunId===runId&&(commit?f.sourceDir.path==='/var/tmp/security-manager-gitleaks-timeout60-20261107/outputs/source-'+runId+'/source':f.sourceDir.path===workspace+(finding?'/source-java':'/source-python'))&&
   f.tool.sha256===binarySha&&f.tool.version==='8.30.1'&&f.tool.observedVersion.replace(/^v/,'')==='8.30.1'&&(commit?[0,1].includes(f.command.exitStatus):f.command.exitStatus===(finding?1:0))&&
   f.command.signal===null&&r.cleanup?.processGroupGone===true);
  if(commit)check(f.sourceSnapshot?.sourceMode==='REAL_COMMIT_SNAPSHOT'&&f.sourceSnapshot.commitSha===sourceContext.commitSha&&f.sourceSnapshot.repository===sourceContext.sourceRepository&&/^[a-f0-9]{64}$/.test(f.sourceSnapshot.archiveSha256)&&/^[a-f0-9]{40}$/.test(f.sourceSnapshot.rootTreeOid)&&r.cleanup.sourceWorkspaceRemoved===true);

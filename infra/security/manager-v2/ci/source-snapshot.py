@@ -94,3 +94,13 @@ def canonical_blob_archive(git_entries,batch,limits):
  archive=gzip.compress(out.getvalue(),mtime=0)
  if len(archive)>limits['archiveBytes']:raise ValueError('SOURCE_ARCHIVE_BUDGET')
  return archive
+
+
+def project_execution_budget(config,project_id,commit_sha,approved_scope):
+ import re
+ default={'scanTimeoutMs':10000,'managerProcessTimeoutMs':25000}
+ override=config.get('projectOverrides',{}).get(project_id,{}).get('executionBudget')
+ if override is None:return default
+ if not re.fullmatch('[a-f0-9]{40}',commit_sha)or approved_scope!={'projectId':project_id,'commitSha':commit_sha}:raise ValueError('SOURCE_TIMEOUT_SCOPE_REJECTED')
+ if set(override)!=set(default)or not isinstance(override['scanTimeoutMs'],int)or not 10000<=override['scanTimeoutMs']<=60000 or override['managerProcessTimeoutMs']!=override['scanTimeoutMs']+15000:raise ValueError('SOURCE_TIMEOUT_LIMIT_REJECTED')
+ return dict(override)
