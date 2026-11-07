@@ -1,0 +1,65 @@
+{
+  "hooks": [
+    {
+      "id": 5,
+      "url": "http://jenkins.ns-devops.svc.cluster.local:8080/project/security-gitlab-push-demo",
+      "branch": "security-demo/gitlab-push-20261105",
+      "push": true
+    }
+  ],
+  "jobs": [
+    {
+      "name": "security-gitlab-push-demo",
+      "exists": true,
+      "disabled": false,
+      "lastBuild": 6,
+      "lastResult": "SUCCESS",
+      "building": false,
+      "definitionSha256": "3480fb1418a7d790a05d334f43b58df382ac52d81557ae5f203690093f73e6ff",
+      "callsFixedScanner": true,
+      "hasGitOpsStage": true,
+      "callsManagerHttp": false,
+      "hasGitLabTrigger": true
+    },
+    {
+      "name": "security-gitleaks-demo",
+      "exists": true,
+      "disabled": false,
+      "lastBuild": 3,
+      "lastResult": "FAILURE",
+      "building": false,
+      "definitionSha256": "0cb5098110abdf10aec9a824a807953804a5070de0e05257f21884f203709db6",
+      "callsFixedScanner": false,
+      "hasGitOpsStage": false,
+      "callsManagerHttp": false,
+      "hasGitLabTrigger": false
+    }
+  ],
+  "credentialMetadata": [
+    {
+      "id": "security-gitleaks-demo-ssh",
+      "type": "BasicSSHUserPrivateKey"
+    },
+    {
+      "id": "security-gitops-demo-ssh",
+      "type": "BasicSSHUserPrivateKey"
+    }
+  ],
+  "mutations": 0,
+  "ssh": {
+    "jenkinsKeyCommands": [
+      "/usr/bin/python3 -I /usr/local/libexec/security-gitleaks-ci-proof.py"
+    ],
+    "existingProofWrapper": true,
+    "mutations": 0
+  },
+  "managerLocalCode": {
+    "bind": "127.0.0.1:17862",
+    "currentProjectCatalog": [
+      "java-sbom-demo",
+      "java-sbom-demo-b"
+    ],
+    "ciApiImplemented": false,
+    "ciProjectGitleaksGrantPresent": false
+  }
+}
