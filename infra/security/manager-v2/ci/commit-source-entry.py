@@ -6,6 +6,29 @@ cmd=os.environ.get('SSH_ORIGINAL_COMMAND','').split()
 if len(cmd)!=3 or cmd[0]!='commit-v1' or not re.fullmatch('web-[a-f0-9-]{36}',cmd[1])or cmd[2]not in ['low','standard','strict']:fail('SOURCE_COMMAND_REJECTED')
 if os.getuid()!=24021 or os.getgid()!=24021 or os.getgroups()!=[24021]:fail('SOURCE_IDENTITY_REJECTED')
 run=cmd[1];level=cmd[2]
+# Adopt only our own orphan descendants so disconnect/timeout cleanup stays bounded.
+import ctypes
+if ctypes.CDLL(None,use_errno=True).prctl(36,1,0,0,0)!=0:fail('SOURCE_PROCESS_BOUNDARY_UNAVAILABLE')
+def descendants(pid=os.getpid()):
+ result=[]
+ try:children=list(map(int,pathlib.Path('/proc/'+str(pid)+'/task/'+str(pid)+'/children').read_text().split()))
+ except FileNotFoundError:return result
+ for child in children:result.extend(descendants(child));result.append(child)
+ return result
+def stop_descendants():
+ for sig in [signal.SIGTERM,signal.SIGKILL]:
+  for pid in descendants():
+   try:os.kill(pid,sig)
+   except ProcessLookupError:pass
+  time.sleep(.1)
+  while True:
+   try:
+    if os.waitpid(-1,os.WNOHANG)[0]==0:break
+   except ChildProcessError:break
+ if descendants():raise RuntimeError('SOURCE_DESCENDANT_CLEANUP_FAILED')
+def interrupted(signum,frame):raise RuntimeError('SOURCE_CANCELLED')
+signal.signal(signal.SIGTERM,interrupted);signal.signal(signal.SIGHUP,interrupted)
+
 for p in ['/run/docker.sock','/etc/rancher/k3s/k3s.yaml']:
  if os.access(p,os.R_OK):fail('PRODUCTION_AUTHORITY_READABLE')
 for p in [ROOT,ROOT/'approval.json',ROOT/'package',ROOT/'askpass.py']:
@@ -14,6 +37,7 @@ for p in [ROOT,ROOT/'approval.json',ROOT/'package',ROOT/'askpass.py']:
 cfg=json.loads((ROOT/'approval.json').read_text())
 if cfg['expiresAt']<=time.time()*1000:fail('SOURCE_AUTHORIZATION_EXPIRED')
 if not re.fullmatch('[a-f0-9]{40}',cfg['commitSha']):fail('SOURCE_COMMIT_REJECTED')
+if cfg.get('budgetScope')!={'projectId':cfg['projectId'],'commitSha':cfg['commitSha']}or cfg['limits']['fileBytes']!=4194304:fail('SOURCE_LIMIT_SCOPE_REJECTED')
 for name,h in json.loads((ROOT/'package-manifest.json').read_text()).items():
  p=ROOT/'package'/name;s=p.lstat()
  if p.resolve()!=p or s.st_uid!=0 or s.st_mode&0o022 or hashlib.sha256(p.read_bytes()).hexdigest()!=h:fail('SOURCE_RELEASE_UNTRUSTED')
@@ -56,20 +80,24 @@ try:
  if len(entries)>cfg['limits']['files']:raise RuntimeError('SOURCE_FILE_BUDGET')
  spec=importlib.util.spec_from_file_location('snapshot',ROOT/'package/infra/security/manager-v2/ci/source-snapshot.py');mod=importlib.util.module_from_spec(spec);spec.loader.exec_module(mod)
  batch=git(base+['cat-file','--batch'],cfg['limits']['expandedBytes']+cfg['limits']['files']*128,(''.join(entries[p]['oid']+'\n'for p in sorted(entries))).encode());archive=mod.canonical_blob_archive(entries,batch,cfg['limits']);del batch
- proof=mod.materialize_verified_archive(archive,entries,source,cfg['limits']);proof.update({'gitEntries':entries,'commitSha':sha,'rootTreeOid':tree,'projectId':cfg['projectId'],'repository':cfg['sourceRepository'],'branch':cfg['branch']});(work/'source-proof.json').write_text(json.dumps(proof));shutil.rmtree(gitdir);del archive
+ proof=mod.materialize_verified_archive(archive,entries,source,cfg['limits']);proof.update({'budgetScope':cfg['budgetScope'],'gitEntries':entries,'commitSha':sha,'rootTreeOid':tree,'projectId':cfg['projectId'],'repository':cfg['sourceRepository'],'branch':cfg['branch']});(work/'source-proof.json').write_text(json.dumps(proof));shutil.rmtree(gitdir);del archive
  stage='SCANNER'
  env={'PATH':'/usr/bin:/bin','HOME':str(work),'LANG':'C'}
  child=subprocess.Popen(['/usr/bin/setpriv','--no-new-privs','/usr/bin/env','-i',*[k+'='+v for k,v in env.items()],'/usr/bin/node','--max-old-space-size=128',str(ROOT/'package/infra/security/manager-v2/ci/commit-run.mjs'),run,level],cwd=ROOT/'package',env=env,stdin=subprocess.DEVNULL,stdout=subprocess.PIPE,stderr=subprocess.PIPE,start_new_session=True)
  try:out,err=child.communicate(timeout=25)
  except subprocess.TimeoutExpired:os.killpg(child.pid,signal.SIGTERM);child.communicate(timeout=3);raise RuntimeError('RUNNER_TIMEOUT')
- if child.returncode or len(out)>2*1024*1024:raise RuntimeError('RUNNER_OR_COLLECTION_ERROR')
+ if child.returncode or len(out)>2*1024*1024:
+  (ROOT/'outputs'/(run+'-process.json')).write_text(json.dumps({'exitCode':child.returncode,'stderrSha256':hashlib.sha256(err).hexdigest(),'stderrBytes':len(err),'stdoutBytes':len(out)}));raise RuntimeError('RUNNER_OR_COLLECTION_ERROR')
  packet=json.loads(out)
  if packet['runId']!=run:raise RuntimeError('SOURCE_RESULT_BINDING')
  if work.exists():raise RuntimeError('SOURCE_CLEANUP_FAILED')
+ stop_descendants()
  print(json.dumps(packet),flush=True)
 except BaseException as e:
  code=str(e)if isinstance(e,(RuntimeError,ValueError))and re.fullmatch('[A-Z_]+',str(e))else('SOURCE_ERROR'if stage!='SCANNER'else'RUNNER_OR_COLLECTION_ERROR')
+ stop_descendants()
  if work.exists():shutil.rmtree(work)
  (ROOT/'outputs'/(run+'-error.json')).write_text(json.dumps({'runId':run,'stage':stage,'error':code,'sourceCleanup':not work.exists(),'scannerStarted':stage=='SCANNER'}));fail(code)
 finally:
+ stop_descendants()
  if work.exists():shutil.rmtree(work)

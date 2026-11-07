@@ -109,7 +109,7 @@ export function acceptLinuxGitleaksPacket(packet,scenarioId,runId,dir,securityLe
   fs.renameSync(staging,path.join(dir,'artifact'));
  }finally{if(fs.existsSync(staging))fs.rmSync(staging,{recursive:true});}
  return {state:r.executionStatus,evidenceClass:'REAL',managerExecutionStatus:r.executionStatus,reason:null,scannerExecuted:true,
-  scannerExitCode:f.command.exitStatus,toolVersion:f.tool.observedVersion,toolSha256:f.tool.sha256,executionHost:linuxHost,...(commit?{sourceMode:'REAL_COMMIT_SNAPSHOT',sourceCommitSha:f.sourceSnapshot.commitSha,sourceSnapshotSha256:f.sourceSnapshot.archiveSha256,sourceTreeOid:f.sourceSnapshot.rootTreeOid,sourceFileCount:f.sourceSnapshot.fileCount,sourceCleanup:'VERIFIED'}:{}),
+  scannerExitCode:f.command.exitStatus,toolVersion:f.tool.observedVersion,toolSha256:f.tool.sha256,executionHost:linuxHost,...(commit?{sourceMode:'REAL_COMMIT_SNAPSHOT',sourceCommitSha:f.sourceSnapshot.commitSha,sourceSnapshotSha256:f.sourceSnapshot.archiveSha256,sourceTreeOid:f.sourceSnapshot.rootTreeOid,sourceFileCount:f.sourceSnapshot.fileCount,sourceExpandedBytes:f.sourceSnapshot.expandedBytes,sourceBudgetExceptionHits:f.sourceSnapshot.budgetExceptionHits,sourceCleanup:'VERIFIED'}:{}),
   findingsCount:f.findingsCount,findingRules:[...new Set(raw.map(x=>x.RuleID))],
   executionIdentity:cleanIdentity,securityLevel:r.securityLevel,effectivePolicy:r.policy.effectivePolicy,appliedOverrides:r.policy.appliedOverrides,policyDecision:r.policyDecision,evaluationCount:r.evaluationCount,resultDigest:r.resultDigest,
   artifactDigest:packet.artifactDigest,rawReportDigest:r.rawReportDigest,factDigest:r.factDigest,router,

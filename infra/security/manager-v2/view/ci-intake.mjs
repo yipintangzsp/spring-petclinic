@@ -32,7 +32,7 @@ export function startCIIntake(){
    }
    if(req.method==='GET'&&/^\/v1\/runs\/web-[a-f0-9-]{36}$/.test(req.url)){
     if(!fs.existsSync(claim))throw fault('CI_RUN_NOT_OWNED');const own=JSON.parse(fs.readFileSync(claim));if(req.url!=='/v1/runs/'+own.runId)throw fault('CI_RUN_NOT_OWNED');const r=getRun(own.runId);if(r.projectId!==cap.projectId||r.pluginId!=='gitleaks')throw fault('CI_RESULT_BINDING');
-    return send(200,Object.fromEntries(['runId','projectId','state','evidenceClass','scannerExitCode','policyDecision','evaluationCount','resultDigest','artifactDigest','ciContext','lokiDelivery','completedAt','reason','findingsCount','sourceMode','sourceCommitSha','sourceSnapshotSha256','sourceTreeOid','sourceFileCount','sourceCleanup'].map(k=>[k,r[k]??null])));
+    return send(200,Object.fromEntries(['runId','projectId','state','evidenceClass','scannerExitCode','policyDecision','evaluationCount','resultDigest','artifactDigest','ciContext','lokiDelivery','completedAt','reason','findingsCount','sourceMode','sourceCommitSha','sourceSnapshotSha256','sourceTreeOid','sourceFileCount','sourceExpandedBytes','sourceBudgetExceptionHits','sourceCleanup'].map(k=>[k,r[k]??null])));
    }
    throw fault('CI_ROUTE_REJECTED',404);
   }catch(e){send(e.status??400,{error:/^[A-Z_]+$/.test(e.code??'')?e.code:'CI_REQUEST_REJECTED'});}

@@ -12,6 +12,23 @@ def valid_path(text):
  if p.is_absolute()or any(x in ('','.','..','.git')for x in text.split('/')):raise ValueError('SOURCE_PATH_REJECTED')
  return p
 
+def project_limits(config,project_id,commit_sha,approved_scope):
+ """Server-only project configuration; no limits accepted from CI requests."""
+ import re
+ base=dict(config['defaults'])
+ if base['fileBytes']!=4194304:raise ValueError('SOURCE_DEFAULT_LIMIT_REJECTED')
+ override=config.get('projectOverrides',{}).get(project_id)
+ if override:
+  if not re.fullmatch('[a-f0-9]{40}',commit_sha)or approved_scope!={'projectId':project_id,'commitSha':commit_sha}:raise ValueError('SOURCE_LIMIT_SCOPE_REJECTED')
+  if override['scope']!='SINGLE_APPROVED_COMMIT_ONLY':raise ValueError('SOURCE_LIMIT_SCOPE_REJECTED')
+  base['fileOverrides']=dict(override['fileOverrides'])
+  for rel,n in base['fileOverrides'].items():
+   valid_path(rel)
+   if not isinstance(n,int)or n<=base['fileBytes']or n>8388608:raise ValueError('SOURCE_LIMIT_OVERRIDE_REJECTED')
+ return base
+
+def file_limit(limits,rel):return limits.get('fileOverrides',{}).get(rel,limits['fileBytes'])
+
 def materialize_verified_archive(archive,git_entries,destination,limits):
  """Verify all bytes before exclusive writes; delete only this new directory on failure."""
  if len(archive)>limits['archiveBytes']:raise ValueError('SOURCE_ARCHIVE_BUDGET')
@@ -33,7 +50,7 @@ def materialize_verified_archive(archive,git_entries,destination,limits):
    if not member.isfile()or len(parts)<2:raise ValueError('SOURCE_LINK_OR_TYPE_REJECTED')
    rel='/'.join(parts[1:]);valid_path(rel)
    if rel not in git_entries or rel in files:raise ValueError('SOURCE_TREE_MISMATCH')
-   if member.size>limits['fileBytes']:raise ValueError('SOURCE_FILE_BUDGET')
+   if member.size>file_limit(limits,rel):raise ValueError('SOURCE_FILE_BUDGET')
    total+=member.size
    if total>limits['expandedBytes']:raise ValueError('SOURCE_EXPANDED_BUDGET')
    data=tar.extractfile(member).read(member.size+1)
@@ -45,11 +62,16 @@ def materialize_verified_archive(archive,git_entries,destination,limits):
  dest.mkdir(mode=0o700)
  try:
   for rel,data in files.items():
-   target=dest.joinpath(*valid_path(rel).parts);target.parent.mkdir(parents=True,exist_ok=True)
+   target=dest.joinpath(*valid_path(rel).parts)
+   parent=dest
+   for part in valid_path(rel).parts[:-1]:
+    parent=parent/part
+    if not parent.exists():parent.mkdir(mode=0o700)
+    if parent.is_symlink()or parent.stat().st_mode&0o077:raise ValueError('SOURCE_DIRECTORY_BOUNDARY')
    fd=os.open(target,os.O_WRONLY|os.O_CREAT|os.O_EXCL|os.O_NOFOLLOW,0o400)
    with os.fdopen(fd,'wb')as f:f.write(data)
   manifest=[{'path':p,'gitBlobOid':git_entries[p]['oid'],'gitMode':git_entries[p]['mode'],'sha256':hashlib.sha256(files[p]).hexdigest(),'bytes':len(files[p])}for p in sorted(files)]
-  return {'archiveSha256':hashlib.sha256(archive).hexdigest(),'files':manifest,'fileCount':len(manifest),'expandedBytes':total,'contentBinding':'EXACT_GIT_TREE_BLOB_SET','classification':'VERIFIED_INPUT_ONLY_NOT_SCAN'}
+  return {'archiveSha256':hashlib.sha256(archive).hexdigest(),'files':manifest,'fileCount':len(manifest),'expandedBytes':total,'contentBinding':'EXACT_GIT_TREE_BLOB_SET','classification':'VERIFIED_INPUT_ONLY_NOT_SCAN','budgetExceptionHits':[{'path':p,'bytes':len(files[p]),'limit':file_limit(limits,p)}for p in sorted(files)if len(files[p])>limits['fileBytes']]}
  except BaseException:shutil.rmtree(dest);raise
 
 def canonical_blob_archive(git_entries,batch,limits):
@@ -64,7 +86,7 @@ def canonical_blob_archive(git_entries,batch,limits):
    header=batch[offset:end].decode('ascii').split();offset=end+1
    if len(header)!=3 or header[:2]!=[e['oid'],'blob']or not header[2].isdigit():raise ValueError('SOURCE_BLOB_BATCH')
    size=int(header[2]);total+=size
-   if size>limits['fileBytes']or total>limits['expandedBytes']:raise ValueError('SOURCE_BLOB_BUDGET')
+   if size>file_limit(limits,rel)or total>limits['expandedBytes']:raise ValueError('SOURCE_BLOB_BUDGET')
    data=batch[offset:offset+size];offset+=size
    if len(data)!=size or batch[offset:offset+1]!=b'\n'or blob_oid(data)!=e['oid']:raise ValueError('SOURCE_BLOB_MISMATCH')
    offset+=1;info=tarfile.TarInfo('source/'+rel);info.size=size;info.mode=0o444;info.mtime=0;tar.addfile(info,io.BytesIO(data))

@@ -15,6 +15,12 @@ class SnapshotTest(unittest.TestCase):
   data=b'@echo off\r\n';e={'mvnw.cmd':{'mode':'100644','oid':m.blob_oid(data)}};batch=(e['mvnw.cmd']['oid']+' blob '+str(len(data))+'\n').encode()+data+b'\n'
   a=m.canonical_blob_archive(e,batch,limits);r=m.materialize_verified_archive(a,e,self.dest,limits);self.assertEqual((self.dest/'mvnw.cmd').read_bytes(),data);self.assertEqual(r['fileCount'],1)
   with self.assertRaisesRegex(ValueError,'BLOB_MISMATCH'):m.canonical_blob_archive(e,batch[:-2]+b'X\n',limits)
+ def test_directory_permissions_independent_of_ssh_umask(self):
+  import os
+  data=b'demo\n';e={'nested/deeper/demo.txt':{'mode':'100644','oid':m.blob_oid(data)}};batch=(e['nested/deeper/demo.txt']['oid']+' blob '+str(len(data))+'\n').encode()+data+b'\n';a=m.canonical_blob_archive(e,batch,limits);old=os.umask(0o002)
+  try:m.materialize_verified_archive(a,e,self.dest,limits)
+  finally:os.umask(old)
+  self.assertEqual((self.dest/'nested').stat().st_mode&0o777,0o700);self.assertEqual((self.dest/'nested/deeper').stat().st_mode&0o777,0o700)
  def test_traversal_rejected(self):
   with self.assertRaisesRegex(ValueError,'PATH_REJECTED'):m.materialize_verified_archive(archive('root/../outside'),self.tree,self.dest,limits)
   self.assertFalse(self.dest.exists())

@@ -16,6 +16,7 @@ function validate(input,projectId){
  const out=fs.lstatSync(approval.outputRoot);if(approval.outputRoot!==domain+'/outputs'||fs.realpathSync(approval.outputRoot)!==approval.outputRoot||out.uid!==process.getuid()||(out.mode&0o077))fail('private output ownership');
  const real=approval.scope==='REAL_COMMIT_SNAPSHOT';let source;
  if(real){
+  if(approval.budgetScope?.projectId!==projectId||approval.budgetScope.commitSha!==approval.commitSha||approval.expiresAt<=Date.now()||approval.limits.fileBytes!==4194304||Object.values(approval.limits.fileOverrides??{}).some(n=>!Number.isSafeInteger(n)||n<=4194304||n>8388608))fail('real source limit scope');
   if(projectId!==approval.projectId||!input.sourceDir.startsWith(approval.outputRoot+'/')||path.basename(input.sourceDir)!=='source')fail('real source project/path');
   const parent=path.dirname(input.sourceDir);if(path.dirname(parent)!==approval.outputRoot||!/^source-web-[a-f0-9-]{36}$/.test(path.basename(parent)))fail('real source run domain');
   const s=fs.lstatSync(parent);if(s.uid!==process.getuid()||(s.mode&0o077)||fs.realpathSync(parent)!==parent)fail('real source ownership');
@@ -65,7 +66,7 @@ export async function executeRealGitleaks(plugin,input,{signal,projectId,runId}=
  try{
   const version=await command(v.tool.path,['version'],privateDir,Math.min(plugin.timeout,5000),signal);
   if(version.code!==0||version.stdout.trim().replace(/^v(?=\d)/,'')!==v.tool.version)throw Error('RUNNER_TOOL_VERSION_ERROR');
-  const argv=['dir',v.source.sourceDir,'--redact=100','--no-banner','--log-level','error','--report-format','json','--report-path',rawPath];
+  const argv=['dir',v.source.sourceDir,...(v.source.snapshot?['--max-target-megabytes','0']:[]),'--redact=100','--no-banner','--log-level','error','--report-format','json','--report-path',rawPath];
   const startedAt=new Date().toISOString();scans++;observed=await command(v.tool.path,argv,privateDir,plugin.timeout,signal);const completedAt=new Date().toISOString();
   if(![0,1].includes(observed.code)||observed.signal)throw Error('RUNNER_SCANNER_ERROR');
   const s=fs.lstatSync(rawPath);if(!s.isFile()||s.isSymbolicLink()||s.size>1024*1024)throw Error('RUNNER_REPORT_ERROR');rawText=fs.readFileSync(rawPath,'utf8');const native=JSON.parse(rawText);if(!Array.isArray(native)||native.length>128)throw Error('RUNNER_REPORT_ERROR');
