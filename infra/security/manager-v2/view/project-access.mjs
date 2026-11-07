@@ -18,7 +18,7 @@ export function projectAccess(){
  const validCookie=req=>{const v=(req.headers.cookie??'').split(';').map(s=>s.trim()).find(s=>s.startsWith('smv2_operator='))?.slice(14),parts=v?.split('.');return parts?.length===2&&Number(parts[0])>Date.now()&&Number(parts[0])<=Date.now()+3600000&&same(parts[1],sign(parts[0]));};
  const operator=req=>same(req.headers.authorization,'Bearer '+credentials.operatorToken)||validCookie(req);
  const project=req=>Object.entries(credentials.projects).find(([,token])=>same(req.headers['x-project-token'],token))?.[0]??null;
- return {operator,project,authorized:(req,id)=>Object.hasOwn(credentials.projects,id)&&(operator(req)||project(req)===id),
+ return {operator,project,authorized:(req,id)=>Object.hasOwn(credentials.projects,id)&&(operator(req)||project(req)===id)||operator(req)&&Object.hasOwn(JSON.parse(fs.readFileSync(new URL('../ci/projects.json',import.meta.url))),id),
   sessions(req){if(operator(req))return Object.entries(credentials.projects).map(([projectId,projectToken])=>({projectId,projectToken}));const id=project(req);return id?[{projectId:id,projectToken:credentials.projects[id]}]:null;},
   ticket(req){if(!same(req.headers.authorization,'Bearer '+credentials.operatorToken))return null;for(const [t,at]of tickets)if(at<Date.now())tickets.delete(t);if(tickets.size>=8)return null;const token=secret();tickets.set(token,Date.now()+30000);return token;},
   consume(token){const expires=tickets.get(token);tickets.delete(token);if(!(expires>Date.now()))return null;const until=String(Date.now()+3600000);return 'smv2_operator='+until+'.'+sign(until)+'; Path=/; HttpOnly; SameSite=Strict; Max-Age=3600';}

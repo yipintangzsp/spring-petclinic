@@ -60,16 +60,16 @@ export function getRun(runId){
  return result;
 }
 export function recentRuns(){init();return fs.readdirSync(directory).filter(n=>identifier.test(n)).sort().map(n=>getRun(n)).sort((a,b)=>b.startedAt.localeCompare(a.startedAt));}
-export function submit(value){
+export function submit(value,ciContext=null){
  validateRequest(value);init();
  if(active)throw fault('RUN_ALREADY_ACTIVE',409);
  if(fs.readdirSync(directory).length>=100)throw fault('LOCAL_RECORD_BUDGET_EXHAUSTED',429);
- const control=currentControls(),project=value.pluginId==='sbom'?projectControls(value.projectId):null;
+ const control=currentControls(),project=value.pluginId==='sbom'?projectControls(value.projectId):ciContext?projectControls(ciContext.projectId):null;
  const configurationSnapshot={revision:control.revision,updatedAt:control.updatedAt,settings:control.settings,source:control.source,configurationOrigins:control.effectiveConfig.configurationOrigins,effectiveConfigDigest:project?.effectiveConfig.effectiveConfigDigest??control.effectiveConfig.effectiveConfigDigest,...(project?{project}: {})};
  const enabled=control.settings.enabled&&control.settings.plugins[value.pluginId].enabled&&(project?.effectiveEnabled??true);
  const runId='web-'+randomUUID(),dir=path.join(directory,runId);fs.mkdirSync(dir,{mode:0o700});safeDir(dir);
  const remote=value.pluginId==='gitleaks'&&linuxReady()||value.pluginId==='semgrep'&&semgrepReady()||value.pluginId==='cosign'&&cosignReady()||value.pluginId==='sbom'&&sbomReady();
- const request={runId,...value,configurationSnapshot,securityLevel:control.settings.securityLevel,startedAt:new Date().toISOString(),kind:'LocalValidationRequest',executionLocation:!enabled?'NO_EXECUTION':remote?'LINUX_RESTRICTED':'MAC_ONLY'};
+ const request={runId,...value,...(ciContext?{projectId:ciContext.projectId,ciContext}:{}),configurationSnapshot,securityLevel:control.settings.securityLevel,startedAt:new Date().toISOString(),kind:'LocalValidationRequest',executionLocation:!enabled?'NO_EXECUTION':remote?'LINUX_RESTRICTED':'MAC_ONLY'};
  save(path.join(dir,'request.json'),request);active=runId;
  setImmediate(async()=>{
   const start=performance.now();const controller=new AbortController();const timer=setTimeout(()=>controller.abort(),value.pluginId==='sbom'?90000:30000);let result,budget=null,attempted=false;
