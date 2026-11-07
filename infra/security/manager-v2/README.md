@@ -1,3 +1,5 @@
+> **2026-11-07 最终交付 / 功能冻结**：当前能力、操作与Backlog以[阶段交付说明](../../../docs/DEVSECOPS-V2-HANDOFF-20261107.md)为准。下文保留开发阶段与特定入口的历史记录，不代表当前系统全部状态。
+
 # Security Manager V2 Candidate
 
 Independent, **offline-only**, non-release entry. Production Jenkins, V1 Summary,

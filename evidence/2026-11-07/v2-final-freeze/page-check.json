@@ -1,0 +1,110 @@
+{
+  "at": "2026-11-07T12:56:53.035183+00:00",
+  "http": 200,
+  "url": "http://security.devops.local:17862",
+  "plugins": {
+    "gitleaks": {
+      "readableRealPass": true,
+      "readableRealFail": false,
+      "runIds": [
+        "web-a3378992-4eb3-414d-ac5d-bf46ba3034cf",
+        "web-bfcb08f9-e841-4972-8ecc-858355719a83"
+      ]
+    },
+    "semgrep": {
+      "readableRealPass": true,
+      "readableRealFail": true,
+      "runIds": [
+        "web-d623a7b0-ced1-42a4-b0a4-7075f44d8db2",
+        "web-042069ea-ae24-4f16-a914-4cbd8117aeaf",
+        "web-96fdc4f0-b3d3-4f42-9a36-d4b85df68056",
+        "web-a6dff8bd-0534-479b-bdb3-8c2c39fb4de8"
+      ]
+    },
+    "cosign": {
+      "readableRealPass": false,
+      "readableRealFail": false,
+      "runIds": []
+    }
+  },
+  "realCommitRun": {
+    "runId": "web-a3378992-4eb3-414d-ac5d-bf46ba3034cf",
+    "policyDecision": "PASS",
+    "resultDigest": "64e7678195b71aa7fb689a0149ddc6896b9d1af51e3ca48d00dad4c44b511bd5",
+    "sourceCommitSha": "a69104ba1bf88b74cc57a420888ee692b88c8c48",
+    "sourceFileCount": 830,
+    "sourceExpandedBytes": 46162841,
+    "sourceSnapshotSha256": "943967bd6eab180d71f9b1c8e197fdad9c89148b0fec4c69f5a6d2d32d124c03",
+    "ciContext": {
+      "projectId": "python-fixture",
+      "sourceRepository": "http://gitlab.devops.local/root/petclinic-platform.git",
+      "commitSha": "a69104ba1bf88b74cc57a420888ee692b88c8c48",
+      "ciProvider": "jenkins",
+      "jobId": "security-gitlab-push-demo",
+      "buildId": 12,
+      "trigger": "gitlab-webhook",
+      "pluginId": "gitleaks",
+      "scenarioId": "clean",
+      "buildUrl": "http://jenkins.devops.local/job/security-gitlab-push-demo/12/",
+      "sourceScope": "REAL_COMMIT_SNAPSHOT",
+      "sourceMode": "REAL_COMMIT_SNAPSHOT",
+      "retryOf": "web-9bd5f65d-f047-4261-aa73-55224f3328cb"
+    },
+    "lokiDelivery": {
+      "consumerId": "loki-candidate",
+      "automatic": true,
+      "sourceClassification": "REAL_CONTROLLED_EXECUTION",
+      "runId": "web-a3378992-4eb3-414d-ac5d-bf46ba3034cf",
+      "resultDigest": "64e7678195b71aa7fb689a0149ddc6896b9d1af51e3ca48d00dad4c44b511bd5",
+      "pushState": "ACKNOWLEDGED",
+      "pushHttpStatus": 204,
+      "receiptDigest": "eb7931443dd55890ea96bfcdf3b7bceab61815c0661699329cae8b7a803c142d",
+      "httpRequestCount": 1,
+      "queryState": "VERIFIED",
+      "state": "DELIVERED",
+      "reason": null,
+      "deliveryAt": "2026-11-07T08:36:04.160Z",
+      "grafanaUrl": "http://grafana.devops.local/d/security-manager-v2-candidate/devsecops-security-manager-v2-overview?var-DS_LOKI=loki&var-project=python-fixture&var-run=web-a3378992-4eb3-414d-ac5d-bf46ba3034cf&var-resultDigest=64e7678195b71aa7fb689a0149ddc6896b9d1af51e3ca48d00dad4c44b511bd5&from=1794040503332&to=1794040863332",
+      "receiptSource": "loki-delivery/router-receipt.json",
+      "queryAt": "2026-11-07T08:36:04.202Z",
+      "queryHttpStatus": 200,
+      "matchedEvents": 1
+    }
+  },
+  "sbomProjects": {
+    "java-sbom-demo": {
+      "runId": "web-6dbc4f41-3d82-4a6c-8b1c-b12f928c4f25",
+      "sbomSha256": "2456c26bdb23806b0c697d44f128d889541ad0d2fd68c3505d3350f7177a006c",
+      "componentCount": 11,
+      "policyDecision": "PASS"
+    },
+    "java-sbom-demo-b": {
+      "runId": "web-b52dbc8e-b584-4c0d-ad53-1c01ce116ddf",
+      "sbomSha256": "807fe308306f5f47ea40f3d7cc01e46b79612669485940b74ceaf2c08e46ee5a",
+      "componentCount": 11,
+      "policyDecision": "PASS"
+    }
+  },
+  "crossProjectDenied": true,
+  "controls": {
+    "enabled": true,
+    "securityLevel": "standard",
+    "plugins": {
+      "gitleaks": {
+        "enabled": true
+      },
+      "semgrep": {
+        "enabled": true
+      },
+      "cosign": {
+        "enabled": true
+      },
+      "sbom": {
+        "enabled": true
+      }
+    }
+  },
+  "localCiCapabilityPresent": false,
+  "browserClick": "NOT_TESTED",
+  "newScans": 0
+}
