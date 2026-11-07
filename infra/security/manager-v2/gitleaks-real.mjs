@@ -1,6 +1,7 @@
 // Trusted directory-scan adapter only. No Docker/Kubernetes/network/shell client.
 import fs from 'node:fs';import path from 'node:path';import {spawn} from 'node:child_process';import vm from 'node:vm';import crypto from 'node:crypto';
 import {sha,digest,freeze,fail} from '../summary-v2/codec.mjs';import {keys} from './config.mjs';import {verifyGitleaksSourceLock} from '../policy/gitleaks-source-lock.mjs';
+import {stageWriter} from './ci/stages.mjs';
 import {verifySourceTree} from './ci/source-tree.mjs';
 let scans=0,commands=0;export const realExecutionCounts=()=>({scans,commands});
 function trustedFile(p){const real=fs.realpathSync(p),s=fs.lstatSync(p);if(real!==p||!s.isFile()||s.uid!==0||(s.mode&0o022))fail('untrusted validation file');return s;}
@@ -36,17 +37,20 @@ function validate(input,projectId){
  const sourceLock=verifyGitleaksSourceLock();
  return {approval,source,tool,sourceLock,identity:{uid:process.getuid(),gid:process.getgid(),groups:process.getgroups(),noNewPrivs:true,effectiveCapabilities:'0',dockerSocketReadable:false,kubeconfigReadable:false,environmentInherited:false}};
 }
-async function command(bin,args,cwd,timeout,signal){
+function validationError(e){const known=['SOURCE_DIRECTORY_BOUNDARY','SOURCE_TREE_FILE','SOURCE_ROOT_TREE_BINDING','tool identity','tool version/image lineage','approval scope/identity','real source limit scope','real source approval binding'];return known.includes(e.message)?e.message:'Input validation rejected';}
+export const inspectRealGitleaksInput=validate;
+async function command(bin,args,cwd,timeout,signal,stages=null){
  if(signal?.aborted)throw Error('RUNNER_CANCELLED');commands++;
+ if(stages)stages('SCANNER_START_ATTEMPT');
  const p=spawn(bin,args,{cwd,env:{PATH:'/usr/bin:/bin',HOME:cwd,LANG:'C',GOMAXPROCS:'1',GOMEMLIMIT:'128MiB'},detached:true,stdio:['ignore','pipe','pipe']});
  let stdout='',stderr='',timer,killer,cause=null;const kill=s=>{if(p.pid)try{process.kill(-p.pid,s);}catch(e){if(e.code!=='ESRCH')throw e;}};
  const stop=reason=>{cause=reason;kill('SIGTERM');killer=setTimeout(()=>kill('SIGKILL'),100);};const abort=()=>stop('RUNNER_CANCELLED');signal?.addEventListener('abort',abort,{once:true});
  try{
   const result=await new Promise((resolve,reject)=>{
-   p.on('error',()=>reject(Error('RUNNER_ERROR')));p.stdout.on('data',b=>{stdout+=b;if(stdout.length>65536)stop('RUNNER_OUTPUT_LIMIT');});p.stderr.on('data',b=>{stderr+=b;if(stderr.length>65536)stop('RUNNER_OUTPUT_LIMIT');});
+   p.once('spawn',()=>{if(stages)stages('SCANNER_STARTED',{pid:p.pid});});p.on('error',()=>{if(stages)stages('RUN_FAILED',{errorCategory:'SCANNER_SPAWN_FAILED',summary:'Scanner process creation failed'});reject(Error('RUNNER_ERROR'));});p.stdout.on('data',b=>{stdout+=b;if(stdout.length>65536)stop('RUNNER_OUTPUT_LIMIT');});p.stderr.on('data',b=>{stderr+=b;if(stderr.length>65536)stop('RUNNER_OUTPUT_LIMIT');});
    p.once('close',(code,sig)=>resolve({code,signal:sig}));timer=setTimeout(()=>stop('RUNNER_TIMEOUT'),timeout);if(signal?.aborted)abort();
   });
-  if(cause)throw Error(cause);return {...result,stdout,stderrSha256:sha(stderr),argv:args};
+  if(stages)stages('SCANNER_EXITED',{exitCode:result.code,errorCategory:cause,summary:cause?'Scanner execution interrupted':null});if(cause)throw Error(cause);return {...result,stdout,stderrSha256:sha(stderr),argv:args};
  }finally{
   clearTimeout(timer);clearTimeout(killer);signal?.removeEventListener('abort',abort);kill('SIGKILL');
   if(p.pid){try{process.kill(-p.pid,0);throw Error('RUNNER_CLEANUP_FAILED');}catch(e){if(e.code!=='ESRCH')throw e;}}
@@ -62,12 +66,18 @@ function oldClassifier(findings,sourceDir,reviewed){
  return {decision,codeSha256:sha(code.slice(begin,end)),scope:'ORIGINAL_SOURCE_SECRET_CLASSIFIER_ON_REAL_INPUT','prefixMapping':'bijective sourceDir -> /work/source; native raw report remains unchanged',blockingCount:report.sourceScan.blockingFindings?.length??0};
 }
 export async function executeRealGitleaks(plugin,input,{signal,projectId,runId}={}){
- const v=validate(input,projectId),privateDir=fs.mkdtempSync(path.join(v.approval.outputRoot,'scan-')),rawPath=path.join(privateDir,'native.json');let rawText,observed;
+ let stages=null;
+ if(typeof input?.approvalFile==='string'&&/^\/var\/tmp\/security-manager-gitleaks-[a-zA-Z0-9_-]+\/approval\.json$/.test(input.approvalFile)){
+  trustedFile(input.approvalFile);const a=JSON.parse(fs.readFileSync(input.approvalFile)),domain=path.dirname(input.approvalFile),d=fs.lstatSync(domain);
+  if(a.scope==='REAL_COMMIT_SNAPSHOT'&&d.uid===0&&!(d.mode&0o022)&&fs.realpathSync(domain)===domain&&a.outputRoot===domain+'/outputs'){const o=fs.lstatSync(a.outputRoot);if(o.uid===process.getuid()&&!(o.mode&0o077)&&fs.realpathSync(a.outputRoot)===a.outputRoot)stages=stageWriter(a.outputRoot+'/'+runId+'-stages.jsonl',runId);}
+ }
+ let v;try{v=validate(input,projectId);}catch(e){if(stages)stages('RUN_FAILED',{errorCategory:'SOURCE_VALIDATION_FAILED',summary:validationError(e)});throw e;}
+ const privateDir=fs.mkdtempSync(path.join(v.approval.outputRoot,'scan-')),rawPath=path.join(privateDir,'native.json');let rawText,observed;
  try{
   const version=await command(v.tool.path,['version'],privateDir,Math.min(plugin.timeout,5000),signal);
   if(version.code!==0||version.stdout.trim().replace(/^v(?=\d)/,'')!==v.tool.version)throw Error('RUNNER_TOOL_VERSION_ERROR');
   const argv=['dir',v.source.sourceDir,...(v.source.snapshot?['--max-target-megabytes','0']:[]),'--redact=100','--no-banner','--log-level','error','--report-format','json','--report-path',rawPath];
-  const startedAt=new Date().toISOString();scans++;observed=await command(v.tool.path,argv,privateDir,plugin.timeout,signal);const completedAt=new Date().toISOString();
+  const startedAt=new Date().toISOString();scans++;observed=await command(v.tool.path,argv,privateDir,plugin.timeout,signal,stages);const completedAt=new Date().toISOString();
   if(![0,1].includes(observed.code)||observed.signal)throw Error('RUNNER_SCANNER_ERROR');
   const s=fs.lstatSync(rawPath);if(!s.isFile()||s.isSymbolicLink()||s.size>1024*1024)throw Error('RUNNER_REPORT_ERROR');rawText=fs.readFileSync(rawPath,'utf8');const native=JSON.parse(rawText);if(!Array.isArray(native)||native.length>128)throw Error('RUNNER_REPORT_ERROR');
   const originalNativeDigest=sha(rawText);
@@ -82,7 +92,8 @@ export async function executeRealGitleaks(plugin,input,{signal,projectId,runId}=
   const oldGate=oldClassifier(findings,v.source.sourceDir,reviewed);
   // Recheck approved content after the scan and original classifier observation.
   validate(input,projectId);
+  if(stages)stages('RESULT_VALIDATED');
   const execution={schemaVersion:1,kind:'CandidateRuntimeSourceFacts',validationRunId:runId,projectId,classification:'REAL_CONTROLLED_EXECUTION',sourceRevision:v.source.sourceRevision,...(v.source.snapshot?{sourceSnapshot:v.source.snapshot,originalNativeReportSha256:originalNativeDigest}:{}),sourceDir:{path:v.source.sourceDir,inode:v.source.inode,device:v.source.device,fileManifestDigest:v.source.fileManifestDigest},tool:{version:v.tool.version,observedVersion:version.stdout.trim(),sha256:v.tool.sha256,image:v.tool.image},config:{kind:'EXISTING_BUILTIN_DEFAULT',digest:digest({version:v.tool.version,toolSha256:v.tool.sha256,mode:'dir',environmentConfigAbsent:true})},command:{executableSha256:v.tool.sha256,argv,exitStatus:observed.code,signal:observed.signal,stderrSha256:observed.stderrSha256},startedAt,completedAt,identity:v.identity,oldGate,sourceBaselineId:v.sourceLock.baselineId,rawReportDigest:sha(rawText),factDigest:digest(fact),findingsCount:findings.length};
   return freeze({rawReport:native,rawReportBytesUtf8:rawText,rawReportDigest:sha(rawText),fact,factDigest:digest(fact),oldDecision:oldGate.decision,runtimeFacts:execution,evidenceRefs:[{kind:'REAL_CONTROLLED_EXECUTION',validationRunId:runId,sourceRevision:v.source.sourceRevision,toolSha256:v.tool.sha256,rawReportDigest:sha(rawText),canonicalRuntime:false}],executionScope:v.source.snapshot?'REAL_COMMIT_SNAPSHOT':'REAL_CONTROLLED_NON_RELEASE_DIR_SCAN',cleanup:{status:'VERIFIED',processGroupGone:true,privateReportDirectoryRemoved:true,...(v.source.snapshot?{sourceWorkspaceRemoved:true}:{})}});
- }finally{if(v.source.snapshot){const sourceParent=path.dirname(input.sourceDir);fs.rmSync(sourceParent,{recursive:true});if(fs.existsSync(sourceParent))throw Error('RUNNER_CLEANUP_FAILED');}fs.rmSync(privateDir,{recursive:true});if(fs.existsSync(privateDir))throw Error('RUNNER_CLEANUP_FAILED');}
+ }catch(e){if(stages)stages('RUN_FAILED',{errorCategory:/^[A-Z_]+$/.test(e.message)?e.message:'RUNNER_OR_COLLECTION_ERROR',summary:'Scanner or report validation failed'});throw e;}finally{if(v.source.snapshot){const sourceParent=path.dirname(input.sourceDir);fs.rmSync(sourceParent,{recursive:true});if(fs.existsSync(sourceParent))throw Error('RUNNER_CLEANUP_FAILED');}fs.rmSync(privateDir,{recursive:true});if(fs.existsSync(privateDir))throw Error('RUNNER_CLEANUP_FAILED');}
 }

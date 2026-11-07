@@ -9,7 +9,7 @@ export function validateCI(v,c){
  const keys=['projectId','sourceRepository','commitSha','ciProvider','jobId','buildId','trigger','pluginId','scenarioId'];
  if(!v||Object.keys(v).sort().join(',')!==keys.sort().join(','))throw fault('CI_FIELDS_REJECTED',400);
  const p=projects()[v.projectId];if(!p||v.projectId!==c.projectId||v.pluginId!==p.pluginId||v.scenarioId!==p.scenarioId||v.sourceRepository!==p.sourceRepository||v.ciProvider!==p.ciProvider||v.jobId!==p.jobId||v.trigger!=='gitlab-webhook'||v.commitSha!==c.commitSha||!Number.isSafeInteger(v.buildId)||v.buildId!==c.buildId||!/^[a-f0-9]{40}$/.test(v.commitSha))throw fault('CI_SCOPE_REJECTED');
- return {...v,buildUrl:p.jobUrl+v.buildId+'/',sourceScope:p.executionScope,...(p.sourceMode?{sourceMode:p.sourceMode}:{})};
+ return {...v,buildUrl:p.jobUrl+v.buildId+'/',sourceScope:p.executionScope,...(p.sourceMode?{sourceMode:p.sourceMode}:{}),...(c.retryOf?{retryOf:c.retryOf}:{})};
 }
 export function startCIIntake(){
  if(!fs.existsSync(ciCapabilityFile))return null;const c=readCapability();if(c.expiresAt<=Date.now())return null;

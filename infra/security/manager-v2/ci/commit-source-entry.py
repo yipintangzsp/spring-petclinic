@@ -1,7 +1,11 @@
 """Fixed authorized source phase; Git objects verified before existing Manager runner."""
 import pathlib,os,sys,json,subprocess,hashlib,io,tarfile,gzip,shutil,tempfile,re,time,fcntl,signal,resource,importlib.util
-ROOT=pathlib.Path('/var/tmp/security-manager-gitleaks-realcommit-20261107')
-def fail(code):print(json.dumps({'error':code}),flush=True);sys.exit(2)
+ROOT=pathlib.Path('/var/tmp/security-manager-gitleaks-recovery-20261107')
+def fail(code):
+ if 'run'in globals()and(ROOT/'outputs').is_dir():
+  f=ROOT/'outputs'/(run+'-stages.jsonl')
+  with f.open('a')as out:out.write(json.dumps({'runId':run,'stage':'RUN_FAILED','time':time.strftime('%Y-%m-%dT%H:%M:%SZ',time.gmtime()),'exitCode':None,'errorCategory':code,'summary':'Source admission or execution rejected'})+'\n');out.flush();os.fsync(out.fileno())
+ print(json.dumps({'error':code}),flush=True);sys.exit(2)
 cmd=os.environ.get('SSH_ORIGINAL_COMMAND','').split()
 if len(cmd)!=3 or cmd[0]!='commit-v1' or not re.fullmatch('web-[a-f0-9-]{36}',cmd[1])or cmd[2]not in ['low','standard','strict']:fail('SOURCE_COMMAND_REJECTED')
 if os.getuid()!=24021 or os.getgid()!=24021 or os.getgroups()!=[24021]:fail('SOURCE_IDENTITY_REJECTED')
@@ -81,6 +85,7 @@ try:
  spec=importlib.util.spec_from_file_location('snapshot',ROOT/'package/infra/security/manager-v2/ci/source-snapshot.py');mod=importlib.util.module_from_spec(spec);spec.loader.exec_module(mod)
  batch=git(base+['cat-file','--batch'],cfg['limits']['expandedBytes']+cfg['limits']['files']*128,(''.join(entries[p]['oid']+'\n'for p in sorted(entries))).encode());archive=mod.canonical_blob_archive(entries,batch,cfg['limits']);del batch
  proof=mod.materialize_verified_archive(archive,entries,source,cfg['limits']);proof.update({'budgetScope':cfg['budgetScope'],'gitEntries':entries,'commitSha':sha,'rootTreeOid':tree,'projectId':cfg['projectId'],'repository':cfg['sourceRepository'],'branch':cfg['branch']});(work/'source-proof.json').write_text(json.dumps(proof));shutil.rmtree(gitdir);del archive
+ (ROOT/'outputs'/(run+'-stages.jsonl')).write_text(json.dumps({'runId':run,'stage':'SOURCE_READY','time':time.strftime('%Y-%m-%dT%H:%M:%SZ',time.gmtime()),'exitCode':None,'errorCategory':None,'summary':None})+'\n')
  stage='SCANNER'
  env={'PATH':'/usr/bin:/bin','HOME':str(work),'LANG':'C'}
  child=subprocess.Popen(['/usr/bin/setpriv','--no-new-privs','/usr/bin/env','-i',*[k+'='+v for k,v in env.items()],'/usr/bin/node','--max-old-space-size=128',str(ROOT/'package/infra/security/manager-v2/ci/commit-run.mjs'),run,level],cwd=ROOT/'package',env=env,stdin=subprocess.DEVNULL,stdout=subprocess.PIPE,stderr=subprocess.PIPE,start_new_session=True)
@@ -96,6 +101,7 @@ try:
 except BaseException as e:
  code=str(e)if isinstance(e,(RuntimeError,ValueError))and re.fullmatch('[A-Z_]+',str(e))else('SOURCE_ERROR'if stage!='SCANNER'else'RUNNER_OR_COLLECTION_ERROR')
  stop_descendants()
+ with(ROOT/'outputs'/(run+'-stages.jsonl')).open('a')as f:f.write(json.dumps({'runId':run,'stage':'RUN_FAILED','time':time.strftime('%Y-%m-%dT%H:%M:%SZ',time.gmtime()),'exitCode':child.returncode if child else None,'errorCategory':code,'summary':'Source or Manager process failed'})+'\n');f.flush();os.fsync(f.fileno())
  if work.exists():shutil.rmtree(work)
  (ROOT/'outputs'/(run+'-error.json')).write_text(json.dumps({'runId':run,'stage':stage,'error':code,'sourceCleanup':not work.exists(),'scannerStarted':stage=='SCANNER'}));fail(code)
 finally:
