@@ -1,7 +1,7 @@
 """Fixed CI transport; token stays server-side. Legacy scanner/proof entry retained."""
 import os,sys,json,socket,http.client,time,signal
 if os.environ.get('SSH_ORIGINAL_COMMAND')!='manager-ci-v1':os.execv('/usr/bin/python3',['/usr/bin/python3','-I','/usr/local/libexec/security-gitleaks-ci-proof.py'])
-signal.alarm(45)
+signal.alarm(110)
 try:
  if os.getuid()!=24021:raise RuntimeError('CI_IDENTITY_REJECTED')
  cap=json.load(open('/var/lib/security-gitleaks/manager-ci-capability.json'))
@@ -17,7 +17,7 @@ try:
  status,r=request('POST','/v1/runs',body)
  if status!=202:print(json.dumps(r));sys.exit(1)
  run=r['runId']
- for _ in range(35):
+ for _ in range(190):
   status,r=request('GET','/v1/runs/'+run)
   if status!=200:raise RuntimeError('CI_QUERY_REJECTED')
   if r['state']not in ['QUEUED','RUNNING']:break

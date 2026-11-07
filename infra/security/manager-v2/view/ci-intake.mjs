@@ -9,7 +9,7 @@ export function validateCI(v,c){
  const keys=['projectId','sourceRepository','commitSha','ciProvider','jobId','buildId','trigger','pluginId','scenarioId'];
  if(!v||Object.keys(v).sort().join(',')!==keys.sort().join(','))throw fault('CI_FIELDS_REJECTED',400);
  const p=projects()[v.projectId];if(!p||v.projectId!==c.projectId||v.pluginId!==p.pluginId||v.scenarioId!==p.scenarioId||v.sourceRepository!==p.sourceRepository||v.ciProvider!==p.ciProvider||v.jobId!==p.jobId||v.trigger!=='gitlab-webhook'||v.commitSha!==c.commitSha||!Number.isSafeInteger(v.buildId)||v.buildId!==c.buildId||!/^[a-f0-9]{40}$/.test(v.commitSha))throw fault('CI_SCOPE_REJECTED');
- return {...v,buildUrl:p.jobUrl+v.buildId+'/',sourceScope:p.executionScope};
+ return {...v,buildUrl:p.jobUrl+v.buildId+'/',sourceScope:p.executionScope,...(p.sourceMode?{sourceMode:p.sourceMode}:{})};
 }
 export function startCIIntake(){
  if(!fs.existsSync(ciCapabilityFile))return null;const c=readCapability();if(c.expiresAt<=Date.now())return null;
@@ -32,7 +32,7 @@ export function startCIIntake(){
    }
    if(req.method==='GET'&&/^\/v1\/runs\/web-[a-f0-9-]{36}$/.test(req.url)){
     if(!fs.existsSync(claim))throw fault('CI_RUN_NOT_OWNED');const own=JSON.parse(fs.readFileSync(claim));if(req.url!=='/v1/runs/'+own.runId)throw fault('CI_RUN_NOT_OWNED');const r=getRun(own.runId);if(r.projectId!==cap.projectId||r.pluginId!=='gitleaks')throw fault('CI_RESULT_BINDING');
-    return send(200,Object.fromEntries(['runId','projectId','state','evidenceClass','scannerExitCode','policyDecision','evaluationCount','resultDigest','artifactDigest','ciContext','lokiDelivery','completedAt','reason'].map(k=>[k,r[k]??null])));
+    return send(200,Object.fromEntries(['runId','projectId','state','evidenceClass','scannerExitCode','policyDecision','evaluationCount','resultDigest','artifactDigest','ciContext','lokiDelivery','completedAt','reason','findingsCount','sourceMode','sourceCommitSha','sourceSnapshotSha256','sourceTreeOid','sourceFileCount','sourceCleanup'].map(k=>[k,r[k]??null])));
    }
    throw fault('CI_ROUTE_REJECTED',404);
   }catch(e){send(e.status??400,{error:/^[A-Z_]+$/.test(e.code??'')?e.code:'CI_REQUEST_REJECTED'});}

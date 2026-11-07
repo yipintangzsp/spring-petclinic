@@ -11,6 +11,10 @@ class SnapshotTest(unittest.TestCase):
  def tearDown(self):self.tmp.cleanup()
  def test_real_bytes_match_git_blob(self):
   r=m.materialize_verified_archive(archive(),self.tree,self.dest,limits);self.assertEqual(r['fileCount'],1);self.assertEqual((self.dest/'main.py').read_bytes(),b'print("demo")\n')
+ def test_canonical_git_bytes_preserve_line_endings_and_reject_corruption(self):
+  data=b'@echo off\r\n';e={'mvnw.cmd':{'mode':'100644','oid':m.blob_oid(data)}};batch=(e['mvnw.cmd']['oid']+' blob '+str(len(data))+'\n').encode()+data+b'\n'
+  a=m.canonical_blob_archive(e,batch,limits);r=m.materialize_verified_archive(a,e,self.dest,limits);self.assertEqual((self.dest/'mvnw.cmd').read_bytes(),data);self.assertEqual(r['fileCount'],1)
+  with self.assertRaisesRegex(ValueError,'BLOB_MISMATCH'):m.canonical_blob_archive(e,batch[:-2]+b'X\n',limits)
  def test_traversal_rejected(self):
   with self.assertRaisesRegex(ValueError,'PATH_REJECTED'):m.materialize_verified_archive(archive('root/../outside'),self.tree,self.dest,limits)
   self.assertFalse(self.dest.exists())

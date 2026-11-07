@@ -51,3 +51,24 @@ def materialize_verified_archive(archive,git_entries,destination,limits):
   manifest=[{'path':p,'gitBlobOid':git_entries[p]['oid'],'gitMode':git_entries[p]['mode'],'sha256':hashlib.sha256(files[p]).hexdigest(),'bytes':len(files[p])}for p in sorted(files)]
   return {'archiveSha256':hashlib.sha256(archive).hexdigest(),'files':manifest,'fileCount':len(manifest),'expandedBytes':total,'contentBinding':'EXACT_GIT_TREE_BLOB_SET','classification':'VERIFIED_INPUT_ONLY_NOT_SCAN'}
  except BaseException:shutil.rmtree(dest);raise
+
+def canonical_blob_archive(git_entries,batch,limits):
+ """Archive exact Git blob bytes; do not apply checkout/export text attributes."""
+ import gzip
+ if not git_entries or len(git_entries)>limits['files']:raise ValueError('SOURCE_FILE_BUDGET')
+ out=io.BytesIO();offset=0;total=0
+ with tarfile.open(fileobj=out,mode='w',format=tarfile.PAX_FORMAT)as tar:
+  for rel,e in sorted(git_entries.items()):
+   valid_path(rel);end=batch.find(b'\n',offset)
+   if end<0:raise ValueError('SOURCE_BLOB_BATCH')
+   header=batch[offset:end].decode('ascii').split();offset=end+1
+   if len(header)!=3 or header[:2]!=[e['oid'],'blob']or not header[2].isdigit():raise ValueError('SOURCE_BLOB_BATCH')
+   size=int(header[2]);total+=size
+   if size>limits['fileBytes']or total>limits['expandedBytes']:raise ValueError('SOURCE_BLOB_BUDGET')
+   data=batch[offset:offset+size];offset+=size
+   if len(data)!=size or batch[offset:offset+1]!=b'\n'or blob_oid(data)!=e['oid']:raise ValueError('SOURCE_BLOB_MISMATCH')
+   offset+=1;info=tarfile.TarInfo('source/'+rel);info.size=size;info.mode=0o444;info.mtime=0;tar.addfile(info,io.BytesIO(data))
+ if offset!=len(batch):raise ValueError('SOURCE_BLOB_BATCH_EXTRA')
+ archive=gzip.compress(out.getvalue(),mtime=0)
+ if len(archive)>limits['archiveBytes']:raise ValueError('SOURCE_ARCHIVE_BUDGET')
+ return archive

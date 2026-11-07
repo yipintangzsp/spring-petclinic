@@ -9,7 +9,7 @@ import {realManagedRegistry} from '../registry.mjs';
 import {routeResults,CONSUMERS} from '../router.mjs';
 import {verifyArtifact,verifyResult} from '../result.mjs';
 import {digest} from '../../summary-v2/codec.mjs';
-import {linuxReady,runLinuxGitleaks,linuxHost,cleanIdentity} from './linux-gitleaks.mjs';
+import {linuxReady,runLinuxGitleaks,runLinuxCommitSnapshot,linuxHost,cleanIdentity} from './linux-gitleaks.mjs';
 import {semgrepReady,runLinuxSemgrep,semgrepHost,semgrepIdentity} from './linux-semgrep.mjs';
 import {cosignReady,runLinuxCosign,cosignHost,cosignIdentity} from './linux-cosign.mjs';
 import {currentControls,writeControls,projectControls} from './controls.mjs';
@@ -72,7 +72,7 @@ export function submit(value,ciContext=null){
  const request={runId,...value,...(ciContext?{projectId:ciContext.projectId,ciContext}:{}),configurationSnapshot,securityLevel:control.settings.securityLevel,startedAt:new Date().toISOString(),kind:'LocalValidationRequest',executionLocation:!enabled?'NO_EXECUTION':remote?'LINUX_RESTRICTED':'MAC_ONLY'};
  save(path.join(dir,'request.json'),request);active=runId;
  setImmediate(async()=>{
-  const start=performance.now();const controller=new AbortController();const timer=setTimeout(()=>controller.abort(),value.pluginId==='sbom'?90000:30000);let result,budget=null,attempted=false;
+  const start=performance.now();const controller=new AbortController();const timer=setTimeout(()=>controller.abort(),value.pluginId==='sbom'||ciContext?.sourceMode==='REAL_COMMIT_SNAPSHOT'?90000:30000);let result,budget=null,attempted=false;
   try{
    if(!enabled&&value.pluginId==='sbom'){result={...request,state:'DISABLED',evidenceClass:'NOT_TESTED',reason:!control.settings.enabled?'MASTER_DISABLED':!control.settings.plugins.sbom.enabled?'PLUGIN_DISABLED':'PROJECT_PLUGIN_DISABLED',scannerExecuted:false,remoteInvocationCount:0,policyDecision:null,evaluationCount:0,resultDigest:null,artifactDigest:null};return;}
    if(!enabled){
@@ -97,7 +97,7 @@ export function submit(value,ciContext=null){
    if(value.pluginId==='gitleaks'){
     if(!remote)throw fault('LINUX_GITLEAKS_NOT_CONFIGURED_BLOCKED');
     attempted=true;
-    result={...request,...await runLinuxGitleaks(value.scenarioId,runId,dir,controller.signal,control.settings.securityLevel),
+    result={...request,...await (ciContext?.sourceMode==='REAL_COMMIT_SNAPSHOT'?runLinuxCommitSnapshot(ciContext,runId,dir,controller.signal,control.settings.securityLevel):runLinuxGitleaks(value.scenarioId,runId,dir,controller.signal,control.settings.securityLevel)),
      source:path.relative(root,path.join(dir,'artifact','gitleaks.result.json'))};
     return;
    }

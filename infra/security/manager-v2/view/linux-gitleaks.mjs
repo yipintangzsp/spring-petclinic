@@ -52,20 +52,27 @@ export async function runLinuxGitleaks(scenarioId,runId,dir,signal,securityLevel
  }
  return acceptLinuxGitleaksPacket(packet,scenarioId,runId,dir,securityLevel);
 }
+export async function runLinuxCommitSnapshot(context,runId,dir,signal,securityLevel='standard'){
+ if(!linuxReady()||!/^[a-f0-9]{40}$/.test(context.commitSha)||!/^web-[a-f0-9-]{36}$/.test(runId)||!['low','standard','strict'].includes(securityLevel))throw fault('SOURCE_REQUEST_REJECTED');
+ let packet;try{const {stdout}=await exec('/usr/bin/ssh',[...args,'commit-v1 '+runId+' '+securityLevel],{signal,timeout:85000,maxBuffer:2*1024*1024,env:{PATH:'/usr/bin:/bin',LANG:'C'}});packet=JSON.parse(stdout);}catch(e){let code;try{code=JSON.parse(e.stdout).error;}catch{}throw fault(/^(?:SOURCE_[A-Z_]+|RUNNER_[A-Z_]+|LINUX_RESOURCE_BUDGET_BLOCKED)$/.test(code??'')?code:'SOURCE_TRANSPORT_ERROR');}
+ return acceptLinuxGitleaksPacket(packet,'commit-snapshot',runId,dir,securityLevel,context);
+}
 // The existing sealed-result validation is shared with the trusted Jenkins dispatcher.
 // This function consumes facts; it never scans or evaluates Policy.
-export function acceptLinuxGitleaksPacket(packet,scenarioId,runId,dir,securityLevel='standard'){
- check(scenarioId==='clean'||scenarioId==='controlled-finding');
+export function acceptLinuxGitleaksPacket(packet,scenarioId,runId,dir,securityLevel='standard',sourceContext=null){
+ const commit=!!sourceContext;
+ check(scenarioId==='clean'||scenarioId==='controlled-finding'||commit&&scenarioId==='commit-snapshot');
  check(/^web-[a-f0-9]{8}-[a-f0-9]{4}-4[a-f0-9]{3}-[89ab][a-f0-9]{3}-[a-f0-9]{12}$/.test(runId));
  const finding=scenarioId==='controlled-finding';
- check(packet?.schemaVersion===1&&packet.kind===(finding?'RestrictedLinuxGitleaksFinding':'RestrictedLinuxGitleaksClean')&&
+ check(packet?.schemaVersion===1&&packet.kind===(commit?'RestrictedLinuxGitleaksCommit':finding?'RestrictedLinuxGitleaksFinding':'RestrictedLinuxGitleaksClean')&&
   packet.runId===runId&&packet.scenarioId===scenarioId&&packet.executionHost===linuxHost);
  const r=packet.result,f=r?.runtimeFacts,i=f?.identity;verifyResult(r);check(['low','standard','strict'].includes(securityLevel)&&r.securityLevel===securityLevel&&r.policy?.securityLevel===securityLevel&&r.policy?.evaluation?.securityLevel===securityLevel);
- check(r.runId===runId&&r.pluginId==='gitleaks'&&r.projectId===(finding?'java-fixture':'python-fixture')&&r.executionStatus==='COMPLETED'&&r.evaluationCount===1&&
-  r.policyDecision===r.oldGateDecision&&r.policyDecision===(finding?'FAIL':'PASS')&&packet.policyEvaluationCount===1&&packet.executionCounts?.scans===1);
- check(f.classification==='REAL_CONTROLLED_EXECUTION'&&f.validationRunId===runId&&f.sourceDir.path===workspace+(finding?'/source-java':'/source-python')&&
-  f.tool.sha256===binarySha&&f.tool.version==='8.30.1'&&f.tool.observedVersion.replace(/^v/,'')==='8.30.1'&&f.command.exitStatus===(finding?1:0)&&
+ check(r.runId===runId&&r.pluginId==='gitleaks'&&r.projectId===(commit?sourceContext.projectId:finding?'java-fixture':'python-fixture')&&r.executionStatus==='COMPLETED'&&r.evaluationCount===1&&
+  r.policyDecision===r.oldGateDecision&&(commit?['PASS','FAIL'].includes(r.policyDecision):r.policyDecision===(finding?'FAIL':'PASS'))&&packet.policyEvaluationCount===1&&packet.executionCounts?.scans===1);
+ check(f.classification==='REAL_CONTROLLED_EXECUTION'&&f.validationRunId===runId&&(commit?f.sourceDir.path==='/var/tmp/security-manager-gitleaks-realcommit-20261107/outputs/source-'+runId+'/source':f.sourceDir.path===workspace+(finding?'/source-java':'/source-python'))&&
+  f.tool.sha256===binarySha&&f.tool.version==='8.30.1'&&f.tool.observedVersion.replace(/^v/,'')==='8.30.1'&&(commit?[0,1].includes(f.command.exitStatus):f.command.exitStatus===(finding?1:0))&&
   f.command.signal===null&&r.cleanup?.processGroupGone===true);
+ if(commit)check(f.sourceSnapshot?.sourceMode==='REAL_COMMIT_SNAPSHOT'&&f.sourceSnapshot.commitSha===sourceContext.commitSha&&f.sourceSnapshot.repository===sourceContext.sourceRepository&&/^[a-f0-9]{64}$/.test(f.sourceSnapshot.archiveSha256)&&/^[a-f0-9]{40}$/.test(f.sourceSnapshot.rootTreeOid)&&r.cleanup.sourceWorkspaceRemoved===true);
  check(i.uid===24021&&i.gid===24021&&Array.isArray(i.groups)&&i.groups.every(g=>g===24021)&&i.noNewPrivs===true&&
   i.effectiveCapabilities==='0'&&i.dockerSocketReadable===false&&i.kubeconfigReadable===false&&i.environmentInherited===false);
  check(Array.isArray(packet.router)&&packet.router.length===3);
@@ -87,7 +94,7 @@ export function acceptLinuxGitleaksPacket(packet,scenarioId,runId,dir,securityLe
  const summary=parse('candidate-summary.json'),raw=parse('gitleaks.raw.json');
  check(summary.runId===runId&&summary.productionEvidence===false&&summary.promotion.status==='BLOCKED'&&
   summary.pluginResults.every(p=>p.pluginId==='gitleaks'?p.resultDigest===r.resultDigest:p.executionStatus==='DISABLED'));
- check(Array.isArray(raw)&&raw.length===f.findingsCount&&(finding?raw.length>0&&raw.every(x=>x.RuleID==='github-pat'&&
+ check(Array.isArray(raw)&&raw.length===f.findingsCount&&(commit?raw.every(x=>x.Secret==='[REDACTED]'&&!Object.hasOwn(x,'Match')&&x.File.startsWith(f.sourceDir.path+'/')):finding?raw.length>0&&raw.every(x=>x.RuleID==='github-pat'&&
   x.File===workspace+'/source-java/Main.java'&&x.StartLine===2&&/^\[?REDACTED\]?$/.test(x.Secret)):raw.length===0)&&
   sha(files['gitleaks.raw.json'])===r.rawReportDigest&&
   digest(parse('gitleaks.facts.json'))===r.factDigest&&digest(parse('gitleaks.runtime-facts.json'))===digest(f)&&
@@ -102,7 +109,7 @@ export function acceptLinuxGitleaksPacket(packet,scenarioId,runId,dir,securityLe
   fs.renameSync(staging,path.join(dir,'artifact'));
  }finally{if(fs.existsSync(staging))fs.rmSync(staging,{recursive:true});}
  return {state:r.executionStatus,evidenceClass:'REAL',managerExecutionStatus:r.executionStatus,reason:null,scannerExecuted:true,
-  scannerExitCode:f.command.exitStatus,toolVersion:f.tool.observedVersion,toolSha256:f.tool.sha256,executionHost:linuxHost,
+  scannerExitCode:f.command.exitStatus,toolVersion:f.tool.observedVersion,toolSha256:f.tool.sha256,executionHost:linuxHost,...(commit?{sourceMode:'REAL_COMMIT_SNAPSHOT',sourceCommitSha:f.sourceSnapshot.commitSha,sourceSnapshotSha256:f.sourceSnapshot.archiveSha256,sourceTreeOid:f.sourceSnapshot.rootTreeOid,sourceFileCount:f.sourceSnapshot.fileCount,sourceCleanup:'VERIFIED'}:{}),
   findingsCount:f.findingsCount,findingRules:[...new Set(raw.map(x=>x.RuleID))],
   executionIdentity:cleanIdentity,securityLevel:r.securityLevel,effectivePolicy:r.policy.effectivePolicy,appliedOverrides:r.policy.appliedOverrides,policyDecision:r.policyDecision,evaluationCount:r.evaluationCount,resultDigest:r.resultDigest,
   artifactDigest:packet.artifactDigest,rawReportDigest:r.rawReportDigest,factDigest:r.factDigest,router,
