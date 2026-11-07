@@ -2,6 +2,8 @@
 import fs from'node:fs';import path from'node:path';import assert from'node:assert/strict';
 import {stageWriter}from'./stages.mjs';
 import {runCandidate}from'../core.mjs';import{realGitleaksRegistry}from'../registry.mjs';import{realExecutionCounts}from'../gitleaks-real.mjs';import{routeResults}from'../router.mjs';
+// Package closure includes the admission helper used by the Python wrapper.
+const budgetHelper=new URL('./resource-budget.py',import.meta.url);assert(fs.statSync(budgetHelper).isFile());
 const root='/var/tmp/security-manager-gitleaks-recovery-20261107',approval=JSON.parse(fs.readFileSync(root+'/approval.json')),runId=process.argv[2],securityLevel=process.argv[3];assert(/^web-[a-f0-9-]{36}$/.test(runId));assert.equal(process.getuid(),24021);assert(['low','standard','strict'].includes(securityLevel));
 const registry=realGitleaksRegistry(),out=root+'/outputs/'+runId;fs.mkdirSync(out,{mode:0o700});const sourceDir=root+'/outputs/source-'+runId+'/source';
 const run=await runCandidate({registry,runId,projectId:approval.projectId,config:{security:{enabled:true,globalMode:'audit',securityLevel,profile:approval.profile,plugins:Object.fromEntries(registry.ids().map(id=>[id,{enabled:id==='gitleaks'}]))}},context:{platform:'linux',capabilities:Object.fromEntries(['SOURCE_DIR','GITLEAKS_TOOL','TRUSTED_VALIDATION_WORKSPACE'].map(c=>[c,{state:'AVAILABLE'}]))},inputs:{gitleaks:{approvalFile:root+'/approval.json',sourceDir}},output:out+'/artifact'});

@@ -1,0 +1,97 @@
+{
+  "schemaVersion": 1,
+  "kind": "ResourceBudgetObservation",
+  "host": "devops",
+  "uid": 24021,
+  "gid": 24021,
+  "groups": [
+    24021
+  ],
+  "cgroup": "0::/user.slice/user-24021.slice/session-6610.scope",
+  "startedAt": "2026-11-07T07:54:59.501361+00:00",
+  "completedAt": "2026-11-07T07:54:59.751848+00:00",
+  "thresholds": {
+    "memBytesMin": 1073741824,
+    "diskBytesMin": 1073741824,
+    "cpuBusyPctMax": 75
+  },
+  "observed": {
+    "memAvailableBytes": 6199726080,
+    "diskAvailableBytes": 44682285056,
+    "availableInodes": 15326791,
+    "cpuBusyPct": 3.6231884057971064,
+    "cpuTicksBefore": [
+      3149586,
+      1897,
+      1385156,
+      24092225,
+      64154,
+      0,
+      50588,
+      0
+    ],
+    "cpuTicksAfter": [
+      3149589,
+      1897,
+      1385158,
+      24092358,
+      64154,
+      0,
+      50588,
+      0
+    ],
+    "sampleSeconds": 0.25026115399668925
+  },
+  "blockedConditions": {
+    "memAvailable": false,
+    "diskAvailable": false,
+    "cpuBusy": false
+  },
+  "preflight": "PASS",
+  "sources": {
+    "memory": "/proc/meminfo MemAvailable kB * 1024",
+    "disk": "statvfs f_bavail * f_frsize via shutil.disk_usage",
+    "cpu": "/proc/stat first8 counters; idle+iowait;250ms"
+  },
+  "scannerStarted": false,
+  "newRun": false,
+  "cgroupLimits": {
+    "/sys/fs/cgroup/user.slice/user-24021.slice/session-6610.scope": {
+      "memory.max": "max",
+      "cpu.max": "max 100000",
+      "pids.max": "max"
+    },
+    "/sys/fs/cgroup/user.slice/user-24021.slice": {
+      "memory.max": "max",
+      "cpu.max": "max 100000",
+      "pids.max": "53073"
+    },
+    "/sys/fs/cgroup/user.slice": {
+      "memory.max": "max",
+      "cpu.max": "max 100000",
+      "cpuset.cpus.effective": "0-5",
+      "pids.max": "max"
+    },
+    "/sys/fs/cgroup": {
+      "cpuset.cpus.effective": "0-5"
+    }
+  },
+  "rlimits": {
+    "RLIMIT_CPU": [
+      -1,
+      -1
+    ],
+    "RLIMIT_AS": [
+      -1,
+      -1
+    ],
+    "RLIMIT_NPROC": [
+      80415,
+      80415
+    ],
+    "RLIMIT_FSIZE": [
+      -1,
+      -1
+    ]
+  }
+}

@@ -48,10 +48,20 @@ for name,h in json.loads((ROOT/'package-manifest.json').read_text()).items():
 lock=open(ROOT/'outputs/execution.lock','a')
 try:fcntl.flock(lock,fcntl.LOCK_EX|fcntl.LOCK_NB)
 except BlockingIOError:fail('EXECUTION_BUSY')
-mem=int(next(l.split()[1]for l in pathlib.Path('/proc/meminfo').read_text().splitlines()if l.startswith('MemAvailable:')))*1024
-def ticks():return list(map(int,pathlib.Path('/proc/stat').read_text().splitlines()[0].split()[1:9]))
-a=ticks();time.sleep(.25);b=ticks();d=[y-x for x,y in zip(a,b)];busy=100*(1-(d[3]+d[4])/sum(d))if sum(d)>0 else 100
-if mem<1073741824 or shutil.disk_usage(ROOT).free<1073741824 or busy>75:fail('LINUX_RESOURCE_BUDGET_BLOCKED')
+# Preserve the existing thresholds/250ms formula; persist the exact branch and values.
+spec=importlib.util.spec_from_file_location('resource_budget',ROOT/'package/infra/security/manager-v2/ci/resource-budget.py');budget_module=importlib.util.module_from_spec(spec);spec.loader.exec_module(budget_module)
+try:budget=budget_module.probe(ROOT)
+except Exception:fail('RESOURCE_STATE_UNKNOWN_BLOCKED')
+budget_target=ROOT/'outputs'/(run+'-resource-budget.json');budget_tmp=ROOT/'outputs'/(run+'-resource-budget.pending')
+fd=os.open(budget_tmp,os.O_WRONLY|os.O_CREAT|os.O_EXCL|os.O_NOFOLLOW,0o400)
+try:
+ with os.fdopen(fd,'w')as f:json.dump({'runId':run,**budget},f);f.flush();os.fsync(f.fileno())
+ os.link(budget_tmp,budget_target) # Exclusive atomic publication; never replace history.
+ dfd=os.open(ROOT/'outputs',os.O_RDONLY)
+ try:os.fsync(dfd)
+ finally:os.close(dfd)
+finally:budget_tmp.unlink(missing_ok=True)
+if budget['preflight']!='PASS':fail('LINUX_RESOURCE_BUDGET_BLOCKED')
 # One source invocation is exclusive even if preparation later fails.
 marker=ROOT/'outputs/source-attempt.json'
 try:

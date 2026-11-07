@@ -1,0 +1,123 @@
+{
+  "at": "2026-11-07T07:56:01.701942+00:00",
+  "baseline": "569890df",
+  "historicalRun": "web-7dfaff07-4b1e-4e2c-82f5-ee6d5cb77cca",
+  "historicalAt": "2026-11-07T07:45:11.717Z",
+  "historicalTriggeredCondition": "UNKNOWN",
+  "historicalActualValues": "NOT_RETAINED",
+  "historicalReason": "original OR guard persisted only LINUX_RESOURCE_BUDGET_BLOCKED; do not infer CPU from current samples",
+  "current": {
+    "schemaVersion": 1,
+    "kind": "ResourceBudgetObservation",
+    "host": "devops",
+    "uid": 24021,
+    "gid": 24021,
+    "groups": [
+      24021
+    ],
+    "cgroup": "0::/user.slice/user-24021.slice/session-6610.scope",
+    "startedAt": "2026-11-07T07:54:59.501361+00:00",
+    "completedAt": "2026-11-07T07:54:59.751848+00:00",
+    "thresholds": {
+      "memBytesMin": 1073741824,
+      "diskBytesMin": 1073741824,
+      "cpuBusyPctMax": 75
+    },
+    "observed": {
+      "memAvailableBytes": 6199726080,
+      "diskAvailableBytes": 44682285056,
+      "availableInodes": 15326791,
+      "cpuBusyPct": 3.6231884057971064,
+      "cpuTicksBefore": [
+        3149586,
+        1897,
+        1385156,
+        24092225,
+        64154,
+        0,
+        50588,
+        0
+      ],
+      "cpuTicksAfter": [
+        3149589,
+        1897,
+        1385158,
+        24092358,
+        64154,
+        0,
+        50588,
+        0
+      ],
+      "sampleSeconds": 0.25026115399668925
+    },
+    "blockedConditions": {
+      "memAvailable": false,
+      "diskAvailable": false,
+      "cpuBusy": false
+    },
+    "preflight": "PASS",
+    "sources": {
+      "memory": "/proc/meminfo MemAvailable kB * 1024",
+      "disk": "statvfs f_bavail * f_frsize via shutil.disk_usage",
+      "cpu": "/proc/stat first8 counters; idle+iowait;250ms"
+    },
+    "scannerStarted": false,
+    "newRun": false,
+    "cgroupLimits": {
+      "/sys/fs/cgroup/user.slice/user-24021.slice/session-6610.scope": {
+        "memory.max": "max",
+        "cpu.max": "max 100000",
+        "pids.max": "max"
+      },
+      "/sys/fs/cgroup/user.slice/user-24021.slice": {
+        "memory.max": "max",
+        "cpu.max": "max 100000",
+        "pids.max": "53073"
+      },
+      "/sys/fs/cgroup/user.slice": {
+        "memory.max": "max",
+        "cpu.max": "max 100000",
+        "cpuset.cpus.effective": "0-5",
+        "pids.max": "max"
+      },
+      "/sys/fs/cgroup": {
+        "cpuset.cpus.effective": "0-5"
+      }
+    },
+    "rlimits": {
+      "RLIMIT_CPU": [
+        -1,
+        -1
+      ],
+      "RLIMIT_AS": [
+        -1,
+        -1
+      ],
+      "RLIMIT_NPROC": [
+        80415,
+        80415
+      ],
+      "RLIMIT_FSIZE": [
+        -1,
+        -1
+      ]
+    }
+  },
+  "currentSurplus": {
+    "memSurplusBytes": 5125984256,
+    "diskSurplusBytes": 43608543232,
+    "cpuHeadroomPercentagePoints": 71.37681159420289
+  },
+  "currentDiagnosis": "All existing guard conditions pass in original SSH execution identity; no memory/cpu cgroup quota found in its hierarchy. No evidence for unit or source-reading bug. Current measurements do not identify historical condition.",
+  "fix": "Reuse exact thresholds and250ms formula; atomically preserve each future admission actual values/thresholds/failed branches with exclusive history protection; unknown metrics fail closed. No sampling or threshold relaxation.",
+  "deploymentScope": "Shared probe exercised through temporary fixed SSH read-only entry; route restored. Revised wrapper staged inert, not installed into old sealed Runner package. Future authorized runner package must include ci/resource-budget.py.",
+  "resourceCleanup": "No task leftovers requiring deletion found; no user application, service or business data changed.",
+  "verdict": {
+    "RESOURCE_BUDGET_ROOT_CAUSE": "UNKNOWN",
+    "RESOURCE_BUDGET_PREFLIGHT": "PASS",
+    "GITLEAKS_STARTED": "NO",
+    "NEW_JENKINS_BUILD": "NO",
+    "PRODUCTION_RELEASE": "NO",
+    "PRODUCTION_ROLLOUT": "NO"
+  }
+}

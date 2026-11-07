@@ -1,0 +1,120 @@
+{
+  "startedAt": "2026-11-07T07:53:53.156790+00:00",
+  "completedAt": "2026-11-07T07:53:53.408703+00:00",
+  "host": "devops",
+  "uid": 24021,
+  "gid": 24021,
+  "groups": [],
+  "thresholds": {
+    "memBytesMin": 1073741824,
+    "diskBytesMin": 1073741824,
+    "cpuBusyPctMax": 75
+  },
+  "observed": {
+    "memAvailableBytes": 6159994880,
+    "diskAvailableBytes": 44679778304,
+    "statvfsAvailableBytes": 44679778304,
+    "availableInodes": 15326828,
+    "cpuBusyPct": 4.316546762589923,
+    "cpuTicksBefore": [
+      3145322,
+      1897,
+      1383288,
+      24063138,
+      64087,
+      0,
+      50526,
+      0
+    ],
+    "cpuTicksAfter": [
+      3145325,
+      1897,
+      1383291,
+      24063271,
+      64087,
+      0,
+      50526,
+      0
+    ],
+    "sampleSeconds": 0.25040786000317894,
+    "loadAverage": [
+      1.6826171875,
+      2.12841796875,
+      2.4423828125
+    ]
+  },
+  "blockedConditions": {
+    "memAvailable": false,
+    "diskAvailable": false,
+    "cpuBusy": false
+  },
+  "preflight": "PASS",
+  "actualSources": [
+    "/proc/meminfo:MemAvailable_kB*1024",
+    "statvfs(directory).f_bavail*f_frsize",
+    "/proc/stat aggregate first8; idle+iowait; 250ms"
+  ],
+  "notUsedByExistingGuard": [
+    "loadAverage",
+    "inodes",
+    "cgroup limits",
+    "filesystem quota",
+    "process count"
+  ],
+  "cgroup": "0::/user.slice/user-1000.slice/session-6600.scope\n",
+  "cgroupHierarchy": {
+    "/sys/fs/cgroup/user.slice/user-1000.slice/session-6600.scope": {
+      "memory.max": "max",
+      "memory.current": "8728576",
+      "cpu.max": "max 100000",
+      "pids.max": "max",
+      "pids.current": "4"
+    },
+    "/sys/fs/cgroup/user.slice/user-1000.slice": {
+      "memory.max": "max",
+      "memory.current": "94953472",
+      "cpu.max": "max 100000",
+      "pids.max": "53073",
+      "pids.current": "11"
+    },
+    "/sys/fs/cgroup/user.slice": {
+      "memory.max": "max",
+      "memory.current": "97148928",
+      "cpu.max": "max 100000",
+      "cpuset.cpus.effective": "0-5",
+      "pids.max": "max",
+      "pids.current": "11"
+    },
+    "/sys/fs/cgroup": {
+      "cpuset.cpus.effective": "0-5"
+    }
+  },
+  "lock": {
+    "exists": true,
+    "held": false
+  },
+  "rlimits": {
+    "RLIMIT_AS": [
+      -1,
+      -1
+    ],
+    "RLIMIT_CPU": [
+      -1,
+      -1
+    ],
+    "RLIMIT_NPROC": [
+      80415,
+      80415
+    ],
+    "RLIMIT_NOFILE": [
+      1024,
+      1048576
+    ],
+    "RLIMIT_FSIZE": [
+      -1,
+      -1
+    ]
+  },
+  "scannerStarted": false,
+  "newRun": false
+}
