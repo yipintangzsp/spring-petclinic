@@ -39,7 +39,7 @@ function renderCandidate(){
  const completion=data.pluginCompletion;
  if(completion?.trivy){
   const t=completion.trivy;
-  const c=card('Trivy · 真实扫描准入',t.state,[['状态来源','HISTORICAL / 本轮只读快照'],['采集时间',time(completion.observedAt)],['阻塞',t.reason],['候选 OCI Index Digest',t.candidateDigest],['已扫描平台',t.targetPlatform],['Trivy 版本',t.toolVersion],['DB Schema Version',t.dbVersion],['DB 更新时间',time(t.dbUpdatedAt)],['DB NextUpdate',time(t.dbNextUpdate)],['DB 新鲜度',t.dbFreshness],['本轮扫描次数',t.scanCount],['Policy','NOT_EVALUATED'],['Run / Digest','NONE']],t.requiredAuthorization,completion.source);
+  const c=card('Trivy · 真实扫描准入',t.state,[['状态来源','HISTORICAL / 本轮只读快照'],['采集时间',time(completion.observedAt)],['阻塞',t.reason],['候选 OCI Index Digest',t.candidateDigest],['已扫描平台',t.targetPlatform],['Trivy 版本',t.toolVersion],['计划固定版本（未安装）',t.plannedToolVersion??'NOT_SELECTED'],['官方归档 SHA256（未下载）',t.plannedToolArchiveSha256??'UNAVAILABLE'],['候选拉取 HTTP',t.candidatePullStatus??'NOT_TESTED'],['DB Schema Version',t.dbVersion],['DB 更新时间',time(t.dbUpdatedAt)],['DB NextUpdate',time(t.dbNextUpdate)],['DB 新鲜度',t.dbFreshness],['本轮扫描次数',t.scanCount],['Policy','NOT_EVALUATED'],['Run / Digest','NONE']],t.requiredAuthorization,completion.source);
   const details=el('details');details.append(el('summary','13 插件完成度 · V2 范围（非生产 Gate）'));
   for(const p of completion.plugins){const d=el('details');d.append(el('summary',p.pluginId+' · '+p.EXECUTABLE));for(const key of ['REGISTERED','EXECUTABLE','MANAGED','SWITCHABLE','POLICY_INTEGRATED','ROUTED','VISIBLE','PORTABLE'])d.append(row(key,p[key]));d.append(el('p',p.gap));details.append(d);}c.append(details);
  }

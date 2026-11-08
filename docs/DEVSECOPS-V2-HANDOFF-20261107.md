@@ -116,3 +116,12 @@ PRODUCTION_ROLLOUT = NO
 |falco|YES|INCOMPLETE|CANDIDATE|INCOMPLETE|CANDIDATE|INCOMPLETE|CANDIDATE|INCOMPLETE|
 
 Semgrep/Cosign真实执行为固定受控Fixture，尚未证明通用项目移植。其余9插件保留Registry/配置/策略Candidate，不冒称V2执行闭环。状态和只读证据见 `evidence/2026-11-08/trivy-v2-admission/`；页面显示Trivy BLOCKED及DB过期，不提供虚假可运行按钮或开关。Canonical 14/16、生产Manager NOT_ACTIVE、旧候选SBOM UNVERIFIED及签名MISSING均不变。
+
+
+### Trivy 独立环境准入补充（2026-11-08）
+
+基线200c5a63。用户已批准独立security-trivy账户、固定SSH入口与隔离缓存；现有管理身份确实可执行初始化，不再把该授权列为缺口。Ubuntu24.04.4 ARM64、6CPU、可用内存约6.1GiB、/var/tmp可用约55GiB仅为只读采样，不是正式扫描资源门禁PASS。
+
+已通过Mac系统curl的正常TLS验证读取官方不可变Release v0.76.2；Linux ARM64归档的官方API SHA256为ab9d51f86e6a5fb936f605faff6b593ac51bc378fff4d3e8b9d58358b9c367c3（尚未下载，不能称已校验本地二进制）。Linux官方源查询报DNS temporary failure；Mac Python证书验证失败，现有系统curl可用，无禁用TLS或修改系统信任。可考虑Mac下载校验后经既有SSH离线传输，不改Linux DNS。独立DB尚未准备，未接触生产Harbor扫描Pod或缓存。
+
+候选镜像只读准入失败：匿名Token GET返回200，但携带Token GET指定候选Manifest仍401。Token仅保留进程内、不落盘。无法确认目标当前可拉取或子Manifest，不擅自选择生产镜像。需要提供现有已授权只读凭据引用，或另行批准最小Harbor pull身份。未借用生产harbor-creds、未创建Harbor账号、未创建无可运行任务的半成品SSH入口。账户/工具/DB/扫描本轮均未实际安装或执行，所有Trivy验收仍INCOMPLETE。源记录见evidence/2026-11-08/trivy-independent-environment；上一轮证据原样保留。

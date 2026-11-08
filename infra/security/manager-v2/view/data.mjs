@@ -151,7 +151,7 @@ export function overview() {
   try{const src=read('evidence/2026-11-06/view-candidate-integration/state.json');semgrepAdmission={...src.value.semgrep,observedAt:src.value.observedAt,classification:'HISTORICAL',source:{path:src.path,sha256:src.sha256}};}
   catch(e){semgrepAdmission={availability:'UNAVAILABLE',reason:safeError(e)};}
   let pluginCompletion;
-  try{const s=read('evidence/2026-11-08/trivy-v2-admission/status.json');if(s.value.kind!=='DevSecOpsV2PluginCompletionSnapshot'||s.value.plugins.length!==13||s.value.trivy.scanCount!==0)throw Error('PLUGIN_STATUS_INVALID');pluginCompletion={...s.value,source:{path:s.path,sha256:s.sha256}};}catch(e){pluginCompletion={availability:'UNAVAILABLE',reason:safeError(e)};}
+  try{const s=read('evidence/2026-11-08/trivy-independent-environment/status.json');if(s.value.kind!=='DevSecOpsV2PluginCompletionSnapshot'||s.value.plugins.length!==13||s.value.trivy.scanCount!==0)throw Error('PLUGIN_STATUS_INVALID');pluginCompletion={...s.value,source:{path:s.path,sha256:s.sha256}};}catch(e){pluginCompletion={availability:'UNAVAILABLE',reason:safeError(e)};}
   return {kind:'SecurityManagerReadOnlyView', servedAt:new Date().toISOString(),registry:registryView,grafana,ciCd,semgrepAdmission,dojoReal,supplyChain,pluginCompletion,
     mode:'REPLAY', liveScan:false, baseline, dojo, runs:catalog.map(run),
     consumers:[consumer('security-manager-v2-loki/loki-protocol-samples-attempt5/A-three-valid.json','Loki'),
