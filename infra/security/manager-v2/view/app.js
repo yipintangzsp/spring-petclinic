@@ -36,6 +36,13 @@ function renderCandidate(){
  const selected=data.runs.find(r=>r.runId===$('scenario').value),cfg=selected?.configuration;
  const cards=[];
  const card=(title,label,fields,description,src)=>{const c=el('article',undefined,'consumer');const top=el('div',undefined,'card-top');top.append(el('h3',title),el('span',label,'tag '+(label==='BLOCKED'?'warn':'neutral')));c.append(top,...fields.map(([k,v])=>row(k,v)),el('p',description));if(src)source(c,src);cards.push(c);return c;};
+ const completion=data.pluginCompletion;
+ if(completion?.trivy){
+  const t=completion.trivy;
+  const c=card('Trivy · 真实扫描准入',t.state,[['状态来源','HISTORICAL / 本轮只读快照'],['采集时间',time(completion.observedAt)],['阻塞',t.reason],['候选 OCI Index Digest',t.candidateDigest],['已扫描平台',t.targetPlatform],['Trivy 版本',t.toolVersion],['DB Schema Version',t.dbVersion],['DB 更新时间',time(t.dbUpdatedAt)],['DB NextUpdate',time(t.dbNextUpdate)],['DB 新鲜度',t.dbFreshness],['本轮扫描次数',t.scanCount],['Policy','NOT_EVALUATED'],['Run / Digest','NONE']],t.requiredAuthorization,completion.source);
+  const details=el('details');details.append(el('summary','13 插件完成度 · V2 范围（非生产 Gate）'));
+  for(const p of completion.plugins){const d=el('details');d.append(el('summary',p.pluginId+' · '+p.EXECUTABLE));for(const key of ['REGISTERED','EXECUTABLE','MANAGED','SWITCHABLE','POLICY_INTEGRATED','ROUTED','VISIBLE','PORTABLE'])d.append(row(key,p[key]));d.append(el('p',p.gap));details.append(d);}c.append(details);
+ }
  const liveSemgrep=liveCapabilities?.plugins.find(p=>p.pluginId==='semgrep');
  const admission=liveSemgrep?{state:liveSemgrep.state==='READY'?'READY / WEB_REAL':liveSemgrep.state,reason:liveSemgrep.reason??liveSemgrep.executionIdentity,observedAt:liveCapabilities.observedAt}:data.semgrepAdmission??{};
  const semgrepHistory=data.runs.flatMap(r=>r.plugins.filter(p=>p.pluginId==='semgrep'&&p.evidenceClass==='REAL'&&p.executionStatus==='COMPLETED').map(p=>({runId:r.runId,...p})));

@@ -1,0 +1,89 @@
+{
+  "at": "2026-11-08T08:36:26.011640+00:00",
+  "host": "devops",
+  "identity": "zhang",
+  "localTrivy": null,
+  "restrictedAccounts": {
+    "security-trivy": null,
+    "scanner": null,
+    "security-gitleaks": {
+      "uid": 24021,
+      "gid": 24021
+    },
+    "security-semgrep": {
+      "uid": 995,
+      "gid": 986
+    },
+    "security-cosign": {
+      "uid": 994,
+      "gid": 985
+    },
+    "security-sbom": {
+      "uid": 993,
+      "gid": 984
+    }
+  },
+  "resources": {
+    "memAvailableKiB": 6422240,
+    "load": [
+      2.814453125,
+      2.41455078125,
+      2.07373046875
+    ],
+    "cpuCount": 6,
+    "diskAvailableBytes": 59137089536
+  },
+  "harborTrivy": {
+    "phase": "Running",
+    "serviceAccount": "default",
+    "automountToken": false,
+    "podSecurityContext": {
+      "fsGroup": 10000,
+      "runAsUser": 10000
+    },
+    "containers": [
+      {
+        "name": "trivy",
+        "image": "192.168.1.58:30050/platform-repair/harbor-trivy-arm64@sha256:c7586c7d21d967a5c652827256f1b357761c4384f6b5c7e7f459dcbda01e2355",
+        "securityContext": {
+          "allowPrivilegeEscalation": false,
+          "capabilities": {
+            "drop": [
+              "ALL"
+            ]
+          },
+          "privileged": false,
+          "runAsNonRoot": true,
+          "seccompProfile": {
+            "type": "RuntimeDefault"
+          }
+        }
+      }
+    ]
+  },
+  "dbMetadata": {
+    "Version": 2,
+    "NextUpdate": "2026-10-31T01:01:11.134359572Z",
+    "UpdatedAt": "2026-10-30T01:01:11.134360213Z",
+    "DownloadedAt": "2026-10-30T03:09:17.523947883Z"
+  },
+  "nodes": [
+    {
+      "name": "aliyun-worker",
+      "Ready": "True"
+    },
+    {
+      "name": "devops",
+      "Ready": "True"
+    },
+    {
+      "name": "ucloud-worker",
+      "Ready": "True"
+    }
+  ],
+  "petclinic": {
+    "replicas": 3,
+    "readyReplicas": 3,
+    "availableReplicas": 3
+  }
+}
