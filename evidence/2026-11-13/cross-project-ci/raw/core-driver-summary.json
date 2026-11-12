@@ -1,0 +1,151 @@
+{
+  "sbomReady": true,
+  "projects": {
+    "java-sbom-demo": {
+      "fixtureId": "java-dependencies-v1",
+      "sourceKind": "FIXED_NONPRODUCTION_POM",
+      "sourceArtifactSha256": "cac4cdce5296a6d6bc31477e9a7feca0a30d9797129da11c9c9d8883a4c55cc2",
+      "profile": "java-web"
+    },
+    "java-sbom-demo-b": {
+      "fixtureId": "java-inventory-second-v1",
+      "sourceKind": "FIXED_NONPRODUCTION_POM",
+      "sourceArtifactSha256": "e38d3b93f3fb56bcc948c2adeb32143f0afae26493a422360f2f2f806e568238",
+      "profile": "java-web"
+    }
+  },
+  "cases": [
+    {
+      "tag": "project-a-real",
+      "runId": "web-b2c6db93-e34b-46f5-a37a-54156d8f4cb8",
+      "projectId": "java-sbom-demo",
+      "fixtureId": "java-dependencies-v1",
+      "executionStatus": "COMPLETED",
+      "policyDecision": "PASS",
+      "evaluationCount": 1,
+      "resultDigest": "459d9b7e5902bbab065f58174c511eba5513c1dd5fb47d3890f8a623dc1b13ad",
+      "artifactDigest": "fc2f8b536c1583ef0e402cb2842d2e12acc15d86a48260b14c9654324ebb7acb",
+      "effectiveConfigDigest": "e96d015835d3a383a52633b8b9394d54c9526e2e162117cf8948b3ede4e1a3f7",
+      "failureReason": null,
+      "componentCount": 11,
+      "cleanup": "VERIFIED"
+    },
+    {
+      "tag": "project-b-real",
+      "runId": "web-f68ca206-ba5a-4801-a294-dad2bb423254",
+      "projectId": "java-sbom-demo-b",
+      "fixtureId": "java-inventory-second-v1",
+      "executionStatus": "COMPLETED",
+      "policyDecision": "PASS",
+      "evaluationCount": 1,
+      "resultDigest": "a70824f244c604505d9d346b8e0d595013c7c9e13957a34996bdad1d16930a01",
+      "artifactDigest": "89a437650dc6bac556ea6db8c285cafad5f3e505f014cdcc4c1f90753e45e35b",
+      "effectiveConfigDigest": "3d5459e943edfc2cb1497654fb0cf7429853960854b5fccd5ad28cf14e6486f0",
+      "failureReason": null,
+      "componentCount": 11,
+      "cleanup": "VERIFIED"
+    },
+    {
+      "tag": "switch-b-disabled",
+      "runId": "web-44573b8b-9c8e-4445-906b-e44d140c389e",
+      "projectId": "java-sbom-demo-b",
+      "fixtureId": "java-inventory-second-v1",
+      "executionStatus": "DISABLED",
+      "policyDecision": null,
+      "evaluationCount": 0,
+      "resultDigest": "e69a099a9615b12aede82ab1388975de29894ecbce0baa5fcb9ec58556c8832b",
+      "artifactDigest": "53234ec6dea11e25972b78a3228db024ce5b27b13919e13fb016ecd091f0c28c",
+      "effectiveConfigDigest": "4c2be4f75738ef851edea9abf2c64b6a5a70486bca29e7686681804dc3ec319b",
+      "failureReason": "PLUGIN_DISABLED",
+      "componentCount": null,
+      "cleanup": null
+    },
+    {
+      "tag": "switch-a-unaffected",
+      "runId": "web-5ac87b86-879a-429e-aa26-919942a9b3e1",
+      "projectId": "java-sbom-demo",
+      "fixtureId": "java-dependencies-v1",
+      "executionStatus": "COMPLETED",
+      "policyDecision": "PASS",
+      "evaluationCount": 1,
+      "resultDigest": "839796bbbeacd4f69f8f291fbc0035d4a31a1d234f9e3d0b2559c07bc2bc8e04",
+      "artifactDigest": "e587364106df501506f01c9b32a3d398b6e2acc72a5f02988cfcd0b1bea4908f",
+      "effectiveConfigDigest": "e96d015835d3a383a52633b8b9394d54c9526e2e162117cf8948b3ede4e1a3f7",
+      "failureReason": null,
+      "componentCount": 11,
+      "cleanup": "VERIFIED"
+    }
+  ],
+  "switchTest": {
+    "disabledProject": "java-sbom-demo-b",
+    "disabledStatus": "DISABLED",
+    "disabledEvaluationCount": 0,
+    "unaffectedProject": "java-sbom-demo",
+    "unaffectedStatus": "COMPLETED",
+    "unaffectedDecision": "PASS",
+    "unaffectedEvaluationCount": 1,
+    "sameConfigObject": true
+  },
+  "crossProject": {
+    "aProjectWithBFixture": "SBOM_PROJECT_NOT_AUTHORIZED",
+    "bProjectWithAFixture": "SBOM_PROJECT_NOT_AUTHORIZED",
+    "unknownProjectWithAFixture": "SBOM_PROJECT_NOT_AUTHORIZED",
+    "secondBusinessProjectNotOnboarded": "SBOM_PROJECT_NOT_AUTHORIZED"
+  },
+  "router": [
+    {
+      "projectId": "java-sbom-demo",
+      "runId": "web-b2c6db93-e34b-46f5-a37a-54156d8f4cb8",
+      "receipts": [
+        {
+          "consumerId": "dry-run",
+          "deliveryDecision": "DRY_RUN",
+          "receiptDigest": "99d6a53970b89d084cf1a525bb3abe2be534168ab2d5a83f79fb62f8acf3a1e2"
+        },
+        {
+          "consumerId": "local-evidence",
+          "deliveryDecision": "DELIVERED_LOCAL_ONLY",
+          "receiptDigest": "fa4ff1f3daeb33cf8b666ea40df30c49be0aad47ad35a3582c6a13498e8cd4e8"
+        }
+      ]
+    },
+    {
+      "projectId": "java-sbom-demo-b",
+      "runId": "web-f68ca206-ba5a-4801-a294-dad2bb423254",
+      "receipts": [
+        {
+          "consumerId": "dry-run",
+          "deliveryDecision": "DRY_RUN",
+          "receiptDigest": "3a744e6e27943d3d68a0606a44f08629a329b706ba144a1459d94ee970c7eb68"
+        },
+        {
+          "consumerId": "local-evidence",
+          "deliveryDecision": "DELIVERED_LOCAL_ONLY",
+          "receiptDigest": "917695d65dd67906b528627e77417c22b7a54cc382ee8a76295729e6e1fc29f3"
+        }
+      ]
+    }
+  ],
+  "secondBusinessProject": {
+    "path": "~/code/petclinic-devops-lab",
+    "exists": true,
+    "head": "2f74ac764f0237c51dc4e512fe2351832afb180e",
+    "pomSha256": "c4a3a4314b05366371f2033b3efc68bbd1f16c59029af4d86e11722ebddddc34",
+    "platformHead": "c76ad06b716722a9f709d9b30b12710963964edd"
+  },
+  "projectAccess": {
+    "projectIds": [
+      "java-sbom-demo",
+      "java-sbom-demo-b"
+    ],
+    "allTokensDistinct": true,
+    "operatorDistinctFromProjects": true,
+    "tokenShapeOk": true
+  },
+  "identityIsolation": {
+    "distinctRunIds": true,
+    "distinctResultDigests": true,
+    "distinctArtifactDigests": true,
+    "distinctEffectiveConfigDigests": true
+  }
+}
