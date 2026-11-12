@@ -1,0 +1,12 @@
+// Final dedicated non-release verification. This does not claim same-run 16/16.
+pipeline {
+ agent any
+ options { disableConcurrentBuilds(); timeout(time:5,unit:'MINUTES') }
+ stages {
+ stage('Verify runtime source bundle') { steps { sh 'node infra/security/runtime-facts/verify-bundle.mjs' } }
+ stage('Accepted thirteen original-binding smoke') { steps { sh 'node infra/security/runtime-facts/thirteen-smoke.mjs' } }
+ stage('Unchanged real Regression 147') { steps { sh 'mkdir -p .devsecops/runtime-controlled/build-${BUILD_NUMBER}; node --test --test-concurrency=1 infra/observability/*.test.mjs infra/security/*.test.mjs > .devsecops/runtime-controlled/build-${BUILD_NUMBER}/regression.log 2>&1' } }
+ stage('Read-only cleanup and protected Harbor proof') { steps { withCredentials([usernamePassword(credentialsId:'harbor-creds',usernameVariable:'HARBOR_USER',passwordVariable:'HARBOR_PASS')]) { sh 'node infra/security/runtime-facts/final-three-postcheck.mjs' } } }
+ }
+ post { always { archiveArtifacts artifacts: '.devsecops/runtime-controlled/build-' + env.BUILD_NUMBER + '/**,runtime-source-bundle.json',allowEmptyArchive:false } }
+}
