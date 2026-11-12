@@ -1,0 +1,1938 @@
+{
+ "kind": "ObservabilityUnifiedVerificationW12",
+ "schemaVersion": 1,
+ "date": "2026-11-13",
+ "branch": "fix/security-manager-plugin-switches",
+ "phase1_G-S2": {
+  "closed": true,
+  "evidence": "evidence/2026-11-13/sonarqube-v2/grafana-supplement-w12.json",
+  "commit": "f9022bc9",
+  "result": "Grafana proxy matched=1 for both delivered SonarQube runs (clean PASS e2c623c4, violating FAIL dfdd461f), eventIdentity equal to Loki query-proof; SonarQube OBSERVABILITY升 VERIFIED"
+ },
+ "phase2_UI": {
+  "commits": {
+   "kyverno": "1590bfff",
+   "sonarqube": "699c4c87",
+   "kubescape": "c52aecca",
+   "zap": "29de4641",
+   "provenance": "35eefaa2",
+   "build-provenance": "d8934234",
+   "sops": "7f5b3c8a"
+  },
+  "management": {
+   "kyverno": "VERIFIED (unchanged; view+hunk submission completed this wave)",
+   "sonarqube": "PARTIAL->VERIFIED (G-S1 closed)",
+   "kubescape": "PARTIAL->VERIFIED (G-K2 closed; POLICY stays PARTIAL per U5, separate dimension)",
+   "zap": "PARTIAL->VERIFIED (G-Z1 closed)",
+   "provenance": "PARTIAL->VERIFIED (G-P1 closed)",
+   "build-provenance": "PARTIAL->VERIFIED (G-BP1 closed)",
+   "sops": "PARTIAL->VERIFIED (G-SOPS1 closed)",
+   "falco": "PARTIAL (G-F3 BLOCKED: view submit contract {pluginId,projectId,scenarioId} cannot carry falco runner inputs testPod+windowEndMs; falco-real.mjs has no falcoUiCase export; creating the controlled test pod needs a cluster-write channel the Mac view process does not hold - collector SA can-i create pods=no (W8). No fake wiring added.)"
+  },
+  "viewDrivers": {
+   "kyverno": {
+    "checks": [
+     {
+      "name": "capability-ready",
+      "ok": true,
+      "detail": {
+       "pluginId": "kyverno",
+       "state": "READY",
+       "reason": null,
+       "runner": "kyverno-real",
+       "toolVersion": "1.36.1",
+       "toolVersionObservation": "PINNED",
+       "executionHost": "devops/192.168.1.58",
+       "executionIdentity": "security-kyverno",
+       "scenarios": [
+        "clean",
+        "controlled-finding"
+       ],
+       "projects": [
+        "kyverno-supply-chain",
+        "kyverno-workload"
+       ]
+      }
+     },
+     {
+      "name": "clean-result",
+      "ok": true,
+      "detail": {
+       "runId": "web-a85d53c1-fce8-4d38-a059-7ee8306becff",
+       "state": "COMPLETED",
+       "policyDecision": "PASS",
+       "evaluationCount": 1,
+       "evidenceClass": "REAL",
+       "caseId": "signed",
+       "resultDigest": "6ee8e03b00a0e12b151e484d8004f1208ba68a1c2d247681c5ce6ebdf7ec6ecd",
+       "artifactDigest": "a44b3d7735d5177b3c059c74d0d96c03f678454557c41dc5e7a431f44c3b631a",
+       "allowed": true,
+       "gateStatus": null,
+       "violating": null,
+       "findings": null,
+       "alertsTotal": null,
+       "storeModel": null,
+       "envelopeSha256": null,
+       "lokiDelivery": {
+        "state": "DELIVERED",
+        "queryState": "VERIFIED"
+       }
+      }
+     },
+     {
+      "name": "finding-result",
+      "ok": true,
+      "detail": {
+       "runId": "web-9b752e0a-817f-4380-99ab-6fc2e2893351",
+       "state": "COMPLETED",
+       "policyDecision": "FAIL",
+       "evaluationCount": 1,
+       "evidenceClass": "REAL",
+       "caseId": "candidate",
+       "resultDigest": "d4331140177906c3d6a48eff71f4ccd308e822e3e77c5771bd74d9df3f2c12ed",
+       "artifactDigest": "3b6c48ff92073d22ace4565e12fbe171fa3ecb0b6a759a941bb53dfcb87285f7",
+       "allowed": false,
+       "gateStatus": null,
+       "violating": null,
+       "findings": null,
+       "alertsTotal": null,
+       "storeModel": null,
+       "envelopeSha256": null,
+       "lokiDelivery": {
+        "state": "DELIVERED",
+        "queryState": "VERIFIED"
+       }
+      }
+     },
+     {
+      "name": "capability-off-disabled",
+      "ok": true,
+      "detail": {
+       "pluginId": "kyverno",
+       "state": "DISABLED",
+       "reason": "PLUGIN_DISABLED",
+       "runner": "kyverno-real",
+       "toolVersion": "1.36.1",
+       "toolVersionObservation": "PINNED",
+       "executionHost": "devops/192.168.1.58",
+       "executionIdentity": "security-kyverno",
+       "scenarios": [
+        "clean",
+        "controlled-finding"
+       ],
+       "projects": [
+        "kyverno-supply-chain",
+        "kyverno-workload"
+       ]
+      }
+     },
+     {
+      "name": "disabled-zero-exec",
+      "ok": true,
+      "detail": {
+       "runId": "web-34d76502-7efd-4e93-8299-b046246469ec",
+       "state": "DISABLED",
+       "evaluationCount": 0,
+       "policyDecision": null,
+       "scannerExecuted": false
+      }
+     },
+     {
+      "name": "capability-restored",
+      "ok": true,
+      "detail": {
+       "pluginId": "kyverno",
+       "state": "READY",
+       "reason": null,
+       "runner": "kyverno-real",
+       "toolVersion": "1.36.1",
+       "toolVersionObservation": "PINNED",
+       "executionHost": "devops/192.168.1.58",
+       "executionIdentity": "security-kyverno",
+       "scenarios": [
+        "clean",
+        "controlled-finding"
+       ],
+       "projects": [
+        "kyverno-supply-chain",
+        "kyverno-workload"
+       ]
+      }
+     }
+    ],
+    "runs": {
+     "clean": {
+      "runId": "web-a85d53c1-fce8-4d38-a059-7ee8306becff",
+      "state": "COMPLETED",
+      "policyDecision": "PASS",
+      "evaluationCount": 1,
+      "evidenceClass": "REAL",
+      "caseId": "signed",
+      "resultDigest": "6ee8e03b00a0e12b151e484d8004f1208ba68a1c2d247681c5ce6ebdf7ec6ecd",
+      "artifactDigest": "a44b3d7735d5177b3c059c74d0d96c03f678454557c41dc5e7a431f44c3b631a",
+      "allowed": true,
+      "gateStatus": null,
+      "violating": null,
+      "findings": null,
+      "alertsTotal": null,
+      "storeModel": null,
+      "envelopeSha256": null,
+      "lokiDelivery": {
+       "state": "DELIVERED",
+       "queryState": "VERIFIED"
+      }
+     },
+     "finding": {
+      "runId": "web-9b752e0a-817f-4380-99ab-6fc2e2893351",
+      "state": "COMPLETED",
+      "policyDecision": "FAIL",
+      "evaluationCount": 1,
+      "evidenceClass": "REAL",
+      "caseId": "candidate",
+      "resultDigest": "d4331140177906c3d6a48eff71f4ccd308e822e3e77c5771bd74d9df3f2c12ed",
+      "artifactDigest": "3b6c48ff92073d22ace4565e12fbe171fa3ecb0b6a759a941bb53dfcb87285f7",
+      "allowed": false,
+      "gateStatus": null,
+      "violating": null,
+      "findings": null,
+      "alertsTotal": null,
+      "storeModel": null,
+      "envelopeSha256": null,
+      "lokiDelivery": {
+       "state": "DELIVERED",
+       "queryState": "VERIFIED"
+      }
+     },
+     "disabled": {
+      "runId": "web-34d76502-7efd-4e93-8299-b046246469ec",
+      "state": "DISABLED",
+      "evaluationCount": 0,
+      "policyDecision": null,
+      "scannerExecuted": false
+     }
+    },
+    "capability": {
+     "pluginId": "kyverno",
+     "state": "READY",
+     "reason": null,
+     "runner": "kyverno-real",
+     "toolVersion": "1.36.1",
+     "toolVersionObservation": "PINNED",
+     "executionHost": "devops/192.168.1.58",
+     "executionIdentity": "security-kyverno",
+     "scenarios": [
+      "clean",
+      "controlled-finding"
+     ],
+     "projects": [
+      "kyverno-supply-chain",
+      "kyverno-workload"
+     ]
+    }
+   },
+   "sonarqube": {
+    "checks": [
+     {
+      "name": "capability-ready",
+      "ok": true,
+      "detail": {
+       "pluginId": "sonarqube",
+       "state": "READY",
+       "reason": null,
+       "runner": "sonar-real",
+       "toolVersion": "7.2.0.5079",
+       "toolVersionObservation": "PINNED",
+       "executionHost": "devops/192.168.1.58",
+       "executionIdentity": "security-sonar",
+       "scenarios": [
+        "clean",
+        "controlled-finding"
+       ],
+       "projects": [
+        "sonarqube-cleanroom",
+        "sonarqube-petclinic"
+       ]
+      }
+     },
+     {
+      "name": "clean-result",
+      "ok": true,
+      "detail": {
+       "runId": "web-2bfea211-0604-42e1-bfda-bb5ec70d886a",
+       "state": "COMPLETED",
+       "policyDecision": "PASS",
+       "evaluationCount": 1,
+       "evidenceClass": "REAL",
+       "caseId": "clean-scan",
+       "resultDigest": "f369f8f4a3e5697778e803716c00d9b0641f14bffc4774a458df232334ef8100",
+       "artifactDigest": "dca853e531fa57966fd905f210a088230bda231c8530076c45327ac9b1cbf482",
+       "allowed": null,
+       "gateStatus": "OK",
+       "violating": null,
+       "findings": null,
+       "alertsTotal": null,
+       "storeModel": null,
+       "envelopeSha256": null,
+       "lokiDelivery": {
+        "state": "DELIVERED",
+        "queryState": "VERIFIED"
+       }
+      }
+     },
+     {
+      "name": "finding-result",
+      "ok": true,
+      "detail": {
+       "runId": "web-0be38782-b100-4fc6-858e-57686735b552",
+       "state": "COMPLETED",
+       "policyDecision": "FAIL",
+       "evaluationCount": 1,
+       "evidenceClass": "REAL",
+       "caseId": "violating-scan",
+       "resultDigest": "b5b58efbe8f71af425d1a982ab32f6f9e0c4fc476a8772b9c024c3d55b951daf",
+       "artifactDigest": "550cfb05ae4d9ca98cb8007a7ccf655fa3a54ca6715f637e5698dfbf852613fb",
+       "allowed": null,
+       "gateStatus": "ERROR",
+       "violating": null,
+       "findings": null,
+       "alertsTotal": null,
+       "storeModel": null,
+       "envelopeSha256": null,
+       "lokiDelivery": {
+        "state": "DELIVERED",
+        "queryState": "VERIFIED"
+       }
+      }
+     },
+     {
+      "name": "capability-off-disabled",
+      "ok": true,
+      "detail": {
+       "pluginId": "sonarqube",
+       "state": "DISABLED",
+       "reason": "PLUGIN_DISABLED",
+       "runner": "sonar-real",
+       "toolVersion": "7.2.0.5079",
+       "toolVersionObservation": "PINNED",
+       "executionHost": "devops/192.168.1.58",
+       "executionIdentity": "security-sonar",
+       "scenarios": [
+        "clean",
+        "controlled-finding"
+       ],
+       "projects": [
+        "sonarqube-cleanroom",
+        "sonarqube-petclinic"
+       ]
+      }
+     },
+     {
+      "name": "disabled-zero-exec",
+      "ok": true,
+      "detail": {
+       "runId": "web-8a0838fd-b427-4766-9ded-58f933733b5a",
+       "state": "DISABLED",
+       "evaluationCount": 0,
+       "policyDecision": null,
+       "scannerExecuted": false
+      }
+     },
+     {
+      "name": "capability-restored",
+      "ok": true,
+      "detail": {
+       "pluginId": "sonarqube",
+       "state": "READY",
+       "reason": null,
+       "runner": "sonar-real",
+       "toolVersion": "7.2.0.5079",
+       "toolVersionObservation": "PINNED",
+       "executionHost": "devops/192.168.1.58",
+       "executionIdentity": "security-sonar",
+       "scenarios": [
+        "clean",
+        "controlled-finding"
+       ],
+       "projects": [
+        "sonarqube-cleanroom",
+        "sonarqube-petclinic"
+       ]
+      }
+     }
+    ],
+    "runs": {
+     "clean": {
+      "runId": "web-2bfea211-0604-42e1-bfda-bb5ec70d886a",
+      "state": "COMPLETED",
+      "policyDecision": "PASS",
+      "evaluationCount": 1,
+      "evidenceClass": "REAL",
+      "caseId": "clean-scan",
+      "resultDigest": "f369f8f4a3e5697778e803716c00d9b0641f14bffc4774a458df232334ef8100",
+      "artifactDigest": "dca853e531fa57966fd905f210a088230bda231c8530076c45327ac9b1cbf482",
+      "allowed": null,
+      "gateStatus": "OK",
+      "violating": null,
+      "findings": null,
+      "alertsTotal": null,
+      "storeModel": null,
+      "envelopeSha256": null,
+      "lokiDelivery": {
+       "state": "DELIVERED",
+       "queryState": "VERIFIED"
+      }
+     },
+     "finding": {
+      "runId": "web-0be38782-b100-4fc6-858e-57686735b552",
+      "state": "COMPLETED",
+      "policyDecision": "FAIL",
+      "evaluationCount": 1,
+      "evidenceClass": "REAL",
+      "caseId": "violating-scan",
+      "resultDigest": "b5b58efbe8f71af425d1a982ab32f6f9e0c4fc476a8772b9c024c3d55b951daf",
+      "artifactDigest": "550cfb05ae4d9ca98cb8007a7ccf655fa3a54ca6715f637e5698dfbf852613fb",
+      "allowed": null,
+      "gateStatus": "ERROR",
+      "violating": null,
+      "findings": null,
+      "alertsTotal": null,
+      "storeModel": null,
+      "envelopeSha256": null,
+      "lokiDelivery": {
+       "state": "DELIVERED",
+       "queryState": "VERIFIED"
+      }
+     },
+     "disabled": {
+      "runId": "web-8a0838fd-b427-4766-9ded-58f933733b5a",
+      "state": "DISABLED",
+      "evaluationCount": 0,
+      "policyDecision": null,
+      "scannerExecuted": false
+     }
+    },
+    "capability": {
+     "pluginId": "sonarqube",
+     "state": "READY",
+     "reason": null,
+     "runner": "sonar-real",
+     "toolVersion": "7.2.0.5079",
+     "toolVersionObservation": "PINNED",
+     "executionHost": "devops/192.168.1.58",
+     "executionIdentity": "security-sonar",
+     "scenarios": [
+      "clean",
+      "controlled-finding"
+     ],
+     "projects": [
+      "sonarqube-cleanroom",
+      "sonarqube-petclinic"
+     ]
+    }
+   },
+   "kubescape": {
+    "checks": [
+     {
+      "name": "capability-ready",
+      "ok": true,
+      "detail": {
+       "pluginId": "kubescape",
+       "state": "READY",
+       "reason": null,
+       "runner": "kubescape-real",
+       "toolVersion": "4.0.17",
+       "toolVersionObservation": "PINNED",
+       "executionHost": "devops/192.168.1.58",
+       "executionIdentity": "security-kubescape",
+       "scenarios": [
+        "clean",
+        "controlled-finding"
+       ],
+       "projects": [
+        "kubescape-petclinic",
+        "kubescape-cleanroom"
+       ]
+      }
+     },
+     {
+      "name": "clean-result",
+      "ok": false,
+      "detail": {
+       "runId": "web-457955ed-0540-4e61-83f0-399c44156d3f",
+       "state": "COMPLETED",
+       "policyDecision": "PASS",
+       "evaluationCount": 1,
+       "evidenceClass": "REAL",
+       "caseId": "cluster-audit",
+       "resultDigest": "98a05aa102cbb0023423158dc3bf87b660d2cb7b2ebeb82990b32bc6f3162ad8",
+       "artifactDigest": "fca649c7b9660119ef40e288d5bca72f090f81304edfc995e0bfd5acb585051f",
+       "allowed": null,
+       "gateStatus": null,
+       "violating": null,
+       "findings": 1260,
+       "alertsTotal": null,
+       "storeModel": null,
+       "envelopeSha256": null,
+       "lokiDelivery": {
+        "state": "DELIVERED",
+        "queryState": "VERIFIED"
+       }
+      }
+     },
+     {
+      "name": "finding-result",
+      "ok": false,
+      "detail": {
+       "runId": "web-18cab42f-5dc7-4ace-93db-da5ea23b9744",
+       "state": "ERROR",
+       "policyDecision": null,
+       "evaluationCount": 0,
+       "evidenceClass": "NOT_TESTED",
+       "caseId": "violating-workload",
+       "resultDigest": "32b1404e98076baa98aa7f22f6be40b8613f0f6f15e3e9266573a5d6d40cddc7",
+       "artifactDigest": "a662294c66b507db2a2949a0a7f3740cdf8fe2ddc918a727daa219a3181f5f9f",
+       "allowed": null,
+       "gateStatus": null,
+       "violating": null,
+       "findings": null,
+       "alertsTotal": null,
+       "storeModel": null,
+       "envelopeSha256": null,
+       "lokiDelivery": null
+      }
+     },
+     {
+      "name": "capability-off-disabled",
+      "ok": true,
+      "detail": {
+       "pluginId": "kubescape",
+       "state": "DISABLED",
+       "reason": "PLUGIN_DISABLED",
+       "runner": "kubescape-real",
+       "toolVersion": "4.0.17",
+       "toolVersionObservation": "PINNED",
+       "executionHost": "devops/192.168.1.58",
+       "executionIdentity": "security-kubescape",
+       "scenarios": [
+        "clean",
+        "controlled-finding"
+       ],
+       "projects": [
+        "kubescape-petclinic",
+        "kubescape-cleanroom"
+       ]
+      }
+     },
+     {
+      "name": "disabled-zero-exec",
+      "ok": true,
+      "detail": {
+       "runId": "web-fa05c33c-762f-4ace-a51a-94ae8b31a507",
+       "state": "DISABLED",
+       "evaluationCount": 0,
+       "policyDecision": null,
+       "scannerExecuted": false
+      }
+     },
+     {
+      "name": "capability-restored",
+      "ok": true,
+      "detail": {
+       "pluginId": "kubescape",
+       "state": "READY",
+       "reason": null,
+       "runner": "kubescape-real",
+       "toolVersion": "4.0.17",
+       "toolVersionObservation": "PINNED",
+       "executionHost": "devops/192.168.1.58",
+       "executionIdentity": "security-kubescape",
+       "scenarios": [
+        "clean",
+        "controlled-finding"
+       ],
+       "projects": [
+        "kubescape-petclinic",
+        "kubescape-cleanroom"
+       ]
+      }
+     }
+    ],
+    "runs": {
+     "clean": {
+      "runId": "web-457955ed-0540-4e61-83f0-399c44156d3f",
+      "state": "COMPLETED",
+      "policyDecision": "PASS",
+      "evaluationCount": 1,
+      "evidenceClass": "REAL",
+      "caseId": "cluster-audit",
+      "resultDigest": "98a05aa102cbb0023423158dc3bf87b660d2cb7b2ebeb82990b32bc6f3162ad8",
+      "artifactDigest": "fca649c7b9660119ef40e288d5bca72f090f81304edfc995e0bfd5acb585051f",
+      "allowed": null,
+      "gateStatus": null,
+      "violating": null,
+      "findings": 1260,
+      "alertsTotal": null,
+      "storeModel": null,
+      "envelopeSha256": null,
+      "lokiDelivery": {
+       "state": "DELIVERED",
+       "queryState": "VERIFIED"
+      }
+     },
+     "finding": {
+      "runId": "web-18cab42f-5dc7-4ace-93db-da5ea23b9744",
+      "state": "ERROR",
+      "policyDecision": null,
+      "evaluationCount": 0,
+      "evidenceClass": "NOT_TESTED",
+      "caseId": "violating-workload",
+      "resultDigest": "32b1404e98076baa98aa7f22f6be40b8613f0f6f15e3e9266573a5d6d40cddc7",
+      "artifactDigest": "a662294c66b507db2a2949a0a7f3740cdf8fe2ddc918a727daa219a3181f5f9f",
+      "allowed": null,
+      "gateStatus": null,
+      "violating": null,
+      "findings": null,
+      "alertsTotal": null,
+      "storeModel": null,
+      "envelopeSha256": null,
+      "lokiDelivery": null
+     },
+     "disabled": {
+      "runId": "web-fa05c33c-762f-4ace-a51a-94ae8b31a507",
+      "state": "DISABLED",
+      "evaluationCount": 0,
+      "policyDecision": null,
+      "scannerExecuted": false
+     }
+    },
+    "capability": {
+     "pluginId": "kubescape",
+     "state": "READY",
+     "reason": null,
+     "runner": "kubescape-real",
+     "toolVersion": "4.0.17",
+     "toolVersionObservation": "PINNED",
+     "executionHost": "devops/192.168.1.58",
+     "executionIdentity": "security-kubescape",
+     "scenarios": [
+      "clean",
+      "controlled-finding"
+     ],
+     "projects": [
+      "kubescape-petclinic",
+      "kubescape-cleanroom"
+     ]
+    },
+    "findingRerun": {
+     "checks": [
+      {
+       "name": "capability-ready",
+       "ok": true,
+       "detail": {
+        "pluginId": "kubescape",
+        "state": "READY",
+        "reason": null,
+        "runner": "kubescape-real",
+        "toolVersion": "4.0.17",
+        "toolVersionObservation": "PINNED",
+        "executionHost": "devops/192.168.1.58",
+        "executionIdentity": "security-kubescape",
+        "scenarios": [
+         "clean",
+         "controlled-finding"
+        ],
+        "projects": [
+         "kubescape-petclinic",
+         "kubescape-cleanroom"
+        ]
+       }
+      },
+      {
+       "name": "finding-result",
+       "ok": true,
+       "detail": {
+        "runId": "web-d3e40b7d-4a57-4233-8a10-5af8fce91aa2",
+        "state": "COMPLETED",
+        "policyDecision": "PASS",
+        "evaluationCount": 1,
+        "evidenceClass": "REAL",
+        "caseId": "violating-workload",
+        "resultDigest": "b1e3b309da2cd1919042efa9f2ed278e8609e0e09e03ad9a3511a9e84cf5d713",
+        "artifactDigest": "e938da9547ebc7d2f10f115f4ce422643b4435fca2efee0703027c1b4aa796cf",
+        "allowed": null,
+        "gateStatus": null,
+        "violating": {
+         "namespace": "kubescape-v2-test",
+         "deployment": "smv2-violating",
+         "created": true,
+         "deleted": true,
+         "verifiedGone": true
+        },
+        "findings": 1285,
+        "auditDisposition": "WARN",
+        "alertsTotal": null,
+        "storeModel": null,
+        "envelopeSha256": null,
+        "lokiDelivery": {
+         "state": "DELIVERED",
+         "queryState": "VERIFIED"
+        }
+       }
+      }
+     ],
+     "runs": {
+      "finding": {
+       "runId": "web-d3e40b7d-4a57-4233-8a10-5af8fce91aa2",
+       "state": "COMPLETED",
+       "policyDecision": "PASS",
+       "evaluationCount": 1,
+       "evidenceClass": "REAL",
+       "caseId": "violating-workload",
+       "resultDigest": "b1e3b309da2cd1919042efa9f2ed278e8609e0e09e03ad9a3511a9e84cf5d713",
+       "artifactDigest": "e938da9547ebc7d2f10f115f4ce422643b4435fca2efee0703027c1b4aa796cf",
+       "allowed": null,
+       "gateStatus": null,
+       "violating": {
+        "namespace": "kubescape-v2-test",
+        "deployment": "smv2-violating",
+        "created": true,
+        "deleted": true,
+        "verifiedGone": true
+       },
+       "findings": 1285,
+       "auditDisposition": "WARN",
+       "alertsTotal": null,
+       "storeModel": null,
+       "envelopeSha256": null,
+       "lokiDelivery": {
+        "state": "DELIVERED",
+        "queryState": "VERIFIED"
+       }
+      }
+     }
+    }
+   },
+   "zap": {
+    "checks": [
+     {
+      "name": "capability-ready",
+      "ok": true,
+      "detail": {
+       "pluginId": "zap",
+       "state": "READY",
+       "reason": null,
+       "runner": "zap-real",
+       "toolVersion": "2.17.0",
+       "toolVersionObservation": "PINNED",
+       "executionHost": "devops/192.168.1.58",
+       "executionIdentity": "security-zap",
+       "scenarios": [
+        "clean",
+        "controlled-finding"
+       ],
+       "projects": [
+        "zap-lab",
+        "zap-cleanroom"
+       ]
+      }
+     },
+     {
+      "name": "clean-result",
+      "ok": true,
+      "detail": {
+       "runId": "web-247e05ad-1d3e-4586-a575-c78771aab41e",
+       "state": "COMPLETED",
+       "policyDecision": "PASS",
+       "evaluationCount": 1,
+       "evidenceClass": "REAL",
+       "caseId": "clean",
+       "resultDigest": "81ec9be5f399e4b67b5aaf5a47209c7f595de916ce8ef1161879d6d868df1971",
+       "artifactDigest": "8efacf82b58c1f5c0ddcc9f5d0c66b67ba7ee47919beeda562633f85548dab1b",
+       "allowed": null,
+       "gateStatus": null,
+       "violating": null,
+       "findings": null,
+       "auditDisposition": null,
+       "alertsTotal": 0,
+       "storeModel": null,
+       "envelopeSha256": null,
+       "lokiDelivery": {
+        "state": "DELIVERED",
+        "queryState": "VERIFIED"
+       }
+      }
+     },
+     {
+      "name": "finding-result",
+      "ok": true,
+      "detail": {
+       "runId": "web-4f51f9c1-ce1a-4d21-9917-39203df27961",
+       "state": "COMPLETED",
+       "policyDecision": "FAIL",
+       "evaluationCount": 1,
+       "evidenceClass": "REAL",
+       "caseId": "pii-disclosure",
+       "resultDigest": "9dfddf88a71e9f71ab9dee284317fc470710106a6cf374be4db93be709c93f0e",
+       "artifactDigest": "fd56bedda162e72b99647cdae970c7ef0f8c4a4b583d8b51cd5753ae48203b4e",
+       "allowed": null,
+       "gateStatus": null,
+       "violating": null,
+       "findings": null,
+       "auditDisposition": null,
+       "alertsTotal": 5,
+       "storeModel": null,
+       "envelopeSha256": null,
+       "lokiDelivery": {
+        "state": "DELIVERED",
+        "queryState": "VERIFIED"
+       }
+      }
+     },
+     {
+      "name": "capability-off-disabled",
+      "ok": true,
+      "detail": {
+       "pluginId": "zap",
+       "state": "DISABLED",
+       "reason": "PLUGIN_DISABLED",
+       "runner": "zap-real",
+       "toolVersion": "2.17.0",
+       "toolVersionObservation": "PINNED",
+       "executionHost": "devops/192.168.1.58",
+       "executionIdentity": "security-zap",
+       "scenarios": [
+        "clean",
+        "controlled-finding"
+       ],
+       "projects": [
+        "zap-lab",
+        "zap-cleanroom"
+       ]
+      }
+     },
+     {
+      "name": "disabled-zero-exec",
+      "ok": true,
+      "detail": {
+       "runId": "web-1b9f2329-3e9e-4766-873d-0645f47eb959",
+       "state": "DISABLED",
+       "evaluationCount": 0,
+       "policyDecision": null,
+       "scannerExecuted": false
+      }
+     },
+     {
+      "name": "capability-restored",
+      "ok": true,
+      "detail": {
+       "pluginId": "zap",
+       "state": "READY",
+       "reason": null,
+       "runner": "zap-real",
+       "toolVersion": "2.17.0",
+       "toolVersionObservation": "PINNED",
+       "executionHost": "devops/192.168.1.58",
+       "executionIdentity": "security-zap",
+       "scenarios": [
+        "clean",
+        "controlled-finding"
+       ],
+       "projects": [
+        "zap-lab",
+        "zap-cleanroom"
+       ]
+      }
+     }
+    ],
+    "runs": {
+     "clean": {
+      "runId": "web-247e05ad-1d3e-4586-a575-c78771aab41e",
+      "state": "COMPLETED",
+      "policyDecision": "PASS",
+      "evaluationCount": 1,
+      "evidenceClass": "REAL",
+      "caseId": "clean",
+      "resultDigest": "81ec9be5f399e4b67b5aaf5a47209c7f595de916ce8ef1161879d6d868df1971",
+      "artifactDigest": "8efacf82b58c1f5c0ddcc9f5d0c66b67ba7ee47919beeda562633f85548dab1b",
+      "allowed": null,
+      "gateStatus": null,
+      "violating": null,
+      "findings": null,
+      "auditDisposition": null,
+      "alertsTotal": 0,
+      "storeModel": null,
+      "envelopeSha256": null,
+      "lokiDelivery": {
+       "state": "DELIVERED",
+       "queryState": "VERIFIED"
+      }
+     },
+     "finding": {
+      "runId": "web-4f51f9c1-ce1a-4d21-9917-39203df27961",
+      "state": "COMPLETED",
+      "policyDecision": "FAIL",
+      "evaluationCount": 1,
+      "evidenceClass": "REAL",
+      "caseId": "pii-disclosure",
+      "resultDigest": "9dfddf88a71e9f71ab9dee284317fc470710106a6cf374be4db93be709c93f0e",
+      "artifactDigest": "fd56bedda162e72b99647cdae970c7ef0f8c4a4b583d8b51cd5753ae48203b4e",
+      "allowed": null,
+      "gateStatus": null,
+      "violating": null,
+      "findings": null,
+      "auditDisposition": null,
+      "alertsTotal": 5,
+      "storeModel": null,
+      "envelopeSha256": null,
+      "lokiDelivery": {
+       "state": "DELIVERED",
+       "queryState": "VERIFIED"
+      }
+     },
+     "disabled": {
+      "runId": "web-1b9f2329-3e9e-4766-873d-0645f47eb959",
+      "state": "DISABLED",
+      "evaluationCount": 0,
+      "policyDecision": null,
+      "scannerExecuted": false
+     }
+    },
+    "capability": {
+     "pluginId": "zap",
+     "state": "READY",
+     "reason": null,
+     "runner": "zap-real",
+     "toolVersion": "2.17.0",
+     "toolVersionObservation": "PINNED",
+     "executionHost": "devops/192.168.1.58",
+     "executionIdentity": "security-zap",
+     "scenarios": [
+      "clean",
+      "controlled-finding"
+     ],
+     "projects": [
+      "zap-lab",
+      "zap-cleanroom"
+     ]
+    }
+   },
+   "provenance": {
+    "checks": [
+     {
+      "name": "capability-ready",
+      "ok": true,
+      "detail": {
+       "pluginId": "provenance",
+       "state": "READY",
+       "reason": null,
+       "runner": "provenance-real",
+       "toolVersion": null,
+       "toolVersionObservation": "OFFLINE_DSSE_ARCHIVED_PROOF",
+       "executionHost": "local/offline",
+       "executionIdentity": "local-operator",
+       "scenarios": [
+        "verified",
+        "rejected"
+       ],
+       "projects": [
+        "petclinic-platform"
+       ]
+      }
+     },
+     {
+      "name": "clean-result",
+      "ok": true,
+      "detail": {
+       "runId": "web-de4d4f38-0429-49ca-a671-78e547c97d86",
+       "state": "COMPLETED",
+       "policyDecision": "PASS",
+       "evaluationCount": 1,
+       "evidenceClass": "REAL",
+       "caseId": "historical-candidate",
+       "resultDigest": "cfefc91d30423b584a15214f0e2269adfd1be9e01475389dcdbee5831bafb63c",
+       "artifactDigest": "3b61d2744d68aa965ab3319b546ae756b33e2e37f1d3be573507f2f11e373e9e",
+       "allowed": null,
+       "gateStatus": null,
+       "violating": null,
+       "findings": null,
+       "auditDisposition": null,
+       "alertsTotal": null,
+       "storeModel": null,
+       "envelopeSha256": "d8091efa2525eb74ae84e1968f261d51d24302a6dde36229993979f365a665a0",
+       "lokiDelivery": {
+        "state": "DELIVERED",
+        "queryState": "VERIFIED"
+       }
+      }
+     },
+     {
+      "name": "finding-result",
+      "ok": true,
+      "detail": {
+       "runId": "web-f307a117-48b8-4b14-bbc2-6757524ee689",
+       "state": "COMPLETED",
+       "policyDecision": "FAIL",
+       "evaluationCount": 1,
+       "evidenceClass": "REAL",
+       "caseId": "wrong-digest",
+       "resultDigest": "71d09b44c7ab01fb22cefd29530c16f24ada812e2262c00ea5b3da90d81d5601",
+       "artifactDigest": "a3d9bc759eefa761740eeb7e85732e70b9d25befc1f762fce1baef234b9338ba",
+       "allowed": null,
+       "gateStatus": null,
+       "violating": null,
+       "findings": null,
+       "auditDisposition": null,
+       "alertsTotal": null,
+       "storeModel": null,
+       "envelopeSha256": "d8091efa2525eb74ae84e1968f261d51d24302a6dde36229993979f365a665a0",
+       "lokiDelivery": {
+        "state": "DELIVERED",
+        "queryState": "VERIFIED"
+       }
+      }
+     },
+     {
+      "name": "capability-off-disabled",
+      "ok": true,
+      "detail": {
+       "pluginId": "provenance",
+       "state": "DISABLED",
+       "reason": "PLUGIN_DISABLED",
+       "runner": "provenance-real",
+       "toolVersion": null,
+       "toolVersionObservation": "OFFLINE_DSSE_ARCHIVED_PROOF",
+       "executionHost": "local/offline",
+       "executionIdentity": "local-operator",
+       "scenarios": [
+        "verified",
+        "rejected"
+       ],
+       "projects": [
+        "petclinic-platform"
+       ]
+      }
+     },
+     {
+      "name": "disabled-zero-exec",
+      "ok": true,
+      "detail": {
+       "runId": "web-c521715c-f3ba-4c23-93a7-e7f021562019",
+       "state": "DISABLED",
+       "evaluationCount": 0,
+       "policyDecision": null,
+       "scannerExecuted": false
+      }
+     },
+     {
+      "name": "capability-restored",
+      "ok": true,
+      "detail": {
+       "pluginId": "provenance",
+       "state": "READY",
+       "reason": null,
+       "runner": "provenance-real",
+       "toolVersion": null,
+       "toolVersionObservation": "OFFLINE_DSSE_ARCHIVED_PROOF",
+       "executionHost": "local/offline",
+       "executionIdentity": "local-operator",
+       "scenarios": [
+        "verified",
+        "rejected"
+       ],
+       "projects": [
+        "petclinic-platform"
+       ]
+      }
+     }
+    ],
+    "runs": {
+     "clean": {
+      "runId": "web-de4d4f38-0429-49ca-a671-78e547c97d86",
+      "state": "COMPLETED",
+      "policyDecision": "PASS",
+      "evaluationCount": 1,
+      "evidenceClass": "REAL",
+      "caseId": "historical-candidate",
+      "resultDigest": "cfefc91d30423b584a15214f0e2269adfd1be9e01475389dcdbee5831bafb63c",
+      "artifactDigest": "3b61d2744d68aa965ab3319b546ae756b33e2e37f1d3be573507f2f11e373e9e",
+      "allowed": null,
+      "gateStatus": null,
+      "violating": null,
+      "findings": null,
+      "auditDisposition": null,
+      "alertsTotal": null,
+      "storeModel": null,
+      "envelopeSha256": "d8091efa2525eb74ae84e1968f261d51d24302a6dde36229993979f365a665a0",
+      "lokiDelivery": {
+       "state": "DELIVERED",
+       "queryState": "VERIFIED"
+      }
+     },
+     "finding": {
+      "runId": "web-f307a117-48b8-4b14-bbc2-6757524ee689",
+      "state": "COMPLETED",
+      "policyDecision": "FAIL",
+      "evaluationCount": 1,
+      "evidenceClass": "REAL",
+      "caseId": "wrong-digest",
+      "resultDigest": "71d09b44c7ab01fb22cefd29530c16f24ada812e2262c00ea5b3da90d81d5601",
+      "artifactDigest": "a3d9bc759eefa761740eeb7e85732e70b9d25befc1f762fce1baef234b9338ba",
+      "allowed": null,
+      "gateStatus": null,
+      "violating": null,
+      "findings": null,
+      "auditDisposition": null,
+      "alertsTotal": null,
+      "storeModel": null,
+      "envelopeSha256": "d8091efa2525eb74ae84e1968f261d51d24302a6dde36229993979f365a665a0",
+      "lokiDelivery": {
+       "state": "DELIVERED",
+       "queryState": "VERIFIED"
+      }
+     },
+     "disabled": {
+      "runId": "web-c521715c-f3ba-4c23-93a7-e7f021562019",
+      "state": "DISABLED",
+      "evaluationCount": 0,
+      "policyDecision": null,
+      "scannerExecuted": false
+     }
+    },
+    "capability": {
+     "pluginId": "provenance",
+     "state": "READY",
+     "reason": null,
+     "runner": "provenance-real",
+     "toolVersion": null,
+     "toolVersionObservation": "OFFLINE_DSSE_ARCHIVED_PROOF",
+     "executionHost": "local/offline",
+     "executionIdentity": "local-operator",
+     "scenarios": [
+      "verified",
+      "rejected"
+     ],
+     "projects": [
+      "petclinic-platform"
+     ]
+    }
+   },
+   "build-provenance": {
+    "checks": [
+     {
+      "name": "capability-ready",
+      "ok": true,
+      "detail": {
+       "pluginId": "build-provenance",
+       "state": "READY",
+       "reason": null,
+       "runner": "build-provenance-real",
+       "toolVersion": null,
+       "toolVersionObservation": "OFFLINE_DSSE_ARCHIVED_PROOF",
+       "executionHost": "local/offline",
+       "executionIdentity": "local-operator",
+       "scenarios": [
+        "verified",
+        "rejected"
+       ],
+       "projects": [
+        "petclinic-platform"
+       ]
+      }
+     },
+     {
+      "name": "clean-result",
+      "ok": true,
+      "detail": {
+       "runId": "web-1c0b6aa0-68f4-4be1-8ee4-c6f127742ea8",
+       "state": "COMPLETED",
+       "policyDecision": "PASS",
+       "evaluationCount": 1,
+       "evidenceClass": "REAL",
+       "caseId": "historical-build",
+       "resultDigest": "a045615f2b8d0a1b1ad1f9b7a090a073ba325cbd22a030d9b7edbe9b1c6a8f01",
+       "artifactDigest": "4a76d6df11b5484cd04f7a4e36279943425e28266fcf129280e3e999f8f0930b",
+       "allowed": null,
+       "gateStatus": null,
+       "violating": null,
+       "findings": null,
+       "auditDisposition": null,
+       "alertsTotal": null,
+       "storeModel": null,
+       "envelopeSha256": "f72e882c6abf54786216e2aabe894d7a44a097fbbae361d76e1f69f83ce1222f",
+       "lokiDelivery": {
+        "state": "DELIVERED",
+        "queryState": "VERIFIED"
+       }
+      }
+     },
+     {
+      "name": "finding-result",
+      "ok": true,
+      "detail": {
+       "runId": "web-3f8ebca5-2f93-4605-a0d6-16b25839a38c",
+       "state": "COMPLETED",
+       "policyDecision": "FAIL",
+       "evaluationCount": 1,
+       "evidenceClass": "REAL",
+       "caseId": "wrong-digest",
+       "resultDigest": "73d7b711cdc8264e25382e69709fa94c2624de1b1dd1ba084bbd213381e53d1a",
+       "artifactDigest": "b73717403075df9070e8cc4fb96c9a29bea9b22c9f865e5dcc3cf629ddd75789",
+       "allowed": null,
+       "gateStatus": null,
+       "violating": null,
+       "findings": null,
+       "auditDisposition": null,
+       "alertsTotal": null,
+       "storeModel": null,
+       "envelopeSha256": "f72e882c6abf54786216e2aabe894d7a44a097fbbae361d76e1f69f83ce1222f",
+       "lokiDelivery": {
+        "state": "DELIVERED",
+        "queryState": "VERIFIED"
+       }
+      }
+     },
+     {
+      "name": "capability-off-disabled",
+      "ok": true,
+      "detail": {
+       "pluginId": "build-provenance",
+       "state": "DISABLED",
+       "reason": "PLUGIN_DISABLED",
+       "runner": "build-provenance-real",
+       "toolVersion": null,
+       "toolVersionObservation": "OFFLINE_DSSE_ARCHIVED_PROOF",
+       "executionHost": "local/offline",
+       "executionIdentity": "local-operator",
+       "scenarios": [
+        "verified",
+        "rejected"
+       ],
+       "projects": [
+        "petclinic-platform"
+       ]
+      }
+     },
+     {
+      "name": "disabled-zero-exec",
+      "ok": true,
+      "detail": {
+       "runId": "web-c2940365-26df-44cc-ac37-6eb780f65bd5",
+       "state": "DISABLED",
+       "evaluationCount": 0,
+       "policyDecision": null,
+       "scannerExecuted": false
+      }
+     },
+     {
+      "name": "capability-restored",
+      "ok": true,
+      "detail": {
+       "pluginId": "build-provenance",
+       "state": "READY",
+       "reason": null,
+       "runner": "build-provenance-real",
+       "toolVersion": null,
+       "toolVersionObservation": "OFFLINE_DSSE_ARCHIVED_PROOF",
+       "executionHost": "local/offline",
+       "executionIdentity": "local-operator",
+       "scenarios": [
+        "verified",
+        "rejected"
+       ],
+       "projects": [
+        "petclinic-platform"
+       ]
+      }
+     }
+    ],
+    "runs": {
+     "clean": {
+      "runId": "web-1c0b6aa0-68f4-4be1-8ee4-c6f127742ea8",
+      "state": "COMPLETED",
+      "policyDecision": "PASS",
+      "evaluationCount": 1,
+      "evidenceClass": "REAL",
+      "caseId": "historical-build",
+      "resultDigest": "a045615f2b8d0a1b1ad1f9b7a090a073ba325cbd22a030d9b7edbe9b1c6a8f01",
+      "artifactDigest": "4a76d6df11b5484cd04f7a4e36279943425e28266fcf129280e3e999f8f0930b",
+      "allowed": null,
+      "gateStatus": null,
+      "violating": null,
+      "findings": null,
+      "auditDisposition": null,
+      "alertsTotal": null,
+      "storeModel": null,
+      "envelopeSha256": "f72e882c6abf54786216e2aabe894d7a44a097fbbae361d76e1f69f83ce1222f",
+      "lokiDelivery": {
+       "state": "DELIVERED",
+       "queryState": "VERIFIED"
+      }
+     },
+     "finding": {
+      "runId": "web-3f8ebca5-2f93-4605-a0d6-16b25839a38c",
+      "state": "COMPLETED",
+      "policyDecision": "FAIL",
+      "evaluationCount": 1,
+      "evidenceClass": "REAL",
+      "caseId": "wrong-digest",
+      "resultDigest": "73d7b711cdc8264e25382e69709fa94c2624de1b1dd1ba084bbd213381e53d1a",
+      "artifactDigest": "b73717403075df9070e8cc4fb96c9a29bea9b22c9f865e5dcc3cf629ddd75789",
+      "allowed": null,
+      "gateStatus": null,
+      "violating": null,
+      "findings": null,
+      "auditDisposition": null,
+      "alertsTotal": null,
+      "storeModel": null,
+      "envelopeSha256": "f72e882c6abf54786216e2aabe894d7a44a097fbbae361d76e1f69f83ce1222f",
+      "lokiDelivery": {
+       "state": "DELIVERED",
+       "queryState": "VERIFIED"
+      }
+     },
+     "disabled": {
+      "runId": "web-c2940365-26df-44cc-ac37-6eb780f65bd5",
+      "state": "DISABLED",
+      "evaluationCount": 0,
+      "policyDecision": null,
+      "scannerExecuted": false
+     }
+    },
+    "capability": {
+     "pluginId": "build-provenance",
+     "state": "READY",
+     "reason": null,
+     "runner": "build-provenance-real",
+     "toolVersion": null,
+     "toolVersionObservation": "OFFLINE_DSSE_ARCHIVED_PROOF",
+     "executionHost": "local/offline",
+     "executionIdentity": "local-operator",
+     "scenarios": [
+      "verified",
+      "rejected"
+     ],
+     "projects": [
+      "petclinic-platform"
+     ]
+    }
+   },
+   "sops": {
+    "checks": [
+     {
+      "name": "capability-ready",
+      "ok": true,
+      "detail": {
+       "pluginId": "sops",
+       "state": "READY",
+       "reason": null,
+       "runner": "sops-real",
+       "toolVersion": "3.13.3",
+       "toolVersionObservation": "PINNED",
+       "executionHost": "devops/192.168.1.58",
+       "executionIdentity": "security-sops",
+       "scenarios": [
+        "clean",
+        "controlled-finding"
+       ],
+       "projects": [
+        "sops-lab",
+        "sops-cleanroom"
+       ]
+      }
+     },
+     {
+      "name": "clean-result",
+      "ok": true,
+      "detail": {
+       "runId": "web-a686245a-f4e7-4191-8ca7-81aeb828aaf2",
+       "state": "COMPLETED",
+       "policyDecision": "PASS",
+       "evaluationCount": 1,
+       "evidenceClass": "REAL",
+       "caseId": "compliant",
+       "resultDigest": "38bc782112dd90caa79e679476652fb95693c7b30434bd5bb3e10490b264bca4",
+       "artifactDigest": "15a8de3c76b94a3de371ba5bbb2860cdc12c834f3b853e76fd3d3f2f45032bcb",
+       "allowed": null,
+       "gateStatus": null,
+       "violating": null,
+       "findings": null,
+       "auditDisposition": null,
+       "alertsTotal": null,
+       "storeModel": "FILE_FIXTURE_STORE",
+       "envelopeSha256": null,
+       "lokiDelivery": {
+        "state": "DELIVERED",
+        "queryState": "VERIFIED"
+       }
+      }
+     },
+     {
+      "name": "finding-result",
+      "ok": true,
+      "detail": {
+       "runId": "web-ab756cf6-23df-4690-8087-69b5775f67f1",
+       "state": "COMPLETED",
+       "policyDecision": "FAIL",
+       "evaluationCount": 1,
+       "evidenceClass": "REAL",
+       "caseId": "tampered-ciphertext",
+       "resultDigest": "6ac68119f50febec556048b0f40e91b0d062ff5311978bb1daea190afc47a9f0",
+       "artifactDigest": "3b37732149a33ec7fc575f7a52b7ea7101f6a8d52126fe1def9a506c8d86915f",
+       "allowed": null,
+       "gateStatus": null,
+       "violating": null,
+       "findings": null,
+       "auditDisposition": null,
+       "alertsTotal": null,
+       "storeModel": "FILE_FIXTURE_STORE",
+       "envelopeSha256": null,
+       "lokiDelivery": {
+        "state": "DELIVERED",
+        "queryState": "VERIFIED"
+       }
+      }
+     },
+     {
+      "name": "capability-off-disabled",
+      "ok": true,
+      "detail": {
+       "pluginId": "sops",
+       "state": "DISABLED",
+       "reason": "PLUGIN_DISABLED",
+       "runner": "sops-real",
+       "toolVersion": "3.13.3",
+       "toolVersionObservation": "PINNED",
+       "executionHost": "devops/192.168.1.58",
+       "executionIdentity": "security-sops",
+       "scenarios": [
+        "clean",
+        "controlled-finding"
+       ],
+       "projects": [
+        "sops-lab",
+        "sops-cleanroom"
+       ]
+      }
+     },
+     {
+      "name": "disabled-zero-exec",
+      "ok": true,
+      "detail": {
+       "runId": "web-8949afee-9e06-42f7-b345-8e7df9aa552c",
+       "state": "DISABLED",
+       "evaluationCount": 0,
+       "policyDecision": null,
+       "scannerExecuted": false
+      }
+     },
+     {
+      "name": "capability-restored",
+      "ok": true,
+      "detail": {
+       "pluginId": "sops",
+       "state": "READY",
+       "reason": null,
+       "runner": "sops-real",
+       "toolVersion": "3.13.3",
+       "toolVersionObservation": "PINNED",
+       "executionHost": "devops/192.168.1.58",
+       "executionIdentity": "security-sops",
+       "scenarios": [
+        "clean",
+        "controlled-finding"
+       ],
+       "projects": [
+        "sops-lab",
+        "sops-cleanroom"
+       ]
+      }
+     }
+    ],
+    "runs": {
+     "clean": {
+      "runId": "web-a686245a-f4e7-4191-8ca7-81aeb828aaf2",
+      "state": "COMPLETED",
+      "policyDecision": "PASS",
+      "evaluationCount": 1,
+      "evidenceClass": "REAL",
+      "caseId": "compliant",
+      "resultDigest": "38bc782112dd90caa79e679476652fb95693c7b30434bd5bb3e10490b264bca4",
+      "artifactDigest": "15a8de3c76b94a3de371ba5bbb2860cdc12c834f3b853e76fd3d3f2f45032bcb",
+      "allowed": null,
+      "gateStatus": null,
+      "violating": null,
+      "findings": null,
+      "auditDisposition": null,
+      "alertsTotal": null,
+      "storeModel": "FILE_FIXTURE_STORE",
+      "envelopeSha256": null,
+      "lokiDelivery": {
+       "state": "DELIVERED",
+       "queryState": "VERIFIED"
+      }
+     },
+     "finding": {
+      "runId": "web-ab756cf6-23df-4690-8087-69b5775f67f1",
+      "state": "COMPLETED",
+      "policyDecision": "FAIL",
+      "evaluationCount": 1,
+      "evidenceClass": "REAL",
+      "caseId": "tampered-ciphertext",
+      "resultDigest": "6ac68119f50febec556048b0f40e91b0d062ff5311978bb1daea190afc47a9f0",
+      "artifactDigest": "3b37732149a33ec7fc575f7a52b7ea7101f6a8d52126fe1def9a506c8d86915f",
+      "allowed": null,
+      "gateStatus": null,
+      "violating": null,
+      "findings": null,
+      "auditDisposition": null,
+      "alertsTotal": null,
+      "storeModel": "FILE_FIXTURE_STORE",
+      "envelopeSha256": null,
+      "lokiDelivery": {
+       "state": "DELIVERED",
+       "queryState": "VERIFIED"
+      }
+     },
+     "disabled": {
+      "runId": "web-8949afee-9e06-42f7-b345-8e7df9aa552c",
+      "state": "DISABLED",
+      "evaluationCount": 0,
+      "policyDecision": null,
+      "scannerExecuted": false
+     }
+    },
+    "capability": {
+     "pluginId": "sops",
+     "state": "READY",
+     "reason": null,
+     "runner": "sops-real",
+     "toolVersion": "3.13.3",
+     "toolVersionObservation": "PINNED",
+     "executionHost": "devops/192.168.1.58",
+     "executionIdentity": "security-sops",
+     "scenarios": [
+      "clean",
+      "controlled-finding"
+     ],
+     "projects": [
+      "sops-lab",
+      "sops-cleanroom"
+     ]
+    }
+   }
+  },
+  "notes": [
+   "Kubescape controlled-finding view case required restoring the W3-deleted test namespace kubescape-v2-test + its scoped Role/Binding (exact W3 rbac.yaml subset, raw/kubescape-testns-restore.yaml); restored and left in place as reusable non-prod test infra. SA can-i: create deployments=yes, list secrets=no.",
+   "Kubescape/SOPS first view attempts hit entry RESOURCE_BUDGET_BLOCKED during a parallel-line load spike on devops (load1 6.77 > 6cpu*0.9); both passed after load fell (2.84). Transient contention, not a wiring defect; aborted run records remain in the view runs directory.",
+   "Provenance/Build-Provenance UiCase scenario vocabulary is verified/rejected; view capability exposes exactly those scenarios for these two plugins and validateRequest enforces them per-plugin.",
+   "Capability projects are ordered by case coverage so the UI default project is the primary project that carries both scenarios."
+  ]
+ },
+ "phase3_matrix": [
+  {
+   "plugin": "gitleaks",
+   "referenceRunId": "web-bfcb08f9-e841-4972-8ecc-858355719a83",
+   "referenceSource": "view-run record (newest REAL view run)",
+   "expectedPolicyDecision": "PASS",
+   "lokiDirect": {
+    "matched": 1,
+    "policyDecision": "PASS",
+    "resultDigest": "6d099ffe64f725d9454408e82c3e2526ea73a2f755c6f83ad9bdd75de3f72dd1",
+    "eventIdentity": "fa06b9341dfb37fb443aa094b7b112fdba9982fede0a66c44d8f36ab7f462b78",
+    "findingEvidenceStatus": "VERIFIED_NATIVE_COUNT_NO_NATIVE_SEVERITY"
+   },
+   "grafanaProxy": {
+    "matched": 1,
+    "policyDecision": "PASS",
+    "resultDigest": "6d099ffe64f725d9454408e82c3e2526ea73a2f755c6f83ad9bdd75de3f72dd1",
+    "eventIdentity": "fa06b9341dfb37fb443aa094b7b112fdba9982fede0a66c44d8f36ab7f462b78"
+   },
+   "webView": {
+    "refRunVisible": true,
+    "refRunPolicy": "PASS",
+    "check": {
+     "runId": "web-bfcb08f9-e841-4972-8ecc-858355719a83",
+     "state": "COMPLETED",
+     "policyDecision": "PASS",
+     "via": "reference-run"
+    }
+   },
+   "verdict": "CONSISTENT (loki=grafana eventIdentity and resultDigest identical; web view shows a REAL run of this plugin with correct result/policy)"
+  },
+  {
+   "plugin": "semgrep",
+   "referenceRunId": "web-d623a7b0-ced1-42a4-b0a4-7075f44d8db2",
+   "referenceSource": "view-run record (newest REAL view run)",
+   "expectedPolicyDecision": "PASS",
+   "lokiDirect": {
+    "matched": 1,
+    "policyDecision": "PASS",
+    "resultDigest": "1704f59ccd47d8df299a1a9cfa89f3f9109cd1f59cfd8aaf25a6986cecbb16ec",
+    "eventIdentity": "ab1ffcfde9220f30c2c51520a2d9e4aa50d56a7e820311d5afacb9cb8ff4ec32",
+    "findingEvidenceStatus": "VERIFIED_NATIVE_COUNT"
+   },
+   "grafanaProxy": {
+    "matched": 1,
+    "policyDecision": "PASS",
+    "resultDigest": "1704f59ccd47d8df299a1a9cfa89f3f9109cd1f59cfd8aaf25a6986cecbb16ec",
+    "eventIdentity": "ab1ffcfde9220f30c2c51520a2d9e4aa50d56a7e820311d5afacb9cb8ff4ec32"
+   },
+   "webView": {
+    "refRunVisible": true,
+    "refRunPolicy": "PASS",
+    "check": {
+     "runId": "web-d623a7b0-ced1-42a4-b0a4-7075f44d8db2",
+     "state": "COMPLETED",
+     "policyDecision": "PASS",
+     "via": "reference-run"
+    }
+   },
+   "verdict": "CONSISTENT (loki=grafana eventIdentity and resultDigest identical; web view shows a REAL run of this plugin with correct result/policy)"
+  },
+  {
+   "plugin": "cosign",
+   "referenceRunId": "web-d6a525de-e630-4520-a300-12d313957078",
+   "referenceSource": "view-run record (newest REAL view run)",
+   "expectedPolicyDecision": "PASS",
+   "lokiDirect": {
+    "matched": 0,
+    "policyDecision": null,
+    "resultDigest": null,
+    "eventIdentity": null,
+    "findingEvidenceStatus": null
+   },
+   "grafanaProxy": {
+    "matched": 0,
+    "policyDecision": null,
+    "resultDigest": null,
+    "eventIdentity": null
+   },
+   "webView": {
+    "refRunVisible": true,
+    "refRunPolicy": "PASS",
+    "check": {
+     "runId": "web-d6a525de-e630-4520-a300-12d313957078",
+     "state": "COMPLETED",
+     "policyDecision": "PASS",
+     "via": "reference-run"
+    }
+   },
+   "verdict": "ANOMALY: reference run was never delivered to Loki (predates view auto-delivery; no replay record). Loki direct and Grafana agree on absence (0=0), Web view shows the run correctly. Class: data/delivery-history gap, not a wiring defect."
+  },
+  {
+   "plugin": "sbom",
+   "referenceRunId": "web-b52dbc8e-b584-4c0d-ad53-1c01ce116ddf",
+   "referenceSource": "view-run record (newest REAL view run)",
+   "expectedPolicyDecision": "PASS",
+   "lokiDirect": {
+    "matched": 1,
+    "policyDecision": "PASS",
+    "resultDigest": "8934062feabe4c5b7ef1bc508af1237a8a0a32798a599d80016a4264209ff074",
+    "eventIdentity": "3d00ab4bc00f2f7c2966d617473846ea09c951574c2991e98bb755f314144a95",
+    "findingEvidenceStatus": "NOT_A_VULNERABILITY_SCANNER"
+   },
+   "grafanaProxy": {
+    "matched": 1,
+    "policyDecision": "PASS",
+    "resultDigest": "8934062feabe4c5b7ef1bc508af1237a8a0a32798a599d80016a4264209ff074",
+    "eventIdentity": "3d00ab4bc00f2f7c2966d617473846ea09c951574c2991e98bb755f314144a95"
+   },
+   "webView": {
+    "refRunVisible": true,
+    "refRunPolicy": "PASS",
+    "check": {
+     "runId": "web-b52dbc8e-b584-4c0d-ad53-1c01ce116ddf",
+     "state": "COMPLETED",
+     "policyDecision": "PASS",
+     "via": "reference-run"
+    }
+   },
+   "verdict": "CONSISTENT (loki=grafana eventIdentity and resultDigest identical; web view shows a REAL run of this plugin with correct result/policy)"
+  },
+  {
+   "plugin": "trivy",
+   "referenceRunId": "web-7f2fc057-5d21-44c2-9144-ee398a8b8c33",
+   "referenceSource": "item-6b auto-delivery run",
+   "expectedPolicyDecision": "FAIL",
+   "lokiDirect": {
+    "matched": 1,
+    "policyDecision": "FAIL",
+    "resultDigest": "cba4ba0363afc0f73dfa611bfe99dc5719ffbb16c8c7d8710de3737550851ee5",
+    "eventIdentity": "962866b3383ca4707a58bc1e8dd66461143d38a82b46baafb62610b293ff113a",
+    "findingEvidenceStatus": "VERIFIED_NATIVE_COUNT"
+   },
+   "grafanaProxy": {
+    "matched": 1,
+    "policyDecision": "FAIL",
+    "resultDigest": "cba4ba0363afc0f73dfa611bfe99dc5719ffbb16c8c7d8710de3737550851ee5",
+    "eventIdentity": "962866b3383ca4707a58bc1e8dd66461143d38a82b46baafb62610b293ff113a"
+   },
+   "webView": {
+    "refRunVisible": true,
+    "refRunPolicy": "FAIL",
+    "check": {
+     "runId": "web-7f2fc057-5d21-44c2-9144-ee398a8b8c33",
+     "state": "COMPLETED",
+     "policyDecision": "FAIL",
+     "via": "reference-run"
+    }
+   },
+   "verdict": "CONSISTENT (loki=grafana eventIdentity and resultDigest identical; web view shows a REAL run of this plugin with correct result/policy)"
+  },
+  {
+   "plugin": "kyverno",
+   "referenceRunId": "web-699261a0-ac5a-4aca-a8ff-6a8031429049",
+   "referenceSource": "kyverno-v2 verification.json signed",
+   "expectedPolicyDecision": "PASS",
+   "lokiDirect": {
+    "matched": 1,
+    "policyDecision": "PASS",
+    "resultDigest": "9d30d4c9c0482a2dc1cf043ff32b06723a823c94a2cdc1327b047caac185ddc3",
+    "eventIdentity": "88d2eefecaca019cc0e5170c52dea2a057d3d2ee907356f8705408868fad0adc",
+    "findingEvidenceStatus": "COUNT_MAPPING_NOT_CONFIGURED"
+   },
+   "grafanaProxy": {
+    "matched": 1,
+    "policyDecision": "PASS",
+    "resultDigest": "9d30d4c9c0482a2dc1cf043ff32b06723a823c94a2cdc1327b047caac185ddc3",
+    "eventIdentity": "88d2eefecaca019cc0e5170c52dea2a057d3d2ee907356f8705408868fad0adc"
+   },
+   "webView": {
+    "refRunVisible": false,
+    "refRunPolicy": null,
+    "check": {
+     "runId": "web-a85d53c1-fce8-4d38-a059-7ee8306becff",
+     "state": "COMPLETED",
+     "policyDecision": "PASS",
+     "via": "w12-view-driver-run"
+    }
+   },
+   "verdict": "CONSISTENT (loki=grafana eventIdentity and resultDigest identical; web view shows a REAL run of this plugin with correct result/policy)"
+  },
+  {
+   "plugin": "falco",
+   "referenceRunId": "web-falco-gf2-pos2",
+   "referenceSource": "falco-gf2 verification.json positiveRun",
+   "expectedPolicyDecision": "PASS",
+   "lokiDirect": {
+    "matched": 1,
+    "policyDecision": "PASS",
+    "resultDigest": "1047cce3b3241c9c3480aa5758c7139f436c93ed9f3c0aa1b97c75a95d5a408a",
+    "eventIdentity": "ed8264f91bbb088fd4ce79a299e3e8b3265a7707a921e020d5848e5b829fd63c",
+    "findingEvidenceStatus": "COUNT_MAPPING_NOT_CONFIGURED"
+   },
+   "grafanaProxy": {
+    "matched": 1,
+    "policyDecision": "PASS",
+    "resultDigest": "1047cce3b3241c9c3480aa5758c7139f436c93ed9f3c0aa1b97c75a95d5a408a",
+    "eventIdentity": "ed8264f91bbb088fd4ce79a299e3e8b3265a7707a921e020d5848e5b829fd63c"
+   },
+   "webView": {
+    "refRunVisible": false,
+    "refRunPolicy": null,
+    "check": null
+   },
+   "verdict": "Loki+Grafana consistent; Web view NOT_VISIBLE (no falco view run exists; G-F3 BLOCKED, see per-plugin/falco.md)."
+  },
+  {
+   "plugin": "sonarqube",
+   "referenceRunId": "web-caf26080-d320-438a-beb5-b61170c9d3e1",
+   "referenceSource": "sonarqube-v2 verification.json clean-scan",
+   "expectedPolicyDecision": "PASS",
+   "lokiDirect": {
+    "matched": 1,
+    "policyDecision": "PASS",
+    "resultDigest": "e2c623c47a8f4ad3f5f490cb92758a3b4b689986e15d03c98b522b4d45a5bd67",
+    "eventIdentity": "341ee5608f6cfedabcfb3615fcfeae3164ab48d9170af853fbf0c473628f6e7a",
+    "findingEvidenceStatus": "COUNT_MAPPING_NOT_CONFIGURED"
+   },
+   "grafanaProxy": {
+    "matched": 1,
+    "policyDecision": "PASS",
+    "resultDigest": "e2c623c47a8f4ad3f5f490cb92758a3b4b689986e15d03c98b522b4d45a5bd67",
+    "eventIdentity": "341ee5608f6cfedabcfb3615fcfeae3164ab48d9170af853fbf0c473628f6e7a"
+   },
+   "webView": {
+    "refRunVisible": false,
+    "refRunPolicy": null,
+    "check": {
+     "runId": "web-2bfea211-0604-42e1-bfda-bb5ec70d886a",
+     "state": "COMPLETED",
+     "policyDecision": "PASS",
+     "via": "w12-view-driver-run"
+    }
+   },
+   "verdict": "CONSISTENT (loki=grafana eventIdentity and resultDigest identical; web view shows a REAL run of this plugin with correct result/policy)"
+  },
+  {
+   "plugin": "kubescape",
+   "referenceRunId": "web-c7f969a0-8748-4117-ae3b-d6d429e7202a",
+   "referenceSource": "kubescape-v2 verification.json cluster-audit",
+   "expectedPolicyDecision": "PASS",
+   "lokiDirect": {
+    "matched": 1,
+    "policyDecision": "PASS",
+    "resultDigest": "8f8c3470f1cf35191a808e2d41c927f302daacce24136ddcc04dd7f7a8331deb",
+    "eventIdentity": "76e0c79c146571b82a075dd36b105345ada969a9cbfde12d16b7da006423195f",
+    "findingEvidenceStatus": "COUNT_MAPPING_NOT_CONFIGURED"
+   },
+   "grafanaProxy": {
+    "matched": 1,
+    "policyDecision": "PASS",
+    "resultDigest": "8f8c3470f1cf35191a808e2d41c927f302daacce24136ddcc04dd7f7a8331deb",
+    "eventIdentity": "76e0c79c146571b82a075dd36b105345ada969a9cbfde12d16b7da006423195f"
+   },
+   "webView": {
+    "refRunVisible": false,
+    "refRunPolicy": null,
+    "check": {
+     "runId": "web-457955ed-0540-4e61-83f0-399c44156d3f",
+     "state": "COMPLETED",
+     "policyDecision": "PASS",
+     "via": "w12-view-driver-run"
+    }
+   },
+   "verdict": "CONSISTENT (loki=grafana eventIdentity and resultDigest identical; web view shows a REAL run of this plugin with correct result/policy)"
+  },
+  {
+   "plugin": "zap",
+   "referenceRunId": "web-6e277bfd-e875-407e-92b8-6fe9be8bdbcd",
+   "referenceSource": "zap-v2 verification.json clean",
+   "expectedPolicyDecision": "PASS",
+   "lokiDirect": {
+    "matched": 1,
+    "policyDecision": "PASS",
+    "resultDigest": "0800f06bdff64b60aa8a1ae44b9841f8c0ddc448ee16bfd595976d689aa85432",
+    "eventIdentity": "b6d5f31c957ba12f0c6b76047ab7b80f20dc77547c50e9ee020ec76b11805545",
+    "findingEvidenceStatus": "COUNT_MAPPING_NOT_CONFIGURED"
+   },
+   "grafanaProxy": {
+    "matched": 1,
+    "policyDecision": "PASS",
+    "resultDigest": "0800f06bdff64b60aa8a1ae44b9841f8c0ddc448ee16bfd595976d689aa85432",
+    "eventIdentity": "b6d5f31c957ba12f0c6b76047ab7b80f20dc77547c50e9ee020ec76b11805545"
+   },
+   "webView": {
+    "refRunVisible": false,
+    "refRunPolicy": null,
+    "check": {
+     "runId": "web-247e05ad-1d3e-4586-a575-c78771aab41e",
+     "state": "COMPLETED",
+     "policyDecision": "PASS",
+     "via": "w12-view-driver-run"
+    }
+   },
+   "verdict": "CONSISTENT (loki=grafana eventIdentity and resultDigest identical; web view shows a REAL run of this plugin with correct result/policy)"
+  },
+  {
+   "plugin": "provenance",
+   "referenceRunId": "web-e8a79056-0b07-4f3b-8073-6d050952bbea",
+   "referenceSource": "provenance-v2 verification.json historical-candidate",
+   "expectedPolicyDecision": "PASS",
+   "lokiDirect": {
+    "matched": 1,
+    "policyDecision": "PASS",
+    "resultDigest": "eb700a5423736c8fc891ca1a05f5e211391669e6e21217151c0b1b7eb27c7660",
+    "eventIdentity": "a86bd61836d81b0a0e06e16bb1c65f66b75ac8988bec143bbda1ce6074f7ad16",
+    "findingEvidenceStatus": "NOT_A_VULNERABILITY_SCANNER"
+   },
+   "grafanaProxy": {
+    "matched": 1,
+    "policyDecision": "PASS",
+    "resultDigest": "eb700a5423736c8fc891ca1a05f5e211391669e6e21217151c0b1b7eb27c7660",
+    "eventIdentity": "a86bd61836d81b0a0e06e16bb1c65f66b75ac8988bec143bbda1ce6074f7ad16"
+   },
+   "webView": {
+    "refRunVisible": false,
+    "refRunPolicy": null,
+    "check": {
+     "runId": "web-de4d4f38-0429-49ca-a671-78e547c97d86",
+     "state": "COMPLETED",
+     "policyDecision": "PASS",
+     "via": "w12-view-driver-run"
+    }
+   },
+   "verdict": "CONSISTENT (loki=grafana eventIdentity and resultDigest identical; web view shows a REAL run of this plugin with correct result/policy)"
+  },
+  {
+   "plugin": "build-provenance",
+   "referenceRunId": "web-8973a0d3-7d2f-48d7-95ba-b99933b0dc7d",
+   "referenceSource": "build-provenance-v2 verification.json historical-build",
+   "expectedPolicyDecision": "PASS",
+   "lokiDirect": {
+    "matched": 1,
+    "policyDecision": "PASS",
+    "resultDigest": "3cfb365db85d151709f5cd89da738737f4381a259c39e4f44daa069a128b4d10",
+    "eventIdentity": "6398554badab4faa4bccbc00dfffc64f19fedf0922184cf69ee475fd513c1664",
+    "findingEvidenceStatus": "NOT_A_VULNERABILITY_SCANNER"
+   },
+   "grafanaProxy": {
+    "matched": 1,
+    "policyDecision": "PASS",
+    "resultDigest": "3cfb365db85d151709f5cd89da738737f4381a259c39e4f44daa069a128b4d10",
+    "eventIdentity": "6398554badab4faa4bccbc00dfffc64f19fedf0922184cf69ee475fd513c1664"
+   },
+   "webView": {
+    "refRunVisible": false,
+    "refRunPolicy": null,
+    "check": {
+     "runId": "web-1c0b6aa0-68f4-4be1-8ee4-c6f127742ea8",
+     "state": "COMPLETED",
+     "policyDecision": "PASS",
+     "via": "w12-view-driver-run"
+    }
+   },
+   "verdict": "CONSISTENT (loki=grafana eventIdentity and resultDigest identical; web view shows a REAL run of this plugin with correct result/policy)"
+  },
+  {
+   "plugin": "sops",
+   "referenceRunId": "web-0ec63caa-60db-4ad6-b8d8-3cc00695f3db",
+   "referenceSource": "sops-v2 verification.json compliant",
+   "expectedPolicyDecision": "PASS",
+   "lokiDirect": {
+    "matched": 1,
+    "policyDecision": "PASS",
+    "resultDigest": "ef8ab10dcac9870d90c6e481e2f7932bd6a09656e2b767d1097b175556dfea90",
+    "eventIdentity": "24aa6b6c3ddd68cab25d82f45313fb4a9235dc43d907f8a1ec7b6d9282488b53",
+    "findingEvidenceStatus": "COUNT_MAPPING_NOT_CONFIGURED"
+   },
+   "grafanaProxy": {
+    "matched": 1,
+    "policyDecision": "PASS",
+    "resultDigest": "ef8ab10dcac9870d90c6e481e2f7932bd6a09656e2b767d1097b175556dfea90",
+    "eventIdentity": "24aa6b6c3ddd68cab25d82f45313fb4a9235dc43d907f8a1ec7b6d9282488b53"
+   },
+   "webView": {
+    "refRunVisible": false,
+    "refRunPolicy": null,
+    "check": {
+     "runId": "web-a686245a-f4e7-4191-8ca7-81aeb828aaf2",
+     "state": "COMPLETED",
+     "policyDecision": "PASS",
+     "via": "w12-view-driver-run"
+    }
+   },
+   "verdict": "CONSISTENT (loki=grafana eventIdentity and resultDigest identical; web view shows a REAL run of this plugin with correct result/policy)"
+  }
+ ],
+ "regression": {
+  "managerV2TopLevel": "180/180",
+  "managerV2PlusView": "202/202",
+  "infraSecurityPlusObservability": "147/147",
+  "consumers": "114/162 pass, 48 fail = pre-existing baseline exactly, no new failure"
+ },
+ "leftoverUnstaged": [
+  "consumers/loki.mjs: Codex trivy counts block + trivy token in counts list + trivy/falco tokens in singlePluginId whitelist (falco token is the Falco line increment; all other plugin tokens committed by W12).",
+  "view/actions.mjs + view/app.js: Codex hunks only (withReplayAudit import + getRun replay branch; lokiReplayEvents rendering). Zero W12 content remains unstaged in these files.",
+  "view/project-access.mjs + view/server.mjs: Codex/general canReadRun hunks, untouched by W12.",
+  "consumers/loki-event-v1.json: JSON content identical to HEAD (verified by parse-compare); only pretty-print formatting remains unstaged.",
+  "core.mjs: content identical to HEAD except import/dispatch ORDER of the five W12 wiring branches (sops/provenance relative order); zero semantic difference.",
+  "registry.mjs, view/controls.mjs: fully integrated, no unstaged diff."
+ ],
+ "anomalies": [
+  "cosign: reference real run web-d6a525de (2026-11-06) has no Loki event (Loki direct 0, Grafana 0, consistent absence). Data/delivery-history gap: run predates view auto-delivery and no replay was recorded for cosign. Web view cell is correct.",
+  "falco: web view cell NOT_VISIBLE by design gap G-F3 (BLOCKED, precise reason recorded).",
+  "kyverno/sonarqube/kubescape/zap/sops events carry findingEvidenceStatus=COUNT_MAPPING_NOT_CONFIGURED where applicable: these are non-vulnerability-scanner evaluators; counts are null by design (口径), not missing data."
+ ],
+ "productionManager": "NOT_ACTIVE (view server never started; all verification via in-process view/actions imports)"
+}

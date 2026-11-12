@@ -1,0 +1,20 @@
+
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: kubescape-v2-test
+  labels: {smv2.platform/test-namespace: "kubescape", app.kubernetes.io/part-of: petclinic-platform}
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata: {name: smv2-kubescape-test, namespace: kubescape-v2-test}
+rules:
+- {apiGroups: ["apps"], resources: ["deployments"], verbs: ["create", "get", "delete", "list", "watch"]}
+- {apiGroups: ["apps"], resources: ["replicasets"], verbs: ["get", "list", "watch"]}
+- {apiGroups: [""], resources: ["pods"], verbs: ["get", "list", "watch", "delete"]}
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata: {name: smv2-kubescape-test, namespace: kubescape-v2-test}
+roleRef: {apiGroup: rbac.authorization.k8s.io, kind: Role, name: smv2-kubescape-test}
+subjects: [{kind: ServiceAccount, name: security-kubescape, namespace: devsecops-system}]
