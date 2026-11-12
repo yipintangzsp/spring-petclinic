@@ -1,0 +1,90 @@
+{
+  "uid": 1005,
+  "gid": 1005,
+  "kubectlSha256": "2240e9f7fd8cf36e9998d7ef18781975780d724b59408174618ec15b410891dc",
+  "tool": {
+    "version": "4.0.17",
+    "binary": "/var/lib/security-kubescape/tools/4.0.17/kubescape",
+    "binarySha256": "2e7a48c7a0577c9d4ec81e8cdf0149fbb67f2e2b649165f77a1da9bb72f30fa7",
+    "artifactRoot": "/var/lib/security-kubescape/tools/4.0.17/artifacts",
+    "artifacts": {
+      "nsa.json": "8070c614bb1a9fe66829de5a486c3e5ec281af8a10e18f9d230bb1e348141d05",
+      "cis-v1.12.0.json": "0678ecb322835594dab5432942e483a8cb3230f59209b6e1d25ade34d17f16d5",
+      "controls-inputs.json": "de2f95312230143eabd768ef6f9150c6bad90d6d41b5f84bc90402082d7edf22",
+      "attack-tracks.json": "4f3cd850c1499c860af27c31c5eeee4996696d4e777767f581da6a06bbc93c23"
+    }
+  },
+  "srcSha256": {
+    "infra/security/governance/kubescape.mjs": "23a23a7db0a413e474cb72ae4725dd0756fb596e1a62a9b9c43caa62dfc66f42",
+    "infra/security/governance/kubescape-report.mjs": "69113dd94dd801f621fd050f75a141be2360b4664f5dc05c12ae300be7c21d8a",
+    "infra/security/governance/kubescape-no-exceptions.json": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570",
+    "infra/security/runtime-facts/kubescape-observer.mjs": "c90f89dd4e301286f878f92a28ce89873ed32e2796654ea75c3c97fa327bc2cc",
+    ".git-sha": "3ea44bd50cd47c8e633868939666b4398de9ed6ed1db126740a2920edc901e1e"
+  },
+  "projects": {
+    "kubescape-petclinic": {
+      "targetId": "petclinic-posture-audit",
+      "cases": {
+        "cluster-audit": {
+          "violating": false
+        },
+        "violating-workload": {
+          "violating": true,
+          "deployment": {
+            "apiVersion": "apps/v1",
+            "kind": "Deployment",
+            "metadata": {
+              "name": "smv2-violating",
+              "namespace": "kubescape-v2-test",
+              "labels": {
+                "app": "smv2-violating"
+              }
+            },
+            "spec": {
+              "replicas": 1,
+              "selector": {
+                "matchLabels": {
+                  "app": "smv2-violating"
+                }
+              },
+              "template": {
+                "metadata": {
+                  "labels": {
+                    "app": "smv2-violating"
+                  }
+                },
+                "spec": {
+                  "automountServiceAccountToken": false,
+                  "containers": [
+                    {
+                      "name": "violating",
+                      "image": "127.0.0.1:30050/platform-security/falco@sha256:3c5ccde1c8b50ccc8baf016090a5376d182e08dc8751df2b37d8ff2a13499558",
+                      "securityContext": {
+                        "privileged": true,
+                        "allowPrivilegeEscalation": true,
+                        "capabilities": {
+                          "add": [
+                            "SYS_ADMIN"
+                          ]
+                        }
+                      },
+                      "resources": {}
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "kubescape-cleanroom": {
+      "targetId": "cleanroom-posture-audit",
+      "cases": {
+        "posture-audit": {
+          "violating": false
+        }
+      }
+    }
+  }
+}
