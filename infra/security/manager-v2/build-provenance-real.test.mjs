@@ -1,0 +1,18 @@
+import test from 'node:test';import assert from 'node:assert/strict';
+import {registry,realBuildProvenanceRegistry} from './registry.mjs';
+import {buildProvenanceProjects,verifyBuildEnvelope,buildBuildProvenanceFact,buildProvenanceDecisionAt,buildProvenanceUiCase,executeRealBuildProvenance} from './build-provenance-real.mjs';
+const P=buildProvenanceProjects()['petclinic-platform'];
+test('default registry keeps build-provenance blocked',()=>{const p=registry().get('build-provenance');assert.equal(p.runner,'blocked');assert.equal(p.executionMode,'PREFLIGHT_ONLY');});
+test('realBuildProvenanceRegistry shape',()=>{const p=realBuildProvenanceRegistry().get('build-provenance');assert.equal(p.runner,'build-provenance-real');assert.equal(p.executionMode,'REAL_VALIDATION');assert.equal(p.normalizer,'build-provenance-native/v1');assert.equal(p.policyAdapter,'build-provenance');assert.equal(p.enabled,false);});
+test('historical signed build attestation verifies with full build identity',()=>{const pkt=verifyBuildEnvelope({project:P,caseId:'historical-build'});assert.equal(pkt.exitCode,0);assert.equal(pkt.statement.predicate.buildType,'petclinic-maven-buildx-v1');assert.equal(pkt.statement.predicate.source.commit,'9a78cc89f22fa98fb1ffcc43e2ae279299471793');assert.equal(pkt.statement.predicate.builder.buildNumber,2);assert.equal(pkt.sbomCrossCheck.match,true);assert.equal(buildProvenanceDecisionAt(buildBuildProvenanceFact(pkt)),'PASS');});
+test('wrong commit is rejected',()=>{const pkt=verifyBuildEnvelope({project:P,caseId:'wrong-commit'});assert.equal(pkt.exitCode,1);assert.equal(buildProvenanceDecisionAt(buildBuildProvenanceFact(pkt)),'FAIL');});
+test('wrong digest is rejected',()=>{const pkt=verifyBuildEnvelope({project:P,caseId:'wrong-digest'});assert.equal(pkt.exitCode,1);assert.equal(buildProvenanceDecisionAt(buildBuildProvenanceFact(pkt)),'FAIL');});
+test('tampered envelope payload is rejected',()=>{const pkt=verifyBuildEnvelope({project:P,caseId:'tampered-envelope'});assert.equal(pkt.exitCode,1);assert.equal(buildProvenanceDecisionAt(buildBuildProvenanceFact(pkt)),'FAIL');});
+test('executeRealBuildProvenance returns PASS execution for historical case',async()=>{const r=await executeRealBuildProvenance(realBuildProvenanceRegistry().get('build-provenance'),{targetId:P.targetId,caseId:'historical-build'},{projectId:'petclinic-platform',runId:'web-test-bp-1'});assert.equal(r.oldDecision,'PASS');assert.equal(r.runtimeFacts.validationRunId,'web-test-bp-1');assert.equal(r.runtimeFacts.buildNumber,2);assert.match(r.runtimeFacts.jarSha256,/^[a-f0-9]{64}$/);});
+test('cross-project and target mismatches are rejected',async()=>{
+ const plug=realBuildProvenanceRegistry().get('build-provenance');
+ await assert.rejects(()=>executeRealBuildProvenance(plug,{targetId:P.targetId,caseId:'historical-build'},{projectId:'build-provenance-cleanroom',runId:'web-test-bp-2'}),/BUILD_PROVENANCE_PROJECT_NOT_AUTHORIZED/);
+ await assert.rejects(()=>executeRealBuildProvenance(plug,{targetId:'wrong-target',caseId:'historical-build'},{projectId:'petclinic-platform',runId:'web-test-bp-3'}),/BUILD_PROVENANCE_PROJECT_NOT_AUTHORIZED/);
+ await assert.rejects(()=>executeRealBuildProvenance(plug,{targetId:P.targetId,caseId:'historical-build'},{projectId:'unknown-project',runId:'web-test-bp-4'}),/BUILD_PROVENANCE_PROJECT_NOT_AUTHORIZED/);
+});
+test('buildProvenanceUiCase maps scenarios and rejects others',()=>{assert.equal(buildProvenanceUiCase(P,'verified'),'historical-build');assert.equal(buildProvenanceUiCase(P,'rejected'),'wrong-digest');assert.throws(()=>buildProvenanceUiCase(P,'anything-else'),/BUILD_PROVENANCE_SCENARIO_NOT_AUTHORIZED/);});
