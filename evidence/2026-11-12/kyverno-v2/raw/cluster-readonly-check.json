@@ -1,0 +1,26 @@
+{
+  "kind": "KyvernoV2ClusterReadonlyCheck",
+  "queriedAt": "2026-11-12T16:11:31Z",
+  "queriedFrom": "devops (zhang) with KUBECONFIG=/home/zhang/.kube/platform-readonly.yaml (read-only)",
+  "namespaces": {
+    "devsecops-test": {"pods": []},
+    "devsecops-supply-chain": {"pods": []},
+    "devsecops-execution": {"pods": []}
+  },
+  "devsecopsSystemPods": [
+    {"name": "kyverno-admission-controller-848fb9647d-8s5zj", "status": "Running", "ready": "1/1"},
+    {"name": "platform-falco-fwwfd", "status": "Running", "ready": "1/1"}
+  ],
+  "clusterPolicies": [
+    {"name": "devsecops-production-baseline", "ready": true},
+    {"name": "devsecops-signed-images", "ready": true},
+    {"name": "devsecops-workload-contract", "ready": true}
+  ],
+  "productionNamespacePetclinic": [
+    {"name": "clinic-message-worker-b887b9bbb-m6zld", "status": "Running", "ready": "1/1"},
+    {"name": "petclinic-7b9fc47976-7gqqx", "status": "Running", "ready": "1/1"},
+    {"name": "petclinic-7b9fc47976-v7pbv", "status": "Running", "ready": "1/1"},
+    {"name": "petclinic-7b9fc47976-z9q2p", "status": "Running", "ready": "1/1"}
+  ],
+  "conclusion": "No leftover Kyverno test pods in any isolated namespace; production petclinic workloads unchanged and Running; no cluster mutation was performed in this check."
+}

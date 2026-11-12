@@ -1,0 +1,11 @@
+Kyverno V2 closure (W1) regression — Mac working tree (uncommitted changes of parallel lines present), node v24.14.0, 2026-11-13 CST
+suite1 kyverno-real only: node --test infra/security/manager-v2/kyverno-real.test.mjs -> tests 5 pass 5 fail 0
+suite1 contract set: node --test infra/security/manager-v2/*.test.mjs infra/security/manager-v2/view/loki-delivery.test.mjs -> tests 133 pass 133 fail 0
+suite2 infra top-level: node --test infra/security/*.test.mjs infra/observability/*.test.mjs -> tests 147 pass 147 fail 0 (baseline 147/147, exact)
+suite-wide manager-v2 glob (supplementary): node --test infra/security/manager-v2/*.test.mjs infra/security/manager-v2/view/*.test.mjs infra/security/manager-v2/observability/*.test.mjs -> tests 167 pass 166 fail 1
+  sole failure: observability/queries.test.mjs 'save real Event fixture projections and exact offline validation scope' EEXIST mkdir logql-contract-samples (leftover dir created 2026-11-12 23:26 by earlier runs); isolated-cwd rerun of queries.test.mjs: tests 20 pass 20 fail 0
+suite4 consumers (in-tree): node --test infra/security/manager-v2/consumers/*.test.mjs -> tests 162 pass 114 fail 48
+suite4 consumers (pristine copy without leftover sample dirs): tests 162 pass 129 fail 31
+  pristine failures: 18x LOKI_TIMESTAMP_OUTSIDE_WINDOW direct + 11 downstream ACK assertions from the same aged fixtures + 1 EADDRINUSE port 32185 (parallel test files) + 1 intra-suite EEXIST (loki-protocol-samples/master-off-FIXTURE.json written by two files)
+  in-tree extra 17 failures: EEXIST on pre-existing sample dirs http-protocol-samples/ loki-protocol-samples/ (created 2026-11-12 23:26, before this session)
+  baseline reference: 30/156 failing at b36b7554, all LOKI_TIMESTAMP_OUTSIDE_WINDOW class; Falco line in-tree run: 48/162. No failing test references kyverno.

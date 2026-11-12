@@ -1,0 +1,12 @@
+CASE kyverno-supply-chain signed COMPLETED PASS allowed=true
+CASE kyverno-supply-chain unsigned COMPLETED FAIL allowed=false
+CASE kyverno-supply-chain wrongkey COMPLETED FAIL allowed=false
+CASE kyverno-supply-chain candidate COMPLETED FAIL allowed=false
+CASE kyverno-workload compliant COMPLETED PASS allowed=true
+CASE kyverno-workload host-access COMPLETED FAIL allowed=false
+DISABLED plugin-off DISABLED 0
+DISABLED master-off DISABLED 0
+CROSS {"mismatch":"KYVERNO_PROJECT_NOT_AUTHORIZED","caseLeak":"KYVERNO_PROJECT_NOT_AUTHORIZED"}
+LOKI signed DELIVERED VERIFIED
+LOKI compliant DELIVERED VERIFIED
+DRIVER_DONE

@@ -1,0 +1,93 @@
+{
+  "kind": "KyvernoV2Verification",
+  "schemaVersion": 1,
+  "closedAt": "2026-11-13T00:20:00+08:00",
+  "closedBy": "W1 closure pass (execution drivers of 2026-11-12 not re-run; state recheck, Grafana look-back, regression and finalization only)",
+  "codeCommit": "1712969dcbd31a063d0f8dbb72cd44bb4093303a",
+  "productionManager": "NOT_ACTIVE",
+  "productionWorkloadChanged": "NO",
+  "flags": {
+    "REGISTRY": "VERIFIED",
+    "RUNNER": "VERIFIED",
+    "MANAGEMENT": "VERIFIED",
+    "POLICY": "VERIFIED",
+    "ARTIFACT": "VERIFIED",
+    "ROUTER": "VERIFIED",
+    "OBSERVABILITY": "VERIFIED",
+    "CROSS_PROJECT": "VERIFIED"
+  },
+  "flagBasis": {
+    "REGISTRY": "realKyvernoRegistry(): kyverno -> runner kyverno-real, REAL_VALIDATION, normalizer kyverno-admission/v1, policyAdapter kyverno-admission, pluginVersion 2.0.0-candidate.7, timeout 30000, requiredCapabilities [CLUSTER_ACCESS, TRUSTED_EXECUTOR]; default registry unchanged",
+    "RUNNER": "kyverno-real.mjs restricted SSH to security-kyverno@192.168.1.58 (uid/gid 1002), forced command admit-v1, Kyverno 1.36.1 pinned with toolSha256 2240e9f7fd8cf36e9998d7ef18781975780d724b59408174618ec15b410891dc; packet validation binds project/run/identity/policy/image/tool; signed case realCreate attempted+created+deleted+verifiedGone",
+    "MANAGEMENT": "Core plugin-off and master-off runs DISABLED with evaluationCount 0; view controls: capability DISABLED (PLUGIN_DISABLED) with submit DISABLED/evaluationCount 0/scannerExecuted false, then restored READY (view-driver-summary.json)",
+    "POLICY": "Frozen kyverno-admission Policy branch: admitted workload -> PASS, Kyverno-denied -> FAIL; 6/6 core cases match expectedAllowed with evaluationCount 1; view clean PASS / controlled-finding FAIL",
+    "ARTIFACT": "Every run sealed via artifactStore (artifactDigest indexed below) with cleanup VERIFIED; signed case cleanup includes real Pod deletion verification",
+    "ROUTER": "All 6 core cases routed: dry-run DRY_RUN and local-evidence DELIVERED_LOCAL_ONLY with receipt digests in core-driver-summary.json",
+    "OBSERVABILITY": "Loki delivery for signed and compliant runs DELIVERED with push ACKNOWLEDGED and query VERIFIED at delivery time (query-proof in run dirs); Grafana Loki datasource-proxy look-back in this closure matched the same events (see grafana section). Kyverno findingCount stays COUNT_MAPPING_NOT_CONFIGURED in Loki events: Kyverno is an admission evaluator, not a vulnerability scanner (by design).",
+    "CROSS_PROJECT": "Two distinct projects executed (kyverno-supply-chain, kyverno-workload); target mismatch and case leak both rejected locally with KYVERNO_PROJECT_NOT_AUTHORIZED before any SSH"
+  },
+  "cases": [
+    {"runId": "web-699261a0-ac5a-4aca-a8ff-6a8031429049", "projectId": "kyverno-supply-chain", "caseId": "signed", "policy": "devsecops-signed-images", "namespace": "devsecops-supply-chain", "expectedAllowed": true, "allowed": true, "executionStatus": "COMPLETED", "policyDecision": "PASS", "evaluationCount": 1, "resultDigest": "9d30d4c9c0482a2dc1cf043ff32b06723a823c94a2cdc1327b047caac185ddc3", "artifactDigest": "0cf7ba5403c7ec26f878be765e94aab929bc46076fffc30595852e7a5f9dcbe8", "realCreate": {"attempted": true, "created": true, "deleted": true, "verifiedGone": true}, "cleanup": "VERIFIED"},
+    {"runId": "web-4b71fde1-fa5a-470f-9bb0-b469c0badd6e", "projectId": "kyverno-supply-chain", "caseId": "unsigned", "expectedAllowed": false, "allowed": false, "executionStatus": "COMPLETED", "policyDecision": "FAIL", "evaluationCount": 1, "resultDigest": "567d1e71e9a06568745a06c21dfa8d3bf64f441975ce740aa5a0a1a3cc00510e", "artifactDigest": "d41fb1994f6dcde860eb2398053d64811f8711de2e7c6a36040fd5ddd982cce1", "cleanup": "VERIFIED"},
+    {"runId": "web-672beeb0-9104-4e17-8d90-82ec81286e8c", "projectId": "kyverno-supply-chain", "caseId": "wrongkey", "expectedAllowed": false, "allowed": false, "executionStatus": "COMPLETED", "policyDecision": "FAIL", "evaluationCount": 1, "resultDigest": "970495efc5e4dfb28abe0b3eefa3072e53d981bdd98d7fcd456d70a0391c536a", "artifactDigest": "5754eecd0a38e33a6e6f2464b40aeccfabf95c019f2e1f9b9a2294fc0dd1dd3e", "cleanup": "VERIFIED"},
+    {"runId": "web-b4959aa0-69f7-4c11-a201-a91eda949211", "projectId": "kyverno-supply-chain", "caseId": "candidate", "expectedAllowed": false, "allowed": false, "executionStatus": "COMPLETED", "policyDecision": "FAIL", "evaluationCount": 1, "resultDigest": "7f3c28aa54682afb3637d21808f0c1e25a0a3fc7f57993ff704e9a132d03fdea", "artifactDigest": "fc2cf365bba455764c2760c9ff51ab7e6663797c3c05bbc1f2667bf745e187c7", "cleanup": "VERIFIED", "note": "Candidate index sha256:2fbaea65ab030c56c60c62e3ee9fbe362deb8bbbb8216a891ef4c7bbbcea6d55 denied: Harbor carries no .sig signature for it (supply-chain gap U1/G3, out of scope for this item)"},
+    {"runId": "web-f0c9df24-ddee-433c-9601-cdf885addc8f", "projectId": "kyverno-workload", "caseId": "compliant", "policy": "devsecops-workload-contract", "namespace": "devsecops-execution", "expectedAllowed": true, "allowed": true, "executionStatus": "COMPLETED", "policyDecision": "PASS", "evaluationCount": 1, "resultDigest": "db0f7de86a3852fa8e7cc09755968432607c4d23c621aae67848ef60c56648b2", "artifactDigest": "6d29280aa6293bdeb7d2f4d450824b3196116f9d60101f6a37670ffe50e1966d", "cleanup": "VERIFIED"},
+    {"runId": "web-c25d8d00-b916-4562-9171-285159e30037", "projectId": "kyverno-workload", "caseId": "host-access", "expectedAllowed": false, "allowed": false, "executionStatus": "COMPLETED", "policyDecision": "FAIL", "evaluationCount": 1, "resultDigest": "2ad75e5c344f221138d93ea33e277268e3dad0b5227d367da34751e8ea1543cc", "artifactDigest": "772526018fca1d559a27fa61047e6f97a28ee5f9580385f7f4fae23349a0a3a1", "cleanup": "VERIFIED"}
+  ],
+  "disabledRuns": [
+    {"case": "plugin-off", "runId": "web-2e413a97-f623-4231-8a9a-e38668c598f0", "executionStatus": "DISABLED", "evaluationCount": 0, "policyDecision": null},
+    {"case": "master-off", "runId": "web-e59b9a4b-9188-4838-baa4-208e5b058ade", "executionStatus": "DISABLED", "evaluationCount": 0, "policyDecision": null},
+    {"case": "view-plugin-off", "runId": "web-d712790b-dd9e-47b6-b9cb-0cc5590fffaa", "state": "DISABLED", "evaluationCount": 0, "policyDecision": null, "scannerExecuted": false}
+  ],
+  "crossProject": {"mismatch": "KYVERNO_PROJECT_NOT_AUTHORIZED", "caseLeak": "KYVERNO_PROJECT_NOT_AUTHORIZED"},
+  "viewRuns": [
+    {"runId": "web-db1752b9-b8b2-488a-9c78-07e3d67ac677", "scenario": "clean", "caseId": "signed", "state": "COMPLETED", "policyDecision": "PASS", "evaluationCount": 1, "evidenceClass": "REAL", "resultDigest": "20df1f7e17e104d07c859f77674d05f2112bf484ab3a70281e4fcfd7bc731ea6", "lokiDelivery": {"state": "DELIVERED", "queryState": "VERIFIED"}},
+    {"runId": "web-4596547b-24de-428d-9fd6-74e8d4213824", "scenario": "controlled-finding", "caseId": "candidate", "state": "COMPLETED", "policyDecision": "FAIL", "evaluationCount": 1, "evidenceClass": "REAL", "resultDigest": "fa9f5ef8bc084718f8bce8e808ea505142dc6928d71940b09d63e295c6d48e91", "lokiDelivery": {"state": "DELIVERED", "queryState": "VERIFIED"}}
+  ],
+  "loki": [
+    {"runId": "web-699261a0-ac5a-4aca-a8ff-6a8031429049", "caseId": "signed", "state": "DELIVERED", "pushState": "ACKNOWLEDGED", "queryState": "VERIFIED", "receiptDigest": "aff6d79f0327e145d6377cd95425c310cfed6ac8a209a0617938179749ebc17a", "eventIdentity": "88d2eefecaca019cc0e5170c52dea2a057d3d2ee907356f8705408868fad0adc"},
+    {"runId": "web-f0c9df24-ddee-433c-9601-cdf885addc8f", "caseId": "compliant", "state": "DELIVERED", "pushState": "ACKNOWLEDGED", "queryState": "VERIFIED", "receiptDigest": "c3b1ebffa22deab5ad1c745dcc9011e228fb5ca4dad10fabcace73b991ae3440", "eventIdentity": "914779de8670fa7152826a8a3cf04eb50130385273dfbdacb92914c94e8d32cd"}
+  ],
+  "grafana": {
+    "method": "devops in-session Grafana admin credentials (secret kube-stack-grafana, values never printed or stored) -> GET /api/datasources/proxy/uid/loki/loki/api/v1/query_range with the same LogQL as the delivery query-proof",
+    "checkedAt": "2026-11-13T00:12+08:00",
+    "results": [
+      {"runId": "web-699261a0-ac5a-4aca-a8ff-6a8031429049", "caseId": "signed", "httpStatus": 200, "matched": 1, "eventIdentity": "88d2eefecaca019cc0e5170c52dea2a057d3d2ee907356f8705408868fad0adc", "resultDigest": "9d30d4c9c0482a2dc1cf043ff32b06723a823c94a2cdc1327b047caac185ddc3", "policyDecision": "PASS", "rawFile": "raw/grafana-loki-signed.json", "rawSha256": "3d741daf5201e10233f6b2f4945807629d1c5634a647d4516e5b26136087fd1d"},
+      {"runId": "web-f0c9df24-ddee-433c-9601-cdf885addc8f", "caseId": "compliant", "httpStatus": 200, "matched": 1, "eventIdentity": "914779de8670fa7152826a8a3cf04eb50130385273dfbdacb92914c94e8d32cd", "resultDigest": "db0f7de86a3852fa8e7cc09755968432607c4d23c621aae67848ef60c56648b2", "policyDecision": "PASS", "rawFile": "raw/grafana-loki-compliant.json", "rawSha256": "09a6d018f0c2321ea4cf0f92a787a2e57b02332bee47f437ddae81f7345b398e"}
+    ]
+  },
+  "clusterCheck": {"file": "raw/cluster-readonly-check.json", "conclusion": "devsecops-test, devsecops-supply-chain and devsecops-execution hold no pods; Kyverno controller Running; 3 ClusterPolicies Ready; petclinic production pods all Running (4/4); read-only verification only, zero cluster mutation"},
+  "regression": {
+    "file": "raw/regression-w1.txt",
+    "treeNote": "Counts measured on the Mac working tree, which also carries uncommitted increments of parallel lines (Codex observability etc.); not a pristine HEAD clone",
+    "kyvernoReal": {"tests": 5, "pass": 5, "fail": 0},
+    "managerV2ContractSet": {"command": "node --test infra/security/manager-v2/*.test.mjs infra/security/manager-v2/view/loki-delivery.test.mjs", "tests": 133, "pass": 133, "fail": 0},
+    "infraTopLevel": {"command": "node --test infra/security/*.test.mjs infra/observability/*.test.mjs", "tests": 147, "pass": 147, "fail": 0, "baseline": "147/147 exact"},
+    "managerV2WideGlobSupplementary": {"tests": 167, "pass": 166, "fail": 1, "soleFailure": "observability/queries.test.mjs EEXIST on leftover logql-contract-samples dir (created 2026-11-12 23:26 by earlier runs); isolated-cwd rerun 20/20 pass"},
+    "consumers": {"inTree": {"tests": 162, "pass": 114, "fail": 48}, "pristineCopy": {"tests": 162, "pass": 129, "fail": 31}, "attribution": "All failures are the pre-existing baseline class: aged fixed-timestamp fixtures (LOKI_TIMESTAMP_OUTSIDE_WINDOW and its downstream ACK assertions), plus leftover sample-dir EEXIST in-tree and one parallel-port EADDRINUSE flake. Baseline at b36b7554 was 30/156; Falco line in-tree run was 48/162. No failing test references kyverno."}
+  },
+  "sharedFileDisposition": [
+    {"file": "infra/security/manager-v2/kyverno-real.mjs", "disposition": "COMMITTED in 1712969d (new file)"},
+    {"file": "infra/security/manager-v2/kyverno-real.test.mjs", "disposition": "COMMITTED in 1712969d (new file)"},
+    {"file": "infra/security/manager-v2/kyverno/{entry.py,entry-projects.json,projects.json,runner.json}", "disposition": "COMMITTED in 1712969d (new files)"},
+    {"file": "infra/security/manager-v2/core.mjs", "disposition": "COMMITTED in 1712969d: whole HEAD diff is Kyverno-only (import of executeRealKyverno; kyverno-real dispatch branch in runCandidate)"},
+    {"file": "infra/security/manager-v2/registry.mjs", "disposition": "COMMITTED in 1712969d: whole HEAD diff is Kyverno-only (realKyverno predicate, real-list membership, realKyvernoRegistry export)"},
+    {"file": "infra/security/manager-v2/view/controls.mjs", "disposition": "COMMITTED in 1712969d: whole HEAD diff is one line, managedPlugins gains 'kyverno'"},
+    {"file": "infra/security/manager-v2/consumers/loki-event-v1.json", "disposition": "COMMITTED in 1712969d: whole HEAD diff is one line, plugins list gains 'kyverno' (falco was already committed in 2cdcc95c)"},
+    {"file": "infra/security/manager-v2/consumers/loki.mjs", "disposition": "NOT COMMITTED: HEAD diff mixes Codex trivy counts block (10 lines) and a whitelist line that also adds trivy/falco. Kyverno increment isolated against protected-before/loki.mjs.before is exactly one token: prepareLoki singlePluginId whitelist gains 'kyverno' ([...,'trivy','falco'] -> [...,'trivy','falco','kyverno']). Working tree retains it; Falco loki.mjs precedent followed."},
+    {"file": "infra/security/manager-v2/view/actions.mjs", "disposition": "NOT COMMITTED: HEAD diff mixes Codex withReplayAudit import/use (already present in protected-before/actions.mjs.before). Kyverno increment vs that snapshot: realKyvernoRegistry import, kyverno-real helpers import, ids gains 'kyverno', kyverno capability branch (READY/BLOCKED, runner kyverno-real, tool 1.36.1 PINNED, host devops/192.168.1.58, identity security-kyverno), validateRequest kyverno project clause, remote-readiness kyverno clause, kyverno submit timeout 60000, and the kyverno submit execution block (runCandidate + Router + result record)."},
+    {"file": "infra/security/manager-v2/view/app.js", "disposition": "NOT COMMITTED: HEAD diff mixes Codex lokiReplayEvents rendering (already present in protected-before/app.js.before). Kyverno increment vs that snapshot: plugin subtitle label, kyverno run-detail card (Case/allowed/policy/namespace/image/Router), Kyverno dropdown option, run-request projectId for kyverno, and 'kyverno' added to control-rows/effective-controls/settings plugin lists."},
+    {"file": "infra/security/manager-v2/view/project-access.mjs", "disposition": "NOT KYVERNO, NOT COMMITTED: diff adds generic canReadRun read policy; file mtime 2026-11-12 21:38 predates the Kyverno line (22:51+); zero kyverno references. Left untouched for its owning line."},
+    {"file": "infra/security/manager-v2/view/server.mjs", "disposition": "NOT KYVERNO, NOT COMMITTED: diff only routes /api/runs reads through canReadRun; mtime 2026-11-12 21:38; zero kyverno references. Left untouched."}
+  ],
+  "stateAsFoundAtClosure": {
+    "macViewHttpService": "not running (no manager-v2 view server process or listener found; view-driver had imported actions in-process)",
+    "kyvernoArmedFile": ".devsecops/security-view-kyverno-linux-v1.json still {enabled: true, consumed: false, scope: KYVERNO_V2_CONTROLLED_ADMISSION, armedAt: 2026-11-12T14:55:00.000Z} as discovered; left as-is and flagged in the item summary for a coordinator decision (kyvernoReady() requires exactly this state, so capability reads READY)",
+    "controlsRevision": "40 (kyverno enabled, master enabled, restored by view-driver after the off test)"
+  },
+  "gaps": [
+    "U1 (needs user authorization, supply-chain item 2): candidate image denied because Harbor holds no .sig for it; a compliant signing write path (Jenkins dry-run signing or scoped push robot) is required before a candidate PASS can exist. Not addressed in this item by design.",
+    "Shared-file Kyverno increments in consumers/loki.mjs, view/actions.mjs and view/app.js remain uncommitted in the working tree because their HEAD diffs mix Codex observability increments; they are functionally verified (drivers + regression) and itemized above for a later consolidated commit.",
+    "View-layer Loki deliveries (clean/finding runs) were query-verified at delivery time but were not part of this closure's Grafana look-back scope (the two core-driver runs were)."
+  ]
+}
