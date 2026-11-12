@@ -1,0 +1,124 @@
+# Falco V2 collector dedicated identity (G-F2) — least-privilege RBAC.
+# Grants exactly the read operations falco/collector.mjs performs:
+#   get/list pods in devsecops-system (sensor pod resolution)
+#   get pods/log in devsecops-system (Falco log slices)
+#   get daemonsets/platform-falco in devsecops-system
+#   get/list pods in petclinic (workload identities for the frozen adapter)
+#   get nodes/devops (sensor node identity)
+# Nothing else: no secrets, no writes, no other namespaces.
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: security-falco-collector
+  namespace: devsecops-system
+  labels:
+    app.kubernetes.io/part-of: petclinic-platform
+    security-manager-v2/plugin: falco
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: security-falco-collector
+  namespace: devsecops-system
+  labels:
+    app.kubernetes.io/part-of: petclinic-platform
+    security-manager-v2/plugin: falco
+rules:
+- apiGroups: [""]
+  resources: ["pods"]
+  verbs: ["get", "list"]
+- apiGroups: [""]
+  resources: ["pods/log"]
+  verbs: ["get"]
+- apiGroups: ["apps"]
+  resources: ["daemonsets"]
+  verbs: ["get"]
+  resourceNames: ["platform-falco"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: security-falco-collector
+  namespace: devsecops-system
+  labels:
+    app.kubernetes.io/part-of: petclinic-platform
+    security-manager-v2/plugin: falco
+subjects:
+- kind: ServiceAccount
+  name: security-falco-collector
+  namespace: devsecops-system
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: security-falco-collector
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: security-falco-workload-reader
+  namespace: petclinic
+  labels:
+    app.kubernetes.io/part-of: petclinic-platform
+    security-manager-v2/plugin: falco
+rules:
+- apiGroups: [""]
+  resources: ["pods"]
+  verbs: ["get", "list"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: security-falco-workload-reader
+  namespace: petclinic
+  labels:
+    app.kubernetes.io/part-of: petclinic-platform
+    security-manager-v2/plugin: falco
+subjects:
+- kind: ServiceAccount
+  name: security-falco-collector
+  namespace: devsecops-system
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: security-falco-workload-reader
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: security-falco-node-reader
+  labels:
+    app.kubernetes.io/part-of: petclinic-platform
+    security-manager-v2/plugin: falco
+rules:
+- apiGroups: [""]
+  resources: ["nodes"]
+  verbs: ["get"]
+  resourceNames: ["devops"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: security-falco-node-reader
+  labels:
+    app.kubernetes.io/part-of: petclinic-platform
+    security-manager-v2/plugin: falco
+subjects:
+- kind: ServiceAccount
+  name: security-falco-collector
+  namespace: devsecops-system
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: security-falco-node-reader
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: security-falco-collector-token
+  namespace: devsecops-system
+  annotations:
+    kubernetes.io/service-account.name: security-falco-collector
+  labels:
+    app.kubernetes.io/part-of: petclinic-platform
+    security-manager-v2/plugin: falco
+type: kubernetes.io/service-account-token

@@ -1,0 +1,95 @@
+# Falco G-F2 dedicated identity evidence (devops, 2026-11-13)
+== os identity ==
+uid=1007(security-falco) gid=1007(security-falco) groups=1007(security-falco)
+security-falco:x:1007:1007::/var/lib/security-falco:/bin/sh
+== entry layout ==
+/var/lib/security-falco:
+total 32
+drwxr-xr-x  4 root           root           4096 Nov 13 02:15 .
+drwxr-xr-x 69 root           root           4096 Nov 13 02:15 ..
+drwx------  2 security-falco security-falco 4096 Nov 13 02:15 data
+-r--r--r--  1 root           root            398 Nov 13 02:15 entry-projects.json
+-r--r--r--  1 root           root           6047 Nov 13 02:15 entry.py
+-rw-------  1 security-falco security-falco 2113 Nov 13 02:15 kubeconfig.yaml
+drwx------  2 security-falco security-falco 4096 Nov 13 02:15 .ssh
+ls: cannot open directory '/var/lib/security-falco/.ssh': Permission denied
+security-falco security-falco 600 /var/lib/security-falco/kubeconfig.yaml
+root root 444 /var/lib/security-falco/entry.py
+root root 444 /var/lib/security-falco/entry-projects.json
+== authorized_keys (options prefix only, key material truncated) ==
+restrict,command="/usr/bin/setpriv --no-new-privs /usr/bin/python3 /var/lib/security-falco/entry.py" ssh-ed25519 AAAAC3N
+== client key (zhang, devops) ==
+zhang zhang 600 /home/zhang/.ssh/security-manager-v2-falco
+256 SHA256:96HFAZj7hTm8nH0BzN9aVxFXWTfAklgdhyZD2SVUpag security-manager-v2-falco (ED25519)
+== loopback host key verification ==
+server /etc/ssh fingerprint: SHA256:nKfNkeCTSMNscgQKxptFwg14rsFjTYIWIjSfJ1hwG7s
+keyscan 127.0.0.1 fingerprint: SHA256:nKfNkeCTSMNscgQKxptFwg14rsFjTYIWIjSfJ1hwG7s
+== serviceaccount / rbac objects ==
+NAME                       AGE
+security-falco-collector   5m55s
+NAME                                                      CREATED AT
+role.rbac.authorization.k8s.io/security-falco-collector   2026-11-12T18:15:31Z
+
+NAME                                                             ROLE                            AGE
+rolebinding.rbac.authorization.k8s.io/security-falco-collector   Role/security-falco-collector   5m55s
+NAME                                                            CREATED AT
+role.rbac.authorization.k8s.io/security-falco-workload-reader   2026-11-12T18:15:31Z
+
+NAME                                                                   ROLE                                  AGE
+rolebinding.rbac.authorization.k8s.io/security-falco-workload-reader   Role/security-falco-workload-reader   5m55s
+NAME                                                               CREATED AT
+clusterrole.rbac.authorization.k8s.io/security-falco-node-reader   2026-11-12T18:15:31Z
+
+NAME                                                                      ROLE                                     AGE
+clusterrolebinding.rbac.authorization.k8s.io/security-falco-node-reader   ClusterRole/security-falco-node-reader   5m55s
+== can-i matrix (SA) ==
+can-i get pods ns=devsecops-system -> yes
+can-i list pods ns=devsecops-system -> yes
+can-i get pods/log ns=devsecops-system -> yes
+can-i get daemonsets ns=devsecops-system -> no
+can-i list pods ns=petclinic -> yes
+can-i get pods ns=petclinic -> yes
+can-i list secrets ns=devsecops-system -> no
+can-i get secrets ns=devsecops-system -> no
+can-i list secrets ns=petclinic -> no
+can-i get pods ns=kube-system -> no
+can-i create pods ns=devsecops-test -> no
+can-i get pods/log ns=petclinic -> yes
+can-i delete pods ns=devsecops-system -> no
+can-i list daemonsets ns=devsecops-system -> no
+can-i list nodes ns=cluster -> no
+can-i get nodes ns=cluster -> no
+note: can-i without a resource name cannot match resourceNames-scoped grants (daemonsets/nodes show 'no'); direct named attempts below are authoritative. can-i also reports pods/log in petclinic as yes without a pod name; the direct attempt below is Forbidden.
+== direct attempts via dedicated kubeconfig ==
+-- get ds platform-falco:
+daemonset.apps/platform-falco
+-- get ds other-ds:
+Error from server (Forbidden): daemonsets.apps "other-ds" is forbidden: User "system:serviceaccount:devsecops-system:security-falco-collector" cannot get resource "daemonsets" in API group "apps" in the namespace "devsecops-system"
+-- get node devops:
+node/devops
+-- get node aliyun:
+Error from server (Forbidden): nodes "aliyun" is forbidden: User "system:serviceaccount:devsecops-system:security-falco-collector" cannot get resource "nodes" in API group "" at the cluster scope
+-- list pods devsecops-system (falco label):
+pod/platform-falco-fwwfd
+-- list pods petclinic (first):
+pod/clinic-message-worker-b887b9bbb-m6zld
+-- logs in petclinic (pod/clinic-message-worker-b887b9bbb-m6zld):
+Error from server (Forbidden): pods "clinic-message-worker-b887b9bbb-m6zld" is forbidden: User "system:serviceaccount:devsecops-system:security-falco-collector" cannot get resource "pods/log" in API group "" in the namespace "petclinic"
+-- list secrets devsecops-system:
+Error from server (Forbidden): secrets is forbidden: User "system:serviceaccount:devsecops-system:security-falco-collector" cannot list resource "secrets" in API group "" in the namespace "devsecops-system"
+-- list nodes:
+Error from server (Forbidden): nodes is forbidden: User "system:serviceaccount:devsecops-system:security-falco-collector" cannot list resource "nodes" in API group "" at the cluster scope
+== ssh forced-command negatives ==
+-- command 'id':
+{"error": "COMMAND_REJECTED"}
+-- malformed window:
+{"error": "COMMAND_REJECTED"}
+-- wrong project:
+{"error": "PROJECT_NOT_AUTHORIZED"}
+-- empty command:
+{"error": "COMMAND_REJECTED"}
+== host-side denials ==
+-- security-falco sudo:
+sudo: a password is required
+-- security-falco read admin kubeconfig:
+head: cannot open '/etc/rancher/k3s/k3s.yaml' for reading: Permission denied
