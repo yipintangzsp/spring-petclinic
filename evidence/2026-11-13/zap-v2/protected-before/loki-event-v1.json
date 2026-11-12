@@ -1,0 +1,20 @@
+{
+  "schemaVersion": 1,
+  "consumerVersion": "1.0.0-loki-candidate.1",
+  "eventTypes": ["PLUGIN_RESULT", "CONSUMER_DELIVERY", "PROMOTION_STATUS"],
+  "plugins": ["gitleaks", "semgrep", "cosign", "sbom", "trivy", "kubescape", "kyverno", "falco", "sonarqube", "manager"],
+  "executionStatuses": ["COMPLETED", "DISABLED", "SKIPPED", "NOT_CONFIGURED", "UNSUPPORTED", "ERROR", "POLICY_ERROR"],
+  "policyDecisions": ["PASS", "WARN", "FAIL"],
+  "deliveryStatuses": ["PREPARED", "DISABLED", "DRY_RUN", "DELIVERED_LOCAL_ONLY", "OFFLINE_PAYLOAD_PREPARED", "NOT_CONFIGURED", "NOT_SENT", "SENT", "ACKNOWLEDGED", "REJECTED", "RETRYABLE_FAILURE", "UNKNOWN_REMOTE_STATE", "ERROR"],
+  "errorCategories": ["MASTER_DISABLED", "MODE_OFF", "PLUGIN_DISABLED", "EXECUTION_ERROR", "POLICY_ERROR", "CAPABILITY_UNAVAILABLE", "EXECUTION_SKIPPED", "CONSUMER_ERROR", "DELIVERY_REJECTED", "DELIVERY_RETRYABLE", "DELIVERY_UNKNOWN", "CONSUMER_DISABLED"],
+  "labelKeys": ["service_name", "environment", "schema_version", "job", "plugin", "execution_status", "policy_decision"],
+  "maxLabelCombinations": 160,
+  "limits": {"maxLineBytes": 4096, "maxBatchBytes": 131072, "maxEvents": 64, "maxStreams": 32, "maxAgeSeconds": 604800, "maxFutureSeconds": 60},
+  "timestampPolicy": "Preserve source completion or receipt timestamp, never retimestamp old results to pass ingestion limits",
+  "findingPolicy": "Only count verified native fact arrays; absent/disabled/unsupported severity is null, never synthetic zero. No Cosign CVE mapping.",
+  "cardinalityPolicy": "projectId/runId/digests/evidence identities are JSON body only, never stream labels",
+  "retentionPolicy": "No retention changes. Installed reject_old_samples_max_age is 168h; retention and unspecified server limits remain UNKNOWN.",
+  "sourceClassification": "SEALED_ARTIFACT_REPLAY_NOT_NEW_SCAN",
+  "realRemoteDelivery": "NOT_TESTED",
+  "remoteExactlyOnce": "NOT_VERIFIED"
+}
