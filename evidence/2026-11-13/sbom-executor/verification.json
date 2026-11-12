@@ -1,0 +1,55 @@
+{
+  "schemaVersion": 1,
+  "kind": "SbomExecutorImageModeVerification",
+  "item": "W9 SBOM formal executor image mode",
+  "date": "2026-11-13",
+  "head": "48c1a52a15d6a10c972d0f006b2e5dd06e809c50",
+  "verdict": "BLOCKED_FROZEN_POLICY_CONTRACT",
+  "summary": "Image mode cannot pass the frozen SBOM Policy adapter: the adapter accepts only CycloneDX specVersion 1.6, the pinned image SBOM tool (Trivy 0.76.2) emits specVersion 1.7 with no spec-version selector. Per task red line the frozen adapter was NOT modified and no document was transcoded or relabelled. No executor code was changed, because any image-mode fact carrying a genuine image SBOM evaluates FAIL for format reasons alone, indistinguishable from a tampered or wrong SBOM.",
+  "candidate": {
+    "repository": "petclinic/petclinic",
+    "indexDigest": "sha256:2fbaea65ab030c56c60c62e3ee9fbe362deb8bbbb8216a891ef4c7bbbcea6d55",
+    "step1BindingAnchor": {"sealDigest": "c0b526e11ab3a6b79f9c25475a7ce2e4a3291d2af233d3378e31f3c596cb8ea5", "bindingDigest": "71739f4a4033195a64cc41b75bfed8667e4bb3b94be8349f9d1a3e358f47a450"}
+  },
+  "step1SbomFacts": {
+    "arm64": {"manifestDigest": "sha256:06a515708b6783db7d545544bbefb02e9f94abfc0fdf13a7355ccbe2deb3ed42", "configDigest": "sha256:7f574b1b278717eb5dc8d3a8c829a16906cf830bf4fe0682803eeac24b7fab69", "sbomSha256": "434f9f115bf711d3a4403682acb7f4fa1f194c81eb2960524e790a03262f1cae", "sbomBytes": 487154, "specVersion": "1.7", "components": 271, "dependencies": 272, "serialNumber": "urn:uuid:0f9c9acf-68d9-4672-b139-376d7a541074", "subjectBomRefContainsManifestDigest": true},
+    "amd64": {"manifestDigest": "sha256:2bd9c1c445afbf55e390bfc41910551c32e09913143f7a137038cc87941b7c94", "configDigest": "sha256:a5390e38942a05bd0d476ded2eedda9f04aa722bd7244d8b46a6548e8117c18b", "sbomSha256": "828d1e590e2a4d02c114dee59e10249708e27985a56727cb411a67f3b3f7b212", "sbomBytes": 503158, "specVersion": "1.7", "components": 271, "dependencies": 272, "serialNumber": "urn:uuid:bacce2af-ac99-4338-8c65-6f02faaf897d", "subjectBomRefContainsManifestDigest": true}
+  },
+  "anchorCrossCheck": "The documents probed are the step1 originals themselves (sha256 above equals step1 binding record); their metadata.component bom-ref/purl embed the exact child manifest digests and ImageID equals the config digests. Subject binding is intact; the Policy rejection is purely the format-version gate, not a binding failure.",
+  "adapterProbe": {
+    "driver": "probe-adapter.mjs",
+    "rawOutput": "raw/probe-output.json",
+    "factShape": "exact standalone shape constructed by sbom-real.mjs (stage=standalone, extraction.base64 == files[target/classes/META-INF/sbom/application.cdx.json], .git-sha present, io trio present)",
+    "genuineImageSbom": {"arm64": "FAIL", "amd64": "FAIL", "reason": "Nonempty CycloneDX 1.6 dependency inventory required", "failurePhase": "validation", "layers": ["sbomEvidence", "sbomParent", "policy engine evaluate"]},
+    "specIsolation": "Rewriting ONLY specVersion 1.7->1.6 on probe copies flips both architectures to PASS at sbomEvidence and sbomParent, proving every other frozen check (CycloneDX format, >=10 components, non-empty dependencies, unique bom-refs, packaged==maven byte equality) is already satisfied by genuine image SBOMs. The rewritten copies were never sealed, shipped or presented as generated output.",
+    "negativeDiscrimination": "NOT_ACHIEVABLE in current contract: valid and invalid image SBOMs are rejected at the same format gate with the same reason, so an executor-level positive/negative pair cannot discriminate. Step1 tamper rejection (23/23, incl. one-byte tamper) was verified at the artifactStore/seal layer and is not re-claimed here as an executor result."
+  },
+  "frozenContract": {
+    "file": "infra/security/policy/sbom-evidence.mjs",
+    "check": "bom.specVersion !== 1.6 -> FAIL (Nonempty CycloneDX 1.6 dependency inventory required)",
+    "consumers": ["sbomParent standalone/production stages", "policy engine sbom no-stage path"],
+    "alsoCheckedPaths": {
+      "genericStage": "No specVersion check, but requires Jenkins lease + manager-config + checkout-contained sbomFile observations and records scope Generic inventory acceptance, no image/digest attestation; using it for digest-pinned image attestation would misrepresent the evidence class.",
+      "workflowStage": "Decision derives from moduleStatus observations without validating SBOM bytes; not a standalone executor path."
+    },
+    "toolSide": "Trivy 0.76.2 (sha256 7844c3851b28470b6d7f0975fa0b3262c5b2272c9a54a91f522801bb8926f51f, same pin as trivy/projects.json and step1 receipt) emits CycloneDX 1.7; trivy image --help on devops shows no cyclonedx spec-version option (grep count 0)."
+  },
+  "executorInventory": {
+    "adapter": "infra/security/manager-v2/sbom-real.mjs: keys(input,[fixtureId]) only; project must match projects.json fixtureId; SSH security-sbom@192.168.64.11 generate-v1 <projectId> <runId>; packet validation itself rejects specVersion != 1.6 (SBOM_FORMAT_INVALID); fact hardcodes file path target/classes/META-INF/sbom/application.cdx.json and .git-sha=artifact-sha256:<pom sha>; scope APPLICATION_MAVEN_DEPENDENCIES_ONLY; executionScope REAL_CONTROLLED_APPLICATION_DEPENDENCY_SBOM",
+    "projects": "infra/security/manager-v2/sbom/projects.json: only java-sbom-demo / java-sbom-demo-b, FIXED_NONPRODUCTION_POM, CycloneDX Maven plugin 2.9.3 toolSha c452d5eebe...",
+    "restrictedEntry": "infra/security/manager-v2/sbom/linux-entry.py (deployed under security-sbom): single fixed command generate-v1 over a root-owned POM catalog; cannot read Harbor or images",
+    "devopsSide": "deployed /var/lib/security-trivy/entry.py exposes exactly one command pattern scan-v1 (vulnerability scan); no sbom-v1 exists. Step1 generation was an ad-hoc controlled script under the security-trivy data dir, not a formal entry.",
+    "registry": "realManagedRegistry: sbom runner sbom-real, normalizer cyclonedx-native/v1, requiredCapabilities [SBOM_FILE], timeout 30000; registry() validation caps non-listed real plugins at 30000ms (shared file registry.mjs)"
+  },
+  "regression": {
+    "managerV2": "176/176 pass (node --test infra/security/manager-v2/*.test.mjs; glob includes parallel lines untracked test files in the shared worktree; checkpoint baseline at HEAD was 167/167, zero failures observed)",
+    "securityPlusObservability": "147/147 pass (node --test infra/security/*.test.mjs infra/observability/*.test.mjs)",
+    "consumers": "114/162 pass, 48 fail (TAP reporter) - exactly the pre-existing baseline class (fixture aging / sample-dir), no new failure",
+    "codeChanges": "none (blocked before modification per red line); frozen and executor file hashes in protected-before/sha256-before.txt re-verified identical after the probe"
+  },
+  "gaps": [
+    {"id": "G-SBOM1", "class": "DECISION_REQUIRED_BLOCKER", "detail": "Frozen SBOM Policy adapter (sbom-evidence.mjs) accepts only CycloneDX 1.6; pinned Trivy 0.76.2 image SBOMs are 1.7. Needs a policy decision: (a) amend and re-freeze the adapter/baseline to accept 1.7 (or 1.6+1.7) with new source hashes and regression re-acceptance, or (b) approve introducing/pinning an image SBOM tool that emits 1.6, or (c) close image mode and keep step1 descriptive binding as the final form. Until decided, a formal image mode can only ever FAIL."},
+    {"id": "G-SBOM2", "class": "IMPLEMENTATION_AFTER_G_SBOM1", "detail": "Executor/entry work queued behind G-SBOM1: sbom-real image input contract + image project entries (digest-pinned per architecture), a formal restricted sbom-v1 entry on devops (security-trivy or a dedicated identity; step1 proves the generation recipe), registry timeout/capability review for image pulls (30000ms cap and [SBOM_FILE] in shared registry.mjs, currently entangled with other lines uncommitted diffs)."},
+    {"id": "G-SBOM3", "class": "DESIGN_AFTER_G_SBOM1", "detail": "Fact shaping for image mode: standalone fact hardcodes the Maven file path and .git-sha=artifact-sha256 anchor; image facts need a subject-digest anchor design (the SBOM metadata.component bom-ref already embeds the child manifest digest) that the (amended) adapter can check, without weakening the packaged==source byte-equality rule."}
+  ]
+}
