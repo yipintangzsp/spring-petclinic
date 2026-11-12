@@ -5,7 +5,7 @@ import os from 'node:os';
 import {randomUUID} from 'node:crypto';
 import {root} from './data.mjs';
 import {runCandidate} from '../core.mjs';
-import {realManagedRegistry} from '../registry.mjs';
+import {realManagedRegistry,realKyvernoRegistry} from '../registry.mjs';
 import {routeResults,CONSUMERS} from '../router.mjs';
 import {verifyArtifact,verifyResult} from '../result.mjs';
 import {digest} from '../../summary-v2/codec.mjs';
@@ -15,8 +15,9 @@ import {cosignReady,runLinuxCosign,cosignHost,cosignIdentity} from './linux-cosi
 import {currentControls,writeControls,projectControls} from './controls.mjs';
 import {sbomProjects,sbomReady} from '../sbom-real.mjs';
 import {trivyProjects,trivyReady,trivyBlockedReason} from '../trivy-real.mjs';
+import {kyvernoProjects,kyvernoReady,kyvernoBlockedReason,kyvernoUiCase} from '../kyverno-real.mjs';
 import {deliverRunToLoki} from './loki-delivery.mjs';
-const ids=['gitleaks','semgrep','cosign','sbom','trivy'],scenarios=['clean','controlled-finding'];
+const ids=['gitleaks','semgrep','cosign','sbom','trivy','kyverno'],scenarios=['clean','controlled-finding'];
 const directory=path.join(root,'.devsecops/security-view-runs-v1');
 const identifier=/^web-[a-f0-9-]{36}$/;
 let active=null;
@@ -31,7 +32,7 @@ export function capabilities(projectId=null){
  return {observedAt:new Date().toISOString(),platform:process.platform,arch:process.arch,uid:process.getuid(),groups:process.getgroups(),nodeVersion:process.version,
   executionLocation:ready||semgrepReady()||cosignReady()||trivyReady()?'LINUX_RESTRICTED':'MAC_ONLY',maxConcurrent:1,timeoutMs:90000,
   configurationRevision:control.revision,securityLevel:control.settings.securityLevel,
-  plugins:ids.map(pluginId=>pluginId==='sbom'?{pluginId,state:!enabled(pluginId)?'DISABLED':sbomReady()?'READY':'BLOCKED',reason:!enabled(pluginId)?'PLUGIN_DISABLED':sbomReady()?null:Object.values(sbomProjects())[0]?.blockedReason??'SBOM_EXECUTOR_UNAVAILABLE',toolVersion:'2.9.3',executionHost:'devops/192.168.64.11',executionIdentity:'security-sbom',scenarios:['clean'],projects:Object.keys(sbomProjects())}:pluginId==='trivy'?{pluginId,state:!enabled(pluginId)?'DISABLED':trivyReady()?'READY':'BLOCKED',reason:!enabled(pluginId)?(control.settings.enabled?'PLUGIN_DISABLED':'MASTER_DISABLED'):trivyReady()?null:trivyBlockedReason(),runner:'trivy-real',toolVersion:'0.76.2',toolVersionObservation:'PINNED',executionHost:'devops/192.168.1.58',executionIdentity:'security-trivy',scenarios:['clean'],projects:Object.keys(trivyProjects())}:!enabled(pluginId)?{pluginId,state:'DISABLED',reason:control.settings.enabled?'PLUGIN_DISABLED':'MASTER_DISABLED',configurationRevision:control.revision,configurationSource:control.source,scenarios}:pluginId==='gitleaks'&&ready?{pluginId,state:'READY',runner:'gitleaks-real',
+  plugins:ids.map(pluginId=>pluginId==='sbom'?{pluginId,state:!enabled(pluginId)?'DISABLED':sbomReady()?'READY':'BLOCKED',reason:!enabled(pluginId)?'PLUGIN_DISABLED':sbomReady()?null:Object.values(sbomProjects())[0]?.blockedReason??'SBOM_EXECUTOR_UNAVAILABLE',toolVersion:'2.9.3',executionHost:'devops/192.168.64.11',executionIdentity:'security-sbom',scenarios:['clean'],projects:Object.keys(sbomProjects())}:pluginId==='trivy'?{pluginId,state:!enabled(pluginId)?'DISABLED':trivyReady()?'READY':'BLOCKED',reason:!enabled(pluginId)?(control.settings.enabled?'PLUGIN_DISABLED':'MASTER_DISABLED'):trivyReady()?null:trivyBlockedReason(),runner:'trivy-real',toolVersion:'0.76.2',toolVersionObservation:'PINNED',executionHost:'devops/192.168.1.58',executionIdentity:'security-trivy',scenarios:['clean'],projects:Object.keys(trivyProjects())}:pluginId==='kyverno'?{pluginId,state:!enabled(pluginId)?'DISABLED':kyvernoReady()?'READY':'BLOCKED',reason:!enabled(pluginId)?(control.settings.enabled?'PLUGIN_DISABLED':'MASTER_DISABLED'):kyvernoReady()?null:kyvernoBlockedReason(),runner:'kyverno-real',toolVersion:'1.36.1',toolVersionObservation:'PINNED',executionHost:'devops/192.168.1.58',executionIdentity:'security-kyverno',scenarios,projects:Object.keys(kyvernoProjects())}:!enabled(pluginId)?{pluginId,state:'DISABLED',reason:control.settings.enabled?'PLUGIN_DISABLED':'MASTER_DISABLED',configurationRevision:control.revision,configurationSource:control.source,scenarios}:pluginId==='gitleaks'&&ready?{pluginId,state:'READY',runner:'gitleaks-real',
    reason:null,toolVersion:'8.30.1',toolVersionObservation:'PINNED',fixtureStatus:'FIXED_NON_PRODUCTION_FIXTURES',
    executionHost:linuxHost,executionIdentity:cleanIdentity,scenarios}:
    pluginId==='semgrep'&&semgrepReady()?{pluginId,state:'READY',runner:'semgrep-real',reason:null,toolVersion:'1.182.1',toolVersionObservation:'PINNED',fixtureStatus:'FIXED_NON_PRODUCTION_FIXTURES',executionHost:semgrepHost,executionIdentity:semgrepIdentity,scenarios}:
@@ -41,7 +42,7 @@ export function capabilities(projectId=null){
    fixtureStatus:'NO_APPROVED_EXECUTOR',scenarios:pluginId==='gitleaks'?['clean']:scenarios})};
 }
 export function updateControls(input,reset=false){if(active)throw fault('RUN_ALREADY_ACTIVE',409);return writeControls(input,reset);}
-export function validateRequest(value){if(!value||typeof value!=='object'||Array.isArray(value)||!['pluginId,scenarioId','pluginId,projectId,scenarioId'].includes(Object.keys(value).sort().join(','))||!ids.includes(value.pluginId)||!scenarios.includes(value.scenarioId))throw fault('INVALID_FIXED_RUN_REQUEST');if(value.pluginId==='sbom'&&(!sbomProjects()[value.projectId]||value.scenarioId!=='clean')||value.pluginId==='trivy'&&(!trivyProjects()[value.projectId]||value.scenarioId!=='clean')||value.pluginId!=='sbom'&&value.pluginId!=='trivy'&&value.projectId!==undefined)throw fault('PROJECT_NOT_AUTHORIZED',403);return value;}
+export function validateRequest(value){if(!value||typeof value!=='object'||Array.isArray(value)||!['pluginId,scenarioId','pluginId,projectId,scenarioId'].includes(Object.keys(value).sort().join(','))||!ids.includes(value.pluginId)||!scenarios.includes(value.scenarioId))throw fault('INVALID_FIXED_RUN_REQUEST');if(value.pluginId==='sbom'&&(!sbomProjects()[value.projectId]||value.scenarioId!=='clean')||value.pluginId==='trivy'&&(!trivyProjects()[value.projectId]||value.scenarioId!=='clean')||value.pluginId==='kyverno'&&!kyvernoProjects()[value.projectId]||value.pluginId!=='sbom'&&value.pluginId!=='trivy'&&value.pluginId!=='kyverno'&&value.projectId!==undefined)throw fault('PROJECT_NOT_AUTHORIZED',403);return value;}
 export function getRun(runId){
  if(!identifier.test(runId))throw fault('INVALID_RUN_ID');init();const dir=path.join(directory,runId);
  if(!fs.existsSync(dir))throw fault('RUN_NOT_FOUND',404);safeDir(dir);const request=read(path.join(dir,'request.json'));
@@ -75,11 +76,11 @@ export function submit(value,ciContext=null){
  const configurationSnapshot={revision:control.revision,updatedAt:control.updatedAt,settings:control.settings,source:control.source,configurationOrigins:control.effectiveConfig.configurationOrigins,effectiveConfigDigest:project?.effectiveConfig.effectiveConfigDigest??control.effectiveConfig.effectiveConfigDigest,...(project?{project}: {})};
  const enabled=control.settings.enabled&&control.settings.plugins[value.pluginId].enabled&&(project?.effectiveEnabled??true);
  const runId='web-'+randomUUID(),dir=path.join(directory,runId);fs.mkdirSync(dir,{mode:0o700});safeDir(dir);
- const remote=value.pluginId==='gitleaks'&&linuxReady()||value.pluginId==='semgrep'&&semgrepReady()||value.pluginId==='cosign'&&cosignReady()||value.pluginId==='sbom'&&sbomReady()||value.pluginId==='trivy'&&trivyReady();
+ const remote=value.pluginId==='gitleaks'&&linuxReady()||value.pluginId==='semgrep'&&semgrepReady()||value.pluginId==='cosign'&&cosignReady()||value.pluginId==='sbom'&&sbomReady()||value.pluginId==='trivy'&&trivyReady()||value.pluginId==='kyverno'&&kyvernoReady();
  const request={runId,...value,...(ciContext?{projectId:ciContext.projectId,ciContext}:{}),configurationSnapshot,securityLevel:control.settings.securityLevel,startedAt:new Date().toISOString(),kind:'LocalValidationRequest',executionLocation:!enabled?'NO_EXECUTION':remote?'LINUX_RESTRICTED':'MAC_ONLY'};
  save(path.join(dir,'request.json'),request);active=runId;
  setImmediate(async()=>{
-  const start=performance.now();const controller=new AbortController();const timer=setTimeout(()=>controller.abort(),ciContext?.sourceMode==='REAL_COMMIT_SNAPSHOT'?150000:value.pluginId==='trivy'?225000:value.pluginId==='sbom'?90000:30000);let result,budget=null,attempted=false;
+  const start=performance.now();const controller=new AbortController();const timer=setTimeout(()=>controller.abort(),ciContext?.sourceMode==='REAL_COMMIT_SNAPSHOT'?150000:value.pluginId==='trivy'?225000:value.pluginId==='kyverno'?60000:value.pluginId==='sbom'?90000:30000);let result,budget=null,attempted=false;
   try{
    if(!enabled&&value.pluginId==='sbom'){result={...request,state:'DISABLED',evidenceClass:'NOT_TESTED',reason:!control.settings.enabled?'MASTER_DISABLED':!control.settings.plugins.sbom.enabled?'PLUGIN_DISABLED':'PROJECT_PLUGIN_DISABLED',scannerExecuted:false,remoteInvocationCount:0,policyDecision:null,evaluationCount:0,resultDigest:null,artifactDigest:null};return;}
    if(!enabled){
@@ -112,6 +113,18 @@ export function submit(value,ciContext=null){
     const routed=routeResults({run,artifactDirectory:path.join(dir,'artifact'),expectedSealDigest:run.artifact.sealDigest,output:path.join(dir,'router'),definitions:CONSUMERS.filter(c=>c.consumerId!=='defectdojo-future')});
     result={...request,state:gateBlocked?'BLOCKED':selected.executionStatus,evidenceClass:f?'REAL':'NOT_TESTED',scannerExecuted:!!f,policyDecision:selected.policyDecision,evaluationCount:selected.evaluationCount,resultDigest:selected.resultDigest,artifactDigest:run.artifact.sealDigest,source:path.relative(root,path.join(dir,'artifact/trivy.result.json')),reason:gateBlocked?diagnostic.error:selected.failureReason,
      executionDiagnostic:diagnostic,db:f?.db?.map(d=>({name:d.name,version:d.metadata?.Version,updatedAt:d.metadata?.UpdatedAt,nextUpdate:d.metadata?.NextUpdate,metadataSha256:d.metadataSha256}))??null,findingCount:f?.findingCount??null,toolVersion:f?.toolVersion??null,toolSha256:f?.toolSha256??null,indexDigest:cfg.indexDigest,platformDigest:cfg.platformDigest,executionIdentity:'security-trivy',executionHost:'devops/192.168.1.58',router:routed.receipts.map(r=>({consumerId:r.consumerId,deliveryDecision:r.deliveryDecision})),cleanup:selected.cleanup?.status??'NOT_VERIFIED'};return;
+   }
+   if(value.pluginId==='kyverno'){
+    const cfg=kyvernoProjects()[value.projectId],registry=realKyvernoRegistry(),blocked=kyvernoBlockedReason(),caseId=kyvernoUiCase(cfg,value.scenarioId);
+    if(blocked){result={...request,state:'BLOCKED',evidenceClass:'NOT_TESTED',reason:blocked,scannerExecuted:false,remoteInvocationCount:0,policyDecision:null,evaluationCount:0,resultDigest:null,artifactDigest:null,executionIdentity:'security-kyverno',executionHost:'devops/192.168.1.58',toolVersion:'1.36.1',caseId};return;}
+    attempted=true;
+    const run=await runCandidate({registry,runId,projectId:value.projectId,context:{platform:process.platform,capabilities:{CLUSTER_ACCESS:{state:'AVAILABLE'},TRUSTED_EXECUTOR:{state:'AVAILABLE'}}},inputs:{kyverno:{targetId:cfg.targetId,caseId}},config:{security:{enabled:true,globalMode:'audit',securityLevel:control.settings.securityLevel,profile:cfg.profile,plugins:Object.fromEntries(registry.ids().map(id=>[id,{enabled:id==='kyverno'}]))}},output:path.join(dir,'artifact'),signal:controller.signal});
+    const selected=run.gate.kyverno,f=selected.runtimeFacts;
+    const diagnostic=fs.existsSync(path.join(dir,'artifact/kyverno.execution-error.json'))?read(path.join(dir,'artifact/kyverno.execution-error.json')).diagnostic:null;
+    fs.mkdirSync(path.join(dir,'router'),{mode:0o700});
+    const routed=routeResults({run,artifactDirectory:path.join(dir,'artifact'),expectedSealDigest:run.artifact.sealDigest,output:path.join(dir,'router'),definitions:CONSUMERS.filter(c=>c.consumerId!=='defectdojo-future')});
+    result={...request,state:selected.executionStatus,evidenceClass:f?'REAL':'NOT_TESTED',scannerExecuted:!!f,policyDecision:selected.policyDecision,evaluationCount:selected.evaluationCount,resultDigest:selected.resultDigest,artifactDigest:run.artifact.sealDigest,source:path.relative(root,path.join(dir,'artifact/kyverno.result.json')),reason:selected.failureReason,
+     executionDiagnostic:diagnostic,caseId,allowed:f?.allowed??null,policyName:cfg.policy,namespace:cfg.namespace,image:cfg.cases[caseId].image,toolVersion:f?.toolVersion??null,toolSha256:f?.toolSha256??null,executionIdentity:'security-kyverno',executionHost:'devops/192.168.1.58',router:routed.receipts.map(r=>({consumerId:r.consumerId,deliveryDecision:r.deliveryDecision})),cleanup:selected.cleanup?.status??'NOT_VERIFIED'};return;
    }
    if(process.platform!=='darwin'||process.getuid()===0)throw fault('LOCAL_MAC_IDENTITY_REQUIRED');
    if(value.pluginId==='gitleaks'){
