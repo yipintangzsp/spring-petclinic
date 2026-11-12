@@ -55,3 +55,25 @@ test('formal adapter fact with only low-rated findings warns at every level',asy
  const lowLevel=await policyOwner(configuration({security:{securityLevel:'low'}},'trivy-critical-low')).evaluateOnce('trivy',critical);
  assert.equal(lowLevel.evaluation.decision,'FAIL');
 });
+
+import {legacyGateFields,sealResult,verifyResult} from './result.mjs';
+import {digest} from '../summary-v2/codec.mjs';
+test('formal result seals with a Policy decision when the runner has no legacy gate',async()=>{
+ const project=trivyProjects()['trivy-candidate'];
+ const fact=buildTrivyFact({rawReport:nativeReport},project);
+ const config=configuration({},'trivy-formal-seal');
+ const policy=await policyOwner(config).evaluateOnce('trivy',fact);
+ assert.equal(policy.evaluation.decision,'FAIL');
+ // executeRealTrivy returns runtimeFacts and no oldDecision (no legacy Gate).
+ const execution={fact,factDigest:digest(fact),rawReportDigest:'a'.repeat(64),runtimeFacts:{kind:'CandidateRuntimeFactsProbe'},evidenceRefs:[{kind:'REAL_CONTROLLED_EXECUTION'}],cleanup:{status:'VERIFIED',processExited:true},executionScope:'REAL_NON_PRODUCTION_IMAGE_SCAN'};
+ assert.deepEqual(legacyGateFields(execution),{runtimeFacts:execution.runtimeFacts});
+ assert.deepEqual(legacyGateFields({...execution,oldDecision:'FAIL'}),{runtimeFacts:execution.runtimeFacts,oldGateDecision:'FAIL'});
+ assert.deepEqual(legacyGateFields({}),{});
+ const body={schemaVersion:1,kind:'CandidatePluginResult',managerVersion:'test',securityEnabled:true,effectiveProfile:config.profile,globalMode:config.globalMode,securityLevel:config.securityLevel,runId:'run-seal',projectId:'trivy-candidate',pluginId:'trivy',pluginVersion:'test',executionScope:execution.executionScope,startedAt:new Date().toISOString(),inputDigest:'a'.repeat(64),configDigest:config.configDigest,effectiveConfigDigest:config.effectiveConfigDigest,contextDigest:'b'.repeat(64),policyVersion:config.policyVersion,executionStatus:'COMPLETED',policyDecision:policy.evaluation.decision,evaluationCount:1,policy,rawReportDigest:execution.rawReportDigest,factDigest:execution.factDigest,evidenceRefs:execution.evidenceRefs,failureReason:null,completedAt:new Date().toISOString(),cleanup:execution.cleanup,...legacyGateFields(execution)};
+ const sealed=sealResult(body);
+ assert.equal(sealed.policyDecision,'FAIL');
+ assert.equal('oldGateDecision' in sealed,false);
+ assert.equal(verifyResult(sealed),true);
+ // The codec still fails closed on a genuinely non-JSON field value.
+ assert.throws(()=>sealResult({...body,oldGateDecision:undefined}),/non-JSON value/);
+});

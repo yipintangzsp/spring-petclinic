@@ -6,7 +6,7 @@ import {executeRealSbom} from './sbom-real.mjs';
 import {executeRealCosign} from './cosign-real.mjs';
 import {executeRealSemgrep} from './semgrep-real.mjs';
 import {executeRealGitleaks} from './gitleaks-real.mjs';
-import {policyOwner,sealResult,verifyResult,artifactStore,verifyArtifact} from './result.mjs';
+import {policyOwner,sealResult,verifyResult,artifactStore,verifyArtifact,legacyGateFields} from './result.mjs';
 import {freeze,digest,fail} from '../summary-v2/codec.mjs';
 export const MANAGER_VERSION='2.0.0-candidate.4';
 const nonEvaluation=(p,base,status,reason)=>sealResult({...base,executionStatus:status,policyDecision:null,evaluationCount:0,policy:null,rawReportDigest:null,factDigest:null,evidenceRefs:[],failureReason:reason,completedAt:new Date().toISOString(),cleanup:null});
@@ -30,7 +30,7 @@ export async function runCandidate({config={},runId,projectId,context={platform:
      store.putRaw(p.pluginId+'.raw.json',execution.rawReportBytesUtf8);
      const policy=await owner.evaluateOnce(p.pluginId,execution.fact);
      if(execution.runtimeFacts){store.put(p.pluginId+'.runtime-facts.json',execution.runtimeFacts);store.put(p.pluginId+'.facts.json',execution.fact);if(execution.oldDecision!==undefined&&policy.evaluation.status!=='POLICY_ERROR'&&policy.evaluation.decision!==execution.oldDecision)fail('real old Gate and Policy differ');}
-     result=sealResult({...base,executionScope:execution.executionScope,executionStatus:policy.evaluation.status==='POLICY_ERROR'?'POLICY_ERROR':policy.evaluation.decision===null?'NOT_CONFIGURED':'COMPLETED',policyDecision:policy.evaluation.decision,evaluationCount:policy.evaluationCount,policy,rawReportDigest:execution.rawReportDigest,factDigest:execution.factDigest,evidenceRefs:execution.evidenceRefs,failureReason:policy.evaluation.status==='POLICY_ERROR'?policy.evaluation.error:policy.evaluation.decision===null?'POLICY_EVIDENCE_INCOMPLETE':null,completedAt:new Date().toISOString(),cleanup:execution.cleanup,...(execution.runtimeFacts?{runtimeFacts:execution.runtimeFacts,oldGateDecision:execution.oldDecision}: {})});
+     result=sealResult({...base,executionScope:execution.executionScope,executionStatus:policy.evaluation.status==='POLICY_ERROR'?'POLICY_ERROR':policy.evaluation.decision===null?'NOT_CONFIGURED':'COMPLETED',policyDecision:policy.evaluation.decision,evaluationCount:policy.evaluationCount,policy,rawReportDigest:execution.rawReportDigest,factDigest:execution.factDigest,evidenceRefs:execution.evidenceRefs,failureReason:policy.evaluation.status==='POLICY_ERROR'?policy.evaluation.error:policy.evaluation.decision===null?'POLICY_EVIDENCE_INCOMPLETE':null,completedAt:new Date().toISOString(),cleanup:execution.cleanup,...legacyGateFields(execution)});
     }catch(e){
      const notConfigured=e.message==='COSIGN_TOOL_NOT_CONFIGURED',policyError=String(e.message).startsWith('POLICY_ERROR:'),unsupported=['GITLEAKS_UNSUPPORTED_IDENTITY','SEMGREP_UNSUPPORTED_IDENTITY','SEMGREP_UNSUPPORTED_SOURCE','COSIGN_UNSUPPORTED_IDENTITY'].includes(e.message);
      if(e.candidateEvidence){const {rawReportBytesUtf8,...evidence}=e.candidateEvidence;store.put(p.pluginId+'.execution-error.json',evidence);if(rawReportBytesUtf8)store.putRaw(p.pluginId+'.raw.json',rawReportBytesUtf8);execution={rawReportDigest:e.candidateEvidence.rawReportDigest};}

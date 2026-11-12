@@ -23,6 +23,10 @@ export function policyOwner(config){
  }});
 }
 export function sealResult(body){return freeze({...body,resultDigest:digest(body)});}
+// A runner with runtimeFacts but no legacy Gate (trivy-real has no old Gate)
+// must not emit oldGateDecision at all: an explicit undefined value is not
+// JSON and canonical sealing would fail closed on the whole result.
+export function legacyGateFields(execution){return execution?.runtimeFacts?{runtimeFacts:execution.runtimeFacts,...(execution.oldDecision!==undefined?{oldGateDecision:execution.oldDecision}:{})}:{};}
 export function verifyResult(result){
  const statuses=['COMPLETED','DISABLED','SKIPPED','NOT_CONFIGURED','UNSUPPORTED','POLICY_ERROR','ERROR'];
  if(result?.schemaVersion!==1||result.kind!=='CandidatePluginResult'||!statuses.includes(result.executionStatus)||![null,'PASS','WARN','FAIL'].includes(result.policyDecision)||![0,1].includes(result.evaluationCount)||!Array.isArray(result.evidenceRefs))fail('result contract');
