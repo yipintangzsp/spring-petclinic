@@ -54,6 +54,15 @@ export function grafanaRunUrl({runId,projectId,resultDigest,completedAt}){
  const q=new URLSearchParams({'var-DS_LOKI':'loki','var-project':projectId,'var-run':runId,'var-resultDigest':resultDigest,from:String(at-60000),to:String(at+300000)});
  return 'http://grafana.devops.local/d/security-manager-v2-candidate/devsecops-security-manager-v2-overview?'+q;
 }
+export function lokiDeliveryRecord(result,receipt,grafanaUrl,receiptSource){
+ // Preparation-error Router receipts carry no httpStatus (no HTTP was
+ // attempted); absent receipt fields normalize to null so the run record
+ // embedding this object stays pure JSON for its audit digest.
+ return {consumerId:'loki-candidate',automatic:true,sourceClassification:'REAL_CONTROLLED_EXECUTION',runId:result.runId,resultDigest:result.resultDigest,
+  pushState:receipt.deliveryState,pushHttpStatus:receipt.httpStatus??null,receiptDigest:receipt.receiptDigest,httpRequestCount:receipt.httpRequestCount,
+  queryState:'NOT_VERIFIED',state:'FAILED',reason:receipt.diagnosticCode??receipt.errorCategory??null,deliveryAt:receipt.timestamp,
+  grafanaUrl,receiptSource};
+}
 export async function deliverRunToLoki(result,dir){
  requireValue(result.evidenceClass==='REAL'&&result.state==='COMPLETED'&&result.scannerExecuted===true&&result.evaluationCount===1,'LOKI_REAL_RESULT_REQUIRED');
  const artifactDirectory=path.join(dir,'artifact'),summary=JSON.parse(fs.readFileSync(path.join(artifactDirectory,'candidate-summary.json')));
@@ -66,10 +75,7 @@ export async function deliverRunToLoki(result,dir){
    lokiOutput:output,lokiTransport:createLokiTransport({mode:'real-http',targetId:'existing-security-loki-v1',timeoutMs:3000,maxAttempts:1,backoffMs:1})});
   const receipt=routed.lokiDelivery;save(path.join(output,'router-receipt.json'),routed);
   requireValue(receipt.runId===result.runId&&receipt.resultDigests[result.pluginId]===result.resultDigest,'LOKI_RECEIPT_BINDING');
-  const base={consumerId:'loki-candidate',automatic:true,sourceClassification:'REAL_CONTROLLED_EXECUTION',runId:result.runId,resultDigest:result.resultDigest,
-   pushState:receipt.deliveryState,pushHttpStatus:receipt.httpStatus,receiptDigest:receipt.receiptDigest,httpRequestCount:receipt.httpRequestCount,
-   queryState:'NOT_VERIFIED',state:'FAILED',reason:receipt.diagnosticCode??receipt.errorCategory??null,deliveryAt:receipt.timestamp,
-   grafanaUrl:grafanaRunUrl({...selected,completedAt:selected.completedAt}),receiptSource:path.relative(dir,path.join(output,'router-receipt.json'))};
+  const base=lokiDeliveryRecord(result,receipt,grafanaRunUrl({...selected,completedAt:selected.completedAt}),path.relative(dir,path.join(output,'router-receipt.json')));
   if(receipt.deliveryState!=='ACKNOWLEDGED')return base;
   const at=BigInt(Date.parse(selected.completedAt))*1000000n;
   const selector='{service_name="security-manager-v2",environment="validation",schema_version="1",job="devsecops-security-v2"}';
