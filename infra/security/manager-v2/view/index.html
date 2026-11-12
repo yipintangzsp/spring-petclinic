@@ -123,6 +123,30 @@ kubectl get pods -n devsecops-test</code></pre>
 <div class="section-heading"><div><span class="eyebrow">PETCLINIC DEVSECOPS</span><h2>PetClinic Pipeline Overview</h2></div><span class="tag replay">HISTORICAL · 只读快照</span></div>
 <p class="muted">采集时间：<time datetime="2026-11-05T10:37:17.395314+00:00">2026-11-05 18:37:17 +08:00</time>。刷新只重新读取本地记录，不触发扫描、构建或生产查询。</p>
 <p class="muted">GitLab → Jenkins / Security Gate → Harbor 候选镜像 · GitOps → Argo CD → Kubernetes。下列分段证据不代表同轮生产发布。</p>
+<!-- CANDIDATE_APPROVAL_BEGIN -->
+<article id="candidate-approval" class="consumer" aria-labelledby="candidate-approval-title">
+<div class="card-top"><h3 id="candidate-approval-title">Candidate Signing &amp; Release Approval</h3><span class="tag fail">NOT_READY</span></div>
+<p>本次有条件 dry-run 在隔离检查阶段停止，未创建 Jenkins 构建。不是安全 Gate FAIL，也没有生成签名或发布批准。</p>
+<p class="muted">HISTORICAL · 真实只读预检快照：<time datetime="2026-11-05T15:43:20Z">2026-11-05 23:43:20 +08:00</time>。刷新只读取本地快照，不启动流水线或查询生产。</p>
+<div class="card-row"><span>目标候选 OCI Index</span><b>sha256:2fbaea65ab030c56c60c62e3ee9fbe362deb8bbbb8216a891ef4c7bbbcea6d55</b></div>
+<div class="card-row"><span>本次 Jenkins Build</span><b>NOT_STARTED · 未消耗获批的一次执行</b></div>
+<div class="card-row"><span>本次实际 Security Gate</span><b>NOT_RUN · 不复用旧结果作为新批准</b></div>
+<div class="card-row"><span>本次 Cosign 验签</span><b>NOT_RUN · 未生成签名附件</b></div>
+<div class="card-row"><span>发布批准及 Digest 绑定</span><b>NOT_APPROVED · 无本次批准归档</b></div>
+<div class="card-row"><span>RELEASE_READY</span><b>NO</b></div>
+<div class="card-row"><span>DefectDojo 隔离</span><b>BLOCKED · PetClinic / Product 1 / Engagement 1</b></div>
+<p>目标为 Continuous Read-Only Security，与 #270 的治理记录共用。既有流程会导入结果并可能 PATCH 已有 Finding，不能满足“仅隔离测试项目写入”。</p>
+<div class="card-row"><span>SonarQube 隔离</span><b>UNVERIFIED · 固定 projectKey=petclinic · 元数据 GET 403</b></div>
+<p>当前 PetClinic adapter 没有隔离项目参数。未修改生产 Gate 或目标配置，也未创建测试项目；不通过跳过阶段获得批准。</p>
+<details><summary>原始来源与既有构建（非本次执行）</summary>
+<p><a href="http://jenkins.devops.local/job/petclinic-ci/270/">查看既有 petclinic-ci #270 · SUCCESS</a>：PROMOTION_ACTION=audit-only，Security Manager mode=enforce。签名与批准阶段未执行，不能代替本次发布批准。</p>
+<p>签名附件查询时点 2026-11-05 23:32:47 +08:00：现行 Cosign 使用的候选 Index / ARM64 / AMD64 三个 .sig 标签 HEAD 均为 404。此记录不是密码学验签成功证明。</p>
+<p class="source-path">evidence/2026-11-05/candidate-dry-run-isolation/isolation.json</p>
+<p class="source-path">evidence/2026-11-05/candidate-signing-approval/observed.json</p>
+</details>
+<p>生产健康快照：2026-11-05 23:44:02 +08:00 · 三节点 Ready · PetClinic 3/3 · HTTP 200 · Argo CD Synced/Healthy · Docker Socket 0660。发布 0 / Rollout 0。</p>
+</article>
+<!-- CANDIDATE_APPROVAL_END -->
 <!-- CANDIDATE_RUNNING_BEGIN -->
 <article id="candidate-running" class="consumer">
 <div class="card-top"><h3>Candidate vs Running Deployment</h3><span class="tag replay">NOT_DEPLOYED</span></div>
