@@ -77,3 +77,27 @@ test('formal result seals with a Policy decision when the runner has no legacy g
  // The codec still fails closed on a genuinely non-JSON field value.
  assert.throws(()=>sealResult({...body,oldGateDecision:undefined}),/non-JSON value/);
 });
+
+import {buildTrivyRuntimeFacts,buildTrivyEvidenceRefs} from './trivy-real.mjs';
+test('runner runtime facts carry validationRunId for the Loki fresh gate',()=>{
+ const runId='web-00000000-1111-4222-8333-444444444444';
+ // Shape of the restricted entry packet as consumed by executeRealTrivy:
+ // it carries runId but no validationRunId (the 6b field-contract defect).
+ const packet={kind:'RestrictedLinuxTrivy',projectId:'trivy-candidate',runId,uid:1000,gid:1000,groups:[1000],noNewPrivs:true,indexDigest:'sha256:'+'a'.repeat(64),platformDigest:'sha256:'+'b'.repeat(64),toolVersion:'0.76.2',exitCode:0,rawReport:{Results:[]},rawReportSha256:'c'.repeat(64),nativeReportSha256:'d'.repeat(64),findingCount:0,completedAt:new Date().toISOString()};
+ const facts=buildTrivyRuntimeFacts(packet,runId);
+ assert.equal(facts.validationRunId,runId);
+ assert.equal(facts.runId,runId);
+ assert.equal(facts.classification,'REAL_CONTROLLED_EXECUTION');
+ assert.equal('rawReport' in facts,false);
+ // Exactly the predicate prepareLoki applies to fresh runs (consumers/loki.mjs):
+ // classification REAL_CONTROLLED_EXECUTION and validationRunId===freshRunId.
+ assert.equal(facts.classification==='REAL_CONTROLLED_EXECUTION'&&facts.validationRunId===runId,true);
+ const project=trivyProjects()['trivy-candidate'];
+ const refs=buildTrivyEvidenceRefs(packet,project,runId);
+ assert.equal(refs.length,1);
+ assert.equal(refs[0].validationRunId,runId);
+ assert.equal(refs[0].runId,runId);
+ assert.equal(refs[0].indexDigest,project.indexDigest);
+ assert.equal(refs[0].platformDigest,project.platformDigest);
+ assert.equal(refs[0].nativeReportSha256,packet.nativeReportSha256);
+});

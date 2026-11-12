@@ -36,6 +36,13 @@ function diagnosticFailure(message,code,runId,stages){
  f.candidateEvidence={kind:'TrivyExecutionDiagnostic',diagnostic:{error:code,stage:'RESTRICTED_SSH_RUNNER',scannerStarted:scannerStarted(stages)},diagnosticRunId:runId,rawReportDigest:null};
  return f;
 }
+export function buildTrivyRuntimeFacts(packet,runId){
+ const {rawReport,...runtimeFacts}=packet;runtimeFacts.classification='REAL_CONTROLLED_EXECUTION';runtimeFacts.validationRunId=runId;
+ return runtimeFacts;
+}
+export function buildTrivyEvidenceRefs(packet,project,runId){
+ return [{kind:'REAL_CONTROLLED_EXECUTION',runId,validationRunId:runId,indexDigest:project.indexDigest,platformDigest:project.platformDigest,nativeReportSha256:packet.nativeReportSha256}];
+}
 export async function executeRealTrivy(plugin,input,{projectId,runId,signal}){
  keys(input,['targetId']);const p=trivyProjects()[projectId];if(!p||input.targetId!==p.targetId||!trivyReady())throw Error('TRIVY_PROJECT_NOT_AUTHORIZED');
  const args=['-F','/dev/null','-T','-n','-i',key,'-o','BatchMode=yes','-o','IdentitiesOnly=yes','-o','IdentityAgent=none','-o','StrictHostKeyChecking=yes','-o','UpdateHostKeys=no','-o','HostKeyAlias=192.168.1.58','-o','ClearAllForwardings=yes','-o','ConnectTimeout=5',trivySshTarget(),'scan-v1 '+projectId+' '+runId];
@@ -51,6 +58,6 @@ export async function executeRealTrivy(plugin,input,{projectId,runId,signal}){
  if(x.kind!=='RestrictedLinuxTrivy'||x.projectId!==projectId||x.runId!==runId||x.uid!==p.uid||x.gid!==p.gid||x.groups.some(g=>g!==p.gid)||!x.noNewPrivs||x.indexDigest!==p.indexDigest||x.platformDigest!==p.platformDigest||x.toolSha256!==p.toolSha256||x.toolVersion!=='0.76.2'||x.exitCode!==0||!x.stages.some(s=>s.stage==='SCANNER_STARTED'&&Number.isInteger(s.pid))||!x.stages.some(s=>s.stage==='RUN_COMPLETED'))throw Error('RUNNER_REPORT_ERROR');
  const raw=JSON.stringify(x.rawReport);if(sha(raw)!==x.rawReportSha256)throw Error('RUNNER_REPORT_ERROR');
  const fact=buildTrivyFact(x,p);if(fact.raw.findings.length!==x.findingCount)throw Error('RUNNER_REPORT_ERROR');
- const {rawReport,...runtimeFacts}=x;runtimeFacts.classification='REAL_CONTROLLED_EXECUTION';
- return freeze({rawReportBytesUtf8:raw,rawReportDigest:sha(raw),fact,factDigest:digest(fact),runtimeFacts,executionScope:'REAL_NON_PRODUCTION_IMAGE_SCAN',evidenceRefs:[{kind:'REAL_CONTROLLED_EXECUTION',runId,indexDigest:p.indexDigest,platformDigest:p.platformDigest,nativeReportSha256:x.nativeReportSha256}],cleanup:{status:'VERIFIED',processExited:true}});
+ const runtimeFacts=buildTrivyRuntimeFacts(x,runId);
+ return freeze({rawReportBytesUtf8:raw,rawReportDigest:sha(raw),fact,factDigest:digest(fact),runtimeFacts,executionScope:'REAL_NON_PRODUCTION_IMAGE_SCAN',evidenceRefs:buildTrivyEvidenceRefs(x,p,runId),cleanup:{status:'VERIFIED',processExited:true}});
 }
