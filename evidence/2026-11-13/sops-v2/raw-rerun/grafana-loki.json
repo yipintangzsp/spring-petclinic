@@ -1,0 +1,26 @@
+{
+ "via": "grafana-datasource-proxy",
+ "datasourceUid": "loki",
+ "httpStatus": 200,
+ "query": "{service_name=\"security-manager-v2\",environment=\"validation\",schema_version=\"1\",job=\"devsecops-security-v2\"} | json | runId=\"web-0ec63caa-60db-4ad6-b8d8-3cc00695f3db\" | resultDigest=\"ef8ab10dcac9870d90c6e481e2f7932bd6a09656e2b767d1097b175556dfea90\"",
+ "runId": "web-0ec63caa-60db-4ad6-b8d8-3cc00695f3db",
+ "caseId": "compliant",
+ "matched": 1,
+ "eventIdentity": "24aa6b6c3ddd68cab25d82f45313fb4a9235dc43d907f8a1ec7b6d9282488b53",
+ "expectedEventIdentity": "24aa6b6c3ddd68cab25d82f45313fb4a9235dc43d907f8a1ec7b6d9282488b53",
+ "eventIdentityMatch": true,
+ "policyDecision": "PASS"
+}
+{
+ "via": "grafana-datasource-proxy",
+ "datasourceUid": "loki",
+ "httpStatus": 200,
+ "query": "{service_name=\"security-manager-v2\",environment=\"validation\",schema_version=\"1\",job=\"devsecops-security-v2\"} | json | runId=\"web-55bac243-d53e-497c-86d3-0a78c59ee004\" | resultDigest=\"c7cb7a1571520a43df0a36567ca1606ad28155c58ce710f073d9634eee3660b7\"",
+ "runId": "web-55bac243-d53e-497c-86d3-0a78c59ee004",
+ "caseId": "tampered-ciphertext",
+ "matched": 1,
+ "eventIdentity": "a8d4faddeb586dafb624c9876f1cc37f7c49ff4b55b33e6357cbee58402bd692",
+ "expectedEventIdentity": "a8d4faddeb586dafb624c9876f1cc37f7c49ff4b55b33e6357cbee58402bd692",
+ "eventIdentityMatch": true,
+ "policyDecision": "FAIL"
+}

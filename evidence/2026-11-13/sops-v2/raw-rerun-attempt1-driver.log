@@ -1,0 +1,12 @@
+CASE sops-lab compliant COMPLETED PASS expected=PASS
+CASE sops-lab tampered-ciphertext ERROR null expected=FAIL
+CASE sops-lab wrong-key COMPLETED FAIL expected=FAIL
+CASE sops-lab plaintext-masquerade COMPLETED FAIL expected=FAIL
+CASE sops-lab data-drift COMPLETED FAIL expected=FAIL
+CASE sops-cleanroom compliant COMPLETED PASS expected=PASS
+DISABLED plugin-off DISABLED 0
+DISABLED master-off DISABLED 0
+CROSS {"targetMismatch":"SOPS_PROJECT_NOT_AUTHORIZED","cleanroomIntoLabTarget":"SOPS_PROJECT_NOT_AUTHORIZED","caseLeak":"SOPS_PROJECT_NOT_AUTHORIZED"}
+LOKI compliant DELIVERED VERIFIED
+LOKI tampered-ciphertext FAILED NOT_VERIFIED
+DRIVER_DONE

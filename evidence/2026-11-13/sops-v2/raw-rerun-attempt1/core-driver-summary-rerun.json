@@ -1,0 +1,390 @@
+{
+  "cases": [
+    {
+      "runId": "web-f92695e2-69a8-44b8-98ae-5e8fb71bb5d9",
+      "projectId": "sops-lab",
+      "caseId": "compliant",
+      "policyLevel": "standard",
+      "expectedDecision": "PASS",
+      "executionStatus": "COMPLETED",
+      "policyDecision": "PASS",
+      "oldGateDecision": "PASS",
+      "evaluationCount": 1,
+      "resultDigest": "437b046b814a682fd1ae0b28e76187d1a3d3e0c60e309664f80f8c9d32470eea",
+      "artifactDigest": "b5f35f6c204fcce04e51277685136e3102731e85e3647e8d92b0809c3a5002ff",
+      "failureReason": null,
+      "cleanup": "VERIFIED",
+      "storeModel": "FILE_FIXTURE_STORE",
+      "rbacModel": "FIXTURE_STORE_ACL",
+      "cipherFacts": [
+        {
+          "namespace": "petclinic",
+          "name": "petclinic-db",
+          "encSha256": "7049ce6115a9d8e6e09fdf9f3ad84df8dcc23bdbfcd318e2c602eb0939686449",
+          "encBytes": 1812,
+          "hasMac": true,
+          "recipientCount": 1
+        },
+        {
+          "namespace": "petclinic",
+          "name": "rabbitmq-client",
+          "encSha256": "540a27b39d9f4e610a717e567fc791f4d6909cba4ce3b3a3876c6bce80b597a1",
+          "encBytes": 1820,
+          "hasMac": true,
+          "recipientCount": 1
+        },
+        {
+          "namespace": "petclinic",
+          "name": "petclinic-harbor-pull",
+          "encSha256": "2a4e806285ffff2fe4709d0e490d88e0fb1f77309ae1a14ac9c7a87b8e113256",
+          "encBytes": 1840,
+          "hasMac": true,
+          "recipientCount": 1
+        },
+        {
+          "namespace": "devsecops-system",
+          "name": "kyverno-registry-pull",
+          "encSha256": "03937d794466a65a6d6eba2efad545b5e701ebd18931c6e450bb35cbc683d1a1",
+          "encBytes": 1852,
+          "hasMac": true,
+          "recipientCount": 1
+        }
+      ],
+      "router": [
+        {
+          "consumerId": "dry-run",
+          "deliveryDecision": "DRY_RUN",
+          "receiptDigest": "0e6e8c1ec979bc156cf2efee4c281c4d474f9b8844395f6f57d8a4ae6a4c33ca"
+        },
+        {
+          "consumerId": "local-evidence",
+          "deliveryDecision": "DELIVERED_LOCAL_ONLY",
+          "receiptDigest": "afabfa38bf782cfe917f19cf742a4273244fc03e8d1513b75477816bd9e029ff"
+        }
+      ]
+    },
+    {
+      "runId": "web-42d81a96-2ae3-4294-815d-13a81e60dd4d",
+      "projectId": "sops-lab",
+      "caseId": "tampered-ciphertext",
+      "policyLevel": "standard",
+      "expectedDecision": "FAIL",
+      "executionStatus": "ERROR",
+      "policyDecision": null,
+      "oldGateDecision": null,
+      "evaluationCount": 0,
+      "resultDigest": "ebea967ffd29ff3f4a65d0d0029f46794cc766434630c480cad090e3cf7abc5b",
+      "artifactDigest": "e35d6e2db797484b3c61418f934804072c51d7cb15546d198b055ac685ea1ff8",
+      "failureReason": "RUNNER_REPORT_ERROR",
+      "cleanup": "JOINED_OR_NOT_STARTED",
+      "storeModel": null,
+      "rbacModel": null,
+      "cipherFacts": null,
+      "router": [
+        {
+          "consumerId": "dry-run",
+          "deliveryDecision": "DRY_RUN",
+          "receiptDigest": "31712f8993889b289b6cfbd1c8ba44c5eceaccd70cfb134c03022265268042e0"
+        },
+        {
+          "consumerId": "local-evidence",
+          "deliveryDecision": "DELIVERED_LOCAL_ONLY",
+          "receiptDigest": "081c4a7dab4b93d17544fa5915f748b41236dfa96329cf1106f60b9a0ce989d8"
+        }
+      ]
+    },
+    {
+      "runId": "web-22809bb4-462c-4dda-ab83-5ede2775868a",
+      "projectId": "sops-lab",
+      "caseId": "wrong-key",
+      "policyLevel": "standard",
+      "expectedDecision": "FAIL",
+      "executionStatus": "COMPLETED",
+      "policyDecision": "FAIL",
+      "oldGateDecision": "FAIL",
+      "evaluationCount": 1,
+      "resultDigest": "76b43b61903b9ffed0ad135dedd047788b9a910da528de6331aab29149efd63e",
+      "artifactDigest": "4e22bba5ed34fe6f832a7ad4efe5c35cfbebcae934675b696c3d346a779e0899",
+      "failureReason": null,
+      "cleanup": "VERIFIED",
+      "storeModel": "FILE_FIXTURE_STORE",
+      "rbacModel": "FIXTURE_STORE_ACL",
+      "cipherFacts": [
+        {
+          "namespace": "petclinic",
+          "name": "petclinic-db",
+          "encSha256": "b9b6cbcefbfc95e87b815b5e07c66d960faba0be9d3ce33f2bf1cbd38816ec17",
+          "encBytes": 1812,
+          "hasMac": true,
+          "recipientCount": 1
+        },
+        {
+          "namespace": "petclinic",
+          "name": "rabbitmq-client",
+          "encSha256": "c66da4d53f3472ca054fd05f9e20ccdfc9eba5ae53d46a8f75546a70f49dc589",
+          "encBytes": 1820,
+          "hasMac": true,
+          "recipientCount": 1
+        },
+        {
+          "namespace": "petclinic",
+          "name": "petclinic-harbor-pull",
+          "encSha256": "1fbd79aad4fdb1dd042b3bfe6238d825137006db2b99b56b1ad9b6ca4ad016f3",
+          "encBytes": 1840,
+          "hasMac": true,
+          "recipientCount": 1
+        },
+        {
+          "namespace": "devsecops-system",
+          "name": "kyverno-registry-pull",
+          "encSha256": "3ea7285700c4da415dee205ac455c5c8afe3f9a9a6f1cadeb31176756b767140",
+          "encBytes": 1852,
+          "hasMac": true,
+          "recipientCount": 1
+        }
+      ],
+      "router": [
+        {
+          "consumerId": "dry-run",
+          "deliveryDecision": "DRY_RUN",
+          "receiptDigest": "95b63801a9f0b903339c6c677148462ce32fda9b6968aa3d3952cba0b35ad344"
+        },
+        {
+          "consumerId": "local-evidence",
+          "deliveryDecision": "DELIVERED_LOCAL_ONLY",
+          "receiptDigest": "46bb47036de20a222bd70f898b600c2022b3c28f868be8787d88b009b96af48a"
+        }
+      ]
+    },
+    {
+      "runId": "web-7aea1bf4-52e1-4cfd-8ee4-1b36376ca21f",
+      "projectId": "sops-lab",
+      "caseId": "plaintext-masquerade",
+      "policyLevel": "standard",
+      "expectedDecision": "FAIL",
+      "executionStatus": "COMPLETED",
+      "policyDecision": "FAIL",
+      "oldGateDecision": "FAIL",
+      "evaluationCount": 1,
+      "resultDigest": "139548c232cbb2fc87d42e7418101eef75de3f2acb098d4f94e261875e9ac1b3",
+      "artifactDigest": "8c25e2c33286511672710a5090fed7078331263fb8716b12a11f3639810d71c2",
+      "failureReason": null,
+      "cleanup": "VERIFIED",
+      "storeModel": "FILE_FIXTURE_STORE",
+      "rbacModel": "FIXTURE_STORE_ACL",
+      "cipherFacts": [
+        {
+          "namespace": "petclinic",
+          "name": "petclinic-db",
+          "encSha256": "c70c66c5ddad07bf0196672d6df5ad132ded378f365d0551385408333f35b912",
+          "encBytes": 1812,
+          "hasMac": true,
+          "recipientCount": 1
+        },
+        {
+          "namespace": "petclinic",
+          "name": "rabbitmq-client",
+          "encSha256": "14445eb28c9da08ea87bd4e4474c4891b19b110b02797fc6638f169f8e122eef",
+          "encBytes": 202,
+          "hasMac": false,
+          "recipientCount": 0
+        },
+        {
+          "namespace": "petclinic",
+          "name": "petclinic-harbor-pull",
+          "encSha256": "ba6e8cf79f158bbc273fd1c9222a15e19d6b74a517e7500906baff0d60953fa2",
+          "encBytes": 1840,
+          "hasMac": true,
+          "recipientCount": 1
+        },
+        {
+          "namespace": "devsecops-system",
+          "name": "kyverno-registry-pull",
+          "encSha256": "d5eb51b0d616439f15bcb63e177ca5532659a403a459e52b14d70c9c1b4da048",
+          "encBytes": 1852,
+          "hasMac": true,
+          "recipientCount": 1
+        }
+      ],
+      "router": [
+        {
+          "consumerId": "dry-run",
+          "deliveryDecision": "DRY_RUN",
+          "receiptDigest": "4466a9e71a6807b68a6607932257cd048f085968c6fc344f39eacda0048ffd7b"
+        },
+        {
+          "consumerId": "local-evidence",
+          "deliveryDecision": "DELIVERED_LOCAL_ONLY",
+          "receiptDigest": "f47dfe884c5570b7918f2ae31d11eafae3afbe878531c1d2da34da805faf9d6c"
+        }
+      ]
+    },
+    {
+      "runId": "web-246e1b71-8d1b-4c87-a1fc-015781c18e61",
+      "projectId": "sops-lab",
+      "caseId": "data-drift",
+      "policyLevel": "standard",
+      "expectedDecision": "FAIL",
+      "executionStatus": "COMPLETED",
+      "policyDecision": "FAIL",
+      "oldGateDecision": "FAIL",
+      "evaluationCount": 1,
+      "resultDigest": "b3c7f81af8442f02ffb2cf3aba43599341804b71761d38328d4403b35e0ea621",
+      "artifactDigest": "6214a6dba8107e9a8458f41d6b6b4090a6df06733b43709cd92326315a7ee611",
+      "failureReason": null,
+      "cleanup": "VERIFIED",
+      "storeModel": "FILE_FIXTURE_STORE",
+      "rbacModel": "FIXTURE_STORE_ACL",
+      "cipherFacts": [
+        {
+          "namespace": "petclinic",
+          "name": "petclinic-db",
+          "encSha256": "a2dd4d029255b0b6d4d1a893372fe6bffe6dba538a9bd0d0bc9a0109f8eef574",
+          "encBytes": 1812,
+          "hasMac": true,
+          "recipientCount": 1
+        },
+        {
+          "namespace": "petclinic",
+          "name": "rabbitmq-client",
+          "encSha256": "d590afc2612036f6633b57d492dc6788440a7e3f4539a738193ec1152205450f",
+          "encBytes": 1820,
+          "hasMac": true,
+          "recipientCount": 1
+        },
+        {
+          "namespace": "petclinic",
+          "name": "petclinic-harbor-pull",
+          "encSha256": "90d86bace2b78c6af2a923eb7550703bc4bda13230596b1738458e3fd095b719",
+          "encBytes": 1840,
+          "hasMac": true,
+          "recipientCount": 1
+        },
+        {
+          "namespace": "devsecops-system",
+          "name": "kyverno-registry-pull",
+          "encSha256": "01b1e183b809ab1ec564de24fc5103d15535ca3e2b7c36d0dcaa726081baf494",
+          "encBytes": 1852,
+          "hasMac": true,
+          "recipientCount": 1
+        }
+      ],
+      "router": [
+        {
+          "consumerId": "dry-run",
+          "deliveryDecision": "DRY_RUN",
+          "receiptDigest": "816423c7fd364968f50d2e0b6ca3bbf498ed71c95f1b1933b39429e95651eb5b"
+        },
+        {
+          "consumerId": "local-evidence",
+          "deliveryDecision": "DELIVERED_LOCAL_ONLY",
+          "receiptDigest": "1f5bc8730fffc2af7aeccf8df749904ab357d685fba3825a251f9e6c502e7abb"
+        }
+      ]
+    },
+    {
+      "runId": "web-2b4ba467-2887-497b-a5e7-5d624419e4a3",
+      "projectId": "sops-cleanroom",
+      "caseId": "compliant",
+      "policyLevel": "standard",
+      "expectedDecision": "PASS",
+      "executionStatus": "COMPLETED",
+      "policyDecision": "PASS",
+      "oldGateDecision": "PASS",
+      "evaluationCount": 1,
+      "resultDigest": "6d574ac544038a9c631c322ea6106e18afcbaf65e95cf809d26f1d525502c12c",
+      "artifactDigest": "fda74e485165a4d2a4f488baa2b84334560701119ea5f6a8d6cf9678153aacae",
+      "failureReason": null,
+      "cleanup": "VERIFIED",
+      "storeModel": "FILE_FIXTURE_STORE",
+      "rbacModel": "FIXTURE_STORE_ACL",
+      "cipherFacts": [
+        {
+          "namespace": "petclinic",
+          "name": "petclinic-db",
+          "encSha256": "c2a304ef13bbe5598dd1e920eb38044e06fa451c3be55a5706b94cad24e7ca2e",
+          "encBytes": 1812,
+          "hasMac": true,
+          "recipientCount": 1
+        },
+        {
+          "namespace": "petclinic",
+          "name": "rabbitmq-client",
+          "encSha256": "c4b090e7ad1562cb4624455f7667f30d3f83a8ad0f9b3915173d662e9028c64a",
+          "encBytes": 1820,
+          "hasMac": true,
+          "recipientCount": 1
+        },
+        {
+          "namespace": "petclinic",
+          "name": "petclinic-harbor-pull",
+          "encSha256": "7b2d49edcc49f0aac4743fbeaf632833357912ae7edd611628bb1043dba8bdcd",
+          "encBytes": 1840,
+          "hasMac": true,
+          "recipientCount": 1
+        },
+        {
+          "namespace": "devsecops-system",
+          "name": "kyverno-registry-pull",
+          "encSha256": "178277f9d4f0739c4545a67f8f68d2409aec2c69137dda14c948c936f9651523",
+          "encBytes": 1852,
+          "hasMac": true,
+          "recipientCount": 1
+        }
+      ],
+      "router": [
+        {
+          "consumerId": "dry-run",
+          "deliveryDecision": "DRY_RUN",
+          "receiptDigest": "723d3cc4dfa9fd04f51a956823b4a0ee02050fde8878ff24c67cdb1dc6b1e550"
+        },
+        {
+          "consumerId": "local-evidence",
+          "deliveryDecision": "DELIVERED_LOCAL_ONLY",
+          "receiptDigest": "3621bdf2769c60794fd76599b2b923e64a2858be56826691688825688025117a"
+        }
+      ]
+    }
+  ],
+  "disabled": [
+    {
+      "name": "plugin-off",
+      "runId": "web-d3e39689-38b8-42bb-b73b-171259e8866a",
+      "executionStatus": "DISABLED",
+      "evaluationCount": 0,
+      "policyDecision": null,
+      "failureReason": "PLUGIN_DISABLED"
+    },
+    {
+      "name": "master-off",
+      "runId": "web-808de043-9d48-4bb5-8cfd-c90811db9c56",
+      "executionStatus": "DISABLED",
+      "evaluationCount": 0,
+      "policyDecision": null,
+      "failureReason": "MASTER_DISABLED"
+    }
+  ],
+  "crossProject": {
+    "targetMismatch": "SOPS_PROJECT_NOT_AUTHORIZED",
+    "cleanroomIntoLabTarget": "SOPS_PROJECT_NOT_AUTHORIZED",
+    "caseLeak": "SOPS_PROJECT_NOT_AUTHORIZED"
+  },
+  "loki": [
+    {
+      "runId": "web-f92695e2-69a8-44b8-98ae-5e8fb71bb5d9",
+      "caseId": "compliant",
+      "state": "DELIVERED",
+      "queryState": "VERIFIED",
+      "pushState": "ACKNOWLEDGED",
+      "receiptDigest": "b37824438e86ff6b1124dc1fc37d1ddf15ea5292933de663face168340f8a869"
+    },
+    {
+      "runId": "web-42d81a96-2ae3-4294-815d-13a81e60dd4d",
+      "caseId": "tampered-ciphertext",
+      "state": "FAILED",
+      "queryState": "NOT_VERIFIED",
+      "pushState": "ERROR",
+      "receiptDigest": "bb05453240182e9d842e3896b175bb4e2cd95328a0654527aececff8026d3c8f"
+    }
+  ]
+}

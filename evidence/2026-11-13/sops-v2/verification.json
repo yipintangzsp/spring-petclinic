@@ -1,0 +1,614 @@
+{
+ "kind": "SopsV2Verification",
+ "schemaVersion": 1,
+ "date": "2026-11-13",
+ "branch": "fix/security-manager-plugin-switches",
+ "headBeforeCommits": "48c1a52a",
+ "productionManager": "NOT_ACTIVE",
+ "dimensions": {
+  "REGISTRY": "VERIFIED",
+  "RUNNER": "VERIFIED",
+  "MANAGEMENT": "PARTIAL",
+  "POLICY": "VERIFIED",
+  "ARTIFACT": "VERIFIED",
+  "ROUTER": "VERIFIED",
+  "OBSERVABILITY": "VERIFIED",
+  "CROSS_PROJECT": "VERIFIED"
+ },
+ "managementNote": "Core/capability layer VERIFIED (registry exposes the sops capability; sopsUiCase exported: clean->compliant, controlled-finding->tampered-ciphertext). Web UI not wired (view/* carries no sops reference) - gap G-SOPS1, same precedent as Falco/Sonar/Kubescape/ZAP/Provenance; UI wiring belongs to the W12 wave.",
+ "registry": {
+  "function": "realSopsRegistry()",
+  "pluginId": "sops",
+  "runner": "sops-real",
+  "executionMode": "REAL_VALIDATION",
+  "normalizer": "sops-native/v1",
+  "policyAdapter": "sops",
+  "pluginVersion": "2.0.0-candidate.7",
+  "timeout": 120000,
+  "requiredCapabilities": [
+   "CREDENTIALS",
+   "TRUSTED_EXECUTOR"
+  ],
+  "cleanupPolicy": "TERMINATE_AND_VERIFY_GROUP",
+  "defaultRegistry": "unchanged (blocked / PREFLIGHT_ONLY), asserted by unit test"
+ },
+ "wrapper": {
+  "user": "security-sops",
+  "uid": 1006,
+  "gid": 1006,
+  "home": "/var/lib/security-sops",
+  "entry": "/var/lib/security-sops/entry.py (root-owned, mode 444; forced command via authorized_keys restrict + setpriv --no-new-privs)",
+  "protocol": "validate-v1 <projectId> <runId> <caseId>",
+  "entrySha256BeforeThisLine": "3701907c3d04325960c0b318b9088f945c662c5478b2a4326a640ce7bae1e188",
+  "entrySha256AfterTimeoutFix": "bc6f3bd3db27e30b58b53b42fc2625f5b092149efdb4f028ca08ab4bafbb5488",
+  "entrySha256Final": "7f9c9d850b852eb12ea59ce4c0172840100a80fe951275c8d34587978734987d",
+  "storeModel": "FILE_FIXTURE_STORE",
+  "rbacModel": "FIXTURE_STORE_ACL",
+  "keyHandling": "The wrapper generates a disposable age keypair per run inside its own work directory, shreds the test key files and removes the whole work directory before returning the packet (cleanup VERIFIED per run). No production age key, production ciphertext or cluster access is involved; all fixture values are synthetic public labels. No key material is printed or stored anywhere."
+ },
+ "tools": {
+  "sops": {
+   "version": "3.13.3",
+   "path": "/opt/platform-security/sops/3.13.3/sops",
+   "sha256": "53b0abacd38ef1b12a66d6c100956691b9cefce018d91f81e73ddf7438b94d77"
+  },
+  "age": {
+   "version": "1.3.2",
+   "path": "/opt/platform-security/age/1.3.2/age",
+   "sha256": "41b072352f4561018949623c674d16ef704019b9108a9bbdbd21292efebfc94f"
+  },
+  "age-keygen": {
+   "path": "/opt/platform-security/age/1.3.2/age-keygen",
+   "sha256": "00b549cebf68302893fc489830f37e706712689ca877f84d85439d700d2997c7"
+  }
+ },
+ "diagnosis": {
+  "firstRound": "evidence raw/ preserved untouched: five SSH-driven cases ERROR with SOPS_TRANSPORT_ERROR (stage RESTRICTED_SSH_RUNNER, scannerStarted=false); data-drift COMPLETED/FAIL; disabled cases normal; cross-project rejections normal; Loki FAILED/NOT_VERIFIED for the two ERROR runs.",
+  "rootCause": "devops auth log shows the five failed sessions each lasted ~20.3s - exactly the entry run_tool default timeout (20s). A subprocess inside the entry (the sops --version online update check, run in a stripped environment without proxy) stalled past 20s; subprocess.TimeoutExpired was not caught by the entry (only RuntimeError was), so the entry died with a traceback and no JSON packet, which the runner correctly mapped to SOPS_TRANSPORT_ERROR. The one success (data-drift, 16.6s) finished the same check just under the timeout. The entry, user, authorized_keys forced command and pinned tool hashes were all already in place and correct.",
+  "fixes": [
+   "entry.py: sops --version probe now uses timeout=6 and falls back to the pinned sha256 (verified separately at entry start) on any probe failure.",
+   "entry.py: top-level subprocess.TimeoutExpired now returns a JSON {error: EXECUTION_TIMEOUT, stages} packet instead of a traceback.",
+   "entry.py: tampered-ciphertext now flips one base64 character inside the encrypted payload (JSON structure, sops metadata and MAC field intact) instead of a whole-file midpoint byte flip, which had randomly corrupted the JSON structure depending on the random ciphertext (rerun attempt 1: RUNNER_REPORT_ERROR)."
+  ]
+ },
+ "cases": [
+  {
+   "runId": "web-0ec63caa-60db-4ad6-b8d8-3cc00695f3db",
+   "projectId": "sops-lab",
+   "caseId": "compliant",
+   "policyLevel": "standard",
+   "expectedDecision": "PASS",
+   "executionStatus": "COMPLETED",
+   "policyDecision": "PASS",
+   "oldGateDecision": "PASS",
+   "evaluationCount": 1,
+   "resultDigest": "ef8ab10dcac9870d90c6e481e2f7932bd6a09656e2b767d1097b175556dfea90",
+   "artifactDigest": "823c418362af5e1af21c0302927714ee7c7f4a30b1d8c4b90cc5ae84f472d299",
+   "failureReason": null,
+   "cleanup": "VERIFIED",
+   "storeModel": "FILE_FIXTURE_STORE",
+   "rbacModel": "FIXTURE_STORE_ACL",
+   "cipherFacts": [
+    {
+     "namespace": "petclinic",
+     "name": "petclinic-db",
+     "encSha256": "62f65ac08a088034e915ee6f18b2945cf79c13a7c3f7aabb7727142f88eae3f9",
+     "encBytes": 1812,
+     "hasMac": true,
+     "recipientCount": 1
+    },
+    {
+     "namespace": "petclinic",
+     "name": "rabbitmq-client",
+     "encSha256": "aa19815c0d56cc2427fa802d6edea1021706b694cac2effe3f96bf2c1e1ab8fe",
+     "encBytes": 1820,
+     "hasMac": true,
+     "recipientCount": 1
+    },
+    {
+     "namespace": "petclinic",
+     "name": "petclinic-harbor-pull",
+     "encSha256": "eb9a244e9d823882ad36f51500bb950900f74ff7a945737652fb8f68adfc5781",
+     "encBytes": 1840,
+     "hasMac": true,
+     "recipientCount": 1
+    },
+    {
+     "namespace": "devsecops-system",
+     "name": "kyverno-registry-pull",
+     "encSha256": "f74bc624cbf96ba7e1619508ea0220d245f7119f20bc2b113c200e819b2930f4",
+     "encBytes": 1852,
+     "hasMac": true,
+     "recipientCount": 1
+    }
+   ],
+   "router": [
+    {
+     "consumerId": "dry-run",
+     "deliveryDecision": "DRY_RUN",
+     "receiptDigest": "8b7fc97cb502924a5970fb94e7fd8073ab8e8ea832db656f0414b92ee7753527"
+    },
+    {
+     "consumerId": "local-evidence",
+     "deliveryDecision": "DELIVERED_LOCAL_ONLY",
+     "receiptDigest": "8bfa300b87c263d351afb6cba677634cf196c7fcef84a40f18dadf4341a69ba7"
+    }
+   ]
+  },
+  {
+   "runId": "web-55bac243-d53e-497c-86d3-0a78c59ee004",
+   "projectId": "sops-lab",
+   "caseId": "tampered-ciphertext",
+   "policyLevel": "standard",
+   "expectedDecision": "FAIL",
+   "executionStatus": "COMPLETED",
+   "policyDecision": "FAIL",
+   "oldGateDecision": "FAIL",
+   "evaluationCount": 1,
+   "resultDigest": "c7cb7a1571520a43df0a36567ca1606ad28155c58ce710f073d9634eee3660b7",
+   "artifactDigest": "ab5cf82c6118f3a170d7b4ee88b416161d9f16a13f5a114c40dbfd2f408faeff",
+   "failureReason": null,
+   "cleanup": "VERIFIED",
+   "storeModel": "FILE_FIXTURE_STORE",
+   "rbacModel": "FIXTURE_STORE_ACL",
+   "cipherFacts": [
+    {
+     "namespace": "petclinic",
+     "name": "petclinic-db",
+     "encSha256": "3bc26a406e66c51b57ec29535857fafa22284cc99353208bf8463d9338494a15",
+     "encBytes": 1758,
+     "hasMac": true,
+     "recipientCount": 1
+    },
+    {
+     "namespace": "petclinic",
+     "name": "rabbitmq-client",
+     "encSha256": "960926fe34d3e04ee2455e1988ba1cfc0c5c80746f7e4338e8fd1fa45df1ac80",
+     "encBytes": 1820,
+     "hasMac": true,
+     "recipientCount": 1
+    },
+    {
+     "namespace": "petclinic",
+     "name": "petclinic-harbor-pull",
+     "encSha256": "10d767a0115f12182ccbba90c6292d614872c03e8dde029fe82819d4cd6f130e",
+     "encBytes": 1840,
+     "hasMac": true,
+     "recipientCount": 1
+    },
+    {
+     "namespace": "devsecops-system",
+     "name": "kyverno-registry-pull",
+     "encSha256": "65362b86c8c0cfe96cc7ac01e21b3ca80d65886552fced2ecc5d0c2903719871",
+     "encBytes": 1852,
+     "hasMac": true,
+     "recipientCount": 1
+    }
+   ],
+   "router": [
+    {
+     "consumerId": "dry-run",
+     "deliveryDecision": "DRY_RUN",
+     "receiptDigest": "e3ddc20436ca8b537f5da8f9df5361c069a40fd10d208ae088805182f6f5750d"
+    },
+    {
+     "consumerId": "local-evidence",
+     "deliveryDecision": "DELIVERED_LOCAL_ONLY",
+     "receiptDigest": "4603214bf21f6a88f114605fbd9cee63f357136c650ad5feab17cd06e8ceb97c"
+    }
+   ]
+  },
+  {
+   "runId": "web-581fc8ac-8f87-4b60-9c2a-296ad670eccb",
+   "projectId": "sops-lab",
+   "caseId": "wrong-key",
+   "policyLevel": "standard",
+   "expectedDecision": "FAIL",
+   "executionStatus": "COMPLETED",
+   "policyDecision": "FAIL",
+   "oldGateDecision": "FAIL",
+   "evaluationCount": 1,
+   "resultDigest": "fda0089778e2e3239fc22469bca40003747cdbdac47ad59c17c2816b0003f9dd",
+   "artifactDigest": "e9de1c0eb798e451cb4e2456b05034f9de2171cc910a9b4b9aa68007af9da0f0",
+   "failureReason": null,
+   "cleanup": "VERIFIED",
+   "storeModel": "FILE_FIXTURE_STORE",
+   "rbacModel": "FIXTURE_STORE_ACL",
+   "cipherFacts": [
+    {
+     "namespace": "petclinic",
+     "name": "petclinic-db",
+     "encSha256": "e752396d16f0ab0363a81390acf3fb6be8328ebf72666dcba9364895f6f4c65b",
+     "encBytes": 1812,
+     "hasMac": true,
+     "recipientCount": 1
+    },
+    {
+     "namespace": "petclinic",
+     "name": "rabbitmq-client",
+     "encSha256": "760d062545149ddbd26842039181513688c69ed428d30e42ddc587031b1fe226",
+     "encBytes": 1820,
+     "hasMac": true,
+     "recipientCount": 1
+    },
+    {
+     "namespace": "petclinic",
+     "name": "petclinic-harbor-pull",
+     "encSha256": "6a28c8f8a2caeda40b8ed3d9801acf20dfb33e327d35bef5a19ac748e156bdaf",
+     "encBytes": 1840,
+     "hasMac": true,
+     "recipientCount": 1
+    },
+    {
+     "namespace": "devsecops-system",
+     "name": "kyverno-registry-pull",
+     "encSha256": "a353a19a9cc91218a6f42aaa0e67ce317ac1e2c216931fcd7eaecae781609c9c",
+     "encBytes": 1852,
+     "hasMac": true,
+     "recipientCount": 1
+    }
+   ],
+   "router": [
+    {
+     "consumerId": "dry-run",
+     "deliveryDecision": "DRY_RUN",
+     "receiptDigest": "6b4d85ddebdcb88078a5e1d5f157e78aa30afe64872280b261aa9bba1d616f5d"
+    },
+    {
+     "consumerId": "local-evidence",
+     "deliveryDecision": "DELIVERED_LOCAL_ONLY",
+     "receiptDigest": "e62f575faf9c5387b1f1c8bfc91d515ebbdf39fd86785a15a903538d415de0ae"
+    }
+   ]
+  },
+  {
+   "runId": "web-2a349784-f1b1-487b-82fb-1889b0c437fd",
+   "projectId": "sops-lab",
+   "caseId": "plaintext-masquerade",
+   "policyLevel": "standard",
+   "expectedDecision": "FAIL",
+   "executionStatus": "COMPLETED",
+   "policyDecision": "FAIL",
+   "oldGateDecision": "FAIL",
+   "evaluationCount": 1,
+   "resultDigest": "8148eecf1953494467eebb0c658b626985363048e68055084e926bb3906d9e1a",
+   "artifactDigest": "641e24cd793393f15765ddb9687e4f66d33faa5ac6ff7fe80cdcdbdf3dda9dee",
+   "failureReason": null,
+   "cleanup": "VERIFIED",
+   "storeModel": "FILE_FIXTURE_STORE",
+   "rbacModel": "FIXTURE_STORE_ACL",
+   "cipherFacts": [
+    {
+     "namespace": "petclinic",
+     "name": "petclinic-db",
+     "encSha256": "06e97568f62c1c6bcc9c9e63e304098c76a6aef4a8e2678395288b7fc5c40e3b",
+     "encBytes": 1812,
+     "hasMac": true,
+     "recipientCount": 1
+    },
+    {
+     "namespace": "petclinic",
+     "name": "rabbitmq-client",
+     "encSha256": "14445eb28c9da08ea87bd4e4474c4891b19b110b02797fc6638f169f8e122eef",
+     "encBytes": 202,
+     "hasMac": false,
+     "recipientCount": 0
+    },
+    {
+     "namespace": "petclinic",
+     "name": "petclinic-harbor-pull",
+     "encSha256": "a414fe38d44d98aadf6687580132c815b7a7b9870cfc536424ecb9d9f843650b",
+     "encBytes": 1840,
+     "hasMac": true,
+     "recipientCount": 1
+    },
+    {
+     "namespace": "devsecops-system",
+     "name": "kyverno-registry-pull",
+     "encSha256": "c69e98b7bb8f940fc5c81f3050884c9c68cf206c16eebbafdd792082ebb13865",
+     "encBytes": 1852,
+     "hasMac": true,
+     "recipientCount": 1
+    }
+   ],
+   "router": [
+    {
+     "consumerId": "dry-run",
+     "deliveryDecision": "DRY_RUN",
+     "receiptDigest": "7f798b63ff1e6d95f248d48ecb82231b749322e951b163a890ad294aa4bf8ab6"
+    },
+    {
+     "consumerId": "local-evidence",
+     "deliveryDecision": "DELIVERED_LOCAL_ONLY",
+     "receiptDigest": "ad9595cc4e6ded82a63d57702b5a730070f27727e14c02b1060ac7957ee811a0"
+    }
+   ]
+  },
+  {
+   "runId": "web-36b555ba-a544-4885-80a7-f8a1a30233e3",
+   "projectId": "sops-lab",
+   "caseId": "data-drift",
+   "policyLevel": "standard",
+   "expectedDecision": "FAIL",
+   "executionStatus": "COMPLETED",
+   "policyDecision": "FAIL",
+   "oldGateDecision": "FAIL",
+   "evaluationCount": 1,
+   "resultDigest": "9806a06c1bf2896c06deac439d5d2c35d6109dec9a2e8b20b9e832f32d2dd2ed",
+   "artifactDigest": "9eff81d53b860a9ab9a50ebaeb43c164f956459402dafc9802de69349aa70ae9",
+   "failureReason": null,
+   "cleanup": "VERIFIED",
+   "storeModel": "FILE_FIXTURE_STORE",
+   "rbacModel": "FIXTURE_STORE_ACL",
+   "cipherFacts": [
+    {
+     "namespace": "petclinic",
+     "name": "petclinic-db",
+     "encSha256": "6ddd96659b1d9ab48b055845108a2b701c72c914dec23320e50498f25f614a4e",
+     "encBytes": 1812,
+     "hasMac": true,
+     "recipientCount": 1
+    },
+    {
+     "namespace": "petclinic",
+     "name": "rabbitmq-client",
+     "encSha256": "e62d0c9a962a9f8f038992981d1b97840260834fa7cac3eef3a8c698bc1fb35d",
+     "encBytes": 1820,
+     "hasMac": true,
+     "recipientCount": 1
+    },
+    {
+     "namespace": "petclinic",
+     "name": "petclinic-harbor-pull",
+     "encSha256": "42180f9b054be9149086a905e991fcd13ed7b253b27701576c2ca5ba59e627eb",
+     "encBytes": 1840,
+     "hasMac": true,
+     "recipientCount": 1
+    },
+    {
+     "namespace": "devsecops-system",
+     "name": "kyverno-registry-pull",
+     "encSha256": "fcf18188a8efdeb0c86b3eac277d6e55474c9ce21d18034c3b207d3842df9884",
+     "encBytes": 1852,
+     "hasMac": true,
+     "recipientCount": 1
+    }
+   ],
+   "router": [
+    {
+     "consumerId": "dry-run",
+     "deliveryDecision": "DRY_RUN",
+     "receiptDigest": "20da081262089489879f00506f86ad6d4e904a3fc73e40676c8cbc3bd1a09183"
+    },
+    {
+     "consumerId": "local-evidence",
+     "deliveryDecision": "DELIVERED_LOCAL_ONLY",
+     "receiptDigest": "17ba08f5f5b530fbe92cb87438f0e63f6d482b2a5e51b100d4a6987be2a6828b"
+    }
+   ]
+  },
+  {
+   "runId": "web-9726d837-fec3-4788-9aea-cfa1af78dbf2",
+   "projectId": "sops-cleanroom",
+   "caseId": "compliant",
+   "policyLevel": "standard",
+   "expectedDecision": "PASS",
+   "executionStatus": "COMPLETED",
+   "policyDecision": "PASS",
+   "oldGateDecision": "PASS",
+   "evaluationCount": 1,
+   "resultDigest": "c3a4ceef745dde000a8ddab8707286d687d104615bbbc3a369ce89bf7ef8951d",
+   "artifactDigest": "077a2c62a6dcddfa52e30800e4187550a430df783604eb260a3e6b0da4ada8be",
+   "failureReason": null,
+   "cleanup": "VERIFIED",
+   "storeModel": "FILE_FIXTURE_STORE",
+   "rbacModel": "FIXTURE_STORE_ACL",
+   "cipherFacts": [
+    {
+     "namespace": "petclinic",
+     "name": "petclinic-db",
+     "encSha256": "52c70e8e984678100c4db5ec05a4411f9b0d46dbd881365b66092791162dfa5d",
+     "encBytes": 1812,
+     "hasMac": true,
+     "recipientCount": 1
+    },
+    {
+     "namespace": "petclinic",
+     "name": "rabbitmq-client",
+     "encSha256": "12f597c94d278d6b68f4fa0ca13ae92a363771fe82e2d90a257d869e313336f4",
+     "encBytes": 1820,
+     "hasMac": true,
+     "recipientCount": 1
+    },
+    {
+     "namespace": "petclinic",
+     "name": "petclinic-harbor-pull",
+     "encSha256": "5248190ed8a1c3f97272b7d01c3423f24bb2bd8a5cce16b9c43e37bd62d1ecd1",
+     "encBytes": 1840,
+     "hasMac": true,
+     "recipientCount": 1
+    },
+    {
+     "namespace": "devsecops-system",
+     "name": "kyverno-registry-pull",
+     "encSha256": "fd65994cce341a027d8534a5a481212662c7256708a98705300212d1ba81d958",
+     "encBytes": 1852,
+     "hasMac": true,
+     "recipientCount": 1
+    }
+   ],
+   "router": [
+    {
+     "consumerId": "dry-run",
+     "deliveryDecision": "DRY_RUN",
+     "receiptDigest": "f8436fdbe839031c0f4b405d26bc53d64fbdb7cbb4311bbda66851715ceab35f"
+    },
+    {
+     "consumerId": "local-evidence",
+     "deliveryDecision": "DELIVERED_LOCAL_ONLY",
+     "receiptDigest": "ee632b0b6e50bcf2a07c1ee40d71b53411b2988ee6acc66e6d0e798508017dff"
+    }
+   ]
+  }
+ ],
+ "disabled": [
+  {
+   "name": "plugin-off",
+   "runId": "web-8924896a-8810-421e-addf-99dcfd0a8927",
+   "executionStatus": "DISABLED",
+   "evaluationCount": 0,
+   "policyDecision": null,
+   "failureReason": "PLUGIN_DISABLED"
+  },
+  {
+   "name": "master-off",
+   "runId": "web-38cfd571-ce85-46b3-871d-8c92ed124cb4",
+   "executionStatus": "DISABLED",
+   "evaluationCount": 0,
+   "policyDecision": null,
+   "failureReason": "MASTER_DISABLED"
+  }
+ ],
+ "crossProject": {
+  "targetMismatch": "SOPS_PROJECT_NOT_AUTHORIZED",
+  "cleanroomIntoLabTarget": "SOPS_PROJECT_NOT_AUTHORIZED",
+  "caseLeak": "SOPS_PROJECT_NOT_AUTHORIZED"
+ },
+ "crossProjectNote": "All three rejections (targetId mismatch both directions, case leak into sops-cleanroom) happen locally in the runner before any SSH is attempted.",
+ "loki": [
+  {
+   "runId": "web-0ec63caa-60db-4ad6-b8d8-3cc00695f3db",
+   "caseId": "compliant",
+   "state": "DELIVERED",
+   "queryState": "VERIFIED",
+   "pushState": "ACKNOWLEDGED",
+   "receiptDigest": "ed7865f438df8041afeb88032d0f3e85e3d649f5644df520def739a1d87d806a",
+   "eventIdentity": "24aa6b6c3ddd68cab25d82f45313fb4a9235dc43d907f8a1ec7b6d9282488b53"
+  },
+  {
+   "runId": "web-55bac243-d53e-497c-86d3-0a78c59ee004",
+   "caseId": "tampered-ciphertext",
+   "state": "DELIVERED",
+   "queryState": "VERIFIED",
+   "pushState": "ACKNOWLEDGED",
+   "receiptDigest": "902c4301eba2279f21a9a1864ae85852cb0793fbef9ff700e93044a321025de4",
+   "eventIdentity": "a8d4faddeb586dafb624c9876f1cc37f7c49ff4b55b33e6357cbee58402bd692"
+  }
+ ],
+ "grafana": {
+  "status": "VERIFIED",
+  "via": "devops-session datasource proxy (kube-stack-grafana secret credentials used only inside the devops shell session, never printed or stored)",
+  "checks": [
+   {
+    "via": "grafana-datasource-proxy",
+    "datasourceUid": "loki",
+    "httpStatus": 200,
+    "query": "{service_name=\"security-manager-v2\",environment=\"validation\",schema_version=\"1\",job=\"devsecops-security-v2\"} | json | runId=\"web-0ec63caa-60db-4ad6-b8d8-3cc00695f3db\" | resultDigest=\"ef8ab10dcac9870d90c6e481e2f7932bd6a09656e2b767d1097b175556dfea90\"",
+    "runId": "web-0ec63caa-60db-4ad6-b8d8-3cc00695f3db",
+    "caseId": "compliant",
+    "matched": 1,
+    "eventIdentity": "24aa6b6c3ddd68cab25d82f45313fb4a9235dc43d907f8a1ec7b6d9282488b53",
+    "expectedEventIdentity": "24aa6b6c3ddd68cab25d82f45313fb4a9235dc43d907f8a1ec7b6d9282488b53",
+    "eventIdentityMatch": true,
+    "policyDecision": "PASS"
+   },
+   {
+    "via": "grafana-datasource-proxy",
+    "datasourceUid": "loki",
+    "httpStatus": 200,
+    "query": "{service_name=\"security-manager-v2\",environment=\"validation\",schema_version=\"1\",job=\"devsecops-security-v2\"} | json | runId=\"web-55bac243-d53e-497c-86d3-0a78c59ee004\" | resultDigest=\"c7cb7a1571520a43df0a36567ca1606ad28155c58ce710f073d9634eee3660b7\"",
+    "runId": "web-55bac243-d53e-497c-86d3-0a78c59ee004",
+    "caseId": "tampered-ciphertext",
+    "matched": 1,
+    "eventIdentity": "a8d4faddeb586dafb624c9876f1cc37f7c49ff4b55b33e6357cbee58402bd692",
+    "expectedEventIdentity": "a8d4faddeb586dafb624c9876f1cc37f7c49ff4b55b33e6357cbee58402bd692",
+    "eventIdentityMatch": true,
+    "policyDecision": "FAIL"
+   }
+  ],
+  "file": "raw-rerun/grafana-loki.json",
+  "script": "grafana-check.sh"
+ },
+ "rerunAttempt1": {
+  "note": "First rerun after the timeout fix: 5/6 cases correct and compliant Loki DELIVERED/VERIFIED; tampered-ciphertext failed packet validation (RUNNER_REPORT_ERROR) due to the non-deterministic whole-file byte flip in the entry - see diagnosis.fixes[2]. Artifacts preserved in raw-rerun-attempt1/.",
+  "cases": [
+   {
+    "projectId": "sops-lab",
+    "caseId": "compliant",
+    "executionStatus": "COMPLETED",
+    "policyDecision": "PASS",
+    "failureReason": null
+   },
+   {
+    "projectId": "sops-lab",
+    "caseId": "tampered-ciphertext",
+    "executionStatus": "ERROR",
+    "policyDecision": null,
+    "failureReason": "RUNNER_REPORT_ERROR"
+   },
+   {
+    "projectId": "sops-lab",
+    "caseId": "wrong-key",
+    "executionStatus": "COMPLETED",
+    "policyDecision": "FAIL",
+    "failureReason": null
+   },
+   {
+    "projectId": "sops-lab",
+    "caseId": "plaintext-masquerade",
+    "executionStatus": "COMPLETED",
+    "policyDecision": "FAIL",
+    "failureReason": null
+   },
+   {
+    "projectId": "sops-lab",
+    "caseId": "data-drift",
+    "executionStatus": "COMPLETED",
+    "policyDecision": "FAIL",
+    "failureReason": null
+   },
+   {
+    "projectId": "sops-cleanroom",
+    "caseId": "compliant",
+    "executionStatus": "COMPLETED",
+    "policyDecision": "PASS",
+    "failureReason": null
+   }
+  ]
+ },
+ "regression": {
+  "sopsReal": {
+   "tests": 9,
+   "pass": 9,
+   "fail": 0
+  },
+  "managerV2ContractSet": {
+   "tests": 176,
+   "pass": 176,
+   "fail": 0,
+   "note": "node --test infra/security/manager-v2/*.test.mjs; baseline 167 + sops-real 9."
+  },
+  "securityPlusObservability": {
+   "tests": 147,
+   "pass": 147,
+   "fail": 0,
+   "note": "node --test infra/security/*.test.mjs infra/observability/*.test.mjs; identical to baseline."
+  },
+  "consumers": {
+   "tests": 162,
+   "pass": 114,
+   "fail": 48,
+   "note": "Identical to the pre-existing baseline (LOKI_TIMESTAMP_OUTSIDE_WINDOW fixture aging + sample-dir EEXIST); no failing test references sops."
+  }
+ },
+ "uncommittedWiring": {
+  "files": [
+   "infra/security/manager-v2/registry.mjs",
+   "infra/security/manager-v2/core.mjs",
+   "infra/security/manager-v2/consumers/loki.mjs",
+   "infra/security/manager-v2/consumers/loki-event-v1.json"
+  ],
+  "note": "The sops wiring increments stay in the working tree only, entangled in the same files with the uncommitted W3/W4/W5 increments (Falco/Provenance precedent). Pre-change snapshots are in protected-before/ and the exact sops hunks are listed in REPRODUCE.md. Committed by this line: sops-real.mjs, sops-real.test.mjs, sops/projects.json, sops/runner.json and this evidence directory."
+ },
+ "armedFile": ".devsecops/security-view-sops-linux-v1.json remains {enabled:true, consumed:false}, consistent with the kyverno/sonar/trivy/zap precedent; left for the W13 close-out check."
+}
