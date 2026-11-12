@@ -1,0 +1,59 @@
+# devops raw state capture 2026-11-12T18:17:46+08:00
+# first observation this round (2026-11-12 ~17:40 CST, same command): aliyun-worker Ready, devops Ready, ucloud-worker NotReady
+== kubectl nodes ==
+NAME            STATUS   ROLES           AGE    VERSION
+aliyun-worker   Ready    <none>          177d   v1.36.1+k3s1
+devops          Ready    control-plane   209d   v1.36.1+k3s1
+ucloud-worker   Ready    <none>          177d   v1.36.1+k3s1
+== entry.py ==
+-r--r--r-- 1 root root 6170 Nov 12 17:59 /var/lib/security-trivy/entry.py
+e37075d96694f8c1b95c63a90ae313c4595ea9df809f37229403621c396bfa58  /var/lib/security-trivy/entry.py
+== db-cache ==
+/var/lib/security-trivy/db-cache:
+total 16
+drwxr-xr-x  4 root root           4096 Nov 12 18:05 .
+drwxr-xr-x 10 root root           4096 Nov 12 18:05 ..
+drwxr-x---  2 root security-trivy 4096 Nov 12 18:06 db
+drwxr-x---  2 root security-trivy 4096 Nov 12 18:06 java-db
+
+/var/lib/security-trivy/db-cache/db:
+total 1723052
+drwxr-x--- 2 root security-trivy       4096 Nov 12 18:06 .
+drwxr-xr-x 4 root root                 4096 Nov 12 18:05 ..
+-r--r----- 1 root security-trivy        143 Nov 12 18:05 metadata.json
+-r--r----- 1 root security-trivy 1764368384 Nov 12 18:05 trivy.db
+
+/var/lib/security-trivy/db-cache/java-db:
+total 1540436
+drwxr-x--- 2 root security-trivy       4096 Nov 12 18:06 .
+drwxr-xr-x 4 root root                 4096 Nov 12 18:05 ..
+-r--r----- 1 root security-trivy        142 Nov 12 18:06 metadata.json
+-r--r----- 1 root security-trivy 1577381888 Nov 12 18:06 trivy-java.db
+== hashes ==
+e79569457479d18baa1ea27f21c5ccab9cf543a211c459ee7bdace2e3c52539f  /var/lib/security-trivy/db-cache/db/trivy.db
+442de28864c1b59bc8b7512560b41cfd8f7355de21ec15a91278497847f8df9b  /var/lib/security-trivy/db-cache/db/metadata.json
+c7667e7d7d335b7a801b4ed11c1a886d0928eec65bf7e5b973762e8715cf4263  /var/lib/security-trivy/db-cache/java-db/trivy-java.db
+2dd38a9e5c3c46eccc54de846c94655246e3003b638719c24960327a3276ed89  /var/lib/security-trivy/db-cache/java-db/metadata.json
+== metadata db ==
+{"Version":2,"NextUpdate":"2026-11-13T07:01:33.828309984Z","UpdatedAt":"2026-11-12T07:01:33.828310435Z","DownloadedAt":"0001-01-01T00:00:00Z"}
+
+== metadata java-db ==
+{"Version":1,"NextUpdate":"2026-11-15T00:58:04.308133879Z","UpdatedAt":"2026-11-12T00:58:04.30813481Z","DownloadedAt":"0001-01-01T00:00:00Z"}
+
+== credentials expiry (no secret values) ==
+{'username': 'robot$petclinic+security-manager-v2-trivy-pull', 'robotId': 250, 'expiresAt': 1794222144}
+== marker ==
+total 12
+drwx------  3 security-trivy security-trivy 4096 Nov 12 12:38 .
+drwxr-xr-x 10 root           root           4096 Nov 12 18:05 ..
+drwx------  3 security-trivy security-trivy 4096 Nov 12 12:43 offline-stale-20261112
+MARKER_ABSENT
+== offline scan record hashes ==
+a83d39f8d126ca2ba1e7ccf21b1b2dad6a3f77b8dea2cd208bbfda400cdcb119  /var/lib/security-trivy/data/offline-stale-20261112/native.json
+05725f6cd82d66f94f7e9ad5774ecb0404715a40d42f422ee84bfeb1ebb1928b  /var/lib/security-trivy/data/offline-stale-20261112/execution-evidence.json
+== tool ==
+7844c3851b28470b6d7f0975fa0b3262c5b2272c9a54a91f522801bb8926f51f  /var/lib/security-trivy/bin/trivy
+== disk/mem/load ==
+/dev/vda2       252G  207G   34G  86% /
+MemAvailable:    5992744 kB
+4.36 3.54 3.74 2/3151 1476542

@@ -12,10 +12,41 @@
     "SIGHUP/SIGTERM during a scan kills the scanner process group before the entry exits (disconnect cleanup); the pre-existing 185s timeout group-kill is unchanged"
   ],
   "probes": [
-    {"command": "bogus", "response": {"error": "COMMAND_REJECTED", "stages": []}},
-    {"command": "scan-v1 trivy-candidate web-11111111-2222-3333-4444-555555555555", "response": {"error": "DB_FRESHNESS_BLOCKED", "stages": []}, "note": "before DB refresh"},
-    {"command": "scan-v1 trivy-candidate web-11111111-2222-3333-4444-555555555555", "response": {"error": "RESOURCE_BUDGET_BLOCKED", "stages": []}, "note": "after DB refresh, transient load1 above 75% of 6 CPUs on the shared platform host; not bypassed"},
-    {"command": "scan-v1 trivy-candidate web-11111111-2222-3333-4444-555555555555", "response": {"error": "CREDENTIAL_EXPIRED_BLOCKED", "stages": []}, "note": "after DB refresh in a normal load window: identity, tool digest, resource and DB freshness gates all pass; credential gate stops the attempt before the one-shot marker"}
+    {
+      "command": "bogus",
+      "response": {
+        "error": "COMMAND_REJECTED",
+        "stages": []
+      }
+    },
+    {
+      "command": "scan-v1 trivy-candidate web-11111111-2222-3333-4444-555555555555",
+      "response": {
+        "error": "DB_FRESHNESS_BLOCKED",
+        "stages": []
+      },
+      "note": "before DB refresh"
+    },
+    {
+      "command": "scan-v1 trivy-candidate web-11111111-2222-3333-4444-555555555555",
+      "response": {
+        "error": "RESOURCE_BUDGET_BLOCKED",
+        "stages": []
+      },
+      "note": "after DB refresh, transient load1 above 75% of 6 CPUs on the shared platform host; not bypassed"
+    },
+    {
+      "command": "scan-v1 trivy-candidate web-11111111-2222-3333-4444-555555555555",
+      "response": {
+        "error": "CREDENTIAL_EXPIRED_BLOCKED",
+        "stages": []
+      },
+      "note": "after DB refresh in a normal load window: identity, tool digest, resource and DB freshness gates all pass; credential gate stops the attempt before the one-shot marker"
+    }
   ],
-  "formalScanMarker": "/var/lib/security-trivy/data/formal-scan-attempt.json absent after all probes and after the armed Web attempt"
+  "formalScanMarker": "/var/lib/security-trivy/data/formal-scan-attempt.json absent after all probes and after the armed Web attempt",
+  "rawLogs": [
+    "raw/web-acceptance.log",
+    "raw/devops-state.log"
+  ]
 }

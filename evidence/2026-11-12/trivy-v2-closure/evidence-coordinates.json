@@ -1,0 +1,155 @@
+{
+  "kind": "TrivyV2ClosureEvidenceCoordinates",
+  "observedAt": "2026-11-12T10:19:00Z",
+  "commits": {
+    "adapterAndRunner": "17ca30e4f839507425bd526ef3971650e0405059",
+    "viewWiring": "9dd706c40502119274ca056493df4fd4f78e635c",
+    "viewApprovalBlock": "62fe835928259cc4dd38b64661de1cad907e1c8a",
+    "opsDocs": "9177c21f3995c2c4f05d4e87a1f4bd2a989444ad",
+    "runtimeFactsCi": "6f668a52123ae2452d40f3eac3008bba694c4c2c",
+    "closureEvidence": "8c2daa5bc1cf794d4cf0b306bd8e8915829d14f7"
+  },
+  "items": [
+    {
+      "id": "C2-severity-normalization",
+      "code": [
+        {
+          "path": "infra/security/manager-v2/trivy-real.mjs",
+          "lines": "11-12 (SEVERITIES map, normalizeTrivySeverity)",
+          "commit": "17ca30e4"
+        },
+        {
+          "path": "infra/security/manager-v2/trivy-real.mjs",
+          "lines": "15 (buildTrivyFindings applies normalization)",
+          "commit": "17ca30e4"
+        },
+        {
+          "path": "infra/security/manager-v2/trivy-real.mjs",
+          "lines": "18-20 (buildTrivyFact)",
+          "commit": "17ca30e4"
+        },
+        {
+          "path": "infra/security/manager-v2/trivy-real.test.mjs",
+          "lines": "severity mapping + formal Policy path tests",
+          "commit": "17ca30e4"
+        }
+      ],
+      "rawLogs": [
+        "raw/contract-manager-v2.log"
+      ]
+    },
+    {
+      "id": "C1/A10-web-switch",
+      "code": [
+        {
+          "path": "infra/security/manager-v2/view/controls.mjs",
+          "lines": "9 (managedPlugins incl. trivy), 13 (normalize migration)",
+          "commit": "9dd706c4"
+        },
+        {
+          "path": "infra/security/manager-v2/view/actions.mjs",
+          "lines": "17 (import), 19 (ids), 34 (capabilities trivy branch), 44 (validateRequest), 78 (remote), 82 (225s timer), 103-114 (submit trivy branch)",
+          "commit": "9dd706c4"
+        },
+        {
+          "path": "infra/security/manager-v2/view/app.js",
+          "lines": "18 (subtitle), 178-181 (run card), 201 (live-plugin option), 206-207 (run body + polling), 216/221/227 (control rows, effective policy, save payload)",
+          "commit": "9dd706c4"
+        },
+        {
+          "path": "infra/security/manager-v2/trivy-real.mjs",
+          "lines": "6 (arming state path fix: ../../../.devsecops)",
+          "commit": "17ca30e4"
+        }
+      ],
+      "rawLogs": [
+        "raw/web-acceptance.log",
+        "raw/repro-api-acceptance.mjs",
+        "raw/repro-formal-attempt.mjs",
+        "raw/run-web-eb7c1ac0-3502-448d-83f5-e6e7ae68f827/",
+        "raw/run-web-7f701cf6-22ac-4512-a9ce-6185a8e29522/"
+      ]
+    },
+    {
+      "id": "D3-timeout-diagnostics",
+      "code": [
+        {
+          "path": "infra/security/manager-v2/trivy-real.mjs",
+          "lines": "34-50 (diagnosticFailure + error mapping incl. RUNNER_TIMEOUT/RUNNER_CANCELLED)",
+          "commit": "17ca30e4"
+        },
+        {
+          "path": "infra/security/manager-v2/trivy/entry.py",
+          "lines": "4-10 (STAGES/_term), 41 (FORMAL_SCAN_ALREADY_CONSUMED), 44 (stages alias), 51-52 (signal handlers + child group), 73-75 (error output with stages)",
+          "commit": "17ca30e4"
+        }
+      ],
+      "values": {
+        "entrySha256BothCopies": "e37075d96694f8c1b95c63a90ae313c4595ea9df809f37229403621c396bfa58"
+      },
+      "rawLogs": [
+        "raw/web-acceptance.log",
+        "raw/devops-state.log"
+      ]
+    },
+    {
+      "id": "A7/A8-database-refresh",
+      "code": [],
+      "values": {
+        "trivyDbManifestSha256": "69f786ce825ea62439875b067d2ba0aa91208354189e4289e047b986275fbc7e",
+        "trivyDbLayerSha256": "74c86a033c1125f451e369060b126aa0c6b4c678ae9661915c82c345fb8e05d7",
+        "trivyDbFileSha256": "e79569457479d18baa1ea27f21c5ccab9cf543a211c459ee7bdace2e3c52539f",
+        "javaDbManifestSha256": "91f7488e5afee003ff19a0ca49bbd889eaa911bfde4279d37288f7a540a061c5",
+        "javaDbLayerSha256": "679805756c2b434d9c797fba24de1468938f18f19884f6cde33508455274cd19",
+        "javaDbFileSha256": "c7667e7d7d335b7a801b4ed11c1a886d0928eec65bf7e5b973762e8715cf4263",
+        "candidateIndexDigest": "sha256:2fbaea65ab030c56c60c62e3ee9fbe362deb8bbbb8216a891ef4c7bbbcea6d55",
+        "candidatePlatformDigest": "sha256:06a515708b6783db7d545544bbefb02e9f94abfc0fdf13a7355ccbe2deb3ed42",
+        "toolSha256": "7844c3851b28470b6d7f0975fa0b3262c5b2272c9a54a91f522801bb8926f51f"
+      },
+      "rawLogs": [
+        "raw/ghcr-trivy-db-manifest.json",
+        "raw/ghcr-trivy-java-db-manifest.json",
+        "raw/db-metadata.json",
+        "raw/java-db-metadata.json",
+        "raw/devops-state.log",
+        "db-update.json"
+      ]
+    },
+    {
+      "id": "A9-formal-scan-blocked",
+      "code": [],
+      "values": {
+        "robotId": 250,
+        "credentialExpiresAtEpoch": 1794222144,
+        "blocker": "CREDENTIAL_EXPIRED_BLOCKED",
+        "oneShotMarkerConsumed": false
+      },
+      "rawLogs": [
+        "raw/web-acceptance.log",
+        "raw/devops-state.log",
+        "raw/run-web-eb7c1ac0-3502-448d-83f5-e6e7ae68f827/result.json",
+        "raw/run-web-7f701cf6-22ac-4512-a9ce-6185a8e29522/result.json"
+      ]
+    },
+    {
+      "id": "A2-k8s-nodes",
+      "code": [],
+      "rawLogs": [
+        "raw/devops-state.log"
+      ],
+      "note": "Two observations recorded in the same raw log: ~17:40 CST ucloud-worker NotReady; 18:15 and 18:17 CST captures show all three nodes Ready. State flaps with the pre-existing tunnel instability item."
+    },
+    {
+      "id": "A4-offline-scan",
+      "code": [],
+      "values": {
+        "nativeReportSha256": "a83d39f8d126ca2ba1e7ccf21b1b2dad6a3f77b8dea2cd208bbfda400cdcb119",
+        "executionEvidenceSha256": "05725f6cd82d66f94f7e9ad5774ecb0404715a40d42f422ee84bfeb1ebb1928b"
+      },
+      "rawLogs": [
+        "raw/devops-state.log"
+      ]
+    }
+  ],
+  "rawDirectory": "evidence/2026-11-12/trivy-v2-closure/raw/"
+}

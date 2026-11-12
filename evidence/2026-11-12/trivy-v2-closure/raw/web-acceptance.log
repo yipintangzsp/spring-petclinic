@@ -1,0 +1,50 @@
+date: invalid argument 's' for -I
+# Web/API acceptance rerun 
+# server lifecycle: node infra/security/manager-v2/view/control.mjs start|stop
+Running: http://127.0.0.1:17862
+# --- switch toggling acceptance (repro-api-acceptance.mjs) ---
+CAPABILITY {"pluginId":"trivy","state":"BLOCKED","reason":"TRIVY_EXECUTION_NOT_ARMED","runner":"trivy-real","toolVersion":"0.76.2","toolVersionObservation":"PINNED","executionHost":"devops/192.168.1.58","executionIdentity":"security-trivy","scenarios":["clean"],"projects":["trivy-candidate"]}
+CONFIG revision 36 trivy {"enabled":true} pluginKeys gitleaks,semgrep,cosign,sbom,trivy
+AFTER_OFF capability {"pluginId":"trivy","state":"DISABLED","reason":"PLUGIN_DISABLED","runner":"trivy-real","toolVersion":"0.76.2","toolVersionObservation":"PINNED","executionHost":"devops/192.168.1.58","executionIdentity":"security-trivy","scenarios":["clean"],"projects":["trivy-candidate"]}
+RUN_OFF {"runId":"web-5dd84367-cd38-4552-aa17-e948c58b6d3a","state":"DISABLED","reason":"PLUGIN_DISABLED","scannerExecuted":false,"evaluationCount":0,"policyDecision":null}
+AFTER_ON capability {"pluginId":"trivy","state":"BLOCKED","reason":"TRIVY_EXECUTION_NOT_ARMED","runner":"trivy-real","toolVersion":"0.76.2","toolVersionObservation":"PINNED","executionHost":"devops/192.168.1.58","executionIdentity":"security-trivy","scenarios":["clean"],"projects":["trivy-candidate"]}
+RUN_ON {"runId":"web-30019eeb-8292-4339-9f01-6df464916c8b","state":"BLOCKED","reason":"TRIVY_EXECUTION_NOT_ARMED","scannerExecuted":false,"evaluationCount":0,"policyDecision":null}
+FINAL revision 38 trivyEnabled true
+# --- entry probes via adapter-identical ssh ---
+{"error": "COMMAND_REJECTED", "stages": []}
+{"error": "CREDENTIAL_EXPIRED_BLOCKED", "stages": []}
+# --- armed formal attempt (repro-formal-attempt.mjs) ---
+CAPABILITY_ARMED {"pluginId":"trivy","state":"READY","reason":null,"runner":"trivy-real","toolVersion":"0.76.2","toolVersionObservation":"PINNED","executionHost":"devops/192.168.1.58","executionIdentity":"security-trivy","scenarios":["clean"],"projects":["trivy-candidate"]}
+SUBMITTED web-7f701cf6-22ac-4512-a9ce-6185a8e29522
+RUN_RESULT {
+ "runId": "web-7f701cf6-22ac-4512-a9ce-6185a8e29522",
+ "state": "BLOCKED",
+ "reason": "CREDENTIAL_EXPIRED_BLOCKED",
+ "evidenceClass": "NOT_TESTED",
+ "scannerExecuted": false,
+ "policyDecision": null,
+ "evaluationCount": 0,
+ "executionDiagnostic": {
+  "error": "CREDENTIAL_EXPIRED_BLOCKED",
+  "scannerStarted": false,
+  "stage": "RESTRICTED_SSH_RUNNER"
+ },
+ "router": [
+  {
+   "consumerId": "dry-run",
+   "deliveryDecision": "DRY_RUN"
+  },
+  {
+   "consumerId": "local-evidence",
+   "deliveryDecision": "DELIVERED_LOCAL_ONLY"
+  }
+ ],
+ "artifactDigest": "9143af13f5a2f63e69c5956ee459f1e5a87d8ceef50b6ebeb2dda35c6d53cee8",
+ "resultDigest": "3168526b87cb723a7f790cd7a9c9352ff0ba867d48b7d044524f47131f704340",
+ "cleanup": "JOINED_OR_NOT_STARTED",
+ "executionLocation": "LINUX_RESTRICTED"
+}
+# state file removed (disarmed)
+CAPABILITY_AFTER_DISARM {"pluginId": "trivy", "state": "BLOCKED", "reason": "TRIVY_EXECUTION_NOT_ARMED", "runner": "trivy-real", "toolVersion": "0.76.2", "toolVersionObservation": "PINNED", "executionHost": "devops/192.168.1.58", "executionIdentity": "security-trivy", "scenarios": ["clean"], "projects": ["trivy-candidate"]}
+Stopped local page
+# captured: 2026-11-12T18:17:37+0800 Asia/Shanghai

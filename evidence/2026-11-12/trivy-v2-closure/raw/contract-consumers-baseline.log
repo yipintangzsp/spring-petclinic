@@ -1,0 +1,674 @@
+# command: node --test infra/security/manager-v2/consumers/*.test.mjs (baseline anomaly record)
+date: invalid argument 's' for -I
+✔ REPLAY Gitleaks actual finding becomes a redacted Generic finding with versioned default severity (11.000583ms)
+✔ REPLAY Semgrep native rules/severity/locations preserved separately from Policy (13.199292ms)
+✔ REPLAY Cosign supply-chain failure explicitly UNSUPPORTED, no invented CVE (6.009125ms)
+✔ REPLAY three-plugin same-run candidate prepares independent sources without Trivy (4.972875ms)
+✔ REPLAY noncomplete D-gitleaks-disabled cannot close history or emit scan PASS (3.964167ms)
+✔ REPLAY noncomplete C-semgrep-disabled cannot close history or emit scan PASS (8.231375ms)
+✔ REPLAY noncomplete I-cosign-timeout cannot close history or emit scan PASS (3.444458ms)
+✔ REPLAY noncomplete Q-cross-project-identity-rejected cannot close history or emit scan PASS (9.197625ms)
+✔ FIXTURE Trivy blocked is independent and does not prevent Gitleaks/Semgrep preparation (224.8395ms)
+✔ REPLAY project B maps to a distinct nonproduction Product/Engagement/Test plan (9.172417ms)
+✔ REPLAY offline repeated preparation and delivery preserve exact facts and reuse the sealed payload (45.819ms)
+✔ FIXTURE equal finding in different projects has different stable identity (217.497917ms)
+✔ FIXTURE equal title/location across plugins and scope is not a shared identity (0.154792ms)
+✔ FIXTURE invalid production IDs, colliding aliases or profile mapping rejected (0.684792ms)
+✔ FIXTURE unknown project is NOT_CONFIGURED and never auto-creates context (268.302291ms)
+✔ FIXTURE missing raw report reference blocks only that plugin, no synthetic PASS (304.418875ms)
+✔ FIXTURE corrupted raw bytes fail artifact validation before any consumer delivery (258.722958ms)
+✔ FIXTURE payload digest mismatch rejected (9.637667ms)
+✔ REPLAY Policy FAIL remains FAIL through Router and receipt with same result/fact digests (47.800375ms)
+✔ REPLAY consumer delivery error is independent and retry reuses original Policy results (80.329875ms)
+✔ FIXTURE redaction drops Secret/Match/source snippets/messages/email regardless of caller text (267.273083ms)
+✔ REPLAY no history-close actions in disabled/error/empty reports (12.787791ms)
+✔ STATIC no token/remote destination accepted, no HTTP success receipt fabricated (55.130666ms)
+✔ STATIC arbitrary registry transform and private Product CLI parameters rejected (0.209084ms)
+✔ REPLAY actual CLI prepares consumer artifacts without starting scanners/Policy (205.732083ms)
+✔ REPLAY rediscovery across two real prior runs keeps stable finding identity, distinct result binding (14.32525ms)
+✔ FIXTURE token smuggling via a resealed plan is rejected (6.275625ms)
+✔ FIXTURE no arbitrary inline endpoint, raw source field or lifecycle state in Generic Finding (3.784458ms)
+✔ REPLAY Router refuses remote options without changing other consumer or result (7.38175ms)
+✔ FIXTURE consumer cannot write preparation output into immutable input artifact (218.646167ms)
+✔ REPLAY real HTTP multipart gitleaks mapping and fact/result reuse (345.777ms)
+✔ REPLAY real HTTP multipart semgrep mapping and fact/result reuse (337.2375ms)
+✔ FIXTURE mixed findings use both existing mappings over actual HTTP (650.943667ms)
+✔ REPLAY disabled source does not block other HTTP import D-gitleaks-disabled (138.670625ms)
+✔ REPLAY disabled source does not block other HTTP import C-semgrep-disabled (97.566958ms)
+✔ FIXTURE ERROR retains null Policy and independent other plugin delivery (397.797958ms)
+✔ FIXTURE POLICY_ERROR retains null Policy and independent other plugin delivery (372.632917ms)
+✔ FIXTURE blocked Trivy and REPLAY Cosign failure never become synthetic HTTP findings (495.32175ms)
+✔ HTTP 400 is rejected, no mutation retries or secret echo (224.670375ms)
+✔ HTTP 401 is rejected, no mutation retries or secret echo (228.499917ms)
+✔ HTTP 403 is rejected, no mutation retries or secret echo (191.143792ms)
+✔ HTTP 404 is rejected, no mutation retries or secret echo (163.570583ms)
+✔ HTTP 409 never treated as successful or blindly retried (131.580666ms)
+✔ HTTP 500 never treated as successful or blindly retried (155.783833ms)
+✔ HTTP 503 never treated as successful or blindly retried (130.5855ms)
+✔ HTTP POST 429 is retryable only after read-only recovery, no blind resend (83.754291ms)
+✔ HTTP safe GET retries with bounded backoff 429 (94.093708ms)
+✔ HTTP safe GET retries with bounded backoff 500 (134.007417ms)
+✔ HTTP safe GET retries with bounded backoff 503 (142.317709ms)
+✔ HTTP GET retry exhaustion cannot trigger import (78.788ms)
+✔ HTTP connection refused is bounded, never starts a write (75.607917ms)
+✔ HTTP GET timeout is bounded and preserves NOT_SENT semantics (105.755041ms)
+✔ HTTP ambiguous write postTimeout persists uncertainty across calls (219.531833ms)
+✔ HTTP ambiguous write responseLost persists uncertainty across calls (112.728ms)
+✔ HTTP ambiguous write malformed persists uncertainty across calls (130.817833ms)
+✔ HTTP ambiguous write oversized persists uncertainty across calls (103.319917ms)
+✔ HTTP ambiguous write noTest persists uncertainty across calls (128.838167ms)
+✔ HTTP ambiguous write redirect persists uncertainty across calls (105.773167ms)
+✔ HTTP delivered-but-lost response is reconciled by exact Test and Finding identities, not promoted to ACK (200.7395ms)
+✔ HTTP ambiguous multiple remote tests block replay (63.578708ms)
+✔ HTTP repeated acknowledged result uses durable receipts without another request (176.93825ms)
+✔ HTTP a fresh client journal cannot duplicate an already existing Test (103.725292ms)
+✔ HTTP simultaneous clients sharing journal cannot both POST (94.383333ms)
+✔ HTTP consumer failure affects receipt, not Policy or another plugin (185.673458ms)
+✔ HTTP default is disabled and legacy Router remains offline (66.666375ms)
+✔ HTTP unknown profile or mismatched project rejects before any socket (5.420417ms)
+✖ HTTP allowlist cannot accept arbitrary URL, address, Product, token or fetch override (2.044167ms)
+✔ HTTP timeout/retry bounds reject weakening (0.4925ms)
+✔ HTTP credential channel rejects symlink, hardlink, broad permissions and real token (1.92775ms)
+✔ HTTP unapproved redirect and pagination URL are never followed (49.705792ms)
+✔ HTTP Product binding and Finding test binding cannot be guessed (160.33525ms)
+✔ HTTP journal damage fails closed, does not replay (78.340208ms)
+✔ HTTP journal must be private and separate from immutable input (270.21725ms)
+✔ HTTP manufactured transport handle cannot start network (0.88875ms)
+✔ HTTP CLI refuses remote destination/inline token/real opt-in (0.125791ms)
+✔ HTTP actual async Candidate CLI sends to only local Mock using protected credential (237.420542ms)
+✔ HTTP 200 and nested 201 success accepted only with matching Test/Finding query (90.459666ms)
+✔ STATIC HTTP implementation has no scanner/Policy imports or reimport writes (0.442417ms)
+✔ HTTP response content-type mismatch is UNKNOWN, never another POST (35.516583ms)
+✔ HTTP payload bytes on the wire bind to the durable SENT SHA256 (98.66625ms)
+✔ HTTP project B uses its own mock Product/Engagement only (103.510667ms)
+✔ HTTP corrupt Candidate artifact is rejected before network or journal (168.020417ms)
+✔ HTTP wrong artifact seal cannot start a request (4.792083ms)
+✔ HTTP serialized transport handle is unusable and contains no credential (3.477042ms)
+✔ HTTP no scanner or Policy result is changed by protocol rejections (154.7ms)
+✔ HTTP limitation: independent concurrent journals are not a distributed exactly-once guarantee (145.871125ms)
+✔ HTTP 202 acceptance is not a completed import ACK (48.638875ms)
+✔ HTTP real journal permission failure blocks dispatch and preserves Policy (9.216708ms)
+✔ HTTP all-disabled Candidate has no request and cannot close findings (2.324625ms)
+✖ REPLAY A-three-valid same Result in Dojo offline and Loki real HTTP (106.712875ms)
+✖ REPLAY H-gitleaks-fail same Result in Dojo offline and Loki real HTTP (109.803542ms)
+✖ REPLAY G-semgrep-fail same Result in Dojo offline and Loki real HTTP (79.795209ms)
+✖ REPLAY F-cosign-tampered same Result in Dojo offline and Loki real HTTP (80.008417ms)
+✖ REPLAY D-gitleaks-disabled same Result in Dojo offline and Loki real HTTP (85.938125ms)
+✖ REPLAY I-cosign-timeout same Result in Dojo offline and Loki real HTTP (83.83525ms)
+✖ REPLAY P-service-project same Result in Dojo offline and Loki real HTTP (80.991541ms)
+✔ default transport is local dry-run with zero HTTP (44.213583ms)
+✔ disabled Consumer needs no writable output and sends zero HTTP (4.689ms)
+✖ HTTP 400 rejected without retry (52.336167ms)
+✖ HTTP 401 rejected without retry (66.580708ms)
+✖ HTTP 403 rejected without retry (37.938542ms)
+✖ HTTP 404 rejected without retry (72.826ms)
+✖ HTTP 429 bounded retries preserve exact bytes and Policy (62.927708ms)
+✖ HTTP 500 bounded retries preserve exact bytes and Policy (60.936708ms)
+✖ HTTP 503 bounded retries preserve exact bytes and Policy (51.792667ms)
+✖ retry then 204 ACK never claims exactly-once (47.278542ms)
+✖ connection refused retries bounded to three (63.327959ms)
+✖ timeout is UNKNOWN_REMOTE_STATE, no blind retry (46.90675ms)
+✖ lost is UNKNOWN_REMOTE_STATE, no blind retry (74.278459ms)
+✖ HTTP 200 is not ingestion ACK (46.512041ms)
+✖ HTTP 201 is not ingestion ACK (37.21425ms)
+✖ HTTP 202 is not ingestion ACK (26.537917ms)
+✖ redirect rejected, never followed (34.814833ms)
+✔ transport denies url override (0.488541ms)
+✔ transport denies targetId override (0.096417ms)
+✔ transport denies headers override (0.117416ms)
+✔ transport denies token override (0.0775ms)
+✔ transport denies proxy override (0.10525ms)
+✔ transport denies tenant override (0.077209ms)
+✔ transport denies mode override (0.101542ms)
+✔ transport denies maxAttempts override (0.084459ms)
+✔ transport denies timeoutMs override (0.077459ms)
+✔ transport denies backoffMs override (0.079958ms)
+✔ plan and transport must be genuine capability handles (8.105209ms)
+✔ cross-project artifact or receipt rejected (52.637542ms)
+✔ stable identities, timestamps and content across repeated projection (9.96ms)
+✔ project and plugin identity never share eventIdentity (7.823708ms)
+✔ native findings retained, severity not invented, Cosign never CVE (11.363917ms)
+✔ disabled and runner error are unknown findings, never zero/PASS (7.000458ms)
+✔ actual core master OFF performs zero evaluations, Router emits DISABLED, no PASS (313.13425ms)
+✖ explicit Policy ERROR FIXTURE remains error, never PASS (212.110958ms)
+✖ secrets and source snippets never enter push, receipt or test log (258.301208ms)
+✔ oversized untrusted failureReason is replaced by fixed error enum (316.711333ms)
+✔ oversized identity fails closed without HTTP (184.789208ms)
+✔ timestamp invalid refused without retimestamp (221.737792ms)
+✔ timestamp old refused without retimestamp (248.227083ms)
+✔ timestamp future refused without retimestamp (240.489917ms)
+✔ payload validator rejects extra-label (8.572ms)
+✔ payload validator rejects changed-label (4.184333ms)
+✔ payload validator rejects duplicate-event (3.94975ms)
+✔ payload validator rejects timestamp-number (3.978209ms)
+✔ payload validator rejects unknown-field (3.771333ms)
+✔ payload validator rejects unknown-severity (4.074333ms)
+✔ payload validator rejects finding-unknown-zero (4.675791ms)
+✔ label values are bounded enumerations and contain no project/run/digests (4.879666ms)
+✔ duplicate source receipts collapse by stable identity (50.703667ms)
+✔ sealed payload reused without rewriting evidence; output symlink and input overlap denied (33.950875ms)
+✖ Dojo offline ERROR does not stop Loki ACK (37.79825ms)
+✖ Loki ERROR preserves successful Dojo offline preparation and Policy FAIL (55.931709ms)
+✖ both Consumer failures remain separate hashed receipts (34.777375ms)
+✔ Loki preparation error produces isolated receipt without changing Dojo (36.799709ms)
+✖ own ACK is an actual receipt event only in an explicit subsequent batch (22.119625ms)
+✔ Consumer code has no scanner or Policy evaluation import/call (0.367541ms)
+✔ real HTTP invalid push receives 400 at Mock protocol boundary (10.354ms)
+✔ CLI defaults local-only and rejects target/token/unknown/duplicate arguments (2.309542ms)
+✖ Dojo HTTP rejection and Loki HTTP ACK are independent over shared Result (4.10975ms)
+ℹ tests 156
+ℹ suites 0
+ℹ pass 126
+ℹ fail 30
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 8385.022084
+
+✖ failing tests:
+
+test at infra/security/manager-v2/consumers/dojo-http.test.mjs:99:1
+✖ HTTP allowlist cannot accept arbitrary URL, address, Product, token or fetch override (2.044167ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
+  + actual - expected
+  
+  + [
+  +   'dojo-demo-java-v1'
+  + ]
+  - []
+  
+      at TestContext.<anonymous> (file:///private/tmp/v2-contract-full/infra/security/manager-v2/consumers/dojo-http.test.mjs:99:451)
+      at Test.runInAsyncScope (node:async_hooks:226:14)
+      at Test.run (node:internal/test_runner/test:1201:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:831:18)
+      at Test.postRun (node:internal/test_runner/test:1330:19)
+      at Test.run (node:internal/test_runner/test:1258:12)
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:831:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: [ 'dojo-demo-java-v1' ],
+    expected: [],
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }
+
+test at infra/security/manager-v2/consumers/loki.test.mjs:25:153
+✖ REPLAY A-three-valid same Result in Dojo offline and Loki real HTTP (106.712875ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  + actual - expected
+  
+  + 'ERROR'
+  - 'ACKNOWLEDGED'
+  
+      at file:///private/tmp/v2-contract-full/infra/security/manager-v2/consumers/loki.test.mjs:27:9
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async withMock (file:///private/tmp/v2-contract-full/infra/security/manager-v2/consumers/loki.test.mjs:22:64)
+      at async Test.run (node:internal/test_runner/test:1208:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:385:3) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 'ERROR',
+    expected: 'ACKNOWLEDGED',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at infra/security/manager-v2/consumers/loki.test.mjs:25:153
+✖ REPLAY H-gitleaks-fail same Result in Dojo offline and Loki real HTTP (109.803542ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  + actual - expected
+  
+  + 'ERROR'
+  - 'ACKNOWLEDGED'
+  
+      at file:///private/tmp/v2-contract-full/infra/security/manager-v2/consumers/loki.test.mjs:27:9
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async withMock (file:///private/tmp/v2-contract-full/infra/security/manager-v2/consumers/loki.test.mjs:22:64)
+      at async Test.run (node:internal/test_runner/test:1208:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:831:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 'ERROR',
+    expected: 'ACKNOWLEDGED',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at infra/security/manager-v2/consumers/loki.test.mjs:25:153
+✖ REPLAY G-semgrep-fail same Result in Dojo offline and Loki real HTTP (79.795209ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  + actual - expected
+  
+  + 'ERROR'
+  - 'ACKNOWLEDGED'
+  
+      at file:///private/tmp/v2-contract-full/infra/security/manager-v2/consumers/loki.test.mjs:27:9
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async withMock (file:///private/tmp/v2-contract-full/infra/security/manager-v2/consumers/loki.test.mjs:22:64)
+      at async Test.run (node:internal/test_runner/test:1208:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:831:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 'ERROR',
+    expected: 'ACKNOWLEDGED',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at infra/security/manager-v2/consumers/loki.test.mjs:25:153
+✖ REPLAY F-cosign-tampered same Result in Dojo offline and Loki real HTTP (80.008417ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  + actual - expected
+  
+  + 'ERROR'
+  - 'ACKNOWLEDGED'
+  
+      at file:///private/tmp/v2-contract-full/infra/security/manager-v2/consumers/loki.test.mjs:27:9
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async withMock (file:///private/tmp/v2-contract-full/infra/security/manager-v2/consumers/loki.test.mjs:22:64)
+      at async Test.run (node:internal/test_runner/test:1208:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:831:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 'ERROR',
+    expected: 'ACKNOWLEDGED',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at infra/security/manager-v2/consumers/loki.test.mjs:25:153
+✖ REPLAY D-gitleaks-disabled same Result in Dojo offline and Loki real HTTP (85.938125ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  + actual - expected
+  
+  + 'ERROR'
+  - 'ACKNOWLEDGED'
+  
+      at file:///private/tmp/v2-contract-full/infra/security/manager-v2/consumers/loki.test.mjs:27:9
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async withMock (file:///private/tmp/v2-contract-full/infra/security/manager-v2/consumers/loki.test.mjs:22:64)
+      at async Test.run (node:internal/test_runner/test:1208:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:831:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 'ERROR',
+    expected: 'ACKNOWLEDGED',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at infra/security/manager-v2/consumers/loki.test.mjs:25:153
+✖ REPLAY I-cosign-timeout same Result in Dojo offline and Loki real HTTP (83.83525ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  + actual - expected
+  
+  + 'ERROR'
+  - 'ACKNOWLEDGED'
+  
+      at file:///private/tmp/v2-contract-full/infra/security/manager-v2/consumers/loki.test.mjs:27:9
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async withMock (file:///private/tmp/v2-contract-full/infra/security/manager-v2/consumers/loki.test.mjs:22:64)
+      at async Test.run (node:internal/test_runner/test:1208:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:831:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 'ERROR',
+    expected: 'ACKNOWLEDGED',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at infra/security/manager-v2/consumers/loki.test.mjs:25:153
+✖ REPLAY P-service-project same Result in Dojo offline and Loki real HTTP (80.991541ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  + actual - expected
+  
+  + 'ERROR'
+  - 'ACKNOWLEDGED'
+  
+      at file:///private/tmp/v2-contract-full/infra/security/manager-v2/consumers/loki.test.mjs:27:9
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async withMock (file:///private/tmp/v2-contract-full/infra/security/manager-v2/consumers/loki.test.mjs:22:64)
+      at async Test.run (node:internal/test_runner/test:1208:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:831:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 'ERROR',
+    expected: 'ACKNOWLEDGED',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at infra/security/manager-v2/consumers/loki.test.mjs:31:39
+✖ HTTP 400 rejected without retry (52.336167ms)
+  Error: LOKI_TIMESTAMP_OUTSIDE_WINDOW
+      at must (file:///private/tmp/v2-contract-full/infra/security/manager-v2/consumers/loki.mjs:8:42)
+      at validateLokiPush (file:///private/tmp/v2-contract-full/infra/security/manager-v2/consumers/loki.mjs:97:20)
+      at publishLoki (file:///private/tmp/v2-contract-full/infra/security/manager-v2/consumers/loki.mjs:130:2)
+      at file:///private/tmp/v2-contract-full/infra/security/manager-v2/consumers/loki.test.mjs:31:164
+      at withMock (file:///private/tmp/v2-contract-full/infra/security/manager-v2/consumers/loki.test.mjs:22:70)
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async Test.run (node:internal/test_runner/test:1208:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:831:7) {
+    code: 'LOKI_TIMESTAMP_OUTSIDE_WINDOW'
+  }
+
+test at infra/security/manager-v2/consumers/loki.test.mjs:31:39
+✖ HTTP 401 rejected without retry (66.580708ms)
+  Error: LOKI_TIMESTAMP_OUTSIDE_WINDOW
+      at must (file:///private/tmp/v2-contract-full/infra/security/manager-v2/consumers/loki.mjs:8:42)
+      at validateLokiPush (file:///private/tmp/v2-contract-full/infra/security/manager-v2/consumers/loki.mjs:97:20)
+      at publishLoki (file:///private/tmp/v2-contract-full/infra/security/manager-v2/consumers/loki.mjs:130:2)
+      at file:///private/tmp/v2-contract-full/infra/security/manager-v2/consumers/loki.test.mjs:31:164
+      at withMock (file:///private/tmp/v2-contract-full/infra/security/manager-v2/consumers/loki.test.mjs:22:70)
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async Test.run (node:internal/test_runner/test:1208:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:831:7) {
+    code: 'LOKI_TIMESTAMP_OUTSIDE_WINDOW'
+  }
+
+test at infra/security/manager-v2/consumers/loki.test.mjs:31:39
+✖ HTTP 403 rejected without retry (37.938542ms)
+  Error: LOKI_TIMESTAMP_OUTSIDE_WINDOW
+      at must (file:///private/tmp/v2-contract-full/infra/security/manager-v2/consumers/loki.mjs:8:42)
+      at validateLokiPush (file:///private/tmp/v2-contract-full/infra/security/manager-v2/consumers/loki.mjs:97:20)
+      at publishLoki (file:///private/tmp/v2-contract-full/infra/security/manager-v2/consumers/loki.mjs:130:2)
+      at file:///private/tmp/v2-contract-full/infra/security/manager-v2/consumers/loki.test.mjs:31:164
+      at withMock (file:///private/tmp/v2-contract-full/infra/security/manager-v2/consumers/loki.test.mjs:22:70)
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async Test.run (node:internal/test_runner/test:1208:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:831:7) {
+    code: 'LOKI_TIMESTAMP_OUTSIDE_WINDOW'
+  }
+
+test at infra/security/manager-v2/consumers/loki.test.mjs:31:39
+✖ HTTP 404 rejected without retry (72.826ms)
+  Error: LOKI_TIMESTAMP_OUTSIDE_WINDOW
+      at must (file:///private/tmp/v2-contract-full/infra/security/manager-v2/consumers/loki.mjs:8:42)
+      at validateLokiPush (file:///private/tmp/v2-contract-full/infra/security/manager-v2/consumers/loki.mjs:97:20)
+      at publishLoki (file:///private/tmp/v2-contract-full/infra/security/manager-v2/consumers/loki.mjs:130:2)
+      at file:///private/tmp/v2-contract-full/infra/security/manager-v2/consumers/loki.test.mjs:31:164
+      at withMock (file:///private/tmp/v2-contract-full/infra/security/manager-v2/consumers/loki.test.mjs:22:70)
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async Test.run (node:internal/test_runner/test:1208:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:831:7) {
+    code: 'LOKI_TIMESTAMP_OUTSIDE_WINDOW'
+  }
+
+test at infra/security/manager-v2/consumers/loki.test.mjs:32:35
+✖ HTTP 429 bounded retries preserve exact bytes and Policy (62.927708ms)
+  Error: LOKI_TIMESTAMP_OUTSIDE_WINDOW
+      at must (file:///private/tmp/v2-contract-full/infra/security/manager-v2/consumers/loki.mjs:8:42)
+      at validateLokiPush (file:///private/tmp/v2-contract-full/infra/security/manager-v2/consumers/loki.mjs:97:20)
+      at publishLoki (file:///private/tmp/v2-contract-full/infra/security/manager-v2/consumers/loki.mjs:130:2)
+      at file:///private/tmp/v2-contract-full/infra/security/manager-v2/consumers/loki.test.mjs:32:213
+      at withMock (file:///private/tmp/v2-contract-full/infra/security/manager-v2/consumers/loki.test.mjs:22:70)
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async Test.run (node:internal/test_runner/test:1208:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:831:7) {
+    code: 'LOKI_TIMESTAMP_OUTSIDE_WINDOW'
+  }
+
+test at infra/security/manager-v2/consumers/loki.test.mjs:32:35
+✖ HTTP 500 bounded retries preserve exact bytes and Policy (60.936708ms)
+  Error: LOKI_TIMESTAMP_OUTSIDE_WINDOW
+      at must (file:///private/tmp/v2-contract-full/infra/security/manager-v2/consumers/loki.mjs:8:42)
+      at validateLokiPush (file:///private/tmp/v2-contract-full/infra/security/manager-v2/consumers/loki.mjs:97:20)
+      at publishLoki (file:///private/tmp/v2-contract-full/infra/security/manager-v2/consumers/loki.mjs:130:2)
+      at file:///private/tmp/v2-contract-full/infra/security/manager-v2/consumers/loki.test.mjs:32:213
+      at withMock (file:///private/tmp/v2-contract-full/infra/security/manager-v2/consumers/loki.test.mjs:22:70)
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async Test.run (node:internal/test_runner/test:1208:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:831:7) {
+    code: 'LOKI_TIMESTAMP_OUTSIDE_WINDOW'
+  }
+
+test at infra/security/manager-v2/consumers/loki.test.mjs:32:35
+✖ HTTP 503 bounded retries preserve exact bytes and Policy (51.792667ms)
+  Error: LOKI_TIMESTAMP_OUTSIDE_WINDOW
+      at must (file:///private/tmp/v2-contract-full/infra/security/manager-v2/consumers/loki.mjs:8:42)
+      at validateLokiPush (file:///private/tmp/v2-contract-full/infra/security/manager-v2/consumers/loki.mjs:97:20)
+      at publishLoki (file:///private/tmp/v2-contract-full/infra/security/manager-v2/consumers/loki.mjs:130:2)
+      at file:///private/tmp/v2-contract-full/infra/security/manager-v2/consumers/loki.test.mjs:32:213
+      at withMock (file:///private/tmp/v2-contract-full/infra/security/manager-v2/consumers/loki.test.mjs:22:70)
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async Test.run (node:internal/test_runner/test:1208:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:831:7) {
+    code: 'LOKI_TIMESTAMP_OUTSIDE_WINDOW'
+  }
+
+test at infra/security/manager-v2/consumers/loki.test.mjs:33:1
+✖ retry then 204 ACK never claims exactly-once (47.278542ms)
+  Error: LOKI_TIMESTAMP_OUTSIDE_WINDOW
+      at must (file:///private/tmp/v2-contract-full/infra/security/manager-v2/consumers/loki.mjs:8:42)
+      at validateLokiPush (file:///private/tmp/v2-contract-full/infra/security/manager-v2/consumers/loki.mjs:97:20)
+      at publishLoki (file:///private/tmp/v2-contract-full/infra/security/manager-v2/consumers/loki.mjs:130:2)
+      at file:///private/tmp/v2-contract-full/infra/security/manager-v2/consumers/loki.test.mjs:33:120
+      at withMock (file:///private/tmp/v2-contract-full/infra/security/manager-v2/consumers/loki.test.mjs:22:70)
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async Test.run (node:internal/test_runner/test:1208:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:831:7) {
+    code: 'LOKI_TIMESTAMP_OUTSIDE_WINDOW'
+  }
+
+test at infra/security/manager-v2/consumers/loki.test.mjs:34:1
+✖ connection refused retries bounded to three (63.327959ms)
+  Error: LOKI_TIMESTAMP_OUTSIDE_WINDOW
+      at must (file:///private/tmp/v2-contract-full/infra/security/manager-v2/consumers/loki.mjs:8:42)
+      at validateLokiPush (file:///private/tmp/v2-contract-full/infra/security/manager-v2/consumers/loki.mjs:97:20)
+      at publishLoki (file:///private/tmp/v2-contract-full/infra/security/manager-v2/consumers/loki.mjs:130:2)
+      at TestContext.<anonymous> (file:///private/tmp/v2-contract-full/infra/security/manager-v2/consumers/loki.test.mjs:34:102)
+      at Test.runInAsyncScope (node:async_hooks:226:14)
+      at Test.run (node:internal/test_runner/test:1201:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:831:18)
+      at Test.postRun (node:internal/test_runner/test:1330:19)
+      at Test.run (node:internal/test_runner/test:1258:12)
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5) {
+    code: 'LOKI_TIMESTAMP_OUTSIDE_WINDOW'
+  }
+
+test at infra/security/manager-v2/consumers/loki.test.mjs:35:38
+✖ timeout is UNKNOWN_REMOTE_STATE, no blind retry (46.90675ms)
+  Error: LOKI_TIMESTAMP_OUTSIDE_WINDOW
+      at must (file:///private/tmp/v2-contract-full/infra/security/manager-v2/consumers/loki.mjs:8:42)
+      at validateLokiPush (file:///private/tmp/v2-contract-full/infra/security/manager-v2/consumers/loki.mjs:97:20)
+      at publishLoki (file:///private/tmp/v2-contract-full/infra/security/manager-v2/consumers/loki.mjs:130:2)
+      at file:///private/tmp/v2-contract-full/infra/security/manager-v2/consumers/loki.test.mjs:35:175
+      at withMock (file:///private/tmp/v2-contract-full/infra/security/manager-v2/consumers/loki.test.mjs:22:70)
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async Test.run (node:internal/test_runner/test:1208:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:831:7) {
+    code: 'LOKI_TIMESTAMP_OUTSIDE_WINDOW'
+  }
+
+test at infra/security/manager-v2/consumers/loki.test.mjs:35:38
+✖ lost is UNKNOWN_REMOTE_STATE, no blind retry (74.278459ms)
+  Error: LOKI_TIMESTAMP_OUTSIDE_WINDOW
+      at must (file:///private/tmp/v2-contract-full/infra/security/manager-v2/consumers/loki.mjs:8:42)
+      at validateLokiPush (file:///private/tmp/v2-contract-full/infra/security/manager-v2/consumers/loki.mjs:97:20)
+      at publishLoki (file:///private/tmp/v2-contract-full/infra/security/manager-v2/consumers/loki.mjs:130:2)
+      at file:///private/tmp/v2-contract-full/infra/security/manager-v2/consumers/loki.test.mjs:35:175
+      at withMock (file:///private/tmp/v2-contract-full/infra/security/manager-v2/consumers/loki.test.mjs:22:70)
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async Test.run (node:internal/test_runner/test:1208:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:831:7) {
+    code: 'LOKI_TIMESTAMP_OUTSIDE_WINDOW'
+  }
+
+test at infra/security/manager-v2/consumers/loki.test.mjs:36:35
+✖ HTTP 200 is not ingestion ACK (46.512041ms)
+  Error: LOKI_TIMESTAMP_OUTSIDE_WINDOW
+      at must (file:///private/tmp/v2-contract-full/infra/security/manager-v2/consumers/loki.mjs:8:42)
+      at validateLokiPush (file:///private/tmp/v2-contract-full/infra/security/manager-v2/consumers/loki.mjs:97:20)
+      at publishLoki (file:///private/tmp/v2-contract-full/infra/security/manager-v2/consumers/loki.mjs:130:2)
+      at file:///private/tmp/v2-contract-full/infra/security/manager-v2/consumers/loki.test.mjs:36:130
+      at withMock (file:///private/tmp/v2-contract-full/infra/security/manager-v2/consumers/loki.test.mjs:22:70)
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async Test.run (node:internal/test_runner/test:1208:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:831:7) {
+    code: 'LOKI_TIMESTAMP_OUTSIDE_WINDOW'
+  }
+
+test at infra/security/manager-v2/consumers/loki.test.mjs:36:35
+✖ HTTP 201 is not ingestion ACK (37.21425ms)
+  Error: LOKI_TIMESTAMP_OUTSIDE_WINDOW
+      at must (file:///private/tmp/v2-contract-full/infra/security/manager-v2/consumers/loki.mjs:8:42)
+      at validateLokiPush (file:///private/tmp/v2-contract-full/infra/security/manager-v2/consumers/loki.mjs:97:20)
+      at publishLoki (file:///private/tmp/v2-contract-full/infra/security/manager-v2/consumers/loki.mjs:130:2)
+      at file:///private/tmp/v2-contract-full/infra/security/manager-v2/consumers/loki.test.mjs:36:130
+      at withMock (file:///private/tmp/v2-contract-full/infra/security/manager-v2/consumers/loki.test.mjs:22:70)
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async Test.run (node:internal/test_runner/test:1208:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:831:7) {
+    code: 'LOKI_TIMESTAMP_OUTSIDE_WINDOW'
+  }
+
+test at infra/security/manager-v2/consumers/loki.test.mjs:36:35
+✖ HTTP 202 is not ingestion ACK (26.537917ms)
+  Error: LOKI_TIMESTAMP_OUTSIDE_WINDOW
+      at must (file:///private/tmp/v2-contract-full/infra/security/manager-v2/consumers/loki.mjs:8:42)
+      at validateLokiPush (file:///private/tmp/v2-contract-full/infra/security/manager-v2/consumers/loki.mjs:97:20)
+      at publishLoki (file:///private/tmp/v2-contract-full/infra/security/manager-v2/consumers/loki.mjs:130:2)
+      at file:///private/tmp/v2-contract-full/infra/security/manager-v2/consumers/loki.test.mjs:36:130
+      at withMock (file:///private/tmp/v2-contract-full/infra/security/manager-v2/consumers/loki.test.mjs:22:70)
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async Test.run (node:internal/test_runner/test:1208:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:831:7) {
+    code: 'LOKI_TIMESTAMP_OUTSIDE_WINDOW'
+  }
+
+test at infra/security/manager-v2/consumers/loki.test.mjs:37:1
+✖ redirect rejected, never followed (34.814833ms)
+  Error: LOKI_TIMESTAMP_OUTSIDE_WINDOW
+      at must (file:///private/tmp/v2-contract-full/infra/security/manager-v2/consumers/loki.mjs:8:42)
+      at validateLokiPush (file:///private/tmp/v2-contract-full/infra/security/manager-v2/consumers/loki.mjs:97:20)
+      at publishLoki (file:///private/tmp/v2-contract-full/infra/security/manager-v2/consumers/loki.mjs:130:2)
+      at file:///private/tmp/v2-contract-full/infra/security/manager-v2/consumers/loki.test.mjs:37:100
+      at withMock (file:///private/tmp/v2-contract-full/infra/security/manager-v2/consumers/loki.test.mjs:22:70)
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async Test.run (node:internal/test_runner/test:1208:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:831:7) {
+    code: 'LOKI_TIMESTAMP_OUTSIDE_WINDOW'
+  }
+
+test at infra/security/manager-v2/consumers/loki.test.mjs:46:1
+✖ explicit Policy ERROR FIXTURE remains error, never PASS (212.110958ms)
+  Error: LOKI_TIMESTAMP_OUTSIDE_WINDOW
+      at must (file:///private/tmp/v2-contract-full/infra/security/manager-v2/consumers/loki.mjs:8:42)
+      at validateLokiPush (file:///private/tmp/v2-contract-full/infra/security/manager-v2/consumers/loki.mjs:97:20)
+      at publishLoki (file:///private/tmp/v2-contract-full/infra/security/manager-v2/consumers/loki.mjs:130:2)
+      at file:///private/tmp/v2-contract-full/infra/security/manager-v2/consumers/loki.test.mjs:46:497
+      at withMock (file:///private/tmp/v2-contract-full/infra/security/manager-v2/consumers/loki.test.mjs:22:70)
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async Test.run (node:internal/test_runner/test:1208:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:831:7) {
+    code: 'LOKI_TIMESTAMP_OUTSIDE_WINDOW'
+  }
+
+test at infra/security/manager-v2/consumers/loki.test.mjs:47:1
+✖ secrets and source snippets never enter push, receipt or test log (258.301208ms)
+  Error: LOKI_TIMESTAMP_OUTSIDE_WINDOW
+      at must (file:///private/tmp/v2-contract-full/infra/security/manager-v2/consumers/loki.mjs:8:42)
+      at validateLokiPush (file:///private/tmp/v2-contract-full/infra/security/manager-v2/consumers/loki.mjs:97:20)
+      at publishLoki (file:///private/tmp/v2-contract-full/infra/security/manager-v2/consumers/loki.mjs:130:2)
+      at file:///private/tmp/v2-contract-full/infra/security/manager-v2/consumers/loki.test.mjs:47:459
+      at withMock (file:///private/tmp/v2-contract-full/infra/security/manager-v2/consumers/loki.test.mjs:22:70)
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async TestContext.<anonymous> (file:///private/tmp/v2-contract-full/infra/security/manager-v2/consumers/loki.test.mjs:47:354)
+      at async Test.run (node:internal/test_runner/test:1208:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:831:7) {
+    code: 'LOKI_TIMESTAMP_OUTSIDE_WINDOW'
+  }
+
+test at infra/security/manager-v2/consumers/loki.test.mjs:55:1
+✖ Dojo offline ERROR does not stop Loki ACK (37.79825ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  + actual - expected
+  
+  + 'ERROR'
+  - 'ACKNOWLEDGED'
+  
+      at file:///private/tmp/v2-contract-full/infra/security/manager-v2/consumers/loki.test.mjs:55:366
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async withMock (file:///private/tmp/v2-contract-full/infra/security/manager-v2/consumers/loki.test.mjs:22:64)
+      at async Test.run (node:internal/test_runner/test:1208:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:831:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 'ERROR',
+    expected: 'ACKNOWLEDGED',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at infra/security/manager-v2/consumers/loki.test.mjs:56:1
+✖ Loki ERROR preserves successful Dojo offline preparation and Policy FAIL (55.931709ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  + actual - expected
+  
+  + 'ERROR'
+  - 'RETRYABLE_FAILURE'
+  
+      at file:///private/tmp/v2-contract-full/infra/security/manager-v2/consumers/loki.test.mjs:56:360
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async withMock (file:///private/tmp/v2-contract-full/infra/security/manager-v2/consumers/loki.test.mjs:22:64)
+      at async Test.run (node:internal/test_runner/test:1208:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:831:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 'ERROR',
+    expected: 'RETRYABLE_FAILURE',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at infra/security/manager-v2/consumers/loki.test.mjs:57:1
+✖ both Consumer failures remain separate hashed receipts (34.777375ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  + actual - expected
+  
+  + 'ERROR'
+  - 'REJECTED'
+  
+      at file:///private/tmp/v2-contract-full/infra/security/manager-v2/consumers/loki.test.mjs:57:389
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async withMock (file:///private/tmp/v2-contract-full/infra/security/manager-v2/consumers/loki.test.mjs:22:64)
+      at async Test.run (node:internal/test_runner/test:1208:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:831:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 'ERROR',
+    expected: 'REJECTED',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at infra/security/manager-v2/consumers/loki.test.mjs:59:1
+✖ own ACK is an actual receipt event only in an explicit subsequent batch (22.119625ms)
+  Error: LOKI_TIMESTAMP_OUTSIDE_WINDOW
+      at must (file:///private/tmp/v2-contract-full/infra/security/manager-v2/consumers/loki.mjs:8:42)
+      at validateLokiPush (file:///private/tmp/v2-contract-full/infra/security/manager-v2/consumers/loki.mjs:97:20)
+      at publishLoki (file:///private/tmp/v2-contract-full/infra/security/manager-v2/consumers/loki.mjs:130:2)
+      at file:///private/tmp/v2-contract-full/infra/security/manager-v2/consumers/loki.test.mjs:59:164
+      at withMock (file:///private/tmp/v2-contract-full/infra/security/manager-v2/consumers/loki.test.mjs:22:70)
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async Test.run (node:internal/test_runner/test:1208:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:831:7) {
+    code: 'LOKI_TIMESTAMP_OUTSIDE_WINDOW'
+  }
+
+test at infra/security/manager-v2/consumers/loki.test.mjs:63:1
+✖ Dojo HTTP rejection and Loki HTTP ACK are independent over shared Result (4.10975ms)
+  Error: listen EADDRINUSE: address already in use 127.0.0.1:32185
+      at Server.setupListenHandle [as _listen2] (node:net:2008:16)
+      at listenInCluster (node:net:2065:12)
+      at node:net:2274:7
+      at process.processTicksAndRejections (node:internal/process/task_queues:90:21) {
+    code: 'EADDRINUSE',
+    errno: -48,
+    syscall: 'listen',
+    address: '127.0.0.1',
+    port: 32185
+  }
+exit=1
