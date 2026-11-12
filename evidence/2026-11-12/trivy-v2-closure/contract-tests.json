@@ -1,0 +1,15 @@
+{
+  "kind": "TrivyV2ClosureContractTests",
+  "observedAt": "2026-11-12T10:20:00Z",
+  "method": "Full disposable copy of the repository (tests that write outputs cannot touch the real tree), run from the copy root with node --test",
+  "results": [
+    {"suite": "manager-v2 core set (config, registry, core, runner, integration, trivy-real, view origins/mac-budget/loki-delivery, observability queries)", "tests": 86, "pass": 86, "fail": 0},
+    {"suite": "runtime-facts regression set (infra/security/*.test.mjs, infra/observability/*.test.mjs)", "tests": 147, "pass": 147, "fail": 0},
+    {"suite": "trivy-real.test.mjs (includes new severity normalization and formal adapter -> Policy engine path tests)", "tests": 7, "pass": 7, "fail": 0}
+  ],
+  "severityPathEvidence": "buildTrivyFact over real native entries (HIGH x1, MEDIUM x1 from the 2026-11-12 offline report) plus synthetic CRITICAL/LOW/UNKNOWN evaluates through policyOwner -> frozen Policy engine to decision FAIL with no 'invalid finding severity'; low-only fact evaluates to WARN at low/standard/strict; unrecognized or missing severity throws RUNNER_REPORT_ERROR before Policy",
+  "preExistingAnomalies": [
+    "consumers/loki.test.mjs HTTP and REPLAY cases fail with LOKI_TIMESTAMP_OUTSIDE_WINDOW in both the real tree and the clean copy (30 of 156 consumer tests): the fixtures carry fixed historical timestamps outside the validator window at the current date. Pre-existing, unrelated to this closure, unchanged by it.",
+    "In-place-only artifacts that disappear in the clean copy: integration.test.mjs J case depends on the working directory (passes from repo root), observability queries EEXIST on a leftover logql-contract-samples directory in the real tree."
+  ]
+}

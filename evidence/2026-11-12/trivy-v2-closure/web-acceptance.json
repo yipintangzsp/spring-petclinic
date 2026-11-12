@@ -1,0 +1,37 @@
+{
+  "kind": "TrivyWebSwitchAcceptance",
+  "observedAt": "2026-11-12T10:11:00Z",
+  "surface": "Local candidate console API http://127.0.0.1:17862 (operator session, real HTTP)",
+  "configMigration": {
+    "before": "controls file revision 34 with plugins gitleaks,semgrep,cosign,sbom only",
+    "after": "same file loads with trivy normalized to {enabled:true}; two operator saves persisted revision 36 with trivy enabled"
+  },
+  "switchOff": {
+    "capability": {"state": "DISABLED", "reason": "PLUGIN_DISABLED"},
+    "runId": "web-3a5f9de4-2fd1-462a-91a2-c625b1e8c5c9",
+    "run": {"state": "DISABLED", "reason": "PLUGIN_DISABLED", "scannerExecuted": false, "evaluationCount": 0, "policyDecision": null}
+  },
+  "switchOnUnarmed": {
+    "capability": {"state": "BLOCKED", "reason": "TRIVY_EXECUTION_NOT_ARMED"},
+    "runId": "web-3baf7bd8-3913-4027-b575-650f89ac635b",
+    "run": {"state": "BLOCKED", "reason": "TRIVY_EXECUTION_NOT_ARMED", "scannerExecuted": false, "evaluationCount": 0, "policyDecision": null}
+  },
+  "armedFormalAttempt": {
+    "capability": {"state": "READY", "reason": null, "runner": "trivy-real", "toolVersion": "0.76.2", "projects": ["trivy-candidate"]},
+    "runId": "web-eb7c1ac0-3502-448d-83f5-e6e7ae68f827",
+    "run": {
+      "state": "BLOCKED", "reason": "CREDENTIAL_EXPIRED_BLOCKED", "evidenceClass": "NOT_TESTED",
+      "scannerExecuted": false, "evaluationCount": 0, "policyDecision": null,
+      "executionLocation": "LINUX_RESTRICTED",
+      "executionDiagnostic": {"error": "CREDENTIAL_EXPIRED_BLOCKED", "stage": "RESTRICTED_SSH_RUNNER", "scannerStarted": false},
+      "artifactDigest": "56eb414fad466522990ea0ee49120e10305c5c18bc0784b0b30c6170159c9f6e",
+      "resultDigest": "8160018a78ab27baa6546f04a6c3cd159cfcc2fd654b9d9c4cdb0bded4daa53e",
+      "router": [{"consumerId": "dry-run", "deliveryDecision": "DRY_RUN"}, {"consumerId": "local-evidence", "deliveryDecision": "DELIVERED_LOCAL_ONLY"}]
+    }
+  },
+  "afterDisarm": {
+    "capability": {"state": "BLOCKED", "reason": "TRIVY_EXECUTION_NOT_ARMED"},
+    "oneShotFormalScanMarkerConsumed": false,
+    "note": "Arming state file is an operator action; it was removed after the attempt, restoring the found posture. The sealed run record remains in .devsecops/security-view-runs-v1."
+  }
+}

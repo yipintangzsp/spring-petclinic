@@ -1,0 +1,45 @@
+{
+  "kind": "TrivyDatabaseRefreshRecord",
+  "observedAt": "2026-11-12T10:06:00Z",
+  "route": "MAC_OFFICIAL_GHCR_DOWNLOAD_THEN_SSH_OFFLINE_TRANSFER",
+  "tlsVerification": "ENABLED",
+  "dnsConfigChanged": false,
+  "systemTrustChanged": false,
+  "source": "ghcr.io/aquasecurity (official OCI artifacts, fetched on the Mac where official DNS/TLS works; the Linux host cannot resolve the GHCR CDN and was not reconfigured)",
+  "artifacts": [
+    {
+      "name": "trivy-db", "reference": "ghcr.io/aquasecurity/trivy-db:2",
+      "manifestDigest": "sha256:69f786ce825ea62439875b067d2ba0aa91208354189e4289e047b986275fbc7e",
+      "manifestCreated": "2026-11-12T07:11:18Z",
+      "layerDigest": "sha256:74c86a033c1125f451e369060b126aa0c6b4c678ae9661915c82c345fb8e05d7",
+      "layerBytes": 139801261,
+      "files": {
+        "trivy.db": {"bytes": 1764368384, "sha256": "e79569457479d18baa1ea27f21c5ccab9cf543a211c459ee7bdace2e3c52539f"},
+        "metadata.json": {"sha256": "442de28864c1b59bc8b7512560b41cfd8f7355de21ec15a91278497847f8df9b"}
+      },
+      "metadata": {"Version": 2, "UpdatedAt": "2026-11-12T07:01:33.828310435Z", "NextUpdate": "2026-11-13T07:01:33.828309984Z"}
+    },
+    {
+      "name": "trivy-java-db", "reference": "ghcr.io/aquasecurity/trivy-java-db:1",
+      "manifestDigest": "sha256:91f7488e5afee003ff19a0ca49bbd889eaa911bfde4279d37288f7a540a061c5",
+      "manifestCreated": "2026-11-12T00:59:37Z",
+      "layerDigest": "sha256:679805756c2b434d9c797fba24de1468938f18f19884f6cde33508455274cd19",
+      "layerBytes": 998306487,
+      "files": {
+        "trivy-java.db": {"bytes": 1577381888, "sha256": "c7667e7d7d335b7a801b4ed11c1a886d0928eec65bf7e5b973762e8715cf4263"},
+        "metadata.json": {"sha256": "2dd38a9e5c3c46eccc54de846c94655246e3003b638719c24960327a3276ed89"}
+      },
+      "metadata": {"Version": 1, "UpdatedAt": "2026-11-12T00:58:04.30813481Z", "NextUpdate": "2026-11-15T00:58:04.308133879Z"}
+    }
+  ],
+  "transferSha256VerifiedOnServer": true,
+  "installedTo": "/var/lib/security-trivy/db-cache/db and /var/lib/security-trivy/db-cache/java-db (java-db directory newly created; it did not exist before)",
+  "installedOwner": "root:security-trivy",
+  "installedFileMode": "0440",
+  "installedDirMode": "0750",
+  "previousCacheBackup": "/var/lib/security-trivy/db-cache.bak-20261112",
+  "gateVerification": {
+    "before": "DB_FRESHNESS_BLOCKED (db UpdatedAt 2026-11-08, java-db missing)",
+    "after": "entry gates pass identity/tool/resource/DB freshness and stop at CREDENTIAL_EXPIRED_BLOCKED"
+  }
+}
