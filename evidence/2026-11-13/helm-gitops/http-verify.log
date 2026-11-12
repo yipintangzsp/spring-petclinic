@@ -1,0 +1,17 @@
+2026-11-13T02:03:37+08:00
+NAME                         READY   STATUS    RESTARTS   AGE   IP            NODE     NOMINATED NODE   READINESS GATES
+petclinic-6c66d49679-887qh   0/1     Running   0          15s   10.42.0.230   devops   <none>           <none>
+NAME        READY   UP-TO-DATE   AVAILABLE   AGE
+petclinic   0/1     1            0           16s
+--curl clusterip health--
+
+HTTP_CODE=000
+--curl root--
+HTTP_CODE=000 SIZE=0
+head: cannot open '/tmp/w10/root.html' for reading: No such file or directory
+
+--pod logs tail--
+{"@timestamp":"2026-11-12T18:03:30.302684624Z","log":{"level":"INFO","logger":"org.springframework.samples.petclinic.PetClinicApplication"},"process":{"pid":1,"thread":{"name":"main"}},"service":{"nam
+{"@timestamp":"2026-11-12T18:03:30.364266238Z","log":{"level":"INFO","logger":"org.springframework.samples.petclinic.PetClinicApplication"},"process":{"pid":1,"thread":{"name":"main"}},"service":{"nam
+{"@timestamp":"2026-11-12T18:03:35.205963489Z","log":{"level":"INFO","logger":"org.springframework.data.repository.config.RepositoryConfigurationDelegate"},"process":{"pid":1,"thread":{"name":"main"}}
+{"@timestamp":"2026-11-12T18:03:35.511472107Z","log":{"level":"INFO","logger":"org.springframework.data.repository.config.RepositoryConfigurationDelegate"},"process":{"pid":1,"thread":{"name":"main"}}

@@ -1,0 +1,123 @@
+{
+  "comparisons": [
+    {
+      "comparison": "rendered_vs_baseline_fixture_340ef4b8",
+      "rendered_count": 11,
+      "other_count": 11,
+      "only_in_rendered": [],
+      "only_in_other": [],
+      "per_resource": {
+        "apps/v1/Deployment/petclinic/petclinic": {
+          "diff_count": 0,
+          "diffs": []
+        },
+        "monitoring.coreos.com/v1/PrometheusRule/petclinic/petclinic": {
+          "diff_count": 0,
+          "diffs": []
+        },
+        "monitoring.coreos.com/v1/ServiceMonitor/petclinic/petclinic": {
+          "diff_count": 0,
+          "diffs": []
+        },
+        "networking.k8s.io/v1/Ingress/petclinic/petclinic": {
+          "diff_count": 0,
+          "diffs": []
+        },
+        "policy/v1/PodDisruptionBudget/petclinic/petclinic": {
+          "diff_count": 0,
+          "diffs": []
+        },
+        "v1/ConfigMap/petclinic/petclinic-config": {
+          "diff_count": 0,
+          "diffs": []
+        },
+        "v1/ConfigMap/petclinic/petclinic-grafana-dashboard": {
+          "diff_count": 0,
+          "diffs": []
+        },
+        "v1/ConfigMap/petclinic/petclinic-metrics-dashboard": {
+          "diff_count": 0,
+          "diffs": []
+        },
+        "v1/ConfigMap/petclinic/petclinic-release-analysis-dashboard": {
+          "diff_count": 0,
+          "diffs": []
+        },
+        "v1/ConfigMap/petclinic/petclinic-v09-dashboard": {
+          "diff_count": 0,
+          "diffs": []
+        },
+        "v1/Service/petclinic/petclinic": {
+          "diff_count": 0,
+          "diffs": []
+        }
+      },
+      "total_field_diffs": 0
+    },
+    {
+      "comparison": "rendered_vs_local_k8s_production",
+      "rendered_count": 11,
+      "other_count": 14,
+      "only_in_rendered": [],
+      "only_in_other": [
+        "argoproj.io/v1alpha1/Application/argocd/platform-alertmanager",
+        "argoproj.io/v1alpha1/Application/argocd/spark-operator",
+        "networking.k8s.io/v1/Ingress/harbor/petclinic-harbor-alias"
+      ],
+      "per_resource": {
+        "apps/v1/Deployment/petclinic/petclinic": {
+          "diff_count": 1,
+          "diffs": [
+            {
+              "path": "spec.template.spec.containers[0].image",
+              "rendered": "core.harbor.domain/petclinic/petclinic@sha256:489cb821573ff1f98edd846d5949d74bf3391b24e2f1fe5bcfb71c6be0793137",
+              "other": "core.harbor.domain/petclinic/petclinic@sha256:83c2ae787a3d160cad1681228a669ac46afb19000558f4eefb45da50f08bf05c"
+            }
+          ]
+        },
+        "monitoring.coreos.com/v1/PrometheusRule/petclinic/petclinic": {
+          "diff_count": 0,
+          "diffs": []
+        },
+        "monitoring.coreos.com/v1/ServiceMonitor/petclinic/petclinic": {
+          "diff_count": 0,
+          "diffs": []
+        },
+        "networking.k8s.io/v1/Ingress/petclinic/petclinic": {
+          "diff_count": 0,
+          "diffs": []
+        },
+        "policy/v1/PodDisruptionBudget/petclinic/petclinic": {
+          "diff_count": 0,
+          "diffs": []
+        },
+        "v1/ConfigMap/petclinic/petclinic-config": {
+          "diff_count": 0,
+          "diffs": []
+        },
+        "v1/ConfigMap/petclinic/petclinic-grafana-dashboard": {
+          "diff_count": 0,
+          "diffs": []
+        },
+        "v1/ConfigMap/petclinic/petclinic-metrics-dashboard": {
+          "diff_count": 0,
+          "diffs": []
+        },
+        "v1/ConfigMap/petclinic/petclinic-release-analysis-dashboard": {
+          "diff_count": 0,
+          "diffs": []
+        },
+        "v1/ConfigMap/petclinic/petclinic-v09-dashboard": {
+          "diff_count": 0,
+          "diffs": []
+        },
+        "v1/Service/petclinic/petclinic": {
+          "diff_count": 0,
+          "diffs": []
+        }
+      },
+      "total_field_diffs": 1
+    }
+  ],
+  "production_non_k8s_or_extra": []
+}

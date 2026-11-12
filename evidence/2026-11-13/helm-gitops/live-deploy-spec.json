@@ -1,0 +1,294 @@
+{
+ "spec": {
+  "minReadySeconds": 10,
+  "progressDeadlineSeconds": 600,
+  "replicas": 3,
+  "revisionHistoryLimit": 5,
+  "selector": {
+   "matchLabels": {
+    "app": "petclinic"
+   }
+  },
+  "strategy": {
+   "rollingUpdate": {
+    "maxSurge": 0,
+    "maxUnavailable": 1
+   },
+   "type": "RollingUpdate"
+  },
+  "template": {
+   "metadata": {
+    "annotations": {
+     "devops.zhanglab.io/git-commit": "620ecc51de378c2d7581167aaa2eae585260a438",
+     "devops.zhanglab.io/image-tag": "0.4.0-ci-57",
+     "devops.zhanglab.io/jenkins-build": "57",
+     "kubectl.kubernetes.io/restartedAt": "2026-08-18T12:35:18+08:00"
+    },
+    "labels": {
+     "app": "petclinic"
+    }
+   },
+   "spec": {
+    "automountServiceAccountToken": false,
+    "containers": [
+     {
+      "env": [
+       {
+        "name": "SERVER_COMPRESSION_ENABLED",
+        "value": "true"
+       },
+       {
+        "name": "SERVER_COMPRESSION_MIN_RESPONSE_SIZE",
+        "value": "2KB"
+       },
+       {
+        "name": "SERVER_COMPRESSION_MIME_TYPES",
+        "value": "text/plain,application/openmetrics-text"
+       },
+       {
+        "name": "SPRING_SQL_INIT_MODE",
+        "value": "never"
+       },
+       {
+        "name": "SPRING_DATASOURCE_HIKARI_MAXIMUM_POOL_SIZE",
+        "value": "6"
+       },
+       {
+        "name": "SPRING_DATASOURCE_HIKARI_MINIMUM_IDLE",
+        "value": "2"
+       },
+       {
+        "name": "SERVER_SHUTDOWN",
+        "value": "graceful"
+       },
+       {
+        "name": "SPRING_LIFECYCLE_TIMEOUT_PER_SHUTDOWN_PHASE",
+        "value": "25s"
+       },
+       {
+        "name": "MANAGEMENT_ENDPOINTS_WEB_EXPOSURE_INCLUDE",
+        "value": "health,info,prometheus,metrics"
+       },
+       {
+        "name": "MANAGEMENT_OTLP_METRICS_EXPORT_ENABLED",
+        "value": "false"
+       },
+       {
+        "name": "MANAGEMENT_TRACING_EXPORT_OTLP_ENABLED",
+        "value": "true"
+       },
+       {
+        "name": "MANAGEMENT_OPENTELEMETRY_TRACING_EXPORT_OTLP_ENDPOINT",
+        "value": "http://otel-collector.monitoring.svc.cluster.local:4318/v1/traces"
+       },
+       {
+        "name": "MANAGEMENT_TRACING_SAMPLING_PROBABILITY",
+        "value": "1.0"
+       },
+       {
+        "name": "APPLICATION_VERSION",
+        "value": "0.10.0-ci-218"
+       },
+       {
+        "name": "BUILD_NUMBER",
+        "value": "218"
+       },
+       {
+        "name": "BUILD_GIT_COMMIT",
+        "value": "1fc223cb01a153b66e00ddbbff1b3b517a9784b1"
+       },
+       {
+        "name": "BUILD_TIME",
+        "value": "2026-10-27T04:59:35.090Z"
+       },
+       {
+        "name": "SPRING_PROFILES_ACTIVE",
+        "valueFrom": {
+         "configMapKeyRef": {
+          "key": "SPRING_PROFILES_ACTIVE",
+          "name": "petclinic-config"
+         }
+        }
+       },
+       {
+        "name": "POSTGRES_URL",
+        "valueFrom": {
+         "configMapKeyRef": {
+          "key": "POSTGRES_URL",
+          "name": "petclinic-config"
+         }
+        }
+       },
+       {
+        "name": "POSTGRES_USER",
+        "valueFrom": {
+         "secretKeyRef": {
+          "key": "POSTGRES_USER",
+          "name": "petclinic-db"
+         }
+        }
+       },
+       {
+        "name": "POSTGRES_PASS",
+        "valueFrom": {
+         "secretKeyRef": {
+          "key": "POSTGRES_PASS",
+          "name": "petclinic-db"
+         }
+        }
+       }
+      ],
+      "image": "core.harbor.domain/petclinic/petclinic@sha256:489cb821573ff1f98edd846d5949d74bf3391b24e2f1fe5bcfb71c6be0793137",
+      "imagePullPolicy": "IfNotPresent",
+      "lifecycle": {
+       "preStop": {
+        "exec": {
+         "command": [
+          "/bin/sh",
+          "-c",
+          "sleep 5"
+         ]
+        }
+       }
+      },
+      "livenessProbe": {
+       "failureThreshold": 3,
+       "httpGet": {
+        "path": "/actuator/health/liveness",
+        "port": "http",
+        "scheme": "HTTP"
+       },
+       "periodSeconds": 15,
+       "successThreshold": 1,
+       "timeoutSeconds": 3
+      },
+      "name": "petclinic",
+      "ports": [
+       {
+        "containerPort": 8080,
+        "name": "http",
+        "protocol": "TCP"
+       }
+      ],
+      "readinessProbe": {
+       "failureThreshold": 6,
+       "httpGet": {
+        "path": "/actuator/health/readiness",
+        "port": "http",
+        "scheme": "HTTP"
+       },
+       "periodSeconds": 10,
+       "successThreshold": 1,
+       "timeoutSeconds": 3
+      },
+      "resources": {
+       "limits": {
+        "cpu": "500m",
+        "memory": "768Mi"
+       },
+       "requests": {
+        "cpu": "100m",
+        "memory": "512Mi"
+       }
+      },
+      "securityContext": {
+       "allowPrivilegeEscalation": false,
+       "capabilities": {
+        "drop": [
+         "ALL"
+        ]
+       },
+       "readOnlyRootFilesystem": true
+      },
+      "startupProbe": {
+       "failureThreshold": 36,
+       "httpGet": {
+        "path": "/actuator/health/liveness",
+        "port": "http",
+        "scheme": "HTTP"
+       },
+       "periodSeconds": 5,
+       "successThreshold": 1,
+       "timeoutSeconds": 3
+      },
+      "terminationMessagePath": "/dev/termination-log",
+      "terminationMessagePolicy": "File",
+      "volumeMounts": [
+       {
+        "mountPath": "/tmp",
+        "name": "runtime-tmp"
+       },
+       {
+        "mountPath": "/etc/petclinic-platform",
+        "name": "platform-snapshot",
+        "readOnly": true
+       }
+      ]
+     }
+    ],
+    "dnsPolicy": "ClusterFirst",
+    "imagePullSecrets": [
+     {
+      "name": "petclinic-harbor-pull"
+     }
+    ],
+    "nodeSelector": {
+     "kubernetes.io/hostname": "devops",
+     "kubernetes.io/os": "linux"
+    },
+    "restartPolicy": "Always",
+    "schedulerName": "default-scheduler",
+    "securityContext": {
+     "fsGroup": 10001,
+     "runAsGroup": 10001,
+     "runAsNonRoot": true,
+     "runAsUser": 10001,
+     "seccompProfile": {
+      "type": "RuntimeDefault"
+     }
+    },
+    "terminationGracePeriodSeconds": 45,
+    "tolerations": [
+     {
+      "effect": "NoSchedule",
+      "key": "cloud",
+      "operator": "Equal",
+      "value": "true"
+     }
+    ],
+    "topologySpreadConstraints": [
+     {
+      "labelSelector": {
+       "matchLabels": {
+        "app": "petclinic"
+       }
+      },
+      "matchLabelKeys": [
+       "pod-template-hash"
+      ],
+      "maxSkew": 1,
+      "topologyKey": "kubernetes.io/hostname",
+      "whenUnsatisfiable": "ScheduleAnyway"
+     }
+    ],
+    "volumes": [
+     {
+      "emptyDir": {
+       "sizeLimit": "128Mi"
+      },
+      "name": "runtime-tmp"
+     },
+     {
+      "configMap": {
+       "defaultMode": 420,
+       "name": "petclinic-platform-snapshot",
+       "optional": true
+      },
+      "name": "platform-snapshot"
+     }
+    ]
+   }
+  }
+ },
+ "image": "core.harbor.domain/petclinic/petclinic@sha256:489cb821573ff1f98edd846d5949d74bf3391b24e2f1fe5bcfb71c6be0793137"
+}

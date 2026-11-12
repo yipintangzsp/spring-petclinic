@@ -1,0 +1,43 @@
+== date ==
+2026-11-13T02:05:09+08:00
+== prep namespace helm-argo-verify + secrets (values piped, never printed) ==
+namespace/helm-argo-verify created
+secret/petclinic-db created
+secret/petclinic-harbor-pull created
+== apply temporary Application ==
+Warning: metadata.finalizers: "resources-finalizer.argocd.argoproj.io": prefer a domain-qualified finalizer name including a path (/) to avoid accidental conflicts with other finalizer writers
+application.argoproj.io/petclinic-helm-verify created
+== poll sync/health up to ~240s ==
+poll 1: Unknown Healthy  main
+poll 2: Unknown Healthy  main
+poll 3: Unknown Healthy  main
+poll 4: Unknown Healthy  main
+poll 5: Unknown Healthy  main
+poll 6: Unknown Healthy  main
+poll 7: Unknown Healthy  main
+poll 8: Unknown Healthy  main
+poll 9: Unknown Healthy  main
+poll 10: Unknown Healthy  main
+poll 11: Unknown Healthy  main
+poll 12: Unknown Healthy  main
+poll 13: Unknown Healthy  main
+poll 14: Unknown Healthy  main
+poll 15: Unknown Healthy  main
+poll 16: Unknown Healthy  main
+poll 17: Unknown Healthy  main
+poll 18: Unknown Healthy  main
+poll 19: Unknown Healthy  main
+poll 20: Unknown Healthy  main
+poll 21: Unknown Healthy  main
+poll 22: Unknown Healthy  main
+poll 23: Unknown Healthy  main
+poll 24: Unknown Healthy  main
+== app conditions (errors if any) ==
+ComparisonError: Failed to load target state: failed to generate manifest for source 1 of 1: rpc error: code = Unknown desc = charts/petclinic: app path does not exist
+== resources in helm-argo-verify ==
+NAME                         DATA   AGE
+configmap/kube-root-ca.crt   1      4m7s
+== http check via ClusterIP ==
+clusterIP=
+== argo test capture done ==
+2026-11-13T02:09:16+08:00

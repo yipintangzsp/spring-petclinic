@@ -1,0 +1,25 @@
+--node taints/labels--
+
+devops
+--prod deploy image--
+core.harbor.domain/petclinic/petclinic@sha256:489cb821573ff1f98edd846d5949d74bf3391b24e2f1fe5bcfb71c6be0793137
+3
+--prod secrets names only--
+Error from server (Forbidden): secrets is forbidden: User "system:serviceaccount:platform-ops:platform-readonly" cannot list resource "secrets" in API group "" in the namespace "petclinic"
+--devsecops-test--
+NAME                              DATA   AGE
+configmap/kube-root-ca.crt        1      17d
+configmap/petclinic-gitops-demo   1      7d1h
+Error from server (Forbidden): replicationcontrollers is forbidden: User "system:serviceaccount:platform-ops:platform-readonly" cannot list resource "replicationcontrollers" in API group "" in the namespace "devsecops-test"
+Error from server (Forbidden): horizontalpodautoscalers.autoscaling is forbidden: User "system:serviceaccount:platform-ops:platform-readonly" cannot list resource "horizontalpodautoscalers" in API group "autoscaling" in the namespace "devsecops-test"
+Error from server (Forbidden): cronjobs.batch is forbidden: User "system:serviceaccount:platform-ops:platform-readonly" cannot list resource "cronjobs" in API group "batch" in the namespace "devsecops-test"
+Error from server (Forbidden): jobs.batch is forbidden: User "system:serviceaccount:platform-ops:platform-readonly" cannot list resource "jobs" in API group "batch" in the namespace "devsecops-test"
+Error from server (Forbidden): secrets is forbidden: User "system:serviceaccount:platform-ops:platform-readonly" cannot list resource "secrets" in API group "" in the namespace "devsecops-test"
+--argocd version--
+NAME                               READY   UP-TO-DATE   AVAILABLE   AGE
+argocd-applicationset-controller   1/1     1            1           205d
+argocd-dex-server                  1/1     1            1           205d
+argocd-notifications-controller    1/1     1            1           205d
+argocd-redis                       1/1     1            1           205d
+argocd-repo-server                 1/1     1            1           205d
+argocd-server                      1/1     1            1           205d

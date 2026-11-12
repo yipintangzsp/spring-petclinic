@@ -1,0 +1,29 @@
+== date ==
+2026-11-13T02:03:49+08:00
+== kubectl wait deployment available (timeout 240s) ==
+deployment.apps/petclinic condition met
+wait_exit=0
+NAME                         READY   STATUS    RESTARTS   AGE   IP            NODE     NOMINATED NODE   READINESS GATES
+petclinic-6c66d49679-887qh   0/1     Running   0          27s   10.42.0.230   devops   <none>           <none>
+NAME                        READY   UP-TO-DATE   AVAILABLE   AGE
+deployment.apps/petclinic   0/1     1            0           28s
+
+NAME                TYPE        CLUSTER-IP   EXTERNAL-IP   PORT(S)   AGE
+service/petclinic   ClusterIP   10.43.8.44   <none>        80/TCP    28s
+NAME              ADDRESSTYPE   PORTS   ENDPOINTS     AGE
+petclinic-9zlkz   IPv4          8080    10.42.0.230   29s
+== curl via ClusterIP from devops host (svc petclinic.helm-verify) ==
+clusterIP=10.43.8.44
+attempt 1 health http=000000
+attempt 2 health http=000000
+attempt 3 health http=000000
+attempt 4 health http=000000
+attempt 5 health http=200
+{"groups":["liveness","readiness"],"status":"UP"}
+root HTTP_CODE=200 SIZE=8110
+<title>PetClinic :: a Spring Framework demonstration</title>
+== readiness endpoint ==
+{"status":"UP"}
+readiness HTTP_CODE=200
+== done ==
+2026-11-13T02:04:13+08:00

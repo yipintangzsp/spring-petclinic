@@ -1,0 +1,47 @@
+# TARGET (NOT APPLIED) — production petclinic Application after Helm cutover.
+# W10 evidence artifact, 2026-11-13. Production switch requires SEPARATE user approval.
+# Derived from the LIVE petclinic Application (argocd ns, checked 2026-11-13 via
+# platform-readonly): repoURL is the live GitLab URL, destination/policy unchanged.
+# ONLY spec.source changes: path k8s/production -> charts/petclinic + helm block.
+# Apply path: edit the Git-managed definition of the EXISTING petclinic Application
+# during the approved window. NEVER apply petclinic-helm-candidate.yaml (or this file
+# under a different name) as a second controller for namespace petclinic.
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: petclinic
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: http://gitlab-service.ns-devops.svc.cluster.local/root/petclinic-platform.git
+    targetRevision: main
+    path: charts/petclinic
+    helm:
+      releaseName: petclinic
+      valueFiles:
+        - values-prod.yaml
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: petclinic
+  syncPolicy:
+    automated:
+      prune: false
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=false
+# Cutover notes (see docs/helm-gitops-cutover-20261113.md):
+# - Chart renders exactly the 11 PetClinic-owned resources (Deployment, Service,
+#   Ingress, ConfigMap petclinic-config, PDB, 4 Grafana dashboard ConfigMaps,
+#   ServiceMonitor, PrometheusRule). Verified equivalent to the deployed baseline.
+# - NOT in chart, must be preserved as standalone before switch (prune=false keeps
+#   them alive but unmanaged by this app afterwards):
+#   Application/argocd platform-alertmanager, Application/argocd spark-operator,
+#   Ingress/harbor petclinic-harbor-alias.
+# - Image digest stays the currently deployed, approved one from values-prod.yaml
+#   (sha256:489cb821... as of 2026-11-13). Any digest change is a separate release
+#   approval, never a side effect of the cutover.
+# - Expected one-time effect: live Deployment pod template carries legacy
+#   annotations (devops.zhanglab.io/*, kubectl restartedAt, 2026-08) that exist in
+#   neither GitOps source; first Helm sync removes them -> one normal rolling
+#   update (maxSurge 0 / maxUnavailable 1, PDB minAvailable 2).

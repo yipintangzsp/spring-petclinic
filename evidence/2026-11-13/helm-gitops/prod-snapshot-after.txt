@@ -1,0 +1,34 @@
+2026-11-13T02:10:06+08:00
+--PROD SNAPSHOT AFTER--
+NAME                                    READY   STATUS    RESTARTS         AGE   IP            NODE     NOMINATED NODE   READINESS GATES
+clinic-message-worker-b887b9bbb-m6zld   1/1     Running   11 (5h50m ago)   16d   10.42.0.209   devops   <none>           <none>
+petclinic-7b9fc47976-7gqqx              1/1     Running   14 (5h49m ago)   14d   10.42.0.195   devops   <none>           <none>
+petclinic-7b9fc47976-v7pbv              1/1     Running   16 (5h50m ago)   14d   10.42.0.199   devops   <none>           <none>
+petclinic-7b9fc47976-z9q2p              1/1     Running   16 (5h49m ago)   14d   10.42.0.191   devops   <none>           <none>
+NAME        READY   UP-TO-DATE   AVAILABLE   AGE
+petclinic   3/3     3            3           94d
+NAME        TYPE        CLUSTER-IP     EXTERNAL-IP   PORT(S)   AGE
+petclinic   ClusterIP   10.43.39.130   <none>        80/TCP    94d
+NAME                                  CLASS     HOSTS                    ADDRESS    PORTS   AGE
+ingress.networking.k8s.io/petclinic   traefik   petclinic.devops.local   10.0.0.3   80      94d
+
+NAME                                   MIN AVAILABLE   MAX UNAVAILABLE   ALLOWED DISRUPTIONS   AGE
+poddisruptionbudget.policy/petclinic   2               N/A               1                     38d
+
+NAME                                             AGE
+servicemonitor.monitoring.coreos.com/petclinic   84d
+
+NAME                                             AGE
+prometheusrule.monitoring.coreos.com/petclinic   83d
+
+NAME                                             DATA   AGE
+configmap/clinic-message-code-9bc9ch76mb         1      20d
+configmap/clinic-mq-pika-0779a7c1                1      20d
+configmap/kube-root-ca.crt                       1      94d
+configmap/petclinic-config                       2      93d
+configmap/petclinic-grafana-dashboard            1      83d
+configmap/petclinic-metrics-dashboard            1      59d
+configmap/petclinic-platform-snapshot            1      41d
+configmap/petclinic-release-analysis-dashboard   1      31d
+configmap/petclinic-v09-dashboard                1      41d
+ls: cannot access '/tmp/w10': No such file or directory

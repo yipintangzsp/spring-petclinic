@@ -1,0 +1,25 @@
+
+NAME                    TYPE                             DATA   AGE
+petclinic-db            Opaque                           2      93d
+petclinic-harbor-pull   kubernetes.io/dockerconfigjson   1      32d
+rabbitmq-client         Opaque                           2      20d
+--svc endpoints--
+NAME              ADDRESSTYPE   PORTS   ENDPOINTS                             AGE
+petclinic-8lj9d   IPv4          8080    10.42.0.195,10.42.0.199,10.42.0.191   94d
+--ingress pdb sm pmr--
+NAME                                  CLASS     HOSTS                    ADDRESS    PORTS   AGE
+ingress.networking.k8s.io/petclinic   traefik   petclinic.devops.local   10.0.0.3   80      94d
+
+NAME                                   MIN AVAILABLE   MAX UNAVAILABLE   ALLOWED DISRUPTIONS   AGE
+poddisruptionbudget.policy/petclinic   2               N/A               1                     38d
+
+NAME                                             AGE
+servicemonitor.monitoring.coreos.com/petclinic   84d
+
+NAME                                             AGE
+prometheusrule.monitoring.coreos.com/petclinic   83d
+--whoami sudo--
+ATTRIBUTE                                           VALUE
+Username                                            system:admin
+Groups                                              [system:masters system:authenticated]
+Extra: authentication.kubernetes.io/credential-id   [X509SHA256=db192d4b0403f6037389c5ba0b743c39e50ce8641e0ea4c3037a04046c91bf4a]

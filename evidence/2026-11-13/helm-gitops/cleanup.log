@@ -1,0 +1,33 @@
+== date ==
+2026-11-13T02:09:28+08:00
+== delete temporary Argo Application ==
+application.argoproj.io "petclinic-helm-verify" deleted from argocd namespace
+Error from server (NotFound): applications.argoproj.io "petclinic-helm-verify" not found
+== helm uninstall nonprod release ==
+release "petclinic" uninstalled
+== delete test namespaces ==
+namespace "helm-verify" deleted
+namespace "helm-argo-verify" deleted
+== verify NotFound ==
+Error from server (NotFound): namespaces "helm-verify" not found
+Error from server (NotFound): namespaces "helm-argo-verify" not found
+No resources found in helm-verify namespace.
+NAME                    SYNC STATUS   HEALTH STATUS
+airflow                 Synced        Healthy
+cook                    Synced        Healthy
+devops-tls-lab          Synced        Healthy
+hello-app-dev           Synced        Healthy
+petclinic               Synced        Healthy
+petclinic-gitops-demo   Synced        Healthy
+platform-alertmanager   Synced        Healthy
+platform-cert-manager   Synced        Healthy
+platform-devsecops      Synced        Healthy
+platform-messaging      Synced        Healthy
+platform-rabbitmq       Synced        Healthy
+platform-rollouts       Synced        Healthy
+rollouts-lab            Synced        Healthy
+spark-operator          Synced        Healthy
+== production Argo app spec unchanged ==
+k8s/production http://gitlab-service.ns-devops.svc.cluster.local/root/petclinic-platform.git petclinic Synced Healthy
+== cleanup done ==
+2026-11-13T02:09:56+08:00

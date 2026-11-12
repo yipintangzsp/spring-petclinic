@@ -1,0 +1,43 @@
+== T0 state (revision 1, replicas 1) ==
+2026-11-13T02:04:26+08:00
+NAME                         READY   STATUS    RESTARTS   AGE   IP            NODE     NOMINATED NODE   READINESS GATES
+petclinic-6c66d49679-887qh   1/1     Running   0          64s   10.42.0.230   devops   <none>           <none>
+replicas=1 ready=1 image=core.harbor.domain/petclinic/petclinic@sha256:489cb821573ff1f98edd846d5949d74bf3391b24e2f1fe5bcfb71c6be0793137
+REVISION	UPDATED                 	STATUS  	CHART          	APP VERSION	DESCRIPTION     
+1       	Fri Nov 13 02:03:22 2026	deployed	petclinic-0.1.0	0.10.0     	Install complete
+== helm upgrade: replicaCount 1 -> 2 (harmless value) ==
+Release "petclinic" has been upgraded. Happy Helming!
+NAME: petclinic
+LAST DEPLOYED: Fri Nov 13 02:04:27 2026
+NAMESPACE: helm-verify
+STATUS: deployed
+REVISION: 2
+TEST SUITE: None
+upgrade_exit=0
+deployment.apps/petclinic condition met
+NAME                         READY   STATUS    RESTARTS   AGE   IP            NODE     NOMINATED NODE   READINESS GATES
+petclinic-6c66d49679-887qh   1/1     Running   0          69s   10.42.0.230   devops   <none>           <none>
+petclinic-6c66d49679-tl27m   0/1     Running   0          4s    10.42.0.231   devops   <none>           <none>
+replicas=2 ready=1
+REVISION	UPDATED                 	STATUS    	CHART          	APP VERSION	DESCRIPTION     
+1       	Fri Nov 13 02:03:22 2026	superseded	petclinic-0.1.0	0.10.0     	Install complete
+2       	Fri Nov 13 02:04:27 2026	deployed  	petclinic-0.1.0	0.10.0     	Upgrade complete
+== helm rollback to revision 1 ==
+Rollback was a success! Happy Helming!
+rollback_exit=0
+deployment.apps/petclinic condition met
+NAME                         READY   STATUS        RESTARTS   AGE   IP            NODE     NOMINATED NODE   READINESS GATES
+petclinic-6c66d49679-887qh   1/1     Running       0          82s   10.42.0.230   devops   <none>           <none>
+petclinic-6c66d49679-tl27m   0/1     Terminating   0          17s   10.42.0.231   devops   <none>           <none>
+replicas=1 ready=1
+REVISION	UPDATED                 	STATUS    	CHART          	APP VERSION	DESCRIPTION     
+1       	Fri Nov 13 02:03:22 2026	superseded	petclinic-0.1.0	0.10.0     	Install complete
+2       	Fri Nov 13 02:04:27 2026	superseded	petclinic-0.1.0	0.10.0     	Upgrade complete
+3       	Fri Nov 13 02:04:32 2026	deployed  	petclinic-0.1.0	0.10.0     	Rollback to 1   
+NAME     	NAMESPACE  	REVISION	UPDATED                                	STATUS  	CHART          	APP VERSION
+petclinic	helm-verify	3       	2026-11-13 02:04:32.811267738 +0800 CST	deployed	petclinic-0.1.0	0.10.0     
+== HTTP re-check after rollback ==
+{"groups":["liveness","readiness"],"status":"UP"}
+health HTTP_CODE=200
+== rollback drill done ==
+2026-11-13T02:04:46+08:00

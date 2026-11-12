@@ -1,0 +1,39 @@
+# Temporary non-prod Argo Application used in W10 (applied 2026-11-13, deleted after test; result ComparisonError G-H1)
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: petclinic-helm-verify
+  namespace: argocd
+  labels:
+    petclinic.devops.local/status: VALIDATION_ONLY
+    petclinic.devops.local/scope: W10-NONPROD
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  project: default
+  source:
+    repoURL: http://gitlab-service.ns-devops.svc.cluster.local/root/petclinic-platform.git
+    targetRevision: main
+    path: charts/petclinic
+    helm:
+      releaseName: petclinic
+      valueFiles:
+        - values-prod.yaml
+      parameters:
+        - name: replicaCount
+          value: "1"
+        - name: ingress.enabled
+          value: "false"
+        - name: monitoring.enabled
+          value: "false"
+        - name: pdb.minAvailable
+          value: "0"
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: helm-argo-verify
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=false

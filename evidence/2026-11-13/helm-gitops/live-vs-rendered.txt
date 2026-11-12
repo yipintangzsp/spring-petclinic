@@ -1,0 +1,24 @@
+LIVE vs RENDERED (prod values, ns petclinic) - 2026-11-13 W10
+Deployment.spec equal: False
+ only-in-live .template.metadata.annotations = {"devops.zhanglab.io/git-commit": "620ecc51de378c2d7581167aaa2eae585260a438", "devops.zhanglab.io/image-tag": "0.4.0-ci-57", "devops.zhanglab.io/jenkins-build": "57", "kubectl.kubernetes.io/restartedA
+ only-in-live .template.spec.containers[0].livenessProbe.httpGet.scheme = "HTTP"
+ only-in-live .template.spec.containers[0].livenessProbe.successThreshold = 1
+ only-in-live .template.spec.containers[0].ports[0].protocol = "TCP"
+ only-in-live .template.spec.containers[0].readinessProbe.httpGet.scheme = "HTTP"
+ only-in-live .template.spec.containers[0].readinessProbe.successThreshold = 1
+ only-in-live .template.spec.containers[0].startupProbe.httpGet.scheme = "HTTP"
+ only-in-live .template.spec.containers[0].startupProbe.successThreshold = 1
+ only-in-live .template.spec.containers[0].terminationMessagePath = "/dev/termination-log"
+ only-in-live .template.spec.containers[0].terminationMessagePolicy = "File"
+ only-in-live .template.spec.dnsPolicy = "ClusterFirst"
+ only-in-live .template.spec.restartPolicy = "Always"
+ only-in-live .template.spec.schedulerName = "default-scheduler"
+ only-in-live .template.spec.volumes[1].configMap.defaultMode = 420
+Service.spec equal (clusterIP/clusterIPs stripped from live): False
+ only-in-live svc.internalTrafficPolicy = "Cluster"
+ only-in-live svc.ipFamilies = ["IPv4"]
+ only-in-live svc.ipFamilyPolicy = "SingleStack"
+ only-in-live svc.ports[0].protocol = "TCP"
+ only-in-live svc.sessionAffinity = "None"
+PDB.spec equal: True
+Live image: core.harbor.domain/petclinic/petclinic@sha256:489cb821573ff1f98edd846d5949d74bf3391b24e2f1fe5bcfb71c6be0793137

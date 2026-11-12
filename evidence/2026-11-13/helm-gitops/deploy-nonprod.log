@@ -1,0 +1,61 @@
+== date ==
+2026-11-13T02:03:20+08:00
+== write values-nonprod.yaml ==
+# W10 non-production verification overrides (evidence artifact; NOT for production)
+replicaCount: 1
+ingress:
+  enabled: false
+monitoring:
+  enabled: false
+pdb:
+  minAvailable: 0
+== create namespace helm-verify ==
+namespace/helm-verify created
+namespace/helm-verify labeled
+== replicate required secrets by name (values piped server-side, never printed) ==
+secret/petclinic-db created
+secret/petclinic-harbor-pull created
+NAME                    TYPE                             DATA   AGE
+petclinic-db            Opaque                           2      1s
+petclinic-harbor-pull   kubernetes.io/dockerconfigjson   1      1s
+== helm lint (nonprod values) ==
+==> Linting /tmp/w10/charts/petclinic
+[INFO] Chart.yaml: icon is recommended
+
+1 chart(s) linted, 0 chart(s) failed
+== helm template count (nonprod) ==
+4
+PodDisruptionBudget petclinic helm-verify
+ConfigMap petclinic-config helm-verify
+Service petclinic helm-verify
+Deployment petclinic helm-verify
+== helm install --wait ==
+NAME: petclinic
+LAST DEPLOYED: Fri Nov 13 02:03:22 2026
+NAMESPACE: helm-verify
+STATUS: deployed
+REVISION: 1
+TEST SUITE: None
+install_exit=0
+== state after install ==
+NAME                         READY   STATUS    RESTARTS   AGE   IP            NODE     NOMINATED NODE   READINESS GATES
+petclinic-6c66d49679-887qh   0/1     Running   0          2s    10.42.0.230   devops   <none>           <none>
+NAME                        READY   UP-TO-DATE   AVAILABLE   AGE
+deployment.apps/petclinic   0/1     1            0           3s
+
+NAME                TYPE        CLUSTER-IP   EXTERNAL-IP   PORT(S)   AGE
+service/petclinic   ClusterIP   10.43.8.44   <none>        80/TCP    4s
+
+NAME                         DATA   AGE
+configmap/kube-root-ca.crt   1      6s
+configmap/petclinic-config   2      4s
+
+NAME                                   MIN AVAILABLE   MAX UNAVAILABLE   ALLOWED DISRUPTIONS   AGE
+poddisruptionbudget.policy/petclinic   0               N/A               0                     4s
+NAME              ADDRESSTYPE   PORTS   ENDPOINTS     AGE
+petclinic-9zlkz   IPv4          8080    10.42.0.230   5s
+NAME     	NAMESPACE  	REVISION	UPDATED                                	STATUS  	CHART          	APP VERSION
+petclinic	helm-verify	1       	2026-11-13 02:03:22.462726449 +0800 CST	deployed	petclinic-0.1.0	0.10.0     
+REVISION	UPDATED                 	STATUS  	CHART          	APP VERSION	DESCRIPTION     
+1       	Fri Nov 13 02:03:22 2026	deployed	petclinic-0.1.0	0.10.0     	Install complete
+== deploy done ==
