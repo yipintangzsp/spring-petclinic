@@ -1,0 +1,6 @@
+Post-change regression (Mac, node v24.14.0, working tree incl. others' uncommitted changes)
+- kubescape-real.test.mjs: 8/8 pass
+- manager-v2 contract set (top-level *.test.mjs + view/loki-delivery.test.mjs): 157 pass / 0 fail (15 files)
+- infra/security/*.test.mjs + infra/observability/*.test.mjs: 147 pass / 0 fail
+- consumers/*.test.mjs: 114 pass / 48 fail (identical to baseline; pre-existing LOKI_TIMESTAMP_OUTSIDE_WINDOW fixture aging etc., none kubescape-related)
+Baseline (pre-change, same commands): contract 142 pass / 0 fail (13 files at baseline time; all 13 files' counts reproduced post-change, delta = kubescape-real 8 + parallel W4 zap files 7), 147/147, consumers 114/48.

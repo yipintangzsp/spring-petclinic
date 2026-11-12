@@ -1,0 +1,405 @@
+{
+  "kind": "KubescapeV2Verification",
+  "schemaVersion": 1,
+  "date": "2026-11-13",
+  "head": "2c824e5c",
+  "branch": "fix/security-manager-plugin-switches",
+  "tool": {
+    "name": "kubescape",
+    "version": "4.0.17",
+    "platform": "linux-arm64",
+    "sha256": "2e7a48c7a0577c9d4ec81e8cdf0149fbb67f2e2b649165f77a1da9bb72f30fa7",
+    "source": "infra/security/governance/tools-lock.json (kubescape section); binary and offline framework artifacts byte-copied to the restricted entry host directory and re-verified by SHA-256 on every run",
+    "artifacts": {
+      "nsa.json": "8070c614bb1a9fe66829de5a486c3e5ec281af8a10e18f9d230bb1e348141d05",
+      "cis-v1.12.0.json": "0678ecb322835594dab5432942e483a8cb3230f59209b6e1d25ade34d17f16d5",
+      "controls-inputs.json": "de2f95312230143eabd768ef6f9150c6bad90d6d41b5f84bc90402082d7edf22",
+      "attack-tracks.json": "4f3cd850c1499c860af27c31c5eeee4996696d4e777767f581da6a06bbc93c23"
+    }
+  },
+  "entry": {
+    "host": "devops (192.168.1.58)",
+    "user": "security-kubescape",
+    "uid": 1005,
+    "gid": 1005,
+    "forcedCommand": "setpriv --no-new-privs python3 /var/lib/security-kubescape/entry.py (audit-v1)",
+    "execution": "unchanged frozen governance audit infra/security/governance/kubescape.mjs under its passive observer infra/security/runtime-facts/kubescape-observer.mjs; 4 scans in frozen order cluster/nsa, yaml/nsa, cluster/cis-v1.12.0, yaml/cis-v1.12.0; outer platform-heavy Lease acquired by the entry and released after each run",
+    "identity": "dedicated SA security-kubescape in devsecops-system: get/create/delete Lease platform-heavy (data-infra), get configmap kube-root-ca.crt, create token for kubescape-readonly only, deployments/pods in kubescape-v2-test only",
+    "tokenHandling": "the 30-minute kubescape-readonly token observed by the frozen adapter is redacted to its SHA-256 inside the entry before the packet leaves devops; no credential value in any artifact, log or report"
+  },
+  "flags": {
+    "REGISTRY": "VERIFIED",
+    "RUNNER": "VERIFIED",
+    "MANAGEMENT": "PARTIAL",
+    "POLICY": "PARTIAL",
+    "ARTIFACT": "VERIFIED",
+    "ROUTER": "VERIFIED",
+    "OBSERVABILITY": "VERIFIED",
+    "CROSS_PROJECT": "VERIFIED",
+    "notes": {
+      "MANAGEMENT": "Core/capability layer VERIFIED (plugin-off/master-off DISABLED with zero Policy evaluation; kubescapeUiCase prepared in kubescape-real.mjs). Web UI wiring not done: view/* carries uncommitted Kyverno/Sonar increments entangled on the same lines (same precedent as Falco G-F3 / Sonar G-S1). Gap G-K2.",
+      "POLICY": "Frozen AUDIT semantics VERIFIED for execution integrity (successful audit -> PASS with oldDecision == Core decision on all 3 executed cases; integrity tampering -> FAIL proven in kubescape-real.test.mjs). Findings cannot map to FAIL under the frozen kubescape-parent adapter: the violating workload was genuinely detected at native level (11 resource-control findings on the Deployment incl. NSA C-0057 privileged High and C-0046 resource-limits High; cluster findings 1274 -> 1285) and is carried as auditDisposition WARN. A Policy FAIL for findings requires a user decision to change the frozen AUDIT disposition or add an enforce adapter (same class as Falco G-F1). Gap G-K1."
+    }
+  },
+  "cases": [
+    {
+      "runId": "web-c7f969a0-8748-4117-ae3b-d6d429e7202a",
+      "projectId": "kubescape-petclinic",
+      "caseId": "cluster-audit",
+      "expectedDecision": "PASS",
+      "gateStatus": "success",
+      "findings": 1274,
+      "failedControls": 48,
+      "highRiskFindings": 249,
+      "auditDisposition": "WARN",
+      "executionStatus": "COMPLETED",
+      "policyDecision": "PASS",
+      "oldGateDecision": "PASS",
+      "evaluationCount": 1,
+      "resultDigest": "8f8c3470f1cf35191a808e2d41c927f302daacce24136ddcc04dd7f7a8331deb",
+      "artifactDigest": "75ac2b0c919d2d4ba5925db6cd95a58c418b6da2292da2eb208e2cd85dacd1db",
+      "failureReason": null,
+      "cleanup": "VERIFIED",
+      "scans": [
+        {
+          "scope": "cluster",
+          "framework": "nsa",
+          "resources": 552,
+          "failedControlCount": 17,
+          "complianceScore": 59.478745
+        },
+        {
+          "scope": "yaml",
+          "framework": "nsa",
+          "resources": 6,
+          "failedControlCount": 1,
+          "complianceScore": 95
+        },
+        {
+          "scope": "cluster",
+          "framework": "cis-v1.12.0",
+          "resources": 873,
+          "failedControlCount": 29,
+          "complianceScore": 47.643635
+        },
+        {
+          "scope": "yaml",
+          "framework": "cis-v1.12.0",
+          "resources": 1,
+          "failedControlCount": 2,
+          "complianceScore": 78.125
+        }
+      ],
+      "deploymentFindings": [],
+      "violatingCleanup": null,
+      "router": [
+        {
+          "consumerId": "dry-run",
+          "deliveryDecision": "DRY_RUN",
+          "receiptDigest": "4800d8b7a6b636f1aa8a58f189cde747c0642240ffdb420e5dc92afcb25e6460"
+        },
+        {
+          "consumerId": "local-evidence",
+          "deliveryDecision": "DELIVERED_LOCAL_ONLY",
+          "receiptDigest": "dee5f4ab9b55ac161104921747145601f9196938d954779b32ce7c739800c300"
+        }
+      ]
+    },
+    {
+      "runId": "web-55a1f0a4-e74a-4fdc-943e-fd2f12d9e125",
+      "projectId": "kubescape-petclinic",
+      "caseId": "violating-workload",
+      "expectedDecision": "PASS",
+      "gateStatus": "success",
+      "findings": 1285,
+      "failedControls": 48,
+      "highRiskFindings": 254,
+      "auditDisposition": "WARN",
+      "executionStatus": "COMPLETED",
+      "policyDecision": "PASS",
+      "oldGateDecision": "PASS",
+      "evaluationCount": 1,
+      "resultDigest": "f06ae36081d926918018c70086c119d1d152397d4290db42a65dc2427355b64c",
+      "artifactDigest": "54b89885ed6d973a1f64e51e0b69333e652c441e8e0c4be0eb88e4bcecf253fc",
+      "failureReason": null,
+      "cleanup": "VERIFIED",
+      "scans": [
+        {
+          "scope": "cluster",
+          "framework": "nsa",
+          "resources": 553,
+          "failedControlCount": 17,
+          "complianceScore": 59.288475
+        },
+        {
+          "scope": "yaml",
+          "framework": "nsa",
+          "resources": 6,
+          "failedControlCount": 1,
+          "complianceScore": 95
+        },
+        {
+          "scope": "cluster",
+          "framework": "cis-v1.12.0",
+          "resources": 874,
+          "failedControlCount": 29,
+          "complianceScore": 47.644714
+        },
+        {
+          "scope": "yaml",
+          "framework": "cis-v1.12.0",
+          "resources": 1,
+          "failedControlCount": 2,
+          "complianceScore": 78.125
+        }
+      ],
+      "deploymentFindings": [
+        {
+          "scope": "cluster",
+          "framework": "nsa",
+          "resourceId": "apps/v1/kubescape-v2-test/Deployment/smv2-violating",
+          "controlId": "C-0013",
+          "severity": "Medium"
+        },
+        {
+          "scope": "cluster",
+          "framework": "nsa",
+          "resourceId": "apps/v1/kubescape-v2-test/Deployment/smv2-violating",
+          "controlId": "C-0016",
+          "severity": "Medium"
+        },
+        {
+          "scope": "cluster",
+          "framework": "nsa",
+          "resourceId": "apps/v1/kubescape-v2-test/Deployment/smv2-violating",
+          "controlId": "C-0017",
+          "severity": "Low"
+        },
+        {
+          "scope": "cluster",
+          "framework": "nsa",
+          "resourceId": "apps/v1/kubescape-v2-test/Deployment/smv2-violating",
+          "controlId": "C-0030",
+          "severity": "Medium"
+        },
+        {
+          "scope": "cluster",
+          "framework": "nsa",
+          "resourceId": "apps/v1/kubescape-v2-test/Deployment/smv2-violating",
+          "controlId": "C-0046",
+          "severity": "High"
+        },
+        {
+          "scope": "cluster",
+          "framework": "nsa",
+          "resourceId": "apps/v1/kubescape-v2-test/Deployment/smv2-violating",
+          "controlId": "C-0055",
+          "severity": "Medium"
+        },
+        {
+          "scope": "cluster",
+          "framework": "nsa",
+          "resourceId": "apps/v1/kubescape-v2-test/Deployment/smv2-violating",
+          "controlId": "C-0057",
+          "severity": "High"
+        },
+        {
+          "scope": "cluster",
+          "framework": "nsa",
+          "resourceId": "apps/v1/kubescape-v2-test/Deployment/smv2-violating",
+          "controlId": "C-0270",
+          "severity": "High"
+        },
+        {
+          "scope": "cluster",
+          "framework": "nsa",
+          "resourceId": "apps/v1/kubescape-v2-test/Deployment/smv2-violating",
+          "controlId": "C-0271",
+          "severity": "High"
+        },
+        {
+          "scope": "cluster",
+          "framework": "cis-v1.12.0",
+          "resourceId": "apps/v1/kubescape-v2-test/Deployment/smv2-violating",
+          "controlId": "C-0210",
+          "severity": "Medium"
+        },
+        {
+          "scope": "cluster",
+          "framework": "cis-v1.12.0",
+          "resourceId": "apps/v1/kubescape-v2-test/Deployment/smv2-violating",
+          "controlId": "C-0211",
+          "severity": "High"
+        }
+      ],
+      "violatingCleanup": {
+        "namespace": "kubescape-v2-test",
+        "deployment": "smv2-violating",
+        "created": true,
+        "deleted": true,
+        "verifiedGone": true
+      },
+      "router": [
+        {
+          "consumerId": "dry-run",
+          "deliveryDecision": "DRY_RUN",
+          "receiptDigest": "8c4d49a9f3577f786e0c6041f5b3172e087edd905e2d7f2cf2747d4ade93e234"
+        },
+        {
+          "consumerId": "local-evidence",
+          "deliveryDecision": "DELIVERED_LOCAL_ONLY",
+          "receiptDigest": "8da06e04e99b422d2e935a481d984ee6021787c7f4ec6b6f0fc21291521607fd"
+        }
+      ]
+    },
+    {
+      "runId": "web-c7b9c18a-031b-437e-9f32-872b5f7eae7b",
+      "projectId": "kubescape-cleanroom",
+      "caseId": "posture-audit",
+      "expectedDecision": "PASS",
+      "gateStatus": "success",
+      "findings": 1274,
+      "failedControls": 48,
+      "highRiskFindings": 249,
+      "auditDisposition": "WARN",
+      "executionStatus": "COMPLETED",
+      "policyDecision": "PASS",
+      "oldGateDecision": "PASS",
+      "evaluationCount": 1,
+      "resultDigest": "524addaa35b66a1ea1e4cd0c379d7fca86ea1989af993600f734c3b666bac090",
+      "artifactDigest": "3dca62b2982d6c60b1b5655bc6a0c6a19ffd92b1403f83d4071b7d475ae07982",
+      "failureReason": null,
+      "cleanup": "VERIFIED",
+      "scans": [
+        {
+          "scope": "cluster",
+          "framework": "nsa",
+          "resources": 552,
+          "failedControlCount": 17,
+          "complianceScore": 59.478745
+        },
+        {
+          "scope": "yaml",
+          "framework": "nsa",
+          "resources": 6,
+          "failedControlCount": 1,
+          "complianceScore": 95
+        },
+        {
+          "scope": "cluster",
+          "framework": "cis-v1.12.0",
+          "resources": 873,
+          "failedControlCount": 29,
+          "complianceScore": 47.64364
+        },
+        {
+          "scope": "yaml",
+          "framework": "cis-v1.12.0",
+          "resources": 1,
+          "failedControlCount": 2,
+          "complianceScore": 78.125
+        }
+      ],
+      "deploymentFindings": [],
+      "violatingCleanup": null,
+      "router": [
+        {
+          "consumerId": "dry-run",
+          "deliveryDecision": "DRY_RUN",
+          "receiptDigest": "133461e2ceba242ecf7dbe57d111db40f3066724d600eb538da802225fee1325"
+        },
+        {
+          "consumerId": "local-evidence",
+          "deliveryDecision": "DELIVERED_LOCAL_ONLY",
+          "receiptDigest": "6c9e9793fe36fe7609f64181efba3f5ffd3ae83ae55b844f9d7de2f59aa67861"
+        }
+      ]
+    }
+  ],
+  "disabled": [
+    {
+      "name": "plugin-off",
+      "runId": "web-b8bf64ea-ab7d-4f5d-b773-791c736d3894",
+      "executionStatus": "DISABLED",
+      "evaluationCount": 0,
+      "policyDecision": null,
+      "failureReason": "PLUGIN_DISABLED"
+    },
+    {
+      "name": "master-off",
+      "runId": "web-7c9f6406-cb9e-4b92-95d7-59ec3a5dc329",
+      "executionStatus": "DISABLED",
+      "evaluationCount": 0,
+      "policyDecision": null,
+      "failureReason": "MASTER_DISABLED"
+    }
+  ],
+  "crossProject": {
+    "targetMismatch": "KUBESCAPE_PROJECT_NOT_AUTHORIZED",
+    "caseLeak": "KUBESCAPE_PROJECT_NOT_AUTHORIZED",
+    "secondProjectRun": "kubescape-cleanroom/posture-audit executed for real (see cases)"
+  },
+  "loki": [
+    {
+      "runId": "web-c7f969a0-8748-4117-ae3b-d6d429e7202a",
+      "caseId": "cluster-audit",
+      "state": "DELIVERED",
+      "queryState": "VERIFIED",
+      "pushState": "ACKNOWLEDGED",
+      "receiptDigest": "98843fad4bc202b4e1e42e470f6785af25e1b108cd75cb392e1f3a0b9818b59e"
+    },
+    {
+      "runId": "web-55a1f0a4-e74a-4fdc-943e-fd2f12d9e125",
+      "caseId": "violating-workload",
+      "state": "DELIVERED",
+      "queryState": "VERIFIED",
+      "pushState": "ACKNOWLEDGED",
+      "receiptDigest": "be75d1758cbf21076471c7d10be8c833853e0a698830256cfe19f798a13d5a22"
+    }
+  ],
+  "grafana": [
+    {
+      "runId": "web-c7f969a0-8748-4117-ae3b-d6d429e7202a",
+      "caseId": "cluster-audit",
+      "http": 200,
+      "matched": 1,
+      "eventIdentity": "76e0c79c146571b82a075dd36b105345ada969a9cbfde12d16b7da006423195f",
+      "rawFile": "raw/grafana-loki-cluster-audit.json",
+      "rawSha256": "a9267cd0b333cf32b5f91871f1fa2414c9c5ae143ee6be27d407507ffcdc13c2",
+      "method": "devops session: Grafana admin credentials from k8s secret monitoring/kube-stack-grafana used in-session only; datasource proxy query_range on NodePort 30084"
+    },
+    {
+      "runId": "web-55a1f0a4-e74a-4fdc-943e-fd2f12d9e125",
+      "caseId": "violating-workload",
+      "http": 200,
+      "matched": 1,
+      "eventIdentity": "a2e595bd4f235da36003d55e3bcfa7c3068f89d65ef03d4433025b043bf76a66",
+      "rawFile": "raw/grafana-loki-violating-workload.json",
+      "rawSha256": "9aca0fa79f7696402580c5e06d2a351226a6de96b8d26a77d7c27c7fe69e8211",
+      "method": "devops session: Grafana admin credentials from k8s secret monitoring/kube-stack-grafana used in-session only; datasource proxy query_range on NodePort 30084"
+    }
+  ],
+  "cleanup": {
+    "violatingWorkload": "Deployment smv2-violating created per negative run and deleted with verifiedGone=true (entry) ; test namespace kubescape-v2-test verified empty after runs and deleted at item teardown (see REPRODUCE.md)",
+    "lease": "platform-heavy Lease acquired and released per run; verified absent after runs",
+    "entryData": "/var/lib/security-kubescape/data contains only execution.lock after runs"
+  },
+  "regression": {
+    "kubescapeRealTest": "8/8",
+    "managerV2Contract": "157/157 post-change (15 files) vs 142/142 baseline (13 files); zero failures both",
+    "securityObservability147": "147/147 both",
+    "consumers": "114 pass / 48 fail both (pre-existing baseline class, none kubescape-related)",
+    "details": "REPRODUCE.md + raw/regression-before.txt + raw/regression-after.txt"
+  },
+  "commits": {
+    "code": "a8fd1214 feat(manager-v2): kubescape-real runner",
+    "evidence": "this commit"
+  },
+  "uncommittedShared": {
+    "registry.mjs": "kubescape increments entangled on shared lines with parallel W4 zap increments; left in working tree per Falco/Sonar precedent",
+    "core.mjs": "kubescape import+dispatch branch on the same long line as W4 zap branch; left in working tree",
+    "consumers/loki-event-v1.json": "plugins line carries kubescape (this item) and zap (W4) tokens; left in working tree",
+    "consumers/loki.mjs": "singlePluginId whitelist one token kubescape; same line entangled with others; left in working tree",
+    "snapshots": "protected-before/ holds pre-change working-tree copies of all four files"
+  }
+}
