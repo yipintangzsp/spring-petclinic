@@ -23,10 +23,11 @@ export function registry(definitions=BUILTINS){
   const realKubescape=p.pluginId==='kubescape'&&p.runner==='kubescape-real'&&p.executionMode==='REAL_VALIDATION'&&p.normalizer==='kubescape-native/v1'&&p.cleanupPolicy==='TERMINATE_AND_VERIFY_GROUP'&&p.policyAdapter==='kubescape';
   const realSonar=p.pluginId==='sonarqube'&&p.runner==='sonar-real'&&p.executionMode==='REAL_VALIDATION'&&p.normalizer==='sonar-native/v1'&&p.cleanupPolicy==='TERMINATE_AND_VERIFY_GROUP'&&p.policyAdapter==='sonarqube';
   const realZap=p.pluginId==='zap'&&p.runner==='zap-real'&&p.executionMode==='REAL_VALIDATION'&&p.normalizer==='zap-native/v1'&&p.cleanupPolicy==='TERMINATE_AND_VERIFY_GROUP'&&p.policyAdapter==='zap';
+  const realSops=p.pluginId==='sops'&&p.runner==='sops-real'&&p.executionMode==='REAL_VALIDATION'&&p.normalizer==='sops-native/v1'&&p.cleanupPolicy==='TERMINATE_AND_VERIFY_GROUP'&&p.policyAdapter==='sops';
   const realProvenance=p.pluginId==='provenance'&&p.runner==='provenance-real'&&p.executionMode==='REAL_VALIDATION'&&p.normalizer==='provenance-native/v1'&&p.cleanupPolicy==='TERMINATE_AND_VERIFY_GROUP'&&p.policyAdapter==='provenance';
   const realBuildProvenance=p.pluginId==='build-provenance'&&p.runner==='build-provenance-real'&&p.executionMode==='REAL_VALIDATION'&&p.normalizer==='build-provenance-native/v1'&&p.cleanupPolicy==='TERMINATE_AND_VERIFY_GROUP'&&p.policyAdapter==='build-provenance';
-  const real=realFalco||realSonar||realKubescape||realZap||realProvenance||realBuildProvenance||realKyverno||realTrivy||realSbom||realCosign||realSemgrep||p.pluginId==='gitleaks'&&p.runner==='gitleaks-real'&&p.executionMode==='REAL_VALIDATION'&&p.normalizer==='gitleaks-dir/v1'&&p.cleanupPolicy==='TERMINATE_AND_VERIFY_GROUP';
-  if(typeof p.enabled!=='boolean'||!Number.isSafeInteger(p.timeout)||p.timeout<1||p.timeout>(realTrivy?210000:realSonar?180000:realKubescape?1500000:realZap?240000:30000)||!real&&(!['archive-worker','blocked'].includes(p.runner)||!['OFFLINE_REPLAY','PREFLIGHT_ONLY'].includes(p.executionMode)||p.normalizer!=='preserve-raw/v1'||p.cleanupPolicy!=='TERMINATE_AND_JOIN_WORKER'))fail('untrusted runner contract');
+  const real=realFalco||realSonar||realKubescape||realZap||realSops||realProvenance||realBuildProvenance||realKyverno||realTrivy||realSbom||realCosign||realSemgrep||p.pluginId==='gitleaks'&&p.runner==='gitleaks-real'&&p.executionMode==='REAL_VALIDATION'&&p.normalizer==='gitleaks-dir/v1'&&p.cleanupPolicy==='TERMINATE_AND_VERIFY_GROUP';
+  if(typeof p.enabled!=='boolean'||!Number.isSafeInteger(p.timeout)||p.timeout<1||p.timeout>(realTrivy?210000:realSonar?180000:realKubescape?1500000:realZap?240000:realSops?120000:30000)||!real&&(!['archive-worker','blocked'].includes(p.runner)||!['OFFLINE_REPLAY','PREFLIGHT_ONLY'].includes(p.executionMode)||p.normalizer!=='preserve-raw/v1'||p.cleanupPolicy!=='TERMINATE_AND_JOIN_WORKER'))fail('untrusted runner contract');
   if(![p.requiredCapabilities,p.optionalCapabilities].every(x=>Array.isArray(x)&&x.every(c=>CAPABILITIES.includes(c)))||!Array.isArray(p.supportedProfiles)||!p.supportedProfiles.every(x=>PROFILES.includes(x)))fail('registry capability/profile');
   if(!['pluginVersion','displayName','inputContract','outputContract','policyAdapter'].every(k=>typeof p[k]==='string'&&p[k]))fail('registry identity/contract');
   map.set(p.pluginId,freeze(structuredClone(p)));
@@ -93,3 +94,9 @@ export function realProvenanceRegistry(){return registry(realManagedRegistry().a
 // the platform's existing DSSE/build validators over the real archived
 // build attestation and reports the true exit outcome.
 export function realBuildProvenanceRegistry(){return registry(realManagedRegistry().all().map(p=>p.pluginId==='build-provenance'?{...p,runner:'build-provenance-real',executionMode:'REAL_VALIDATION',normalizer:'build-provenance-native/v1',policyAdapter:'build-provenance',pluginVersion:'2.0.0-candidate.7',enabled:false,requiredCapabilities:['BUILD_METADATA','TRUSTED_EXECUTOR'],timeout:30000,cleanupPolicy:'TERMINATE_AND_VERIFY_GROUP'}:p));}
+
+// Additive native plugin; existing managed registry remains unchanged.
+// The frozen SOPS Policy adapter consumes the secrets-gate observations
+// through sopsFacts/sopsDecision (infra/security/policy/sops-evidence.mjs):
+// the runner supplies real controlled gate observations, never a decision.
+export function realSopsRegistry(){return registry(realManagedRegistry().all().map(p=>p.pluginId==='sops'?{...p,runner:'sops-real',executionMode:'REAL_VALIDATION',normalizer:'sops-native/v1',policyAdapter:'sops',pluginVersion:'2.0.0-candidate.7',enabled:false,requiredCapabilities:['CREDENTIALS','TRUSTED_EXECUTOR'],timeout:120000,cleanupPolicy:'TERMINATE_AND_VERIFY_GROUP'}:p));}
