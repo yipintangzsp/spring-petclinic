@@ -1,0 +1,19 @@
+W13 watermark capture, 2026-11-13 03:20 CST (2026-11-12T19:20Z), read-only
+Opening-of-round baseline (checkpoint, 2026-11-13 01:52-02:00): Mac Data 31 Gi (93%), load ~7.2-7.9; devops root 33 G (87%), load ~2.0, mem avail ~5.6 G
+
+== Mac (MACdeMacBook-Pro.local, macOS 27.2.1) ==
+df /System/Volumes/Data: /dev/disk3s5 460Gi total, 403Gi used, 30Gi avail, 94%
+load averages: 8.75 8.11 8.23 (up 1 day 18:02)
+vm_stat (16K pages): free 4210, active 501752, inactive 500106, wired 147286, compressor occupied 902344
+vm.swapusage: total 4096.00M, used 2822.12M, free 1273.88M (encrypted)
+
+== devops (root /dev/vda2) ==
+df -h /: 252G total, 208G used, 33G avail, 87%
+df -B1 /: available 34711023616 bytes
+load average: 3.27 2.69 3.00 (up 7:00)
+free -h: Mem 21Gi total, 15Gi used, available 5.5Gi; Swap 11Gi total, 2.0Gi used (swapfile 8G 1009.2M + swap.img 4G 1009.3M)
+
+== devops service planes (KUBECONFIG=/home/zhang/.kube/platform-readonly.yaml) ==
+nodes: aliyun-worker Ready, devops Ready (control-plane), ucloud-worker Ready (3/3, v1.36.1+k3s1)
+petclinic ns: clinic-message-worker 1/1 Running; petclinic-7b9fc47976 x3 1/1 Running (4/4)
+argocd Applications (14): airflow, cook, devops-tls-lab, hello-app-dev, petclinic, petclinic-gitops-demo, platform-alertmanager, platform-cert-manager, platform-devsecops, platform-messaging, platform-rabbitmq, platform-rollouts, rollouts-lab, spark-operator -- all Synced / Healthy

@@ -1,0 +1,14 @@
+W13 restore drill transcript (devops, docker, 2026-11-13 03:25-03:31 CST). Isolated: temp dir /tmp/w13-drill-20261113 + temp container w13-drill-mysql (mysql:9.7, no published ports, MYSQL_ALLOW_EMPTY_PASSWORD=yes). Production untouched (k3s MySQL never contacted).
+
+SOURCE: /home/zhang/k8s-infra/ns-data/mysql-full-backup.sql (daily backup-k8s.sh output, 2026-11-13 02:00, git commit 7b42f17 in root/k8s-infra)
+sha256 source before = after = 277076923f42a3c5decf10578208bbe5f711a5718b94f6717c5254391d7f7854 (byte-identical copy verified)
+Dump: mysqldump 10.13 / MySQL 8.4.10 --all-databases; databases: mysql(system), airflow, petclinic_analytics_baseline, replication_lab, superset, v23_dataops, zabbix; CREATE TABLE total 373; INSERT statements 190
+SCOPE: system database `mysql` excluded from restore (8.4 system tables are not importable into 9.7); extracted drill-restore.sql 39M, 6 user databases, CREATE TABLE = 335
+
+RESTORE: docker exec -i w13-drill-mysql mysql -uroot < drill-restore.sql -> rc=0, 24.0s, stderr log 0 lines
+VERIFY (information_schema): airflow 71, petclinic_analytics_baseline 2, replication_lab 1, superset 53, v23_dataops 1, zabbix 207 => total 335 == expected 335
+SPOT ROWS (exact COUNT(*)): zabbix.users=2, zabbix.items=16467, superset.tables=3, petclinic_analytics_baseline.runs=3, petclinic_analytics_baseline.snapshot_visits=6002
+SERVER: VERSION()=9.7.4
+
+CLEANUP: docker rm -f w13-drill-mysql (gone); anonymous volume 3e7e22e598d13f77820f181cf5454365f9c4a8794354b1eaf559f2e3c82c0f6c (CreatedAt 2026-11-13T03:25:50+08:00, the drill's own) removed; rm -rf /tmp/w13-drill-20261113 (gone)
+POST-CLEAN CHECK: docker system df volumes back to 9 total / 2.385GB (identical to pre-drill), df / back to 33G avail 87%, no w13 containers. Site restored to pre-drill state.
