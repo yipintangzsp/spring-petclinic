@@ -7,6 +7,7 @@ import {executeRealCosign} from './cosign-real.mjs';
 import {executeRealSemgrep} from './semgrep-real.mjs';
 import {executeRealGitleaks} from './gitleaks-real.mjs';
 import {executeRealFalco} from './falco-real.mjs';
+import {executeRealKyverno} from './kyverno-real.mjs';
 import {policyOwner,sealResult,verifyResult,artifactStore,verifyArtifact,legacyGateFields} from './result.mjs';
 import {freeze,digest,fail} from '../summary-v2/codec.mjs';
 export const MANAGER_VERSION='2.0.0-candidate.4';
@@ -26,7 +27,7 @@ export async function runCandidate({config={},runId,projectId,context={platform:
    else{
     let execution;
     try{
-     execution=p.runner==='falco-real'?await executeRealFalco(p,inputs[p.pluginId],{signal,projectId,runId}):p.runner==='trivy-real'?await executeRealTrivy(p,inputs[p.pluginId],{signal,projectId,runId}):p.runner==='sbom-real'?await executeRealSbom(p,inputs[p.pluginId],{signal,projectId,runId}):p.runner==='cosign-real'?await executeRealCosign(p,inputs[p.pluginId],{signal,projectId,runId}):p.runner==='semgrep-real'?await executeRealSemgrep(p,inputs[p.pluginId],{signal,projectId,runId}):p.runner==='gitleaks-real'?await executeRealGitleaks(p,inputs[p.pluginId],{signal,projectId,runId}):await executeArchive(p,inputs[p.pluginId],{signal});
+     execution=p.runner==='falco-real'?await executeRealFalco(p,inputs[p.pluginId],{signal,projectId,runId}):p.runner==='trivy-real'?await executeRealTrivy(p,inputs[p.pluginId],{signal,projectId,runId}):p.runner==='sbom-real'?await executeRealSbom(p,inputs[p.pluginId],{signal,projectId,runId}):p.runner==='cosign-real'?await executeRealCosign(p,inputs[p.pluginId],{signal,projectId,runId}):p.runner==='semgrep-real'?await executeRealSemgrep(p,inputs[p.pluginId],{signal,projectId,runId}):p.runner==='gitleaks-real'?await executeRealGitleaks(p,inputs[p.pluginId],{signal,projectId,runId}):p.runner==='kyverno-real'?await executeRealKyverno(p,inputs[p.pluginId],{signal,projectId,runId}):await executeArchive(p,inputs[p.pluginId],{signal});
      if(execution.fact.component!==p.policyAdapter||execution.factDigest!==digest(execution.fact))fail('normalizer/adapter mismatch');
      store.putRaw(p.pluginId+'.raw.json',execution.rawReportBytesUtf8);
      const policy=await owner.evaluateOnce(p.pluginId,execution.fact);

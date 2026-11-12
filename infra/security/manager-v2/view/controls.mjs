@@ -6,7 +6,7 @@ import {configuration} from '../config.mjs';
 import {realManagedRegistry} from '../registry.mjs';
 import {digest} from '../../summary-v2/codec.mjs';
 const file=new URL('../../../../.devsecops/security-view-controls-v1.json',import.meta.url);
-export const managedPlugins=Object.freeze(['gitleaks','semgrep','cosign','sbom','trivy']);
+export const managedPlugins=Object.freeze(['gitleaks','semgrep','cosign','sbom','trivy','kyverno']);
 const error=(code,status=400)=>Object.assign(Error(code),{code,status});
 const exact=(x,keys)=>x&&typeof x==='object'&&!Array.isArray(x)&&Object.keys(x).sort().join(',')===[...keys].sort().join(',');
 export const demoDefaults=()=>({enabled:true,securityLevel:'standard',plugins:Object.fromEntries(managedPlugins.map(id=>[id,{enabled:true}]))});
