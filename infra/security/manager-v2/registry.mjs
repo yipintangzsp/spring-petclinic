@@ -23,7 +23,8 @@ export function registry(definitions=BUILTINS){
   const realKubescape=p.pluginId==='kubescape'&&p.runner==='kubescape-real'&&p.executionMode==='REAL_VALIDATION'&&p.normalizer==='kubescape-native/v1'&&p.cleanupPolicy==='TERMINATE_AND_VERIFY_GROUP'&&p.policyAdapter==='kubescape';
   const realSonar=p.pluginId==='sonarqube'&&p.runner==='sonar-real'&&p.executionMode==='REAL_VALIDATION'&&p.normalizer==='sonar-native/v1'&&p.cleanupPolicy==='TERMINATE_AND_VERIFY_GROUP'&&p.policyAdapter==='sonarqube';
   const realZap=p.pluginId==='zap'&&p.runner==='zap-real'&&p.executionMode==='REAL_VALIDATION'&&p.normalizer==='zap-native/v1'&&p.cleanupPolicy==='TERMINATE_AND_VERIFY_GROUP'&&p.policyAdapter==='zap';
-  const real=realFalco||realSonar||realKubescape||realZap||realKyverno||realTrivy||realSbom||realCosign||realSemgrep||p.pluginId==='gitleaks'&&p.runner==='gitleaks-real'&&p.executionMode==='REAL_VALIDATION'&&p.normalizer==='gitleaks-dir/v1'&&p.cleanupPolicy==='TERMINATE_AND_VERIFY_GROUP';
+  const realProvenance=p.pluginId==='provenance'&&p.runner==='provenance-real'&&p.executionMode==='REAL_VALIDATION'&&p.normalizer==='provenance-native/v1'&&p.cleanupPolicy==='TERMINATE_AND_VERIFY_GROUP'&&p.policyAdapter==='provenance';
+  const real=realFalco||realSonar||realKubescape||realZap||realProvenance||realKyverno||realTrivy||realSbom||realCosign||realSemgrep||p.pluginId==='gitleaks'&&p.runner==='gitleaks-real'&&p.executionMode==='REAL_VALIDATION'&&p.normalizer==='gitleaks-dir/v1'&&p.cleanupPolicy==='TERMINATE_AND_VERIFY_GROUP';
   if(typeof p.enabled!=='boolean'||!Number.isSafeInteger(p.timeout)||p.timeout<1||p.timeout>(realTrivy?210000:realSonar?180000:realKubescape?1500000:realZap?240000:30000)||!real&&(!['archive-worker','blocked'].includes(p.runner)||!['OFFLINE_REPLAY','PREFLIGHT_ONLY'].includes(p.executionMode)||p.normalizer!=='preserve-raw/v1'||p.cleanupPolicy!=='TERMINATE_AND_JOIN_WORKER'))fail('untrusted runner contract');
   if(![p.requiredCapabilities,p.optionalCapabilities].every(x=>Array.isArray(x)&&x.every(c=>CAPABILITIES.includes(c)))||!Array.isArray(p.supportedProfiles)||!p.supportedProfiles.every(x=>PROFILES.includes(x)))fail('registry capability/profile');
   if(!['pluginVersion','displayName','inputContract','outputContract','policyAdapter'].every(k=>typeof p[k]==='string'&&p[k]))fail('registry identity/contract');
@@ -78,3 +79,10 @@ export function realKubescapeRegistry(){return registry(realManagedRegistry().al
 // existing classifyZap classifier (infra/security/zap-policy.mjs): the
 // runner supplies real passive-scan observations, never a decision.
 export function realZapRegistry(){return registry(realManagedRegistry().all().map(p=>p.pluginId==='zap'?{...p,runner:'zap-real',executionMode:'REAL_VALIDATION',normalizer:'zap-native/v1',policyAdapter:'zap',pluginVersion:'2.0.0-candidate.7',enabled:false,requiredCapabilities:['RUNTIME_TARGET','TRUSTED_EXECUTOR'],timeout:240000,cleanupPolicy:'TERMINATE_AND_VERIFY_GROUP'}:p));}
+
+// Additive native plugins; existing managed registry remains unchanged.
+// Provenance's frozen Policy adapter is provenanceParent: the runner
+// supplies genuine replay observations whose cosign verify-attestation
+// command carries the real archived DSSE envelope; the adapter's own
+// verifyEnvelope + validate perform the verification.
+export function realProvenanceRegistry(){return registry(realManagedRegistry().all().map(p=>p.pluginId==='provenance'?{...p,runner:'provenance-real',executionMode:'REAL_VALIDATION',normalizer:'provenance-native/v1',policyAdapter:'provenance',pluginVersion:'2.0.0-candidate.7',enabled:false,requiredCapabilities:['PROVENANCE_METADATA','TRUSTED_EXECUTOR'],timeout:30000,cleanupPolicy:'TERMINATE_AND_VERIFY_GROUP'}:p));}
