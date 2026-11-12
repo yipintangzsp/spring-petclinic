@@ -18,7 +18,8 @@ export function registry(definitions=BUILTINS){
   const realCosign=p.pluginId==='cosign'&&p.runner==='cosign-real'&&p.executionMode==='REAL_VALIDATION'&&p.normalizer==='cosign-blob/v1'&&p.cleanupPolicy==='TERMINATE_AND_VERIFY_GROUP'&&p.policyAdapter==='cosign';
   const realSbom=p.pluginId==='sbom'&&p.runner==='sbom-real'&&p.executionMode==='REAL_VALIDATION'&&p.normalizer==='cyclonedx-native/v1'&&p.cleanupPolicy==='TERMINATE_AND_VERIFY_GROUP';
   const realTrivy=p.pluginId==='trivy'&&p.runner==='trivy-real'&&p.executionMode==='REAL_VALIDATION'&&p.normalizer==='trivy-native/v1'&&p.cleanupPolicy==='TERMINATE_AND_VERIFY_GROUP';
-  const real=realTrivy||realSbom||realCosign||realSemgrep||p.pluginId==='gitleaks'&&p.runner==='gitleaks-real'&&p.executionMode==='REAL_VALIDATION'&&p.normalizer==='gitleaks-dir/v1'&&p.cleanupPolicy==='TERMINATE_AND_VERIFY_GROUP';
+  const realFalco=p.pluginId==='falco'&&p.runner==='falco-real'&&p.executionMode==='REAL_VALIDATION'&&p.normalizer==='falco-native/v1'&&p.cleanupPolicy==='TERMINATE_AND_VERIFY_GROUP'&&p.policyAdapter==='falco-final';
+  const real=realFalco||realTrivy||realSbom||realCosign||realSemgrep||p.pluginId==='gitleaks'&&p.runner==='gitleaks-real'&&p.executionMode==='REAL_VALIDATION'&&p.normalizer==='gitleaks-dir/v1'&&p.cleanupPolicy==='TERMINATE_AND_VERIFY_GROUP';
   if(typeof p.enabled!=='boolean'||!Number.isSafeInteger(p.timeout)||p.timeout<1||p.timeout>(realTrivy?210000:30000)||!real&&(!['archive-worker','blocked'].includes(p.runner)||!['OFFLINE_REPLAY','PREFLIGHT_ONLY'].includes(p.executionMode)||p.normalizer!=='preserve-raw/v1'||p.cleanupPolicy!=='TERMINATE_AND_JOIN_WORKER'))fail('untrusted runner contract');
   if(![p.requiredCapabilities,p.optionalCapabilities].every(x=>Array.isArray(x)&&x.every(c=>CAPABILITIES.includes(c)))||!Array.isArray(p.supportedProfiles)||!p.supportedProfiles.every(x=>PROFILES.includes(x)))fail('registry capability/profile');
   if(!['pluginVersion','displayName','inputContract','outputContract','policyAdapter'].every(k=>typeof p[k]==='string'&&p[k]))fail('registry identity/contract');
@@ -33,7 +34,7 @@ export function capabilityCheck(plugin,context,profile){
  if(!['linux','darwin','win32'].includes(context.platform))fail('platform unknown');
  if(!plugin.supportedProfiles.includes(profile))return {executionStatus:'SKIPPED',reason:'PROFILE_NOT_SUPPORTED',missing:[]};
  if(!['linux','darwin'].includes(context.platform))return {executionStatus:'UNSUPPORTED',reason:'PLATFORM_UNSUPPORTED',missing:[]};
- if(['gitleaks-real','semgrep-real','cosign-real'].includes(plugin.runner)&&context.platform!=='linux')return {executionStatus:'UNSUPPORTED',reason:'REAL_SCANNER_REQUIRES_APPROVED_LINUX_IDENTITY',missing:[]};
+ if(['gitleaks-real','semgrep-real','cosign-real','falco-real'].includes(plugin.runner)&&context.platform!=='linux')return {executionStatus:'UNSUPPORTED',reason:'REAL_SCANNER_REQUIRES_APPROVED_LINUX_IDENTITY',missing:[]};
  const missing=plugin.requiredCapabilities.filter(k=>caps[k]?.state!=='AVAILABLE');
  if(missing.length)return {executionStatus:missing.some(k=>caps[k]?.state==='UNAVAILABLE')?'UNSUPPORTED':'NOT_CONFIGURED',reason:'CAPABILITY_BLOCKED',missing};
  if(plugin.runner==='blocked')return {executionStatus:'NOT_CONFIGURED',reason:plugin.pluginId==='trivy'?'TRIVY_REAL_EXECUTION_PROHIBITED':'LIVE_RUNNER_NOT_IMPLEMENTED',missing:[]};
@@ -49,3 +50,8 @@ export function realPluginsRegistry({gitleaks=true,semgrep=true}={}){
 export function realThreePluginsRegistry(){return registry(realPluginsRegistry().all().map(p=>p.pluginId==='cosign'?{...p,pluginVersion:'2.0.0-candidate.4',enabled:false,executionMode:'REAL_VALIDATION',runner:'cosign-real',normalizer:'cosign-blob/v1',requiredCapabilities:['COSIGN_BINARY','COSIGN_VERSION','OFFLINE_SIGNED_OBJECT','TRUSTED_VERIFICATION_IDENTITY','SIGNATURE_SOURCE','POLICY_VERSION','VALIDATION_OUTPUT_DIR','TRUSTED_VALIDATION_WORKSPACE'],timeout:10000,cleanupPolicy:'TERMINATE_AND_VERIFY_GROUP'}:p));}
 
 export function realManagedRegistry(){return registry(realThreePluginsRegistry().all().map(p=>p.pluginId==='trivy'?{...p,runner:'trivy-real',executionMode:'REAL_VALIDATION',normalizer:'trivy-native/v1',pluginVersion:'2.0.0-candidate.6',requiredCapabilities:['IMAGE_REF','FRESH_DB','TRUSTED_EXECUTOR'],timeout:210000,cleanupPolicy:'TERMINATE_AND_VERIFY_GROUP'}:p.pluginId==='sbom'?{...p,runner:'sbom-real',executionMode:'REAL_VALIDATION',normalizer:'cyclonedx-native/v1',pluginVersion:'2.0.0-candidate.5',requiredCapabilities:['SBOM_FILE'],timeout:30000,cleanupPolicy:'TERMINATE_AND_VERIFY_GROUP'}:p));}
+
+// Additive sixth native plugin; existing managed registry remains unchanged.
+// Falco's frozen Policy adapter is the falco-final stage (falco-parent.mjs):
+// the runner supplies real sensor observations, never a decision.
+export function realFalcoRegistry(){return registry(realManagedRegistry().all().map(p=>p.pluginId==='falco'?{...p,runner:'falco-real',executionMode:'REAL_VALIDATION',normalizer:'falco-native/v1',policyAdapter:'falco-final',pluginVersion:'2.0.0-candidate.7',enabled:false,requiredCapabilities:['RUNTIME_TARGET'],timeout:30000,cleanupPolicy:'TERMINATE_AND_VERIFY_GROUP'}:p));}
