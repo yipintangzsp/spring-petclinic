@@ -20,8 +20,9 @@ export function registry(definitions=BUILTINS){
   const realTrivy=p.pluginId==='trivy'&&p.runner==='trivy-real'&&p.executionMode==='REAL_VALIDATION'&&p.normalizer==='trivy-native/v1'&&p.cleanupPolicy==='TERMINATE_AND_VERIFY_GROUP';
   const realKyverno=p.pluginId==='kyverno'&&p.runner==='kyverno-real'&&p.executionMode==='REAL_VALIDATION'&&p.normalizer==='kyverno-admission/v1'&&p.cleanupPolicy==='TERMINATE_AND_VERIFY_GROUP'&&p.policyAdapter==='kyverno-admission';
   const realFalco=p.pluginId==='falco'&&p.runner==='falco-real'&&p.executionMode==='REAL_VALIDATION'&&p.normalizer==='falco-native/v1'&&p.cleanupPolicy==='TERMINATE_AND_VERIFY_GROUP'&&p.policyAdapter==='falco-final';
-  const real=realFalco||realKyverno||realTrivy||realSbom||realCosign||realSemgrep||p.pluginId==='gitleaks'&&p.runner==='gitleaks-real'&&p.executionMode==='REAL_VALIDATION'&&p.normalizer==='gitleaks-dir/v1'&&p.cleanupPolicy==='TERMINATE_AND_VERIFY_GROUP';
-  if(typeof p.enabled!=='boolean'||!Number.isSafeInteger(p.timeout)||p.timeout<1||p.timeout>(realTrivy?210000:30000)||!real&&(!['archive-worker','blocked'].includes(p.runner)||!['OFFLINE_REPLAY','PREFLIGHT_ONLY'].includes(p.executionMode)||p.normalizer!=='preserve-raw/v1'||p.cleanupPolicy!=='TERMINATE_AND_JOIN_WORKER'))fail('untrusted runner contract');
+  const realSonar=p.pluginId==='sonarqube'&&p.runner==='sonar-real'&&p.executionMode==='REAL_VALIDATION'&&p.normalizer==='sonar-native/v1'&&p.cleanupPolicy==='TERMINATE_AND_VERIFY_GROUP'&&p.policyAdapter==='sonarqube';
+  const real=realFalco||realSonar||realKyverno||realTrivy||realSbom||realCosign||realSemgrep||p.pluginId==='gitleaks'&&p.runner==='gitleaks-real'&&p.executionMode==='REAL_VALIDATION'&&p.normalizer==='gitleaks-dir/v1'&&p.cleanupPolicy==='TERMINATE_AND_VERIFY_GROUP';
+  if(typeof p.enabled!=='boolean'||!Number.isSafeInteger(p.timeout)||p.timeout<1||p.timeout>(realTrivy?210000:realSonar?180000:30000)||!real&&(!['archive-worker','blocked'].includes(p.runner)||!['OFFLINE_REPLAY','PREFLIGHT_ONLY'].includes(p.executionMode)||p.normalizer!=='preserve-raw/v1'||p.cleanupPolicy!=='TERMINATE_AND_JOIN_WORKER'))fail('untrusted runner contract');
   if(![p.requiredCapabilities,p.optionalCapabilities].every(x=>Array.isArray(x)&&x.every(c=>CAPABILITIES.includes(c)))||!Array.isArray(p.supportedProfiles)||!p.supportedProfiles.every(x=>PROFILES.includes(x)))fail('registry capability/profile');
   if(!['pluginVersion','displayName','inputContract','outputContract','policyAdapter'].every(k=>typeof p[k]==='string'&&p[k]))fail('registry identity/contract');
   map.set(p.pluginId,freeze(structuredClone(p)));
@@ -57,3 +58,9 @@ export function realManagedRegistry(){return registry(realThreePluginsRegistry()
 // the runner supplies real sensor observations, never a decision.
 export function realKyvernoRegistry(){return registry(realManagedRegistry().all().map(p=>p.pluginId==='kyverno'?{...p,runner:'kyverno-real',executionMode:'REAL_VALIDATION',normalizer:'kyverno-admission/v1',policyAdapter:'kyverno-admission',pluginVersion:'2.0.0-candidate.7',enabled:false,requiredCapabilities:['CLUSTER_ACCESS','TRUSTED_EXECUTOR'],timeout:30000,cleanupPolicy:'TERMINATE_AND_VERIFY_GROUP'}:p));}
 export function realFalcoRegistry(){return registry(realManagedRegistry().all().map(p=>p.pluginId==='falco'?{...p,runner:'falco-real',executionMode:'REAL_VALIDATION',normalizer:'falco-native/v1',policyAdapter:'falco-final',pluginVersion:'2.0.0-candidate.7',enabled:false,requiredCapabilities:['RUNTIME_TARGET'],timeout:30000,cleanupPolicy:'TERMINATE_AND_VERIFY_GROUP'}:p));}
+
+// Additive seventh native plugin; existing managed registry remains unchanged.
+// SonarQube's frozen Policy adapter consumes the server Quality Gate as
+// authoritative (infra/security/policy/sonar-evidence.mjs): the runner
+// supplies real task/gate observations, never a decision.
+export function realSonarRegistry(){return registry(realManagedRegistry().all().map(p=>p.pluginId==='sonarqube'?{...p,runner:'sonar-real',executionMode:'REAL_VALIDATION',normalizer:'sonar-native/v1',policyAdapter:'sonarqube',pluginVersion:'2.0.0-candidate.7',enabled:false,requiredCapabilities:['RUNTIME_TARGET','CREDENTIALS','TRUSTED_EXECUTOR'],timeout:180000,cleanupPolicy:'TERMINATE_AND_VERIFY_GROUP'}:p));}
