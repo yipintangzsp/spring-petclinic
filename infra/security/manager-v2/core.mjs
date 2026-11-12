@@ -9,6 +9,7 @@ import {executeRealGitleaks} from './gitleaks-real.mjs';
 import {executeRealFalco} from './falco-real.mjs';
 import {executeRealKyverno} from './kyverno-real.mjs';
 import {executeRealSonar} from './sonar-real.mjs';
+import {executeRealBuildProvenance} from './build-provenance-real.mjs';
 import {executeRealProvenance} from './provenance-real.mjs';
 import {executeRealZap} from './zap-real.mjs';
 import {executeRealKubescape} from './kubescape-real.mjs';
@@ -31,7 +32,7 @@ export async function runCandidate({config={},runId,projectId,context={platform:
    else{
     let execution;
     try{
-     execution=p.runner==='falco-real'?await executeRealFalco(p,inputs[p.pluginId],{signal,projectId,runId}):p.runner==='trivy-real'?await executeRealTrivy(p,inputs[p.pluginId],{signal,projectId,runId}):p.runner==='sbom-real'?await executeRealSbom(p,inputs[p.pluginId],{signal,projectId,runId}):p.runner==='cosign-real'?await executeRealCosign(p,inputs[p.pluginId],{signal,projectId,runId}):p.runner==='semgrep-real'?await executeRealSemgrep(p,inputs[p.pluginId],{signal,projectId,runId}):p.runner==='gitleaks-real'?await executeRealGitleaks(p,inputs[p.pluginId],{signal,projectId,runId}):p.runner==='kyverno-real'?await executeRealKyverno(p,inputs[p.pluginId],{signal,projectId,runId}):p.runner==='sonar-real'?await executeRealSonar(p,inputs[p.pluginId],{signal,projectId,runId}):p.runner==='kubescape-real'?await executeRealKubescape(p,inputs[p.pluginId],{signal,projectId,runId}):p.runner==='zap-real'?await executeRealZap(p,inputs[p.pluginId],{signal,projectId,runId}):p.runner==='provenance-real'?await executeRealProvenance(p,inputs[p.pluginId],{signal,projectId,runId}):await executeArchive(p,inputs[p.pluginId],{signal});
+     execution=p.runner==='falco-real'?await executeRealFalco(p,inputs[p.pluginId],{signal,projectId,runId}):p.runner==='trivy-real'?await executeRealTrivy(p,inputs[p.pluginId],{signal,projectId,runId}):p.runner==='sbom-real'?await executeRealSbom(p,inputs[p.pluginId],{signal,projectId,runId}):p.runner==='cosign-real'?await executeRealCosign(p,inputs[p.pluginId],{signal,projectId,runId}):p.runner==='semgrep-real'?await executeRealSemgrep(p,inputs[p.pluginId],{signal,projectId,runId}):p.runner==='gitleaks-real'?await executeRealGitleaks(p,inputs[p.pluginId],{signal,projectId,runId}):p.runner==='kyverno-real'?await executeRealKyverno(p,inputs[p.pluginId],{signal,projectId,runId}):p.runner==='sonar-real'?await executeRealSonar(p,inputs[p.pluginId],{signal,projectId,runId}):p.runner==='kubescape-real'?await executeRealKubescape(p,inputs[p.pluginId],{signal,projectId,runId}):p.runner==='zap-real'?await executeRealZap(p,inputs[p.pluginId],{signal,projectId,runId}):p.runner==='provenance-real'?await executeRealProvenance(p,inputs[p.pluginId],{signal,projectId,runId}):p.runner==='build-provenance-real'?await executeRealBuildProvenance(p,inputs[p.pluginId],{signal,projectId,runId}):await executeArchive(p,inputs[p.pluginId],{signal});
      if(execution.fact.component!==p.policyAdapter||execution.factDigest!==digest(execution.fact))fail('normalizer/adapter mismatch');
      store.putRaw(p.pluginId+'.raw.json',execution.rawReportBytesUtf8);
      const policy=await owner.evaluateOnce(p.pluginId,execution.fact);
