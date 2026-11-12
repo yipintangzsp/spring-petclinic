@@ -1,6 +1,7 @@
 import {configuration,identity,keys} from './config.mjs';
 import {registry as makeRegistry,capabilityCheck} from './registry.mjs';
 import {executeArchive} from './archive.mjs';
+import {executeRealTrivy} from './trivy-real.mjs';
 import {executeRealSbom} from './sbom-real.mjs';
 import {executeRealCosign} from './cosign-real.mjs';
 import {executeRealSemgrep} from './semgrep-real.mjs';
@@ -24,11 +25,11 @@ export async function runCandidate({config={},runId,projectId,context={platform:
    else{
     let execution;
     try{
-     execution=p.runner==='sbom-real'?await executeRealSbom(p,inputs[p.pluginId],{signal,projectId,runId}):p.runner==='cosign-real'?await executeRealCosign(p,inputs[p.pluginId],{signal,projectId,runId}):p.runner==='semgrep-real'?await executeRealSemgrep(p,inputs[p.pluginId],{signal,projectId,runId}):p.runner==='gitleaks-real'?await executeRealGitleaks(p,inputs[p.pluginId],{signal,projectId,runId}):await executeArchive(p,inputs[p.pluginId],{signal});
+     execution=p.runner==='trivy-real'?await executeRealTrivy(p,inputs[p.pluginId],{signal,projectId,runId}):p.runner==='sbom-real'?await executeRealSbom(p,inputs[p.pluginId],{signal,projectId,runId}):p.runner==='cosign-real'?await executeRealCosign(p,inputs[p.pluginId],{signal,projectId,runId}):p.runner==='semgrep-real'?await executeRealSemgrep(p,inputs[p.pluginId],{signal,projectId,runId}):p.runner==='gitleaks-real'?await executeRealGitleaks(p,inputs[p.pluginId],{signal,projectId,runId}):await executeArchive(p,inputs[p.pluginId],{signal});
      if(execution.fact.component!==p.policyAdapter||execution.factDigest!==digest(execution.fact))fail('normalizer/adapter mismatch');
      store.putRaw(p.pluginId+'.raw.json',execution.rawReportBytesUtf8);
      const policy=await owner.evaluateOnce(p.pluginId,execution.fact);
-     if(execution.runtimeFacts){store.put(p.pluginId+'.runtime-facts.json',execution.runtimeFacts);store.put(p.pluginId+'.facts.json',execution.fact);if(policy.evaluation.status!=='POLICY_ERROR'&&policy.evaluation.decision!==execution.oldDecision)fail('real old Gate and Policy differ');}
+     if(execution.runtimeFacts){store.put(p.pluginId+'.runtime-facts.json',execution.runtimeFacts);store.put(p.pluginId+'.facts.json',execution.fact);if(execution.oldDecision!==undefined&&policy.evaluation.status!=='POLICY_ERROR'&&policy.evaluation.decision!==execution.oldDecision)fail('real old Gate and Policy differ');}
      result=sealResult({...base,executionScope:execution.executionScope,executionStatus:policy.evaluation.status==='POLICY_ERROR'?'POLICY_ERROR':policy.evaluation.decision===null?'NOT_CONFIGURED':'COMPLETED',policyDecision:policy.evaluation.decision,evaluationCount:policy.evaluationCount,policy,rawReportDigest:execution.rawReportDigest,factDigest:execution.factDigest,evidenceRefs:execution.evidenceRefs,failureReason:policy.evaluation.status==='POLICY_ERROR'?policy.evaluation.error:policy.evaluation.decision===null?'POLICY_EVIDENCE_INCOMPLETE':null,completedAt:new Date().toISOString(),cleanup:execution.cleanup,...(execution.runtimeFacts?{runtimeFacts:execution.runtimeFacts,oldGateDecision:execution.oldDecision}: {})});
     }catch(e){
      const notConfigured=e.message==='COSIGN_TOOL_NOT_CONFIGURED',policyError=String(e.message).startsWith('POLICY_ERROR:'),unsupported=['GITLEAKS_UNSUPPORTED_IDENTITY','SEMGREP_UNSUPPORTED_IDENTITY','SEMGREP_UNSUPPORTED_SOURCE','COSIGN_UNSUPPORTED_IDENTITY'].includes(e.message);
