@@ -1,0 +1,182 @@
+{
+  "schemaVersion": 1,
+  "pluginId": "build-provenance",
+  "verifiedAt": "2026-11-12T17:48:52.880Z",
+  "head": "fd5264e1",
+  "flags": {
+    "REGISTRY": "VERIFIED",
+    "RUNNER": "VERIFIED",
+    "MANAGEMENT": "PARTIAL",
+    "POLICY": "VERIFIED",
+    "ARTIFACT": "VERIFIED",
+    "ROUTER": "VERIFIED",
+    "OBSERVABILITY": "VERIFIED",
+    "CROSS_PROJECT": "VERIFIED"
+  },
+  "cases": [
+    {
+      "caseId": "historical-build",
+      "projectId": "petclinic-platform",
+      "runId": "web-8973a0d3-7d2f-48d7-95ba-b99933b0dc7d",
+      "expectedDecision": "PASS",
+      "executionStatus": "COMPLETED",
+      "policyDecision": "PASS",
+      "oldGateDecision": "PASS",
+      "evaluationCount": 1,
+      "resultDigest": "3cfb365db85d151709f5cd89da738737f4381a259c39e4f44daa069a128b4d10",
+      "artifactDigest": "3d774c2ff38665a276d9021322efe367d161a36d495550e37e09a22cbb9d986e",
+      "cleanup": "VERIFIED",
+      "router": [
+        {
+          "consumerId": "dry-run",
+          "deliveryDecision": "DRY_RUN",
+          "receiptDigest": "c4ce26a4adb507e248a2839ceef9617963a79e630a1f8ad64b3352e671642dcf"
+        },
+        {
+          "consumerId": "local-evidence",
+          "deliveryDecision": "DELIVERED_LOCAL_ONLY",
+          "receiptDigest": "f3efb6704dad66e932ca15cbbf9f0f0ecf0f665a9f63e3eccf820c83204422cf"
+        }
+      ]
+    },
+    {
+      "caseId": "wrong-digest",
+      "projectId": "petclinic-platform",
+      "runId": "web-52b5d426-1a48-4836-afa1-3723703afff0",
+      "expectedDecision": "FAIL",
+      "executionStatus": "COMPLETED",
+      "policyDecision": "FAIL",
+      "oldGateDecision": "FAIL",
+      "evaluationCount": 1,
+      "resultDigest": "8d92fd3d3cada56425dc582b6c9dcdd055cd90439ad0ff6e73086e5a3046968f",
+      "artifactDigest": "f902b175d755254946b4006d5519750f5baa17c59b52dc42a49f49d37c87d921",
+      "cleanup": "VERIFIED",
+      "router": [
+        {
+          "consumerId": "dry-run",
+          "deliveryDecision": "DRY_RUN",
+          "receiptDigest": "b894a1698dc3cf34ec28e6ca700bda8717a0589660220ad589924d66e04ecaca"
+        },
+        {
+          "consumerId": "local-evidence",
+          "deliveryDecision": "DELIVERED_LOCAL_ONLY",
+          "receiptDigest": "f655143a97e5c6809b4e73c30a3b3d9623ba5c77280873a0798b7b25729d1456"
+        }
+      ]
+    },
+    {
+      "caseId": "wrong-commit",
+      "projectId": "petclinic-platform",
+      "runId": "web-cf7866e6-f8c4-4c24-8c73-b7edc0aadefa",
+      "expectedDecision": "FAIL",
+      "executionStatus": "COMPLETED",
+      "policyDecision": "FAIL",
+      "oldGateDecision": "FAIL",
+      "evaluationCount": 1,
+      "resultDigest": "f8bd14af7fd225c24efd319c6493805e23f0b8f8df102ab12e674b0cbe43efcc",
+      "artifactDigest": "893e86fdccdfc01c00dfc2083c234580a2c1202aa4de1d6af98f653561ef9ead",
+      "cleanup": "VERIFIED",
+      "router": [
+        {
+          "consumerId": "dry-run",
+          "deliveryDecision": "DRY_RUN",
+          "receiptDigest": "aeaba6f199ca3605b1d7e43f4ab4ff67fd48c61a3a069c9da5447c63e04fb1a5"
+        },
+        {
+          "consumerId": "local-evidence",
+          "deliveryDecision": "DELIVERED_LOCAL_ONLY",
+          "receiptDigest": "4c465605527904221c1c246e1ad5c65c1618b05b24fd9e85d2078fb22fdd9d29"
+        }
+      ]
+    },
+    {
+      "caseId": "tampered-envelope",
+      "projectId": "petclinic-platform",
+      "runId": "web-e750762d-65ff-4740-af02-57c65dfc9120",
+      "expectedDecision": "FAIL",
+      "executionStatus": "COMPLETED",
+      "policyDecision": "FAIL",
+      "oldGateDecision": "FAIL",
+      "evaluationCount": 1,
+      "resultDigest": "880620e93c5ba5927da3182db9545d8ba43cb3bf886887a0ab4602deddf9c360",
+      "artifactDigest": "5ec59c559545e2750cfeec22bd4fabd0cd61794f9cb7118c30d622c1cac35b99",
+      "cleanup": "VERIFIED",
+      "router": [
+        {
+          "consumerId": "dry-run",
+          "deliveryDecision": "DRY_RUN",
+          "receiptDigest": "3eccf8f02620fa1ef707c47ab6727bae0e5b5786a126057b58bded839d0a6699"
+        },
+        {
+          "consumerId": "local-evidence",
+          "deliveryDecision": "DELIVERED_LOCAL_ONLY",
+          "receiptDigest": "b5fc6c453a0d50598c9bdf418cebfa40cbe1313c8ae8499a014461881555f980"
+        }
+      ]
+    }
+  ],
+  "disabled": [
+    {
+      "name": "plugin-off",
+      "runId": "web-bcdb4a9f-81dc-4f0c-9cd3-8c19649e54a0",
+      "executionStatus": "DISABLED",
+      "evaluationCount": 0,
+      "policyDecision": null,
+      "failureReason": "PLUGIN_DISABLED"
+    },
+    {
+      "name": "master-off",
+      "runId": "web-9df24eaf-1118-4330-b57c-6a5ced1085a3",
+      "executionStatus": "DISABLED",
+      "evaluationCount": 0,
+      "policyDecision": null,
+      "failureReason": "MASTER_DISABLED"
+    }
+  ],
+  "crossProject": {
+    "caseLeakToCleanroom": "BUILD_PROVENANCE_PROJECT_NOT_AUTHORIZED",
+    "targetMismatch": "BUILD_PROVENANCE_PROJECT_NOT_AUTHORIZED",
+    "unknownProject": "BUILD_PROVENANCE_PROJECT_NOT_AUTHORIZED"
+  },
+  "loki": [
+    {
+      "runId": "web-8973a0d3-7d2f-48d7-95ba-b99933b0dc7d",
+      "caseId": "historical-build",
+      "state": "DELIVERED",
+      "queryState": "VERIFIED",
+      "pushState": "ACKNOWLEDGED",
+      "receiptDigest": "24d9995f34d3269bb55576b8b07500292d27af9e0ddd68eb2fcc069515449141"
+    },
+    {
+      "runId": "web-52b5d426-1a48-4836-afa1-3723703afff0",
+      "caseId": "wrong-digest",
+      "state": "DELIVERED",
+      "queryState": "VERIFIED",
+      "pushState": "ACKNOWLEDGED",
+      "receiptDigest": "6db45848de18c91f1e1d3d3775321fa3042749068d5f179f0fd8cbc20bed573b"
+    }
+  ],
+  "grafanaChecks": [
+    {
+      "caseId": "historical-build",
+      "matched": 1,
+      "eventIdentityMatch": true
+    },
+    {
+      "caseId": "wrong-digest",
+      "matched": 1,
+      "eventIdentityMatch": true
+    }
+  ],
+  "regression": {
+    "pluginTests": "9/9",
+    "managerV2All": "167/167 pass (node --test infra/security/manager-v2/*.test.mjs)",
+    "securityObservability": "147/147",
+    "consumers": "114/162 pass, 48 fail = pre-existing baseline (fixture ageing + sample-dir EEXIST/EADDRINUSE), none provenance-related"
+  },
+  "gaps": [
+    "G-BP1 Web UI not wired (same entanglement as G-P1); buildProvenanceUiCase prepared (verified->historical-build, rejected->wrong-digest).",
+    "G-BP2 Wiring increments uncommitted in shared working tree (same as G-P2).",
+    "G-BP3 Cleanroom isolation verified by rejection only (same rationale as G-P3)."
+  ]
+}
