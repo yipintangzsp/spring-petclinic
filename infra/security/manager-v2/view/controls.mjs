@@ -6,11 +6,11 @@ import {configuration} from '../config.mjs';
 import {realManagedRegistry} from '../registry.mjs';
 import {digest} from '../../summary-v2/codec.mjs';
 const file=new URL('../../../../.devsecops/security-view-controls-v1.json',import.meta.url);
-export const managedPlugins=Object.freeze(['gitleaks','semgrep','cosign','sbom']);
+export const managedPlugins=Object.freeze(['gitleaks','semgrep','cosign','sbom','trivy']);
 const error=(code,status=400)=>Object.assign(Error(code),{code,status});
 const exact=(x,keys)=>x&&typeof x==='object'&&!Array.isArray(x)&&Object.keys(x).sort().join(',')===[...keys].sort().join(',');
 export const demoDefaults=()=>({enabled:true,securityLevel:'standard',plugins:Object.fromEntries(managedPlugins.map(id=>[id,{enabled:true}]))});
-function normalize(settings){return {...settings,plugins:{...settings.plugins,sbom:settings.plugins.sbom??{enabled:true}}};}
+function normalize(settings){const plugins={...settings.plugins};for(const id of managedPlugins)plugins[id]=plugins[id]??{enabled:true};return {...settings,plugins};}
 function resolve(settings){
  settings=normalize(settings);
  if(!exact(settings,['enabled','securityLevel','plugins'])||!exact(settings.plugins,managedPlugins)||managedPlugins.some(id=>!exact(settings.plugins[id],['enabled'])))throw error('INVALID_CANDIDATE_CONFIGURATION');

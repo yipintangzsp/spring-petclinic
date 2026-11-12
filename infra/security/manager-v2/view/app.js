@@ -15,7 +15,7 @@ function renderRun(){
   for(const p of r.plugins){
     const card=el('article',undefined,'plugin '+(tone(p.policyDecision)==='fail'||['ERROR','POLICY_ERROR'].includes(p.executionStatus)?'bad':p.executionStatus==='DISABLED'?'off':''));card.dataset.plugin=p.pluginId;
     const top=el('div',undefined,'card-top');top.append(el('h3',p.pluginId),el('span',p.evidenceClass??'UNAVAILABLE','tag '+(p.evidenceClass==='REAL'?'real':'neutral')));
-    card.append(top,el('p',{gitleaks:'凭据泄漏检测 / 受控目录',semgrep:'代码规则检测 / 受控源码',cosign:'离线 Blob 验签 / 非生产信任验证'}[p.pluginId],'plugin-sub'));
+    card.append(top,el('p',{gitleaks:'凭据泄漏检测 / 受控目录',semgrep:'代码规则检测 / 受控源码',cosign:'离线 Blob 验签 / 非生产信任验证',trivy:'镜像漏洞扫描 / 非生产 Harbor 候选'}[p.pluginId],'plugin-sub'));
     const decision=p.policyDecision??(p.executionStatus==='DISABLED'?'DISABLED':p.executionStatus??'UNAVAILABLE');
     card.append(el('div',decision,'decision '+(p.policyDecision==='PASS'?'pass-text':p.policyDecision==='FAIL'?'fail-text':'off-text')),el('p',p.policyDecision?'原始 Policy Decision':'未产生 Policy Decision','decision-label'));
     const execution=el('div',undefined,'execution');execution.append(el('span',p.executionStatus??'UNAVAILABLE','tag neutral'),el('span','REPLAY','tag replay'));card.append(execution);
@@ -175,6 +175,10 @@ function renderLive(runs){
   if(r.executionDiagnostic){const diagnostic=el('details');diagnostic.append(el('summary','执行诊断（退出码 / 阶段 / 清理）'),el('pre',JSON.stringify(r.executionDiagnostic,null,2)));card.append(diagnostic);}
   if(r.state==='COMPLETED'){const button=el('button','读取原始 SBOM / 展开组件');button.type='button';button.addEventListener('click',async()=>{try{const response=await fetch('/api/projects/'+encodeURIComponent(r.projectId)+'/runs/'+r.runId+'/sbom',{cache:'no-store',headers:{'X-Project-Token':sbomProjectSession.projectToken}});if(!response.ok)throw Error('SBOM_DOWNLOAD_'+response.status);const raw=await response.text(),bom=JSON.parse(raw);const d=el('details');d.open=true;d.append(el('summary','CycloneDX · '+bom.components.length+' 个真实组件'));for(const c of bom.components)d.append(el('p',c.name+' @ '+c.version),el('code',c.purl??'PURL_UNAVAILABLE'));const download=el('a','下载本次 CycloneDX JSON');const objectUrl=URL.createObjectURL(new Blob([raw],{type:'application/json'}));download.href=objectUrl;download.download=r.runId+'-sbom.json';d.append(download);card.append(d);button.disabled=true;}catch(e){button.textContent='读取失败：'+e.message;}});card.append(button);}
  }
+ if(r.pluginId==='trivy'){
+  card.append(row('Project ID',r.projectId),row('记录来源',r.evidenceClass==='REAL'?'已完成的真实受控执行':'NOT_TESTED · 未完成真实扫描'),row('执行身份',r.executionIdentity),row('工具版本',r.toolVersion),row('工具 SHA256',r.toolSha256),row('漏洞条数',r.findingCount),row('候选 Index Digest',r.indexDigest),row('Platform Digest',r.platformDigest),row('Result Router',(r.router??[]).map(x=>x.consumerId+': '+x.deliveryDecision).join(' / ')||'NOT_TESTED'),el('p','固定非生产 Harbor 候选镜像；漏洞库新鲜度与拉取凭据由远端受限入口强制校验。'));
+  if(r.executionDiagnostic){const diagnostic=el('details');diagnostic.append(el('summary','执行诊断（远端门禁）'),el('pre',JSON.stringify(r.executionDiagnostic,null,2)));card.append(diagnostic);}
+ }
  if(r.pluginId==='cosign'&&r.scannerExecuted===true)card.append(row('验签范围','受控离线 Blob，非生产镜像信任'),row('验签结果',r.verificationStatus),row('被验证对象 Digest',r.verifiedObjectDigest),row('受控公钥 Digest',r.trustPublicKeyDigest),row('验签输出',r.verificationReason));
  if(Number.isSafeInteger(r.findingsCount))card.append(row('实际命中',r.findingsCount));
  if(r.findingRules?.length)card.append(row('检测规则',r.findingRules.join(', ')));
@@ -194,13 +198,13 @@ async function refreshLive(){const v=await api('/api/runs');latestRuns=v.runs;re
 async function initializeLive(){try{
  const catalog=await api('/api/sbom/projects');try{projectSessions=(await api('/api/sbom/session')).projects;}catch{projectSessions=[];}
  projectSelect.replaceChildren(...catalog.projects.map(p=>{const o=el('option',p.displayName+' · '+p.projectId);o.value=p.projectId;return o;}));sbomProjectSession=projectSessions.find(p=>p.projectId===projectSelect.value)??null;
- const sbomOption=el('option','SBOM · CycloneDX');sbomOption.value='sbom';$('live-plugin').append(sbomOption);liveCapabilities=await api('/api/plugins');sessionToken=liveCapabilities.csrfToken;await refreshLive();try{await loadControls();}catch{$('controls-message').textContent='全局管理需要本机操作员授权。';}await loadProjectControls();await loadCIProject();capabilityText();
+ const sbomOption=el('option','SBOM · CycloneDX');sbomOption.value='sbom';$('live-plugin').append(sbomOption);const trivyOption=el('option','Trivy · 镜像漏洞');trivyOption.value='trivy';$('live-plugin').append(trivyOption);liveCapabilities=await api('/api/plugins');sessionToken=liveCapabilities.csrfToken;await refreshLive();try{await loadControls();}catch{$('controls-message').textContent='全局管理需要本机操作员授权。';}await loadProjectControls();await loadCIProject();capabilityText();
  }catch(e){$('live-message').textContent='UNAVAILABLE: '+e.message;}}
 $('live-plugin').addEventListener('change',capabilityText);
 $('run-validation').addEventListener('click',async()=>{
  if(liveBusy||!sessionToken)return;liveBusy=true;$('run-validation').disabled=true;$('live-message').textContent='正在提交并检查固定 Runner 执行条件…';
- try{const r=await api('/api/run',{method:'POST',headers:{'Content-Type':'application/json','X-CSRF-Token':sessionToken},body:JSON.stringify({pluginId:$('live-plugin').value,scenarioId:$('live-scenario').value,...($('live-plugin').value==='sbom'?{projectId:sbomProjectSession.projectId}:{})})});
-  let done=false;for(let i=0;i<190;i++){const v=await api('/api/runs/'+r.runId);if(!['QUEUED','RUNNING'].includes(v.state)){$('live-message').textContent=`${v.state}: ${v.reason??v.policyDecision??'无判定'} · ${v.runId}`;done=true;break;}await new Promise(r=>setTimeout(r,500));}
+ try{const r=await api('/api/run',{method:'POST',headers:{'Content-Type':'application/json','X-CSRF-Token':sessionToken},body:JSON.stringify({pluginId:$('live-plugin').value,scenarioId:$('live-scenario').value,...($('live-plugin').value==='sbom'?{projectId:sbomProjectSession.projectId}:{}),...($('live-plugin').value==='trivy'?{projectId:liveCapabilities?.plugins.find(p=>p.pluginId==='trivy')?.projects?.[0]}:{})})});
+  let done=false;const maxPolls=$('live-plugin').value==='trivy'?480:190;for(let i=0;i<maxPolls;i++){const v=await api('/api/runs/'+r.runId);if(!['QUEUED','RUNNING'].includes(v.state)){$('live-message').textContent=`${v.state}: ${v.reason??v.policyDecision??'无判定'} · ${v.runId}`;done=true;break;}await new Promise(r=>setTimeout(r,500));}
   if(!done)$('live-message').textContent='执行状态未能及时确认，请刷新记录；不会自动重复执行。';await refreshLive();
  }catch(e){$('live-message').textContent='请求失败：'+e.message;}
  finally{liveBusy=false;capabilityText();}
@@ -209,18 +213,18 @@ function renderControls(){
  if(!currentConfig)return;
  const s=currentConfig.settings;
  $('control-enabled').checked=s.enabled;$('control-level').value=s.securityLevel;
- $('control-rows').replaceChildren(...['gitleaks','semgrep','cosign','sbom'].map(id=>{
+ $('control-rows').replaceChildren(...['gitleaks','semgrep','cosign','sbom','trivy'].map(id=>{
   const tr=el('tr');tr.append(el('td',id));const cell=el('td'),input=el('input');input.type='checkbox';input.id='control-'+id;input.checked=s.plugins[id].enabled;input.setAttribute('aria-label',id+' candidate enabled');cell.append(input,el('span',s.plugins[id].enabled?' ENABLED':' DISABLED'));tr.append(cell);
   tr.append(el('td',currentConfig.source.kind+' · '+(!s.enabled?'MASTER_DISABLED':!s.plugins[id].enabled?'PLUGIN_DISABLED':'ENABLED')));
   const last=latestRuns.find(r=>r.pluginId===id&&r.evidenceClass==='REAL'&&r.state==='COMPLETED');tr.append(el('td',last?last.policyDecision+' / '+(last.securityLevel??'standard')+' · '+time(last.scannerCompletedAt)+' · '+last.runId:'NOT_TESTED'));return tr;
  }));
- $('effective-controls').textContent=JSON.stringify({scope:currentConfig.scope,revision:currentConfig.revision,updatedAt:currentConfig.updatedAt,settings:s,source:currentConfig.source,configurationOrigins:currentConfig.effectiveConfig.configurationOrigins,effectiveSecurityLevel:currentConfig.effectiveConfig.effectiveSecurityLevel,appliedOverrides:currentConfig.effectiveConfig.appliedOverrides,effectivePolicy:Object.fromEntries(['gitleaks','semgrep','cosign','sbom'].map(id=>[id,currentConfig.effectiveConfig.effectivePolicy[id]])),history:currentConfig.history},null,2);
+ $('effective-controls').textContent=JSON.stringify({scope:currentConfig.scope,revision:currentConfig.revision,updatedAt:currentConfig.updatedAt,settings:s,source:currentConfig.source,configurationOrigins:currentConfig.effectiveConfig.configurationOrigins,effectiveSecurityLevel:currentConfig.effectiveConfig.effectiveSecurityLevel,appliedOverrides:currentConfig.effectiveConfig.appliedOverrides,effectivePolicy:Object.fromEntries(['gitleaks','semgrep','cosign','sbom','trivy'].map(id=>[id,currentConfig.effectiveConfig.effectivePolicy[id]])),history:currentConfig.history},null,2);
  $('save-controls').disabled=false;$('reset-controls').disabled=false;
 }
 async function loadControls(){currentConfig=await api('/api/config');renderControls();await loadProjectControls();$('controls-message').textContent='已加载 Revision '+currentConfig.revision+' · '+(currentConfig.updatedAt?time(currentConfig.updatedAt):'演示默认配置')+' · 生产 NOT_ACTIVE';}
 async function saveControls(reset=false){
  if(!currentConfig||!sessionToken||liveBusy)return;
- const settings={enabled:$('control-enabled').checked,securityLevel:$('control-level').value,plugins:Object.fromEntries(['gitleaks','semgrep','cosign','sbom'].map(id=>[id,{enabled:$('control-'+id).checked}]))};
+ const settings={enabled:$('control-enabled').checked,securityLevel:$('control-level').value,plugins:Object.fromEntries(['gitleaks','semgrep','cosign','sbom','trivy'].map(id=>[id,{enabled:$('control-'+id).checked}]))};
  $('save-controls').disabled=true;$('reset-controls').disabled=true;
  try{currentConfig=await api(reset?'/api/config/reset':'/api/config',{method:'POST',headers:{'Content-Type':'application/json','X-CSRF-Token':sessionToken},body:JSON.stringify(reset?{revision:currentConfig.revision}:{revision:currentConfig.revision,settings})});renderControls();liveCapabilities=await api('/api/plugins');sessionToken=liveCapabilities.csrfToken;capabilityText();$('controls-message').textContent='保存成功 · Revision '+currentConfig.revision+' · '+time(currentConfig.updatedAt)+' · 下次受控验证生效';}
  catch(e){$('controls-message').textContent='保存失败：'+e.message+'。未确认生效，请重新读取配置。';}
