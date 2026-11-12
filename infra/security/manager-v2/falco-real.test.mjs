@@ -2,6 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {parseFalcoEvents, falcoProjects} from './falco-real.mjs';
 import {realFalcoRegistry, registry} from './registry.mjs';
+import {falcoCollectorPacket} from './falco/collector.mjs';
 
 const line = (rule, pod, extra = {}) => JSON.stringify({
   time: '2026-11-12T14:00:00.000000000Z', rule, priority: 'Warning',
@@ -47,4 +48,48 @@ test('realFalcoRegistry exposes falco as a real runner and leaves defaults intac
   const demo = registry().get('falco');
   assert.equal(demo.runner, 'blocked');
   assert.equal(demo.executionMode, 'PREFLIGHT_ONLY');
+});
+
+test('falco collector config pins the dedicated restricted entry identity (G-F2)', () => {
+  const p = falcoProjects()['petclinic-runtime'];
+  assert.equal(p.collectorEntryUser, 'security-falco');
+  assert.equal(p.collectorEntryHost, '127.0.0.1');
+  assert.equal(p.collectorUid, 1007);
+  assert.equal(p.collectorGid, 1007);
+  assert.equal(p.collectorProjectId, 'petclinic-runtime');
+  assert.equal(p.collectorServiceAccount, 'security-falco-collector');
+  assert.equal(p.collectorServiceAccountNamespace, 'devsecops-system');
+});
+
+const packetFixture = (overrides = {}) => {
+  const sensorPods = JSON.stringify({items: [{metadata: {name: 'platform-falco-fwwfd'}, status: {podIP: '10.42.0.185'}}]});
+  const ok = stdout => ({status: 0, stdout});
+  return {
+    kind: 'FalcoCollectorPacket', projectId: 'petclinic-runtime', windowEndMs: 1794496655180,
+    identity: {user: 'security-falco', uid: 1007, gid: 1007, serviceAccount: 'security-falco-collector', serviceAccountNamespace: 'devsecops-system', kubeconfig: '/var/lib/security-falco/kubeconfig.yaml'},
+    results: {ds: ok('{}'), sensorPods: ok(sensorPods), node: ok('{}'), workloads: ok('{}'), diagnosticLog: ok(''), sampleLog: ok(''), fullLog: ok('')},
+    health: {ok: true, status: 200},
+    ...overrides,
+  };
+};
+
+test('falcoCollectorPacket accepts a well-formed entry packet and shapes results', () => {
+  const p = falcoProjects()['petclinic-runtime'];
+  const out = falcoCollectorPacket(packetFixture(), p, 1794496655180);
+  assert.equal(out.sensorPod.metadata.name, 'platform-falco-fwwfd');
+  assert.equal(out.identity.uid, 1007);
+  assert.equal(out.health.ok, true);
+  assert.equal(out.fullLogText, '');
+});
+
+test('falcoCollectorPacket rejects a packet from a non-dedicated identity', () => {
+  const p = falcoProjects()['petclinic-runtime'];
+  const bad = packetFixture({identity: {user: 'zhang', uid: 1000, gid: 1000, serviceAccount: 'security-falco-collector', serviceAccountNamespace: 'devsecops-system'}});
+  assert.throws(() => falcoCollectorPacket(bad, p, 1794496655180), /RUNNER_ERROR/);
+});
+
+test('falcoCollectorPacket rejects a packet for a different window or project', () => {
+  const p = falcoProjects()['petclinic-runtime'];
+  assert.throws(() => falcoCollectorPacket(packetFixture(), p, 1794496655181), /RUNNER_ERROR/);
+  assert.throws(() => falcoCollectorPacket(packetFixture({projectId: 'other-project'}), p, 1794496655180), /RUNNER_ERROR/);
 });

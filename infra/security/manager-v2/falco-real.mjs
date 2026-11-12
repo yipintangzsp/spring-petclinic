@@ -64,7 +64,8 @@ export async function executeRealFalco(plugin, input, {projectId, runId, signal}
     const proofText = fs.readFileSync(new URL('../runtime/isolated-sensor-proof.json', import.meta.url), 'utf8');
     const sourceText = fs.readFileSync(new URL('../../../.git-sha', import.meta.url), 'utf8');
     const collectorSha256 = sha(fs.readFileSync(new URL('./falco/collector.mjs', import.meta.url)));
-    const c = await collectFalco(project, {windowEndMs: input.windowEndMs, signal});
+    const c = await collectFalco(project, {windowEndMs: input.windowEndMs, signal, projectId});
+    if (c.identity?.uid !== project.collectorUid || c.identity?.gid !== project.collectorGid || c.identity?.serviceAccount !== project.collectorServiceAccount) throw Error('RUNNER_ERROR');
     const pod = c.sensorPod, container = pod.status?.containerStatuses?.find(x => x.name === 'falco');
     if (!container) throw Error('RUNNER_ERROR');
     const node = JSON.parse(c.node.stdout);
@@ -114,7 +115,7 @@ export async function executeRealFalco(plugin, input, {projectId, runId, signal}
       testPod: input.testPod, testNamespace: project.testNamespace,
       window: rawReport.window, detectedCount: detectedEvents.length, detectedEvents,
       tool: {name: 'falco', version: project.falcoVersion, collectorSha256},
-      identity: {uid: process.getuid(), gid: process.getgid(), host: 'devops', authority: 'sudo-kubectl-allowlisted-collector', dedicatedRestrictedUid: false},
+      identity: {collectorUser: c.identity.user, collectorUid: c.identity.uid, collectorGid: c.identity.gid, serviceAccount: c.identity.serviceAccount, serviceAccountNamespace: c.identity.serviceAccountNamespace, host: 'devops', authority: 'ssh-forced-command collect-v1 via security-falco (restrict + setpriv no-new-privs, dedicated SA minimal RBAC)', dedicatedRestrictedUid: true, runnerUid: process.getuid(), runnerGid: process.getgid()},
       startedAt, completedAt,
     };
     return freeze({
