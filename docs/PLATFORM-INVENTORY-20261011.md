@@ -1,5 +1,10 @@
 # 全平台盘点 · 2026-10-12
 
+## 2026-10-28 当前运行模式
+
+为集中调试DevSecOps，Airflow计算/界面、Trino Coordinator、Superset临时按0副本运行，保留安装与数据；Flink计算及原已暂停组件继续0。Kafka、RabbitMQ、数据库及Spark Operator/Webhook保留。VM当前22GiB/6CPU。不要将这些受控暂停写成组件卸载或功能验收失败；后文旧容量/副本为历史。详见[资源模式与恢复](DEVSECOPS-RESOURCE-MODE-20261028.md)。
+
+
 ## 2026-10-27 Phase4组件分类（补充当前清单）
 
 |对象|分类|当前真实验收|资源与入口|

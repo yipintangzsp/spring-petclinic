@@ -1,5 +1,10 @@
 # 实测资源与按需运行策略 · 2026-10-11
 
+## 2026-10-28 DevSecOps调试模式（当前）
+
+VM经授权恢复为22 GiB / 6CPU；Airflow API/Scheduler/DAG Processor/StatsD、Trino Coordinator、Superset期望副本为0，原已暂停计算保持0。Airflow GitOps期望同步为0，数据/PVC保留；Kafka、RabbitMQ、数据库、Superset Redis、Spark Operator/Webhook保留。恢复样本可用约6.7–6.8GiB、full PSI为0、Mac swap无增长；完整构建峰值待本轮复验，不降低原停止线。此前24/28GiB记录均按历史阶段理解。范围和恢复见[资源模式](DEVSECOPS-RESOURCE-MODE-20261028.md)。
+
+
 ## 2026-10-27 Phase4当前容量与准入
 
 当前Mac物理32GiB，VM已正常关机后仅将内存28672→24576MiB，仍为6CPU；原配置、前后SHA及单字段比对在私有vm-memory-24g证据。Linux实际MemTotal24546064KiB。旧28GiB容量仅作历史参考，后续分析必须重新预算。

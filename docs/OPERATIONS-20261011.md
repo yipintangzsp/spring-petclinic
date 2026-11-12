@@ -1,5 +1,10 @@
 # Petclinic 发布与按需分析操作
 
+## 2026-10-28 DevSecOps专用调试时段
+
+当前VM为22GiB/6CPU；暂不使用的大数据分析服务按0副本保留，Airflow GitOps期望同为0，避免自动恢复占用资源。Kafka/RabbitMQ和业务依赖保持。分析网页暂不可用是预期暂停；恢复必须重新预算并与CI重任务互斥，不能简单将所有组件设为1。原副本、范围及恢复步骤见[资源模式](DEVSECOPS-RESOURCE-MODE-20261028.md)。
+
+
 ## 2026-10-27 Runtime Security操作入口
 
 正常发布继续使用Jenkins petclinic-ci → Build Now，经完整源码/质量/镜像/GitOps门禁；原磁盘和内存新鲜准入仍生效。运行记录查看build214的.devsecops/runtime-health.json、runtime-logging.json、source-gate.json、kyverno-rbac.json及sonar-resource-slot.json。普通Falco事件不作为CI失败条件。
