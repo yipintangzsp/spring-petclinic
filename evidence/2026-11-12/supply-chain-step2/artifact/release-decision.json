@@ -1,0 +1,26 @@
+{
+  "schemaVersion": 1,
+  "kind": "ReleaseApprovalRecord",
+  "classification": "PLATFORM_APPROVAL_RECORD_NOT_DEPLOYMENT",
+  "createdAt": "2026-11-12T14:30:07.272Z",
+  "candidateImage": "core.harbor.domain/petclinic/petclinic@sha256:2fbaea65ab030c56c60c62e3ee9fbe362deb8bbbb8216a891ef4c7bbbcea6d55",
+  "candidateDigest": "sha256:2fbaea65ab030c56c60c62e3ee9fbe362deb8bbbb8216a891ef4c7bbbcea6d55",
+  "status": "NOT_APPROVED",
+  "decisionScope": "This record is the platform-internal, digest-bound approval decision for the supply-chain evidence chain only. It is NOT a deployment: the candidate remains undeployed, production Argo CD / GitOps were not touched, and any production switch requires a separate explicit approval.",
+  "provenanceChain": {
+    "file": "provenance-chain.json",
+    "sha256": "ec3d632ec927cd358acaccc04e33034b9c04bfafa7c8570befc2cc474791f2fa"
+  },
+  "satisfied": [
+    "Build provenance DSSE chain VERIFIED (commit 9a78cc89, candidate-build #2, petclinic-ci #270)",
+    "SBOM -> digest binding VERIFIED in step1 and re-verified this round (23/23)",
+    "Real Cosign signatures over the exact index and both child manifest bytes, verified offline against cosign.pub (3 positives, 5 negatives)",
+    "Kyverno signature admission policy proven live in an isolated namespace (signed admitted incl. real create; unsigned and wrong-key denied)"
+  ],
+  "blockers": [
+    "Harbor-side signature attachment MISSING (.sig tags 404): Kyverno therefore denies the candidate itself (no signatures found). Requires an in-scope Harbor push identity (Jenkins dry-run sign path or a scoped robot with push) - not executed under this round’s credential red lines.",
+    "Trivy V2 policy decision for the candidate arm64 child is FAIL (HIGH 2 / MEDIUM 58 / LOW 4); promotion contract requires C/H=0 dual-arch gate evidence from a single build - not satisfiable without a Jenkins run, which this round forbids.",
+    "No single-build promotion gate evidence set (candidate-sbom.json / approval-signing.json in build #270 are absent per 2026-11-05 preflight)"
+  ],
+  "nextStep": "Run the existing petclinic-ci dry-run sign-and-approve path (PROMOTION_ACTION=dry-run, pinned source 9a78cc89) under separate authorization, after the Trivy HIGH findings are dispositioned; that path signs index+children into Harbor and sign-blobs the approval JSON with the same platform identity."
+}

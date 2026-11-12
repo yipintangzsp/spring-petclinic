@@ -1,0 +1,143 @@
+{
+  "schemaVersion": 1,
+  "kind": "SupplyChainProvenanceChain",
+  "classification": "REAL_CONTROLLED_EXECUTION",
+  "productionEvidence": false,
+  "createdAt": "2026-11-12T14:30:07.270Z",
+  "subject": {
+    "registry": "core.harbor.domain",
+    "repository": "petclinic/petclinic",
+    "indexDigest": "sha256:2fbaea65ab030c56c60c62e3ee9fbe362deb8bbbb8216a891ef4c7bbbcea6d55",
+    "children": {
+      "amd64": "sha256:2bd9c1c445afbf55e390bfc41910551c32e09913143f7a137038cc87941b7c94",
+      "arm64": "sha256:06a515708b6783db7d545544bbefb02e9f94abfc0fdf13a7355ccbe2deb3ed42"
+    },
+    "candidateDeployed": false,
+    "runningIndexDigest": "sha256:489cb821573ff1f98edd846d5949d74bf3391b24e2f1fe5bcfb71c6be0793137"
+  },
+  "buildProvenance": {
+    "status": "VERIFIED",
+    "commit": "9a78cc89f22fa98fb1ffcc43e2ae279299471793",
+    "imageBuild": {
+      "job": "petclinic-candidate-build",
+      "number": 2
+    },
+    "securityValidation": {
+      "job": "petclinic-ci",
+      "number": 270,
+      "summarySha256": "ec9ee51a06d4b9f61c6c0eaf50b374d1e25e6d3ca687908b7596d3a2c794f5d8"
+    },
+    "dsseVerification": "platform verify.mjs offline re-run in step1: exit 0, regenerated record byte-identical to committed record",
+    "publicKey": {
+      "file": "infra/security/cosign.pub",
+      "sha256": "490c048d85da66076c2c152fdc313930af5e9f309d64a75b3d5be7216dcf50f8"
+    }
+  },
+  "sbomBinding": {
+    "status": "VERIFIED",
+    "step": "supply-chain-step1-sbom-binding",
+    "bindingSealDigest": "c0b526e11ab3a6b79f9c25475a7ce2e4a3291d2af233d3378e31f3c596cb8ea5",
+    "bindingDigest": "71739f4a4033195a64cc41b75bfed8667e4bb3b94be8349f9d1a3e358f47a450",
+    "receiptDigest": "7e7c1e54777daad5ebf2007483def294a9e41afb4f0ae3a01d0c45bf1b5c8eef",
+    "provenanceSealDigest": "30a7e6cd63e4d13f96c0df7f316e26a05fdefe2158817ad7977532eb6b90732c",
+    "assessmentDigest": "8cffdea05e2578563596c9b75886fefb90d370d72fdc5dc6d09b27286b873d95",
+    "reverifiedThisRound": "node verify-sbom-binding.mjs re-run 2026-11-12: 23/23 PASS exit 0 (raw/step1-verify-again.log)"
+  },
+  "candidateSignatures": {
+    "status": "PARTIAL",
+    "mode": "OFFLINE_BLOB_SIGNATURE_OVER_EXACT_MANIFEST_BYTES",
+    "tool": {
+      "name": "cosign",
+      "version": "3.1.4",
+      "binarySha256": "ade83b7aac62e131cacfe96d958948b2150cc9efec46a570a2649b8e27dedad2",
+      "pinnedSha256MatchesRegistry": true
+    },
+    "identity": "platform signing bundle (SOPS-encrypted infra/security/secrets/signing-bundle.enc.json, bootstrap copy) decrypted in-memory/temp-700 only with existing signing age key; derived public key equals infra/security/cosign.pub; key material destroyed, never written to evidence or logs",
+    "signedObjects": [
+      {
+        "object": "OCI_INDEX",
+        "digest": "sha256:2fbaea65ab030c56c60c62e3ee9fbe362deb8bbbb8216a891ef4c7bbbcea6d55",
+        "bytesSha256": "2fbaea65ab030c56c60c62e3ee9fbe362deb8bbbb8216a891ef4c7bbbcea6d55",
+        "signature": {
+          "file": "index.sig",
+          "sha256": "db63ccf7feec2f10550651e8e64b591dd197db17644d0c3ec705168932141c5a",
+          "bytes": 96
+        }
+      },
+      {
+        "object": "IMAGE_MANIFEST",
+        "platform": "linux/amd64",
+        "digest": "sha256:2bd9c1c445afbf55e390bfc41910551c32e09913143f7a137038cc87941b7c94",
+        "bytesSha256": "2bd9c1c445afbf55e390bfc41910551c32e09913143f7a137038cc87941b7c94",
+        "signature": {
+          "file": "manifest-amd64.sig",
+          "sha256": "4c8e958406db6b7761661c8b6610f36af9de27355d0f810d90d514aa05b5ef57",
+          "bytes": 96
+        }
+      },
+      {
+        "object": "IMAGE_MANIFEST",
+        "platform": "linux/arm64",
+        "digest": "sha256:06a515708b6783db7d545544bbefb02e9f94abfc0fdf13a7355ccbe2deb3ed42",
+        "bytesSha256": "06a515708b6783db7d545544bbefb02e9f94abfc0fdf13a7355ccbe2deb3ed42",
+        "signature": {
+          "file": "manifest-arm64.sig",
+          "sha256": "033bf03f058dda941f7450ac1eed9e4b99fc7f3f07889b30d57c4a75c762eddc",
+          "bytes": 96
+        }
+      }
+    ],
+    "offlineVerification": {
+      "positives": "cosign verify-blob with cosign.pub: 3/3 rc=0 Verified OK (raw/verify-*.log)",
+      "negatives": "N1 tampered manifest rc=1; N2 index signature on child manifest rc=1; N3 arch-swapped signature rc=1; N4 tampered signature rc=1; N5 missing signature rc=1"
+    },
+    "harborAttachment": {
+      "status": "MISSING",
+      "evidence": "legacy .sig tags for index/amd64/arm64 all HEAD 404 (re-checked this round, raw/fetch.log); referrers endpoint HTTP 200 returns only the two buildx attestation manifests already recorded in step1",
+      "reason": "no in-scope Harbor write identity: project robot is pull-only; the only push-capable identities found are the Jenkins production harbor-creds (forbidden to borrow by task order) and a host docker-config sysadmin identity (out of scope, not used); no account created"
+    }
+  },
+  "kyvernoAdmission": {
+    "status": "PARTIAL",
+    "policy": "devsecops-signed-images (ClusterPolicy, Enforce, Ready)",
+    "namespace": "devsecops-supply-chain",
+    "cases": [
+      {
+        "case": "signed-fixture",
+        "image": "core.harbor.domain/petclinic/signature-fixtures@sha256:86ddc3e1ac2ad2b34dd47ffaf6a181953ebad77f4b1a656f055ddb01fc354cc7",
+        "dryRunServer": "ALLOWED rc=0",
+        "realCreate": "CREATED rc=0 then deleted by this round"
+      },
+      {
+        "case": "unsigned-fixture",
+        "image": "core.harbor.domain/petclinic/signature-fixtures@sha256:d65f8d7fa75dac9393a4e04f6e7f708f2abf9d44d55f473f2a2d9ae60c9202f9",
+        "dryRunServer": "DENIED rc=1 devsecops-signed-images"
+      },
+      {
+        "case": "wrong-key-fixture",
+        "image": "core.harbor.domain/petclinic/signature-fixtures@sha256:4a4c9aab67a2ddb698597507e9d5bbb77489be7ee2780193c2965670a66eaea0",
+        "dryRunServer": "DENIED rc=1 no matching signatures: invalid signature"
+      },
+      {
+        "case": "candidate-index",
+        "image": "core.harbor.domain/petclinic/petclinic@sha256:2fbaea65ab030c56c60c62e3ee9fbe362deb8bbbb8216a891ef4c7bbbcea6d55",
+        "dryRunServer": "DENIED rc=1 no signatures found (Harbor-side signature absent; offline blob signature cannot be consumed by Kyverno)"
+      }
+    ],
+    "cleanup": "test pods deleted; namespace devsecops-supply-chain verified empty after the round; no policy created or modified (pre-existing platform policy used as-is)"
+  },
+  "securityGateFacts": {
+    "trivyV2": {
+      "run": "web-4d4b4773-6750-4927-8e6a-8deef839a6f4",
+      "target": "arm64 child manifest",
+      "policyDecision": "FAIL",
+      "findings": {
+        "critical": 0,
+        "high": 2,
+        "medium": 58,
+        "low": 4
+      }
+    },
+    "note": "V1 petclinic-ci #270 summary recorded trivy_critical=0/trivy_high=0 for its audit scope; the later V2 real scan of the arm64 child found HIGH 2. The promotion contract (infra/security/promotion/contract.mjs validateGate) requires a single-build gate evidence set with dual-arch C/H=0 scans; that evidence set was not produced in this round and Jenkins was not triggered."
+  }
+}
