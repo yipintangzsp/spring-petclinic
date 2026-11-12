@@ -11,7 +11,7 @@
 | 超时清理与失败诊断 | 已闭合。Adapter 失败统一携带 `TrivyExecutionDiagnostic`（远端门禁码、scannerStarted），Core 落盘 `trivy.execution-error.json`，页面映射 `*_BLOCKED` 为 BLOCKED 并显示具体原因；SSH 超时/取消分别归一为 `RUNNER_TIMEOUT`/`RUNNER_CANCELLED`。服务端 `entry.py`（与仓库副本字节一致，sha256 `e37075d9…`）补强：错误输出携带 stages、重复正式尝试返回 `FORMAL_SCAN_ALREADY_CONSUMED`、扫描期间收到 SIGHUP/SIGTERM 先杀扫描器进程组；原有 185 秒超时强杀不变。改前备份在服务端 `setup/entry.py.bak-20261112-diag`。 |
 | 隔离契约测试 | 已闭合。整仓一次性副本内：manager-v2 核心集 86/86、runtime-facts 回归集 147/147、trivy-real 7/7。既有异常与本轮无关且未被掩盖：`consumers/loki.test.mjs` 的 HTTP/REPLAY 用例因固定历史时间戳超出校验窗口失败（真实树与干净副本一致，30/156）。 |
 | 漏洞 DB / Java DB 更新 | 已闭合。devops/Linux 侧官方 GHCR CDN 解析失败未改 DNS：改走 Mac 下载官方 OCI 工件（`trivy-db:2` 清单摘要 `sha256:69f786ce…`、`trivy-java-db:1` 清单摘要 `sha256:91f7488e…`，TLS 校验开启）→ 文件 SHA256 双端核对 → SSH 离线传输入独立缓存。主 DB UpdatedAt 2026-11-12T07:01Z、Java DB UpdatedAt 2026-11-12T00:58Z；此前缺失的 `db-cache/java-db/` 已补建；旧缓存备份在 `db-cache.bak-20261112`。入口实测已越过 DB 新鲜度门禁。 |
-| Harbor Candidate 真实扫描 | **未闭合（阻塞）**。全链路实测（页面提交 → Adapter → SSH 强制入口 → 身份/工具/资源/DB 门禁全过）停在 `CREDENTIAL_EXPIRED_BLOCKED`：项目级只读 Robot `robot$petclinic+security-manager-v2-trivy-pull`（robotId 250）已于 2026-11-09 过期。按红线未借用生产 `harbor-creds`、未新建 Harbor 账号。一次性正式扫描标记未消耗；凭据续期后由操作员武装并从页面重跑即可完成，届时再补 Policy 判定、Loki 投递与 Grafana/UI 显示验收。 |
+| Harbor Candidate 真实扫描 | **用户决定跳过（2026-11-12 18:19）**：待凭据续期后补做，阻塞证据原样保留，不作遗漏处理。全链路实测（页面提交 → Adapter → SSH 强制入口 → 身份/工具/资源/DB 门禁全过）停在 `CREDENTIAL_EXPIRED_BLOCKED`：项目级只读 Robot `robot$petclinic+security-manager-v2-trivy-pull`（robotId 250）已于 2026-11-09 过期。按红线未借用生产 `harbor-creds`、未新建 Harbor 账号。一次性正式扫描标记未消耗；凭据续期后由操作员武装并从页面重跑即可完成，届时再补 Policy 判定、Loki 投递与 Grafana/UI 显示验收。 |
 | K8s 三节点 Ready（13:08 基线） | 复核时点一致：本轮 17:40 首次只读观察 `ucloud-worker` 为 NotReady，18:15/18:17 两次复查三节点均为 Ready（原始输出见 `raw/devops-state.log`）；状态波动与 `DEVSECOPS-V2-CONTINUATION-20261008.md` 既有隧道稳定性未闭环项一致，属平台基础设施，不在本轮 Trivy 范围，未做任何变更。 |
 
 ## 与冻结 Backlog 的边界
@@ -33,3 +33,4 @@
 ## 第三方复核
 
 全部结论的原始输出保存在 `evidence/2026-11-12/trivy-v2-closure/raw/`（测试日志原件、Web 验收转录与脚本、两次武装尝试的封存记录、官方 GHCR 清单原件、服务端状态原始捕获），复现步骤见同目录 `REPRODUCE.md`，逐项代码坐标（路径+行号+提交）见 `evidence-coordinates.json`。
+注：2026-11-12 18:19 用户拍板，Harbor 凭据项（真实扫描及连带 Loki/Grafana/UI 验收）先跳过，等其处理凭据后再补；本记录与证据按最终状态定稿。

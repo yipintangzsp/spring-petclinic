@@ -185,7 +185,9 @@
     "productionScannerReused": false,
     "oneShotMarkerConsumed": false,
     "requiredAuthorization": "现有 Robot robot$petclinic+security-manager-v2-trivy-pull（robotId 250，项目级 pull-only）已于 2026-11-09 过期。需要用户以 Harbor 管理员身份续期该 Robot 或签发新的短期只读 Robot，并把新 secret 更新到受保护文件 /var/lib/security-trivy/credentials.json；不得借用生产 harbor-creds、不得把凭据放入页面/仓库。凭据就绪后，操作员写入一次性武装文件并从页面重跑即可完成正式扫描，一次性标记尚未消耗。",
-    "severityNormalization": "VERIFIED (adapter maps CRITICAL/HIGH/MEDIUM/LOW/UNKNOWN to canonical values; UNKNOWN lands in the lowest rated bucket; unrecognized values fail closed)"
+    "severityNormalization": "VERIFIED (adapter maps CRITICAL/HIGH/MEDIUM/LOW/UNKNOWN to canonical values; UNKNOWN lands in the lowest rated bucket; unrecognized values fail closed)",
+    "disposition": "USER_DEFERRED_2026-11-12_PENDING_CREDENTIAL_RENEWAL",
+    "dispositionNote": "2026-11-12 18:19 用户决定跳过 Harbor 真实扫描及连带 Loki/Grafana/UI 验收，待凭据续期后补做；阻塞证据原样保留，不作遗漏处理。"
   },
   "production": {
     "nodes": [
