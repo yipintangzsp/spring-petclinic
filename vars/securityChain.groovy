@@ -11,7 +11,8 @@ def call(Map cfg=[:]) {
  String projectName=cfg.project ?: (cfg.adapter=='petclinic' ? 'petclinic' : null)
  if (projectName) { try { projectCfg=readJSON(text:libraryResource('security-manager/projects/'+projectName+'.json'),returnPojo:true) } catch(Exception ignored) { projectCfg=[:] } }
  if (!projectCfg) return securityManager(cfg)
- Map delegated=new LinkedHashMap(cfg)
+ Map delegated=[:]
+ delegated.putAll(cfg)
  if (projectCfg.mode && delegated.mode==null) delegated.mode=projectCfg.mode
  if (projectCfg.profile && delegated.profile==null) delegated.profile=projectCfg.profile
  if (projectCfg.adapter && delegated.adapter==null) delegated.adapter=projectCfg.adapter
