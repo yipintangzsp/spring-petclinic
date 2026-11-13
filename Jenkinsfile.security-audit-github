@@ -1,0 +1,107 @@
+pipeline {
+agent any
+parameters { // HELM_SHADOW_PARAMETERS_BEGIN
+booleanParam(name: 'HELM_ENABLED', defaultValue: false, description: 'Opt-in Helm validation only; never activates production deployment')
+string(name: 'HELM_CHART_PATH', defaultValue: 'charts/petclinic', description: 'Shadow chart path')
+string(name: 'HELM_VALUES_FILE', defaultValue: 'charts/petclinic/values-prod.yaml', description: 'Shadow current-production values')
+string(name: 'HELM_RELEASE_NAME', defaultValue: 'petclinic', description: 'Render release name only')
+string(name: 'HELM_NAMESPACE', defaultValue: 'petclinic', description: 'Render namespace only')
+// HELM_SHADOW_PARAMETERS_END
+booleanParam(name:'ENABLE_IMAGE_BUILD_PROVENANCE',defaultValue:false,description:'Verify actual build attestation; requires fixed expected build identity')
+string(name:'BUILD_PROVENANCE_EXPECTATION',defaultValue:'',description:'JSON: commit, repository, builder, buildNumber of the actual candidate build')
+booleanParam(name: 'ENABLE_PROVENANCE', defaultValue: false, description: 'Optional candidate validation attestation; no deployment')
+choice(name: 'PROMOTION_ACTION', choices: ['audit-only','dry-run','deploy'], description: 'Default does not approve or deploy; deploy requires a successful signed approval.')
+string(name: 'AUDIT_CANDIDATE_IMAGE', defaultValue: '', description: 'Optional fixed Harbor PetClinic SHA256 digest; empty audits live image. Never deploys.') }
+options { disableConcurrentBuilds(); timeout(time: 45, unit: 'MINUTES') }
+environment {
+DEVSECOPS_READ_ONLY = 'true'
+GATE_SIGN = 'enforce'
+GATE_FALCO = 'warn'
+GATE_TRIVY = 'warn'
+GATE_POLICY = 'warn'
+GATE_SEMGREP = 'warn'
+GATE_ZAP = 'warn'
+MAVEN_OPTS = '-Xmx256m -XX:ActiveProcessorCount=1'
+SONAR_HOST_URL = 'http'+'://sonarqube-sonarqube.sonarqube.svc.cluster.local:9000'
+SONAR_SCANNER_JAVA_OPTS = '-Xmx384m -XX:ActiveProcessorCount=1'
+}
+stages {
+stage('Audit Checkout') { steps { script { library identifier: 'platform-security@'+env.GIT_COMMIT, retriever: modernSCM([$class: 'GitSCMSource', remote: 'git@github.com:yipintangzsp/devsecops-v2-private-backup.git', credentialsId: 'github-backup-repo-readonly']) }; sh 'git rev-parse HEAD > .git-sha; rm -rf .devsecops; mkdir -p .devsecops; node infra/security/validate-audit-target.mjs' } }
+// HELM_SHADOW_PRECONDITIONS_BEGIN
+stage('Helm Shadow Preconditions') { when { expression { params.HELM_ENABLED == true } }
+ steps { script { if (params.PROMOTION_ACTION != 'audit-only') error('Helm Phase1 denies promotion') } } }
+// HELM_SHADOW_PRECONDITIONS_END
+stage('Snapshot Before') { steps { script { catchError(buildResult: 'FAILURE', stageResult: 'FAILURE') { sh '''set -eu
+mkdir -p .devsecops/gates
+set +e
+node infra/security/audit-state.mjs before > .devsecops/gates/Snapshot-Before.log 2>&1
+rc=$?
+cat .devsecops/gates/Snapshot-Before.log
+. infra/security/gate.sh
+gate Snapshot-Before enforce "$rc" "Snapshot Before"
+''' } } } }
+stage('Admission Resources') { steps { sh 'node infra/observability/heavy-lease.mjs acquire' } }
+stage('Security Manager') { steps { script { def expectedBuild=[:];if(params.ENABLE_IMAGE_BUILD_PROVENANCE){ expectedBuild=readJSON(text:params.BUILD_PROVENANCE_EXPECTATION,returnPojo:true);if(expectedBuild.keySet().sort()!=['buildNumber','builder','commit','repository'])error('Explicit build identity required') };securityChain(project: 'petclinic', buildProvenance:expectedBuild+[enabled:params.ENABLE_IMAGE_BUILD_PROVENANCE,image:params.AUDIT_CANDIDATE_IMAGE]) } } }
+stage('Read Only Release Verification') { steps { script { catchError(buildResult: 'FAILURE', stageResult: 'FAILURE') { sh '''set -eu
+mkdir -p .devsecops/gates
+set +e
+node infra/security/audit-state.mjs after > .devsecops/gates/Read-Only-Release-Verification.log 2>&1
+rc=$?
+cat .devsecops/gates/Read-Only-Release-Verification.log
+. infra/security/gate.sh
+gate Read-Only-Release-Verification enforce "$rc" "Read Only Release Verification"
+''' } } } }
+
+// HELM_SHADOW_STAGES_BEGIN
+stage('Helm Validation Preparation') { when { expression { params.HELM_ENABLED == true } }
+ steps { script { helmShadow(phase: 'prepare') } } }
+stage('Helm Lint') { when { expression { params.HELM_ENABLED == true } }
+ steps { script { helmShadow(phase: 'lint') } } }
+stage('Helm Render') { when { expression { params.HELM_ENABLED == true } }
+ steps { script { helmShadow(phase: 'render') } } }
+stage('Rendered Manifest Validation') { when { expression { params.HELM_ENABLED == true } }
+ steps { script { helmShadow(phase: 'validate') } } }
+stage('Helm Policy Validation') { when { expression { params.HELM_ENABLED == true } }
+ steps { script { helmShadow(phase: 'policy') } } }
+stage('GitOps Candidate Validation') { when { expression { params.HELM_ENABLED == true } }
+ steps { script { helmShadow(phase: 'candidate') } } }
+// HELM_SHADOW_STAGES_END
+
+stage('Candidate Approval Evidence') {
+ when { expression { params.PROMOTION_ACTION != 'audit-only' && currentBuild.currentResult == 'SUCCESS' } }
+ steps {
+  withCredentials([string(credentialsId: 'sonar-token', variable: 'SONAR_TOKEN')]) {
+   withEnv(['SECURITY_BUILD_RESULT=SUCCESS','SECURITY_SUMMARY_WRITE_ONLY=true']) { sh 'node infra/security/security-summary.mjs; node infra/security/promotion/evidence.mjs sbom' }
+  }
+ }
+}
+stage('Candidate Sign and Approve') {
+ when { expression { params.PROMOTION_ACTION != 'audit-only' && currentBuild.currentResult == 'SUCCESS' } }
+ steps {
+  withCredentials([file(credentialsId: 'platform-signing-age', variable: 'SIGNING_AGE_FILE'), usernamePassword(credentialsId: 'harbor-creds', usernameVariable: 'HARBOR_USER', passwordVariable: 'HARBOR_PASS')]) {
+   withEnv(['SECURITY_GATE_RESULT=SUCCESS']) { sh 'node infra/security/promotion/sign-approve.mjs' }
+  }
+  script { env.APPROVED_DIGEST = sh(script: "node -p \"require('./.devsecops/approved-release.json').approvedDigest\"", returnStdout: true).trim() }
+ }
+}
+stage('Approved Promotion') {
+ when { expression { params.PROMOTION_ACTION != 'audit-only' && currentBuild.currentResult == 'SUCCESS' } }
+ steps {
+  withCredentials([usernamePassword(credentialsId: 'gitlab-creds', usernameVariable: 'GITLAB_USER', passwordVariable: 'GITLAB_TOKEN')]) {
+   withEnv(['SECURITY_GATE_RESULT=SUCCESS']) { sh 'node infra/security/promotion/promote.mjs "$PROMOTION_ACTION"' }
+  }
+ }
+}
+
+}
+post { always {
+// HELM_SHADOW_ARCHIVE_BEGIN
+script { if (params.HELM_ENABLED == true) { archiveArtifacts artifacts: '.helm-shadow/**', allowEmptyArchive: true } }
+// HELM_SHADOW_ARCHIVE_END
+catchError(buildResult: 'FAILURE', stageResult: 'FAILURE') { sh 'node infra/security/cleanup.mjs' }
+catchError(buildResult: 'FAILURE', stageResult: 'FAILURE') { sh 'node infra/observability/heavy-lease.mjs release' }
+archiveArtifacts artifacts: '.devsecops/**,target/sonar/**', allowEmptyArchive: true
+script { withEnv(['SECURITY_BUILD_RESULT=' + currentBuild.currentResult]) { withCredentials([string(credentialsId: 'sonar-token', variable: 'SONAR_TOKEN')]) { sh 'node infra/security/security-summary.mjs' } } }
+archiveArtifacts artifacts: '.devsecops/security-summary.json', allowEmptyArchive: true
+} }
+}
