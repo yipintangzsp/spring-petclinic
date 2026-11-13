@@ -1,0 +1,31 @@
+{
+  "scope": "No Kubernetes API queries this iteration; current context metadata and local listener inspection only. Prior UID proof is historical, not refreshed.",
+  "currentContext": "orbstack",
+  "excludedContext": {
+    "name": "orbstack",
+    "server": "https://127.0.0.1:26443",
+    "localListener": "ssh",
+    "currentRemoteTunnelDestination": "NOT_INSPECTED",
+    "historicalUIDProof": {
+      "localContext": "orbstack",
+      "localKubeSystemUid": "639e5426-bc1f-4d37-a844-6a31b7685744",
+      "trustedDevopsKubeSystemUid": "639e5426-bc1f-4d37-a844-6a31b7685744",
+      "sameCluster": true,
+      "lookup": "namespace metadata only"
+    },
+    "historicalProofSource": "evidence/2026-11-01/sops-controlled/acceptance.json",
+    "decision": "EXCLUDE: historically same production cluster; name and loopback endpoint cannot establish isolation"
+  },
+  "kindContext": {
+    "name": "kind-my-multi-node-cluster",
+    "server": "https://127.0.0.1:63731",
+    "localListenerObserved": false,
+    "dockerClusterInventory": "FAILED: local daemon socket missing",
+    "freshKubeSystemUID": "NOT_QUERIED",
+    "decision": "NOT_PROVEN; context entry is not evidence of a running isolated cluster"
+  },
+  "exactIsolatedEnvironmentIdentified": false,
+  "freshNamespaceUIDQueries": 0,
+  "productionAPIRequests": 0,
+  "productionSecretReads": 0
+}

@@ -1,0 +1,67 @@
+{
+  "DEVICE_MODEL": "QEMU VirtIO / UTM QEMU aarch64",
+  "DISK_SIZE_BYTES": 277025390592,
+  "PARTITION_TABLE": "GPT",
+  "ROOT_PARTITION": "/dev/vda2",
+  "ROOT_START_SECTOR": 2203648,
+  "ROOT_END_SECTOR": 541065182,
+  "LOGICAL_SECTOR_BYTES": 512,
+  "LAST_USABLE_SECTOR": 541065182,
+  "PARTITIONS": [
+    {
+      "name": "/dev/vda1",
+      "start": 2048,
+      "end": 2203647,
+      "type": "EFI System"
+    },
+    {
+      "name": "/dev/vda2",
+      "start": 2203648,
+      "end": 541065182,
+      "type": "Linux filesystem"
+    }
+  ],
+  "FILESYSTEM_TYPE": "ext4",
+  "LVM_YES_NO": "NO",
+  "MDRAID_YES_NO": "NO_ACTIVE_ARRAY",
+  "FREE_UNPARTITIONED_TAIL_BYTES": 0,
+  "ONLINE_GROW_SUPPORTED": "Guest ext4 conditional YES after parent/partition grow; safe host online backing API NOT_VERIFIED",
+  "BACKING_VOLUME_TYPE": "UTM QEMU qcow2 on Mac APFS",
+  "CURRENT_BACKING_VIRTUAL_BYTES": 277025390592,
+  "BACKING_FILE_LENGTH_BYTES": 365810089984,
+  "BACKING_ALLOCATED_BYTES": 220040085504,
+  "UTMVersion": "4.7.5",
+  "activeOwner": "p18121\ncQEMULauncher\nf18\n",
+  "EXPANSION_INTERFACE": "Supported UTM drive Resize interface requires a validated management path/maintenance strategy; no live qemu-img modification",
+  "REBOOT_REQUIRED": "NOT_DETERMINED; offline backing route requires VM maintenance/shutdown; no maintenance window assumed",
+  "SNAPSHOT_CAPABILITY": "qcow2 format supports snapshots; installed UTM4.7.5 compatible management and consistent restore point NOT_VERIFIED",
+  "ROLLBACK_CAPABILITY": "No verified pre-resize snapshot/consistent full VM backup created; never shrink live ext4/partition as rollback",
+  "HOST_AVAILABLE_GIB": 25.2532958984375,
+  "proposedMinimum": {
+    "expandGiB": 16,
+    "newParentDiskGiB": 274,
+    "estimatedAvailableGiB": 58.28338293457031,
+    "estimatedFrozenGuardGiB": 52.106671073913574,
+    "assumptions": "Estimate only: filesystem accounting growth ~97% of new sectors, ~5% reserve. Actual df and original guard must be recomputed; no reserve percent change.",
+    "hostThinProvisioning": "Logical resize does NOT immediately allocate expandGiB on host. Must budget actual DB temporary writes, registry/validation growth, snapshot COW and retain existing host reserve.",
+    "worstCaseFullNewCapacityMinusHostReserveGiB": -6.7467041015625,
+    "hostBudgetApproved": false
+  },
+  "proposedRecommended": {
+    "expandGiB": 32,
+    "newParentDiskGiB": 290,
+    "estimatedAvailableGiB": 73.02738293457031,
+    "estimatedFrozenGuardGiB": 54.43467107391357,
+    "assumptions": "Estimate only: filesystem accounting growth ~97% of new sectors, ~5% reserve. Actual df and original guard must be recomputed; no reserve percent change.",
+    "hostThinProvisioning": "Logical resize does NOT immediately allocate expandGiB on host. Must budget actual DB temporary writes, registry/validation growth, snapshot COW and retain existing host reserve.",
+    "worstCaseFullNewCapacityMinusHostReserveGiB": -22.7467041015625,
+    "hostBudgetApproved": false
+  },
+  "riskClassification": [
+    "REQUIRES_SNAPSHOT_OR_CONSISTENT_BACKUP",
+    "MAINTENANCE_IMPACT_OR_SUPPORTED_ONLINE_API_UNRESOLVED",
+    "HOST_CAPACITY_BUDGET_UNVERIFIED"
+  ],
+  "readiness": "NOT_READY",
+  "changes": []
+}

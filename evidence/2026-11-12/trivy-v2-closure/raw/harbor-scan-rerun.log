@@ -1,0 +1,38 @@
+Trivy Harbor scan RERUN transcript - 2026-11-12 evening (CST)
+Authorization: user 2026-11-12 19:22 CST - fix db-cache permissions + reset one-time marker + rerun.
+
+[1] devops permission fix
+BEFORE  root:root 755 /var/lib/security-trivy/db-cache ; sudo -u security-trivy test -w -> NOT-WRITABLE
+        siblings: db root:security-trivy 750, java-db root:security-trivy 750, data security-trivy:security-trivy 700
+ACTION  chgrp security-trivy db-cache; chmod 775 (no other-write; DB content untouched)
+AFTER   root:security-trivy 775 ; mkdir/rmdir as security-trivy OK ; test -w WRITABLE
+        metadata sha256 db=442de28864c1b59b... java-db=2dd38a9e5c3c46e9... (unchanged, re-verified in runtime-facts of the run)
+
+[2] one-time marker reset
+BEFORE  data/formal-scan-attempt.json = {"runId": "web-1a147370-...", "startedAt": "2026-11-12T11:15:22.186Z"} (consumed, mode 600)
+BACKUP  data/formal-scan-attempt.json.bak-20261112-1925-rerun (cp -a, 126 bytes)
+ACTION  rm original -> absence == unconsumed per entry.py O_EXCL semantics (lines 39-41)
+
+[3] formal rerun (Mac, REPRODUCE.md section 2 path)
+service start -> Running http://127.0.0.1:17862
+capability BEFORE arming: BLOCKED / TRIVY_EXECUTION_NOT_ARMED (runner trivy-real, tool 0.76.2 PINNED)
+arming file written 0600 -> capability READY
+SUBMITTED web-c4192b33-1c7f-4457-a45c-7edd26ea43c6
+entry stages: SOURCE_READY -> SCANNER_START_ATTEMPT -> SCANNER_STARTED pid 1689690 -> SCANNER_EXITED exitCode 0 -> RESULT_VALIDATED -> RUN_COMPLETED
+execution.log: zero "permission denied"; fanal dir created by scanner under db-cache (proof of fix)
+RUN_RESULT state=POLICY_ERROR reason="POLICY_ERROR: non-JSON value" evaluationCount=1 scannerExecuted(view)=false findingCount(view)=null policyDecision=null
+router: dry-run DRY_RUN ; local-evidence DELIVERED_LOCAL_ONLY ; cleanup VERIFIED ; releaseCount 0 rolloutCount 0
+marker consumed again by this run (startedAt 2026-11-12T11:25:27.169Z)
+
+[4] findings (entry sanitized.json + artifact trivy.facts.json, cross-checked identical)
+total 64 ; native HIGH 2 / MEDIUM 58 / LOW 4 / CRITICAL 0 ; normalized High 2 / Medium 58 / Low 4
+targets: ubuntu 26.04 OS packages 63, Java 1 ; artifact petclinic/petclinic@sha256:06a51570...
+nativeReportSha256 2921b6e862f046bd... ; rawReportDigest f6e9ee7601a963b9... ; factDigest b4a8f2a3baa28ae4...
+
+[5] policy stop point (diagnosed read-only, NOT fixed - outside authorization)
+throw site: infra/security/summary-v2/codec.mjs canonical() fail('non-JSON value') - rejects non-plain objects / non-finite numbers
+codec digest is imported by infra/security/manager-v2/trivy-real.mjs (formal path)
+all sealed on-disk artifacts parse as plain JSON; offending value is in-memory only; field-level pinpoint needs runner instrumentation (code change)
+
+[6] teardown
+arming file removed; service stopped; port 17862 closed (verified after stop); controls revision 38 / settingsDigest unchanged

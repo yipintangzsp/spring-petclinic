@@ -1,0 +1,35 @@
+{
+  "timestamp": "2026-11-02T03:40:18.036530+00:00",
+  "ISOLATED_KIND_CLUSTER": "READY",
+  "checks": {
+    "createdOnVerifiedSecurityTestDaemon": true,
+    "officialArm64ImagePinnedAndVerified": true,
+    "dedicatedKubeconfigOnly": true,
+    "endpointMappedToOwnedNode": true,
+    "ownCaMatchesNodeAndTls": true,
+    "namespaceUidDiffersFromHistoricalProduction": true,
+    "noProductionMountsCredentials": true,
+    "nodeReady": true,
+    "namespaceSmokePassRemoved": true,
+    "protectedHostConfigUnchanged": true,
+    "protectedProjectFilesUnchanged": 3792
+  },
+  "scope": {
+    "productionApiAccess": 0,
+    "productionSecretCredentialValueReads": 0,
+    "kubernetesSecretValueReads": 0,
+    "sopsAgeExecutions": 0,
+    "manualSecretServiceAccountRbacLeaseFixtures": 0,
+    "gateSummaryReleaseRolloutChanges": 0,
+    "vmRestarts": 0
+  },
+  "standardBootstrapBoundary": "System objects automatically created by kind/kubeadm are standard Kubernetes bootstrap, not manual fixtures. No system Secret read.",
+  "limitations": [
+    "Historical production CA fingerprint unavailable; no CA difference claim.",
+    "VM DNS reboot persistence remains NOT_TESTED; no restart this iteration.",
+    "Isolation is owned runtime/configuration proof, not an outbound air gap."
+  ],
+  "retained": "Owned cluster and private test kubeconfig remain available; namespace smoke cleaned.",
+  "blocker": null,
+  "stop": true
+}

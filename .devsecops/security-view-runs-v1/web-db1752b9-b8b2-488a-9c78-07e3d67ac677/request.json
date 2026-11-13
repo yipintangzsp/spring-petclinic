@@ -1,0 +1,133 @@
+{
+  "runId": "web-db1752b9-b8b2-488a-9c78-07e3d67ac677",
+  "pluginId": "kyverno",
+  "projectId": "kyverno-supply-chain",
+  "scenarioId": "clean",
+  "configurationSnapshot": {
+    "revision": 38,
+    "updatedAt": "2026-11-12T10:17:20.202Z",
+    "settings": {
+      "enabled": true,
+      "securityLevel": "standard",
+      "plugins": {
+        "gitleaks": {
+          "enabled": true
+        },
+        "semgrep": {
+          "enabled": true
+        },
+        "cosign": {
+          "enabled": true
+        },
+        "sbom": {
+          "enabled": true
+        },
+        "trivy": {
+          "enabled": true
+        },
+        "kyverno": {
+          "enabled": true
+        }
+      }
+    },
+    "source": {
+      "kind": "LOCAL_EXPLICIT_OVERRIDE",
+      "path": ".devsecops/security-view-controls-v1.json",
+      "settingsDigest": "347dafd18186853e5fa4ad88c349630ef52b59af6e8d4c3568ceb40493d6637a"
+    },
+    "configurationOrigins": [
+      {
+        "layer": "global",
+        "securityLevel": "standard",
+        "policyVersion": "baseline-v1"
+      },
+      {
+        "layer": "registryDefaults",
+        "plugins": {
+          "build-provenance": {
+            "enabled": false
+          },
+          "cosign": {
+            "enabled": true
+          },
+          "falco": {
+            "enabled": false
+          },
+          "gitleaks": {
+            "enabled": true
+          },
+          "kubescape": {
+            "enabled": false
+          },
+          "kyverno": {
+            "enabled": true
+          },
+          "provenance": {
+            "enabled": false
+          },
+          "sbom": {
+            "enabled": true
+          },
+          "semgrep": {
+            "enabled": true
+          },
+          "sonarqube": {
+            "enabled": false
+          },
+          "sops": {
+            "enabled": false
+          },
+          "trivy": {
+            "enabled": true
+          },
+          "zap": {
+            "enabled": false
+          }
+        }
+      },
+      {
+        "layer": "globalExplicit",
+        "values": {
+          "enabled": true,
+          "securityLevel": "standard",
+          "plugins": {
+            "gitleaks": {
+              "enabled": true
+            },
+            "semgrep": {
+              "enabled": true
+            },
+            "cosign": {
+              "enabled": true
+            },
+            "sbom": {
+              "enabled": true
+            },
+            "trivy": {
+              "enabled": true
+            },
+            "kyverno": {
+              "enabled": true
+            }
+          },
+          "globalMode": "audit",
+          "profile": "java-web",
+          "policyVersion": "baseline-v1"
+        }
+      },
+      {
+        "layer": "profile",
+        "values": {}
+      },
+      {
+        "layer": "project",
+        "values": {}
+      }
+    ],
+    "effectiveConfigDigest": "c54df718aea1b4c06e7fff7c40f3a3145c4f9b4f7eadf20a613a4938f530b240"
+  },
+  "securityLevel": "standard",
+  "startedAt": "2026-11-12T15:09:20.554Z",
+  "kind": "LocalValidationRequest",
+  "executionLocation": "LINUX_RESTRICTED"
+}

@@ -1,0 +1,949 @@
+{
+  "schema": 1,
+  "sourceId": "kyverno",
+  "execution": {
+    "errorClass": null,
+    "signal": null,
+    "command": "( node infra/security/rbac-contract.mjs && node infra/security/admission-gate.mjs )",
+    "exitStatus": 0
+  },
+  "reports": [],
+  "evidence": [
+    {
+      "sampleWindows": [],
+      "observerPackets": 2,
+      "kind": "ACTUAL_PROCESS_EXECUTION",
+      "sourcePayloadClass": "PASSIVE_IN_MEMORY_ORIGINAL_GATE_OBSERVATIONS",
+      "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdoutSha256": "8ad492544445646f4343eb26cd48fa83cd0b082344e1a034abc48121b64b0a5b",
+      "events": [
+        {
+          "completedAtMs": 1793636170120,
+          "kind": "command",
+          "bin": "kubectl",
+          "errorClass": null,
+          "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "argv": [
+            "--request-timeout=15s",
+            "-n",
+            "devsecops-system",
+            "get",
+            "deploy",
+            "kyverno-admission-controller",
+            "-o",
+            "json"
+          ],
+          "stdoutSha256": "0c4e813249fe6863a8a59f85812896474140f657c0e1aa77ecd0896d06732f09",
+          "startedAtMs": 1793636170052,
+          "exitStatus": 0
+        },
+        {
+          "completedAtMs": 1793636170229,
+          "kind": "command",
+          "bin": "kubectl",
+          "errorClass": null,
+          "stderrSha256": "52d64e8cd8e4d9f9afd5efcaace738fff1613d2511ca25cb21dadc783fff6560",
+          "argv": [
+            "--request-timeout=15s",
+            "auth",
+            "can-i",
+            "get",
+            "customresourcedefinitions.apiextensions.k8s.io/clusterpolicies.kyverno.io",
+            "--as=system:serviceaccount:devsecops-system:kyverno-admission-controller"
+          ],
+          "stdoutSha256": "5040625b1fb6fa4af07226683f6e6003b29e5e70b16f8cfb24be7a752393f0ee",
+          "startedAtMs": 1793636170122,
+          "exitStatus": 0
+        },
+        {
+          "completedAtMs": 1793636170324,
+          "kind": "command",
+          "bin": "kubectl",
+          "errorClass": null,
+          "stderrSha256": "52d64e8cd8e4d9f9afd5efcaace738fff1613d2511ca25cb21dadc783fff6560",
+          "argv": [
+            "--request-timeout=15s",
+            "auth",
+            "can-i",
+            "get",
+            "customresourcedefinitions.apiextensions.k8s.io/policies.kyverno.io",
+            "--as=system:serviceaccount:devsecops-system:kyverno-admission-controller"
+          ],
+          "stdoutSha256": "5040625b1fb6fa4af07226683f6e6003b29e5e70b16f8cfb24be7a752393f0ee",
+          "startedAtMs": 1793636170230,
+          "exitStatus": 0
+        },
+        {
+          "completedAtMs": 1793636170392,
+          "kind": "command",
+          "bin": "kubectl",
+          "errorClass": null,
+          "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "argv": [
+            "--request-timeout=15s",
+            "get",
+            "clusterrole",
+            "kyverno:admission-controller",
+            "-o",
+            "json"
+          ],
+          "stdoutSha256": "416d7492685e8d58dfdc29518a56a985569b1918c0b34b0b5a7155930fe3e415",
+          "startedAtMs": 1793636170324,
+          "exitStatus": 0
+        },
+        {
+          "completedAtMs": 1793636170470,
+          "kind": "command",
+          "bin": "kubectl",
+          "errorClass": null,
+          "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "argv": [
+            "--request-timeout=15s",
+            "-n",
+            "argocd",
+            "get",
+            "application",
+            "platform-devsecops",
+            "-o",
+            "json"
+          ],
+          "stdoutSha256": "99e160330d6b90273efa6ce81598444adc3911d8b200ff7d847ab0ae28a540c5",
+          "startedAtMs": 1793636170393,
+          "exitStatus": 0
+        },
+        {
+          "completedAtMs": 1793636172085,
+          "kind": "command",
+          "bin": "kubectl",
+          "errorClass": null,
+          "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "argv": [
+            "--request-timeout=20s",
+            "create",
+            "--dry-run=server",
+            "-f",
+            "-",
+            "-o",
+            "json"
+          ],
+          "stdoutSha256": "0bf2d4a1a858b47a4a4b18f0658be491e9fc680dccea7b62b83bd01c35f0f2d4",
+          "startedAtMs": 1793636170592,
+          "exitStatus": 0
+        },
+        {
+          "completedAtMs": 1793636172794,
+          "kind": "command",
+          "bin": "kubectl",
+          "errorClass": null,
+          "stderrSha256": "680fea9dbdc6cd190b2b85f4a74eeef46a83d0a065562c5594ac4ff99a138ed1",
+          "argv": [
+            "--request-timeout=20s",
+            "create",
+            "--dry-run=server",
+            "-f",
+            "-",
+            "-o",
+            "json"
+          ],
+          "stdoutSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "startedAtMs": 1793636172087,
+          "exitStatus": 1
+        },
+        {
+          "completedAtMs": 1793636173458,
+          "kind": "command",
+          "bin": "kubectl",
+          "errorClass": null,
+          "stderrSha256": "e908683d658c46a58c4be52bf6817d425e92829c2716a8cd2530317c93dfa6fb",
+          "argv": [
+            "--request-timeout=20s",
+            "create",
+            "--dry-run=server",
+            "-f",
+            "-",
+            "-o",
+            "json"
+          ],
+          "stdoutSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "startedAtMs": 1793636172794,
+          "exitStatus": 1
+        },
+        {
+          "completedAtMs": 1793636174315,
+          "kind": "command",
+          "bin": "kubectl",
+          "errorClass": null,
+          "stderrSha256": "6f7e87ffa87ad5972d48bb21afcb9818a9bffb0c5ed6e2c27f1d3c36efe2caa5",
+          "argv": [
+            "--request-timeout=20s",
+            "create",
+            "--dry-run=server",
+            "-f",
+            "-",
+            "-o",
+            "json"
+          ],
+          "stdoutSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "startedAtMs": 1793636173459,
+          "exitStatus": 1
+        },
+        {
+          "completedAtMs": 1793636175000,
+          "kind": "command",
+          "bin": "kubectl",
+          "errorClass": null,
+          "stderrSha256": "42f3de460c3b89f799cdaee74b2326c861a730fa1feb0787ec64c11e2191bf87",
+          "argv": [
+            "--request-timeout=20s",
+            "create",
+            "--dry-run=server",
+            "-f",
+            "-",
+            "-o",
+            "json"
+          ],
+          "stdoutSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "startedAtMs": 1793636174315,
+          "exitStatus": 1
+        },
+        {
+          "completedAtMs": 1793636175849,
+          "kind": "command",
+          "bin": "kubectl",
+          "errorClass": null,
+          "stderrSha256": "5b402088a615994fd6d3ea1e4c11de2f01029ea6a3b0e84be172eecbdfa10ebc",
+          "argv": [
+            "--request-timeout=20s",
+            "create",
+            "--dry-run=server",
+            "-f",
+            "-",
+            "-o",
+            "json"
+          ],
+          "stdoutSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "startedAtMs": 1793636175001,
+          "exitStatus": 1
+        },
+        {
+          "completedAtMs": 1793636176593,
+          "kind": "command",
+          "bin": "kubectl",
+          "errorClass": null,
+          "stderrSha256": "5a21123bf70a533c2a502e9f5b2f81c9e717f8d8a6488e72cb485830a3f391f8",
+          "argv": [
+            "--request-timeout=20s",
+            "create",
+            "--dry-run=server",
+            "-f",
+            "-",
+            "-o",
+            "json"
+          ],
+          "stdoutSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "startedAtMs": 1793636175850,
+          "exitStatus": 1
+        },
+        {
+          "completedAtMs": 1793636177283,
+          "kind": "command",
+          "bin": "kubectl",
+          "errorClass": null,
+          "stderrSha256": "82264220e5c607120d16006affd5126a4b46d3ed71d63ef34a61d5b35c1f9f38",
+          "argv": [
+            "--request-timeout=20s",
+            "create",
+            "--dry-run=server",
+            "-f",
+            "-",
+            "-o",
+            "json"
+          ],
+          "stdoutSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "startedAtMs": 1793636176594,
+          "exitStatus": 1
+        },
+        {
+          "completedAtMs": 1793636178012,
+          "kind": "command",
+          "bin": "kubectl",
+          "errorClass": null,
+          "stderrSha256": "d3ba3046301937dccc5345c1505ae57c93ccf62496a6c66c1c1a104ff0376936",
+          "argv": [
+            "--request-timeout=20s",
+            "create",
+            "--dry-run=server",
+            "-f",
+            "-",
+            "-o",
+            "json"
+          ],
+          "stdoutSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "startedAtMs": 1793636177284,
+          "exitStatus": 1
+        },
+        {
+          "completedAtMs": 1793636178966,
+          "kind": "command",
+          "bin": "kubectl",
+          "errorClass": null,
+          "stderrSha256": "bf4e482b195acf89212cb21d30aad88444bc9085c482612aef6e73fab1aa5945",
+          "argv": [
+            "--request-timeout=20s",
+            "create",
+            "--dry-run=server",
+            "-f",
+            "-",
+            "-o",
+            "json"
+          ],
+          "stdoutSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "startedAtMs": 1793636178013,
+          "exitStatus": 1
+        },
+        {
+          "completedAtMs": 1793636179801,
+          "kind": "command",
+          "bin": "kubectl",
+          "errorClass": null,
+          "stderrSha256": "9fbcff715bfe7f6a4af9538b2aec94cb85eb7f2ac26d4796da8032af42e37715",
+          "argv": [
+            "--request-timeout=20s",
+            "create",
+            "--dry-run=server",
+            "-f",
+            "-",
+            "-o",
+            "json"
+          ],
+          "stdoutSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "startedAtMs": 1793636178967,
+          "exitStatus": 1
+        },
+        {
+          "completedAtMs": 1793636180483,
+          "kind": "command",
+          "bin": "kubectl",
+          "errorClass": null,
+          "stderrSha256": "6d9c3b63888a163576a5e31d97ea6f6c396c281c7e446ad89a1b5b0da581bf55",
+          "argv": [
+            "--request-timeout=20s",
+            "create",
+            "--dry-run=server",
+            "-f",
+            "-",
+            "-o",
+            "json"
+          ],
+          "stdoutSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "startedAtMs": 1793636179801,
+          "exitStatus": 1
+        },
+        {
+          "completedAtMs": 1793636181195,
+          "kind": "command",
+          "bin": "kubectl",
+          "errorClass": null,
+          "stderrSha256": "b5347de565a6e313cca77640252bf65832b2faf0fa90924cbafc4efc1276df10",
+          "argv": [
+            "--request-timeout=20s",
+            "create",
+            "--dry-run=server",
+            "-f",
+            "-",
+            "-o",
+            "json"
+          ],
+          "stdoutSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "startedAtMs": 1793636180484,
+          "exitStatus": 1
+        },
+        {
+          "completedAtMs": 1793636182024,
+          "kind": "command",
+          "bin": "kubectl",
+          "errorClass": null,
+          "stderrSha256": "41891db28857aee421e26d33e030e380b8465213fdbd53872be8e7612dbbd1d8",
+          "argv": [
+            "--request-timeout=20s",
+            "create",
+            "--dry-run=server",
+            "-f",
+            "-",
+            "-o",
+            "json"
+          ],
+          "stdoutSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "startedAtMs": 1793636181197,
+          "exitStatus": 1
+        },
+        {
+          "completedAtMs": 1793636182868,
+          "kind": "command",
+          "bin": "kubectl",
+          "errorClass": null,
+          "stderrSha256": "41891db28857aee421e26d33e030e380b8465213fdbd53872be8e7612dbbd1d8",
+          "argv": [
+            "--request-timeout=20s",
+            "create",
+            "--dry-run=server",
+            "-f",
+            "-",
+            "-o",
+            "json"
+          ],
+          "stdoutSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "startedAtMs": 1793636182026,
+          "exitStatus": 1
+        },
+        {
+          "completedAtMs": 1793636183585,
+          "kind": "command",
+          "bin": "kubectl",
+          "errorClass": null,
+          "stderrSha256": "c45995c0ab8b1fc884c4156801d466d30c161f87d6716b9f75315ffbc0214f86",
+          "argv": [
+            "--request-timeout=20s",
+            "create",
+            "--dry-run=server",
+            "-f",
+            "-",
+            "-o",
+            "json"
+          ],
+          "stdoutSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "startedAtMs": 1793636182869,
+          "exitStatus": 1
+        },
+        {
+          "completedAtMs": 1793636183687,
+          "kind": "command",
+          "bin": "kubectl",
+          "errorClass": null,
+          "stderrSha256": "7d455ffc09d494648565dc53a393724812dedcb72ba8002f2ccb8ebc7be62dd6",
+          "argv": [
+            "--request-timeout=20s",
+            "get",
+            "clusterpolicy",
+            "devsecops-production-baseline",
+            "-o",
+            "json"
+          ],
+          "stdoutSha256": "7cb625600fb6b2409e1d2aa9c07584dc5fe5701172d8b4efa2d0be43540c81f7",
+          "startedAtMs": 1793636183589,
+          "exitStatus": 0
+        },
+        {
+          "completedAtMs": 1793636184397,
+          "kind": "command",
+          "bin": "kubectl",
+          "errorClass": null,
+          "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "argv": [
+            "--request-timeout=20s",
+            "create",
+            "--dry-run=server",
+            "-f",
+            "-",
+            "-o",
+            "json"
+          ],
+          "stdoutSha256": "410df717991bb2de6e72f068ff3520e2c0ffeadf3b3ec7c425aa4ae6c72edc85",
+          "startedAtMs": 1793636183692,
+          "exitStatus": 0
+        },
+        {
+          "completedAtMs": 1793636185212,
+          "kind": "command",
+          "bin": "kubectl",
+          "errorClass": null,
+          "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "argv": [
+            "--request-timeout=20s",
+            "create",
+            "--dry-run=server",
+            "-f",
+            "-",
+            "-o",
+            "json"
+          ],
+          "stdoutSha256": "18278eac1f06179ae2193076cd10004c07f9b1deb9f26fdaf93a3ff9b07c8eed",
+          "startedAtMs": 1793636184398,
+          "exitStatus": 0
+        },
+        {
+          "completedAtMs": 1793636186257,
+          "kind": "command",
+          "bin": "kubectl",
+          "errorClass": null,
+          "stderrSha256": "b5813305ac1439f4816880024daf643162d11154005d8159e1c48d1701c9c483",
+          "argv": [
+            "--request-timeout=20s",
+            "create",
+            "--dry-run=server",
+            "-f",
+            "-",
+            "-o",
+            "json"
+          ],
+          "stdoutSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "startedAtMs": 1793636185213,
+          "exitStatus": 1
+        },
+        {
+          "completedAtMs": 1793636187084,
+          "kind": "command",
+          "bin": "kubectl",
+          "errorClass": null,
+          "stderrSha256": "b3260fd974b53c7b03d778ee255a9017b20ddf73ddcae2198c8800c674104537",
+          "argv": [
+            "--request-timeout=20s",
+            "create",
+            "--dry-run=server",
+            "-f",
+            "-",
+            "-o",
+            "json"
+          ],
+          "stdoutSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "startedAtMs": 1793636186257,
+          "exitStatus": 1
+        },
+        {
+          "completedAtMs": 1793636187718,
+          "kind": "command",
+          "bin": "kubectl",
+          "errorClass": null,
+          "stderrSha256": "068b7e6489cf4a28e4b66116c0e6e140231f6b19c197571f509e7b6d71df26dd",
+          "argv": [
+            "--request-timeout=20s",
+            "create",
+            "--dry-run=server",
+            "-f",
+            "-",
+            "-o",
+            "json"
+          ],
+          "stdoutSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "startedAtMs": 1793636187084,
+          "exitStatus": 1
+        },
+        {
+          "completedAtMs": 1793636188580,
+          "kind": "command",
+          "bin": "kubectl",
+          "errorClass": null,
+          "stderrSha256": "068b7e6489cf4a28e4b66116c0e6e140231f6b19c197571f509e7b6d71df26dd",
+          "argv": [
+            "--request-timeout=20s",
+            "create",
+            "--dry-run=server",
+            "-f",
+            "-",
+            "-o",
+            "json"
+          ],
+          "stdoutSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "startedAtMs": 1793636187718,
+          "exitStatus": 1
+        },
+        {
+          "completedAtMs": 1793636189518,
+          "kind": "command",
+          "bin": "kubectl",
+          "errorClass": null,
+          "stderrSha256": "6b4c20d17c06398a870452fcf6acdb171b14b06594f7fb3243620e23e77574cf",
+          "argv": [
+            "--request-timeout=20s",
+            "create",
+            "--dry-run=server",
+            "-f",
+            "-",
+            "-o",
+            "json"
+          ],
+          "stdoutSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "startedAtMs": 1793636188581,
+          "exitStatus": 1
+        },
+        {
+          "completedAtMs": 1793636190372,
+          "kind": "command",
+          "bin": "kubectl",
+          "errorClass": null,
+          "stderrSha256": "0e6a69820c78fdf30ef5f0fbcda53ae0305e8641bed3496de0286d22bd58e944",
+          "argv": [
+            "--request-timeout=20s",
+            "create",
+            "--dry-run=server",
+            "-f",
+            "-",
+            "-o",
+            "json"
+          ],
+          "stdoutSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "startedAtMs": 1793636189519,
+          "exitStatus": 1
+        },
+        {
+          "completedAtMs": 1793636191107,
+          "kind": "command",
+          "bin": "kubectl",
+          "errorClass": null,
+          "stderrSha256": "b3260fd974b53c7b03d778ee255a9017b20ddf73ddcae2198c8800c674104537",
+          "argv": [
+            "--request-timeout=20s",
+            "create",
+            "--dry-run=server",
+            "-f",
+            "-",
+            "-o",
+            "json"
+          ],
+          "stdoutSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "startedAtMs": 1793636190372,
+          "exitStatus": 1
+        },
+        {
+          "completedAtMs": 1793636191315,
+          "kind": "command",
+          "bin": "kubectl",
+          "errorClass": null,
+          "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "argv": [
+            "--request-timeout=20s",
+            "get",
+            "pods",
+            "-n",
+            "devsecops-system",
+            "-o",
+            "json"
+          ],
+          "stdoutSha256": "68e82feb8afdcb0ea36faef9bb36874bdf5d1de00947fed3404e52ed0624232e",
+          "startedAtMs": 1793636191109,
+          "exitStatus": 0
+        },
+        {
+          "completedAtMs": 1793636192203,
+          "kind": "command",
+          "bin": "kubectl",
+          "errorClass": null,
+          "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "argv": [
+            "--request-timeout=20s",
+            "create",
+            "--dry-run=server",
+            "-f",
+            "-",
+            "-o",
+            "json"
+          ],
+          "stdoutSha256": "3b2329229d73b5e0beaf361166c88790ce3875563a95c5df05552d57179791ea",
+          "startedAtMs": 1793636191317,
+          "exitStatus": 0
+        },
+        {
+          "completedAtMs": 1793636193056,
+          "kind": "command",
+          "bin": "kubectl",
+          "errorClass": null,
+          "stderrSha256": "4bae220b5ac15df14d49fa770f1556c9c3f9763e15bce68b720dd834aa6c3b83",
+          "argv": [
+            "--request-timeout=20s",
+            "create",
+            "--dry-run=server",
+            "-f",
+            "-",
+            "-o",
+            "json"
+          ],
+          "stdoutSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "startedAtMs": 1793636192204,
+          "exitStatus": 1
+        },
+        {
+          "completedAtMs": 1793636193894,
+          "kind": "command",
+          "bin": "kubectl",
+          "errorClass": null,
+          "stderrSha256": "4bae220b5ac15df14d49fa770f1556c9c3f9763e15bce68b720dd834aa6c3b83",
+          "argv": [
+            "--request-timeout=20s",
+            "create",
+            "--dry-run=server",
+            "-f",
+            "-",
+            "-o",
+            "json"
+          ],
+          "stdoutSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "startedAtMs": 1793636193056,
+          "exitStatus": 1
+        },
+        {
+          "completedAtMs": 1793636194691,
+          "kind": "command",
+          "bin": "kubectl",
+          "errorClass": null,
+          "stderrSha256": "f1a25867084ddb6e2bae6b8d5eed2494927945bc0a4dd352f1871327de17904a",
+          "argv": [
+            "--request-timeout=20s",
+            "create",
+            "--dry-run=server",
+            "-f",
+            "-",
+            "-o",
+            "json"
+          ],
+          "stdoutSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "startedAtMs": 1793636193895,
+          "exitStatus": 1
+        },
+        {
+          "completedAtMs": 1793636195156,
+          "kind": "command",
+          "bin": "kubectl",
+          "errorClass": null,
+          "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "argv": [
+            "--request-timeout=20s",
+            "get",
+            "pods",
+            "-n",
+            "monitoring",
+            "-o",
+            "json"
+          ],
+          "stdoutSha256": "bbcf51a74517f60093a9954d07fa8878bfefb7ec80e7dbbab5a7b961561947e1",
+          "startedAtMs": 1793636194692,
+          "exitStatus": 0
+        },
+        {
+          "completedAtMs": 1793636195970,
+          "kind": "command",
+          "bin": "kubectl",
+          "errorClass": null,
+          "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "argv": [
+            "--request-timeout=20s",
+            "create",
+            "--dry-run=server",
+            "-f",
+            "-",
+            "-o",
+            "json"
+          ],
+          "stdoutSha256": "0f0029b55d38284278354c6ae5c1a0cbcf131af42b94d02717c4868f18520083",
+          "startedAtMs": 1793636195159,
+          "exitStatus": 0
+        },
+        {
+          "completedAtMs": 1793636196707,
+          "kind": "command",
+          "bin": "kubectl",
+          "errorClass": null,
+          "stderrSha256": "0ea81a785bd777ca0718e21b46d6f2291e4e252810b6d7018329a75aab2a8b08",
+          "argv": [
+            "--request-timeout=20s",
+            "create",
+            "--dry-run=server",
+            "-f",
+            "-",
+            "-o",
+            "json"
+          ],
+          "stdoutSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "startedAtMs": 1793636195971,
+          "exitStatus": 1
+        },
+        {
+          "completedAtMs": 1793636197361,
+          "kind": "command",
+          "bin": "kubectl",
+          "errorClass": null,
+          "stderrSha256": "0ea81a785bd777ca0718e21b46d6f2291e4e252810b6d7018329a75aab2a8b08",
+          "argv": [
+            "--request-timeout=20s",
+            "create",
+            "--dry-run=server",
+            "-f",
+            "-",
+            "-o",
+            "json"
+          ],
+          "stdoutSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "startedAtMs": 1793636196708,
+          "exitStatus": 1
+        },
+        {
+          "completedAtMs": 1793636198099,
+          "kind": "command",
+          "bin": "kubectl",
+          "errorClass": null,
+          "stderrSha256": "76faa897a3f60c7acc3b2ed4866a8dd0aeaf614f222588d7d7584912c51f6444",
+          "argv": [
+            "--request-timeout=20s",
+            "create",
+            "--dry-run=server",
+            "-f",
+            "-",
+            "-o",
+            "json"
+          ],
+          "stdoutSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "startedAtMs": 1793636197361,
+          "exitStatus": 1
+        },
+        {
+          "completedAtMs": 1793636198593,
+          "kind": "command",
+          "bin": "kubectl",
+          "errorClass": null,
+          "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "argv": [
+            "--request-timeout=20s",
+            "get",
+            "pods",
+            "-n",
+            "sonarqube",
+            "-o",
+            "json"
+          ],
+          "stdoutSha256": "21b030cf9e54455477d2c487d3574b869c1cb489a16cccba4fadab8686c016f8",
+          "startedAtMs": 1793636198099,
+          "exitStatus": 0
+        },
+        {
+          "completedAtMs": 1793636199361,
+          "kind": "command",
+          "bin": "kubectl",
+          "errorClass": null,
+          "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "argv": [
+            "--request-timeout=20s",
+            "create",
+            "--dry-run=server",
+            "-f",
+            "-",
+            "-o",
+            "json"
+          ],
+          "stdoutSha256": "8936994fa4ba9ca3b07a1674512420a2d54365c51de66e3795f8a9963d5fe9cd",
+          "startedAtMs": 1793636198594,
+          "exitStatus": 0
+        },
+        {
+          "completedAtMs": 1793636200103,
+          "kind": "command",
+          "bin": "kubectl",
+          "errorClass": null,
+          "stderrSha256": "2e5a148573a5109eae22dcf3f08e06d4d31c1435a14b9eddb04c6a27d341a0df",
+          "argv": [
+            "--request-timeout=20s",
+            "create",
+            "--dry-run=server",
+            "-f",
+            "-",
+            "-o",
+            "json"
+          ],
+          "stdoutSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "startedAtMs": 1793636199362,
+          "exitStatus": 1
+        },
+        {
+          "completedAtMs": 1793636200998,
+          "kind": "command",
+          "bin": "kubectl",
+          "errorClass": null,
+          "stderrSha256": "2e5a148573a5109eae22dcf3f08e06d4d31c1435a14b9eddb04c6a27d341a0df",
+          "argv": [
+            "--request-timeout=20s",
+            "create",
+            "--dry-run=server",
+            "-f",
+            "-",
+            "-o",
+            "json"
+          ],
+          "stdoutSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "startedAtMs": 1793636200104,
+          "exitStatus": 1
+        },
+        {
+          "completedAtMs": 1793636201898,
+          "kind": "command",
+          "bin": "kubectl",
+          "errorClass": null,
+          "stderrSha256": "2e5a148573a5109eae22dcf3f08e06d4d31c1435a14b9eddb04c6a27d341a0df",
+          "argv": [
+            "--request-timeout=20s",
+            "create",
+            "--dry-run=server",
+            "-f",
+            "-",
+            "-o",
+            "json"
+          ],
+          "stdoutSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "startedAtMs": 1793636201000,
+          "exitStatus": 1
+        },
+        {
+          "completedAtMs": 1793636202753,
+          "kind": "command",
+          "bin": "kubectl",
+          "errorClass": null,
+          "stderrSha256": "5459934a88ec57efb31416cb029c4b87c07706af6ec39995fe15a06d3cf62936",
+          "argv": [
+            "--request-timeout=20s",
+            "create",
+            "--dry-run=server",
+            "-f",
+            "-",
+            "-o",
+            "json"
+          ],
+          "stdoutSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "startedAtMs": 1793636201899,
+          "exitStatus": 1
+        },
+        {
+          "completedAtMs": 1793636203706,
+          "kind": "command",
+          "bin": "kubectl",
+          "errorClass": null,
+          "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "argv": [
+            "--request-timeout=20s",
+            "get",
+            "deploy,ds,sts",
+            "-A",
+            "-o",
+            "json"
+          ],
+          "stdoutSha256": "d5e66b30d94b43f9ddf4d228f6cc4d5803c5002514f16e8af50fade3808e42a4",
+          "startedAtMs": 1793636202754,
+          "exitStatus": 0
+        }
+      ]
+    }
+  ],
+  "rawPayloadPersisted": false,
+  "kind": "RuntimeSourceFacts",
+  "evidenceComplete": true,
+  "resultDigest": "f04b7dae6fa5e12af2a20cb8a6ec3205cfb5d0ec200d3847319e9e296e08f973",
+  "evaluationCount": 1,
+  "buildBinding": {
+    "candidate": "core.harbor.domain/petclinic/petclinic@sha256:489cb821573ff1f98edd846d5949d74bf3391b24e2f1fe5bcfb71c6be0793137",
+    "build": 12,
+    "project": "petclinic",
+    "source": "741ea2866ea142b24c7838e1ef25c8327c79d279",
+    "runId": "security-runtime-facts-20261102#12",
+    "job": "security-runtime-facts-20261102",
+    "targetScope": "runtime"
+  },
+  "envelopeDigest": "2914307dfdd22efb60d83c5f8fe19d08721da85cdca1bbbce012b487059f313d",
+  "rawFactDigest": "73ded589634f96226e98e0b155854d887447a2ca2ac6d4bf58847031e71ddd0e",
+  "presence": "executed"
+}

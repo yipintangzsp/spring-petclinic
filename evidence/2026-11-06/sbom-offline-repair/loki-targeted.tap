@@ -1,0 +1,30 @@
+✔ selected Router sends only selected plugin facts; default remains dry-run (39.872958ms)
+✔ historical REAL evidence cannot be relabeled as fresh automatic execution (7.291083ms)
+✔ wrong fresh Run ID is rejected before HTTP (6.080667ms)
+✔ MOCK or incomplete scanner result never opens real channel (0.701042ms)
+✖ preoccupied localhost port refuses channel rather than trusting a listener (6.644416ms)
+✔ Grafana link binds exact project, run, digest and execution time window (0.46975ms)
+ℹ tests 6
+ℹ suites 0
+ℹ pass 5
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 272.625666
+
+✖ failing tests:
+
+test at infra/security/manager-v2/view/loki-delivery.test.mjs:35:1
+✖ preoccupied localhost port refuses channel rather than trusting a listener (6.644416ms)
+  Error: listen EPERM: operation not permitted 127.0.0.1:32189
+      at Server.setupListenHandle [as _listen2] (node:net:1986:21)
+      at listenInCluster (node:net:2065:12)
+      at node:net:2274:7
+      at process.processTicksAndRejections (node:internal/process/task_queues:90:21) {
+    code: 'EPERM',
+    errno: -1,
+    syscall: 'listen',
+    address: '127.0.0.1',
+    port: 32189
+  }

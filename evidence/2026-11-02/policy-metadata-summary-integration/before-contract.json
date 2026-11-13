@@ -1,0 +1,216 @@
+{
+  "classification": "READ_ONLY_BEFORE_CONTRACT_NO_IMPLEMENTATION",
+  "producer": "infra/security/security-summary.mjs",
+  "directHelpers": [
+    "infra/security/audit-target.mjs",
+    "infra/security/governance/scan-counts.mjs"
+  ],
+  "frozenSourceIndex": "before-contract-source-index.json",
+  "output": ".devsecops/security-summary.json",
+  "schema": 1,
+  "fieldGroups": {
+    "identity": [
+      "schema",
+      "project",
+      "pipeline",
+      "build",
+      "build_result",
+      "source",
+      "recorded_at",
+      "missing",
+      "scannerScopes"
+    ],
+    "manager": [
+      "securityMode",
+      "securityProfile",
+      "securityModules"
+    ],
+    "provenance": [
+      "provenance_status",
+      "attestation_verification",
+      "build_provenance_status",
+      "build_attestation_verification"
+    ],
+    "target": [
+      "runtimeImage",
+      "auditTargetImage",
+      "targetScope"
+    ],
+    "promotion": [
+      "candidateDigest",
+      "approvedDigest",
+      "securityGitCommit",
+      "gitOpsCommit",
+      "runtimeDigest",
+      "promotionResult",
+      "argoSyncResult",
+      "argoHealth",
+      "rollbackOccurred"
+    ],
+    "gitleaks": [
+      "gitleaks_status",
+      "gitleaks_findings",
+      "gitleaks_raw"
+    ],
+    "semgrep": [
+      "semgrep_status",
+      "semgrep_findings",
+      "semgrep_blocking",
+      "semgrep_warn"
+    ],
+    "trivy": [
+      "trivy_status",
+      "trivy_critical",
+      "trivy_high",
+      "trivy_medium",
+      "trivy_low",
+      "trivy_medium_governance"
+    ],
+    "sbom": [
+      "sbom_status",
+      "sbom_generated",
+      "sbom_components"
+    ],
+    "cosign": [
+      "cosign_status",
+      "cosign_verified"
+    ],
+    "zap": [
+      "zap_status",
+      "zap_findings",
+      "zap_high",
+      "zap_confirmed_high",
+      "zap_unconfirmed_high",
+      "zap_auth_status",
+      "zap_auth_fixture_cases",
+      "zap_auth_public_observations"
+    ],
+    "kyverno": [
+      "kyverno_status",
+      "kyverno_enforced_cases",
+      "kyverno_warning_probes",
+      "kyverno_audit_workloads",
+      "kyverno_scope"
+    ],
+    "kubescape": [
+      "kubescape_status",
+      "kubescape_scan_success",
+      "kubescape_failed_controls",
+      "kubescape_high_risk_findings",
+      "kubescape_findings",
+      "kubescape_frameworks",
+      "kubescape_framework_summary"
+    ],
+    "defectdojo": [
+      "defectdojo_status",
+      "defectdojo_import_success",
+      "defectdojo_product",
+      "defectdojo_engagement",
+      "defectdojo_tests",
+      "defectdojo_total_findings",
+      "defectdojo_duplicates",
+      "defectdojo_open_findings",
+      "defectdojo_critical",
+      "defectdojo_high",
+      "defectdojo_medium",
+      "defectdojo_low",
+      "defectdojo_accepted_risk",
+      "defectdojo_mitigated_closed",
+      "defectdojo_false_positives",
+      "defectdojo_url"
+    ],
+    "command": [
+      "command_audit_status",
+      "command_audit_counts",
+      "script_command_review",
+      "script_command_blocking",
+      "script_command_tests",
+      "ssh_command_status",
+      "ssh_command_counts",
+      "ssh_command_blocking",
+      "ssh_command_tests",
+      "interpreter_status",
+      "interpreter_counts",
+      "interpreter_blocking",
+      "interpreter_tests"
+    ],
+    "falco": [
+      "falco_status",
+      "falco_live_checks",
+      "falco_runtime_blocking",
+      "falco_runtime_assessment",
+      "falco_historical_exit"
+    ],
+    "sonar": [
+      "sonar_status",
+      "sonar_vulnerabilities",
+      "sonar_security_hotspots",
+      "sonar_security_rating"
+    ]
+  },
+  "statusSemantics": {
+    "build_result": "SECURITY_BUILD_RESULT verbatim, default UNKNOWN",
+    "tool_status": "Source report status verbatim, default unknown when report exists without status; absent report enters missing",
+    "counts": "Most tool counts emitted only for success; absent/failed scan is not fabricated as zero",
+    "trivy": "Complete success OR policy-failed report with complete scan evidence retains counts; incomplete evidence returns null/no counts",
+    "sonar": "queried_current_project only on successful query; errors add sonarqube to missing",
+    "policy": "No Policy object or evaluation in current producer"
+  },
+  "evidenceReferences": {
+    "root": ".devsecops/",
+    "files": [
+      "security-manager.json",
+      "provenance-status.json",
+      "attestation-verification.json",
+      "build-provenance-status.json",
+      "build-attestation-verification.json",
+      "trivy-audit.json",
+      "promotion-result.json",
+      "approved-release.json",
+      "source-gate.json",
+      "semgrep-gate.json",
+      "sbom-summary.json",
+      "signing-admission.json",
+      "zap-gate.json",
+      "admission-gate.json",
+      "kubescape-gate.json",
+      "defectdojo-import.json",
+      "command-audit.json",
+      "runtime-health.json",
+      "runtime-baseline.json"
+    ],
+    "source": ".git-sha",
+    "externalRead": "Sonar current-project measures query; unchanged and not invoked"
+  },
+  "writeSemantics": "mkdir recursive; synchronous direct overwrite JSON.stringify(record,null,2); not atomic; write precedes optional Loki push",
+  "errorSemantics": {
+    "optionalRead": "Missing or malformed JSON -> null",
+    "source": ".git-sha read errors propagate",
+    "malformedSuccessReport": "Uncaught property/shape errors may propagate",
+    "sonar": "credential/HTTP/network/parse errors -> missing entry",
+    "loki": "Unless SECURITY_SUMMARY_WRITE_ONLY=true, push must return 204 or throw; local output already written",
+    "transportHelper": "3 attempts for TypeError/TimeoutError/AbortError or HTTP408/429/502/503/504; waits2s/4s; timeout20s per attempt"
+  },
+  "generic": {
+    "authoritative": "resources/security-manager/summary.mjs",
+    "usage": "vars/securityManager.groovy:74-75 libraryResource -> .security-manager-summary.mjs -> node",
+    "duplicate": "infra/security/manager/summary.mjs is byte-identical; no generator declaration found",
+    "baseFields": [
+      "schema",
+      "project",
+      "pipeline",
+      "build",
+      "build_result",
+      "mode",
+      "profile",
+      "recorded_at",
+      "targetScope",
+      "source",
+      "modules",
+      "missing",
+      "optionalScansExecuted"
+    ],
+    "conditionalFields": "Current-build enabled nine tool status/findings; trivy severity fields; sbom_generated; provenance fields",
+    "errors": "Required security-manager report; directory must exist; Loki204 required; no generic WRITE_ONLY switch"
+  }
+}

@@ -1,0 +1,217 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Test-only SOPS observation raw fact v1",
+  "type": "object",
+  "required": [
+    "schemaVersion",
+    "factType",
+    "source",
+    "identity",
+    "expectedTarget",
+    "observedTarget",
+    "status",
+    "errorClass",
+    "evidenceRef"
+  ],
+  "properties": {
+    "schemaVersion": {
+      "const": "sops-observation-v1"
+    },
+    "factType": {
+      "enum": [
+        "PREREQUISITE_FACT",
+        "CHILD_EXIT_FACT",
+        "UID_VALUE_FACT"
+      ]
+    },
+    "source": {
+      "type": "string",
+      "minLength": 1
+    },
+    "identity": {
+      "type": "string",
+      "minLength": 1
+    },
+    "expectedTarget": {
+      "type": [
+        "object",
+        "null"
+      ]
+    },
+    "observedTarget": {
+      "type": [
+        "object",
+        "null"
+      ]
+    },
+    "status": {
+      "enum": [
+        "OBSERVED",
+        "EXECUTION_ERROR",
+        "UNAVAILABLE",
+        "MISMATCH",
+        "DENIED",
+        "INCOMPLETE"
+      ]
+    },
+    "errorClass": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "evidenceRef": {
+      "type": "string",
+      "minLength": 1
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "factType": {
+            "const": "PREREQUISITE_FACT"
+          }
+        }
+      },
+      "then": {
+        "required": [
+          "prerequisite",
+          "observation"
+        ],
+        "properties": {
+          "prerequisite": {
+            "type": "string"
+          },
+          "observation": {
+            "type": "object"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "factType": {
+            "const": "CHILD_EXIT_FACT"
+          }
+        }
+      },
+      "then": {
+        "required": [
+          "commandIdentity",
+          "exit",
+          "stdout",
+          "stderr"
+        ],
+        "properties": {
+          "exit": {
+            "type": "object",
+            "required": [
+              "code",
+              "signal",
+              "timedOut",
+              "outputLimitExceeded"
+            ],
+            "properties": {
+              "code": {
+                "type": [
+                  "integer",
+                  "null"
+                ],
+                "minimum": 0
+              },
+              "signal": {
+                "type": [
+                  "integer",
+                  "null"
+                ],
+                "minimum": 1
+              },
+              "timedOut": {
+                "type": "boolean"
+              },
+              "outputLimitExceeded": {
+                "type": "boolean"
+              }
+            }
+          },
+          "stdout": {
+            "$ref": "#/$defs/output"
+          },
+          "stderr": {
+            "$ref": "#/$defs/output"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "factType": {
+            "const": "UID_VALUE_FACT"
+          }
+        }
+      },
+      "then": {
+        "required": [
+          "uid",
+          "values",
+          "typeEqual",
+          "rawUnchanged"
+        ],
+        "properties": {
+          "uid": {
+            "type": "object",
+            "required": [
+              "before",
+              "after",
+              "equal"
+            ]
+          },
+          "values": {
+            "type": "object",
+            "required": [
+              "beforePresent",
+              "afterPresent",
+              "beforeShape",
+              "afterShape",
+              "equal"
+            ]
+          },
+          "typeEqual": {
+            "type": "boolean"
+          },
+          "rawUnchanged": {
+            "type": "boolean"
+          }
+        }
+      }
+    }
+  ],
+  "$defs": {
+    "output": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "bytes",
+        "sha256",
+        "contentStored"
+      ],
+      "properties": {
+        "bytes": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "sha256": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "contentStored": {
+          "const": false
+        }
+      }
+    }
+  },
+  "$comment": "Runtime validate_record also recursively rejects Policy decision/severity/blocking keys. No expected Gate decisions are accepted as facts. This schema is test harness only, not production Summary."
+}

@@ -1,0 +1,289 @@
+{
+  "schema": 1,
+  "scopeNamespaces": [
+    "devsecops-execution",
+    "petclinic",
+    "devsecops-system",
+    "monitoring",
+    "sonarqube"
+  ],
+  "scopeNote": "Other namespaces remain inventory WARN; no cluster-wide production compliance claim. Existing scanner restrictions and signature verification remain unchanged.",
+  "exceptions": [
+    {
+      "id": "falco",
+      "namespace": "devsecops-system",
+      "owner": {
+        "apiVersion": "apps/v1",
+        "blockOwnerDeletion": true,
+        "controller": true,
+        "kind": "DaemonSet",
+        "name": "platform-falco",
+        "uid": "c33ae390-de88-4fc2-bce4-b19c5b828a9c"
+      },
+      "serviceAccount": "platform-falco",
+      "container": "falco",
+      "image": "127.0.0.1:30050/platform-security/falco@sha256:3c5ccde1c8b50ccc8baf016090a5376d182e08dc8751df2b37d8ff2a13499558",
+      "command": [],
+      "args": [
+        "/usr/bin/falco"
+      ],
+      "controls": [
+        "restricted-added-capabilities",
+        "no-host-namespaces",
+        "restricted-hostpath"
+      ],
+      "notes": "Per-expression exception only; other rules still enforced. Owner UID changes require review.",
+      "environment": [
+        {
+          "name": "HOST_ROOT",
+          "value": "/host"
+        },
+        {
+          "name": "FALCO_HOSTNAME",
+          "valueFrom": {
+            "fieldRef": {
+              "apiVersion": "v1",
+              "fieldPath": "spec.nodeName"
+            }
+          }
+        },
+        {
+          "name": "FALCO_K8S_NODE_NAME",
+          "valueFrom": {
+            "fieldRef": {
+              "apiVersion": "v1",
+              "fieldPath": "spec.nodeName"
+            }
+          }
+        }
+      ],
+      "volumeMounts": [
+        {
+          "mountPath": "/host/run/k3s/containerd",
+          "name": "container-engine-socket-0",
+          "readOnly": true
+        },
+        {
+          "mountPath": "/etc/falco/config.d",
+          "name": "specialized-falco-configs"
+        },
+        {
+          "mountPath": "/root/.falco",
+          "name": "root-falco-fs"
+        },
+        {
+          "mountPath": "/host/proc",
+          "name": "proc-fs",
+          "readOnly": true
+        },
+        {
+          "mountPath": "/sys/kernel",
+          "name": "sys-fs",
+          "readOnly": true
+        },
+        {
+          "mountPath": "/etc/falco/falco.yaml",
+          "name": "falco-yaml",
+          "subPath": "falco.yaml"
+        },
+        {
+          "mountPath": "/etc/falco/rules.d",
+          "name": "rules-volume"
+        }
+      ],
+      "volumeSources": [
+        {
+          "hostPath": {
+            "path": "/run/k3s/containerd",
+            "type": ""
+          },
+          "name": "container-engine-socket-0"
+        },
+        {
+          "emptyDir": {},
+          "name": "specialized-falco-configs"
+        },
+        {
+          "emptyDir": {},
+          "name": "root-falco-fs"
+        },
+        {
+          "hostPath": {
+            "path": "/sys/kernel",
+            "type": ""
+          },
+          "name": "sys-fs"
+        },
+        {
+          "hostPath": {
+            "path": "/proc",
+            "type": ""
+          },
+          "name": "proc-fs"
+        },
+        {
+          "configMap": {
+            "defaultMode": 420,
+            "items": [
+              {
+                "key": "falco.yaml",
+                "path": "falco.yaml"
+              }
+            ],
+            "name": "platform-falco"
+          },
+          "name": "falco-yaml"
+        },
+        {
+          "configMap": {
+            "defaultMode": 420,
+            "name": "platform-falco-rules"
+          },
+          "name": "rules-volume"
+        }
+      ]
+    },
+    {
+      "id": "nodeExporter",
+      "namespace": "monitoring",
+      "owner": {
+        "apiVersion": "apps/v1",
+        "blockOwnerDeletion": true,
+        "controller": true,
+        "kind": "DaemonSet",
+        "name": "kube-stack-prometheus-node-exporter",
+        "uid": "d63a0442-dbc1-4021-9fdf-f374bf67825a"
+      },
+      "serviceAccount": "kube-stack-prometheus-node-exporter",
+      "container": "node-exporter",
+      "image": "quay.io/prometheus/node-exporter:v1.12.1",
+      "command": [],
+      "args": [
+        "--path.procfs=/host/proc",
+        "--path.sysfs=/host/sys",
+        "--path.rootfs=/host/root",
+        "--path.udev.data=/host/root/run/udev/data",
+        "--web.listen-address=[$(HOST_IP)]:9100",
+        "--collector.filesystem.mount-points-exclude=^/(dev|proc|sys|run/containerd/.+|var/lib/docker/.+|var/lib/kubelet/.+)($|/)",
+        "--collector.filesystem.fs-types-exclude=^(autofs|binfmt_misc|bpf|cgroup2?|configfs|debugfs|devpts|devtmpfs|fusectl|hugetlbfs|iso9660|mqueue|nsfs|overlay|proc|procfs|pstore|rpc_pipefs|securityfs|selinuxfs|squashfs|sysfs|tracefs|erofs)$"
+      ],
+      "controls": [
+        "no-host-namespaces",
+        "restricted-hostpath"
+      ],
+      "notes": "Per-expression exception only; other rules still enforced. Owner UID changes require review.",
+      "environment": [
+        {
+          "name": "HOST_IP",
+          "value": "0.0.0.0"
+        }
+      ],
+      "volumeMounts": [
+        {
+          "mountPath": "/host/proc",
+          "name": "proc",
+          "readOnly": true
+        },
+        {
+          "mountPath": "/host/sys",
+          "name": "sys",
+          "readOnly": true
+        },
+        {
+          "mountPath": "/host/root",
+          "mountPropagation": "HostToContainer",
+          "name": "root",
+          "readOnly": true
+        }
+      ],
+      "volumeSources": [
+        {
+          "hostPath": {
+            "path": "/proc",
+            "type": ""
+          },
+          "name": "proc"
+        },
+        {
+          "hostPath": {
+            "path": "/sys",
+            "type": ""
+          },
+          "name": "sys"
+        },
+        {
+          "hostPath": {
+            "path": "/",
+            "type": ""
+          },
+          "name": "root"
+        }
+      ]
+    },
+    {
+      "id": "sonarInit",
+      "namespace": "sonarqube",
+      "owner": {
+        "apiVersion": "apps/v1",
+        "blockOwnerDeletion": true,
+        "controller": true,
+        "kind": "StatefulSet",
+        "name": "sonarqube-sonarqube",
+        "uid": "12f0c30f-732f-4db1-9efe-6e811ab7d6c4"
+      },
+      "serviceAccount": "default",
+      "container": "init-sysctl",
+      "image": "192.168.1.58:30050/platform-cache/sonarqube@sha256:f5593e4a6fe6f3d93e8d4d398b7bb6ba6fb3fe93b0a6b760d5ddaa24b8533cf2",
+      "command": [
+        "/bin/bash",
+        "-e",
+        "/tmp/scripts/init_sysctl.sh"
+      ],
+      "args": [],
+      "controls": [
+        "no-privileged-containers",
+        "no-explicit-uid-zero"
+      ],
+      "notes": "Per-expression exception only; other rules still enforced. Owner UID changes require review.",
+      "environment": [
+        {
+          "name": "SONAR_WEB_CONTEXT",
+          "value": "/"
+        },
+        {
+          "name": "SONAR_WEB_JAVAOPTS",
+          "value": "-Xmx768m -Xms768m -XX:MaxMetaspaceSize=256m"
+        },
+        {
+          "name": "SONAR_CE_JAVAOPTS"
+        }
+      ],
+      "volumeMounts": [
+        {
+          "mountPath": "/tmp/scripts/",
+          "name": "init-sysctl"
+        }
+      ],
+      "volumeSources": [
+        {
+          "configMap": {
+            "defaultMode": 420,
+            "items": [
+              {
+                "key": "init_sysctl.sh",
+                "path": "init_sysctl.sh"
+              }
+            ],
+            "name": "sonarqube-sonarqube-init-sysctl"
+          },
+          "name": "init-sysctl"
+        }
+      ]
+    }
+  ],
+  "authorizedScannerRuntimeImages": [
+    "127.0.0.1:30050/petclinic/petclinic@sha256:83c2ae787a3d160cad1681228a669ac46afb19000558f4eefb45da50f08bf05c",
+    "127.0.0.1:30050/platform-security/gitleaks@sha256:6b2d52241f9d176fc59e6e3b026ea52c98f390070587d9475d6ee2bc64941815",
+    "192.168.1.58:30050/platform-upgrade/airflow@sha256:1803ed9d010ddcdc6e09e0052c179a72a99d8f3e2f909ff073d5e88f54fbdce8"
+  ]
+}

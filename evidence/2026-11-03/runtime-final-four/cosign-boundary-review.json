@@ -1,0 +1,27 @@
+{
+  "status": "BLOCKED",
+  "code": "COSIGN_VALIDATION_TRUST_AND_REGISTRY_BOUNDARY_NOT_CLOSED",
+  "verificationFacts": [
+    "Original verify exit/stdout/stderr and public-key/image claim digest binding",
+    "Existing frozen generic VERIFY branch is narrower than canonical admission stage"
+  ],
+  "signingFacts": [
+    "admission decrypts fixed signing bundle",
+    "public-key result must equal workspace trusted key",
+    "POST/PUT registry fixtures in petclinic/signature-fixtures",
+    "real admission must allow signed and reject unsigned/wrong-key"
+  ],
+  "candidateBindingFacts": [
+    "configuration labels build identity in fixed registry manifests",
+    "signature digest must equal actual manifest digest",
+    "admission image reference must match created fixture"
+  ],
+  "testKeyAloneSufficient": false,
+  "productionKeyAccess": 0,
+  "testKeysGenerated": 0,
+  "signaturesCreated": 0,
+  "blocker": "A test-only key can replace disposable inputs only within an independent validation trust/registry boundary. Current full parent also requires the production-host/repository namespace and existing trusted admission behavior. No minimum-scoped test writer + independently isolated admission trust domain has been established; VERIFY-only or blob-signing would omit existing canonical lifecycle facts.",
+  "noProductionFallback": true,
+  "minimumFix": "Define an isolated registry/endpoint and test-only admission trust boundary around the validation job before key generation; preserve the exact full parent decisions and keep production policy/key untouched.",
+  "cleanup": "No key/signature objects created; none to remove."
+}

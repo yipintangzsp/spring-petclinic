@@ -1,0 +1,19 @@
+{
+  "scope": "FUTURE_ONLY_NOT_EXECUTED",
+  "productionProxyRequired": false,
+  "productionProxyHashCriterion": false,
+  "requirements": {
+    "isolatedEnvironmentIdentity": "Independent Linux arm64 target/control plane; exact lab cluster UID/server not production; lab kube credential cannot access production; no prod mounts",
+    "availableDisk": "Guest and host actual allocated headroom sufficient; primary production-equivalent FS capacity270430261248B; external dedicated physical budget at least design floor300GiB usable without extra snapshots; snapshot/backup unique blocks separately budgeted",
+    "filesystemEquivalence": "ext4 features/4096 blocks/reserved ratio/kernel, containerd overlay, cache and TMPDIR device relationships and UID10000 match; preflight actual mountinfo and controller os.tmpdir",
+    "networkPath": "Lab-only DNS/TLS/routes; prove no production control-plane/registry/proxy dependency and deny prod access; no test from Mac standing in for lab",
+    "proxyOrDirectAccess": "Direct or independently provisioned validation proxy for manifest route. Frozen mirror CLI clears proxies, so its exact direct route must succeed independently",
+    "dbSourceReachability": "From selected lab: anonymous official GHCR token and manifests, digest/header/media-type validation; digest-addressed mirror manifest/blob access; no DB refresh in this review",
+    "credentialAvailability": "Public anonymous scoped pull path + least-privilege isolated Kube/Lease identity, no production credentials; existence/expiry checks only, no values in evidence",
+    "frozenImplementationHash": "Compare wrapper/preflight/test/image/binary hashes; capture Node version; exact original argv/timeouts/guard; lab read-only file transfer digest receipts",
+    "samplerReadiness": "10ms sampler actual gaps and loss-free event accounting calibrated on isolated fixtures; cover delalloc/reserved/open-unlinked/overlay accounting; failed calibration = blocked, no false true peak",
+    "evidenceDestination": "Separate observer disk>=8GiB plus tracing budget, writable tested only in future lab; space/clock/schema/hash manifest and redaction verified",
+    "productionIsolation": "Deny production API/registry/proxy, no shared production PVC/cache/storage, no prod kubeconfig/Secrets, independent physical backing; readonly-image acquisition provenance separate"
+  },
+  "prerequisiteValidity": "Recheck immediately before any separately authorized run. Preserve frozen guard stats freshness[-5s,+90s]. All required fields VERIFIED with immutable nonempty evidenceRef; not a claimed execution authorization."
+}

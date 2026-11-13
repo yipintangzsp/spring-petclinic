@@ -1,0 +1,18 @@
+{
+  "command": [
+    "/opt/homebrew/bin/colima",
+    "ssh",
+    "-p",
+    "security-test",
+    "--",
+    "sh",
+    "-c",
+    "printf \"__RESOLV__\\n\"; cat /etc/resolv.conf; printf \"__DNS_LISTENERS__\\n\"; ss -uln | awk \"NR==1 || /:53[[:space:]]/\""
+  ],
+  "exit": 0,
+  "stdout": "__RESOLV__\n__DNS_LISTENERS__\nState  Recv-Q Send-Q    Local Address:Port Peer Address:PortProcess\n",
+  "stderr": "cat: /etc/resolv.conf: No such file or directory\n",
+  "classification": "READ_ONLY_RUNTIME_DNS_DIAGNOSTIC",
+  "DNSSettingsModified": false,
+  "productionAddressProbes": 0
+}

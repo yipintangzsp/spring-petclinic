@@ -1,0 +1,391 @@
+{
+  "canonicalCount": 16,
+  "remaining": [
+    "gitleaks",
+    "trivy",
+    "cosign",
+    "zap",
+    "defectdojo",
+    "semgrep-command-audit"
+  ],
+  "sources": [
+    {
+      "sourceId": "gitleaks",
+      "group": "C",
+      "productionStage": "Secret Source",
+      "actualCommandOrFunction": "node infra/security/source-gate.mjs",
+      "rawOutputPaths": [
+        ".devsecops/source-gate.json",
+        ".devsecops/gitleaks-native.json"
+      ],
+      "prerequisites": [
+        "heavy Lease",
+        "pinned scanner",
+        "exact git archive",
+        "network canary/reviewed source lines"
+      ],
+      "credentialsRequired": false,
+      "kubernetesAccess": true,
+      "externalHttpApiAccess": false,
+      "writeSideEffects": "Creates/deletes scanner Pod; exec/source transfer",
+      "destructivePotential": "Temporary workload mutation; no direct write-path run",
+      "frozenAdapter": "infra/security/policy/gitleaks-parent.mjs",
+      "requiredRawFacts": [
+        "scanner exits/parse/findings/reviews",
+        "prerequisite/isolation outcomes",
+        "parent/finally/report outcomes"
+      ],
+      "currentBlocker": "Before create lacks scanner/cleanup outcomes; wrapper-only facts insufficient",
+      "currentStatus": "NOT_OBSERVED",
+      "normalProductionWritePathAuthorized": false,
+      "classification": "OTHER_BLOCKED",
+      "productionImplementation": "infra/security/source-gate.mjs",
+      "inputSource": [
+        "heavy Lease",
+        "pinned scanner",
+        "exact git archive",
+        "network canary/reviewed source lines"
+      ],
+      "factFormationTrace": "Pod create \u2192 isolation checks \u2192 scanner/native/classifier \u2192 UID-protected Pod cleanup",
+      "earliestAllPolicyFactsExist": "After scanner commands and finally cleanup",
+      "beforeAnyExternalMutation": false,
+      "currentCaptureGap": "PRE_WRITE_FACT_BOUNDARY_NOT_AVAILABLE",
+      "existingCanonicalStatus": "NOT_OBSERVED",
+      "sideEffectClassifications": [
+        "LOCAL_EPHEMERAL_WRITE",
+        "TEST_EXTERNAL_WRITE"
+      ],
+      "writeTarget": "Unique scanner Pods in existing devsecops-execution; temporary exact tracked HEAD workspace",
+      "cleanupOperation": "Original UID-protected Pod deletion, wait absence; temp workspace deletion; exact-run SA/RBAC revocation",
+      "factsBeforeWrite": [
+        "source/tool configuration",
+        "input identity"
+      ],
+      "factsAfterWrite": [
+        "scanner exits/parse/findings/reviews",
+        "prerequisite/isolation outcomes",
+        "parent/finally/report outcomes"
+      ],
+      "executionScope": "CONTROLLED_NON_RELEASE",
+      "sourceHashes": {
+        "infra/security/source-gate.mjs": "35de5317f6b14ffc4d986236410f2bdf488653e47f02eeb2dbe0bc372cc2cd00",
+        "infra/security/scanner-runtime.mjs": "60b26e029479e5371872d87465ae29150b7ded2e091750d026df006bfb968b9b"
+      }
+    },
+    {
+      "sourceId": "trivy",
+      "group": "C",
+      "productionStage": "Trivy",
+      "actualCommandOrFunction": "( node infra/security/ensure-audit-candidate.mjs && node infra/security/audit-trivy.mjs )",
+      "rawOutputPaths": [
+        ".devsecops/trivy-audit.json"
+      ],
+      "prerequisites": [
+        "Harbor identity",
+        "runtime/candidate digest",
+        "SBOM",
+        "DB/transport/review facts"
+      ],
+      "credentialsRequired": true,
+      "kubernetesAccess": true,
+      "externalHttpApiAccess": true,
+      "writeSideEffects": "ensure-candidate may PUT/copy; audit POST /scan",
+      "destructivePotential": "Registry/scan state mutation",
+      "frozenAdapter": "infra/security/policy/trivy-parent.mjs",
+      "requiredRawFacts": [
+        "original && operation sequence",
+        "native vulnerabilities/image/report binding",
+        "DB/prerequisite and proxy-direct facts in original scope",
+        "original classifier/parent exits"
+      ],
+      "currentBlocker": "GET boundary cannot produce POST scan or earlier transport/update outcomes",
+      "currentStatus": "NOT_OBSERVED",
+      "normalProductionWritePathAuthorized": false,
+      "classification": "OTHER_BLOCKED",
+      "productionImplementation": "infra/security/ensure-audit-candidate.mjs + infra/security/audit-trivy.mjs",
+      "inputSource": [
+        "Harbor identity",
+        "runtime/candidate digest",
+        "SBOM",
+        "DB/transport/review facts"
+      ],
+      "factFormationTrace": "Optional candidate copy/write; mandatory Harbor POST scan \u2192 poll \u2192 native report/classifier",
+      "earliestAllPolicyFactsExist": "After actual scan POST/poll and bound report retrieval",
+      "beforeAnyExternalMutation": false,
+      "currentCaptureGap": "PRE_WRITE_FACT_BOUNDARY_NOT_AVAILABLE",
+      "existingCanonicalStatus": "NOT_OBSERVED",
+      "sideEffectClassifications": [
+        "LOCAL_EPHEMERAL_WRITE",
+        "PRODUCTION_EXTERNAL_WRITE"
+      ],
+      "writeTarget": "Frozen target identity needs isolated validated replacement; normal endpoints are forbidden for writes",
+      "cleanupOperation": "Must be proven before any write; not yet available",
+      "factsBeforeWrite": [
+        "source/tool configuration",
+        "input identity"
+      ],
+      "factsAfterWrite": [
+        "original && operation sequence",
+        "native vulnerabilities/image/report binding",
+        "DB/prerequisite and proxy-direct facts in original scope",
+        "original classifier/parent exits"
+      ],
+      "executionScope": "CONTROLLED_NON_RELEASE",
+      "sourceHashes": {}
+    },
+    {
+      "sourceId": "cosign",
+      "group": "C",
+      "productionStage": "Cosign Admission",
+      "actualCommandOrFunction": "node infra/security/signing.mjs admission",
+      "rawOutputPaths": [
+        ".devsecops/signing-admission.json"
+      ],
+      "prerequisites": [
+        "signing age bundle",
+        "Harbor push identity",
+        "trusted key",
+        "candidate digest",
+        "admission"
+      ],
+      "credentialsRequired": true,
+      "kubernetesAccess": true,
+      "externalHttpApiAccess": true,
+      "writeSideEffects": "Decrypts signing bundle, signs, POST/PUT registry fixtures, admission dry-run",
+      "destructivePotential": "Signing and registry writes forbidden",
+      "frozenAdapter": "infra/security/policy/cosign-parent.mjs",
+      "requiredRawFacts": [
+        "stage/config/runtime/tools",
+        "key/source/digest signature binding",
+        "registry/admission/cleanup observations"
+      ],
+      "currentBlocker": "Before signing lacks signature/registry outputs; generic verify cannot stand for admission/bootstrap/release",
+      "currentStatus": "NOT_OBSERVED",
+      "normalProductionWritePathAuthorized": false,
+      "classification": "OTHER_BLOCKED",
+      "productionImplementation": "infra/security/signing.mjs admission",
+      "inputSource": [
+        "signing age bundle",
+        "Harbor push identity",
+        "trusted key",
+        "candidate digest",
+        "admission"
+      ],
+      "factFormationTrace": "Decrypt signing bundle \u2192 registry POST/PUT \u2192 sign \u2192 verify \u2192 admission cases \u2192 cleanup",
+      "earliestAllPolicyFactsExist": "Full admission facts follow signing/registry writes; verify-only cannot replace admission parent",
+      "beforeAnyExternalMutation": false,
+      "currentCaptureGap": "PRE_WRITE_FACT_BOUNDARY_NOT_AVAILABLE",
+      "existingCanonicalStatus": "NOT_OBSERVED",
+      "sideEffectClassifications": [
+        "LOCAL_EPHEMERAL_WRITE",
+        "PRODUCTION_EXTERNAL_WRITE"
+      ],
+      "writeTarget": "Frozen target identity needs isolated validated replacement; normal endpoints are forbidden for writes",
+      "cleanupOperation": "Must be proven before any write; not yet available",
+      "factsBeforeWrite": [
+        "source/tool configuration",
+        "input identity"
+      ],
+      "factsAfterWrite": [
+        "stage/config/runtime/tools",
+        "key/source/digest signature binding",
+        "registry/admission/cleanup observations"
+      ],
+      "executionScope": "CONTROLLED_NON_RELEASE",
+      "sourceHashes": {}
+    },
+    {
+      "sourceId": "zap",
+      "group": "C",
+      "productionStage": "ZAP Passive",
+      "actualCommandOrFunction": "node infra/security/zap-gate.mjs",
+      "rawOutputPaths": [
+        ".devsecops/zap-gate.json",
+        ".devsecops/zap-business-report.json",
+        ".devsecops/zap-auth-readonly.json"
+      ],
+      "prerequisites": [
+        "heavy Lease",
+        "pinned ZAP/Java",
+        "owned URLs",
+        "confirmation hashes",
+        "source/network/cleanup"
+      ],
+      "credentialsRequired": false,
+      "kubernetesAccess": true,
+      "externalHttpApiAccess": true,
+      "writeSideEffects": "Creates/deletes scanner Pod; local fixture; business GET only",
+      "destructivePotential": "Full parent requires workload mutation",
+      "frozenAdapter": "infra/security/policy/zap-parent.mjs",
+      "requiredRawFacts": [
+        "target/report/exploit-confirmation binding",
+        "native alerts/classifier input",
+        "unconfirmed/lower findings",
+        "execution/container/network/report/cleanup failures"
+      ],
+      "currentBlocker": "Business GET alone is not the full frozen scanner stage",
+      "currentStatus": "NOT_OBSERVED",
+      "normalProductionWritePathAuthorized": false,
+      "classification": "OTHER_BLOCKED",
+      "productionImplementation": "infra/security/zap-gate.mjs + infra/security/scanner-runtime.mjs",
+      "inputSource": [
+        "heavy Lease",
+        "pinned ZAP/Java",
+        "owned URLs",
+        "confirmation hashes",
+        "source/network/cleanup"
+      ],
+      "factFormationTrace": "withScanner Pod create before fixture/passive scanner/network/auth/cleanup facts; full parent includes production URL GETs",
+      "earliestAllPolicyFactsExist": "After actual tool/target/report/cleanup; loopback alone is not full parent",
+      "beforeAnyExternalMutation": false,
+      "currentCaptureGap": "PRE_WRITE_FACT_BOUNDARY_NOT_AVAILABLE",
+      "existingCanonicalStatus": "NOT_OBSERVED",
+      "sideEffectClassifications": [
+        "LOCAL_EPHEMERAL_WRITE",
+        "PRODUCTION_EXTERNAL_WRITE"
+      ],
+      "writeTarget": "Frozen target identity needs isolated validated replacement; normal endpoints are forbidden for writes",
+      "cleanupOperation": "Must be proven before any write; not yet available",
+      "factsBeforeWrite": [
+        "source/tool configuration",
+        "input identity"
+      ],
+      "factsAfterWrite": [
+        "target/report/exploit-confirmation binding",
+        "native alerts/classifier input",
+        "unconfirmed/lower findings",
+        "execution/container/network/report/cleanup failures"
+      ],
+      "executionScope": "CONTROLLED_NON_RELEASE",
+      "sourceHashes": {}
+    },
+    {
+      "sourceId": "defectdojo",
+      "group": "C",
+      "productionStage": "DefectDojo Governance",
+      "actualCommandOrFunction": "node --max-old-space-size=192 infra/security/governance/defectdojo.mjs",
+      "rawOutputPaths": [
+        ".devsecops/defectdojo-import.json",
+        "scanner private native reports"
+      ],
+      "prerequisites": [
+        "prior scanner files/order",
+        "Dojo/Sonar identity",
+        "product/engagement/Test"
+      ],
+      "credentialsRequired": true,
+      "kubernetesAccess": false,
+      "externalHttpApiAccess": true,
+      "writeSideEffects": "POST import/reimport and PATCH false positives; GET queryback",
+      "destructivePotential": "No production imports/PATCH merely for collector proof",
+      "frozenAdapter": "infra/security/policy/dojo-parent.mjs",
+      "requiredRawFacts": [
+        "import/reimport responses",
+        "Test identity/dedupe/queryback/pagination",
+        "native report identity",
+        "API/auth/report errors"
+      ],
+      "currentBlocker": "Pre-import GET lacks actual import/dedupe outputs; decoupling remains prohibited",
+      "currentStatus": "NOT_OBSERVED",
+      "normalProductionWritePathAuthorized": false,
+      "classification": "OTHER_BLOCKED",
+      "productionImplementation": "infra/security/governance/defectdojo.mjs",
+      "inputSource": [
+        ".devsecops/defectdojo-import.json",
+        "scanner private native reports"
+      ],
+      "factFormationTrace": "Native reports \u2192 POST import/reimport \u2192 Test/queryback/dedupe \u2192 PATCH false positives",
+      "earliestAllPolicyFactsExist": "After real import/queryback/dedupe; prior canned API fixtures are unit compatibility, not current runtime",
+      "beforeAnyExternalMutation": false,
+      "currentCaptureGap": "PRE_WRITE_FACT_BOUNDARY_NOT_AVAILABLE",
+      "existingCanonicalStatus": "NOT_OBSERVED",
+      "sideEffectClassifications": [
+        "LOCAL_EPHEMERAL_WRITE",
+        "PRODUCTION_EXTERNAL_WRITE"
+      ],
+      "writeTarget": "Frozen target identity needs isolated validated replacement; normal endpoints are forbidden for writes",
+      "cleanupOperation": "Must be proven before any write; not yet available",
+      "factsBeforeWrite": [
+        "source/tool configuration",
+        "input identity"
+      ],
+      "factsAfterWrite": [
+        "import/reimport responses",
+        "Test identity/dedupe/queryback/pagination",
+        "native report identity",
+        "API/auth/report errors"
+      ],
+      "executionScope": "CONTROLLED_NON_RELEASE",
+      "sourceHashes": {}
+    },
+    {
+      "sourceId": "semgrep-command-audit",
+      "group": "C",
+      "productionStage": "Semgrep",
+      "actualCommandOrFunction": "( node infra/security/command-audit.mjs && node --max-old-space-size=128 infra/security/semgrep-gate.mjs )",
+      "rawOutputPaths": [
+        ".devsecops/command-audit.json",
+        ".devsecops/semgrep-gate.json",
+        ".devsecops/semgrep-native.json"
+      ],
+      "prerequisites": [
+        "heavy Lease",
+        "tracked source",
+        "scanner tools",
+        "script/SSH/interpreter reviews"
+      ],
+      "credentialsRequired": false,
+      "kubernetesAccess": true,
+      "externalHttpApiAccess": false,
+      "writeSideEffects": "Creates/deletes audit and scanner Pods; exec/transfer",
+      "destructivePotential": "Temporary workload mutation",
+      "frozenAdapter": "infra/security/policy/command-parent.mjs",
+      "requiredRawFacts": [
+        "source command-flow findings",
+        "Semgrep rules/native report",
+        "original command/report/cleanup outcomes"
+      ],
+      "currentBlocker": "No complete read-only parent boundary before Pod creation",
+      "currentStatus": "NOT_OBSERVED",
+      "normalProductionWritePathAuthorized": false,
+      "classification": "OTHER_BLOCKED",
+      "productionImplementation": "infra/security/command-audit.mjs + infra/security/semgrep-gate.mjs",
+      "inputSource": [
+        "heavy Lease",
+        "tracked source",
+        "scanner tools",
+        "script/SSH/interpreter reviews"
+      ],
+      "factFormationTrace": "Audit/scanner Pod create \u2192 command-flow and exact high-confidence native findings \u2192 cleanup",
+      "earliestAllPolicyFactsExist": "After both original parent stages finish",
+      "beforeAnyExternalMutation": false,
+      "currentCaptureGap": "PRE_WRITE_FACT_BOUNDARY_NOT_AVAILABLE",
+      "existingCanonicalStatus": "NOT_OBSERVED",
+      "sideEffectClassifications": [
+        "LOCAL_EPHEMERAL_WRITE",
+        "TEST_EXTERNAL_WRITE"
+      ],
+      "writeTarget": "Unique scanner Pods in existing devsecops-execution; temporary exact tracked HEAD workspace",
+      "cleanupOperation": "Original UID-protected Pod deletion, wait absence; temp workspace deletion; exact-run SA/RBAC revocation",
+      "factsBeforeWrite": [
+        "source/tool configuration",
+        "input identity"
+      ],
+      "factsAfterWrite": [
+        "source command-flow findings",
+        "Semgrep rules/native report",
+        "original command/report/cleanup outcomes"
+      ],
+      "executionScope": "CONTROLLED_NON_RELEASE",
+      "sourceHashes": {
+        "infra/security/source-gate.mjs": "35de5317f6b14ffc4d986236410f2bdf488653e47f02eeb2dbe0bc372cc2cd00",
+        "infra/security/command-audit.mjs": "b721866fa5ad6200cd15648315378e8dcef5814ba35243063854b11f29af2245",
+        "infra/security/semgrep-gate.mjs": "d734f5f83274bad82c7871ffaaf3048dee42894d94c65ff5306c26468a7f8c9a",
+        "infra/security/scanner-runtime.mjs": "60b26e029479e5371872d87465ae29150b7ded2e091750d026df006bfb968b9b"
+      }
+    }
+  ],
+  "promotionExcluded": true,
+  "unknownSideEffectExecutionAllowed": false,
+  "derivedFromActualRegistry": true
+}

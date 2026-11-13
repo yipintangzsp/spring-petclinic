@@ -1,0 +1,90 @@
+{
+  "basis": "ACTUAL_FROZEN_PRODUCTION_CODE_NOT_PREVIOUS_NOTES",
+  "stage": "Cosign Admission",
+  "command": "node infra/security/signing.mjs admission",
+  "filesAndHashes": {
+    "infra/security/signing.mjs": "660da0a00d773df86fb6f503b73b7284f684cb01def073ddc2f31f6d9a358aba",
+    "infra/security/cosign-verification.mjs": "bbb381beb5ed98e6d9853a3a0a6238b66cc8ea31a50c4e83d2e705abf1fffa99",
+    "infra/security/scanner-runtime.mjs": "60b26e029479e5371872d87465ae29150b7ded2e091750d026df006bfb968b9b",
+    "infra/security/policy/cosign-parent.mjs": "cacf526148868324f82e8b0ad073674eaf59bdeb9da4123d833fa7b008bd3d33"
+  },
+  "parentGate": "signing.mjs admission: exit 0 only after all original sign, CLI and server-dry-run cases, cleanup and report-write succeed",
+  "adapter": "infra/security/policy/cosign-parent.mjs",
+  "owner": "infra/security/runtime-facts/owner.mjs:createRuntimeOwner",
+  "verifyOnlyCanCoverFrozenParent": false,
+  "requiredSigningFacts": [
+    "sign signed validation manifest with matching test trust",
+    "generate independent wrong test key and sign wrong-key validation manifest",
+    "cosign public-key matches isolated input trust",
+    "post-sign verification bound to exact digest"
+  ],
+  "facts": {
+    "VERIFY_FACTS": [
+      "real CLI statuses, stdout/stderr",
+      "signed nonempty verified claims match manifest digest",
+      "unsigned and wrong-key reject for signature reasons, not transport errors"
+    ],
+    "SIGN_FACTS": [
+      "actual sign exits for signed/wrong-key",
+      "wrong-key generation exit",
+      "temporary private files removed"
+    ],
+    "TRUST_BINDING_FACTS": [
+      "SOPS bundle schema and decryption result",
+      "public key derived equals isolated public key input",
+      "test public fingerprint"
+    ],
+    "REGISTRY_BINDING_FACTS": [
+      "fixed repository petclinic/signature-fixtures",
+      "OCI config/manifest digests and returned registry digest",
+      "build-specific tags previously absent",
+      "original token/upload/put operations"
+    ],
+    "EXECUTION_FACTS": [
+      "original tools/manifest lock",
+      "original heavy Lease ownership",
+      "three real API server dry-run results",
+      "report write and temporary cleanup"
+    ],
+    "ERROR_FACTS": [
+      "lease/tool/credential/key/CLI errors",
+      "registry/network/parse/binding errors",
+      "admission mismatch",
+      "report-write/cleanup errors"
+    ]
+  },
+  "validationSubstitutions": {
+    "sourceCodeChanged": false,
+    "trust": "disposable test key and encrypted bundle in disposable exact HEAD checkout",
+    "namespace": "real API server dry-runs scoped to rf3-20261103-9730f2-cosign",
+    "policy": "same verification rule with disposable test public trust and validation-repository-only matching",
+    "additionalHooks": "two separate temporary webhook objects; exact validation namespace selector; existing hooks unchanged"
+  },
+  "registryWriteBoundary": "VALIDATION_ONLY_SIGNATURE_WRITE",
+  "signingNotProductionIdentityRequired": "Frozen code tests derived key equals input public key; no hardcoded production signer identity. Production policy was not modified; isolated namespace uses explicit disposable test trust.",
+  "registryObjectsBefore": "all three build-32 fixture tags HTTP404 (capture evidence in build32 cosign.capture.json)",
+  "negativeTests": {
+    "REAL_CONTROLLED_EXECUTION": [
+      "missing signature CLI+admission denied",
+      "wrong-key CLI+admission denied"
+    ],
+    "SYNTHETIC_FROZEN_PARENT_DIFFERENTIAL": [
+      "wrong claim/digest",
+      "source and artifact mismatch",
+      "foreign repository ref",
+      "malformed JSON/signatures",
+      "registry/tool/report/cleanup failures"
+    ],
+    "policyGateChanged": false
+  },
+  "productionPrivateKeyAccess": 0,
+  "productionSignatureMutations": 0,
+  "release": 0,
+  "rollout": 0,
+  "lockedToolVersions": {
+    "cosign": "3.1.4",
+    "sops": "3.13.3",
+    "age": "1.3.2"
+  },
+  "toolVersionEvidence": "Version metadata from actual tools-lock.json; original verifyTools validates installed binary bytes against frozen scanner-tools manifest, not an invented version command observation."
+}

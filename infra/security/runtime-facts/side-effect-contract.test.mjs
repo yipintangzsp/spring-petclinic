@@ -1,0 +1,22 @@
+import test from 'node:test';import assert from 'node:assert/strict';import {authorizeKubectl,authorizeProcess,validateContract} from './side-effect-contract.mjs';
+const c={schema:1,validationRunId:'rfv-20261103-abcdef',sourceId:'gitleaks',build:13,kubeconfig:'/tmp/runtime-six-credentials-rfv-20261103-abcdef/executor.kubeconfig',workspace:'/tmp/runtime-six-test',realKubectl:'/usr/bin/kubectl',server:'https://kubernetes.default.svc',namespace:'devsecops-execution',allowedImages:['registry.invalid/scanner@sha256:'+'a'.repeat(64)],release:false,rollout:false};
+const pod=()=>({apiVersion:'v1',kind:'Pod',metadata:{name:'source-13-abcdef',namespace:c.namespace},spec:{automountServiceAccountToken:false,restartPolicy:'Never',activeDeadlineSeconds:600,securityContext:{runAsNonRoot:true},containers:[{image:c.allowedImages[0],securityContext:{allowPrivilegeEscalation:false,readOnlyRootFilesystem:true,capabilities:{drop:['ALL']}}}],volumes:[{emptyDir:{}}]}});
+test('minimal exact validation Pod allowed',()=>assert.equal(authorizeKubectl(['create','-f','-','-o','json'],JSON.stringify(pod()),c,[]).action,'create'));
+for(const [name,mutate] of [['production namespace',p=>p.metadata.namespace='petclinic'],['wrong run',p=>p.metadata.name='source-270-any'],['service token',p=>p.spec.automountServiceAccountToken=true],['host network',p=>p.spec.hostNetwork=true],['host path',p=>p.spec.volumes=[{hostPath:{path:'/'}}]],['privileged',p=>p.spec.containers[0].securityContext.privileged=true],['unapproved image',p=>p.spec.containers[0].image='latest']])test('side-effect guard rejects '+name,()=>{const p=pod();mutate(p);assert.throws(()=>authorizeKubectl(['create','-f','-','-o','json'],JSON.stringify(p),c,[]));});
+for(const a of [['apply','-f','petclinic.yaml'],['rollout','restart','deployment/petclinic'],['-n','petclinic','delete','pod','petclinic'],['get','secrets','-A'],['delete','namespace','petclinic'],['patch','deployment','petclinic']])test('release/Kubernetes action rejected: '+a.join(' '),()=>assert.throws(()=>authorizeKubectl(a,null,c,[]),/FORBIDDEN/));
+test('foreign Pod exec/delete rejected before invoking kubectl',()=>{for(const a of [['-n',c.namespace,'exec','-i','foreign','--','sh'],['-n',c.namespace,'delete','pod','foreign','--wait=true','--timeout=45s']])assert.throws(()=>authorizeKubectl(a,null,c,[]));});
+test('cleanup requires exact UID, rejects replaced Pod',()=>{const ledger=[{name:'source-13-abcdef',uid:'old'}],a=['delete','--raw','/api/v1/namespaces/'+c.namespace+'/pods/source-13-abcdef','-f','-'];assert.equal(authorizeKubectl(a,JSON.stringify({preconditions:{uid:'old'}}),c,ledger).action,'delete');assert.throws(()=>authorizeKubectl(a,JSON.stringify({preconditions:{uid:'other'}}),c,ledger));});
+for(const [b,a]of [['git',['push','origin','main']],['argocd',['app','sync','petclinic']],['cosign',['sign','release']],['curl',['https://production']],['node',['infra/security/promotion/promote.mjs']],['/usr/bin/kubectl',['rollout','restart','deployment/petclinic']]])test('release process rejected: '+b,()=>assert.throws(()=>authorizeProcess(b,a,c),/FORBIDDEN/));
+test('guard has no default endpoint or production identity fallback',()=>{for(const x of [{...c,server:'https://external.invalid'},{...c,namespace:'petclinic'},{...c,release:true},{...c,kubeconfig:'/root/.kube/config'}])assert.throws(()=>validateContract(x));});
+
+import fs from 'node:fs';import os from 'node:os';import path from 'node:path';import {spawnSync} from 'node:child_process';
+for(const [name,code] of [
+ ['absolute kubectl bypass',"cp.spawnSync('/usr/bin/kubectl',['rollout','restart','deployment/petclinic'])"],
+ ['Git push',"cp.spawnSync('git',['push','origin','main'])"],
+ ['execFile API bypass',"cp.execFileSync('kubectl',['delete','namespace','petclinic'])"],
+ ['external HTTP',"fetch('https://example.invalid/production')"]
+])test('actual preload fails before forbidden execution: '+name,()=>{
+ const dir=fs.mkdtempSync('/tmp/runtime-six-unit-');try{const contract=path.join(dir,'contract.json');fs.writeFileSync(contract,JSON.stringify({...c,workspace:dir}));
+ const p=spawnSync(process.execPath,['--import',new URL('./controlled-preload.mjs',import.meta.url).pathname,'--input-type=module','-e',"import cp from 'node:child_process';"+code],{encoding:'utf8',env:{PATH:process.env.PATH,RUNTIME_SIDE_EFFECT_CONTRACT:contract},timeout:5000});assert.notEqual(p.status,0);assert.match(p.stderr,/FORBIDDEN/);
+ }finally{fs.rmSync(dir,{recursive:true,force:true});}
+});

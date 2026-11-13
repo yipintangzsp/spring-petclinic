@@ -1,0 +1,189 @@
+{
+  "schema": 1,
+  "sourceId": "falco-final",
+  "execution": {
+    "errorClass": null,
+    "signal": null,
+    "command": "node infra/security/runtime/health.mjs",
+    "exitStatus": 0
+  },
+  "reports": [],
+  "evidence": [
+    {
+      "sampleWindows": [
+        {
+          "completedAtMs": 1793636222287,
+          "windowStartMs": 1793636206981,
+          "windowEndMs": 1793636221981,
+          "querySince": "2026-11-02T16:16:46.981Z",
+          "startedAtMs": 1793636221983,
+          "logCompletedAtMs": 1793636222075
+        }
+      ],
+      "observerPackets": 1,
+      "kind": "ACTUAL_PROCESS_EXECUTION",
+      "sourcePayloadClass": "PASSIVE_IN_MEMORY_ORIGINAL_GATE_OBSERVATIONS",
+      "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdoutSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "events": [
+        {
+          "completedAtMs": 1793636221637,
+          "kind": "command",
+          "bin": "kubectl",
+          "errorClass": null,
+          "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "argv": [
+            "--request-timeout=20s",
+            "-n",
+            "data-infra",
+            "get",
+            "lease",
+            "platform-heavy",
+            "-o",
+            "json"
+          ],
+          "stdoutSha256": "48976d801c4c9aa76c0eb047d55b0365d1fd13dec8cdf048922c818dbfbd269f",
+          "startedAtMs": 1793636221559,
+          "exitStatus": 0
+        },
+        {
+          "completedAtMs": 1793636221724,
+          "kind": "command",
+          "bin": "kubectl",
+          "errorClass": null,
+          "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "argv": [
+            "--request-timeout=15s",
+            "-n",
+            "devsecops-system",
+            "get",
+            "ds",
+            "platform-falco",
+            "-o",
+            "json"
+          ],
+          "stdoutSha256": "e967ddfad1908f5869df57d36bf82450908dd6af41cc047fabe21b61c77f20b3",
+          "startedAtMs": 1793636221637,
+          "exitStatus": 0
+        },
+        {
+          "completedAtMs": 1793636221811,
+          "kind": "command",
+          "bin": "kubectl",
+          "errorClass": null,
+          "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "argv": [
+            "--request-timeout=15s",
+            "-n",
+            "devsecops-system",
+            "get",
+            "pods",
+            "-l",
+            "app.kubernetes.io/name=falco",
+            "-o",
+            "json"
+          ],
+          "stdoutSha256": "fd217f288e670fa1132f95c0957ede077ee5917636cd4f596171abc5f6f698a7",
+          "startedAtMs": 1793636221725,
+          "exitStatus": 0
+        },
+        {
+          "completedAtMs": 1793636221888,
+          "kind": "command",
+          "bin": "kubectl",
+          "errorClass": null,
+          "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "argv": [
+            "--request-timeout=15s",
+            "get",
+            "node",
+            "devops",
+            "-o",
+            "json"
+          ],
+          "stdoutSha256": "749dc23f77be7e5ab64666c3e644eb5546c4e226244487c0486506e8cccc98b8",
+          "startedAtMs": 1793636221811,
+          "exitStatus": 0
+        },
+        {
+          "completedAtMs": 1793636221979,
+          "kind": "command",
+          "bin": "kubectl",
+          "errorClass": null,
+          "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "argv": [
+            "--request-timeout=15s",
+            "-n",
+            "devsecops-system",
+            "logs",
+            "platform-falco-fwwfd",
+            "-c",
+            "falco",
+            "--since-time=2026-11-02T16:16:09.305Z",
+            "--tail=500"
+          ],
+          "stdoutSha256": "fe0cf8dca800a37c342fb80d2236e7ee8148fdd98e67adcec81465496ff0ec4d",
+          "startedAtMs": 1793636221890,
+          "exitStatus": 0
+        },
+        {
+          "completedAtMs": 1793636222075,
+          "kind": "command",
+          "bin": "kubectl",
+          "errorClass": null,
+          "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "argv": [
+            "--request-timeout=15s",
+            "-n",
+            "devsecops-system",
+            "logs",
+            "platform-falco-fwwfd",
+            "-c",
+            "falco",
+            "--since-time=2026-11-02T16:16:46.981Z",
+            "--tail=1000"
+          ],
+          "stdoutSha256": "ad9cfe60e153708253313f40b90fab48e109d01f4edd6194f72a3a3008df0bf4",
+          "startedAtMs": 1793636221983,
+          "exitStatus": 0
+        },
+        {
+          "completedAtMs": 1793636222287,
+          "kind": "command",
+          "bin": "kubectl",
+          "errorClass": null,
+          "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "argv": [
+            "--request-timeout=15s",
+            "-n",
+            "petclinic",
+            "get",
+            "pods",
+            "-o",
+            "json"
+          ],
+          "stdoutSha256": "dc9847c892ba278e2a65f288da381e85df1caee0c5d079aa84c2b89a1577eb97",
+          "startedAtMs": 1793636222076,
+          "exitStatus": 0
+        }
+      ]
+    }
+  ],
+  "rawPayloadPersisted": false,
+  "kind": "RuntimeSourceFacts",
+  "evidenceComplete": true,
+  "resultDigest": "e6b59ae57e80f921eed5825226c31451e73f46b28aa2fda278e04997d85b3113",
+  "evaluationCount": 1,
+  "buildBinding": {
+    "candidate": "core.harbor.domain/petclinic/petclinic@sha256:489cb821573ff1f98edd846d5949d74bf3391b24e2f1fe5bcfb71c6be0793137",
+    "build": 12,
+    "project": "petclinic",
+    "source": "741ea2866ea142b24c7838e1ef25c8327c79d279",
+    "runId": "security-runtime-facts-20261102#12",
+    "job": "security-runtime-facts-20261102",
+    "targetScope": "runtime"
+  },
+  "envelopeDigest": "8d4504c46eca87364aa53e8cd9711224bb52fcf13c62f38d43c03dcdfe5c9f24",
+  "rawFactDigest": "1c5520ba950544b7f678739be7f3db774b2874bfe4328e56862c8e03b0d47f92",
+  "presence": "executed"
+}

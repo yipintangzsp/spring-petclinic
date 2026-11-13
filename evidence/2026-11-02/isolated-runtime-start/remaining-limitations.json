@@ -1,0 +1,37 @@
+{
+  "guestDirectPublicPull": {
+    "status": "FAILED",
+    "source": "docker.io/library/busybox:1.37.0",
+    "evidence": "public-image-pull.log",
+    "daemonError": "registry-1.docker.io lookup on [::1]:53 connection refused"
+  },
+  "readOnlyDNSObservation": {
+    "resolverFile": "/etc/resolv.conf",
+    "exists": false,
+    "udp53ListenersObserved": false,
+    "evidence": "guest-dns-diagnostic.json",
+    "diagnosticCommandExitNote": "Shell overall exit0 came from last ss/awk command; cat separately reported missing resolver file, not a DNS success",
+    "whyFileMissing": "NOT_DETERMINED; no permanent fix claimed"
+  },
+  "publicImageAcquisitionUsed": {
+    "hostTool": "Existing skopeo",
+    "source": "docker.io/library/busybox:1.37.0",
+    "anonymous": true,
+    "TLSVerify": true,
+    "archiveLoadIntoExplicitSocket": true,
+    "copyExit": 0,
+    "loadExit": 0,
+    "temporaryArchivesRemoved": true,
+    "guestDNSChanged": false
+  },
+  "VMLoginProxyVariableNames": [
+    "HTTPS_PROXY",
+    "HTTP_PROXY",
+    "http_proxy",
+    "https_proxy"
+  ],
+  "proxyValuesInspected": false,
+  "daemonProxyNames": [],
+  "smokeProxyCredentialEnv": "NONE; image PATH only, fresh client config, network none",
+  "scopeInterpretation": "Runtime create/run/remove and required isolation pass. Guest online image pulls and future Kubernetes/SOPS environment readiness do not pass by implication. Fix only this new VM DNS in a separately scoped next phase before depending on online pulls."
+}

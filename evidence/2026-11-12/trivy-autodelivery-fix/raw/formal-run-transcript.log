@@ -1,0 +1,200 @@
+CAPABILITY {"pluginId":"trivy","state":"READY","reason":null,"runner":"trivy-real","toolVersion":"0.76.2","toolVersionObservation":"PINNED","executionHost":"devops/192.168.1.58","executionIdentity":"security-trivy","scenarios":["clean"],"projects":["trivy-candidate"]}
+SUBMITTED web-7f2fc057-5d21-44c2-9144-ee398a8b8c33
+STATE RUNNING 
+STATE COMPLETED 
+RUN_RESULT {
+ "runId": "web-7f2fc057-5d21-44c2-9144-ee398a8b8c33",
+ "pluginId": "trivy",
+ "projectId": "trivy-candidate",
+ "scenarioId": "clean",
+ "configurationSnapshot": {
+  "revision": 38,
+  "updatedAt": "2026-11-12T10:17:20.202Z",
+  "settings": {
+   "enabled": true,
+   "securityLevel": "standard",
+   "plugins": {
+    "gitleaks": {
+     "enabled": true
+    },
+    "semgrep": {
+     "enabled": true
+    },
+    "cosign": {
+     "enabled": true
+    },
+    "sbom": {
+     "enabled": true
+    },
+    "trivy": {
+     "enabled": true
+    }
+   }
+  },
+  "source": {
+   "kind": "LOCAL_EXPLICIT_OVERRIDE",
+   "path": ".devsecops/security-view-controls-v1.json",
+   "settingsDigest": "347dafd18186853e5fa4ad88c349630ef52b59af6e8d4c3568ceb40493d6637a"
+  },
+  "configurationOrigins": [
+   {
+    "layer": "global",
+    "securityLevel": "standard",
+    "policyVersion": "baseline-v1"
+   },
+   {
+    "layer": "registryDefaults",
+    "plugins": {
+     "build-provenance": {
+      "enabled": false
+     },
+     "cosign": {
+      "enabled": true
+     },
+     "falco": {
+      "enabled": false
+     },
+     "gitleaks": {
+      "enabled": true
+     },
+     "kubescape": {
+      "enabled": false
+     },
+     "kyverno": {
+      "enabled": false
+     },
+     "provenance": {
+      "enabled": false
+     },
+     "sbom": {
+      "enabled": true
+     },
+     "semgrep": {
+      "enabled": true
+     },
+     "sonarqube": {
+      "enabled": false
+     },
+     "sops": {
+      "enabled": false
+     },
+     "trivy": {
+      "enabled": true
+     },
+     "zap": {
+      "enabled": false
+     }
+    }
+   },
+   {
+    "layer": "globalExplicit",
+    "values": {
+     "enabled": true,
+     "securityLevel": "standard",
+     "plugins": {
+      "gitleaks": {
+       "enabled": true
+      },
+      "semgrep": {
+       "enabled": true
+      },
+      "cosign": {
+       "enabled": true
+      },
+      "sbom": {
+       "enabled": true
+      },
+      "trivy": {
+       "enabled": true
+      }
+     },
+     "globalMode": "audit",
+     "profile": "java-web",
+     "policyVersion": "baseline-v1"
+    }
+   },
+   {
+    "layer": "profile",
+    "values": {}
+   },
+   {
+    "layer": "project",
+    "values": {}
+   }
+  ],
+  "effectiveConfigDigest": "b06631eb8f52f9f6ddc6b162bcaa773635e75d731ba8b40bdbddac18e7279064"
+ },
+ "securityLevel": "standard",
+ "startedAt": "2026-11-12T14:38:54.916Z",
+ "kind": "LocalValidationRequest",
+ "executionLocation": "LINUX_RESTRICTED",
+ "state": "COMPLETED",
+ "evidenceClass": "REAL",
+ "scannerExecuted": true,
+ "policyDecision": "FAIL",
+ "evaluationCount": 1,
+ "resultDigest": "cba4ba0363afc0f73dfa611bfe99dc5719ffbb16c8c7d8710de3737550851ee5",
+ "artifactDigest": "de6ba8e2c194e50f3ca64bf0087eb2f9a6b21a1d5d8b86bf87089c0cbbafeb68",
+ "source": ".devsecops/security-view-runs-v1/web-7f2fc057-5d21-44c2-9144-ee398a8b8c33/artifact/trivy.result.json",
+ "reason": null,
+ "executionDiagnostic": null,
+ "db": [
+  {
+   "name": "db",
+   "version": 2,
+   "updatedAt": "2026-11-12T07:01:33.828310435Z",
+   "nextUpdate": "2026-11-13T07:01:33.828309984Z",
+   "metadataSha256": "442de28864c1b59bc8b7512560b41cfd8f7355de21ec15a91278497847f8df9b"
+  },
+  {
+   "name": "java-db",
+   "version": 1,
+   "updatedAt": "2026-11-12T00:58:04.30813481Z",
+   "nextUpdate": "2026-11-15T00:58:04.308133879Z",
+   "metadataSha256": "2dd38a9e5c3c46eccc54de846c94655246e3003b638719c24960327a3276ed89"
+  }
+ ],
+ "findingCount": 64,
+ "toolVersion": "0.76.2",
+ "toolSha256": "7844c3851b28470b6d7f0975fa0b3262c5b2272c9a54a91f522801bb8926f51f",
+ "indexDigest": "sha256:2fbaea65ab030c56c60c62e3ee9fbe362deb8bbbb8216a891ef4c7bbbcea6d55",
+ "platformDigest": "sha256:06a515708b6783db7d545544bbefb02e9f94abfc0fdf13a7355ccbe2deb3ed42",
+ "executionIdentity": "security-trivy",
+ "executionHost": "devops/192.168.1.58",
+ "router": [
+  {
+   "consumerId": "dry-run",
+   "deliveryDecision": "DRY_RUN"
+  },
+  {
+   "consumerId": "local-evidence",
+   "deliveryDecision": "DELIVERED_LOCAL_ONLY"
+  }
+ ],
+ "cleanup": "VERIFIED",
+ "lokiDelivery": {
+  "consumerId": "loki-candidate",
+  "automatic": true,
+  "sourceClassification": "REAL_CONTROLLED_EXECUTION",
+  "runId": "web-7f2fc057-5d21-44c2-9144-ee398a8b8c33",
+  "resultDigest": "cba4ba0363afc0f73dfa611bfe99dc5719ffbb16c8c7d8710de3737550851ee5",
+  "pushState": "ACKNOWLEDGED",
+  "pushHttpStatus": 204,
+  "receiptDigest": "c5d282b82abf520e9ce442c8275d627a735f32906aa40cb922a36cfc3379952d",
+  "httpRequestCount": 1,
+  "queryState": "VERIFIED",
+  "state": "DELIVERED",
+  "reason": null,
+  "deliveryAt": "2026-11-12T14:38:57.542Z",
+  "grafanaUrl": "http://grafana.devops.local/d/security-manager-v2-candidate/devsecops-security-manager-v2-overview?var-DS_LOKI=loki&var-project=trivy-candidate&var-run=web-7f2fc057-5d21-44c2-9144-ee398a8b8c33&var-resultDigest=cba4ba0363afc0f73dfa611bfe99dc5719ffbb16c8c7d8710de3737550851ee5&from=1794494277230&to=1794494637230",
+  "receiptSource": "loki-delivery/router-receipt.json",
+  "queryAt": "2026-11-12T14:38:57.640Z",
+  "queryHttpStatus": 200,
+  "matchedEvents": 1
+ },
+ "completedAt": "2026-11-12T14:38:57.655Z",
+ "durationMs": 2731,
+ "releaseCount": 0,
+ "rolloutCount": 0,
+ "auditDigest": "f2b61b80207f6e9420a489ad675f906c4602bdbf7aa2737e0b8d74aa1b055bc3"
+}

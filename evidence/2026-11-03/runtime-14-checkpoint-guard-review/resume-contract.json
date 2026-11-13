@@ -1,0 +1,38 @@
+{
+  "TRIVY_RESUME_ALLOWED": false,
+  "additionalUnresolvedProtectionBlocker": "UNEXPLAINED_PROXY_CONFIG_DRIFT",
+  "protectionDriftReceipt": {
+    "path": "evidence/2026-11-03/runtime-14-checkpoint-guard-review/observed-protection-drift.json",
+    "sha256": "58903ab011e6ef2d98d4db9a24c087c41faeb8bc815357754e7f1adf748b2d4c"
+  },
+  "logic": "A OR (B independently revalidated AND explicitly approved AND no safety weakening) OR (C proven equivalent safe architecture AND separately authorized implementation)",
+  "A": {
+    "condition": "New independent backup/storage capacity is available, verifiably suitable, with actual backup/restore and host/guest safety budgets",
+    "currentlyProven": false
+  },
+  "B": {
+    "condition": "Existing49.78GiB guard independently revalidated on same frozen path; any new technically justified guard separately approved without reducing required safety",
+    "reviewOnlyThisIteration": true,
+    "approvalPresent": false,
+    "newApprovedGuard": null,
+    "controlledPlan": {
+      "path": "evidence/2026-11-03/runtime-14-checkpoint-guard-review/FUTURE-GUARD-REVALIDATION-PLAN.md",
+      "sha256": "2b4aaf9cf0e9afca2eabbd48eb5a30b8d9c16dbace4f19b7ca6c6697d5052ef9"
+    }
+  },
+  "C": {
+    "condition": "Another safe DB refresh execution architecture proven to preserve all frozen security semantics and separately authorized",
+    "currentlyProven": false
+  },
+  "beforeAnyActualResume": [
+    "Verify checkpoint bytes and every source/implementation hash",
+    "Recheck trusted SSH and current production/cluster identity read-only",
+    "Do not treat prior source receipts as new current-run facts",
+    "Preserve frozen guard until explicit approval; meet original current-capacity nodefs/imagefs guard, fresh samples, correct owned Lease and no competing scanner CLI",
+    "Prove needed proxy/official manifest route in authorized scope; do not alter proxy merely because network fails",
+    "Run exact frozen refresh, verify fresh metadata/checksum semantics before resuming actual Trivy scan; new facts/owner evaluations only in separately authorized stage",
+    "Keep Dojo blocked until complete current Trivy/native prerequisites available; do not switch to generic manager",
+    "Whole16 same-run proof still required before any complete runtime artifact or global owner verification"
+  ],
+  "futureDebt": "DOJO_DECOUPLING_REQUIRED=YES; eventual Router decoupling is after SummaryV2/Plugin Contract stage, not authorized here"
+}

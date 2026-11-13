@@ -1,0 +1,127 @@
+{
+  "runId": "web-eb7c1ac0-3502-448d-83f5-e6e7ae68f827",
+  "pluginId": "trivy",
+  "projectId": "trivy-candidate",
+  "scenarioId": "clean",
+  "configurationSnapshot": {
+    "revision": 36,
+    "updatedAt": "2026-11-12T09:58:04.488Z",
+    "settings": {
+      "enabled": true,
+      "securityLevel": "standard",
+      "plugins": {
+        "gitleaks": {
+          "enabled": true
+        },
+        "semgrep": {
+          "enabled": true
+        },
+        "cosign": {
+          "enabled": true
+        },
+        "sbom": {
+          "enabled": true
+        },
+        "trivy": {
+          "enabled": true
+        }
+      }
+    },
+    "source": {
+      "kind": "LOCAL_EXPLICIT_OVERRIDE",
+      "path": ".devsecops/security-view-controls-v1.json",
+      "settingsDigest": "347dafd18186853e5fa4ad88c349630ef52b59af6e8d4c3568ceb40493d6637a"
+    },
+    "configurationOrigins": [
+      {
+        "layer": "global",
+        "securityLevel": "standard",
+        "policyVersion": "baseline-v1"
+      },
+      {
+        "layer": "registryDefaults",
+        "plugins": {
+          "build-provenance": {
+            "enabled": false
+          },
+          "cosign": {
+            "enabled": true
+          },
+          "falco": {
+            "enabled": false
+          },
+          "gitleaks": {
+            "enabled": true
+          },
+          "kubescape": {
+            "enabled": false
+          },
+          "kyverno": {
+            "enabled": false
+          },
+          "provenance": {
+            "enabled": false
+          },
+          "sbom": {
+            "enabled": true
+          },
+          "semgrep": {
+            "enabled": true
+          },
+          "sonarqube": {
+            "enabled": false
+          },
+          "sops": {
+            "enabled": false
+          },
+          "trivy": {
+            "enabled": true
+          },
+          "zap": {
+            "enabled": false
+          }
+        }
+      },
+      {
+        "layer": "globalExplicit",
+        "values": {
+          "enabled": true,
+          "securityLevel": "standard",
+          "plugins": {
+            "gitleaks": {
+              "enabled": true
+            },
+            "semgrep": {
+              "enabled": true
+            },
+            "cosign": {
+              "enabled": true
+            },
+            "sbom": {
+              "enabled": true
+            },
+            "trivy": {
+              "enabled": true
+            }
+          },
+          "globalMode": "audit",
+          "profile": "java-web",
+          "policyVersion": "baseline-v1"
+        }
+      },
+      {
+        "layer": "profile",
+        "values": {}
+      },
+      {
+        "layer": "project",
+        "values": {}
+      }
+    ],
+    "effectiveConfigDigest": "b06631eb8f52f9f6ddc6b162bcaa773635e75d731ba8b40bdbddac18e7279064"
+  },
+  "securityLevel": "standard",
+  "startedAt": "2026-11-12T10:10:17.406Z",
+  "kind": "LocalValidationRequest",
+  "executionLocation": "LINUX_RESTRICTED"
+}

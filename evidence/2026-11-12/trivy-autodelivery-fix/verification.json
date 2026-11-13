@@ -1,0 +1,75 @@
+{
+ "item": "6b2-trivy-autodelivery-fix",
+ "at": "2026-11-12 evening CST; scan 2026-11-12T14:38:54Z-14:38:57Z",
+ "fix": {
+  "commit": "4afe4261",
+  "message": "fix(trivy): provide validationRunId in runner runtime facts for Loki fresh gate",
+  "files": [
+   "infra/security/manager-v2/trivy-real.mjs",
+   "infra/security/manager-v2/trivy-real.test.mjs"
+  ],
+  "change": "buildTrivyRuntimeFacts/buildTrivyEvidenceRefs exported helpers: runtimeFacts gains validationRunId=runId (packet passthrough previously had only runId); evidenceRefs entry gains validationRunId alongside runId. Matches gitleaks/semgrep/sbom/cosign runners. loki.mjs untouched.",
+  "pushed": false
+ },
+ "regression": {
+  "trivy-real": "9/9 (baseline 8/8 + 1 new validationRunId regression test)",
+  "suite1-manager-v2-contract-10-files": "90/90 (baseline 89/89 + 1 new test)",
+  "suite2-infra-security+observability": "147/147 (baseline 147/147)",
+  "suite3-consumers": "132 pass / 30 fail of 162 (baseline 126/30 of 156; +6 are trivy-loki.test 6/6; 30 failures identical pre-existing LOKI_TIMESTAMP_OUTSIDE_WINDOW set in loki.test.mjs, no new failures)"
+ },
+ "newRun": {
+  "runId": "web-7f2fc057-5d21-44c2-9144-ee398a8b8c33",
+  "state": "COMPLETED",
+  "evidenceClass": "REAL",
+  "scannerExecuted": true,
+  "findingCount": 64,
+  "policyDecision": "FAIL",
+  "evaluationCount": 1,
+  "resultDigest": "cba4ba0363afc0f73dfa611bfe99dc5719ffbb16c8c7d8710de3737550851ee5",
+  "artifactDigest": "de6ba8e2c194e50f3ca64bf0087eb2f9a6b21a1d5d8b86bf87089c0cbbafeb68",
+  "cleanup": "VERIFIED",
+  "target": "Harbor petclinic/petclinic index sha256:2fbaea65ab030c56c60c62e3ee9fbe362deb8bbbb8216a891ef4c7bbbcea6d55, scanned platform linux/arm64 sha256:06a515708b6783db7d545544bbefb02e9f94abfc0fdf13a7355ccbe2deb3ed42 (arm64 sub-manifest only, same scope as prior rounds; AMD64 not scanned)",
+  "marker": "devops formal-scan-attempt.json backed up as .bak-20261112-2305-autodelivfix then deleted before run; consumed again by this run",
+  "sealedRuntimeFacts": "trivy.result.json runtimeFacts.validationRunId == runId; evidenceRefs[0].validationRunId == runId (2 occurrences in trivy.result.json)"
+ },
+ "autoDelivery": {
+  "automatic": true,
+  "state": "DELIVERED",
+  "pushState": "ACKNOWLEDGED",
+  "pushHttpStatus": 204,
+  "httpRequestCount": 1,
+  "queryState": "VERIFIED",
+  "matchedEvents": 1,
+  "reason": null,
+  "receiptDigest": "c5d282b82abf520e9ce442c8275d627a735f32906aa40cb922a36cfc3379952d",
+  "deliveryAt": "2026-11-12T14:38:57.542Z",
+  "replayOrBackfillUsed": false
+ },
+ "lokiDirectQuery": {
+  "streams": 1,
+  "runIdMatch": true,
+  "resultDigestMatch": true,
+  "policyDecision": "FAIL",
+  "findingCount": 64,
+  "sourceClassification": "REAL_CONTROLLED_EXECUTION"
+ },
+ "grafanaQuery": {
+  "method": "devops in-session Grafana admin credentials from k8s secret monitoring/kube-stack-grafana (values never printed/stored), GET /api/datasources/proxy/uid/loki/loki/api/v1/query_range read-only",
+  "streams": 1,
+  "runIdMatch": true,
+  "resultDigestMatch": true,
+  "dashboardApiStatus": 200
+ },
+ "flags": {
+  "TRIVY_AUTODELIVERY_FIX": "PASS",
+  "TRIVY_AUTO_LOKI_DELIVERY": "PASS",
+  "TRIVY_GRAFANA_LINK": "PASS"
+ },
+ "redlines": {
+  "productionManager": "NOT_ACTIVE unchanged",
+  "push": false,
+  "protectedFilesTouched": false,
+  "lokiMjsTouched": false,
+  "policyEngineTouched": false
+ }
+}

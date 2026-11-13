@@ -1,0 +1,114 @@
+{
+  "runId": "web-1f6ce83c-3262-4e2e-8fb2-3aa591d266ee",
+  "pluginId": "semgrep",
+  "scenarioId": "controlled-finding",
+  "configurationSnapshot": {
+    "revision": 3,
+    "updatedAt": "2026-11-06T04:31:25.977Z",
+    "settings": {
+      "enabled": true,
+      "securityLevel": "low",
+      "plugins": {
+        "gitleaks": {
+          "enabled": true
+        },
+        "semgrep": {
+          "enabled": true
+        },
+        "cosign": {
+          "enabled": true
+        }
+      }
+    },
+    "source": {
+      "kind": "LOCAL_EXPLICIT_OVERRIDE",
+      "path": ".devsecops/security-view-controls-v1.json",
+      "settingsDigest": "ead1e8bc6965bec2aca437ae33a4f9f1cc62846a4a252d5943cce34202f1f818"
+    },
+    "configurationOrigins": [
+      {
+        "layer": "global",
+        "securityLevel": "standard",
+        "policyVersion": "baseline-v1"
+      },
+      {
+        "layer": "registryDefaults",
+        "plugins": {
+          "build-provenance": {
+            "enabled": false
+          },
+          "cosign": {
+            "enabled": true
+          },
+          "falco": {
+            "enabled": false
+          },
+          "gitleaks": {
+            "enabled": true
+          },
+          "kubescape": {
+            "enabled": false
+          },
+          "kyverno": {
+            "enabled": false
+          },
+          "provenance": {
+            "enabled": false
+          },
+          "sbom": {
+            "enabled": false
+          },
+          "semgrep": {
+            "enabled": true
+          },
+          "sonarqube": {
+            "enabled": false
+          },
+          "sops": {
+            "enabled": false
+          },
+          "trivy": {
+            "enabled": false
+          },
+          "zap": {
+            "enabled": false
+          }
+        }
+      },
+      {
+        "layer": "globalExplicit",
+        "values": {
+          "enabled": true,
+          "securityLevel": "low",
+          "plugins": {
+            "gitleaks": {
+              "enabled": true
+            },
+            "semgrep": {
+              "enabled": true
+            },
+            "cosign": {
+              "enabled": true
+            }
+          },
+          "globalMode": "audit",
+          "profile": "java-web",
+          "policyVersion": "baseline-v1"
+        }
+      },
+      {
+        "layer": "profile",
+        "values": {}
+      },
+      {
+        "layer": "project",
+        "values": {}
+      }
+    ],
+    "effectiveConfigDigest": "abb25cd999f145dfb91b4d8f4f325abe143228cde5b37b32dcb0d75cf4fe206f"
+  },
+  "securityLevel": "low",
+  "startedAt": "2026-11-06T04:31:26.013Z",
+  "kind": "LocalValidationRequest",
+  "executionLocation": "LINUX_RESTRICTED"
+}

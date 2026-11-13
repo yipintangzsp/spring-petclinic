@@ -1,0 +1,146 @@
+{
+  "REAL_RUNTIME_FACT_CAPTURE": "INCOMPLETE",
+  "REAL_POLICY_OWNER": "INCOMPLETE",
+  "IMMUTABLE_ARTIFACT_RUNTIME": "INCOMPLETE",
+  "SUMMARY_V2_MIGRATION": "INCOMPLETE",
+  "realCapturedSourceCount": 5,
+  "expectedSourceCount": 16,
+  "blockers": [
+    {
+      "id": "B1",
+      "type": "IMPLEMENTATION_AND_EXECUTION_GAP",
+      "detail": "11 canonical sources have no complete same-run capture in the dedicated path. Wrapper projections are not full scanner/child execution proof; unsupported native shapes remain unavailable. Existing historical success reports cannot fill missing runtime prerequisites or facts.",
+      "sources": [
+        "sbom",
+        "gitleaks",
+        "sops",
+        "trivy",
+        "cosign",
+        "sonarqube",
+        "zap",
+        "defectdojo",
+        "provenance",
+        "build-provenance",
+        "semgrep-command-audit"
+      ],
+      "minimalFix": "Extend passive source-specific capture and original workflow bindings for these sources, preserving native outputs and existing Gate semantics; use the accepted isolated SOPS fixture boundary instead of production credentials."
+    },
+    {
+      "id": "B2",
+      "type": "PARTIAL_OWNER_WIRING",
+      "detail": "The real dedicated owner evaluates 5 sources exactly once and reuses their receipts. It does not yet receive all 16 sources or the real Provenance helper outcomes.",
+      "minimalFix": "Feed all expected original module/helper facts to this sole owner, with atomic claims and no invented skipped states."
+    },
+    {
+      "id": "ARTIFACT",
+      "type": "EXPECTED_COMPLETENESS_REJECTION",
+      "detail": "The bounded five-source runner intentionally stops with exit 3. Its full-artifact branch is not yet wired to real external Gate observations/legacy Summary snapshot/producer identity. No immutable complete runtime artifact exists.",
+      "minimalFix": "After complete facts and Gate compatibility, supply actual external checks, bound preapproval V1 fields and r2 producer identity to the candidate writer; never bypass completeness or fabricate passing checks."
+    }
+  ],
+  "dedicatedJenkinsBuilds": 4,
+  "productionBuildsTriggered": 0,
+  "release": 0,
+  "rollout": 0,
+  "summaryActivated": false,
+  "approval": 0,
+  "promotion": 0,
+  "postflight": {
+    "nodes": [
+      {
+        "name": "aliyun-worker",
+        "conditions": [
+          {
+            "type": "MemoryPressure",
+            "status": "False",
+            "reason": "KubeletHasSufficientMemory",
+            "lastTransitionTime": "2026-11-02T00:00:50Z"
+          },
+          {
+            "type": "DiskPressure",
+            "status": "False",
+            "reason": "KubeletHasNoDiskPressure",
+            "lastTransitionTime": "2026-11-02T00:00:50Z"
+          },
+          {
+            "type": "PIDPressure",
+            "status": "False",
+            "reason": "KubeletHasSufficientPID",
+            "lastTransitionTime": "2026-11-02T00:00:50Z"
+          },
+          {
+            "type": "Ready",
+            "status": "True",
+            "reason": "KubeletReady",
+            "lastTransitionTime": "2026-11-02T00:00:50Z"
+          }
+        ]
+      },
+      {
+        "name": "devops",
+        "conditions": [
+          {
+            "type": "MemoryPressure",
+            "status": "False",
+            "reason": "KubeletHasSufficientMemory",
+            "lastTransitionTime": "2026-10-27T06:30:28Z"
+          },
+          {
+            "type": "DiskPressure",
+            "status": "False",
+            "reason": "KubeletHasNoDiskPressure",
+            "lastTransitionTime": "2026-10-27T06:30:28Z"
+          },
+          {
+            "type": "PIDPressure",
+            "status": "False",
+            "reason": "KubeletHasSufficientPID",
+            "lastTransitionTime": "2026-10-27T06:30:28Z"
+          },
+          {
+            "type": "Ready",
+            "status": "True",
+            "reason": "KubeletReady",
+            "lastTransitionTime": "2026-10-27T06:36:39Z"
+          }
+        ]
+      },
+      {
+        "name": "ucloud-worker",
+        "conditions": [
+          {
+            "type": "MemoryPressure",
+            "status": "False",
+            "reason": "KubeletHasSufficientMemory",
+            "lastTransitionTime": "2026-11-02T14:21:29Z"
+          },
+          {
+            "type": "DiskPressure",
+            "status": "False",
+            "reason": "KubeletHasNoDiskPressure",
+            "lastTransitionTime": "2026-11-02T14:21:29Z"
+          },
+          {
+            "type": "PIDPressure",
+            "status": "False",
+            "reason": "KubeletHasSufficientPID",
+            "lastTransitionTime": "2026-11-02T14:21:29Z"
+          },
+          {
+            "type": "Ready",
+            "status": "True",
+            "reason": "KubeletReady",
+            "lastTransitionTime": "2026-11-02T14:21:29Z"
+          }
+        ]
+      }
+    ],
+    "lease": {
+      "name": "platform-heavy",
+      "absent": true,
+      "validationHolderReleased": true,
+      "evidence": "Successful get --ignore-not-found returned no object after original release command"
+    }
+  },
+  "notAnInfrastructureOrPermissionsBlocker": true
+}

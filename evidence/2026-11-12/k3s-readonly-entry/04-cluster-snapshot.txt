@@ -1,0 +1,58 @@
+### SNAPSHOT TIME 2026-11-12T22:18:45+08:00 via platform-readonly kubeconfig
+## nodes
+NAME            STATUS   ROLES           AGE    VERSION
+aliyun-worker   Ready    <none>          177d   v1.36.1+k3s1
+devops          Ready    control-plane   209d   v1.36.1+k3s1
+ucloud-worker   Ready    <none>          177d   v1.36.1+k3s1
+
+## kube-system pods
+NAME                                      READY   STATUS    RESTARTS         AGE
+coredns-68859b4dd-27j9k                   1/1     Running   0                117m
+local-path-provisioner-5d5cfd7fd7-s5pxz   1/1     Running   76 (118m ago)    68d
+metrics-server-74559cc84c-4gjnf           1/1     Running   123 (118m ago)   68d
+svclb-traefik-3eaada12-4ltjp              2/2     Running   272 (118m ago)   117d
+traefik-5568f87f6b-lr2tn                  1/1     Running   48 (118m ago)    40d
+
+## harbor pods
+NAME                                  READY   STATUS    RESTARTS         AGE
+harbor-core-79fb89df74-x65sk          1/1     Running   318 (117m ago)   44d
+harbor-database-0                     1/1     Running   28 (118m ago)    23d
+harbor-jobservice-7c8cf97947-wrdt4    1/1     Running   43 (118m ago)    29d
+harbor-portal-546b6c47b4-zst8w        1/1     Running   32 (118m ago)    23d
+harbor-redis-arm64-6478fb4c64-l8d7x   1/1     Running   49 (115m ago)    32d
+harbor-registry-5d4c9f9f96-z5vw5      2/2     Running   39 (118m ago)    16d
+harbor-trivy-0                        1/1     Running   28 (118m ago)    24d
+
+## argocd pods
+NAME                                                READY   STATUS    RESTARTS        AGE
+argocd-application-controller-0                     1/1     Running   26 (118m ago)   23d
+argocd-applicationset-controller-79958f54f7-mskbf   1/1     Running   79 (118m ago)   68d
+argocd-dex-server-766b8f97dc-s7t95                  1/1     Running   14 (118m ago)   16d
+argocd-notifications-controller-679f4c8dd5-ggszf    1/1     Running   29 (118m ago)   23d
+argocd-redis-5c656fcdcb-g6w6z                       1/1     Running   74 (118m ago)   68d
+argocd-repo-server-75dc648fcc-hsbc5                 1/1     Running   27 (118m ago)   23d
+argocd-server-f67c4458c-b75h2                       1/1     Running   79 (118m ago)   68d
+
+## jenkins search (deploy -A grep)
+ns-devops          jenkins                               1/1     1            1           207d
+ns-devops          jenkins-build-log-filebeat-es         1/1     1            1           182d
+ns-devops          jenkins-build-log-filebeat-kafka      1/1     1            1           182d
+ns-devops          jenkins-59c6dd9f5c-dw6kg                               1/1     Running   7 (118m ago)     8d
+ns-devops          jenkins-build-log-filebeat-es-65699f8fd9-ks2h4         1/1     Running   28 (118m ago)    23d
+ns-devops          jenkins-build-log-filebeat-kafka-7868f4dbf7-hrgzg      1/1     Running   27 (118m ago)    23d
+
+## petclinic deployments + pods + svc
+NAME                                    READY   UP-TO-DATE   AVAILABLE   AGE
+deployment.apps/clinic-message-worker   1/1     1            1           19d
+deployment.apps/petclinic               3/3     3            3           94d
+
+NAME                TYPE        CLUSTER-IP     EXTERNAL-IP   PORT(S)   AGE
+service/petclinic   ClusterIP   10.43.39.130   <none>        80/TCP    94d
+NAME                                    READY   STATUS    RESTARTS        AGE
+clinic-message-worker-b887b9bbb-m6zld   1/1     Running   11 (118m ago)   15d
+petclinic-7b9fc47976-7gqqx              1/1     Running   14 (117m ago)   14d
+petclinic-7b9fc47976-v7pbv              1/1     Running   16 (118m ago)   14d
+petclinic-7b9fc47976-z9q2p              1/1     Running   16 (117m ago)   14d
+
+## non-running pods cluster-wide (head 40)
+No resources found

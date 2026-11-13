@@ -1,0 +1,106 @@
+{
+  "runtime-baseline.json": {
+    "build": "270",
+    "capturedAt": "2026-10-30T03:17:55.596Z",
+    "containerId": "containerd://255ba06753b576fd638d35f074444c5b25f29e2de8e2226a1d4aece85fc06bb9",
+    "image": "127.0.0.1:30050/platform-security/falco@sha256:3c5ccde1c8b50ccc8baf016090a5376d182e08dc8751df2b37d8ff2a13499558",
+    "nodeBootId": "d56b03a2-7415-452f-9757-752e7918b368",
+    "podUid": "db37cfe6-5b99-46db-8aac-e86f0e6f6bc8",
+    "priorExit": {
+      "containerID": "containerd://bdf8914f0b810ecf0e5fa02201252177fd4c712cbc72015a962189940d9a7946",
+      "exitCode": 255,
+      "finishedAt": "2026-10-29T13:20:51Z",
+      "reason": "Unknown",
+      "startedAt": "2026-10-28T20:46:06Z"
+    },
+    "ready": true,
+    "restarts": 7,
+    "runningSince": "2026-10-29T13:21:14Z",
+    "source": "9a78cc89f22fa98fb1ffcc43e2ae279299471793"
+  },
+  "runtime-health.json": {
+    "baselineRestarts": 7,
+    "diagnosticWindow": {
+      "since": "2026-10-30T03:17:55.596Z",
+      "tail": 500
+    },
+    "diagnostics": {
+      "fatalDriverLines": 0,
+      "procFdWarnings": 94
+    },
+    "historicalWarning": null,
+    "http": 200,
+    "image": "127.0.0.1:30050/platform-security/falco@sha256:3c5ccde1c8b50ccc8baf016090a5376d182e08dc8751df2b37d8ff2a13499558",
+    "liveChecks": [
+      {
+        "at": "2026-10-30T03:25:35.840Z",
+        "fatalDriverLines": 0,
+        "malformedJsonLines": 0,
+        "procFdWarnings": 4,
+        "window": {
+          "candidates": [],
+          "end": "2026-10-30T03:25:35.840Z",
+          "scope": "Bounded local sensor window; raw commands and sensitive file contents are not included",
+          "start": "2026-10-30T03:25:20.840Z",
+          "warnings": {}
+        }
+      }
+    ],
+    "mode": "check",
+    "newRestarts": 0,
+    "node": "devops",
+    "nodeBootId": "d56b03a2-7415-452f-9757-752e7918b368",
+    "pod": "platform-falco-fwwfd",
+    "podUid": "db37cfe6-5b99-46db-8aac-e86f0e6f6bc8",
+    "ready": true,
+    "restarts": 7,
+    "ruleset": "59752c1132f0",
+    "runtimeAssessment": {
+      "blocking": [],
+      "criteria": "Point-in-time local Falco gate, not continuous or cloud coverage",
+      "first": {
+        "candidates": [],
+        "end": "2026-10-30T03:25:35.840Z",
+        "scope": "Bounded local sensor window; raw commands and sensitive file contents are not included",
+        "start": "2026-10-30T03:25:20.840Z",
+        "warnings": {}
+      },
+      "status": "success"
+    },
+    "scope": "Local health plus reviewed two-window runtime events; ordinary/isolated/denied/transient events WARN; no continuous or cloud coverage",
+    "source": "9a78cc89f22fa98fb1ffcc43e2ae279299471793",
+    "status": "success",
+    "validationEvidence": {
+      "isolatedCases": [
+        {
+          "case": "shell",
+          "status": "PASS"
+        },
+        {
+          "case": "sensitive-read",
+          "status": "PASS"
+        },
+        {
+          "case": "package-manager",
+          "status": "PASS"
+        },
+        {
+          "case": "network-tool",
+          "status": "PASS"
+        },
+        {
+          "case": "readonly-write",
+          "status": "PASS"
+        },
+        {
+          "case": "namespace-tool",
+          "status": "PASS"
+        }
+      ],
+      "kind": "actual isolated sensor validation; not real production attacks or successful escapes",
+      "rulesetLabel": "59752c1132f0",
+      "syntheticPolicyTests": "runtime-event-policy.test.mjs; not real business attacks",
+      "testPodRemoved": true
+    }
+  }
+}

@@ -1,0 +1,226 @@
+{
+  "source": "Running harbor-portal public swagger.json",
+  "sourceSha256": "65d0dcc9ca992417d384c7dee6ad7d61a582a374effc2617d4e2481bebda6ab2",
+  "definitions": {
+    "Robot": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "integer",
+          "format": "int64",
+          "description": "The ID of the robot"
+        },
+        "name": {
+          "type": "string",
+          "description": "The name of the robot"
+        },
+        "description": {
+          "type": "string",
+          "description": "The description of the robot"
+        },
+        "secret": {
+          "type": "string",
+          "description": "The secret of the robot"
+        },
+        "level": {
+          "type": "string",
+          "description": "The level of the robot, project or system"
+        },
+        "duration": {
+          "type": "integer",
+          "x-nullable": true,
+          "format": "int64",
+          "description": "The duration of the robot in days, duration must be either -1(Never) or a positive integer"
+        },
+        "editable": {
+          "type": "boolean",
+          "x-omitempty": false,
+          "description": "The editable status of the robot"
+        },
+        "disable": {
+          "type": "boolean",
+          "x-omitempty": false,
+          "description": "The disable status of the robot"
+        },
+        "expires_at": {
+          "type": "integer",
+          "format": "int64",
+          "description": "The expiration date of the robot"
+        },
+        "permissions": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/RobotPermission"
+          }
+        },
+        "creator_type": {
+          "type": "string",
+          "description": "The type of the robot creator, like local(harbor_user) or robot."
+        },
+        "creator_ref": {
+          "type": "integer",
+          "description": "The reference of the robot creator, like the id of harbor user."
+        },
+        "creation_time": {
+          "type": "string",
+          "format": "date-time",
+          "description": "The creation time of the robot."
+        },
+        "update_time": {
+          "type": "string",
+          "format": "date-time",
+          "description": "The update time of the robot."
+        }
+      }
+    },
+    "RobotCreate": {
+      "type": "object",
+      "description": "The request for robot account creation.",
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "The name of the robot"
+        },
+        "description": {
+          "type": "string",
+          "description": "The description of the robot"
+        },
+        "secret": {
+          "type": "string",
+          "description": "The secret of the robot"
+        },
+        "level": {
+          "type": "string",
+          "description": "The level of the robot, project or system"
+        },
+        "disable": {
+          "type": "boolean",
+          "description": "The disable status of the robot"
+        },
+        "duration": {
+          "type": "integer",
+          "format": "int64",
+          "description": "The duration of the robot in days, duration must be either -1(Never) or a positive integer"
+        },
+        "permissions": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/RobotPermission"
+          }
+        }
+      }
+    },
+    "RobotCreated": {
+      "type": "object",
+      "description": "The response for robot account creation.",
+      "properties": {
+        "id": {
+          "type": "integer",
+          "format": "int64",
+          "description": "The ID of the robot"
+        },
+        "name": {
+          "type": "string",
+          "description": "The name of the robot"
+        },
+        "secret": {
+          "type": "string",
+          "description": "The secret of the robot"
+        },
+        "creation_time": {
+          "type": "string",
+          "format": "date-time",
+          "description": "The creation time of the robot."
+        },
+        "expires_at": {
+          "type": "integer",
+          "format": "int64",
+          "description": "The expiration date of the robot"
+        }
+      }
+    },
+    "RobotSec": {
+      "type": "object",
+      "description": "The response for refresh/update robot account secret.",
+      "properties": {
+        "secret": {
+          "type": "string",
+          "description": "The secret of the robot"
+        }
+      }
+    },
+    "RobotPermission": {
+      "type": "object",
+      "properties": {
+        "kind": {
+          "type": "string",
+          "description": "The kind of the permission"
+        },
+        "namespace": {
+          "type": "string",
+          "description": "The namespace of the permission"
+        },
+        "access": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Access"
+          }
+        }
+      }
+    },
+    "Access": {
+      "type": "object",
+      "properties": {
+        "resource": {
+          "type": "string",
+          "description": "The resource of the access. Possible resources are listed here for system and project level https://github.com/goharbor/harbor/blob/main/src/common/rbac/const.go"
+        },
+        "action": {
+          "type": "string",
+          "description": "The action of the access. Possible actions are *, pull, push, create, read, update, delete, list, operate, scanner-pull and stop."
+        },
+        "effect": {
+          "type": "string",
+          "description": "The effect of the access"
+        }
+      }
+    },
+    "RobotCreateV1": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "The name of robot account"
+        },
+        "description": {
+          "type": "string",
+          "description": "The description of robot account"
+        },
+        "expires_at": {
+          "type": "integer",
+          "description": "The expiration time on or after which the JWT MUST NOT be accepted for processing."
+        },
+        "access": {
+          "type": "array",
+          "description": "The permission of robot account",
+          "items": {
+            "$ref": "#/definitions/Access"
+          }
+        }
+      }
+    },
+    "Permission": {
+      "type": "object",
+      "properties": {
+        "resource": {
+          "type": "string",
+          "description": "The permission resoruce"
+        },
+        "action": {
+          "type": "string",
+          "description": "The permission action"
+        }
+      }
+    }
+  }
+}

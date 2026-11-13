@@ -1,0 +1,49 @@
+{
+  "time": "2026-11-02T04:20:23.402387+00:00",
+  "KUBECONFIG_FAIL_CLOSED_BOUNDARY": "READY",
+  "productionChangeDecision": "TEST_WRAPPER_SUFFICIENT",
+  "guardTests": {
+    "tests": 18,
+    "passed": 18,
+    "rejectedInputRecords": 19,
+    "proxyPreparationRecords": 1,
+    "realCliRejection": 1,
+    "rejectedCaseApiCalls": 0,
+    "rejectedCaseGateOrChildCalls": 0
+  },
+  "realPositive": {
+    "cliCheck": true,
+    "cliSentinel": true,
+    "trustedLibrarySentinel": true,
+    "pinnedLocalMetadataGetCount": 3,
+    "actualKubectlInvocations": 0,
+    "gateExecuted": false
+  },
+  "scope": {
+    "productionApiCalls": 0,
+    "kubernetesSecretValueReads": 0,
+    "productionCredentialValueReads": 0,
+    "sopsAgeExecutions": 0,
+    "fixtureObjectsCreated": 0,
+    "sharedRuntimeGateChanges": 0,
+    "summaryReleaseChanges": 0,
+    "vmRestarts": 0
+  },
+  "protection": {
+    "existingFilesUnchanged": 3843,
+    "userKubeconfigSshDefaultUnchanged": true,
+    "dedicatedKubeconfigUnchanged": true,
+    "testKindUnchanged": true,
+    "globalDockerContext": "default",
+    "temporarySnapshotsAndKeyCopiesRemoved": true
+  },
+  "proofClassification": {
+    "negativeSemanticCases": "Guard code executed with owned temporary file binding plus independent socket/subprocess traps; no production CLI pin override is exposed.",
+    "positive": "REAL_EXECUTION against existing dedicated cluster; fixed sentinel children only.",
+    "notClaimed": "No production Gate/SOPS compatibility or live UID mismatch zero-request claim. No outbound air-gap/adversarial-code sandbox claim."
+  },
+  "blocker": null,
+  "priorFixturePreparationStatus": "NOT_REEVALUATED; do not mark entire fixture preparation READY or resume design this turn.",
+  "nextPermittedAction": "Separately scoped next iteration may resume unfinished SOPS/age toolchain and fixture prerequisite review; do not automatically resume/create fixture or execute Gate.",
+  "stop": true
+}

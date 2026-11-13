@@ -1,0 +1,697 @@
+{
+  "guard": {
+    "status": "ACCEPTED",
+    "profile": "MIN_RBAC_EXECUTOR",
+    "server": "https://security-test-sops-control-plane:6443",
+    "kubeSystemUID": "54f300a4-5f1b-4e1e-86a1-d173e5a402d8",
+    "wouldPermitChild": true,
+    "gateExecuted": false,
+    "environment": {
+      "preserved": [],
+      "explicitlySet": [
+        "BUSINESS_AGE_FILE",
+        "DEVSECOPS_READ_ONLY",
+        "HEAVY_HOLDER",
+        "HOME",
+        "ISOLATED_BOUNDARY_CONTEXT",
+        "KUBECONFIG",
+        "PATH",
+        "PYTHONDONTWRITEBYTECODE",
+        "TMPDIR",
+        "XDG_CACHE_HOME"
+      ],
+      "removedInheritedNames": [],
+      "sourceAndSnapshotBytesIdentical": true,
+      "defaultKubeconfigAbsent": true
+    },
+    "trustedChild": {
+      "exit": 0,
+      "outputSuppressed": true
+    },
+    "temporaryDirectory": "/fixture/boundary/isolated-sops-boundary-89bjirp0",
+    "temporaryDirectoryRemoved": true,
+    "audit": {
+      "api_attempts": 3,
+      "kubectl_invocations": 0,
+      "child_executions": 1
+    }
+  },
+  "child": {
+    "schemaVersion": "sops-observation-v1",
+    "factType": "CHILD_EXIT_FACT",
+    "source": "real-local-subprocess",
+    "identity": "system:serviceaccount:devsecops-system:security-fixture-executor",
+    "expectedTarget": {
+      "executable": "/fixture/node/bin/node"
+    },
+    "observedTarget": {
+      "executable": "/fixture/node/bin/node"
+    },
+    "status": "EXECUTION_ERROR",
+    "errorClass": "NONZERO_EXIT",
+    "evidenceRef": "result.json",
+    "commandIdentity": {
+      "executable": "/fixture/node/bin/node",
+      "argvSha256": "27852a53d0e2459b8271fe3715e940389c10f300c4a33e6bf5c73f12591d05bc"
+    },
+    "exit": {
+      "code": 1,
+      "signal": null,
+      "timedOut": false,
+      "outputLimitExceeded": false
+    },
+    "stdout": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "contentStored": false
+    },
+    "stderr": {
+      "bytes": 432,
+      "sha256": "bb91f3c44869745ec055c66136a2d1fcc879c1ba9fa85044b29cac804951bee7",
+      "contentStored": false
+    }
+  },
+  "result": {
+    "scenario": "UID_CONTINUITY_FAILURE",
+    "classification": "REAL_CONTROLLED_EXECUTION",
+    "rawEvidence": {
+      "facts": {
+        "prerequisites": {
+          "credentialPresent": true,
+          "manifest": true,
+          "lease": true,
+          "tools": true
+        },
+        "sourceReadSucceeded": true,
+        "readOnly": false,
+        "expectedTargetCount": 4,
+        "targets": [
+          {
+            "expected": {
+              "namespace": "petclinic",
+              "name": "petclinic-db"
+            },
+            "decrypt": {
+              "exitStatus": 0,
+              "stdout": {
+                "bytes": 272,
+                "sha256": "d3f1a0cbcce13695c7818cbc7cd2743d1088684c893f7d3cd8317ae2be5d3144"
+              }
+            },
+            "readSucceeded": true,
+            "actual": {
+              "kind": "Secret",
+              "metadata": {
+                "name": "petclinic-db",
+                "namespace": "petclinic",
+                "uid": "9e06f999-75bf-431c-a025-f63b279650a9"
+              },
+              "type": "Opaque",
+              "keyNames": [
+                "password",
+                "username"
+              ],
+              "dataSha256": "8e4ccc550e0b8321cd7508929fe754025eba9d9c6e967702587204b810324776"
+            },
+            "applySucceeded": true,
+            "afterReadSucceeded": true,
+            "after": {
+              "kind": "Secret",
+              "metadata": {
+                "name": "petclinic-db",
+                "namespace": "petclinic",
+                "uid": "aecea28d-5a2d-474a-8ea0-01f71e106058"
+              },
+              "type": "Opaque",
+              "keyNames": [
+                "password",
+                "username"
+              ],
+              "dataSha256": "8e4ccc550e0b8321cd7508929fe754025eba9d9c6e967702587204b810324776"
+            },
+            "uidEqual": false,
+            "dataEqual": true
+          }
+        ],
+        "reportWriteSucceeded": true
+      },
+      "events": [
+        {
+          "kind": "PROCESS",
+          "command": "kubectl",
+          "argv": [
+            "--request-timeout=20s",
+            "-n",
+            "data-infra",
+            "get",
+            "lease",
+            "platform-heavy",
+            "-o",
+            "json"
+          ],
+          "exitCode": 0,
+          "signal": null,
+          "errorClass": null,
+          "timedOut": false,
+          "stdout": {
+            "bytes": 760,
+            "sha256": "547a1b119c314be01f5407daec9c57ce99676c99d69ae61e3612d32e3acf973c"
+          },
+          "stderr": {
+            "bytes": 0,
+            "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          }
+        },
+        {
+          "kind": "LEASE_READ",
+          "uid": "ff5e9671-9b22-4a88-892c-64eeac8307cb",
+          "holderIdentity": "sm-sops-20261102-02",
+          "holderMatched": true
+        },
+        {
+          "kind": "TOOL_SHA_READ",
+          "sha256": "53b0abacd38ef1b12a66d6c100956691b9cefce018d91f81e73ddf7438b94d77"
+        },
+        {
+          "kind": "PROCESS",
+          "command": "/var/jenkins_home/platform-security/20261027/sops",
+          "argv": [
+            "decrypt",
+            "infra/security/secrets/petclinic-db.enc.json"
+          ],
+          "exitCode": 0,
+          "signal": null,
+          "errorClass": null,
+          "timedOut": false,
+          "stdout": {
+            "bytes": 272,
+            "sha256": "d3f1a0cbcce13695c7818cbc7cd2743d1088684c893f7d3cd8317ae2be5d3144"
+          },
+          "stderr": {
+            "bytes": 0,
+            "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          }
+        },
+        {
+          "kind": "PROCESS",
+          "command": "kubectl",
+          "argv": [
+            "--request-timeout=20s",
+            "--as=system:serviceaccount:devsecops-system:platform-secret-reconciler",
+            "-n",
+            "petclinic",
+            "get",
+            "secret",
+            "petclinic-db",
+            "-o",
+            "json"
+          ],
+          "exitCode": 0,
+          "signal": null,
+          "errorClass": null,
+          "timedOut": false,
+          "stdout": {
+            "bytes": 757,
+            "sha256": "3ef41e2be69bf6119454a194076fae1243aa3c7331029f5ecf3644d9982fc652"
+          },
+          "stderr": {
+            "bytes": 0,
+            "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          }
+        },
+        {
+          "kind": "PROCESS",
+          "command": "kubectl",
+          "argv": [
+            "--request-timeout=20s",
+            "--as=system:serviceaccount:devsecops-system:platform-secret-reconciler",
+            "apply",
+            "--server-side",
+            "--field-manager=platform-secret-reconciler",
+            "-f",
+            "-"
+          ],
+          "exitCode": 0,
+          "signal": null,
+          "errorClass": null,
+          "timedOut": false,
+          "stdout": {
+            "bytes": 39,
+            "sha256": "14ef8454f2a6a5aa62b3f14cb014a9b36f685ad5553dd98be9374788fd4d703b"
+          },
+          "stderr": {
+            "bytes": 0,
+            "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          }
+        },
+        {
+          "kind": "REAL_MUTATION_BARRIER",
+          "receipt": {
+            "success": true,
+            "kind": "EXPECTED_UID_REPLACEMENT",
+            "name": "petclinic-db",
+            "originalBaselineUid": "2e650994-d040-4298-92e2-c4e4c50969ad",
+            "previousUid": "9e06f999-75bf-431c-a025-f63b279650a9",
+            "replacementUid": "aecea28d-5a2d-474a-8ea0-01f71e106058",
+            "dataSha256": "8e4ccc550e0b8321cd7508929fe754025eba9d9c6e967702587204b810324776",
+            "semanticBaselineMatch": true
+          }
+        },
+        {
+          "kind": "PROCESS",
+          "command": "kubectl",
+          "argv": [
+            "--request-timeout=20s",
+            "--as=system:serviceaccount:devsecops-system:platform-secret-reconciler",
+            "-n",
+            "petclinic",
+            "get",
+            "secret",
+            "petclinic-db",
+            "-o",
+            "json"
+          ],
+          "exitCode": 0,
+          "signal": null,
+          "errorClass": null,
+          "timedOut": false,
+          "stdout": {
+            "bytes": 757,
+            "sha256": "633e916c6450126f0485aa6dbb2d6f45dc03d3f4b3470509cb76f584a66a7d1f"
+          },
+          "stderr": {
+            "bytes": 0,
+            "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          }
+        },
+        {
+          "kind": "REPORT_WRITE",
+          "succeeded": true
+        },
+        {
+          "kind": "UNCAUGHT_EXCEPTION",
+          "errorClass": "Error",
+          "messageSha256": "90a6aca90332794a629b8be6de563d6e1c88275b9fa0bb411ee52e56590d430b"
+        }
+      ],
+      "rawInputSha256": "956652ea6e956df52e873d519165be2e4656d28977d6499348c844b7c251dc9c",
+      "rawPreserved": true,
+      "redaction": "Synthetic decrypted stdout/data stay in memory only; original fingerprints+equality retained, no raw values archived"
+    },
+    "oldGate": {
+      "exitCode": 1,
+      "signal": null,
+      "errorClass": "Error",
+      "oldDecision": "FAIL"
+    },
+    "adapterRawOutput": {
+      "component": "sops",
+      "status": "success",
+      "checks": [
+        {
+          "id": "manifest",
+          "passed": true
+        },
+        {
+          "id": "lease",
+          "passed": true
+        },
+        {
+          "id": "tools",
+          "passed": true
+        },
+        {
+          "id": "credential",
+          "passed": true
+        },
+        {
+          "id": "source-read",
+          "passed": true
+        },
+        {
+          "id": "decrypt-0",
+          "passed": true
+        },
+        {
+          "id": "scope-0",
+          "passed": true
+        },
+        {
+          "id": "read-0",
+          "passed": true
+        },
+        {
+          "id": "data-type-0",
+          "passed": true
+        },
+        {
+          "id": "apply-0",
+          "passed": true
+        },
+        {
+          "id": "after-read-0",
+          "passed": true
+        },
+        {
+          "id": "identity-values-0",
+          "passed": false
+        }
+      ],
+      "failureKind": "validation failure"
+    },
+    "policy": {
+      "policyVersion": "baseline-v1",
+      "securityLevel": "standard",
+      "profile": "java-web",
+      "effectivePolicy": {
+        "security-approval-promotion": {
+          "Critical": "FAIL",
+          "High": "FAIL",
+          "Medium": "WARN",
+          "Low": "WARN",
+          "Info": "WARN"
+        },
+        "regression": {
+          "Critical": "FAIL",
+          "High": "FAIL",
+          "Medium": "WARN",
+          "Low": "WARN",
+          "Info": "WARN"
+        },
+        "gitleaks": {
+          "Critical": "FAIL",
+          "High": "FAIL",
+          "Medium": "WARN",
+          "Low": "WARN",
+          "Info": "WARN"
+        },
+        "semgrep": {
+          "Critical": "FAIL",
+          "High": "FAIL",
+          "Medium": "WARN",
+          "Low": "WARN",
+          "Info": "WARN"
+        },
+        "sonarqube": {
+          "Critical": "FAIL",
+          "High": "FAIL",
+          "Medium": "WARN",
+          "Low": "WARN",
+          "Info": "WARN"
+        },
+        "sbom": {
+          "Critical": "FAIL",
+          "High": "FAIL",
+          "Medium": "WARN",
+          "Low": "WARN",
+          "Info": "WARN"
+        },
+        "trivy": {
+          "Critical": "FAIL",
+          "High": "FAIL",
+          "Medium": "WARN",
+          "Low": "WARN",
+          "Info": "WARN"
+        },
+        "cosign": {
+          "Critical": "FAIL",
+          "High": "FAIL",
+          "Medium": "WARN",
+          "Low": "WARN",
+          "Info": "WARN"
+        },
+        "kubescape": {
+          "Critical": "FAIL",
+          "High": "FAIL",
+          "Medium": "WARN",
+          "Low": "WARN",
+          "Info": "WARN"
+        },
+        "zap": {
+          "Critical": "FAIL",
+          "High": "FAIL",
+          "Medium": "WARN",
+          "Low": "WARN",
+          "Info": "WARN"
+        },
+        "defectdojo": {
+          "Critical": "FAIL",
+          "High": "FAIL",
+          "Medium": "WARN",
+          "Low": "WARN",
+          "Info": "WARN"
+        },
+        "provenance": {
+          "Critical": "FAIL",
+          "High": "FAIL",
+          "Medium": "WARN",
+          "Low": "WARN",
+          "Info": "WARN"
+        },
+        "build-provenance": {
+          "Critical": "FAIL",
+          "High": "FAIL",
+          "Medium": "WARN",
+          "Low": "WARN",
+          "Info": "WARN"
+        },
+        "sops": {
+          "Critical": "FAIL",
+          "High": "FAIL",
+          "Medium": "WARN",
+          "Low": "WARN",
+          "Info": "WARN"
+        },
+        "falco-baseline": {
+          "Critical": "FAIL",
+          "High": "FAIL",
+          "Medium": "WARN",
+          "Low": "WARN",
+          "Info": "WARN"
+        },
+        "falco-final": {
+          "Critical": "FAIL",
+          "High": "FAIL",
+          "Medium": "WARN",
+          "Low": "WARN",
+          "Info": "WARN"
+        },
+        "kyverno": {
+          "Critical": "FAIL",
+          "High": "FAIL",
+          "Medium": "WARN",
+          "Low": "WARN",
+          "Info": "WARN"
+        },
+        "kyverno-admission": {
+          "Critical": "FAIL",
+          "High": "FAIL",
+          "Medium": "WARN",
+          "Low": "WARN",
+          "Info": "WARN"
+        },
+        "kyverno-rbac": {
+          "Critical": "FAIL",
+          "High": "FAIL",
+          "Medium": "WARN",
+          "Low": "WARN",
+          "Info": "WARN"
+        },
+        "falco": {
+          "Critical": "FAIL",
+          "High": "FAIL",
+          "Medium": "WARN",
+          "Low": "WARN",
+          "Info": "WARN"
+        },
+        "semgrep-command-audit": {
+          "Critical": "FAIL",
+          "High": "FAIL",
+          "Medium": "WARN",
+          "Low": "WARN",
+          "Info": "WARN"
+        },
+        "cosign-cli": {
+          "Critical": "FAIL",
+          "High": "FAIL",
+          "Medium": "WARN",
+          "Low": "WARN",
+          "Info": "WARN"
+        },
+        "falco-prior-exit": {
+          "Critical": "FAIL",
+          "High": "FAIL",
+          "Medium": "WARN",
+          "Low": "WARN",
+          "Info": "WARN"
+        },
+        "falco-continuity": {
+          "Critical": "FAIL",
+          "High": "FAIL",
+          "Medium": "WARN",
+          "Low": "WARN",
+          "Info": "WARN"
+        },
+        "falco-persistence": {
+          "Critical": "FAIL",
+          "High": "FAIL",
+          "Medium": "WARN",
+          "Low": "WARN",
+          "Info": "WARN"
+        },
+        "provenance-signature": {
+          "Critical": "FAIL",
+          "High": "FAIL",
+          "Medium": "WARN",
+          "Low": "WARN",
+          "Info": "WARN"
+        },
+        "build-provenance-signature": {
+          "Critical": "FAIL",
+          "High": "FAIL",
+          "Medium": "WARN",
+          "Low": "WARN",
+          "Info": "WARN"
+        },
+        "approval-evidence": {
+          "Critical": "FAIL",
+          "High": "FAIL",
+          "Medium": "WARN",
+          "Low": "WARN",
+          "Info": "WARN"
+        },
+        "approval-signatures": {
+          "Critical": "FAIL",
+          "High": "FAIL",
+          "Medium": "WARN",
+          "Low": "WARN",
+          "Info": "WARN"
+        }
+      },
+      "appliedOverrides": [],
+      "status": "FAIL",
+      "decision": "FAIL",
+      "failureKind": "validation failure",
+      "checks": [
+        {
+          "id": "manifest",
+          "passed": true
+        },
+        {
+          "id": "lease",
+          "passed": true
+        },
+        {
+          "id": "tools",
+          "passed": true
+        },
+        {
+          "id": "credential",
+          "passed": true
+        },
+        {
+          "id": "source-read",
+          "passed": true
+        },
+        {
+          "id": "decrypt-0",
+          "passed": true
+        },
+        {
+          "id": "scope-0",
+          "passed": true
+        },
+        {
+          "id": "read-0",
+          "passed": true
+        },
+        {
+          "id": "data-type-0",
+          "passed": true
+        },
+        {
+          "id": "apply-0",
+          "passed": true
+        },
+        {
+          "id": "after-read-0",
+          "passed": true
+        },
+        {
+          "id": "identity-values-0",
+          "passed": false
+        }
+      ],
+      "severity": null,
+      "sopsFacts": {
+        "component": "sops",
+        "status": "success",
+        "checks": [
+          {
+            "id": "manifest",
+            "passed": true
+          },
+          {
+            "id": "lease",
+            "passed": true
+          },
+          {
+            "id": "tools",
+            "passed": true
+          },
+          {
+            "id": "credential",
+            "passed": true
+          },
+          {
+            "id": "source-read",
+            "passed": true
+          },
+          {
+            "id": "decrypt-0",
+            "passed": true
+          },
+          {
+            "id": "scope-0",
+            "passed": true
+          },
+          {
+            "id": "read-0",
+            "passed": true
+          },
+          {
+            "id": "data-type-0",
+            "passed": true
+          },
+          {
+            "id": "apply-0",
+            "passed": true
+          },
+          {
+            "id": "after-read-0",
+            "passed": true
+          },
+          {
+            "id": "identity-values-0",
+            "passed": false
+          }
+        ],
+        "failureKind": "validation failure"
+      }
+    },
+    "adapterError": null,
+    "comparison": "MATCH"
+  },
+  "executor": {
+    "exitCode": 0,
+    "elapsedSeconds": 1.759,
+    "stderrBytes": 0,
+    "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "nonRootUid": 65532,
+    "network": "kind",
+    "noAdminCredential": true,
+    "noHostMount": true,
+    "containerRemoved": true
+  },
+  "controlledDelta": {}
+}

@@ -1,0 +1,46 @@
+{
+  "exit": 0,
+  "checks": [
+    {
+      "command": [
+        "getent",
+        "ahostsv4",
+        "registry-1.docker.io"
+      ],
+      "exit": 0,
+      "stdout": "54.236.144.168  STREAM registry-1.docker.io\n54.236.144.168  DGRAM  \n54.236.144.168  RAW    \n100.31.14.190   STREAM \n100.31.14.190   DGRAM  \n100.31.14.190   RAW    \n54.209.210.63   STREAM \n54.209.210.63   DGRAM  \n54.209.210.63   RAW    \n54.88.93.133    STREAM \n54.88.93.133    DGRAM  \n54.88.93.133    RAW    \n32.198.166.38   STREAM \n32.198.166.38   DGRAM  \n32.198.166.38   RAW    \n100.58.144.241  STREAM \n100.58.144.241  DGRAM  \n100.58.144.241  RAW    \n100.60.235.201  STREAM \n100.60.235.201  DGRAM  \n100.60.235.201  RAW    \n184.196.27.215  STREAM \n184.196.27.215  DGRAM  \n184.196.27.215  RAW    \n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "getent",
+        "ahostsv4",
+        "auth.docker.io"
+      ],
+      "exit": 0,
+      "stdout": "104.18.43.178   STREAM auth.docker.io.cdn.cloudflare.net\n104.18.43.178   DGRAM  \n104.18.43.178   RAW    \n172.64.144.78   STREAM \n172.64.144.78   DGRAM  \n172.64.144.78   RAW    \n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "curl",
+        "--noproxy",
+        "*",
+        "--connect-timeout",
+        "8",
+        "--max-time",
+        "20",
+        "-sS",
+        "-o",
+        "/dev/null",
+        "-w",
+        "http=%{http_code} tls=%{ssl_verify_result} peer=%{remote_ip}\n",
+        "https://registry-1.docker.io/v2/"
+      ],
+      "exit": 0,
+      "stdout": "http=401 tls=0 peer=52.72.167.255\n",
+      "stderr": ""
+    }
+  ],
+  "stderr": ""
+}

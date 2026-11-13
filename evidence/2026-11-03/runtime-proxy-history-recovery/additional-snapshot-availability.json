@@ -1,0 +1,56 @@
+{
+  "queries": [
+    {
+      "command": [
+        "diskutil",
+        "apfs",
+        "listSnapshots",
+        "/System/Volumes/Data"
+      ],
+      "exit": 0,
+      "stdout": "No snapshots for disk3s5\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "rg",
+        "--files",
+        "--hidden",
+        "/Users/zhangsir/Library/Containers/com.utmapp.UTM/Data/Documents"
+      ],
+      "exit": 0,
+      "fileCount": 6,
+      "matchingPaths": [],
+      "stderr": "",
+      "diskImagesRead": false
+    },
+    {
+      "command": [
+        "rg",
+        "--files",
+        "--hidden",
+        "/Users/zhangsir/.codex/log"
+      ],
+      "exit": 0,
+      "fileCount": 2,
+      "matchingPaths": [],
+      "stderr": "",
+      "diskImagesRead": false
+    }
+  ],
+  "utmSharedConfigurationMetadata": [
+    {
+      "field": "Sharing.DirectoryShareMode",
+      "type": "str",
+      "empty": false
+    },
+    {
+      "field": "Sharing.DirectoryShareReadOnly",
+      "type": "bool",
+      "empty": true
+    }
+  ],
+  "readOnly": true,
+  "newMounts": 0,
+  "diskImagesOpened": 0
+}

@@ -1,0 +1,1343 @@
+{
+  "input": {
+    "env": {
+      "BUILD_NUMBER": "270",
+      "HEAVY_HOLDER": "fixture-holder",
+      "SECURITY_CLEANUP_SCAN_HOMES": "true",
+      "GATE_ZAP": "enforce",
+      "K8S_IMAGE": "registry.invalid/controlled@sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+    },
+    "source": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "manifest": "{\"root\":\"/fixture/tools\",\"baseImage\":\"127.0.0.1:30050/petclinic/petclinic@sha256:83c2ae787a3d160cad1681228a669ac46afb19000558f4eefb45da50f08bf05c\",\"files\":[{\"path\":\"zap/zap-2.17.0.jar\",\"sha256\":\"7ff40b1a099a60a02ee8bb76449e7d87726f4bf9b77b97f56c506ccca79ac177\"},{\"path\":\"zap/addons/controlled.zap\",\"sha256\":\"626d0d2396c1951b7b9c94bdb1c20d366edcda7858336d1efd63a902feb2e1ba\"},{\"path\":\"zap/current\",\"symlink\":\"zap-2.17.0.jar\"}]}",
+    "expectedManifestSha256": "283f6b89f770bb5ba49edbc196ef81520cc720d12477b8b05a2789c85216efdb",
+    "toolFiles": {
+      "zap/zap-2.17.0.jar": "synthetic non-executable jar bytes",
+      "zap/addons/controlled.zap": "synthetic addon bytes"
+    },
+    "symlinks": {
+      "zap/current": "zap-2.17.0.jar"
+    },
+    "lease": {
+      "spec": {
+        "holderIdentity": "fixture-holder"
+      }
+    },
+    "createdUid": "fixture-pod-uid",
+    "currentUid": "fixture-pod-uid",
+    "podIp": "10.42.0.9",
+    "canaryListen": true,
+    "canaryEvents": [
+      "connect"
+    ],
+    "isolationExits": [
+      124,
+      124
+    ],
+    "readinessExits": [
+      0
+    ],
+    "transfer": {
+      "sourceExit": 0,
+      "sinkExit": 0
+    },
+    "scanReports": {
+      "fixture": {
+        "site": [
+          {
+            "@host": "127.0.0.1",
+            "alerts": [
+              {
+                "pluginid": "10062",
+                "name": "Controlled passive alert",
+                "riskcode": "3",
+                "confidence": "2",
+                "count": "1",
+                "instances": [
+                  {
+                    "uri": "http://10.43.0.9:8080/owners/find",
+                    "method": "GET",
+                    "param": "fixture"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      "fixture-negative": {
+        "site": [
+          {
+            "@host": "127.0.0.1",
+            "alerts": []
+          }
+        ]
+      },
+      "business": {
+        "site": [
+          {
+            "@host": "10.43.0.9",
+            "alerts": []
+          }
+        ]
+      }
+    },
+    "deployment": {
+      "spec": {
+        "template": {
+          "spec": {
+            "containers": [
+              {
+                "image": "registry.invalid/controlled@sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+              }
+            ]
+          }
+        }
+      }
+    },
+    "service": {
+      "spec": {
+        "clusterIP": "10.43.0.9",
+        "ports": [
+          {
+            "port": 8080
+          }
+        ]
+      }
+    },
+    "auth": {
+      "status": "success",
+      "fixture": [
+        {
+          "case": "synthetic-roles-only",
+          "status": 200
+        }
+      ],
+      "business": [
+        {
+          "case": "public-get-observation",
+          "status": 200
+        }
+      ],
+      "productionUnsupported": [
+        "real identity model"
+      ],
+      "businessScope": "Existing public GET only"
+    },
+    "confirmations": {
+      "schema": 1,
+      "confirmations": []
+    },
+    "evidenceFiles": {},
+    "cleanupRemaining": false,
+    "commands": {},
+    "io": {},
+    "canaryCloseError": true
+  },
+  "facts": {
+    "schema": 1,
+    "stage": "parent",
+    "complete": true,
+    "classification": "CONTROLLED_REPLAY",
+    "command": "node infra/security/zap-gate.mjs",
+    "execution": {
+      "exitStatus": 1,
+      "diagnostic": "controlled canary close failure"
+    },
+    "observations": [
+      {
+        "type": "io",
+        "key": "read:infra/security/scanner-tools.json",
+        "occurrence": "read:infra/security/scanner-tools.json#1",
+        "ok": true
+      },
+      {
+        "type": "io",
+        "key": "read:infra/security/scanner-tools.json",
+        "occurrence": "read:infra/security/scanner-tools.json#2",
+        "ok": true
+      },
+      {
+        "type": "io",
+        "key": "read:infra/security/tools-lock.json",
+        "occurrence": "read:infra/security/tools-lock.json#1",
+        "ok": true
+      },
+      {
+        "type": "command",
+        "key": "lease",
+        "occurrence": "command:lease#1",
+        "bin": "kubectl",
+        "args": [
+          "--request-timeout=20s",
+          "-n",
+          "data-infra",
+          "get",
+          "lease",
+          "platform-heavy",
+          "-o",
+          "json"
+        ],
+        "timeout": 30000,
+        "result": {
+          "status": 0,
+          "stdout": "{\"spec\":{\"holderIdentity\":\"fixture-holder\"}}",
+          "stderr": ""
+        }
+      },
+      {
+        "type": "io",
+        "key": "read:/fixture/tools/zap/zap-2.17.0.jar",
+        "occurrence": "read:/fixture/tools/zap/zap-2.17.0.jar#1",
+        "ok": true
+      },
+      {
+        "type": "io",
+        "key": "read:/fixture/tools/zap/addons/controlled.zap",
+        "occurrence": "read:/fixture/tools/zap/addons/controlled.zap#1",
+        "ok": true
+      },
+      {
+        "type": "io",
+        "key": "readlink:/fixture/tools/zap/current",
+        "occurrence": "readlink:/fixture/tools/zap/current#1",
+        "ok": true
+      },
+      {
+        "type": "io",
+        "key": "read:.git-sha",
+        "occurrence": "read:.git-sha#1",
+        "ok": true
+      },
+      {
+        "type": "command",
+        "key": "create",
+        "occurrence": "command:create#1",
+        "bin": "kubectl",
+        "args": [
+          "--request-timeout=20s",
+          "create",
+          "-f",
+          "-",
+          "-o",
+          "json"
+        ],
+        "timeout": 30000,
+        "result": {
+          "status": 0,
+          "stdout": "{\"metadata\":{\"uid\":\"fixture-pod-uid\"}}",
+          "stderr": ""
+        },
+        "inputSha256": "ef4018f9c68d4e4297c7b74a3ab58010c00c5e039e2c2f0d2ca9b60db83a8793"
+      },
+      {
+        "type": "io",
+        "key": "mkdir:.devsecops",
+        "occurrence": "mkdir:.devsecops#1",
+        "ok": true
+      },
+      {
+        "type": "io",
+        "key": "write:.devsecops/zap-gate.json",
+        "occurrence": "write:.devsecops/zap-gate.json#1",
+        "ok": true
+      },
+      {
+        "type": "command",
+        "key": "pod-ready",
+        "occurrence": "command:pod-ready#1",
+        "bin": "kubectl",
+        "args": [
+          "--request-timeout=20s",
+          "-n",
+          "devsecops-execution",
+          "wait",
+          "--for=condition=Ready",
+          "pod/zap-270-abcdef",
+          "--timeout=180s"
+        ],
+        "timeout": 190000,
+        "result": {
+          "status": 0,
+          "stdout": "",
+          "stderr": ""
+        }
+      },
+      {
+        "type": "command",
+        "key": "security-probe",
+        "occurrence": "command:security-probe#1",
+        "bin": "kubectl",
+        "args": [
+          "--request-timeout=20s",
+          "-n",
+          "devsecops-execution",
+          "exec",
+          "-i",
+          "zap-270-abcdef",
+          "--",
+          "sh",
+          "-c",
+          "test \"$(id -u)\" = 10001; test ! -e /var/run/secrets/kubernetes.io/serviceaccount/token; ! touch /readonly-probe 2>/dev/null"
+        ],
+        "timeout": 90000,
+        "result": {
+          "status": 0,
+          "stdout": "",
+          "stderr": ""
+        }
+      },
+      {
+        "type": "canary",
+        "key": "listen",
+        "ip": "10.42.0.9",
+        "ok": true
+      },
+      {
+        "type": "canary",
+        "key": "baseline",
+        "event": "connect"
+      },
+      {
+        "type": "command",
+        "key": "isolation-probe",
+        "occurrence": "command:isolation-probe#1",
+        "bin": "kubectl",
+        "args": [
+          "--request-timeout=20s",
+          "-n",
+          "devsecops-execution",
+          "exec",
+          "-i",
+          "zap-270-abcdef",
+          "--",
+          "timeout",
+          "2",
+          "bash",
+          "-c",
+          "echo probe >/dev/tcp/10.42.0.9/12345"
+        ],
+        "timeout": 90000,
+        "result": {
+          "status": 124,
+          "stdout": "",
+          "stderr": ""
+        }
+      },
+      {
+        "type": "canary",
+        "key": "baseline",
+        "event": "connect"
+      },
+      {
+        "type": "canary",
+        "key": "baseline",
+        "event": "connect"
+      },
+      {
+        "type": "command",
+        "key": "isolation-probe",
+        "occurrence": "command:isolation-probe#2",
+        "bin": "kubectl",
+        "args": [
+          "--request-timeout=20s",
+          "-n",
+          "devsecops-execution",
+          "exec",
+          "-i",
+          "zap-270-abcdef",
+          "--",
+          "timeout",
+          "2",
+          "bash",
+          "-c",
+          "echo probe >/dev/tcp/10.42.0.9/12345"
+        ],
+        "timeout": 90000,
+        "result": {
+          "status": 124,
+          "stdout": "",
+          "stderr": ""
+        }
+      },
+      {
+        "type": "canary",
+        "key": "baseline",
+        "event": "connect"
+      },
+      {
+        "type": "command",
+        "key": "mkdir-work",
+        "occurrence": "command:mkdir-work#1",
+        "bin": "kubectl",
+        "args": [
+          "--request-timeout=20s",
+          "-n",
+          "devsecops-execution",
+          "exec",
+          "-i",
+          "zap-270-abcdef",
+          "--",
+          "mkdir",
+          "-p",
+          "/work/tools"
+        ],
+        "timeout": 90000,
+        "result": {
+          "status": 0,
+          "stdout": "",
+          "stderr": ""
+        }
+      },
+      {
+        "type": "stream-process",
+        "side": "source",
+        "bin": "tar",
+        "args": [
+          "cf",
+          "-",
+          "-C",
+          "/fixture/tools",
+          "zap"
+        ],
+        "status": 0
+      },
+      {
+        "type": "stream-process",
+        "side": "sink",
+        "bin": "kubectl",
+        "args": [
+          "--request-timeout=120s",
+          "-n",
+          "devsecops-execution",
+          "exec",
+          "-i",
+          "zap-270-abcdef",
+          "--",
+          "tar",
+          "xf",
+          "-",
+          "-C",
+          "/work/tools"
+        ],
+        "status": 0
+      },
+      {
+        "type": "transfer-timer",
+        "timeout": 150000,
+        "fired": false
+      },
+      {
+        "type": "io",
+        "key": "mkdtemp",
+        "occurrence": "mkdtemp#1",
+        "ok": true
+      },
+      {
+        "type": "io",
+        "key": "write:/tmp/zap-controlled/Synthetic.java",
+        "occurrence": "write:/tmp/zap-controlled/Synthetic.java#1",
+        "ok": true
+      },
+      {
+        "type": "io",
+        "key": "copy-auth-source",
+        "occurrence": "copy-auth-source#1",
+        "ok": true
+      },
+      {
+        "type": "command",
+        "key": "javac",
+        "occurrence": "command:javac#1",
+        "bin": "javac",
+        "args": [
+          "--release",
+          "21",
+          "/tmp/zap-controlled/Synthetic.java",
+          "/tmp/zap-controlled/ZapAuthProbe.java"
+        ],
+        "timeout": 30000,
+        "result": {
+          "status": 0,
+          "stdout": "",
+          "stderr": ""
+        }
+      },
+      {
+        "type": "command",
+        "key": "mkdir-work",
+        "occurrence": "command:mkdir-work#2",
+        "bin": "kubectl",
+        "args": [
+          "--request-timeout=20s",
+          "-n",
+          "devsecops-execution",
+          "exec",
+          "-i",
+          "zap-270-abcdef",
+          "--",
+          "mkdir",
+          "-p",
+          "/work/fixture"
+        ],
+        "timeout": 90000,
+        "result": {
+          "status": 0,
+          "stdout": "",
+          "stderr": ""
+        }
+      },
+      {
+        "type": "io",
+        "key": "read:/tmp/zap-controlled/Synthetic.class",
+        "occurrence": "read:/tmp/zap-controlled/Synthetic.class#1",
+        "ok": true
+      },
+      {
+        "type": "command",
+        "key": "class-transfer",
+        "occurrence": "command:class-transfer#1",
+        "bin": "kubectl",
+        "args": [
+          "--request-timeout=20s",
+          "-n",
+          "devsecops-execution",
+          "exec",
+          "-i",
+          "zap-270-abcdef",
+          "--",
+          "sh",
+          "-c",
+          "cat > /work/fixture/Synthetic.class"
+        ],
+        "timeout": 90000,
+        "result": {
+          "status": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        "inputSha256": "0133cd967dcaea488bc7169c9f43e8aac6003240cd7766e5538541ec2bf233b0"
+      },
+      {
+        "type": "command",
+        "key": "fixture-start",
+        "occurrence": "command:fixture-start#1",
+        "bin": "kubectl",
+        "args": [
+          "--request-timeout=20s",
+          "-n",
+          "devsecops-execution",
+          "exec",
+          "-i",
+          "zap-270-abcdef",
+          "--",
+          "sh",
+          "-c",
+          "java -Xmx32m -cp /work/fixture Synthetic >/work/fixture-server.log 2>&1 </dev/null & echo $! >/work/fixture.pid"
+        ],
+        "timeout": 90000,
+        "result": {
+          "status": 0,
+          "stdout": "",
+          "stderr": ""
+        }
+      },
+      {
+        "type": "command",
+        "key": "fixture-ready",
+        "occurrence": "command:fixture-ready#1",
+        "bin": "kubectl",
+        "args": [
+          "--request-timeout=20s",
+          "-n",
+          "devsecops-execution",
+          "exec",
+          "-i",
+          "zap-270-abcdef",
+          "--",
+          "timeout",
+          "1",
+          "bash",
+          "-c",
+          "echo >/dev/tcp/127.0.0.1/18083"
+        ],
+        "timeout": 90000,
+        "result": {
+          "status": 0,
+          "stdout": "",
+          "stderr": ""
+        }
+      },
+      {
+        "type": "command",
+        "key": "plan:fixture",
+        "occurrence": "command:plan:fixture#1",
+        "bin": "kubectl",
+        "args": [
+          "--request-timeout=20s",
+          "-n",
+          "devsecops-execution",
+          "exec",
+          "-i",
+          "zap-270-abcdef",
+          "--",
+          "sh",
+          "-c",
+          "cat > /work/fixture.yaml"
+        ],
+        "timeout": 90000,
+        "result": {
+          "status": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        "inputSha256": "5ff804b6844eebf7e1def549b91325c8e1704c9e9a4ba8a4193496da20a1e008"
+      },
+      {
+        "type": "command",
+        "key": "scan:fixture",
+        "occurrence": "command:scan:fixture#1",
+        "bin": "kubectl",
+        "args": [
+          "--request-timeout=20s",
+          "-n",
+          "devsecops-execution",
+          "exec",
+          "-i",
+          "zap-270-abcdef",
+          "--",
+          "java",
+          "-Xmx384m",
+          "-Djava.awt.headless=true",
+          "-Djava.util.prefs.userRoot=/work/prefs",
+          "-jar",
+          "/work/tools/zap/zap-2.17.0.jar",
+          "-cmd",
+          "-silent",
+          "-host",
+          "127.0.0.1",
+          "-port",
+          "18084",
+          "-dir",
+          "/work/fixture-home",
+          "-autorun",
+          "/work/fixture.yaml"
+        ],
+        "timeout": 150000,
+        "result": {
+          "status": 0,
+          "stdout": "",
+          "stderr": ""
+        }
+      },
+      {
+        "type": "io",
+        "key": "write:.devsecops/zap-fixture.log",
+        "occurrence": "write:.devsecops/zap-fixture.log#1",
+        "ok": true
+      },
+      {
+        "type": "command",
+        "key": "report:fixture",
+        "occurrence": "command:report:fixture#1",
+        "bin": "kubectl",
+        "args": [
+          "--request-timeout=20s",
+          "-n",
+          "devsecops-execution",
+          "exec",
+          "-i",
+          "zap-270-abcdef",
+          "--",
+          "cat",
+          "/work/fixture.json"
+        ],
+        "timeout": 90000,
+        "result": {
+          "status": 0,
+          "stdout": "{\"site\":[{\"@host\":\"127.0.0.1\",\"alerts\":[{\"pluginid\":\"10062\",\"name\":\"Controlled passive alert\",\"riskcode\":\"3\",\"confidence\":\"2\",\"count\":\"1\",\"instances\":[{\"uri\":\"http://10.43.0.9:8080/owners/find\",\"method\":\"GET\",\"param\":\"fixture\"}]}]}]}",
+          "stderr": ""
+        }
+      },
+      {
+        "type": "io",
+        "key": "write:.devsecops/zap-fixture-native.json",
+        "occurrence": "write:.devsecops/zap-fixture-native.json#1",
+        "ok": true
+      },
+      {
+        "type": "io",
+        "key": "write:.devsecops/zap-fixture-plan.json",
+        "occurrence": "write:.devsecops/zap-fixture-plan.json#1",
+        "ok": true
+      },
+      {
+        "type": "command",
+        "key": "du:/work/fixture-home",
+        "occurrence": "command:du:/work/fixture-home#1",
+        "bin": "kubectl",
+        "args": [
+          "--request-timeout=20s",
+          "-n",
+          "devsecops-execution",
+          "exec",
+          "-i",
+          "zap-270-abcdef",
+          "--",
+          "du",
+          "-sk",
+          "/work/fixture-home"
+        ],
+        "timeout": 90000,
+        "result": {
+          "status": 0,
+          "stdout": "128 /work/fixture-home",
+          "stderr": ""
+        }
+      },
+      {
+        "type": "command",
+        "key": "session-rm:/work/fixture-home",
+        "occurrence": "command:session-rm:/work/fixture-home#1",
+        "bin": "kubectl",
+        "args": [
+          "--request-timeout=20s",
+          "-n",
+          "devsecops-execution",
+          "exec",
+          "-i",
+          "zap-270-abcdef",
+          "--",
+          "rm",
+          "-rf",
+          "--",
+          "/work/fixture-home"
+        ],
+        "timeout": 90000,
+        "result": {
+          "status": 0,
+          "stdout": "",
+          "stderr": ""
+        }
+      },
+      {
+        "type": "io",
+        "key": "read:.devsecops/zap-fixture-native.json",
+        "occurrence": "read:.devsecops/zap-fixture-native.json#1",
+        "ok": true
+      },
+      {
+        "type": "io",
+        "key": "read:infra/security/zap-confirmations.json",
+        "occurrence": "read:infra/security/zap-confirmations.json#1",
+        "ok": true
+      },
+      {
+        "type": "command",
+        "key": "plan:fixture-negative",
+        "occurrence": "command:plan:fixture-negative#1",
+        "bin": "kubectl",
+        "args": [
+          "--request-timeout=20s",
+          "-n",
+          "devsecops-execution",
+          "exec",
+          "-i",
+          "zap-270-abcdef",
+          "--",
+          "sh",
+          "-c",
+          "cat > /work/fixture-negative.yaml"
+        ],
+        "timeout": 90000,
+        "result": {
+          "status": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        "inputSha256": "c93d3d391d5d18a1c5b1671b748b389eecc3af82788afd731e8d5ca493ec0acb"
+      },
+      {
+        "type": "command",
+        "key": "scan:fixture-negative",
+        "occurrence": "command:scan:fixture-negative#1",
+        "bin": "kubectl",
+        "args": [
+          "--request-timeout=20s",
+          "-n",
+          "devsecops-execution",
+          "exec",
+          "-i",
+          "zap-270-abcdef",
+          "--",
+          "java",
+          "-Xmx384m",
+          "-Djava.awt.headless=true",
+          "-Djava.util.prefs.userRoot=/work/prefs",
+          "-jar",
+          "/work/tools/zap/zap-2.17.0.jar",
+          "-cmd",
+          "-silent",
+          "-host",
+          "127.0.0.1",
+          "-port",
+          "18084",
+          "-dir",
+          "/work/fixture-negative-home",
+          "-autorun",
+          "/work/fixture-negative.yaml"
+        ],
+        "timeout": 150000,
+        "result": {
+          "status": 0,
+          "stdout": "",
+          "stderr": ""
+        }
+      },
+      {
+        "type": "io",
+        "key": "write:.devsecops/zap-fixture-negative.log",
+        "occurrence": "write:.devsecops/zap-fixture-negative.log#1",
+        "ok": true
+      },
+      {
+        "type": "command",
+        "key": "report:fixture-negative",
+        "occurrence": "command:report:fixture-negative#1",
+        "bin": "kubectl",
+        "args": [
+          "--request-timeout=20s",
+          "-n",
+          "devsecops-execution",
+          "exec",
+          "-i",
+          "zap-270-abcdef",
+          "--",
+          "cat",
+          "/work/fixture-negative.json"
+        ],
+        "timeout": 90000,
+        "result": {
+          "status": 0,
+          "stdout": "{\"site\":[{\"@host\":\"127.0.0.1\",\"alerts\":[]}]}",
+          "stderr": ""
+        }
+      },
+      {
+        "type": "io",
+        "key": "write:.devsecops/zap-fixture-negative-native.json",
+        "occurrence": "write:.devsecops/zap-fixture-negative-native.json#1",
+        "ok": true
+      },
+      {
+        "type": "io",
+        "key": "write:.devsecops/zap-fixture-negative-plan.json",
+        "occurrence": "write:.devsecops/zap-fixture-negative-plan.json#1",
+        "ok": true
+      },
+      {
+        "type": "command",
+        "key": "du:/work/fixture-negative-home",
+        "occurrence": "command:du:/work/fixture-negative-home#1",
+        "bin": "kubectl",
+        "args": [
+          "--request-timeout=20s",
+          "-n",
+          "devsecops-execution",
+          "exec",
+          "-i",
+          "zap-270-abcdef",
+          "--",
+          "du",
+          "-sk",
+          "/work/fixture-negative-home"
+        ],
+        "timeout": 90000,
+        "result": {
+          "status": 0,
+          "stdout": "128 /work/fixture-negative-home",
+          "stderr": ""
+        }
+      },
+      {
+        "type": "command",
+        "key": "session-rm:/work/fixture-negative-home",
+        "occurrence": "command:session-rm:/work/fixture-negative-home#1",
+        "bin": "kubectl",
+        "args": [
+          "--request-timeout=20s",
+          "-n",
+          "devsecops-execution",
+          "exec",
+          "-i",
+          "zap-270-abcdef",
+          "--",
+          "rm",
+          "-rf",
+          "--",
+          "/work/fixture-negative-home"
+        ],
+        "timeout": 90000,
+        "result": {
+          "status": 0,
+          "stdout": "",
+          "stderr": ""
+        }
+      },
+      {
+        "type": "io",
+        "key": "read:.devsecops/zap-fixture-negative-native.json",
+        "occurrence": "read:.devsecops/zap-fixture-negative-native.json#1",
+        "ok": true
+      },
+      {
+        "type": "io",
+        "key": "write:.devsecops/zap-fixture-negative-report.json",
+        "occurrence": "write:.devsecops/zap-fixture-negative-report.json#1",
+        "ok": true
+      },
+      {
+        "type": "io",
+        "key": "write:.devsecops/zap-fixture-report.json",
+        "occurrence": "write:.devsecops/zap-fixture-report.json#1",
+        "ok": true
+      },
+      {
+        "type": "command",
+        "key": "deployment",
+        "occurrence": "command:deployment#1",
+        "bin": "kubectl",
+        "args": [
+          "--request-timeout=20s",
+          "-n",
+          "petclinic",
+          "get",
+          "deploy",
+          "petclinic",
+          "-o",
+          "json"
+        ],
+        "timeout": 30000,
+        "result": {
+          "status": 0,
+          "stdout": "{\"spec\":{\"template\":{\"spec\":{\"containers\":[{\"image\":\"registry.invalid/controlled@sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\"}]}}}}",
+          "stderr": ""
+        }
+      },
+      {
+        "type": "command",
+        "key": "service",
+        "occurrence": "command:service#1",
+        "bin": "kubectl",
+        "args": [
+          "--request-timeout=20s",
+          "-n",
+          "petclinic",
+          "get",
+          "service",
+          "petclinic",
+          "-o",
+          "json"
+        ],
+        "timeout": 30000,
+        "result": {
+          "status": 0,
+          "stdout": "{\"spec\":{\"clusterIP\":\"10.43.0.9\",\"ports\":[{\"port\":8080}]}}",
+          "stderr": ""
+        }
+      },
+      {
+        "type": "io",
+        "key": "read:/tmp/zap-controlled/ZapAuthProbe.class",
+        "occurrence": "read:/tmp/zap-controlled/ZapAuthProbe.class#1",
+        "ok": true
+      },
+      {
+        "type": "command",
+        "key": "class-transfer",
+        "occurrence": "command:class-transfer#2",
+        "bin": "kubectl",
+        "args": [
+          "--request-timeout=20s",
+          "-n",
+          "devsecops-execution",
+          "exec",
+          "-i",
+          "zap-270-abcdef",
+          "--",
+          "sh",
+          "-c",
+          "cat > /work/fixture/ZapAuthProbe.class"
+        ],
+        "timeout": 90000,
+        "result": {
+          "status": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        "inputSha256": "0133cd967dcaea488bc7169c9f43e8aac6003240cd7766e5538541ec2bf233b0"
+      },
+      {
+        "type": "command",
+        "key": "auth-probe",
+        "occurrence": "command:auth-probe#1",
+        "bin": "kubectl",
+        "args": [
+          "--request-timeout=20s",
+          "-n",
+          "devsecops-execution",
+          "exec",
+          "-i",
+          "zap-270-abcdef",
+          "--",
+          "java",
+          "-Xmx32m",
+          "-cp",
+          "/work/fixture",
+          "ZapAuthProbe",
+          "http://10.43.0.9:8080"
+        ],
+        "timeout": 240000,
+        "result": {
+          "status": 0,
+          "stdout": "{\"status\":\"success\",\"fixture\":[{\"case\":\"synthetic-roles-only\",\"status\":200}],\"business\":[{\"case\":\"public-get-observation\",\"status\":200}],\"productionUnsupported\":[\"real identity model\"],\"businessScope\":\"Existing public GET only\"}",
+          "stderr": ""
+        }
+      },
+      {
+        "type": "io",
+        "key": "write:.devsecops/zap-auth-readonly.json",
+        "occurrence": "write:.devsecops/zap-auth-readonly.json#1",
+        "ok": true
+      },
+      {
+        "type": "command",
+        "key": "fixture-stop",
+        "occurrence": "command:fixture-stop#1",
+        "bin": "kubectl",
+        "args": [
+          "--request-timeout=20s",
+          "-n",
+          "devsecops-execution",
+          "exec",
+          "-i",
+          "zap-270-abcdef",
+          "--",
+          "sh",
+          "-c",
+          "kill \"$(cat /work/fixture.pid)\""
+        ],
+        "timeout": 90000,
+        "result": {
+          "status": 0,
+          "stdout": "",
+          "stderr": ""
+        }
+      },
+      {
+        "type": "command",
+        "key": "deployment",
+        "occurrence": "command:deployment#2",
+        "bin": "kubectl",
+        "args": [
+          "--request-timeout=20s",
+          "-n",
+          "petclinic",
+          "get",
+          "deploy",
+          "petclinic",
+          "-o",
+          "json"
+        ],
+        "timeout": 30000,
+        "result": {
+          "status": 0,
+          "stdout": "{\"spec\":{\"template\":{\"spec\":{\"containers\":[{\"image\":\"registry.invalid/controlled@sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\"}]}}}}",
+          "stderr": ""
+        }
+      },
+      {
+        "type": "command",
+        "key": "service",
+        "occurrence": "command:service#2",
+        "bin": "kubectl",
+        "args": [
+          "--request-timeout=20s",
+          "-n",
+          "petclinic",
+          "get",
+          "service",
+          "petclinic",
+          "-o",
+          "json"
+        ],
+        "timeout": 30000,
+        "result": {
+          "status": 0,
+          "stdout": "{\"spec\":{\"clusterIP\":\"10.43.0.9\",\"ports\":[{\"port\":8080}]}}",
+          "stderr": ""
+        }
+      },
+      {
+        "type": "command",
+        "key": "plan:business",
+        "occurrence": "command:plan:business#1",
+        "bin": "kubectl",
+        "args": [
+          "--request-timeout=20s",
+          "-n",
+          "devsecops-execution",
+          "exec",
+          "-i",
+          "zap-270-abcdef",
+          "--",
+          "sh",
+          "-c",
+          "cat > /work/business.yaml"
+        ],
+        "timeout": 90000,
+        "result": {
+          "status": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        "inputSha256": "5c7043242b83684959d55a4911319c096faa34e7b57bc7245c3c799b006e56ba"
+      },
+      {
+        "type": "command",
+        "key": "scan:business",
+        "occurrence": "command:scan:business#1",
+        "bin": "kubectl",
+        "args": [
+          "--request-timeout=20s",
+          "-n",
+          "devsecops-execution",
+          "exec",
+          "-i",
+          "zap-270-abcdef",
+          "--",
+          "java",
+          "-Xmx384m",
+          "-Djava.awt.headless=true",
+          "-Djava.util.prefs.userRoot=/work/prefs",
+          "-jar",
+          "/work/tools/zap/zap-2.17.0.jar",
+          "-cmd",
+          "-silent",
+          "-host",
+          "127.0.0.1",
+          "-port",
+          "18084",
+          "-dir",
+          "/work/business-home",
+          "-autorun",
+          "/work/business.yaml"
+        ],
+        "timeout": 150000,
+        "result": {
+          "status": 0,
+          "stdout": "",
+          "stderr": ""
+        }
+      },
+      {
+        "type": "io",
+        "key": "write:.devsecops/zap-business.log",
+        "occurrence": "write:.devsecops/zap-business.log#1",
+        "ok": true
+      },
+      {
+        "type": "command",
+        "key": "report:business",
+        "occurrence": "command:report:business#1",
+        "bin": "kubectl",
+        "args": [
+          "--request-timeout=20s",
+          "-n",
+          "devsecops-execution",
+          "exec",
+          "-i",
+          "zap-270-abcdef",
+          "--",
+          "cat",
+          "/work/business.json"
+        ],
+        "timeout": 90000,
+        "result": {
+          "status": 0,
+          "stdout": "{\"site\":[{\"@host\":\"10.43.0.9\",\"alerts\":[]}]}",
+          "stderr": ""
+        }
+      },
+      {
+        "type": "command",
+        "key": "report:business:xml",
+        "occurrence": "command:report:business:xml#1",
+        "bin": "kubectl",
+        "args": [
+          "--request-timeout=20s",
+          "-n",
+          "devsecops-execution",
+          "exec",
+          "-i",
+          "zap-270-abcdef",
+          "--",
+          "cat",
+          "/work/business.xml"
+        ],
+        "timeout": 90000,
+        "result": {
+          "status": 0,
+          "stdout": "<synthetic-zap-report/>",
+          "stderr": ""
+        }
+      },
+      {
+        "type": "io",
+        "key": "write:.devsecops/zap-business-report.xml",
+        "occurrence": "write:.devsecops/zap-business-report.xml#1",
+        "ok": true
+      },
+      {
+        "type": "io",
+        "key": "write:.devsecops/zap-business-native.json",
+        "occurrence": "write:.devsecops/zap-business-native.json#1",
+        "ok": true
+      },
+      {
+        "type": "io",
+        "key": "write:.devsecops/zap-business-plan.json",
+        "occurrence": "write:.devsecops/zap-business-plan.json#1",
+        "ok": true
+      },
+      {
+        "type": "command",
+        "key": "du:/work/business-home",
+        "occurrence": "command:du:/work/business-home#1",
+        "bin": "kubectl",
+        "args": [
+          "--request-timeout=20s",
+          "-n",
+          "devsecops-execution",
+          "exec",
+          "-i",
+          "zap-270-abcdef",
+          "--",
+          "du",
+          "-sk",
+          "/work/business-home"
+        ],
+        "timeout": 90000,
+        "result": {
+          "status": 0,
+          "stdout": "128 /work/business-home",
+          "stderr": ""
+        }
+      },
+      {
+        "type": "command",
+        "key": "session-rm:/work/business-home",
+        "occurrence": "command:session-rm:/work/business-home#1",
+        "bin": "kubectl",
+        "args": [
+          "--request-timeout=20s",
+          "-n",
+          "devsecops-execution",
+          "exec",
+          "-i",
+          "zap-270-abcdef",
+          "--",
+          "rm",
+          "-rf",
+          "--",
+          "/work/business-home"
+        ],
+        "timeout": 90000,
+        "result": {
+          "status": 0,
+          "stdout": "",
+          "stderr": ""
+        }
+      },
+      {
+        "type": "io",
+        "key": "read:.devsecops/zap-business-native.json",
+        "occurrence": "read:.devsecops/zap-business-native.json#1",
+        "ok": true
+      },
+      {
+        "type": "io",
+        "key": "write:.devsecops/zap-business-report.json",
+        "occurrence": "write:.devsecops/zap-business-report.json#1",
+        "ok": true
+      },
+      {
+        "type": "io",
+        "key": "rm:/tmp/zap-controlled",
+        "occurrence": "rm:/tmp/zap-controlled#1",
+        "ok": true
+      },
+      {
+        "type": "command",
+        "key": "memory-peak",
+        "occurrence": "command:memory-peak#1",
+        "bin": "kubectl",
+        "args": [
+          "--request-timeout=20s",
+          "-n",
+          "devsecops-execution",
+          "exec",
+          "-i",
+          "zap-270-abcdef",
+          "--",
+          "cat",
+          "/sys/fs/cgroup/memory.peak"
+        ],
+        "timeout": 90000,
+        "result": {
+          "status": 0,
+          "stdout": "33554432",
+          "stderr": ""
+        }
+      },
+      {
+        "type": "canary",
+        "key": "close"
+      }
+    ],
+    "reports": {
+      ".devsecops/zap-gate.json": "{\n  \"status\": \"failed\",\n  \"source\": \"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\n  \"pod\": \"zap-270-abcdef\",\n  \"namespace\": \"devsecops-execution\",\n  \"startedAt\": \"2026-11-02T00:00:00.000Z\",\n  \"cleanup\": false,\n  \"uid\": \"fixture-pod-uid\"\n}",
+      ".devsecops/zap-fixture.log": "",
+      ".devsecops/zap-fixture-native.json": "{\n  \"site\": [\n    {\n      \"@host\": \"127.0.0.1\",\n      \"alerts\": [\n        {\n          \"pluginid\": \"10062\",\n          \"name\": \"Controlled passive alert\",\n          \"riskcode\": \"3\",\n          \"confidence\": \"2\",\n          \"count\": \"1\",\n          \"instances\": [\n            {\n              \"uri\": \"http://10.43.0.9:8080/owners/find\",\n              \"method\": \"GET\",\n              \"param\": \"fixture\"\n            }\n          ]\n        }\n      ]\n    }\n  ]\n}",
+      ".devsecops/zap-fixture-plan.json": "{\n  \"env\": {\n    \"contexts\": [\n      {\n        \"name\": \"fixture\",\n        \"urls\": [\n          \"http://127.0.0.1:18083/\"\n        ]\n      }\n    ],\n    \"parameters\": {\n      \"failOnError\": true,\n      \"failOnWarning\": false\n    }\n  },\n  \"jobs\": [\n    {\n      \"type\": \"requestor\",\n      \"requests\": [\n        {\n          \"url\": \"http://127.0.0.1:18083/\",\n          \"method\": \"GET\",\n          \"responseCode\": 200\n        }\n      ]\n    },\n    {\n      \"type\": \"passiveScan-wait\",\n      \"parameters\": {\n        \"maxDuration\": 1\n      }\n    },\n    {\n      \"type\": \"report\",\n      \"parameters\": {\n        \"template\": \"traditional-json\",\n        \"reportDir\": \"/work\",\n        \"reportFile\": \"fixture\",\n        \"displayReport\": false\n      }\n    }\n  ]\n}",
+      ".devsecops/zap-fixture-negative.log": "",
+      ".devsecops/zap-fixture-negative-native.json": "{\n  \"site\": [\n    {\n      \"@host\": \"127.0.0.1\",\n      \"alerts\": []\n    }\n  ]\n}",
+      ".devsecops/zap-fixture-negative-plan.json": "{\n  \"env\": {\n    \"contexts\": [\n      {\n        \"name\": \"fixture-negative\",\n        \"urls\": [\n          \"http://127.0.0.1:18083/clean\"\n        ]\n      }\n    ],\n    \"parameters\": {\n      \"failOnError\": true,\n      \"failOnWarning\": false\n    }\n  },\n  \"jobs\": [\n    {\n      \"type\": \"requestor\",\n      \"requests\": [\n        {\n          \"url\": \"http://127.0.0.1:18083/clean\",\n          \"method\": \"GET\",\n          \"responseCode\": 200\n        }\n      ]\n    },\n    {\n      \"type\": \"passiveScan-wait\",\n      \"parameters\": {\n        \"maxDuration\": 1\n      }\n    },\n    {\n      \"type\": \"report\",\n      \"parameters\": {\n        \"template\": \"traditional-json\",\n        \"reportDir\": \"/work\",\n        \"reportFile\": \"fixture-negative\",\n        \"displayReport\": false\n      }\n    }\n  ]\n}",
+      ".devsecops/zap-fixture-negative-report.json": "{\n  \"site\": [\n    {\n      \"@host\": \"127.0.0.1\",\n      \"alerts\": []\n    }\n  ]\n}",
+      ".devsecops/zap-fixture-report.json": "{\n  \"site\": [\n    {\n      \"@host\": \"127.0.0.1\",\n      \"alerts\": [\n        {\n          \"pluginid\": \"10062\",\n          \"name\": \"Controlled passive alert\",\n          \"riskcode\": \"3\",\n          \"confidence\": \"2\",\n          \"count\": \"1\",\n          \"instances\": [\n            {\n              \"uri\": \"http://10.43.0.9:8080/owners/find\",\n              \"method\": \"GET\",\n              \"param\": \"fixture\"\n            }\n          ]\n        }\n      ]\n    }\n  ]\n}",
+      ".devsecops/zap-auth-readonly.json": "{\n  \"status\": \"success\",\n  \"fixture\": [\n    {\n      \"case\": \"synthetic-roles-only\",\n      \"status\": 200\n    }\n  ],\n  \"business\": [\n    {\n      \"case\": \"public-get-observation\",\n      \"status\": 200\n    }\n  ],\n  \"productionUnsupported\": [\n    \"real identity model\"\n  ],\n  \"businessScope\": \"Existing public GET only\",\n  \"targetImage\": \"registry.invalid/controlled@sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\n  \"bodyContentSaved\": false\n}",
+      ".devsecops/zap-business.log": "",
+      ".devsecops/zap-business-report.xml": "<synthetic-zap-report/>",
+      ".devsecops/zap-business-native.json": "{\n  \"site\": [\n    {\n      \"@host\": \"10.43.0.9\",\n      \"alerts\": []\n    }\n  ]\n}",
+      ".devsecops/zap-business-plan.json": "{\n  \"env\": {\n    \"contexts\": [\n      {\n        \"name\": \"business\",\n        \"urls\": [\n          \"http://10.43.0.9:8080/\",\n          \"http://10.43.0.9:8080/owners/find\",\n          \"http://10.43.0.9:8080/vets.html\",\n          \"http://10.43.0.9:8080/actuator/health\"\n        ]\n      }\n    ],\n    \"parameters\": {\n      \"failOnError\": true,\n      \"failOnWarning\": false\n    }\n  },\n  \"jobs\": [\n    {\n      \"type\": \"requestor\",\n      \"requests\": [\n        {\n          \"url\": \"http://10.43.0.9:8080/\",\n          \"method\": \"GET\",\n          \"responseCode\": 200\n        },\n        {\n          \"url\": \"http://10.43.0.9:8080/owners/find\",\n          \"method\": \"GET\",\n          \"responseCode\": 200\n        },\n        {\n          \"url\": \"http://10.43.0.9:8080/vets.html\",\n          \"method\": \"GET\",\n          \"responseCode\": 200\n        },\n        {\n          \"url\": \"http://10.43.0.9:8080/actuator/health\",\n          \"method\": \"GET\",\n          \"responseCode\": 200\n        }\n      ]\n    },\n    {\n      \"type\": \"passiveScan-wait\",\n      \"parameters\": {\n        \"maxDuration\": 1\n      }\n    },\n    {\n      \"type\": \"report\",\n      \"parameters\": {\n        \"template\": \"traditional-json\",\n        \"reportDir\": \"/work\",\n        \"reportFile\": \"business\",\n        \"displayReport\": false\n      }\n    },\n    {\n      \"type\": \"report\",\n      \"parameters\": {\n        \"template\": \"traditional-xml\",\n        \"reportDir\": \"/work\",\n        \"reportFile\": \"business\",\n        \"displayReport\": false\n      }\n    }\n  ]\n}",
+      ".devsecops/zap-business-report.json": "{\n  \"site\": [\n    {\n      \"@host\": \"10.43.0.9\",\n      \"alerts\": []\n    }\n  ]\n}"
+    },
+    "classifierInput": {
+      "report": {
+        "site": [
+          {
+            "@host": "10.43.0.9",
+            "alerts": []
+          }
+        ]
+      },
+      "context": {
+        "targetImage": "registry.invalid/controlled@sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "reportSha256": "08ae3ab5b27a50a9b142bc8db5022385d93c4ae75005562ea403003484bfd449"
+      },
+      "approved": {
+        "schema": 1,
+        "confirmations": []
+      }
+    }
+  }
+}

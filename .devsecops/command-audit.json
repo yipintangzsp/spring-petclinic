@@ -1,0 +1,369 @@
+{
+  "status": "success",
+  "scope": "tracked Python and Shell scripts; conservative local AST/inventory, no interprocedural or remote-shell exploit proof",
+  "items": [
+    {
+      "path": "infra/analytics/controlled.py",
+      "line": 26,
+      "classification": "unknown",
+      "reason": "dynamic arguments, environment, wrapper or remote-shell trust needs manual review; argument-list calls are not proof of injection",
+      "sink": "subprocess.run"
+    },
+    {
+      "path": "infra/analytics/controlled.py",
+      "line": 98,
+      "classification": "safe",
+      "reason": "fixed command and literal arguments; scoped to this call only",
+      "sink": "subprocess.check_output"
+    },
+    {
+      "path": "infra/analytics/controlled.py",
+      "line": 99,
+      "classification": "safe",
+      "reason": "fixed command and literal arguments; scoped to this call only",
+      "sink": "subprocess.check_output"
+    },
+    {
+      "path": "infra/analytics/controlled.py",
+      "line": 100,
+      "classification": "safe",
+      "reason": "fixed command and literal arguments; scoped to this call only",
+      "sink": "subprocess.check_output"
+    },
+    {
+      "path": "infra/analytics/install_host_resources.py",
+      "line": 26,
+      "classification": "unknown",
+      "reason": "dynamic arguments, environment, wrapper or remote-shell trust needs manual review; argument-list calls are not proof of injection",
+      "sink": "subprocess.run"
+    },
+    {
+      "path": "infra/analytics/install_host_resources.py",
+      "line": 29,
+      "classification": "unknown",
+      "reason": "dynamic arguments, environment, wrapper or remote-shell trust needs manual review; argument-list calls are not proof of injection",
+      "sink": "subprocess.run"
+    },
+    {
+      "path": "infra/analytics/install_host_resources.py",
+      "line": 30,
+      "classification": "unknown",
+      "reason": "dynamic arguments, environment, wrapper or remote-shell trust needs manual review; argument-list calls are not proof of injection",
+      "sink": "subprocess.run"
+    },
+    {
+      "path": "infra/analytics/run_airflow.py",
+      "line": 83,
+      "classification": "unknown",
+      "reason": "dynamic arguments, environment, wrapper or remote-shell trust needs manual review; argument-list calls are not proof of injection",
+      "sink": "subprocess.run"
+    },
+    {
+      "path": "infra/analytics/test_clinic_task.py",
+      "line": 64,
+      "classification": "unknown",
+      "reason": "dynamic arguments, environment, wrapper or remote-shell trust needs manual review; argument-list calls are not proof of injection",
+      "sink": "subprocess.run"
+    },
+    {
+      "path": "infra/analytics/verify_superset.py",
+      "line": 39,
+      "classification": "unknown",
+      "reason": "dynamic arguments, environment, wrapper or remote-shell trust needs manual review; argument-list calls are not proof of injection",
+      "sink": "subprocess.run"
+    },
+    {
+      "path": "infra/data/audit-postgres.py",
+      "line": 6,
+      "classification": "unknown",
+      "reason": "dynamic arguments, environment, wrapper or remote-shell trust needs manual review; argument-list calls are not proof of injection",
+      "sink": "subprocess.check_output(['ssh', '-o', 'BatchMode=yes', '192.168.1.58', f'sudo -n k3s kubectl exec -i -n ns-data deploy/postgresql -- psql -X -v ON_ERROR_STOP=1 -U postgres -d {db} -At'], input=q, text=True, timeout=60).strip"
+    },
+    {
+      "path": "infra/data/audit-postgres.py",
+      "line": 6,
+      "classification": "unknown",
+      "reason": "dynamic arguments, environment, wrapper or remote-shell trust needs manual review; argument-list calls are not proof of injection",
+      "sink": "subprocess.check_output"
+    },
+    {
+      "path": "infra/devops-lab/iac/isolated/test_build_inputs.py",
+      "line": 31,
+      "classification": "unknown",
+      "reason": "dynamic arguments, environment, wrapper or remote-shell trust needs manual review; argument-list calls are not proof of injection",
+      "sink": "subprocess.run"
+    },
+    {
+      "path": "infra/devops-lab/iac/isolated/worker.py",
+      "line": 213,
+      "classification": "unknown",
+      "reason": "dynamic arguments, environment, wrapper or remote-shell trust needs manual review; argument-list calls are not proof of injection",
+      "sink": "subprocess.Popen"
+    },
+    {
+      "path": "infra/devops-lab/iac/isolated/worker.py",
+      "line": 316,
+      "classification": "unknown",
+      "reason": "dynamic arguments, environment, wrapper or remote-shell trust needs manual review; argument-list calls are not proof of injection",
+      "sink": "subprocess.Popen"
+    },
+    {
+      "path": "infra/devops-lab/iac/run.py",
+      "line": 82,
+      "classification": "unknown",
+      "reason": "dynamic arguments, environment, wrapper or remote-shell trust needs manual review; argument-list calls are not proof of injection",
+      "sink": "subprocess.check_output"
+    },
+    {
+      "path": "infra/devops-lab/iac/run.py",
+      "line": 93,
+      "classification": "unknown",
+      "reason": "dynamic arguments, environment, wrapper or remote-shell trust needs manual review; argument-list calls are not proof of injection",
+      "sink": "subprocess.check_output(['git', 'ls-tree', '-r', '--name-only', args.revision, '--', prefix], cwd=ROOT, text=True).splitlines"
+    },
+    {
+      "path": "infra/devops-lab/iac/run.py",
+      "line": 94,
+      "classification": "unknown",
+      "reason": "dynamic arguments, environment, wrapper or remote-shell trust needs manual review; argument-list calls are not proof of injection",
+      "sink": "subprocess.check_output"
+    },
+    {
+      "path": "infra/devops-lab/iac/run.py",
+      "line": 93,
+      "classification": "unknown",
+      "reason": "dynamic arguments, environment, wrapper or remote-shell trust needs manual review; argument-list calls are not proof of injection",
+      "sink": "subprocess.check_output"
+    },
+    {
+      "path": "infra/devops-lab/rollouts/run.py",
+      "line": 42,
+      "classification": "unknown",
+      "reason": "dynamic arguments, environment, wrapper or remote-shell trust needs manual review; argument-list calls are not proof of injection",
+      "sink": "subprocess.run"
+    },
+    {
+      "path": "infra/devops-lab/rollouts/run.py",
+      "line": 37,
+      "classification": "unknown",
+      "reason": "dynamic arguments, environment, wrapper or remote-shell trust needs manual review; argument-list calls are not proof of injection",
+      "sink": "subprocess.check_output"
+    },
+    {
+      "path": "infra/harbor/warm_trivy_db.py",
+      "line": 66,
+      "classification": "unknown",
+      "reason": "dynamic arguments, environment, wrapper or remote-shell trust needs manual review; argument-list calls are not proof of injection",
+      "sink": "subprocess.run"
+    },
+    {
+      "path": "infra/harbor/warm_trivy_db.py",
+      "line": 99,
+      "classification": "unknown",
+      "reason": "dynamic arguments, environment, wrapper or remote-shell trust needs manual review; argument-list calls are not proof of injection",
+      "sink": "subprocess.Popen"
+    },
+    {
+      "path": "infra/observability/audit-production.py",
+      "line": 11,
+      "classification": "unknown",
+      "reason": "dynamic arguments, environment, wrapper or remote-shell trust needs manual review; argument-list calls are not proof of injection",
+      "sink": "subprocess.check_output"
+    },
+    {
+      "path": "infra/observability/configure-collectors.py",
+      "line": 6,
+      "classification": "safe",
+      "reason": "fixed command and literal arguments; scoped to this call only",
+      "sink": "subprocess.run"
+    },
+    {
+      "path": "infra/observability/configure-collectors.py",
+      "line": 5,
+      "classification": "unknown",
+      "reason": "dynamic arguments, environment, wrapper or remote-shell trust needs manual review; argument-list calls are not proof of injection",
+      "sink": "subprocess.check_output"
+    },
+    {
+      "path": "infra/observability/configure-control-relay.py",
+      "line": 4,
+      "classification": "unknown",
+      "reason": "dynamic arguments, environment, wrapper or remote-shell trust needs manual review; argument-list calls are not proof of injection",
+      "sink": "subprocess.check_output"
+    },
+    {
+      "path": "infra/observability/configure-filebeat-retention.py",
+      "line": 20,
+      "classification": "unknown",
+      "reason": "dynamic arguments, environment, wrapper or remote-shell trust needs manual review; argument-list calls are not proof of injection",
+      "sink": "subprocess.check_output"
+    },
+    {
+      "path": "infra/observability/configure-jenkins-resources.py",
+      "line": 11,
+      "classification": "unknown",
+      "reason": "dynamic arguments, environment, wrapper or remote-shell trust needs manual review; argument-list calls are not proof of injection",
+      "sink": "subprocess.run"
+    },
+    {
+      "path": "infra/observability/configure-jenkins-resources.py",
+      "line": 7,
+      "classification": "safe",
+      "reason": "fixed command and literal arguments; scoped to this call only",
+      "sink": "subprocess.check_output"
+    },
+    {
+      "path": "infra/observability/configure-upgrade-kibana.py",
+      "line": 4,
+      "classification": "unknown",
+      "reason": "dynamic arguments, environment, wrapper or remote-shell trust needs manual review; argument-list calls are not proof of injection",
+      "sink": "subprocess.check_output"
+    },
+    {
+      "path": "infra/observability/platform-snapshot.py",
+      "line": 65,
+      "classification": "unknown",
+      "reason": "dynamic arguments, environment, wrapper or remote-shell trust needs manual review; argument-list calls are not proof of injection",
+      "sink": "subprocess.run"
+    },
+    {
+      "path": "infra/observability/platform-snapshot.py",
+      "line": 7,
+      "classification": "unknown",
+      "reason": "dynamic arguments, environment, wrapper or remote-shell trust needs manual review; argument-list calls are not proof of injection",
+      "sink": "subprocess.check_output"
+    },
+    {
+      "path": "infra/observability/run-capacity-load.py",
+      "line": 11,
+      "classification": "safe",
+      "reason": "fixed command and literal arguments; scoped to this call only",
+      "sink": "subprocess.check_output"
+    },
+    {
+      "path": "infra/observability/run-capacity-load.py",
+      "line": 25,
+      "classification": "safe",
+      "reason": "fixed command and literal arguments; scoped to this call only",
+      "sink": "subprocess.check_output"
+    },
+    {
+      "path": "infra/observability/run-capacity-load.py",
+      "line": 26,
+      "classification": "safe",
+      "reason": "fixed command and literal arguments; scoped to this call only",
+      "sink": "subprocess.check_output"
+    },
+    {
+      "path": "infra/observability/run-ha-maintenance.py",
+      "line": 30,
+      "classification": "unknown",
+      "reason": "dynamic arguments, environment, wrapper or remote-shell trust needs manual review; argument-list calls are not proof of injection",
+      "sink": "subprocess.check_output"
+    },
+    {
+      "path": "infra/observability/run-ha-maintenance.py",
+      "line": 87,
+      "classification": "unknown",
+      "reason": "dynamic arguments, environment, wrapper or remote-shell trust needs manual review; argument-list calls are not proof of injection",
+      "sink": "subprocess.Popen"
+    },
+    {
+      "path": "infra/observability/run-isolated-drills.py",
+      "line": 24,
+      "classification": "unknown",
+      "reason": "dynamic arguments, environment, wrapper or remote-shell trust needs manual review; argument-list calls are not proof of injection",
+      "sink": "subprocess.check_output"
+    },
+    {
+      "path": "infra/observability/validate-ha-workers.py",
+      "line": 22,
+      "classification": "unknown",
+      "reason": "dynamic arguments, environment, wrapper or remote-shell trust needs manual review; argument-list calls are not proof of injection",
+      "sink": "subprocess.check_output"
+    },
+    {
+      "path": "infra/observability/verify-compressed-metrics.py",
+      "line": 23,
+      "classification": "safe",
+      "reason": "fixed command and literal arguments; scoped to this call only",
+      "sink": "subprocess.check_output"
+    },
+    {
+      "path": "infra/observability/verify-upgrade-trace.py",
+      "line": 8,
+      "classification": "unknown",
+      "reason": "dynamic arguments, environment, wrapper or remote-shell trust needs manual review; argument-list calls are not proof of injection",
+      "sink": "subprocess.check_output"
+    },
+    {
+      "path": "infra/observability/wait-gitops.sh",
+      "line": 5,
+      "classification": "unknown",
+      "reason": "shell execution/expansion inventory; no shell data-flow proof"
+    },
+    {
+      "path": "infra/observability/wait-gitops.sh",
+      "line": 8,
+      "classification": "unknown",
+      "reason": "shell execution/expansion inventory; no shell data-flow proof"
+    },
+    {
+      "path": "infra/observability/wait-gitops.sh",
+      "line": 11,
+      "classification": "unknown",
+      "reason": "shell execution/expansion inventory; no shell data-flow proof"
+    },
+    {
+      "path": "infra/observability/wait-gitops.sh",
+      "line": 13,
+      "classification": "unknown",
+      "reason": "shell execution/expansion inventory; no shell data-flow proof"
+    },
+    {
+      "path": "infra/observability/wait-gitops.sh",
+      "line": 14,
+      "classification": "unknown",
+      "reason": "shell execution/expansion inventory; no shell data-flow proof"
+    },
+    {
+      "path": "infra/observability/wait-gitops.sh",
+      "line": 15,
+      "classification": "unknown",
+      "reason": "shell execution/expansion inventory; no shell data-flow proof"
+    },
+    {
+      "path": "infra/observability/wait-gitops.sh",
+      "line": 16,
+      "classification": "unknown",
+      "reason": "shell execution/expansion inventory; no shell data-flow proof"
+    },
+    {
+      "path": "infra/observability/wait-gitops.sh",
+      "line": 23,
+      "classification": "unknown",
+      "reason": "shell execution/expansion inventory; no shell data-flow proof"
+    },
+    {
+      "path": "infra/runtime/repair-amd64-emulator-20261023.py",
+      "line": 21,
+      "classification": "safe",
+      "reason": "fixed command and literal arguments; scoped to this call only",
+      "sink": "subprocess.check_output"
+    },
+    {
+      "path": "infra/security/runtime/render.py",
+      "line": 8,
+      "classification": "unknown",
+      "reason": "dynamic arguments, environment, wrapper or remote-shell trust needs manual review; argument-list calls are not proof of injection",
+      "sink": "subprocess.check_output"
+    }
+  ],
+  "errors": [],
+  "counts": {
+    "safe": 10,
+    "dangerous": 0,
+    "unknown": 42
+  },
+  "policy": "all script candidates remain WARN until reviewed and Semgrep positive/negative validation; no script rule promoted in this round"
+}

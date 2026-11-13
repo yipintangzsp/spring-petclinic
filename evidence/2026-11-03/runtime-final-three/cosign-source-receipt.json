@@ -1,0 +1,271 @@
+{
+  "sourceId": "cosign",
+  "validationRunId": "rf3-20261103-7d6715",
+  "executionScope": "CONTROLLED_NON_RELEASE",
+  "credentialIdentity": "robot$petclinic+rf3-20261103-7d6715-sign",
+  "permissionScope": "project pull/push/artifact-read; pinned command and request guard restrict writes to this build signature-fixtures",
+  "inputArtifact": {
+    "wrong-key": {
+      "image": "core.harbor.domain/petclinic/signature-fixtures@sha256:fef2d952d868d524b4a50fc843d04e74ed912f6c6a246bddb8a6a1b024c1f221",
+      "manifestDigest": "sha256:fef2d952d868d524b4a50fc843d04e74ed912f6c6a246bddb8a6a1b024c1f221",
+      "configDigest": "sha256:751cddb51e048c7df12b88f69d32ec89ca503bb9b9b6a2626114f104b974eba6",
+      "tag": "ci-26-wrong-key"
+    },
+    "signed": {
+      "image": "core.harbor.domain/petclinic/signature-fixtures@sha256:393c43470be77284506de6ceac4be85d8dbab8cc173109939775af2a14caedfc",
+      "manifestDigest": "sha256:393c43470be77284506de6ceac4be85d8dbab8cc173109939775af2a14caedfc",
+      "configDigest": "sha256:61383ec34dcc75a631ce10728485942f3d3bc4d9ea1b48146488f2523a3e2350",
+      "tag": "ci-26-signed"
+    },
+    "unsigned": {
+      "image": "core.harbor.domain/petclinic/signature-fixtures@sha256:cabc2d6d8b6154a537c70ce7297c2cb8f93f8ab55daf6f119070df20cb716796",
+      "manifestDigest": "sha256:cabc2d6d8b6154a537c70ce7297c2cb8f93f8ab55daf6f119070df20cb716796",
+      "configDigest": "sha256:5d13bd58ed3839666d1ae16be4a81d01a41ac74ecc991b062fca613e2db2a357",
+      "tag": "ci-26-unsigned"
+    }
+  },
+  "externalSystem": "http://harbor-core.harbor.svc.cluster.local",
+  "rawReport": [
+    {
+      "path": ".devsecops/signing-admission.json",
+      "sha256": "366454bcd6a73a85a06a2ae2ea8f14ef881bd610a76d42f58643b3390e7db5ff",
+      "bytes": 787
+    }
+  ],
+  "factDigest": "716e3870f12666803e30bc7f87ad69014514efa3dff89b8580c58e855ad33e73",
+  "evaluationId": "security-runtime-facts-20261102#26:cosign",
+  "resultDigest": "92bcc507fa6ad1d6b24ca19598895da1f9ff49fb5538c81e34f1a85d274ba498",
+  "GateInputDigest": "92bcc507fa6ad1d6b24ca19598895da1f9ff49fb5538c81e34f1a85d274ba498",
+  "factsCompleteForObservedFailurePath": true,
+  "fullBoundaryAcceptance": "INCOMPLETE",
+  "evaluationCount": 1,
+  "oldDecision": "FAIL",
+  "policyDecision": "FAIL",
+  "rawPayloadPersisted": false,
+  "productionMutation": 0,
+  "cleanupState": "REMOVED",
+  "receiptEvidence": "jenkins-build-26.json",
+  "externalObjectsCreated": [
+    {
+      "kind": "Harbor sign robot",
+      "id": 248
+    },
+    {
+      "kind": "test fixture manifests and signatures",
+      "recordedBuild": 26
+    },
+    {
+      "kind": "Namespace",
+      "name": "rf3-20261103-7d6715-cosign",
+      "namespace": null,
+      "uid": "1c3871b7-11ab-45a4-95e7-baedd778a9c3",
+      "apiVersion": "v1"
+    },
+    {
+      "kind": "ServiceAccount",
+      "name": "signature-executor",
+      "namespace": "rf3-20261103-7d6715-cosign",
+      "uid": "65129097-5c8e-4269-b1e2-83840671d2af",
+      "apiVersion": "v1"
+    },
+    {
+      "kind": "Role",
+      "name": "rf3-20261103-7d6715-dryrun",
+      "namespace": "rf3-20261103-7d6715-cosign",
+      "uid": "39d5ee25-f47c-48b0-bc74-4cbc50aed9c0",
+      "apiVersion": "rbac.authorization.k8s.io/v1"
+    },
+    {
+      "kind": "RoleBinding",
+      "name": "rf3-20261103-7d6715-dryrun",
+      "namespace": "rf3-20261103-7d6715-cosign",
+      "uid": "bb67fb02-5640-4ce5-85b0-363d759436a2",
+      "apiVersion": "rbac.authorization.k8s.io/v1"
+    },
+    {
+      "kind": "Role",
+      "name": "rf3-20261103-7d6715-lease-read",
+      "namespace": "data-infra",
+      "uid": "808a1141-9279-48bf-abc8-6fa6739696fc",
+      "apiVersion": "rbac.authorization.k8s.io/v1"
+    },
+    {
+      "kind": "RoleBinding",
+      "name": "rf3-20261103-7d6715-lease-read",
+      "namespace": "data-infra",
+      "uid": "d897eae9-60fb-4062-88ba-b8ffa25e9e86",
+      "apiVersion": "rbac.authorization.k8s.io/v1"
+    },
+    {
+      "kind": "Secret",
+      "name": "rf3-20261103-7d6715-registry",
+      "namespace": "devsecops-system",
+      "uid": "757a157f-d53f-4f8f-9dba-e6ebceee16a5",
+      "apiVersion": "v1"
+    },
+    {
+      "kind": "Role",
+      "name": "rf3-20261103-7d6715-test-registry-read",
+      "namespace": "devsecops-system",
+      "uid": "38dd0154-efe7-4ba9-87a2-b3c155165ec8",
+      "apiVersion": "rbac.authorization.k8s.io/v1"
+    },
+    {
+      "kind": "RoleBinding",
+      "name": "rf3-20261103-7d6715-test-registry-read",
+      "namespace": "devsecops-system",
+      "uid": "153f3cbb-46b9-4e19-a88e-3db7c2ba2a4b",
+      "apiVersion": "rbac.authorization.k8s.io/v1"
+    },
+    {
+      "kind": "Policy",
+      "name": "devsecops-signed-images",
+      "namespace": "rf3-20261103-7d6715-cosign",
+      "uid": "e6c2602e-5735-46a4-8662-7ae486e1c913",
+      "apiVersion": "kyverno.io/v1"
+    }
+  ],
+  "externalObjectsModified": [],
+  "externalObjectsRetained": [],
+  "externalObjectsDeleted": [
+    {
+      "kind": "Harbor sign robot",
+      "id": 248
+    },
+    {
+      "kind": "test fixture manifests/signature tags",
+      "references": [
+        {
+          "reference": "ci-26-signed",
+          "httpStatus": 404,
+          "absent": true,
+          "repository": "petclinic/signature-fixtures"
+        },
+        {
+          "reference": "sha256-393c43470be77284506de6ceac4be85d8dbab8cc173109939775af2a14caedfc.sig",
+          "httpStatus": 404,
+          "absent": true,
+          "repository": "petclinic/signature-fixtures"
+        },
+        {
+          "reference": "ci-26-unsigned",
+          "httpStatus": 404,
+          "absent": true,
+          "repository": "petclinic/signature-fixtures"
+        },
+        {
+          "reference": "sha256-cabc2d6d8b6154a537c70ce7297c2cb8f93f8ab55daf6f119070df20cb716796.sig",
+          "httpStatus": 404,
+          "absent": true,
+          "repository": "petclinic/signature-fixtures"
+        },
+        {
+          "reference": "ci-26-wrong-key",
+          "httpStatus": 404,
+          "absent": true,
+          "repository": "petclinic/signature-fixtures"
+        },
+        {
+          "reference": "sha256-fef2d952d868d524b4a50fc843d04e74ed912f6c6a246bddb8a6a1b024c1f221.sig",
+          "httpStatus": 404,
+          "absent": true,
+          "repository": "petclinic/signature-fixtures"
+        }
+      ]
+    },
+    {
+      "kind": "Policy",
+      "name": "devsecops-signed-images",
+      "namespace": "rf3-20261103-7d6715-cosign",
+      "uid": "e6c2602e-5735-46a4-8662-7ae486e1c913",
+      "apiVersion": "kyverno.io/v1"
+    },
+    {
+      "kind": "RoleBinding",
+      "name": "rf3-20261103-7d6715-dryrun",
+      "namespace": "rf3-20261103-7d6715-cosign",
+      "uid": "bb67fb02-5640-4ce5-85b0-363d759436a2",
+      "apiVersion": "rbac.authorization.k8s.io/v1"
+    },
+    {
+      "kind": "RoleBinding",
+      "name": "rf3-20261103-7d6715-lease-read",
+      "namespace": "data-infra",
+      "uid": "d897eae9-60fb-4062-88ba-b8ffa25e9e86",
+      "apiVersion": "rbac.authorization.k8s.io/v1"
+    },
+    {
+      "kind": "RoleBinding",
+      "name": "rf3-20261103-7d6715-test-registry-read",
+      "namespace": "devsecops-system",
+      "uid": "153f3cbb-46b9-4e19-a88e-3db7c2ba2a4b",
+      "apiVersion": "rbac.authorization.k8s.io/v1"
+    },
+    {
+      "kind": "Role",
+      "name": "rf3-20261103-7d6715-dryrun",
+      "namespace": "rf3-20261103-7d6715-cosign",
+      "uid": "39d5ee25-f47c-48b0-bc74-4cbc50aed9c0",
+      "apiVersion": "rbac.authorization.k8s.io/v1"
+    },
+    {
+      "kind": "Role",
+      "name": "rf3-20261103-7d6715-lease-read",
+      "namespace": "data-infra",
+      "uid": "808a1141-9279-48bf-abc8-6fa6739696fc",
+      "apiVersion": "rbac.authorization.k8s.io/v1"
+    },
+    {
+      "kind": "Role",
+      "name": "rf3-20261103-7d6715-test-registry-read",
+      "namespace": "devsecops-system",
+      "uid": "38dd0154-efe7-4ba9-87a2-b3c155165ec8",
+      "apiVersion": "rbac.authorization.k8s.io/v1"
+    },
+    {
+      "kind": "Secret",
+      "name": "rf3-20261103-7d6715-registry",
+      "namespace": "devsecops-system",
+      "uid": "757a157f-d53f-4f8f-9dba-e6ebceee16a5",
+      "apiVersion": "v1"
+    },
+    {
+      "kind": "ServiceAccount",
+      "name": "signature-executor",
+      "namespace": "rf3-20261103-7d6715-cosign",
+      "uid": "65129097-5c8e-4269-b1e2-83840671d2af",
+      "apiVersion": "v1"
+    },
+    {
+      "kind": "Namespace",
+      "name": "rf3-20261103-7d6715-cosign",
+      "namespace": null,
+      "uid": "1c3871b7-11ab-45a4-95e7-baedd778a9c3",
+      "apiVersion": "v1"
+    }
+  ],
+  "productionPrivateKeyReads": 0,
+  "trustPublicKeySha256": "3d537f14db1f5088b4a88666d584cfbcc71cef2381e628b00bfcaea8f388d896",
+  "actualCases": [
+    {
+      "cliVerified": true,
+      "image": "core.harbor.domain/petclinic/signature-fixtures@sha256:393c43470be77284506de6ceac4be85d8dbab8cc173109939775af2a14caedfc",
+      "allowed": true,
+      "diagnostic": "server dry-run accepted; no Pod created",
+      "case": "signed"
+    }
+  ],
+  "blocker": "Current shared webhook namespaceSelector excludes the dedicated validation namespace. Actual unsigned server dry-run returned 0; frozen parent correctly FAILed. Existing allowlisted scanner namespaces also restrict permitted image repositories. No global webhook or production policy modified.",
+  "wrongKeyAdmission": "NOT_REACHED_AFTER_UNSIGNED_MISMATCH",
+  "startedAt": "2026-11-03T01:22:46.872Z",
+  "completedAt": "2026-11-03T01:23:00.920Z",
+  "binding": {
+    "candidate": "core.harbor.domain/petclinic/signature-fixtures@sha256:393c43470be77284506de6ceac4be85d8dbab8cc173109939775af2a14caedfc",
+    "build": 26,
+    "project": "petclinic",
+    "source": "741ea2866ea142b24c7838e1ef25c8327c79d279",
+    "runId": "security-runtime-facts-20261102#26",
+    "job": "security-runtime-facts-20261102",
+    "targetScope": "candidate"
+  }
+}

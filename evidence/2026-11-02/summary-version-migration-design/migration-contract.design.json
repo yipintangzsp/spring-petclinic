@@ -1,0 +1,68 @@
+{
+  "classification": "DESIGN_ONLY_NOT_INSTALLED",
+  "selectedStrategy": "C: explicit versioned integrity manifest/contract with pinned bundle delivery",
+  "v1": {
+    "labelIsDesignOnly": true,
+    "producer": "infra/security/security-summary.mjs",
+    "sha256": "038320f04c67fb1fe5ff711c11d445c2de88cc50b2230eb4c971bf46142f5b34",
+    "summarySchema": 1,
+    "oldLocksUnchanged": true
+  },
+  "v2": {
+    "created": false,
+    "registered": false,
+    "actualSha256": null,
+    "preferredSummarySchema": 1
+  },
+  "tupleFields": [
+    "producer exact hash",
+    "consumer exact hashes",
+    "owner exact hash",
+    "Engine/config exact hashes",
+    "fixed source-root/revision",
+    "metadata-required flag",
+    "Summary schema"
+  ],
+  "selection": "trusted pinned revision/descriptor chooses exactly one contract; no self-selection, auto fallback, wildcard, or future hash",
+  "mixedVersionMatrix": [
+    {
+      "producer": "V1",
+      "consumerContract": "V1",
+      "expected": "ACCEPT"
+    },
+    {
+      "producer": "V2",
+      "consumerContract": "V2",
+      "expected": "ACCEPT only after actual implementation verification"
+    },
+    {
+      "producer": "V2",
+      "consumerContract": "V1",
+      "expected": "POLICY_ERROR in migration verifier; legacy runtime parser alone is not enforcement"
+    },
+    {
+      "producer": "V1",
+      "consumerContract": "V2",
+      "expected": "POLICY_ERROR"
+    },
+    {
+      "producer": "unknown hash",
+      "expected": "POLICY_ERROR"
+    },
+    {
+      "producer": "missing trusted identity",
+      "expected": "POLICY_ERROR; V1 JSON does not need a new literal identity field"
+    },
+    {
+      "producer": "tampered",
+      "expected": "POLICY_ERROR"
+    },
+    {
+      "producer": "valid V2",
+      "metadata": "malformed",
+      "expected": "POLICY_ERROR"
+    }
+  ],
+  "rollback": "explicit complete V1 bundle in separate run/context; verify original hashes; never reuse V2 result in V1 run",
+  "history": "Do not overwrite frozen #250-related evidence, old V1 oracles/locks or authoritative 2128 samples; current untracked Policy is not covered by HEAD alone"
+}

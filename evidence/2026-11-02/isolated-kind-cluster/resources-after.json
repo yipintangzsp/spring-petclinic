@@ -1,0 +1,101 @@
+{
+  "containers": {
+    "command": [
+      "/opt/homebrew/bin/docker",
+      "--host",
+      "unix:///Users/zhangsir/.colima/security-test/docker.sock",
+      "ps",
+      "-a",
+      "--no-trunc",
+      "--format",
+      "{{json .}}"
+    ],
+    "exit": 0,
+    "stdout": "{\"Command\":\"\\\"/usr/local/bin/entrypoint /sbin/init\\\"\",\"CreatedAt\":\"2026-11-02 11:35:25 +0800 CST\",\"HealthStatus\":\"none\",\"ID\":\"9813796eee581bf765b2cd0fb93c26c632b4cb47a075b6c99a29e77597b19697\",\"Image\":\"docker.io/kindest/node:v1.35.0@sha256:452d707d4862f52530247495d180205e029056831160e22870e37e3f6c1ac31f\",\"Labels\":\"io.x-k8s.kind.cluster=security-test-sops,io.x-k8s.kind.role=control-plane\",\"LocalVolumes\":\"1\",\"Mounts\":\"/lib/modules,289d891f7426cde46bc46ae897f14fa4b2fbf84703f0513a999f56206d13cd13\",\"Names\":\"security-test-sops-control-plane\",\"Networks\":\"kind\",\"Platform\":{\"architecture\":\"arm64\",\"os\":\"linux\"},\"Ports\":\"127.0.0.1:59645-\\u003e6443/tcp\",\"RunningFor\":\"3 minutes ago\",\"Size\":\"3.62MB (virtual 954MB)\",\"State\":\"running\",\"Status\":\"Up 3 minutes\"}\n",
+    "stderr": "",
+    "seconds": 0.045
+  },
+  "volumes": {
+    "command": [
+      "/opt/homebrew/bin/docker",
+      "--host",
+      "unix:///Users/zhangsir/.colima/security-test/docker.sock",
+      "volume",
+      "ls",
+      "--format",
+      "{{json .}}"
+    ],
+    "exit": 0,
+    "stdout": "{\"Availability\":\"N/A\",\"Driver\":\"local\",\"Group\":\"N/A\",\"Labels\":\"com.docker.volume.anonymous=\",\"Links\":\"N/A\",\"Mountpoint\":\"/var/lib/docker/volumes/289d891f7426cde46bc46ae897f14fa4b2fbf84703f0513a999f56206d13cd13/_data\",\"Name\":\"289d891f7426cde46bc46ae897f14fa4b2fbf84703f0513a999f56206d13cd13\",\"Scope\":\"local\",\"Size\":\"N/A\",\"Status\":\"N/A\"}\n",
+    "stderr": "",
+    "seconds": 0.037
+  },
+  "networks": {
+    "command": [
+      "/opt/homebrew/bin/docker",
+      "--host",
+      "unix:///Users/zhangsir/.colima/security-test/docker.sock",
+      "network",
+      "ls",
+      "--no-trunc",
+      "--format",
+      "{{json .}}"
+    ],
+    "exit": 0,
+    "stdout": "{\"CreatedAt\":\"2026-11-02 09:06:56.597178372 +0800 CST\",\"Driver\":\"bridge\",\"ID\":\"f8cdd74e5f749d2a8a2f43cb9a7f5b7bfbaac44099575ae67f3b4ebd7007fae4\",\"IPv4\":\"true\",\"IPv6\":\"false\",\"Internal\":\"false\",\"Labels\":\"\",\"Name\":\"bridge\",\"Scope\":\"local\"}\n{\"CreatedAt\":\"2026-11-02 09:06:56.595464456 +0800 CST\",\"Driver\":\"host\",\"ID\":\"cd9897b64724f1b5e89a37647eff94c04111976f953f674a784639fac4c1e4f0\",\"IPv4\":\"true\",\"IPv6\":\"false\",\"Internal\":\"false\",\"Labels\":\"\",\"Name\":\"host\",\"Scope\":\"local\"}\n{\"CreatedAt\":\"2026-11-02 11:35:24.959339314 +0800 CST\",\"Driver\":\"bridge\",\"ID\":\"4a0ea7b2181bc3a1fd8896aa5158aec85c162ab8084a7760d6f753935b2a063a\",\"IPv4\":\"true\",\"IPv6\":\"true\",\"Internal\":\"false\",\"Labels\":\"\",\"Name\":\"kind\",\"Scope\":\"local\"}\n{\"CreatedAt\":\"2026-11-02 09:06:56.587482331 +0800 CST\",\"Driver\":\"null\",\"ID\":\"5c4f87bd92ed90d6d7227e7554eb5b34d4fb1f32e53c5dfce1889647429c02fc\",\"IPv4\":\"true\",\"IPv6\":\"false\",\"Internal\":\"false\",\"Labels\":\"\",\"Name\":\"none\",\"Scope\":\"local\"}\n",
+    "stderr": "",
+    "seconds": 0.023
+  },
+  "ownedVolume": {
+    "command": [
+      "/opt/homebrew/bin/docker",
+      "--host",
+      "unix:///Users/zhangsir/.colima/security-test/docker.sock",
+      "volume",
+      "inspect",
+      "289d891f7426cde46bc46ae897f14fa4b2fbf84703f0513a999f56206d13cd13"
+    ],
+    "exit": 0,
+    "stdout": "[\n    {\n        \"CreatedAt\": \"2026-11-02T11:35:25+08:00\",\n        \"Driver\": \"local\",\n        \"Labels\": {\n            \"com.docker.volume.anonymous\": \"\"\n        },\n        \"Mountpoint\": \"/var/lib/docker/volumes/289d891f7426cde46bc46ae897f14fa4b2fbf84703f0513a999f56206d13cd13/_data\",\n        \"Name\": \"289d891f7426cde46bc46ae897f14fa4b2fbf84703f0513a999f56206d13cd13\",\n        \"Options\": null,\n        \"Scope\": \"local\"\n    }\n]\n",
+    "stderr": "",
+    "seconds": 0.024
+  },
+  "ownedNetwork": {
+    "command": [
+      "/opt/homebrew/bin/docker",
+      "--host",
+      "unix:///Users/zhangsir/.colima/security-test/docker.sock",
+      "network",
+      "inspect",
+      "4a0ea7b2181bc3a1fd8896aa5158aec85c162ab8084a7760d6f753935b2a063a"
+    ],
+    "exit": 0,
+    "stdout": "[\n    {\n        \"Name\": \"kind\",\n        \"Id\": \"4a0ea7b2181bc3a1fd8896aa5158aec85c162ab8084a7760d6f753935b2a063a\",\n        \"Created\": \"2026-11-02T11:35:24.959339314+08:00\",\n        \"Scope\": \"local\",\n        \"Driver\": \"bridge\",\n        \"EnableIPv4\": true,\n        \"EnableIPv6\": true,\n        \"IPAM\": {\n            \"Driver\": \"default\",\n            \"Options\": {},\n            \"Config\": [\n                {\n                    \"Subnet\": \"fc00:f853:ccd:e793::/64\",\n                    \"Gateway\": \"fc00:f853:ccd:e793::1\"\n                },\n                {\n                    \"Subnet\": \"172.18.0.0/16\",\n                    \"Gateway\": \"172.18.0.1\"\n                }\n            ]\n        },\n        \"Internal\": false,\n        \"Attachable\": false,\n        \"Ingress\": false,\n        \"ConfigFrom\": {\n            \"Network\": \"\"\n        },\n        \"ConfigOnly\": false,\n        \"Options\": {\n            \"com.docker.network.bridge.enable_ip_masquerade\": \"true\",\n            \"com.docker.network.driver.mtu\": \"1500\"\n        },\n        \"Labels\": {},\n        \"Containers\": {\n            \"9813796eee581bf765b2cd0fb93c26c632b4cb47a075b6c99a29e77597b19697\": {\n                \"Name\": \"security-test-sops-control-plane\",\n                \"EndpointID\": \"e7b8c2832d59baf786eeb734d0fb66c7c2258ccb8d71582dd0a3e9c51ec3366b\",\n                \"MacAddress\": \"b2:80:9a:f9:de:74\",\n                \"IPv4Address\": \"172.18.0.2/16\",\n                \"IPv6Address\": \"fc00:f853:ccd:e793::2/64\"\n            }\n        },\n        \"Status\": {\n            \"IPAM\": {\n                \"Subnets\": {\n                    \"172.18.0.0/16\": {\n                        \"IPsInUse\": 4,\n                        \"DynamicIPsAvailable\": 65532\n                    },\n                    \"fc00:f853:ccd:e793::/64\": {\n                        \"IPsInUse\": 3,\n                        \"DynamicIPsAvailable\": 18446744073709551613\n                    }\n                }\n            }\n        }\n    }\n]\n",
+    "stderr": "",
+    "seconds": 0.021
+  },
+  "kindClusters": {
+    "command": [
+      "/opt/homebrew/bin/kind",
+      "get",
+      "clusters"
+    ],
+    "exit": 0,
+    "stdout": "security-test-sops\n",
+    "stderr": "using docker due to KIND_EXPERIMENTAL_PROVIDER\n",
+    "seconds": 0.072
+  },
+  "kindNodes": {
+    "command": [
+      "/opt/homebrew/bin/kind",
+      "get",
+      "nodes",
+      "--name",
+      "security-test-sops"
+    ],
+    "exit": 0,
+    "stdout": "security-test-sops-control-plane\n",
+    "stderr": "using docker due to KIND_EXPERIMENTAL_PROVIDER\n",
+    "seconds": 0.039
+  }
+}

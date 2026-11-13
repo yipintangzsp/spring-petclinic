@@ -1,0 +1,134 @@
+{
+  "inputs": [
+    {
+      "input": "Kubernetes context/server",
+      "configurable": "Indirectly via inherited KUBECONFIG for real kubectl; no hardcoded --context/server",
+      "proof": {
+        "path": "infra/security/scanner-runtime.mjs",
+        "line": 14
+      },
+      "safety": "Only a newly generated dedicated fixture kubeconfig; never merge/default/select existing contexts"
+    },
+    {
+      "input": "namespace/Secret targets",
+      "configurable": false,
+      "targets": [
+        [
+          "petclinic",
+          "petclinic-db"
+        ],
+        [
+          "petclinic",
+          "rabbitmq-client"
+        ],
+        [
+          "petclinic",
+          "petclinic-harbor-pull"
+        ],
+        [
+          "devsecops-system",
+          "kyverno-registry-pull"
+        ]
+      ],
+      "proof": {
+        "path": "infra/security/secrets-gate.mjs",
+        "line": 8
+      }
+    },
+    {
+      "input": "identity/reconciler",
+      "configurable": false,
+      "value": "system:serviceaccount:devsecops-system:platform-secret-reconciler",
+      "proof": {
+        "path": "infra/security/secrets-gate.mjs",
+        "line": 7
+      }
+    },
+    {
+      "input": "identity/verifier",
+      "configurable": false,
+      "value": "system:serviceaccount:devsecops-system:kyverno-admission-controller",
+      "proof": {
+        "path": "infra/security/secrets-gate.mjs",
+        "line": 29
+      }
+    },
+    {
+      "input": "encrypted files",
+      "configurable": "Fixed relative names; a dedicated isolated workspace can provide synthetic files without modifying production files",
+      "pattern": "infra/security/secrets/<fixed name>.enc.json",
+      "proof": {
+        "path": "infra/security/secrets-gate.mjs",
+        "line": 14
+      }
+    },
+    {
+      "input": "age key path",
+      "configurable": "BUSINESS_AGE_FILE; overrides child SOPS_AGE_KEY_FILE",
+      "proof": {
+        "path": "infra/security/secrets-gate.mjs",
+        "line": 11
+      }
+    },
+    {
+      "input": "readOnly",
+      "configurable": "DEVSECOPS_READ_ONLY==='true' skips apply only; BOTH reads of Secret data remain",
+      "proof": {
+        "path": "infra/security/secrets-gate.mjs",
+        "line": 18
+      }
+    },
+    {
+      "input": "Lease",
+      "configurable": "Name/namespace fixed: data-infra/platform-heavy; holder from HEAVY_HOLDER or build fallback",
+      "proof": {
+        "path": "infra/security/scanner-runtime.mjs",
+        "line": 16
+      }
+    },
+    {
+      "input": "tool root + SOPS bytes",
+      "configurable": "No env override in current code; scanner-tools.json and tools-lock SHA chain fixed",
+      "root": "/var/jenkins_home/platform-security/20261027",
+      "sopsFiles": [
+        {
+          "path": "sops",
+          "sha256": "53b0abacd38ef1b12a66d6c100956691b9cefce018d91f81e73ddf7438b94d77",
+          "bytes": 48300194
+        }
+      ],
+      "ageToolFiles": [
+        {
+          "path": "age",
+          "sha256": "41b072352f4561018949623c674d16ef704019b9108a9bbdbd21292efebfc94f",
+          "bytes": 6540637
+        },
+        {
+          "path": "age-keygen",
+          "sha256": "00b549cebf68302893fc489830f37e706712689ca877f84d85439d700d2997c7",
+          "bytes": 3854433
+        }
+      ],
+      "proof": {
+        "path": "infra/security/scanner-runtime.mjs",
+        "line": 7
+      }
+    },
+    {
+      "input": ".git-sha and report",
+      "configurable": "Fixed relative paths in controlled working directory; writes .devsecops/secrets-gate.json only",
+      "proof": {
+        "path": "infra/security/secrets-gate.mjs",
+        "line": 9
+      }
+    }
+  ],
+  "fixedProductionAPIServer": "NONE in secrets-gate or its called requireLease/verifyTools/kube/read functions",
+  "sharedWithScannerNotCalled": true,
+  "productionPodNodeSelectorNotRelevant": "scanner-runtime defines withScanner, but secrets-gate never calls it; no need for a node named devops or a scanner Pod to run this Gate",
+  "oneNamespaceOneSecretPossibleWithoutCodeChanges": false,
+  "fullSyntheticMirrorTheoreticallyPossibleWithoutProductionCodeChanges": true,
+  "reuseStatus": "CONDITIONAL / NOT_EXECUTED / NOT_READY",
+  "productionCredentialPathNeverRead": true,
+  "productionEncryptedFilesNotReadOrChanged": true
+}

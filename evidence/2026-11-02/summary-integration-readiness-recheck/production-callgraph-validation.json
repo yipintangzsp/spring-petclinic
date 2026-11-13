@@ -1,0 +1,383 @@
+{
+  "status": "PASS",
+  "currentAdapterStages": [
+    {
+      "id": "sbom",
+      "stage": "Package SBOM",
+      "command": "( nice -n 10 ./mvnw -B package -DskipTests && node infra/security/sbom-verify.mjs )",
+      "credentials": [],
+      "platform": false
+    },
+    {
+      "id": "regression",
+      "stage": "Regression",
+      "command": "node --test --test-concurrency=1 infra/observability/*.test.mjs infra/security/*.test.mjs",
+      "credentials": [],
+      "platform": true
+    },
+    {
+      "id": "falco-baseline",
+      "stage": "Falco Baseline",
+      "command": "node infra/security/runtime/health.mjs baseline",
+      "credentials": [],
+      "platform": true
+    },
+    {
+      "id": "kyverno",
+      "stage": "Kyverno",
+      "command": "( node infra/security/rbac-contract.mjs && node infra/security/admission-gate.mjs )",
+      "credentials": [],
+      "platform": true
+    },
+    {
+      "id": "kubescape",
+      "stage": "Kubescape Audit",
+      "command": "node --max-old-space-size=128 infra/security/governance/kubescape.mjs",
+      "credentials": [],
+      "platform": false
+    },
+    {
+      "id": "gitleaks",
+      "stage": "Secret Source",
+      "command": "node infra/security/source-gate.mjs",
+      "credentials": [],
+      "platform": false
+    },
+    {
+      "id": "semgrep",
+      "stage": "Semgrep",
+      "command": "( node infra/security/command-audit.mjs && node --max-old-space-size=128 infra/security/semgrep-gate.mjs )",
+      "credentials": [],
+      "platform": false
+    },
+    {
+      "id": "sops",
+      "stage": "Encrypted Credentials",
+      "command": "node infra/security/secrets-gate.mjs",
+      "credentials": [
+        {
+          "type": "file",
+          "id": "platform-business-age",
+          "variable": "BUSINESS_AGE_FILE",
+          "username": "",
+          "password": ""
+        }
+      ],
+      "platform": true
+    },
+    {
+      "id": "trivy",
+      "stage": "Trivy",
+      "command": "( node infra/security/ensure-audit-candidate.mjs && node infra/security/audit-trivy.mjs )",
+      "credentials": [
+        {
+          "type": "usernamePassword",
+          "id": "harbor-creds",
+          "variable": "",
+          "username": "HARBOR_USER",
+          "password": "HARBOR_PASS"
+        }
+      ],
+      "platform": false
+    },
+    {
+      "id": "cosign",
+      "stage": "Cosign Admission",
+      "command": "node infra/security/signing.mjs admission",
+      "credentials": [
+        {
+          "type": "file",
+          "id": "platform-signing-age",
+          "variable": "SIGNING_AGE_FILE",
+          "username": "",
+          "password": ""
+        },
+        {
+          "type": "usernamePassword",
+          "id": "harbor-creds",
+          "variable": "",
+          "username": "HARBOR_USER",
+          "password": "HARBOR_PASS"
+        }
+      ],
+      "platform": false
+    },
+    {
+      "id": "sonarqube",
+      "stage": "SonarQube",
+      "command": "nice -n 10 ./mvnw -B org.sonarsource.scanner.maven:sonar-maven-plugin:5.8.0.7211:sonar -Dsonar.projectKey=petclinic -Dsonar.qualitygate.wait=true -Dsonar.qualitygate.timeout=300",
+      "credentials": [
+        {
+          "type": "string",
+          "id": "sonar-token",
+          "variable": "SONAR_TOKEN",
+          "username": "",
+          "password": ""
+        }
+      ],
+      "platform": false
+    },
+    {
+      "id": "zap",
+      "stage": "ZAP Passive",
+      "command": "node infra/security/zap-gate.mjs",
+      "credentials": [],
+      "platform": false,
+      "environment": {
+        "SECURITY_CLEANUP_SCAN_HOMES": "true"
+      }
+    },
+    {
+      "id": "falco-final",
+      "stage": "Falco Final",
+      "command": "node infra/security/runtime/health.mjs",
+      "credentials": [],
+      "platform": true
+    },
+    {
+      "id": "defectdojo",
+      "stage": "DefectDojo Governance",
+      "command": "node --max-old-space-size=192 infra/security/governance/defectdojo.mjs",
+      "credentials": [
+        {
+          "type": "string",
+          "id": "defectdojo-api-token",
+          "variable": "DEFECTDOJO_TOKEN",
+          "username": "",
+          "password": ""
+        },
+        {
+          "type": "string",
+          "id": "sonar-token",
+          "variable": "SONAR_TOKEN",
+          "username": "",
+          "password": ""
+        }
+      ],
+      "platform": false
+    }
+  ],
+  "conditionalModules": [
+    "vars/securityProvenance.groovy",
+    "vars/securityBuildProvenance.groovy"
+  ],
+  "additionalSources": [
+    "semgrep-command-audit",
+    "security-approval-promotion"
+  ],
+  "jenkinsStages": [
+    {
+      "path": "Jenkinsfile",
+      "sha256": "c46ac48976d581890592968272ed664e93bf4de9f86beab13c2144d67ef67b9b",
+      "stages": [
+        {
+          "line": 26,
+          "name": "Checkout Info"
+        },
+        {
+          "line": 57,
+          "name": "Infrastructure Preflight"
+        },
+        {
+          "line": 76,
+          "name": "Pretest Idle Scanner Slot"
+        },
+        {
+          "line": 87,
+          "name": "Test"
+        },
+        {
+          "line": 99,
+          "name": "Package"
+        },
+        {
+          "line": 112,
+          "name": "DevSecOps Source & Admission"
+        },
+        {
+          "line": 130,
+          "name": "DevSecOps SBOM"
+        },
+        {
+          "line": 139,
+          "name": "Restore Scanner Before Analysis"
+        },
+        {
+          "line": 144,
+          "name": "SonarQube Analysis"
+        },
+        {
+          "line": 182,
+          "name": "Release Idle Scanner Memory"
+        },
+        {
+          "line": 193,
+          "name": "GitLab Source Audit"
+        },
+        {
+          "line": 201,
+          "name": "Sign Existing Release Baselines"
+        },
+        {
+          "line": 211,
+          "name": "DevSecOps GitOps Sync"
+        },
+        {
+          "line": 238,
+          "name": "Encrypted Business Credentials"
+        },
+        {
+          "line": 247,
+          "name": "Signature Admission Gate"
+        },
+        {
+          "line": 256,
+          "name": "Terraform Provider Native Build"
+        },
+        {
+          "line": 261,
+          "name": "Multi-Arch Build & Push"
+        },
+        {
+          "line": 294,
+          "name": "Registry Verify"
+        },
+        {
+          "line": 327,
+          "name": "Harbor Push & Scan"
+        },
+        {
+          "line": 343,
+          "name": "Terraform Runtime Build & Scan"
+        },
+        {
+          "line": 352,
+          "name": "DevSecOps Release Evidence"
+        },
+        {
+          "line": 361,
+          "name": "RabbitMQ Worker Deployment"
+        },
+        {
+          "line": 367,
+          "name": "Git Promotion"
+        },
+        {
+          "line": 376,
+          "name": "Wait for ArgoCD Sync"
+        },
+        {
+          "line": 396,
+          "name": "Rollout Verify"
+        },
+        {
+          "line": 430,
+          "name": "Health Verify"
+        },
+        {
+          "line": 460,
+          "name": "DAST Read-only Gate"
+        },
+        {
+          "line": 465,
+          "name": "RabbitMQ Release Event"
+        },
+        {
+          "line": 471,
+          "name": "Kafka Release Event"
+        },
+        {
+          "line": 477,
+          "name": "Terraform Isolated Plan"
+        },
+        {
+          "line": 482,
+          "name": "Terraform Shared State"
+        },
+        {
+          "line": 489,
+          "name": "Terraform Failure Cleanup"
+        },
+        {
+          "line": 494,
+          "name": "Restore Build Services"
+        },
+        {
+          "line": 507,
+          "name": "DevSecOps Final Health"
+        }
+      ]
+    },
+    {
+      "path": "Jenkinsfile.security-audit",
+      "sha256": "e6e7c1b8f838e42e8bc9b3aa35e731515e2e05feb300bd1833d64aa921c54ed2",
+      "stages": [
+        {
+          "line": 22,
+          "name": "Audit Checkout"
+        },
+        {
+          "line": 23,
+          "name": "Snapshot Before"
+        },
+        {
+          "line": 32,
+          "name": "Admission Resources"
+        },
+        {
+          "line": 33,
+          "name": "Security Manager"
+        },
+        {
+          "line": 34,
+          "name": "Read Only Release Verification"
+        },
+        {
+          "line": 44,
+          "name": "Candidate Approval Evidence"
+        },
+        {
+          "line": 52,
+          "name": "Candidate Sign and Approve"
+        },
+        {
+          "line": 61,
+          "name": "Approved Promotion"
+        }
+      ]
+    },
+    {
+      "path": "Jenkinsfile.candidate-build",
+      "sha256": "728823efbed710a1aae2ad8ca80a9162020e8fa8393fd905981699b3b2cbe2b8",
+      "stages": [
+        {
+          "line": 11,
+          "name": "Source"
+        },
+        {
+          "line": 12,
+          "name": "Admission"
+        },
+        {
+          "line": 13,
+          "name": "Compile Candidate"
+        },
+        {
+          "line": 14,
+          "name": "Build Dual Architecture Candidate"
+        },
+        {
+          "line": 15,
+          "name": "Preserve Candidate in Harbor"
+        },
+        {
+          "line": 16,
+          "name": "Attest Actual Image Build"
+        }
+      ]
+    }
+  ],
+  "completeSourceCount": 18,
+  "sourceEntriesReconstructed": true,
+  "liveStagesExecuted": 0
+}

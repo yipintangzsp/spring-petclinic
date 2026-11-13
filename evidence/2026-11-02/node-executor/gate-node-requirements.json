@@ -1,0 +1,54 @@
+{
+  "entrypoint": "node --max-old-space-size=128 infra/security/secrets-gate.mjs (Jenkinsfile); adapter invokes node infra/security/secrets-gate.mjs",
+  "cwd": "repository root containing infra/security/scanner-tools.json, tools-lock.json, four relative encrypted fixture paths and .git-sha",
+  "exactVersionDeclared": false,
+  "enginesDeclared": false,
+  "packageManifestInGateImportClosure": false,
+  "lockfileInGateImportClosure": false,
+  "packageManagerExpectedByGate": null,
+  "moduleType": ".mjs ESM, explicit relative extension, dynamic import and top-level await",
+  "builtinImports": [
+    "node:fs",
+    "node:util",
+    "node:crypto",
+    "node:net",
+    "node:os",
+    "node:child_process"
+  ],
+  "builtinApis": [
+    "fs readFileSync/writeFileSync/mkdirSync/readlinkSync",
+    "util.isDeepStrictEqual",
+    "crypto.createHash/randomBytes",
+    "net.createServer/connect (loaded exports only, not called by SOPS Gate)",
+    "os.networkInterfaces (only in unused withScanner)",
+    "child_process.spawn/spawnSync",
+    "JSON parse/stringify",
+    "optional chaining/nullish coalescing",
+    "top-level await / import()"
+  ],
+  "externalNpmDependencies": [],
+  "installCommand": "NONE: no npm install or npm ci; do not create/update lockfile",
+  "nodeModules": "Gate has no node_modules dependency; bundled npm from official archive only used for npm --version",
+  "selectedTestVersion": "22.23.3",
+  "uncertainty": "No exact production Node patch or engines bound exists for Gate. ESM/top-level-await require a capable Node release; source-feature inspection does not prove an exact supported minimum patch. 22.23.3 is an explicit official compatible test pin, confirmed by actual imports/linking, not a fabricated production requirement. Inventory Node24.18.0 is a different relay workload and is not a Gate pin.",
+  "sourceFiles": [
+    {
+      "path": "infra/security/secrets-gate.mjs",
+      "sha256": "cb3bc63884f238fe125d8adbe5c6cddd165db5f00d3c7c8eeab5e6883ec7869e"
+    },
+    {
+      "path": "infra/security/scanner-runtime.mjs",
+      "sha256": "60b26e029479e5371872d87465ae29150b7ded2e091750d026df006bfb968b9b"
+    },
+    {
+      "path": "infra/security/scanner-tools.json",
+      "sha256": "4fdb335010b9bf57d61d5e28d1397285c813bfa9bbf2ac008efddb8f27e3b703"
+    },
+    {
+      "path": "infra/security/tools-lock.json",
+      "sha256": "7517d8d59b2880fe4f2051b1d7feb91c42b4ac6b3f1dfc0441b2bf9fe74edf8c"
+    }
+  ],
+  "noDryRunMode": "Gate immediately requireLease() then verifyTools; importing/evaluating full Gate would violate this iteration scope",
+  "startupTechnique": "Actual import of unchanged scanner-runtime (manifest hash only), actual builtin module imports; vm.SourceTextModule parses unchanged Gate and links actual dependency namespaces through SyntheticModule adapters. No evaluate; no Gate decision or VM oracle execution. --experimental-vm-modules is sentinel-only, not a new production mode."
+}

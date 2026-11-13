@@ -1,0 +1,667 @@
+{
+  "canonicalCount": 16,
+  "startingWired": 8,
+  "endingWired": 10,
+  "sources": [
+    {
+      "sourceId": "sbom",
+      "evaluationCount": 1,
+      "contract": {
+        "sourceId": "sbom",
+        "adapterScope": "source-specific",
+        "required": [
+          "generator execution",
+          "original verifier extraction bytes",
+          "Maven SBOM bytes",
+          "source",
+          "mkdir/native/summary write observations"
+        ],
+        "nativeSuccessSufficient": false
+      },
+      "state": "CAPTURED",
+      "resultDigest": "a781c2c4ff51492141a80c468f662494dff920014a381ed443e9895cd8a6c2f7",
+      "executionScope": "REAL_DEDICATED_NONRELEASE_ORIGINAL_COMMAND",
+      "factProducer": "( nice -n 10 ./mvnw -B package -DskipTests && node infra/security/sbom-verify.mjs )",
+      "writeBoundary": "Unchanged already-approved read-only/bounded path",
+      "collectorContract": {
+        "sourceId": "sbom",
+        "adapterScope": "source-specific",
+        "required": [
+          "generator execution",
+          "original verifier extraction bytes",
+          "Maven SBOM bytes",
+          "source",
+          "mkdir/native/summary write observations"
+        ],
+        "nativeSuccessSufficient": false
+      },
+      "resultId": "a781c2c4ff51492141a80c468f662494dff920014a381ed443e9895cd8a6c2f7",
+      "gateResultId": "a781c2c4ff51492141a80c468f662494dff920014a381ed443e9895cd8a6c2f7",
+      "oldDecision": "PASS",
+      "policyStatus": "PASS",
+      "rawFactsPreserved": true,
+      "rawFactDigest": "bf711d05c0620be3dab89e99489fd21c1ffab59889b8d6978267fa6fdb1dce08",
+      "blocker": null
+    },
+    {
+      "sourceId": "regression",
+      "evaluationCount": 1,
+      "contract": {
+        "sourceId": "regression",
+        "adapterScope": "frozen wrapper/command",
+        "required": [
+          "actual command status",
+          "original module status",
+          "execution observations"
+        ],
+        "nativeSuccessSufficient": false
+      },
+      "state": "CAPTURED",
+      "resultDigest": "963d0093b54a0072cc44891c2e5ab02795914e4415297765d1f9d5baebf85603",
+      "executionScope": "REAL_DEDICATED_NONRELEASE_ORIGINAL_COMMAND",
+      "factProducer": "node --test --test-concurrency=1 infra/observability/*.test.mjs infra/security/*.test.mjs",
+      "writeBoundary": "Unchanged already-approved read-only/bounded path",
+      "collectorContract": {
+        "sourceId": "regression",
+        "adapterScope": "frozen wrapper/command",
+        "required": [
+          "actual command status",
+          "original module status",
+          "execution observations"
+        ],
+        "nativeSuccessSufficient": false
+      },
+      "resultId": "963d0093b54a0072cc44891c2e5ab02795914e4415297765d1f9d5baebf85603",
+      "gateResultId": "963d0093b54a0072cc44891c2e5ab02795914e4415297765d1f9d5baebf85603",
+      "oldDecision": "PASS",
+      "policyStatus": "PASS",
+      "rawFactsPreserved": true,
+      "rawFactDigest": "a639735dde56f03701fbc6be3adaaa1142ecc5fb2b7a3bac96bb314f1ba7439f",
+      "blocker": null
+    },
+    {
+      "sourceId": "falco-baseline",
+      "evaluationCount": 1,
+      "contract": {
+        "sourceId": "falco-baseline",
+        "adapterScope": "source-specific",
+        "required": [
+          "files",
+          "ds",
+          "sensorPods",
+          "node",
+          "diagnosticLog",
+          "samples.windowEndMs",
+          "samples.log",
+          "samples.workloads",
+          "health",
+          "reportWriteSucceeded"
+        ],
+        "nativeSuccessSufficient": false
+      },
+      "state": "CAPTURED",
+      "resultDigest": "da24cacdf9de77d7618ac0534376979d634127f48f182a5bad7611605f71a284",
+      "executionScope": "REAL_DEDICATED_NONRELEASE_ORIGINAL_COMMAND",
+      "factProducer": "node infra/security/runtime/health.mjs baseline",
+      "writeBoundary": "Unchanged already-approved read-only/bounded path",
+      "collectorContract": {
+        "sourceId": "falco-baseline",
+        "adapterScope": "source-specific",
+        "required": [
+          "files",
+          "ds",
+          "sensorPods",
+          "node",
+          "diagnosticLog",
+          "samples.windowEndMs",
+          "samples.log",
+          "samples.workloads",
+          "health",
+          "reportWriteSucceeded"
+        ],
+        "nativeSuccessSufficient": false
+      },
+      "resultId": "da24cacdf9de77d7618ac0534376979d634127f48f182a5bad7611605f71a284",
+      "gateResultId": "da24cacdf9de77d7618ac0534376979d634127f48f182a5bad7611605f71a284",
+      "oldDecision": "PASS",
+      "policyStatus": "PASS",
+      "rawFactsPreserved": true,
+      "rawFactDigest": "1023f40ac81231f4329a272626acc0e924c5e1e5d14d5ccb3f8cdb6ec472a264",
+      "blocker": null
+    },
+    {
+      "sourceId": "kyverno",
+      "evaluationCount": 1,
+      "contract": {
+        "sourceId": "kyverno",
+        "adapterScope": "source-specific",
+        "required": [
+          "configuration",
+          "rbac command observations",
+          "probes",
+          "live policy",
+          "owners",
+          "workloads",
+          "report writes"
+        ],
+        "nativeSuccessSufficient": false
+      },
+      "state": "CAPTURED",
+      "resultDigest": "f04b7dae6fa5e12af2a20cb8a6ec3205cfb5d0ec200d3847319e9e296e08f973",
+      "executionScope": "REAL_DEDICATED_NONRELEASE_ORIGINAL_COMMAND",
+      "factProducer": "( node infra/security/rbac-contract.mjs && node infra/security/admission-gate.mjs )",
+      "writeBoundary": "Unchanged already-approved read-only/bounded path",
+      "collectorContract": {
+        "sourceId": "kyverno",
+        "adapterScope": "source-specific",
+        "required": [
+          "configuration",
+          "rbac command observations",
+          "probes",
+          "live policy",
+          "owners",
+          "workloads",
+          "report writes"
+        ],
+        "nativeSuccessSufficient": false
+      },
+      "resultId": "f04b7dae6fa5e12af2a20cb8a6ec3205cfb5d0ec200d3847319e9e296e08f973",
+      "gateResultId": "f04b7dae6fa5e12af2a20cb8a6ec3205cfb5d0ec200d3847319e9e296e08f973",
+      "oldDecision": "PASS",
+      "policyStatus": "PASS",
+      "rawFactsPreserved": true,
+      "rawFactDigest": "73ded589634f96226e98e0b155854d887447a2ca2ac6d4bf58847031e71ddd0e",
+      "blocker": null
+    },
+    {
+      "sourceId": "kubescape",
+      "evaluationCount": 1,
+      "contract": {
+        "sourceId": "kubescape",
+        "adapterScope": "source-specific",
+        "required": [
+          "lock",
+          "binary/artifact hashes",
+          "lease",
+          "read-only credential setup",
+          "scans",
+          "cleanup",
+          "report write"
+        ],
+        "nativeSuccessSufficient": false
+      },
+      "state": "CAPTURED",
+      "resultDigest": "52ae56380c878af0660427f42dc2eb915f1041199f825395957b143497a8fa7f",
+      "executionScope": "REAL_DEDICATED_NONRELEASE_ORIGINAL_COMMAND",
+      "factProducer": "node --max-old-space-size=128 infra/security/governance/kubescape.mjs",
+      "writeBoundary": "Unchanged already-approved read-only/bounded path",
+      "collectorContract": {
+        "sourceId": "kubescape",
+        "adapterScope": "source-specific",
+        "required": [
+          "lock",
+          "binary/artifact hashes",
+          "lease",
+          "read-only credential setup",
+          "scans",
+          "cleanup",
+          "report write"
+        ],
+        "nativeSuccessSufficient": false
+      },
+      "resultId": "52ae56380c878af0660427f42dc2eb915f1041199f825395957b143497a8fa7f",
+      "gateResultId": "52ae56380c878af0660427f42dc2eb915f1041199f825395957b143497a8fa7f",
+      "oldDecision": "PASS",
+      "policyStatus": "PASS",
+      "rawFactsPreserved": true,
+      "rawFactDigest": "0bbc6f329a5ee49e10843ef2fdc7eaf12060b4e894c5625667ad6b4ffaf4acba",
+      "blocker": null
+    },
+    {
+      "sourceId": "gitleaks",
+      "evaluationCount": null,
+      "contract": {
+        "sourceId": "gitleaks",
+        "adapterScope": "source-specific",
+        "required": [
+          "scanner exit",
+          "native report presence/parse/findings",
+          "original classifier inputs",
+          "prerequisite/isolation/cleanup",
+          "parent aggregation/report writes"
+        ],
+        "nativeSuccessSufficient": false
+      },
+      "state": "NOT_OBSERVED",
+      "resultDigest": null,
+      "executionScope": "NOT_OBSERVED",
+      "factProducer": "node infra/security/source-gate.mjs",
+      "writeBoundary": "Pod create → isolation checks → scanner/native/classifier → UID-protected Pod cleanup",
+      "collectorContract": {
+        "sourceId": "gitleaks",
+        "adapterScope": "source-specific",
+        "required": [
+          "scanner exit",
+          "native report presence/parse/findings",
+          "original classifier inputs",
+          "prerequisite/isolation/cleanup",
+          "parent aggregation/report writes"
+        ],
+        "nativeSuccessSufficient": false
+      },
+      "resultId": null,
+      "gateResultId": null,
+      "oldDecision": null,
+      "policyStatus": null,
+      "rawFactsPreserved": null,
+      "rawFactDigest": null,
+      "blocker": "PRE_WRITE_FACT_BOUNDARY_NOT_AVAILABLE"
+    },
+    {
+      "sourceId": "sops",
+      "evaluationCount": 1,
+      "contract": {
+        "sourceId": "sops",
+        "adapterScope": "source-specific",
+        "required": [
+          "prerequisites",
+          "targets.decrypt",
+          "targets.actual",
+          "targets.after",
+          "rbac",
+          "verifierRbac",
+          "reportWriteSucceeded"
+        ],
+        "nativeSuccessSufficient": false
+      },
+      "state": "CAPTURED",
+      "resultDigest": "419d4e908db6a574c99b7438f4be348e412d61a2ad112a6fd3488c015cfb0014",
+      "executionScope": "CONTROLLED_ISOLATED_RUNTIME",
+      "factProducer": "node infra/security/secrets-gate.mjs",
+      "writeBoundary": "Only synthetic isolated kind namespace/SA/minRBAC/Secrets; original Gate may apply isolated Secret; never production credential",
+      "collectorContract": {
+        "sourceId": "sops",
+        "adapterScope": "source-specific",
+        "required": [
+          "prerequisites",
+          "targets.decrypt",
+          "targets.actual",
+          "targets.after",
+          "rbac",
+          "verifierRbac",
+          "reportWriteSucceeded"
+        ],
+        "nativeSuccessSufficient": false
+      },
+      "resultId": "419d4e908db6a574c99b7438f4be348e412d61a2ad112a6fd3488c015cfb0014",
+      "gateResultId": "419d4e908db6a574c99b7438f4be348e412d61a2ad112a6fd3488c015cfb0014",
+      "oldDecision": "PASS",
+      "policyStatus": "PASS",
+      "rawFactsPreserved": true,
+      "rawFactDigest": "850098bc81a6e897e56ba95539ac0f4158d21a6a5669c134717f54e281bc0d16",
+      "blocker": null
+    },
+    {
+      "sourceId": "trivy",
+      "evaluationCount": null,
+      "contract": {
+        "sourceId": "trivy",
+        "adapterScope": "source-specific",
+        "required": [
+          "original parent operation sequence",
+          "Harbor scan response and native report",
+          "DB/update and proxy-direct observations",
+          "reachability/fixability evidence",
+          "candidate/image/report binding"
+        ],
+        "nativeSuccessSufficient": false
+      },
+      "state": "NOT_OBSERVED",
+      "resultDigest": null,
+      "executionScope": "NOT_OBSERVED",
+      "factProducer": "( node infra/security/ensure-audit-candidate.mjs && node infra/security/audit-trivy.mjs )",
+      "writeBoundary": "Optional candidate copy/write; mandatory Harbor POST scan → poll → native report/classifier",
+      "collectorContract": {
+        "sourceId": "trivy",
+        "adapterScope": "source-specific",
+        "required": [
+          "original parent operation sequence",
+          "Harbor scan response and native report",
+          "DB/update and proxy-direct observations",
+          "reachability/fixability evidence",
+          "candidate/image/report binding"
+        ],
+        "nativeSuccessSufficient": false
+      },
+      "resultId": null,
+      "gateResultId": null,
+      "oldDecision": null,
+      "policyStatus": null,
+      "rawFactsPreserved": null,
+      "rawFactDigest": null,
+      "blocker": "PRE_WRITE_FACT_BOUNDARY_NOT_AVAILABLE"
+    },
+    {
+      "sourceId": "cosign",
+      "evaluationCount": null,
+      "contract": {
+        "sourceId": "cosign",
+        "adapterScope": "source-specific",
+        "required": [
+          "configuration",
+          "runtime",
+          "files",
+          "commands",
+          "registry",
+          "admissions",
+          "io"
+        ],
+        "nativeSuccessSufficient": false
+      },
+      "state": "NOT_OBSERVED",
+      "resultDigest": null,
+      "executionScope": "NOT_OBSERVED",
+      "factProducer": "node infra/security/signing.mjs admission",
+      "writeBoundary": "Decrypt signing bundle → registry POST/PUT → sign → verify → admission cases → cleanup",
+      "collectorContract": {
+        "sourceId": "cosign",
+        "adapterScope": "source-specific",
+        "required": [
+          "configuration",
+          "runtime",
+          "files",
+          "commands",
+          "registry",
+          "admissions",
+          "io"
+        ],
+        "nativeSuccessSufficient": false
+      },
+      "resultId": null,
+      "gateResultId": null,
+      "oldDecision": null,
+      "policyStatus": null,
+      "rawFactsPreserved": null,
+      "rawFactDigest": null,
+      "blocker": "PRE_WRITE_FACT_BOUNDARY_NOT_AVAILABLE"
+    },
+    {
+      "sourceId": "sonarqube",
+      "evaluationCount": 1,
+      "contract": {
+        "sourceId": "sonarqube",
+        "adapterScope": "source-specific",
+        "required": [
+          "task",
+          "analysis id",
+          "authoritative projectStatus",
+          "conditions",
+          "binding"
+        ],
+        "nativeSuccessSufficient": false
+      },
+      "state": "CAPTURED",
+      "resultDigest": "7f7ddc4ddab271e477dfae64f18345beebb13883ae9ad999c4a77f76d1ac36bd",
+      "executionScope": "REAL_DEDICATED_NONRELEASE_NEW_ANALYSIS",
+      "factProducer": "nice -n 10 ./mvnw -B org.sonarsource.scanner.maven:sonar-maven-plugin:5.8.0.7211:sonar -Dsonar.projectKey=petclinic -Dsonar.qualitygate.wait=true -Dsonar.qualitygate.timeout=300",
+      "writeBoundary": "New dedicated non-release analysis expressly authorized; no Gate/config/release change",
+      "collectorContract": {
+        "sourceId": "sonarqube",
+        "adapterScope": "source-specific",
+        "required": [
+          "task",
+          "analysis id",
+          "authoritative projectStatus",
+          "conditions",
+          "binding"
+        ],
+        "nativeSuccessSufficient": false
+      },
+      "resultId": "7f7ddc4ddab271e477dfae64f18345beebb13883ae9ad999c4a77f76d1ac36bd",
+      "gateResultId": "7f7ddc4ddab271e477dfae64f18345beebb13883ae9ad999c4a77f76d1ac36bd",
+      "oldDecision": "PASS",
+      "policyStatus": "PASS",
+      "rawFactsPreserved": true,
+      "rawFactDigest": "f57c0d2cd88f6d3ae7b0415a2eaa1099f7fcd79b2f04d751341cafeb183505d0",
+      "blocker": null
+    },
+    {
+      "sourceId": "zap",
+      "evaluationCount": null,
+      "contract": {
+        "sourceId": "zap",
+        "adapterScope": "source-specific",
+        "required": [
+          "target/report identity",
+          "confirmed High reproduction evidence",
+          "unconfirmed/lower-risk observations",
+          "container/network/report/cleanup outcomes"
+        ],
+        "nativeSuccessSufficient": false
+      },
+      "state": "NOT_OBSERVED",
+      "resultDigest": null,
+      "executionScope": "NOT_OBSERVED",
+      "factProducer": "node infra/security/zap-gate.mjs",
+      "writeBoundary": "withScanner Pod create before fixture/passive scanner/network/auth/cleanup facts; full parent includes production URL GETs",
+      "collectorContract": {
+        "sourceId": "zap",
+        "adapterScope": "source-specific",
+        "required": [
+          "target/report identity",
+          "confirmed High reproduction evidence",
+          "unconfirmed/lower-risk observations",
+          "container/network/report/cleanup outcomes"
+        ],
+        "nativeSuccessSufficient": false
+      },
+      "resultId": null,
+      "gateResultId": null,
+      "oldDecision": null,
+      "policyStatus": null,
+      "rawFactsPreserved": null,
+      "rawFactDigest": null,
+      "blocker": "PRE_WRITE_FACT_BOUNDARY_NOT_AVAILABLE"
+    },
+    {
+      "sourceId": "falco-final",
+      "evaluationCount": 1,
+      "contract": {
+        "sourceId": "falco-final",
+        "adapterScope": "source-specific",
+        "required": [
+          "files",
+          "baseline",
+          "continuity",
+          "ds",
+          "sensorPods",
+          "node",
+          "diagnosticLog",
+          "samples.windowEndMs",
+          "samples.log",
+          "samples.workloads",
+          "health",
+          "reportWriteSucceeded"
+        ],
+        "nativeSuccessSufficient": false
+      },
+      "state": "CAPTURED",
+      "resultDigest": "e6b59ae57e80f921eed5825226c31451e73f46b28aa2fda278e04997d85b3113",
+      "executionScope": "REAL_DEDICATED_NONRELEASE_ORIGINAL_COMMAND",
+      "factProducer": "node infra/security/runtime/health.mjs",
+      "writeBoundary": "Unchanged already-approved read-only/bounded path",
+      "collectorContract": {
+        "sourceId": "falco-final",
+        "adapterScope": "source-specific",
+        "required": [
+          "files",
+          "baseline",
+          "continuity",
+          "ds",
+          "sensorPods",
+          "node",
+          "diagnosticLog",
+          "samples.windowEndMs",
+          "samples.log",
+          "samples.workloads",
+          "health",
+          "reportWriteSucceeded"
+        ],
+        "nativeSuccessSufficient": false
+      },
+      "resultId": "e6b59ae57e80f921eed5825226c31451e73f46b28aa2fda278e04997d85b3113",
+      "gateResultId": "e6b59ae57e80f921eed5825226c31451e73f46b28aa2fda278e04997d85b3113",
+      "oldDecision": "PASS",
+      "policyStatus": "PASS",
+      "rawFactsPreserved": true,
+      "rawFactDigest": "1c5520ba950544b7f678739be7f3db774b2874bfe4328e56862c8e03b0d47f92",
+      "blocker": null
+    },
+    {
+      "sourceId": "defectdojo",
+      "evaluationCount": null,
+      "contract": {
+        "sourceId": "defectdojo",
+        "adapterScope": "source-specific",
+        "required": [
+          "files",
+          "target",
+          "actual API request/response observations",
+          "credential presence"
+        ],
+        "nativeSuccessSufficient": false
+      },
+      "state": "NOT_OBSERVED",
+      "resultDigest": null,
+      "executionScope": "NOT_OBSERVED",
+      "factProducer": "node --max-old-space-size=192 infra/security/governance/defectdojo.mjs",
+      "writeBoundary": "Native reports → POST import/reimport → Test/queryback/dedupe → PATCH false positives",
+      "collectorContract": {
+        "sourceId": "defectdojo",
+        "adapterScope": "source-specific",
+        "required": [
+          "files",
+          "target",
+          "actual API request/response observations",
+          "credential presence"
+        ],
+        "nativeSuccessSufficient": false
+      },
+      "resultId": null,
+      "gateResultId": null,
+      "oldDecision": null,
+      "policyStatus": null,
+      "rawFactsPreserved": null,
+      "rawFactDigest": null,
+      "blocker": "PRE_WRITE_FACT_BOUNDARY_NOT_AVAILABLE"
+    },
+    {
+      "sourceId": "provenance",
+      "evaluationCount": 1,
+      "contract": {
+        "sourceId": "provenance",
+        "adapterScope": "source-specific",
+        "required": [
+          "actual workflow cfg/params/environment/return",
+          "enabled branch only: git/steps/operations/DSSE/subject/builder binding"
+        ],
+        "nativeSuccessSufficient": false
+      },
+      "state": "CAPTURED",
+      "resultDigest": "93f1716ce43c9f95ecd4c143c06ef715b41653835cffd3125a3d6450bd31a838",
+      "executionScope": "ACTUAL_DEFAULT_UNENABLED_RETURN_ONLY",
+      "factProducer": "securityProvenance([:])",
+      "writeBoundary": "Unchanged already-approved read-only/bounded path",
+      "collectorContract": {
+        "sourceId": "provenance",
+        "adapterScope": "source-specific",
+        "required": [
+          "actual workflow cfg/params/environment/return",
+          "enabled branch only: git/steps/operations/DSSE/subject/builder binding"
+        ],
+        "nativeSuccessSufficient": false
+      },
+      "resultId": "93f1716ce43c9f95ecd4c143c06ef715b41653835cffd3125a3d6450bd31a838",
+      "gateResultId": "93f1716ce43c9f95ecd4c143c06ef715b41653835cffd3125a3d6450bd31a838",
+      "oldDecision": null,
+      "policyStatus": "SKIPPED",
+      "rawFactsPreserved": true,
+      "rawFactDigest": "31bee246f46478f848aff30dc0fde074598b2b380d7f7b6b6bf8fcfb8522e21c",
+      "blocker": null
+    },
+    {
+      "sourceId": "build-provenance",
+      "evaluationCount": 1,
+      "contract": {
+        "sourceId": "build-provenance",
+        "adapterScope": "source-specific",
+        "required": [
+          "actual workflow cfg/params/environment/return",
+          "enabled branch only: verification/inputIdentity/artifacts/architecture/candidate binding"
+        ],
+        "nativeSuccessSufficient": false
+      },
+      "state": "CAPTURED",
+      "resultDigest": "d21a74946f4695e62432dc2008106e809a4366f332e66d968f577a7b0f963254",
+      "executionScope": "ACTUAL_DEFAULT_UNENABLED_RETURN_ONLY",
+      "factProducer": "securityBuildProvenance([:])",
+      "writeBoundary": "Unchanged already-approved read-only/bounded path",
+      "collectorContract": {
+        "sourceId": "build-provenance",
+        "adapterScope": "source-specific",
+        "required": [
+          "actual workflow cfg/params/environment/return",
+          "enabled branch only: verification/inputIdentity/artifacts/architecture/candidate binding"
+        ],
+        "nativeSuccessSufficient": false
+      },
+      "resultId": "d21a74946f4695e62432dc2008106e809a4366f332e66d968f577a7b0f963254",
+      "gateResultId": "d21a74946f4695e62432dc2008106e809a4366f332e66d968f577a7b0f963254",
+      "oldDecision": null,
+      "policyStatus": "SKIPPED",
+      "rawFactsPreserved": true,
+      "rawFactDigest": "d297ec4dce6d471dc6b81f4276138157ffd5049c76584c7b4c5a170d0b83ff85",
+      "blocker": null
+    },
+    {
+      "sourceId": "semgrep-command-audit",
+      "evaluationCount": null,
+      "contract": {
+        "sourceId": "semgrep-command-audit",
+        "adapterScope": "source-specific",
+        "required": [
+          "command-flow findings",
+          "high-confidence frozen Semgrep rules/native report",
+          "scanner execution/report/cleanup",
+          "source binding"
+        ],
+        "nativeSuccessSufficient": false
+      },
+      "state": "NOT_OBSERVED",
+      "resultDigest": null,
+      "executionScope": "NOT_OBSERVED",
+      "factProducer": "( node infra/security/command-audit.mjs && node --max-old-space-size=128 infra/security/semgrep-gate.mjs )",
+      "writeBoundary": "Audit/scanner Pod create → command-flow and exact high-confidence native findings → cleanup",
+      "collectorContract": {
+        "sourceId": "semgrep-command-audit",
+        "adapterScope": "source-specific",
+        "required": [
+          "command-flow findings",
+          "high-confidence frozen Semgrep rules/native report",
+          "scanner execution/report/cleanup",
+          "source binding"
+        ],
+        "nativeSuccessSufficient": false
+      },
+      "resultId": null,
+      "gateResultId": null,
+      "oldDecision": null,
+      "policyStatus": null,
+      "rawFactsPreserved": null,
+      "rawFactDigest": null,
+      "blocker": "PRE_WRITE_FACT_BOUNDARY_NOT_AVAILABLE"
+    }
+  ],
+  "promotionExcluded": true,
+  "noPreApprovalCycle": true
+}

@@ -1,0 +1,91 @@
+from pathlib import Path
+import json,hashlib,datetime
+O=Path(__file__).resolve().parent;P=O.parent/'runtime-independent-boundaries'
+def read(n):return json.loads((O/n).read_text())
+def save(n,x):(O/n).write_text(json.dumps(x,ensure_ascii=False,indent=2)+'\n')
+before=read('dojo-governance-before.json');after=read('dojo-governance-after.json');assert before==after
+save('dojo-governance-comparison.json',{'classification':'LIVE_READ_ONLY_METADATA_COMPARISON','productIds':before['products']['ids'],'engagementIds':before['engagements']['ids'],'testIds':before['tests']['ids'],'findingCount':before['findings']['count'],'sameSelectedGovernanceMetadata':True,'objectsCompared':['Product','Engagement','Test','Finding'],'credentialValuesRead':0,'createdValidationObjects':0,'importOrReimportCalls':0,'unexpectedProductionMutation':0,'beforeEvidence':'dojo-governance-before.json','afterEvidence':'dojo-governance-after.json'})
+old=next(x for x in read('live-jenkins-before.json')['jobs'] if x['job']=='petclinic-ci');new=next(x for x in read('live-jenkins-final.json')['jobs'] if x['job']=='petclinic-ci');assert old==new and new['latestBuild']==270 and new['result']=='SUCCESS'
+ws=read('live-workspace-hashes-final.json')['workspaces'][0]['files'];base=read('source-baseline.json')
+for f in ['resources/security-manager/petclinic-adapter.json','infra/security/governance/defectdojo.mjs','Jenkinsfile.security-audit']:assert ws[f]['sha256']==base[f]
+assert ws['vars/securityManager.groovy']['sha256']=='6854436a43b347fc94e895eada0b2048be238668817a4af33a228396f1c57c32'
+assert new['summarySha256']=='ec9ee51a06d4b9f61c6c0eaf50b374d1e25e6d3ca687908b7596d3a2c794f5d8'
+assert not ws['infra/security/summary-v2/owner.mjs']['exists']
+p=read('live-protected-final.json');assert p['argocdSync']=='Synced' and p['argocdHealth']=='Healthy';assert p['deploymentSpecUnchanged'] and p['originalWebhooksUnchanged']
+assert read('health-final.json')['deployment']['ready']==3
+assert all(next(c['status'] for c in n['conditions'] if c['type']=='Ready')=='True' for n in read('node-lease-postflight.json')['nodes'])
+save('protected-state.json',{'classification':'LIVE_READ_ONLY_POSTFLIGHT_AND_NO_MUTATION_AUDIT','productionBuild':270,'productionResult':'SUCCESS','validationArchivesIntact':[32,33],'newJenkinsBuilds':0,'v1Active':True,'v1SummarySha256':new['summarySha256'],'policyBaselinePreserved':True,'frozenGatePreserved':True,'gitopsSpecUnchanged':True,'argocdSync':'Synced','argocdHealth':'Healthy','readyNodes':3,'petclinicReady':3,'readyServiceEndpoints':3,'httpStatus':200,'productionCosignPrivateKeyReads':0,'productionSecretReads':0,'productionSignatureWrites':0,'unexpectedProductionDojoMutation':0,'trivyStorageOperations':0,'trivyRuntimeExecutions':0,'proxyModifications':0,'trivyDBRefreshes':0,'storageAndDbEvidenceScope':'No new storage inventory or DB bytewise comparison; no command/API operation mutating Trivy, proxy, storage or DB. Existing environment blocker and evidence seals preserved.','release':0,'rollout':0,'summaryV2Activated':False,'completeRuntimeArtifactGenerated':False,'validationResourcesCreated':0})
+verdict={'DOJO_INPUT_DEPENDENCY':'TRIVY_HARD_DEPENDENCY','DEFECTDOJO_RUNTIME_DEPENDENCY':'BLOCKED_BY_TRIVY','DEFECTDOJO_RUNTIME_FACT_CAPTURE':'INCOMPLETE','TRIVY_STORAGE_ENVIRONMENT':'ENVIRONMENT_BLOCKED','TRIVY_RUNTIME_FACT_CAPTURE':'INCOMPLETE','COSIGN_RUNTIME_FACT_CAPTURE':'VERIFIED','FINAL_WIRED_CAPABILITY':'14/16','REAL_RUNTIME_FACT_CAPTURE':'INCOMPLETE','REAL_POLICY_OWNER':'INCOMPLETE','IMMUTABLE_ARTIFACT_RUNTIME':'INCOMPLETE','SUMMARY_V2_MIGRATION':'INCOMPLETE'}
+save('verdict.json',verdict)
+save('runtime-disposition.json',{'sourceId':'defectdojo','executionScope':'READ_ONLY_FROZEN_CONTRACT_REVIEW','executionStatus':'NOT_EXECUTED_DEPENDENCY_BLOCKED','validationRunId':read('run.json')['validationRunId'],'sourceRevision':json.loads((P/'runtime-source-bundle.json').read_text())['sourceIdentity'],'selectedReport':None,'reportDigest':None,'scannerType':None,'identityCreated':False,'tokenCreated':False,'productId':None,'engagementId':None,'testId':None,'importResult':'NOT_TESTED','reimportResult':'NOT_TESTED','queryBack':'NOT_TESTED','findingCount':None,'pagination':'NOT_TESTED_REAL_API','dedupe':'NOT_TESTED_REAL_API','oldGateDecision':None,'policyDecision':None,'evaluationCount':0,'evaluationId':None,'factDigest':None,'resultDigest':None,'gateConsumedDigest':None,'cleanup':'NOT_REQUIRED_NO_RESOURCES_CREATED','realRuntimeAccepted':False,'engineeringReceipt':'dojo-dependency-receipt.json','negativeUnitSamplesAreNotRuntime':True,'evidenceRefs':['dojo-report-contract.json','dependency-unit-evidence.json','validation-archives-recheck.json','protected-state.json']})
+items=[]
+def add(n,s):items.append((n,s))
+add('frozen Dojo accepted report types','固定六类：Gitleaks Scan、Semgrep JSON Report、ZAP Scan、Harbor Vulnerability Scan、Kubescape JSON Importer、SonarQube Scan。当前生产入口需要集合内规定的报告，不能任选其一。逐项路径与代码行见dojo-report-contract.json。')
+add('report discovery logic','本地Manager SHA ae297e…与活动V1 SHA685443…不同，已保存实际线上四个公开代码文件并核对；两者都在adapter=petclinic时选固定plan，parent/adapter/generic tool与线上hash一致。实际parent显式tasks数组＋Trivy scans按digest展开＋Kubescape四个reportFile＋实时Sonar API export。没有目录遍历、插件发现或任一报告自动替代。')
+add('parser mapping','governance/defectdojo.mjs:7/10/12/13设置scanType；dojo-client.mjs:18把scanType原样传给import/reimport multipart scan_type。映射由代码明确声明，没有按扩展名推断scanner。')
+add('Trivy mandatory YES/NO','YES。实际parent第8行无条件读取trivy-audit.json，要求scans非空、每项scan_status=Success且raw存在、status为success或有既有finding failure事实。第14行import loop在这之后。既有Policy adapter第15行保留同样前置条件。')
+add('DOJO_INPUT_DEPENDENCY','TRIVY_HARD_DEPENDENCY。虽然支持六类parser，生产冻结入口是mandatory多扫描器集合；“可支持多个parser”不等于“任选一个parser”。')
+add('selected current report if applicable','null / NOT_SELECTED。发现硬依赖后，按附件Part3停在执行前；未使用历史Trivy、合成Trivy或其他scanner代替当前输入。')
+add('report scanner type','null。本轮未选择实际导入报告。通用manager/tool分支确有enabledModules选择逻辑，但Jenkins adapter=petclinic会走固定resource plan，改走通用分支会改变本轮冻结边界，未执行。')
+add('current-run binding','当前生产pipeline在Audit Checkout清理.devsecops后按固定顺序执行。parent从.git-sha与BUILD_NUMBER读取source/build，并传commit_hash/build_id；显式检查Kubescape source。Trivy native本身没有source/build/runId字段的显式freshness比较，不能把这一缺口虚构为已有强绑定。新runtime envelope另要求完整绑定。当前未选择报告，未构造current-run report身份。')
+add('report digest','null。未读取/哈希历史报告充当当前报告，未制造digest。')
+add('Dojo identity','本轮未创建/绑定runtime token。只读盘点现有jenkins-petclinic id2（非staff/非superuser），没有读取token值。若将来prerequisite满足，仍需独立validation-only非管理员身份。')
+add('permission scope','现有用户无group/global model permissions，但authorized Products=[1,2]，没有拿它进行validation写入。仅使用既有可信SSH只读查询对象元数据/计数。无权限扩展。')
+add('Product ID','null（validation）。生产Product IDs保持原值[1,2]，未将其选为测试写目标。')
+add('Engagement ID','null（validation）；正常Engagement数量2，前后ID及元数据摘要一致。')
+add('Test ID','null（validation）；正常Test数量35，前后ID及元数据摘要一致。')
+add('import result','NOT_TESTED_REAL_API；import calls=0。')
+add('reimport result','NOT_TESTED_REAL_API；reimport calls=0。')
+add('query-back result','NOT_TESTED_REAL_API。只读DB治理元数据比较不等同于导入后的API query-back。')
+add('finding count','当前导入Finding count=null；生产Finding6627，前后选定治理字段摘要一致，没有把此计数当成本轮扫描结果。')
+add('pagination result','真实API NOT_TESTED。冻结client每页tests100/findings200，跟随同origin next，最多100页；本地外部next和无限next负例测试通过，不把它称为真实分页证明。')
+add('dedupe result','真实API NOT_TESTED。原client按engagement内title定位Test，同报告二次reimport后比较排序Finding ID集合。本轮只重跑既有受控冻结测试，未改语义。')
+add('old Gate decision','null / NOT_EXECUTED。依赖探针中旧Gate=FAIL属于单元测试，不能当成本轮真实生产Gate执行。')
+add('Policy decision','null（真实runtime）。四个missing-Trivy探针均standard FAIL并与旧Gate一致，分类SYNTHETIC_UNIT_ONLY；未据此接受真实runtime source。')
+add('evaluation count','真实authoritative owner评价0；evaluationId=null。本轮没有完整runtime事实，不提交到owner。单元测试自身的Engine调用不混记成runtime评价。')
+add('factDigest','null（真实runtime）。Dependency receipt为工程证据，不是RuntimeSourceFacts/ResolvedPolicyResult。')
+add('resultDigest','null（真实runtime）。')
+add('Gate reuse','NOT_TESTED_REAL_RUNTIME；没有result可供本轮Dojo Gate消费。Cosign #32原result/Gate摘要继续保留并复核归档。')
+add('cleanup/retention','NO_VALIDATION_OBJECTS_CREATED。没有新user/token/Product/Engagement/Test，清理无需执行。没有删/关/archive生产对象；原Cosign临时Kubernetes对象仍无残留，验证registry保留策略未改。')
+add('production mutation count','0。前后Product2/Engagement2/Test35/Finding6627的IDs及选定元数据摘要完全一致；没有任何Dojo import/PATCH/DELETE。')
+add('DEFECTDOJO_RUNTIME_DEPENDENCY','BLOCKED_BY_TRIVY。依赖链Dojo → 必须有当前完整Trivy native report → Trivy环境容量/backup阻塞 → Dojo未完成。')
+add('DEFECTDOJO_RUNTIME_FACT_CAPTURE','INCOMPLETE。未将受控单元测试提升为真实生命周期VERIFIED。')
+add('final wired capability','14/16。原13个来源＋已接受Cosign，仍保留各自原build/run绑定；本轮新增runtime接受数0。不是同run14份或完整artifact。')
+add('canonical missing source','能力层缺trivy、defectdojo；expectedSources仍16。未尝试全16同run；本轮没有新的owner source集合，不合并旧回执。')
+add('completeness result','INCOMPLETE。15/16负例仍拒绝，当前能力只有14/16，不能称complete。')
+add('immutable artifact status','INCOMPLETE / NOT_GENERATED。真实artifact path/hash=null；封存清单只是证据目录SHA清单。')
+add('current runtime dependency graph','runtime-dependency-graph.md / .json覆盖16个canonical来源，区分独立scanner、shared observation、external prerequisites、真实report edges。Falco final读取同build baseline；Trivy读取SBOM；Dojo读取五个前序scanner的native/proof并另行查询Sonar。')
+add('Dojo pipeline coupling debt','PIPELINE_COUPLING_DEBT。固定私有路径、上游输出集合/顺序、Trivy targetScope、Sonar项目和Product/Engagement/Test生命周期均直接耦合父阶段。当前不修。')
+add('DOJO_DECOUPLING_REQUIRED','YES。未来scanner → Manager → normalized result/report → Result Router → Dojo应解除scanner私有路径/顺序依赖；仅记录设计含义，不实现Router或Plugin Registry。')
+add('runtime/collector tests','154/154＝基础runtime143/143＋隔离完整性负例11/11。无真实Trivy scanner执行。')
+add('candidate tests','40/40；临时checkout完成，旧封存证据未写入；没有生产V2 activation。')
+add('Policy core','5/5。')
+add('contract checks','10/10，default standard、显式low、strict与override/POLICY_ERROR边界保持。')
+add('Regression 147/147','147/147本地真实既有回归。没有触发新的Jenkins构建；#33历史Regression SUCCESS归档保持完整。')
+add('Dojo tests','69/69完整冻结父阶段差分单元通过，原始输入不变、old==standard、请求序列一致。当前生产compatibility权威样本2202不变。')
+add('mapping tests','本轮报告替代依赖探针4/4：Gitleaks、Semgrep、ZAP单份及三份齐全，缺Trivy均在import前FAIL；六类parser映射按实际tasks/scan_type代码与69项旧Gate差分核对。未执行在线parser导入。')
+add('binding tests','runtime stale build/run/source/candidate与篡改digest拒绝测试通过；依赖测试包含generic current build/source checks与canonical freshness实际限制。没有宣称canonical Trivy自己验证了所有run字段。')
+add('dedupe tests','69项内existing-tests stable、first import、object/fallback Test ID、finding ID顺序不变、dedupe ID变化FAIL等通过。分类为冻结单元，不是新线上dedupe。')
+add('pagination tests','69项内external pagination / unbounded pagination / malformed collection / query failure等守卫通过；原同origin与100页上限未变。真实在线分页未执行。')
+add('auth tests','69项内missing credentials、Product/import/query-back/FP PATCH认证失败路径通过；runtime side-effect guards fail-closed通过。本轮线上credential读取0、scope扩大0。')
+add('cleanup tests','runtime临时目录、UID保护/替换对象不删测试通过；本轮无需清理Dojo对象。线上复核Cosign原temporary namespace/SA/RBAC/Policy/webhooks/registry Secret均无残留。')
+add('duplicate evaluation tests','runtime owner原子claim、同source并发/重试、第二owner、重复Gate handoff及completeness duplicate receipt拒绝均通过。本轮真实Dojo评价0。')
+add('incomplete-artifact tests','11/11：15/16缺source、重复source、stale binding、wrong candidate/source/run、fact/result tamper、malformed status、missing scope、duplicate evaluation；未生成真实COMPLETE artifact。')
+add('source/hash preservation','455/455冻结引用、229个unique文件匹配；本轮14个source基线保持。前七轮已封存592文件摘要全部一致，#32/#33在线归档JSON hash与原封存完全相同。')
+add('production Jenkins state','petclinic-ci #270 SUCCESS不变；专用validation最新仍#33 SUCCESS，#32/#33归档与job definition未改，新构建0。')
+add('V1 state','V1 active；Summary SHA ec9ee51a06d4b9f61c6c0eaf50b374d1e25e6d3ca687908b7596d3a2c794f5d8不变；live manager6854436a…/producer038320f0…不变。生产workspace未接入Policy Engine或V2 owner。')
+add('nodes state','devops、aliyun-worker、ucloud-worker均Ready；验证heavy Lease已释放。')
+add('PetClinic state','3/3 Ready、3个Ready Endpoint、HTTP200；Deployment UID/spec/generation175/revision164不变，Argo Synced/Healthy且同GitOps spec/revision。Harbor7Pod均Ready。')
+add('release count','0。')
+add('rollout count','0。')
+for k in ['TRIVY_STORAGE_ENVIRONMENT','TRIVY_RUNTIME_FACT_CAPTURE','COSIGN_RUNTIME_FACT_CAPTURE','FINAL_WIRED_CAPABILITY','REAL_RUNTIME_FACT_CAPTURE','REAL_POLICY_OWNER','IMMUTABLE_ARTIFACT_RUNTIME','SUMMARY_V2_MIGRATION']:add(k,verdict[k])
+add('exact blocker','实际生产petclinic冻结父阶段在任何import前无条件要求完整Trivy native报告；当前验证workspace该文件不存在，Trivy环境仍阻塞。generic Manager虽可按enabledModules导入其他类型，但它不是此canonical adapter入口，切换会改变冻结契约。')
+add('exact next permitted action','STOP。仅等待用户另行授权未来Dojo输入解耦设计/变更，或Trivy环境前置条件恢复后的下一轮验证。本轮不继续存储、代理/DB、不切generic入口、不做Summary/Registry/Router、不发布。')
+assert len(items)==68,len(items)
+text='# Dojo 冻结输入依赖复核：68 项报告\n\n结论：TRIVY_HARD_DEPENDENCY；Dojo BLOCKED_BY_TRIVY / INCOMPLETE；能力保持14/16。\n\n'
+text+='生产实际入口支持六类parser组成的固定报告集合，并不支持用任意一份报告替换mandatory Trivy。通用Manager的可选报告分支已明确区分，未切换入口。\n\n'
+for i,(name,result) in enumerate(items,1):text+=f'{i}. **{name}** — {result}\n\n'
+text+='```text\n'+'\n'.join(f'{k} = {v}' for k,v in verdict.items())+'\n```\n\nTrivy storage/proxy/DB本轮写操作均0；按要求没有重开容量盘点或做DB字节级对比，不对外部后台活动作无证据断言。\n\nSTOP。\n'
+(O/'REPORT-68.md').write_text(text)
+save('report-items.json',[{'item':i,'name':name,'result':result} for i,(name,result) in enumerate(items,1)])
+print('REPORT_ITEMS',len(items))

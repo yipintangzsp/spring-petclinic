@@ -1,0 +1,16 @@
+..E...
+======================================================================
+ERROR: test_real_bytes_match_git_blob (__main__.SnapshotTest.test_real_bytes_match_git_blob)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/zhangsir/code/petclinic-platform-20261011/infra/security/manager-v2/ci/source-snapshot.test.py", line 13, in test_real_bytes_match_git_blob
+    r=m.materialize_verified_archive(archive(),self.tree,self.dest,limits);self.assertEqual(r['fileCount'],1);self.assertEqual((self.dest/'main.py').read_bytes(),b'print("demo")\n')
+  File "/Users/zhangsir/code/petclinic-platform-20261011/infra/security/manager-v2/ci/source-snapshot.py", line 44, in materialize_verified_archive
+    if dest.exists()or dest.is_symlink()or dest.parent.resolve()!=dest.parent:raise ValueError('SOURCE_DESTINATION_REJECTED')
+                                                                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+ValueError: SOURCE_DESTINATION_REJECTED
+
+----------------------------------------------------------------------
+Ran 6 tests in 0.009s
+
+FAILED (errors=1)

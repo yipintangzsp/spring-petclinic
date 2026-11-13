@@ -1,0 +1,99 @@
+{
+  "implementationScope": "DESIGN_METADATA_ONLY_NO_PLUGIN_REGISTRY_ROUTER_OR_NEW_ENGINE",
+  "classifications": {
+    "cosign": {
+      "overall": "EXTERNAL_SYSTEM_COUPLED",
+      "registry": "EXTERNAL_SYSTEM_COUPLED",
+      "trustRoot": "NEEDS_ADAPTER",
+      "signerIdentity": "NEEDS_ADAPTER",
+      "candidateDigest": "PORTABLE",
+      "currentStageInputs": "PIPELINE_COUPLED"
+    },
+    "defectdojo": {
+      "overall": "EXTERNAL_SYSTEM_COUPLED",
+      "apiEndpoint": "EXTERNAL_SYSTEM_COUPLED",
+      "credential": "NEEDS_ADAPTER",
+      "productEngagementTestLifecycle": "EXTERNAL_SYSTEM_COUPLED",
+      "reportInput": "PIPELINE_COUPLED",
+      "currentTrivyNativeFileDependency": "PIPELINE_COUPLED"
+    }
+  },
+  "futureCapabilities": {
+    "cosign": [
+      "IMAGE_REF",
+      "CANDIDATE_DIGEST",
+      "REGISTRY_ACCESS",
+      "CREDENTIALS",
+      "BUILD_METADATA",
+      "PROVENANCE_METADATA"
+    ],
+    "defectdojo": [
+      "SECURITY_REPORTS",
+      "DEFECTDOJO_API",
+      "CREDENTIALS",
+      "BUILD_METADATA"
+    ]
+  },
+  "displayReadiness": {
+    "cosign": {
+      "status": "SUFFICIENT_WITH_EXPLICIT_VALIDATION_SCOPE",
+      "sourceId": "cosign",
+      "executionScope": "CONTROLLED_NON_RELEASE",
+      "executionStatus": "success",
+      "decision": "PASS",
+      "startedAt": "2026-11-03T05:39:53.497Z",
+      "completedAt": "2026-11-03T05:40:13.601Z",
+      "factDigest": "3c4ebafa611fb3f9e1e15ade68b255d60452b5673e25b77f73cbd33910e5dfb1",
+      "resultDigest": "c7dbafbf7cf496456c872297eedcf800cebf110073793ad02ebfda70842de2b1",
+      "evidenceRefs": [
+        "jenkins-build-31.json",
+        "jenkins-build-32.json",
+        "cosign-kube-cleanup.json",
+        "validation-registry-retention.json"
+      ],
+      "artifact": "core.harbor.domain/petclinic/signature-fixtures@sha256:a786348b1bfb3125c150d94d58d6edc51beb36fb832ad258e000b03fbab7d899",
+      "signatureSummary": [
+        {
+          "cliVerified": true,
+          "image": "core.harbor.domain/petclinic/signature-fixtures@sha256:a786348b1bfb3125c150d94d58d6edc51beb36fb832ad258e000b03fbab7d899",
+          "allowed": true,
+          "diagnostic": "server dry-run accepted; no Pod created",
+          "case": "signed"
+        },
+        {
+          "cliVerified": false,
+          "image": "core.harbor.domain/petclinic/signature-fixtures@sha256:f17f3fdaee27ea057580ed001bf8ac61bad962b2e9c2dbd101dbefffb93eb64b",
+          "allowed": false,
+          "diagnostic": "Error from server: error when creating \"STDIN\": admission webhook \"mutate.rf3-20261103-9730f2.validation.local\" denied the request: \n\nresource Pod/rf3-20261103-9730f2-cosign/signature-unsigned was blocked due to the following policies \n\ndevsecops-signed-images:\n  verify-private-petclinic-image: 'failed to verify image core.harbor.domain/petclinic/signature-fixtures@sha256:f17f3fdaee27ea057580ed001bf8ac61bad962b2e9c2dbd101dbefffb93eb64b: .attestors[0].entries[0].keys: no signatures found'\n",
+          "case": "unsigned"
+        },
+        {
+          "cliVerified": false,
+          "image": "core.harbor.domain/petclinic/signature-fixtures@sha256:f798eb548f648cc099f5d44a424be6b7bbb13001c40eca2c6891fa6846d8591b",
+          "allowed": false,
+          "diagnostic": "Error from server: error when creating \"STDIN\": admission webhook \"mutate.rf3-20261103-9730f2.validation.local\" denied the request: \n\nresource Pod/rf3-20261103-9730f2-cosign/signature-wrong-key was blocked due to the following policies \n\ndevsecops-signed-images:\n  verify-private-petclinic-image: 'failed to verify image core.harbor.domain/petclinic/signature-fixtures@sha256:f798eb548f648cc099f5d44a424be6b7bbb13001c40eca2c6891fa6846d8591b: .attestors[0].entries[0].keys: no matching signatures: invalid signature when validating ASN.1 encoded signature'\n",
+          "case": "wrong-key"
+        }
+      ]
+    },
+    "defectdojo": {
+      "status": "PARTIAL_MISSING_RUNTIME_FACTS",
+      "sourceId": "defectdojo",
+      "executionScope": "READ_ONLY_PREREQUISITE_INVENTORY",
+      "executionStatus": "NOT_EXECUTED",
+      "decision": null,
+      "startedAt": null,
+      "completedAt": null,
+      "factDigest": null,
+      "resultDigest": null,
+      "evidenceRefs": [
+        "defectdojo-source-receipt.json"
+      ],
+      "reportIdentity": null,
+      "testIdentity": null,
+      "findingSummary": null,
+      "dedupeSummary": null,
+      "missingFieldsReason": "full real report/API lifecycle not executed; do not invent values"
+    }
+  }
+}

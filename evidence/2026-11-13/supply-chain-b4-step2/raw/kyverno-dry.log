@@ -1,0 +1,17 @@
+KYVERNO-DRY started 2026-11-13T08:44:55Z
+LATEST_FIXTURE_BUILD 270
+FIXTURE signed digest=sha256:86ddc3e1ac2ad2b34dd47ffaf6a181953ebad77f4b1a656f055ddb01fc354cc7
+FIXTURE unsigned digest=sha256:d65f8d7fa75dac9393a4e04f6e7f708f2abf9d44d55f473f2a2d9ae60c9202f9
+FIXTURE wrong-key digest=sha256:4a4c9aab67a2ddb698597507e9d5bbb77489be7ee2780193c2965670a66eaea0
+/tmp/b4-kyverno-dry.sh: line 15: D_wrong-key=sha256:4a4c9aab67a2ddb698597507e9d5bbb77489be7ee2780193c2965670a66eaea0: command not found
+DRYRUN b4-signed rc=0 image=core.harbor.domain/petclinic/signature-fixtures@sha256:86ddc3e1ac2ad2b34dd47ffaf6a181953ebad77f4b1a656f055ddb01fc354cc7
+
+DRYRUN b4-unsigned rc=1 image=core.harbor.domain/petclinic/signature-fixtures@sha256:d65f8d7fa75dac9393a4e04f6e7f708f2abf9d44d55f473f2a2d9ae60c9202f9
+Error from server: error when creating "kyv/pod-b4-unsigned.json": admission webhook "mutate.kyverno.svc-fail" denied the request: 
+
+resource Pod/devsecops-supply-chain/b4-unsigned was blocked due to the following policies 
+
+devsecops-signed-images:
+  verify-private-petclinic-image: 'failed to verify image core.harbor.domain/petclinic/signature-fixtures@sha256:d65f8d7fa75dac9393a4e04f6e7f708f2abf9d44d55f473f2a2d9ae60c9202f9: .attestors[0].entries[0].keys: no signatures found'
+
+/tmp/b4-kyverno-dry.sh: line 27: D_wrongkey: unbound variable

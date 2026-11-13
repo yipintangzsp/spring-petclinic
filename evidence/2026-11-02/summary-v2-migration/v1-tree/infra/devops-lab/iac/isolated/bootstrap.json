@@ -1,0 +1,260 @@
+{
+  "apiVersion": "v1",
+  "kind": "List",
+  "items": [
+    {
+      "apiVersion": "v1",
+      "kind": "Namespace",
+      "metadata": {
+        "name": "terraform-execution",
+        "labels": {
+          "petclinic.devops.local/owner": "terraform-isolation",
+          "petclinic.devops.local/execution-sandbox": "true",
+          "pod-security.kubernetes.io/enforce": "restricted",
+          "pod-security.kubernetes.io/enforce-version": "v1.36",
+          "pod-security.kubernetes.io/audit": "restricted",
+          "pod-security.kubernetes.io/warn": "restricted"
+        }
+      }
+    },
+    {
+      "apiVersion": "v1",
+      "kind": "ResourceQuota",
+      "metadata": {
+        "name": "terraform-execution-budget",
+        "namespace": "terraform-execution",
+        "labels": {
+          "petclinic.devops.local/owner": "terraform-isolation",
+          "petclinic.devops.local/execution-sandbox": "true",
+          "pod-security.kubernetes.io/enforce": "restricted",
+          "pod-security.kubernetes.io/enforce-version": "v1.36",
+          "pod-security.kubernetes.io/audit": "restricted",
+          "pod-security.kubernetes.io/warn": "restricted"
+        }
+      },
+      "spec": {
+        "hard": {
+          "pods": "1",
+          "count/jobs.batch": "2",
+          "persistentvolumeclaims": "0",
+          "services": "0",
+          "secrets": "0",
+          "configmaps": "4",
+          "requests.cpu": "100m",
+          "limits.cpu": "1",
+          "requests.memory": "384Mi",
+          "limits.memory": "512Mi",
+          "requests.ephemeral-storage": "128Mi",
+          "limits.ephemeral-storage": "384Mi",
+          "requests.storage": "0"
+        }
+      }
+    },
+    {
+      "apiVersion": "v1",
+      "kind": "ServiceAccount",
+      "metadata": {
+        "name": "terraform-runner",
+        "namespace": "terraform-execution",
+        "labels": {
+          "petclinic.devops.local/owner": "terraform-isolation",
+          "petclinic.devops.local/execution-sandbox": "true",
+          "pod-security.kubernetes.io/enforce": "restricted",
+          "pod-security.kubernetes.io/enforce-version": "v1.36",
+          "pod-security.kubernetes.io/audit": "restricted",
+          "pod-security.kubernetes.io/warn": "restricted"
+        }
+      },
+      "automountServiceAccountToken": false
+    },
+    {
+      "apiVersion": "v1",
+      "kind": "ServiceAccount",
+      "metadata": {
+        "name": "terraform-orchestrator",
+        "namespace": "terraform-execution",
+        "labels": {
+          "petclinic.devops.local/owner": "terraform-isolation",
+          "petclinic.devops.local/execution-sandbox": "true",
+          "pod-security.kubernetes.io/enforce": "restricted",
+          "pod-security.kubernetes.io/enforce-version": "v1.36",
+          "pod-security.kubernetes.io/audit": "restricted",
+          "pod-security.kubernetes.io/warn": "restricted"
+        }
+      },
+      "automountServiceAccountToken": false
+    },
+    {
+      "apiVersion": "rbac.authorization.k8s.io/v1",
+      "kind": "Role",
+      "metadata": {
+        "name": "terraform-orchestrator",
+        "namespace": "terraform-execution",
+        "labels": {
+          "petclinic.devops.local/owner": "terraform-isolation",
+          "petclinic.devops.local/execution-sandbox": "true",
+          "pod-security.kubernetes.io/enforce": "restricted",
+          "pod-security.kubernetes.io/enforce-version": "v1.36",
+          "pod-security.kubernetes.io/audit": "restricted",
+          "pod-security.kubernetes.io/warn": "restricted"
+        }
+      },
+      "rules": [
+        {
+          "apiGroups": [
+            "batch"
+          ],
+          "resources": [
+            "jobs"
+          ],
+          "verbs": [
+            "create",
+            "get",
+            "list",
+            "watch",
+            "delete"
+          ]
+        },
+        {
+          "apiGroups": [
+            ""
+          ],
+          "resources": [
+            "pods"
+          ],
+          "verbs": [
+            "get",
+            "list",
+            "watch"
+          ]
+        },
+        {
+          "apiGroups": [
+            ""
+          ],
+          "resources": [
+            "pods/log"
+          ],
+          "verbs": [
+            "get"
+          ]
+        }
+      ]
+    },
+    {
+      "apiVersion": "rbac.authorization.k8s.io/v1",
+      "kind": "RoleBinding",
+      "metadata": {
+        "name": "terraform-orchestrator",
+        "namespace": "terraform-execution",
+        "labels": {
+          "petclinic.devops.local/owner": "terraform-isolation",
+          "petclinic.devops.local/execution-sandbox": "true",
+          "pod-security.kubernetes.io/enforce": "restricted",
+          "pod-security.kubernetes.io/enforce-version": "v1.36",
+          "pod-security.kubernetes.io/audit": "restricted",
+          "pod-security.kubernetes.io/warn": "restricted"
+        }
+      },
+      "roleRef": {
+        "apiGroup": "rbac.authorization.k8s.io",
+        "kind": "Role",
+        "name": "terraform-orchestrator"
+      },
+      "subjects": [
+        {
+          "kind": "ServiceAccount",
+          "name": "terraform-orchestrator",
+          "namespace": "terraform-execution"
+        }
+      ]
+    },
+    {
+      "apiVersion": "rbac.authorization.k8s.io/v1",
+      "kind": "RoleBinding",
+      "metadata": {
+        "name": "terraform-runtime",
+        "namespace": "terraform-state",
+        "labels": {
+          "petclinic.devops.local/owner": "terraform-remote-lab"
+        }
+      },
+      "roleRef": {
+        "apiGroup": "rbac.authorization.k8s.io",
+        "kind": "Role",
+        "name": "terraform-runtime"
+      },
+      "subjects": [
+        {
+          "kind": "ServiceAccount",
+          "name": "terraform-runner",
+          "namespace": "terraform-execution"
+        }
+      ]
+    },
+    {
+      "apiVersion": "rbac.authorization.k8s.io/v1",
+      "kind": "RoleBinding",
+      "metadata": {
+        "name": "terraform-runtime",
+        "namespace": "tf-remote-lab",
+        "labels": {
+          "petclinic.devops.local/owner": "terraform-remote-lab"
+        }
+      },
+      "roleRef": {
+        "apiGroup": "rbac.authorization.k8s.io",
+        "kind": "Role",
+        "name": "terraform-runtime"
+      },
+      "subjects": [
+        {
+          "kind": "ServiceAccount",
+          "name": "terraform-runner",
+          "namespace": "terraform-execution"
+        }
+      ]
+    },
+    {
+      "apiVersion": "networking.k8s.io/v1",
+      "kind": "NetworkPolicy",
+      "metadata": {
+        "name": "terraform-api-only",
+        "namespace": "terraform-execution",
+        "labels": {
+          "petclinic.devops.local/owner": "terraform-isolation",
+          "petclinic.devops.local/execution-sandbox": "true",
+          "pod-security.kubernetes.io/enforce": "restricted",
+          "pod-security.kubernetes.io/enforce-version": "v1.36",
+          "pod-security.kubernetes.io/audit": "restricted",
+          "pod-security.kubernetes.io/warn": "restricted"
+        }
+      },
+      "spec": {
+        "podSelector": {},
+        "policyTypes": [
+          "Ingress",
+          "Egress"
+        ],
+        "ingress": [],
+        "egress": [
+          {
+            "to": [
+              {
+                "ipBlock": {
+                  "cidr": "10.0.0.3/32"
+                }
+              }
+            ],
+            "ports": [
+              {
+                "protocol": "TCP",
+                "port": 6443
+              }
+            ]
+          }
+        ]
+      }
+    }
+  ]
+}

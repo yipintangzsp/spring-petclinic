@@ -1,0 +1,63 @@
+{
+  "SUMMARY_INTEGRATION_READINESS": "NOT_READY",
+  "totalProductionSources": 18,
+  "counts": {
+    "VERIFIED": 13,
+    "NOT_TESTED": 3,
+    "ENVIRONMENT_BLOCKED": 1,
+    "DEFERRED_REAL_NEGATIVE_EVIDENCE": 1,
+    "FAILED": 0,
+    "NOT_APPLICABLE": 0
+  },
+  "aggregateDifferentialSamples": 1816,
+  "aggregateDrift": 0,
+  "completeParentUniqueDifferentialSamples": 1675,
+  "selectedCurrentDifferentialSamples": 1695,
+  "policyCore": "VERIFIED",
+  "existingCoreTests": "5/5 PASS (see log)",
+  "coreAuditObservations": 10,
+  "cumulativePolicyCases": 1873,
+  "cumulativeCasesRerun": false,
+  "summaryIntegrationBlockers": [
+    {
+      "source": "gitleaks",
+      "reason": [
+        "Full production parent prerequisite/execution/identity/report/cleanup differential proof absent; observed classifier parity cannot cover these failure paths"
+      ]
+    },
+    {
+      "source": "sops",
+      "reason": [
+        "0 real controlled positive/negative/prerequisite executions; no safe disposable authorized Kubernetes environment",
+        "Original runtime prerequisite validation behavior not proven by booleans supplied as input; do not read production Secrets to fill this gap"
+      ]
+    },
+    {
+      "source": "trivy",
+      "reason": [
+        "Full production parent prerequisite/execution/identity/report/cleanup differential proof absent; observed classifier parity cannot cover these failure paths"
+      ]
+    },
+    {
+      "source": "zap",
+      "reason": [
+        "Full production parent prerequisite/execution/identity/report/cleanup differential proof absent; observed classifier parity cannot cover these failure paths"
+      ]
+    }
+  ],
+  "finalPortabilityBlockers": [
+    "Master switch and plugin contract/lifecycle/capability isolation",
+    "DefectDojo private-file decoupling",
+    "Result Router and publish/query closure",
+    "Provenance opt-in contract unification",
+    "Portability smoke and unresolved evidence debt; Sonar real negative remains deferred"
+  ],
+  "allOriginalProductionSourcesAccountedFor": true,
+  "sopsClassification": "A: no safe real execution and runtime-prerequisite proof; not merely absent historical incident. NOT_TESTED / ENVIRONMENT_BLOCKED retained.",
+  "sonarClassification": "B: bound positive VERIFIED, current authoritative OK/ERROR mapping audited, missing real negative historical binding is deferred per explicit user disposition. Real negative NOT_TESTED, never VERIFIED.",
+  "nextPermittedStage": "Only a separately scoped blocker-repayment stage: Gitleaks/Trivy/ZAP full production-parent evidence; SOPS safe disposable authorized environment + real controlled execution/prerequisite differential proof. Do not implement during this audit. Re-run readiness after proof. Actual Summary integration remains prohibited.",
+  "auditStop": true,
+  "summaryModified": false,
+  "productionModified": false,
+  "rollout": false
+}

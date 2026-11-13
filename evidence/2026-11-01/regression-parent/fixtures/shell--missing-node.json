@@ -1,0 +1,18 @@
+{
+  "schema": 1,
+  "stage": "command",
+  "classification": "CONTROLLED_REPLAY",
+  "collector": "unchanged-production-shell-with-inert-node",
+  "complete": true,
+  "command": "node --test --test-concurrency=1 infra/observability/*.test.mjs infra/security/*.test.mjs",
+  "execution": {
+    "status": 127,
+    "signal": null,
+    "error": null
+  },
+  "stdout": "",
+  "stderr": "/bin/sh: line 3: cat: command not found\n",
+  "originalWrapper": "set +e\nnode --test --test-concurrency=1 infra/observability/*.test.mjs infra/security/*.test.mjs > .devsecops/gates/regression.log 2>&1\nrc=$?\ncat .devsecops/gates/regression.log\nexit \"$rc\"",
+  "nodeInvocation": null,
+  "note": "Inert node output is synthetic, not historical test execution"
+}

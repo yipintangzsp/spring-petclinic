@@ -1,0 +1,99 @@
+# Trivy V2 · Harbor Candidate 真实扫描补做转录 · 2026-11-12 晚（凭据续期后）
+# 操作员：Rocky（后台执行，用户已在 Harbor UI 完成 Robot 续期）
+# 对应定稿报告：trivy-v2-closure-report-2026-11-12.md 第三节第 1 条（A9/D6 补做条件）
+
+## 0. 补做前基线（devops，2026-11-12T11:13Z 只读核查）
+credentials.json: root:security-trivy 640, 151 bytes
+  keys: [expiresAt, password, robotId, username]; expiresAt=1794222144（与定稿报告一致）; robotId=250
+  non-expiry-fields sha256[:16]=5b5ef1958ca098ac; username len 46; password len 32（值未打印、未记录）
+formal-scan-attempt.json: ABSENT（一次性标记未消耗）
+db metadata: db v2 UpdatedAt 2026-11-12T07:01:33Z NextUpdate 2026-11-13T07:01:33Z
+             java-db v1 UpdatedAt 2026-11-12T00:58:04Z NextUpdate 2026-11-15T00:58:04Z
+  → 72 小时新鲜度门禁与 NextUpdate 门禁在今日均可通过
+projects.json: registry=core.harbor.domain (→192.168.1.58), repository=petclinic/petclinic
+  indexDigest sha256:2fbaea65… platformDigest sha256:06a51570…
+
+## 1. 服务器侧凭据同步（只改 expiresAt）
+备份: /var/lib/security-trivy/credentials.json.bak-20261112-191329-renewal（cp -a, 151 bytes）
+改动: 原始文本等长替换 1794222144 → 1796727744（新到期 2026-12-08 19:02:24 CST，用户 UI 续期 30 天）
+改后: expiresAt=1796727744; robotId=250; non-expiry-fields sha256[:16]=5b5ef1958ca098ac（未变）
+      stat 不变: root:security-trivy 640, 151 bytes
+
+## 2. Harbor 侧旧 secret 只读实测（不经入口、不消耗标记）
+GET https://core.harbor.domain/service/token?service=harbor-registry&scope=repository:petclinic/petclinic:pull
+  → HTTP 200, token issued: True
+结论: 旧 secret 仍然有效（Harbor 改有效期不重置 secret），不存在 401 失效问题。
+
+## 3. 入口探针（Mac 专用密钥，按 REPRODUCE 第三节）
+ssh security-trivy@192.168.1.58 'bogus'
+  → {"error": "COMMAND_REJECTED", "stages": []}（与预期一致）
+注: 未单独执行 scan-v1 探针——entry.py 在凭据门禁之后立即以 O_EXCL 创建一次性标记并直接
+    启动扫描，任何通过凭据门禁的 scan-v1 都会消耗唯一一次正式扫描机会；故以第 5 节页面
+    正式尝试本身作为凭据门禁的通过证据（设计使然，非省略）。
+
+## 4. 页面服务与武装（Mac 仓库 fix/security-manager-plugin-switches）
+control.mjs start → Running: http://127.0.0.1:17862 (service security-manager-v2-readonly, pid 28286)
+武装前 capability: {"pluginId":"trivy","state":"BLOCKED","reason":"TRIVY_EXECUTION_NOT_ARMED",
+  "runner":"trivy-real","toolVersion":"0.76.2","executionHost":"devops/192.168.1.58"}
+配置未动: controls revision 38, trivy.enabled=true（发现时状态）
+武装文件: .devsecops/security-view-trivy-linux-v1.json = {"enabled":true}（0600）
+武装后 capability: {"pluginId":"trivy","state":"READY","reason":null, ...}
+
+## 5. 正式扫描尝试（repro-formal-attempt.mjs 原脚本）
+CAPABILITY_ARMED {trivy state READY}
+SUBMITTED web-1a147370-4b30-429a-b1f2-cb4cfb85ffc3
+RUN_RESULT {
+  "runId": "web-1a147370-4b30-429a-b1f2-cb4cfb85ffc3",
+  "state": "ERROR", "reason": "RUNNER_SCANNER_ERROR", "evidenceClass": "NOT_TESTED",
+  "scannerExecuted": false, "policyDecision": null, "evaluationCount": 0,
+  "executionDiagnostic": {"error": "SCANNER_ERROR", "scannerStarted": true, "stage": "RESTRICTED_SSH_RUNNER"},
+  "router": [{"consumerId":"dry-run","deliveryDecision":"DRY_RUN"},
+             {"consumerId":"local-evidence","deliveryDecision":"DELIVERED_LOCAL_ONLY"}],
+  "artifactDigest": "0a35f5fad278687b8ae81195de2d15879299fb5d0bbf56d5c63f677bbb40f322",
+  "resultDigest": "7d2a926cf96dba21078a43b1f2ced020661e336491f78023a5558b5e85813689",
+  "cleanup": "JOINED_OR_NOT_STARTED", "executionLocation": "LINUX_RESTRICTED"
+}
+运行记录: startedAt 2026-11-12T11:15:20.443Z, completedAt 11:15:22.435Z, durationMs 1981
+  releaseCount 0, rolloutCount 0（无发布、无集群变更）
+
+## 6. 入口侧实测（devops /var/lib/security-trivy/data/web-1a147370-…/）
+一次性标记已消耗（设计内）:
+  {"runId": "web-1a147370-4b30-429a-b1f2-cb4cfb85ffc3", "projectId": "trivy-candidate", "startedAt": "2026-11-12T11:15:22.186Z"}
+  → 身份/工具摘要/资源/DB 新鲜度/凭据有效期五道门禁全部通过，扫描器真实启动。
+stages.json:
+[{"stage":"SOURCE_READY","at":"2026-11-12T11:15:22.187Z"},
+ {"stage":"SCANNER_START_ATTEMPT","at":"2026-11-12T11:15:22.187Z"},
+ {"stage":"SCANNER_STARTED","at":"2026-11-12T11:15:22.189Z","pid":1657303},
+ {"stage":"SCANNER_EXITED","at":"2026-11-12T11:15:22.359Z","exitCode":1},
+ {"stage":"RUN_FAILED","at":"2026-11-12T11:15:22.359Z","errorCategory":"SCANNER_ERROR"}]
+execution.log（全文 430 字节，无凭据内容——已以程序化布尔校验确认 username/password 均不出现）:
+2026-11-12T19:15:22+08:00 INFO Loaded file_path="/var/lib/security-trivy/trivy.yaml"
+2026-11-12T19:15:22+08:00 INFO [vuln] Vulnerability scanning is enabled
+2026-11-12T19:15:22+08:00 FATAL Fatal error run error: image scan error: scan error: unable to initialize a scan service: unable to initialize cache: unable to initialize fs cache: failed to create cache dir: mkdir /var/lib/security-trivy/db-cache/fanal: permission denied
+
+## 7. 根因（实测，非推测）
+stat: /var/lib/security-trivy/db-cache = root:root 755
+      db-cache/db, db-cache/java-db = root:security-trivy 750; metadata.json 440
+sudo -u security-trivy test -w db-cache → NOT-WRITABLE
+trivy 以 security-trivy(uid 990) 运行，初始化 fs cache 需在 db-cache 下 mkdir fanal，被拒。
+DB 内容本身可读（DB 门禁已通过）；缺陷在缓存根目录写权限——2026-11-12 DB 刷新安装时
+db/java-db 子目录按 root:security-trivy 750/440 落盘（db-update.json 有记录），缓存根目录
+保持 root:root 755。定稿当日的离线验收（A4）走独立可写目录 offline-stale-20261112，
+未经过这条路径，故未暴露。扫描器在拉取镜像之前即退出，Harbor 扫描时认证未被 trivy 本身
+行使（但第 2 节 token 实测已证明凭据对 Harbor 有效）。
+
+## 8. 未完成项与所需决策（不自行绕过）
+- 本次正式尝试已消耗一次性标记；入口对后续 scan-v1 将返回 FORMAL_SCAN_ALREADY_CONSUMED。
+- 真实扫描结果（finding 分布）、Policy 判定、Grafana 回查仍未取得。
+- 补齐路径（二选一，均需用户/Codex 拍板，超出本次授权）：
+  (a) 授权运维处置：修正 db-cache 属主/权限（如 chown security-trivy 或组写）+ 处置已消耗
+      标记（删除/轮换）后重新武装重跑——等于变更一次性设计语义，须明确批准并留痕；
+  (b) 接受本次结果定稿：凭据链已全程验通（UI 续期→文件同步→Harbor token 200→五门禁全过
+      →扫描器启动），扫描本体被缓存目录权限缺陷阻断，作为环境缺陷单独立项修复后再议。
+- Loki/Grafana：本轮 router 回执与历次正式尝试同型（dry-run DRY_RUN、local-evidence
+  DELIVERED_LOCAL_ONLY，投递载荷已随运行记录封存）；loki-candidate 按冻结设计
+  realDeliveryApproved=false，真实 Loki 推送/Grafana 回查仍为 NOT_TESTED（冻结状态，非本轮回退）。
+
+## 9. 收尾状态
+武装文件已删除；页面服务已 stop 并验证端口关闭；controls 配置未改（revision 38）；
+生产 Manager 保持 NOT_ACTIVE；未 push；冻结 Backlog 未动；集群零变更。

@@ -1,0 +1,581 @@
+[
+  {
+    "apiVersion": "v1",
+    "kind": "Namespace",
+    "namespace": null,
+    "name": "petclinic",
+    "uid": "65c1e86b-fab7-4575-828b-024816506686",
+    "creationTimestamp": "2026-11-02T16:08:29Z",
+    "resourceVersion": "59018",
+    "labels": {
+      "kubernetes.io/metadata.name": "petclinic",
+      "security-manager.test/purpose": "sops-controlled-compat",
+      "security-manager.test/run-id": "sm-sops-runtime-20261103"
+    },
+    "annotations": {
+      "security-manager.test/kube-system-uid": "54f300a4-5f1b-4e1e-86a1-d173e5a402d8"
+    }
+  },
+  {
+    "apiVersion": "v1",
+    "kind": "Namespace",
+    "namespace": null,
+    "name": "devsecops-system",
+    "uid": "aea6ae19-86cb-40d9-8c20-2488af3509a9",
+    "creationTimestamp": "2026-11-02T16:08:29Z",
+    "resourceVersion": "59021",
+    "labels": {
+      "kubernetes.io/metadata.name": "devsecops-system",
+      "security-manager.test/purpose": "sops-controlled-compat",
+      "security-manager.test/run-id": "sm-sops-runtime-20261103"
+    },
+    "annotations": {
+      "security-manager.test/kube-system-uid": "54f300a4-5f1b-4e1e-86a1-d173e5a402d8"
+    }
+  },
+  {
+    "apiVersion": "v1",
+    "kind": "Namespace",
+    "namespace": null,
+    "name": "data-infra",
+    "uid": "1fac39cd-d8ab-4192-b8cd-63bc999f4474",
+    "creationTimestamp": "2026-11-02T16:08:29Z",
+    "resourceVersion": "59024",
+    "labels": {
+      "kubernetes.io/metadata.name": "data-infra",
+      "security-manager.test/purpose": "sops-controlled-compat",
+      "security-manager.test/run-id": "sm-sops-runtime-20261103"
+    },
+    "annotations": {
+      "security-manager.test/kube-system-uid": "54f300a4-5f1b-4e1e-86a1-d173e5a402d8"
+    }
+  },
+  {
+    "apiVersion": "v1",
+    "kind": "ServiceAccount",
+    "namespace": "devsecops-system",
+    "name": "platform-secret-reconciler",
+    "uid": "32f6e4a0-9647-482b-8ee1-23020a50edf8",
+    "creationTimestamp": "2026-11-02T16:08:29Z",
+    "resourceVersion": "59027",
+    "labels": {
+      "security-manager.test/purpose": "sops-controlled-compat",
+      "security-manager.test/run-id": "sm-sops-runtime-20261103"
+    },
+    "annotations": {
+      "security-manager.test/kube-system-uid": "54f300a4-5f1b-4e1e-86a1-d173e5a402d8"
+    }
+  },
+  {
+    "apiVersion": "v1",
+    "kind": "ServiceAccount",
+    "namespace": "devsecops-system",
+    "name": "kyverno-admission-controller",
+    "uid": "b989eb9f-4be3-45bb-a28f-f598d1acf0ce",
+    "creationTimestamp": "2026-11-02T16:08:29Z",
+    "resourceVersion": "59028",
+    "labels": {
+      "security-manager.test/purpose": "sops-controlled-compat",
+      "security-manager.test/run-id": "sm-sops-runtime-20261103"
+    },
+    "annotations": {
+      "security-manager.test/kube-system-uid": "54f300a4-5f1b-4e1e-86a1-d173e5a402d8"
+    }
+  },
+  {
+    "apiVersion": "v1",
+    "kind": "ServiceAccount",
+    "namespace": "devsecops-system",
+    "name": "security-fixture-executor",
+    "uid": "d23af14a-baf8-461a-b518-2bb9e912c917",
+    "creationTimestamp": "2026-11-02T16:08:29Z",
+    "resourceVersion": "59029",
+    "labels": {
+      "security-manager.test/purpose": "sops-controlled-compat",
+      "security-manager.test/run-id": "sm-sops-runtime-20261103"
+    },
+    "annotations": {
+      "security-manager.test/kube-system-uid": "54f300a4-5f1b-4e1e-86a1-d173e5a402d8"
+    }
+  },
+  {
+    "apiVersion": "rbac.authorization.k8s.io/v1",
+    "kind": "Role",
+    "namespace": "petclinic",
+    "name": "sops-fixture-reconciler-business",
+    "uid": "48b2d71b-b945-4703-b236-b7553f2e94cc",
+    "creationTimestamp": "2026-11-02T16:08:29Z",
+    "resourceVersion": "59030",
+    "labels": {
+      "security-manager.test/purpose": "sops-controlled-compat",
+      "security-manager.test/run-id": "sm-sops-runtime-20261103"
+    },
+    "annotations": {
+      "security-manager.test/kube-system-uid": "54f300a4-5f1b-4e1e-86a1-d173e5a402d8"
+    },
+    "rules": [
+      {
+        "verbs": [
+          "get",
+          "patch"
+        ],
+        "apiGroups": [
+          ""
+        ],
+        "resources": [
+          "secrets"
+        ],
+        "resourceNames": [
+          "petclinic-db",
+          "rabbitmq-client",
+          "petclinic-harbor-pull"
+        ]
+      }
+    ]
+  },
+  {
+    "apiVersion": "rbac.authorization.k8s.io/v1",
+    "kind": "RoleBinding",
+    "namespace": "petclinic",
+    "name": "sops-fixture-reconciler-business-binding",
+    "uid": "3fa96724-beb7-491b-beea-2e15564b6511",
+    "creationTimestamp": "2026-11-02T16:08:29Z",
+    "resourceVersion": "59031",
+    "labels": {
+      "security-manager.test/purpose": "sops-controlled-compat",
+      "security-manager.test/run-id": "sm-sops-runtime-20261103"
+    },
+    "annotations": {
+      "security-manager.test/kube-system-uid": "54f300a4-5f1b-4e1e-86a1-d173e5a402d8"
+    },
+    "roleRef": {
+      "apiGroup": "rbac.authorization.k8s.io",
+      "kind": "Role",
+      "name": "sops-fixture-reconciler-business"
+    },
+    "subjects": [
+      {
+        "kind": "ServiceAccount",
+        "name": "platform-secret-reconciler",
+        "namespace": "devsecops-system"
+      }
+    ]
+  },
+  {
+    "apiVersion": "rbac.authorization.k8s.io/v1",
+    "kind": "Role",
+    "namespace": "devsecops-system",
+    "name": "sops-fixture-reconciler-registry",
+    "uid": "cc81fb64-72ff-49e6-bd5b-b6b6dd563e73",
+    "creationTimestamp": "2026-11-02T16:08:29Z",
+    "resourceVersion": "59032",
+    "labels": {
+      "security-manager.test/purpose": "sops-controlled-compat",
+      "security-manager.test/run-id": "sm-sops-runtime-20261103"
+    },
+    "annotations": {
+      "security-manager.test/kube-system-uid": "54f300a4-5f1b-4e1e-86a1-d173e5a402d8"
+    },
+    "rules": [
+      {
+        "verbs": [
+          "get",
+          "patch"
+        ],
+        "apiGroups": [
+          ""
+        ],
+        "resources": [
+          "secrets"
+        ],
+        "resourceNames": [
+          "kyverno-registry-pull"
+        ]
+      }
+    ]
+  },
+  {
+    "apiVersion": "rbac.authorization.k8s.io/v1",
+    "kind": "RoleBinding",
+    "namespace": "devsecops-system",
+    "name": "sops-fixture-reconciler-registry-binding",
+    "uid": "5e3ec36f-05c1-4608-a07f-f7e1802a0eef",
+    "creationTimestamp": "2026-11-02T16:08:29Z",
+    "resourceVersion": "59033",
+    "labels": {
+      "security-manager.test/purpose": "sops-controlled-compat",
+      "security-manager.test/run-id": "sm-sops-runtime-20261103"
+    },
+    "annotations": {
+      "security-manager.test/kube-system-uid": "54f300a4-5f1b-4e1e-86a1-d173e5a402d8"
+    },
+    "roleRef": {
+      "apiGroup": "rbac.authorization.k8s.io",
+      "kind": "Role",
+      "name": "sops-fixture-reconciler-registry"
+    },
+    "subjects": [
+      {
+        "kind": "ServiceAccount",
+        "name": "platform-secret-reconciler",
+        "namespace": "devsecops-system"
+      }
+    ]
+  },
+  {
+    "apiVersion": "rbac.authorization.k8s.io/v1",
+    "kind": "Role",
+    "namespace": "devsecops-system",
+    "name": "sops-fixture-verifier-registry",
+    "uid": "3b88a832-1d12-437d-9ecd-adeecf842061",
+    "creationTimestamp": "2026-11-02T16:08:29Z",
+    "resourceVersion": "59034",
+    "labels": {
+      "security-manager.test/purpose": "sops-controlled-compat",
+      "security-manager.test/run-id": "sm-sops-runtime-20261103"
+    },
+    "annotations": {
+      "security-manager.test/kube-system-uid": "54f300a4-5f1b-4e1e-86a1-d173e5a402d8"
+    },
+    "rules": [
+      {
+        "verbs": [
+          "get"
+        ],
+        "apiGroups": [
+          ""
+        ],
+        "resources": [
+          "secrets"
+        ],
+        "resourceNames": [
+          "kyverno-registry-pull"
+        ]
+      }
+    ]
+  },
+  {
+    "apiVersion": "rbac.authorization.k8s.io/v1",
+    "kind": "RoleBinding",
+    "namespace": "devsecops-system",
+    "name": "sops-fixture-verifier-registry-binding",
+    "uid": "ca39a580-0594-4890-a943-654070784888",
+    "creationTimestamp": "2026-11-02T16:08:29Z",
+    "resourceVersion": "59035",
+    "labels": {
+      "security-manager.test/purpose": "sops-controlled-compat",
+      "security-manager.test/run-id": "sm-sops-runtime-20261103"
+    },
+    "annotations": {
+      "security-manager.test/kube-system-uid": "54f300a4-5f1b-4e1e-86a1-d173e5a402d8"
+    },
+    "roleRef": {
+      "apiGroup": "rbac.authorization.k8s.io",
+      "kind": "Role",
+      "name": "sops-fixture-verifier-registry"
+    },
+    "subjects": [
+      {
+        "kind": "ServiceAccount",
+        "name": "kyverno-admission-controller",
+        "namespace": "devsecops-system"
+      }
+    ]
+  },
+  {
+    "apiVersion": "rbac.authorization.k8s.io/v1",
+    "kind": "Role",
+    "namespace": "data-infra",
+    "name": "sops-fixture-executor-lease",
+    "uid": "f833e93a-b81e-44dd-b9f4-2e23da79eb0b",
+    "creationTimestamp": "2026-11-02T16:08:30Z",
+    "resourceVersion": "59036",
+    "labels": {
+      "security-manager.test/purpose": "sops-controlled-compat",
+      "security-manager.test/run-id": "sm-sops-runtime-20261103"
+    },
+    "annotations": {
+      "security-manager.test/kube-system-uid": "54f300a4-5f1b-4e1e-86a1-d173e5a402d8"
+    },
+    "rules": [
+      {
+        "verbs": [
+          "get"
+        ],
+        "apiGroups": [
+          "coordination.k8s.io"
+        ],
+        "resources": [
+          "leases"
+        ],
+        "resourceNames": [
+          "platform-heavy"
+        ]
+      }
+    ]
+  },
+  {
+    "apiVersion": "rbac.authorization.k8s.io/v1",
+    "kind": "RoleBinding",
+    "namespace": "data-infra",
+    "name": "sops-fixture-executor-lease-binding",
+    "uid": "2c9290c1-73b8-4989-b60b-533e8394d0d1",
+    "creationTimestamp": "2026-11-02T16:08:30Z",
+    "resourceVersion": "59037",
+    "labels": {
+      "security-manager.test/purpose": "sops-controlled-compat",
+      "security-manager.test/run-id": "sm-sops-runtime-20261103"
+    },
+    "annotations": {
+      "security-manager.test/kube-system-uid": "54f300a4-5f1b-4e1e-86a1-d173e5a402d8"
+    },
+    "roleRef": {
+      "apiGroup": "rbac.authorization.k8s.io",
+      "kind": "Role",
+      "name": "sops-fixture-executor-lease"
+    },
+    "subjects": [
+      {
+        "kind": "ServiceAccount",
+        "name": "security-fixture-executor",
+        "namespace": "devsecops-system"
+      }
+    ]
+  },
+  {
+    "apiVersion": "rbac.authorization.k8s.io/v1",
+    "kind": "Role",
+    "namespace": "devsecops-system",
+    "name": "sops-fixture-executor-impersonation",
+    "uid": "d2e0ed51-4128-460b-8b10-9b0e6ce1c023",
+    "creationTimestamp": "2026-11-02T16:08:30Z",
+    "resourceVersion": "59038",
+    "labels": {
+      "security-manager.test/purpose": "sops-controlled-compat",
+      "security-manager.test/run-id": "sm-sops-runtime-20261103"
+    },
+    "annotations": {
+      "security-manager.test/kube-system-uid": "54f300a4-5f1b-4e1e-86a1-d173e5a402d8"
+    },
+    "rules": [
+      {
+        "verbs": [
+          "impersonate"
+        ],
+        "apiGroups": [
+          ""
+        ],
+        "resources": [
+          "serviceaccounts"
+        ],
+        "resourceNames": [
+          "platform-secret-reconciler",
+          "kyverno-admission-controller"
+        ]
+      }
+    ]
+  },
+  {
+    "apiVersion": "rbac.authorization.k8s.io/v1",
+    "kind": "RoleBinding",
+    "namespace": "devsecops-system",
+    "name": "sops-fixture-executor-impersonation-binding",
+    "uid": "37b0604e-c80d-4fb2-a937-a4e0745055a5",
+    "creationTimestamp": "2026-11-02T16:08:30Z",
+    "resourceVersion": "59039",
+    "labels": {
+      "security-manager.test/purpose": "sops-controlled-compat",
+      "security-manager.test/run-id": "sm-sops-runtime-20261103"
+    },
+    "annotations": {
+      "security-manager.test/kube-system-uid": "54f300a4-5f1b-4e1e-86a1-d173e5a402d8"
+    },
+    "roleRef": {
+      "apiGroup": "rbac.authorization.k8s.io",
+      "kind": "Role",
+      "name": "sops-fixture-executor-impersonation"
+    },
+    "subjects": [
+      {
+        "kind": "ServiceAccount",
+        "name": "security-fixture-executor",
+        "namespace": "devsecops-system"
+      }
+    ]
+  },
+  {
+    "apiVersion": "rbac.authorization.k8s.io/v1",
+    "kind": "ClusterRole",
+    "namespace": null,
+    "name": "sops-fixture-executor-identity",
+    "uid": "62171e00-aa79-4a66-b2b6-3cd6cca2d69e",
+    "creationTimestamp": "2026-11-02T16:08:30Z",
+    "resourceVersion": "59040",
+    "labels": {
+      "security-manager.test/purpose": "sops-controlled-compat",
+      "security-manager.test/run-id": "sm-sops-runtime-20261103"
+    },
+    "annotations": {
+      "security-manager.test/kube-system-uid": "54f300a4-5f1b-4e1e-86a1-d173e5a402d8"
+    },
+    "rules": [
+      {
+        "verbs": [
+          "get"
+        ],
+        "apiGroups": [
+          ""
+        ],
+        "resources": [
+          "namespaces"
+        ],
+        "resourceNames": [
+          "kube-system",
+          "devsecops-system"
+        ]
+      },
+      {
+        "verbs": [
+          "create"
+        ],
+        "apiGroups": [
+          "authentication.k8s.io"
+        ],
+        "resources": [
+          "selfsubjectreviews"
+        ]
+      }
+    ]
+  },
+  {
+    "apiVersion": "rbac.authorization.k8s.io/v1",
+    "kind": "ClusterRoleBinding",
+    "namespace": null,
+    "name": "sops-fixture-executor-identity-binding",
+    "uid": "a12d6eed-bfa2-4936-8ad4-513e87670fec",
+    "creationTimestamp": "2026-11-02T16:08:30Z",
+    "resourceVersion": "59041",
+    "labels": {
+      "security-manager.test/purpose": "sops-controlled-compat",
+      "security-manager.test/run-id": "sm-sops-runtime-20261103"
+    },
+    "annotations": {
+      "security-manager.test/kube-system-uid": "54f300a4-5f1b-4e1e-86a1-d173e5a402d8"
+    },
+    "roleRef": {
+      "apiGroup": "rbac.authorization.k8s.io",
+      "kind": "ClusterRole",
+      "name": "sops-fixture-executor-identity"
+    },
+    "subjects": [
+      {
+        "kind": "ServiceAccount",
+        "name": "security-fixture-executor",
+        "namespace": "devsecops-system"
+      }
+    ]
+  },
+  {
+    "apiVersion": "coordination.k8s.io/v1",
+    "kind": "Lease",
+    "namespace": "data-infra",
+    "name": "platform-heavy",
+    "uid": "0878914c-3619-4779-bc6b-ed6ba5239ac7",
+    "creationTimestamp": "2026-11-02T16:08:39Z",
+    "resourceVersion": "59055",
+    "labels": {
+      "security-manager.test/purpose": "sops-controlled-compat",
+      "security-manager.test/run-id": "sm-sops-runtime-20261103"
+    },
+    "annotations": {
+      "security-manager.test/kube-system-uid": "54f300a4-5f1b-4e1e-86a1-d173e5a402d8"
+    },
+    "holderIdentity": "sm-sops-runtime-20261103"
+  },
+  {
+    "apiVersion": "v1",
+    "kind": "Secret",
+    "namespace": "petclinic",
+    "name": "petclinic-db",
+    "uid": "50f64554-ae7c-445b-ba37-a245a1037845",
+    "creationTimestamp": "2026-11-02T16:08:39Z",
+    "resourceVersion": "59056",
+    "labels": {
+      "security-manager.test/purpose": "sops-controlled-compat",
+      "security-manager.test/run-id": "sm-sops-runtime-20261103"
+    },
+    "annotations": {
+      "security-manager.test/kube-system-uid": "54f300a4-5f1b-4e1e-86a1-d173e5a402d8"
+    },
+    "type": "Opaque",
+    "keyNames": [
+      "password",
+      "username"
+    ],
+    "dataSha256": "8e4ccc550e0b8321cd7508929fe754025eba9d9c6e967702587204b810324776"
+  },
+  {
+    "apiVersion": "v1",
+    "kind": "Secret",
+    "namespace": "petclinic",
+    "name": "rabbitmq-client",
+    "uid": "372ba8c3-4a5a-4d17-88a0-8bab12d4198d",
+    "creationTimestamp": "2026-11-02T16:08:39Z",
+    "resourceVersion": "59057",
+    "labels": {
+      "security-manager.test/purpose": "sops-controlled-compat",
+      "security-manager.test/run-id": "sm-sops-runtime-20261103"
+    },
+    "annotations": {
+      "security-manager.test/kube-system-uid": "54f300a4-5f1b-4e1e-86a1-d173e5a402d8"
+    },
+    "type": "Opaque",
+    "keyNames": [
+      "password",
+      "username"
+    ],
+    "dataSha256": "138729346ccf2c574cb4c592d3ca286465200a5078985625d79531881279df54"
+  },
+  {
+    "apiVersion": "v1",
+    "kind": "Secret",
+    "namespace": "petclinic",
+    "name": "petclinic-harbor-pull",
+    "uid": "e06ffc9c-e6ff-417e-9bc7-cedb5d2c6126",
+    "creationTimestamp": "2026-11-02T16:08:39Z",
+    "resourceVersion": "59058",
+    "labels": {
+      "security-manager.test/purpose": "sops-controlled-compat",
+      "security-manager.test/run-id": "sm-sops-runtime-20261103"
+    },
+    "annotations": {
+      "security-manager.test/kube-system-uid": "54f300a4-5f1b-4e1e-86a1-d173e5a402d8"
+    },
+    "type": "kubernetes.io/dockerconfigjson",
+    "keyNames": [
+      ".dockerconfigjson"
+    ],
+    "dataSha256": "d8c5404269e76eba7c02983955c00b44578d520bed7fec52275c931d288d5535"
+  },
+  {
+    "apiVersion": "v1",
+    "kind": "Secret",
+    "namespace": "devsecops-system",
+    "name": "kyverno-registry-pull",
+    "uid": "9fd20721-f139-43cf-ad4e-1cb14e851f87",
+    "creationTimestamp": "2026-11-02T16:08:39Z",
+    "resourceVersion": "59059",
+    "labels": {
+      "security-manager.test/purpose": "sops-controlled-compat",
+      "security-manager.test/run-id": "sm-sops-runtime-20261103"
+    },
+    "annotations": {
+      "security-manager.test/kube-system-uid": "54f300a4-5f1b-4e1e-86a1-d173e5a402d8"
+    },
+    "type": "kubernetes.io/dockerconfigjson",
+    "keyNames": [
+      ".dockerconfigjson"
+    ],
+    "dataSha256": "ded88bd78c1192b099b7f9bd0cc4e8b16054894955ee2b1fd88a5a2cc9a58bad"
+  }
+]

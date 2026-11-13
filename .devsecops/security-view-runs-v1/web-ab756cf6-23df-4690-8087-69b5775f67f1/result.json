@@ -1,0 +1,223 @@
+{
+  "runId": "web-ab756cf6-23df-4690-8087-69b5775f67f1",
+  "pluginId": "sops",
+  "projectId": "sops-lab",
+  "scenarioId": "controlled-finding",
+  "configurationSnapshot": {
+    "revision": 54,
+    "updatedAt": "2026-11-12T18:58:12.578Z",
+    "settings": {
+      "enabled": true,
+      "securityLevel": "standard",
+      "plugins": {
+        "gitleaks": {
+          "enabled": true
+        },
+        "semgrep": {
+          "enabled": true
+        },
+        "cosign": {
+          "enabled": true
+        },
+        "sbom": {
+          "enabled": true
+        },
+        "trivy": {
+          "enabled": true
+        },
+        "kyverno": {
+          "enabled": true
+        },
+        "sonarqube": {
+          "enabled": true
+        },
+        "kubescape": {
+          "enabled": true
+        },
+        "zap": {
+          "enabled": true
+        },
+        "provenance": {
+          "enabled": true
+        },
+        "build-provenance": {
+          "enabled": true
+        },
+        "sops": {
+          "enabled": true
+        }
+      }
+    },
+    "source": {
+      "kind": "LOCAL_EXPLICIT_OVERRIDE",
+      "path": ".devsecops/security-view-controls-v1.json",
+      "settingsDigest": "282e3201b9c95d400ab7cabbdeb05dc2f32b2b0b5a6668e7ae248837857e6d84"
+    },
+    "configurationOrigins": [
+      {
+        "layer": "global",
+        "securityLevel": "standard",
+        "policyVersion": "baseline-v1"
+      },
+      {
+        "layer": "registryDefaults",
+        "plugins": {
+          "build-provenance": {
+            "enabled": true
+          },
+          "cosign": {
+            "enabled": true
+          },
+          "falco": {
+            "enabled": false
+          },
+          "gitleaks": {
+            "enabled": true
+          },
+          "kubescape": {
+            "enabled": true
+          },
+          "kyverno": {
+            "enabled": true
+          },
+          "provenance": {
+            "enabled": true
+          },
+          "sbom": {
+            "enabled": true
+          },
+          "semgrep": {
+            "enabled": true
+          },
+          "sonarqube": {
+            "enabled": true
+          },
+          "sops": {
+            "enabled": true
+          },
+          "trivy": {
+            "enabled": true
+          },
+          "zap": {
+            "enabled": true
+          }
+        }
+      },
+      {
+        "layer": "globalExplicit",
+        "values": {
+          "enabled": true,
+          "securityLevel": "standard",
+          "plugins": {
+            "gitleaks": {
+              "enabled": true
+            },
+            "semgrep": {
+              "enabled": true
+            },
+            "cosign": {
+              "enabled": true
+            },
+            "sbom": {
+              "enabled": true
+            },
+            "trivy": {
+              "enabled": true
+            },
+            "kyverno": {
+              "enabled": true
+            },
+            "sonarqube": {
+              "enabled": true
+            },
+            "kubescape": {
+              "enabled": true
+            },
+            "zap": {
+              "enabled": true
+            },
+            "provenance": {
+              "enabled": true
+            },
+            "build-provenance": {
+              "enabled": true
+            },
+            "sops": {
+              "enabled": true
+            }
+          },
+          "globalMode": "audit",
+          "profile": "java-web",
+          "policyVersion": "baseline-v1"
+        }
+      },
+      {
+        "layer": "profile",
+        "values": {}
+      },
+      {
+        "layer": "project",
+        "values": {}
+      }
+    ],
+    "effectiveConfigDigest": "44c130ccbd2d2eedf706f8ec1eda9359afb08776df5e9cf384cf757838f529fd"
+  },
+  "securityLevel": "standard",
+  "startedAt": "2026-11-12T19:05:54.516Z",
+  "kind": "LocalValidationRequest",
+  "executionLocation": "LINUX_RESTRICTED",
+  "state": "COMPLETED",
+  "evidenceClass": "REAL",
+  "scannerExecuted": true,
+  "policyDecision": "FAIL",
+  "evaluationCount": 1,
+  "resultDigest": "6ac68119f50febec556048b0f40e91b0d062ff5311978bb1daea190afc47a9f0",
+  "artifactDigest": "3b37732149a33ec7fc575f7a52b7ea7101f6a8d52126fe1def9a506c8d86915f",
+  "source": ".devsecops/security-view-runs-v1/web-ab756cf6-23df-4690-8087-69b5775f67f1/artifact/sops.result.json",
+  "reason": null,
+  "executionDiagnostic": null,
+  "caseId": "tampered-ciphertext",
+  "storeModel": "FILE_FIXTURE_STORE",
+  "rbacModel": "FIXTURE_STORE_ACL",
+  "cipherTargets": 4,
+  "toolVersion": "3.13.3",
+  "toolSha256": "53b0abacd38ef1b12a66d6c100956691b9cefce018d91f81e73ddf7438b94d77",
+  "executionIdentity": "security-sops",
+  "executionHost": "devops/192.168.1.58",
+  "router": [
+    {
+      "consumerId": "dry-run",
+      "deliveryDecision": "DRY_RUN"
+    },
+    {
+      "consumerId": "local-evidence",
+      "deliveryDecision": "DELIVERED_LOCAL_ONLY"
+    }
+  ],
+  "cleanup": "VERIFIED",
+  "lokiDelivery": {
+    "consumerId": "loki-candidate",
+    "automatic": true,
+    "sourceClassification": "REAL_CONTROLLED_EXECUTION",
+    "runId": "web-ab756cf6-23df-4690-8087-69b5775f67f1",
+    "resultDigest": "6ac68119f50febec556048b0f40e91b0d062ff5311978bb1daea190afc47a9f0",
+    "pushState": "ACKNOWLEDGED",
+    "pushHttpStatus": 204,
+    "receiptDigest": "a765e379ec227e0c40866493161b29ba27e8e64af8923025a293266cb59dc74d",
+    "httpRequestCount": 1,
+    "queryState": "VERIFIED",
+    "state": "DELIVERED",
+    "reason": null,
+    "deliveryAt": "2026-11-12T19:05:55.769Z",
+    "grafanaUrl": "http://grafana.devops.local/d/security-manager-v2-candidate/devsecops-security-manager-v2-overview?var-DS_LOKI=loki&var-project=sops-lab&var-run=web-ab756cf6-23df-4690-8087-69b5775f67f1&var-resultDigest=6ac68119f50febec556048b0f40e91b0d062ff5311978bb1daea190afc47a9f0&from=1794510295468&to=1794510655468",
+    "receiptSource": "loki-delivery/router-receipt.json",
+    "queryAt": "2026-11-12T19:05:55.808Z",
+    "queryHttpStatus": 200,
+    "matchedEvents": 1
+  },
+  "completedAt": "2026-11-12T19:05:55.814Z",
+  "durationMs": 1286,
+  "releaseCount": 0,
+  "rolloutCount": 0,
+  "auditDigest": "75424569c7588843473a4b5cb86681d3b940ddfcd85c0c21122940e429c69f64"
+}

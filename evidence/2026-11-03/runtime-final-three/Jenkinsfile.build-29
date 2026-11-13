@@ -1,0 +1,11 @@
+// Dedicated isolated identity proof and exact validation artifact cleanup only.
+pipeline {
+ agent any
+ options { disableConcurrentBuilds(); timeout(time:5,unit:'MINUTES') }
+ stages {
+ stage('Bundle and accepted thirteen') { steps { sh 'node infra/security/runtime-facts/verify-bundle.mjs; node infra/security/runtime-facts/thirteen-smoke.mjs' } }
+ stage('Clean exact build-26 Cosign validation artifacts') { steps { withCredentials([usernamePassword(credentialsId:'harbor-creds',usernameVariable:'HARBOR_USER',passwordVariable:'HARBOR_PASS')]) { sh 'node infra/security/runtime-facts/cosign-registry-cleanup.mjs 26' } } }
+ stage('Real minimum Product-scope Dojo API proof') { steps { sh 'node infra/security/runtime-facts/dojo-identity-probe.mjs' } }
+ }
+ post { always { archiveArtifacts artifacts: '.devsecops/runtime-controlled/build-' + env.BUILD_NUMBER + '/**,runtime-source-bundle.json',allowEmptyArchive:false } }
+}

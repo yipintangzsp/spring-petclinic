@@ -1,0 +1,8 @@
+[Unit]
+Description=Petclinic read-only platform inventory snapshot
+[Service]
+Type=oneshot
+ExecStart=/usr/bin/python3 /opt/petclinic-observability/platform-snapshot.py
+TimeoutStartSec=60
+NoNewPrivileges=true
+UMask=0077

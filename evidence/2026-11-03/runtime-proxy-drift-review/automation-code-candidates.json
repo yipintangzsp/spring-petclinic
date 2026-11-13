@@ -1,0 +1,116 @@
+{
+  "files": [
+    {
+      "path": "/Users/zhangsir/code/v2rayn-node-automation/node_guard.py",
+      "sha256": "7a177c20fb7e9e6dbf6d5a09c21738a62f514af19dfbb9fbfa8455eb099af151",
+      "writeAndProcessRelatedLines": [
+        {
+          "line": 2,
+          "source": "\"\"\"Build a conservative, append-only managed Clash/v2rayN profile."
+        },
+        {
+          "line": 4,
+          "source": "The script never edits v2rayN's SQLite database.  It reads candidate URI/text"
+        },
+        {
+          "line": 7,
+          "source": "v2rayN profiles therefore remain untouched and can be rolled back by replacing"
+        },
+        {
+          "line": 150,
+          "source": "    ap.add_argument(\"--output\", type=Path, default=Path.home() / \"Library/Application Support/v2rayN/guiConfigs/grok-managed.yaml\")"
+        },
+        {
+          "line": 165,
+          "source": "            req = urllib.request.Request(source_url, headers={\"User-Agent\": \"v2rayn-node-guard/1.0\"})"
+        },
+        {
+          "line": 198,
+          "source": "    summary = {\"input\": str(args.input), \"source_urls\": len(args.source_url), \"source_errors\": source_errors, \"extracted\": len(URI_RE.findall(text)), \"unique\": len(candidates), \"reachable\": len(scored), \"selected\": len(selected), \"existing_v2rayn_db_is_untouched\": True}"
+        },
+        {
+          "line": 199,
+          "source": "    print(json.dumps(summary, ensure_ascii=False))"
+        }
+      ]
+    },
+    {
+      "path": "/Users/zhangsir/code/v2rayn-node-automation/refresh_managed.sh",
+      "sha256": "3981cfac5878b3fcb94552ca241efdffccab995265b766580278b566a81d2279",
+      "writeAndProcessRelatedLines": [
+        {
+          "line": 4,
+          "source": "BASE_DIR=\"/Users/zhangsir/code/v2rayn-node-automation\""
+        },
+        {
+          "line": 5,
+          "source": "GUICONFIG_DIR=\"/Users/zhangsir/Library/Application Support/v2rayN/guiConfigs\""
+        },
+        {
+          "line": 9,
+          "source": "LOCK_DIR=\"/tmp/v2rayn-grok-refresh.lock\""
+        },
+        {
+          "line": 17,
+          "source": "TMP_DIR=$(mktemp -d /tmp/v2rayn-grok-refresh.XXXXXX)"
+        }
+      ]
+    },
+    {
+      "path": "/Users/zhangsir/code/v2rayn-node-automation/gmail_extract_sources.py",
+      "sha256": "9b28fcc43301a1816ee975331612c8d6e5a7550b296383c34a0fb9bbfe5d98f5",
+      "writeAndProcessRelatedLines": []
+    },
+    {
+      "path": "/Users/zhangsir/code/v2rayn-node-automation/gmail_refresh.sh",
+      "sha256": "4568833ae8f3de1a7b0d7aabae78864ffb5fdf92377580dd7775d6b050be8571",
+      "writeAndProcessRelatedLines": [
+        {
+          "line": 4,
+          "source": "BASE_DIR=\"/Users/zhangsir/code/v2rayn-node-automation\""
+        },
+        {
+          "line": 7,
+          "source": "LOCK_DIR=\"/tmp/v2rayn-gmail-refresh.lock\""
+        },
+        {
+          "line": 8,
+          "source": "LOG_FILE=\"/tmp/v2rayn-gmail-refresh.log\""
+        },
+        {
+          "line": 15,
+          "source": "TMP_DIR=$(mktemp -d /tmp/v2rayn-gmail-refresh.XXXXXX)"
+        },
+        {
+          "line": 20,
+          "source": "  /usr/bin/osascript \"${BASE_DIR}/gmail_search.applescript\" >\"${TMP_DIR}/gmail.txt\" 2>\"${TMP_DIR}/gmail.err\" &"
+        },
+        {
+          "line": 21,
+          "source": "  osascript_pid=$!"
+        },
+        {
+          "line": 24,
+          "source": "    if ! kill -0 \"${osascript_pid}\" 2>/dev/null; then"
+        },
+        {
+          "line": 25,
+          "source": "      wait \"${osascript_pid}\" || true"
+        },
+        {
+          "line": 30,
+          "source": "  if kill -0 \"${osascript_pid}\" 2>/dev/null; then"
+        },
+        {
+          "line": 32,
+          "source": "    kill \"${osascript_pid}\" 2>/dev/null || true"
+        },
+        {
+          "line": 33,
+          "source": "    wait \"${osascript_pid}\" 2>/dev/null || true"
+        }
+      ]
+    }
+  ],
+  "scriptsExecuted": false
+}

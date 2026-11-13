@@ -1,0 +1,62 @@
+{
+  "schema": 1,
+  "sourceId": "sonarqube",
+  "execution": {
+    "errorClass": null,
+    "signal": null,
+    "command": "nice -n 10 ./mvnw -B org.sonarsource.scanner.maven:sonar-maven-plugin:5.8.0.7211:sonar -Dsonar.projectKey=petclinic -Dsonar.qualitygate.wait=true -Dsonar.qualitygate.timeout=300",
+    "exitStatus": 0
+  },
+  "reports": [
+    {
+      "path": "target/sonar/report-task.txt",
+      "sha256": "7c111b64a5055b0988a243713fb629a6ac720d18262d78461b08baa3af54143a",
+      "bytes": 383
+    }
+  ],
+  "evidence": [
+    {
+      "prerequisite": {
+        "completedAtMs": 1793636429943,
+        "errorClass": null,
+        "stderrSha256": "70f43ada5d8442c13532dae98132c73c0fe07e9aecac45a63c4cc414fba09fd1",
+        "signal": null,
+        "stdoutSha256": "d913733c2124510907b9c484b96f80042dfea6d39eb026920b28998a3ec15d1b",
+        "exitStatus": 0,
+        "startedAtMs": 1793636223481
+      },
+      "sourceRevision": "741ea2866ea142b24c7838e1ef25c8327c79d279",
+      "classification": "REAL_DEDICATED_NONRELEASE_NEW_ANALYSIS",
+      "queries": [
+        {
+          "path": "/api/ce/task?id=c146a69e-cb30-4708-9535-d7f923a2ae20",
+          "method": "GET",
+          "httpStatus": 200
+        },
+        {
+          "path": "/api/qualitygates/project_status?analysisId=db7cf501-fc84-40d6-9fbe-a28fb745b94b",
+          "method": "GET",
+          "httpStatus": 200
+        }
+      ],
+      "compatibilityNegative": "DEFERRED_REAL_NEGATIVE_EVIDENCE"
+    }
+  ],
+  "rawPayloadPersisted": false,
+  "kind": "RuntimeSourceFacts",
+  "evidenceComplete": true,
+  "resultDigest": "7f7ddc4ddab271e477dfae64f18345beebb13883ae9ad999c4a77f76d1ac36bd",
+  "evaluationCount": 1,
+  "buildBinding": {
+    "candidate": "core.harbor.domain/petclinic/petclinic@sha256:489cb821573ff1f98edd846d5949d74bf3391b24e2f1fe5bcfb71c6be0793137",
+    "build": 12,
+    "project": "petclinic",
+    "source": "741ea2866ea142b24c7838e1ef25c8327c79d279",
+    "runId": "security-runtime-facts-20261102#12",
+    "job": "security-runtime-facts-20261102",
+    "targetScope": "runtime"
+  },
+  "envelopeDigest": "3b6a4fcf6472f58d1bb1362b57253503fa87d07ccf1e198f96f1973a955d68a3",
+  "rawFactDigest": "f57c0d2cd88f6d3ae7b0415a2eaa1099f7fcd79b2f04d751341cafeb183505d0",
+  "presence": "executed"
+}

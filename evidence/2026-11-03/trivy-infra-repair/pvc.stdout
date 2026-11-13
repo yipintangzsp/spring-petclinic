@@ -1,0 +1,1830 @@
+{
+    "apiVersion": "v1",
+    "items": [
+        {
+            "apiVersion": "v1",
+            "kind": "PersistentVolume",
+            "metadata": {
+                "annotations": {
+                    "kubectl.kubernetes.io/last-applied-configuration": "{\"apiVersion\":\"v1\",\"kind\":\"PersistentVolume\",\"metadata\":{\"annotations\":{},\"name\":\"gitlab-pv\"},\"spec\":{\"accessModes\":[\"ReadWriteOnce\"],\"capacity\":{\"storage\":\"30Gi\"},\"local\":{\"path\":\"/opt/devops/data/gitlab\"},\"nodeAffinity\":{\"required\":{\"nodeSelectorTerms\":[{\"matchExpressions\":[{\"key\":\"kubernetes.io/hostname\",\"operator\":\"In\",\"values\":[\"devops\"]}]}]}},\"persistentVolumeReclaimPolicy\":\"Retain\",\"storageClassName\":\"local-path\"}}\n",
+                    "pv.kubernetes.io/bound-by-controller": "yes"
+                },
+                "creationTimestamp": "2026-04-20T06:13:57Z",
+                "finalizers": [
+                    "kubernetes.io/pv-protection"
+                ],
+                "name": "gitlab-pv",
+                "resourceVersion": "95405",
+                "uid": "fd311e47-22cf-4883-97f3-734be8a5c8ff"
+            },
+            "spec": {
+                "accessModes": [
+                    "ReadWriteOnce"
+                ],
+                "capacity": {
+                    "storage": "30Gi"
+                },
+                "claimRef": {
+                    "apiVersion": "v1",
+                    "kind": "PersistentVolumeClaim",
+                    "name": "gitlab-pvc",
+                    "namespace": "ns-devops",
+                    "resourceVersion": "95390",
+                    "uid": "7a333a2e-dd0f-4acf-8718-f03b28057bef"
+                },
+                "local": {
+                    "path": "/opt/devops/data/gitlab"
+                },
+                "nodeAffinity": {
+                    "required": {
+                        "nodeSelectorTerms": [
+                            {
+                                "matchExpressions": [
+                                    {
+                                        "key": "kubernetes.io/hostname",
+                                        "operator": "In",
+                                        "values": [
+                                            "devops"
+                                        ]
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                },
+                "persistentVolumeReclaimPolicy": "Retain",
+                "storageClassName": "local-path",
+                "volumeMode": "Filesystem"
+            },
+            "status": {
+                "lastPhaseTransitionTime": "2026-04-20T06:13:57Z",
+                "phase": "Bound"
+            }
+        },
+        {
+            "apiVersion": "v1",
+            "kind": "PersistentVolume",
+            "metadata": {
+                "annotations": {
+                    "kubectl.kubernetes.io/last-applied-configuration": "{\"apiVersion\":\"v1\",\"kind\":\"PersistentVolume\",\"metadata\":{\"annotations\":{},\"labels\":{\"type\":\"local-openclaw\"},\"name\":\"pv-openclaw-data\"},\"spec\":{\"accessModes\":[\"ReadWriteOnce\"],\"capacity\":{\"storage\":\"5Gi\"},\"hostPath\":{\"path\":\"/opt/openclaw/data\"},\"persistentVolumeReclaimPolicy\":\"Retain\",\"storageClassName\":\"local-storage\"}}\n",
+                    "pv.kubernetes.io/bound-by-controller": "yes"
+                },
+                "creationTimestamp": "2026-04-17T09:25:01Z",
+                "finalizers": [
+                    "kubernetes.io/pv-protection"
+                ],
+                "labels": {
+                    "type": "local-openclaw"
+                },
+                "name": "pv-openclaw-data",
+                "resourceVersion": "2418",
+                "uid": "c41b8a4f-dde0-4472-8722-79ff57bad7b6"
+            },
+            "spec": {
+                "accessModes": [
+                    "ReadWriteOnce"
+                ],
+                "capacity": {
+                    "storage": "5Gi"
+                },
+                "claimRef": {
+                    "apiVersion": "v1",
+                    "kind": "PersistentVolumeClaim",
+                    "name": "pvc-openclaw-data",
+                    "namespace": "ns-openclaw",
+                    "resourceVersion": "2415",
+                    "uid": "84f96510-c926-416d-9730-1290d143b5af"
+                },
+                "hostPath": {
+                    "path": "/opt/openclaw/data",
+                    "type": ""
+                },
+                "persistentVolumeReclaimPolicy": "Retain",
+                "storageClassName": "local-storage",
+                "volumeMode": "Filesystem"
+            },
+            "status": {
+                "lastPhaseTransitionTime": "2026-04-17T09:25:01Z",
+                "phase": "Bound"
+            }
+        },
+        {
+            "apiVersion": "v1",
+            "kind": "PersistentVolume",
+            "metadata": {
+                "annotations": {
+                    "local.path.provisioner/selected-node": "devops",
+                    "pv.kubernetes.io/provisioned-by": "rancher.io/local-path"
+                },
+                "creationTimestamp": "2026-04-19T02:12:14Z",
+                "finalizers": [
+                    "kubernetes.io/pv-protection"
+                ],
+                "name": "pvc-14c139bf-5717-4b2f-9997-4c77fa03f409",
+                "resourceVersion": "57188",
+                "uid": "df1ca23a-abb3-47bd-bda0-b0fdfcca25c0"
+            },
+            "spec": {
+                "accessModes": [
+                    "ReadWriteOnce"
+                ],
+                "capacity": {
+                    "storage": "10Gi"
+                },
+                "claimRef": {
+                    "apiVersion": "v1",
+                    "kind": "PersistentVolumeClaim",
+                    "name": "jenkins-pvc",
+                    "namespace": "ns-devops",
+                    "resourceVersion": "57168",
+                    "uid": "14c139bf-5717-4b2f-9997-4c77fa03f409"
+                },
+                "local": {
+                    "path": "/var/lib/rancher/k3s/storage/pvc-14c139bf-5717-4b2f-9997-4c77fa03f409_ns-devops_jenkins-pvc"
+                },
+                "nodeAffinity": {
+                    "required": {
+                        "nodeSelectorTerms": [
+                            {
+                                "matchExpressions": [
+                                    {
+                                        "key": "kubernetes.io/hostname",
+                                        "operator": "In",
+                                        "values": [
+                                            "devops"
+                                        ]
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                },
+                "persistentVolumeReclaimPolicy": "Delete",
+                "storageClassName": "local-path",
+                "volumeMode": "Filesystem"
+            },
+            "status": {
+                "lastPhaseTransitionTime": "2026-04-19T02:12:14Z",
+                "phase": "Bound"
+            }
+        },
+        {
+            "apiVersion": "v1",
+            "kind": "PersistentVolume",
+            "metadata": {
+                "annotations": {
+                    "local.path.provisioner/selected-node": "devops",
+                    "pv.kubernetes.io/provisioned-by": "rancher.io/local-path"
+                },
+                "creationTimestamp": "2026-04-28T08:39:39Z",
+                "finalizers": [
+                    "kubernetes.io/pv-protection"
+                ],
+                "name": "pvc-1e828a7b-9362-4dd3-986d-0f4931c08d8e",
+                "resourceVersion": "551780",
+                "uid": "10449b3d-685f-41f4-a834-682cbbe9582d"
+            },
+            "spec": {
+                "accessModes": [
+                    "ReadWriteOnce"
+                ],
+                "capacity": {
+                    "storage": "1Gi"
+                },
+                "claimRef": {
+                    "apiVersion": "v1",
+                    "kind": "PersistentVolumeClaim",
+                    "name": "harbor-jobservice",
+                    "namespace": "harbor",
+                    "resourceVersion": "551664",
+                    "uid": "1e828a7b-9362-4dd3-986d-0f4931c08d8e"
+                },
+                "local": {
+                    "path": "/var/lib/rancher/k3s/storage/pvc-1e828a7b-9362-4dd3-986d-0f4931c08d8e_harbor_harbor-jobservice"
+                },
+                "nodeAffinity": {
+                    "required": {
+                        "nodeSelectorTerms": [
+                            {
+                                "matchExpressions": [
+                                    {
+                                        "key": "kubernetes.io/hostname",
+                                        "operator": "In",
+                                        "values": [
+                                            "devops"
+                                        ]
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                },
+                "persistentVolumeReclaimPolicy": "Delete",
+                "storageClassName": "local-path",
+                "volumeMode": "Filesystem"
+            },
+            "status": {
+                "lastPhaseTransitionTime": "2026-04-28T08:39:39Z",
+                "phase": "Bound"
+            }
+        },
+        {
+            "apiVersion": "v1",
+            "kind": "PersistentVolume",
+            "metadata": {
+                "annotations": {
+                    "local.path.provisioner/selected-node": "devops",
+                    "pv.kubernetes.io/provisioned-by": "rancher.io/local-path"
+                },
+                "creationTimestamp": "2026-04-28T08:39:40Z",
+                "finalizers": [
+                    "kubernetes.io/pv-protection"
+                ],
+                "name": "pvc-262fbaec-19cb-49dd-b8e2-fd2be46ab2d7",
+                "resourceVersion": "551812",
+                "uid": "761d76e4-7b84-4d1b-abdb-d4358229c961"
+            },
+            "spec": {
+                "accessModes": [
+                    "ReadWriteOnce"
+                ],
+                "capacity": {
+                    "storage": "5Gi"
+                },
+                "claimRef": {
+                    "apiVersion": "v1",
+                    "kind": "PersistentVolumeClaim",
+                    "name": "data-harbor-trivy-0",
+                    "namespace": "harbor",
+                    "resourceVersion": "551698",
+                    "uid": "262fbaec-19cb-49dd-b8e2-fd2be46ab2d7"
+                },
+                "local": {
+                    "path": "/var/lib/rancher/k3s/storage/pvc-262fbaec-19cb-49dd-b8e2-fd2be46ab2d7_harbor_data-harbor-trivy-0"
+                },
+                "nodeAffinity": {
+                    "required": {
+                        "nodeSelectorTerms": [
+                            {
+                                "matchExpressions": [
+                                    {
+                                        "key": "kubernetes.io/hostname",
+                                        "operator": "In",
+                                        "values": [
+                                            "devops"
+                                        ]
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                },
+                "persistentVolumeReclaimPolicy": "Delete",
+                "storageClassName": "local-path",
+                "volumeMode": "Filesystem"
+            },
+            "status": {
+                "lastPhaseTransitionTime": "2026-04-28T08:39:40Z",
+                "phase": "Bound"
+            }
+        },
+        {
+            "apiVersion": "v1",
+            "kind": "PersistentVolume",
+            "metadata": {
+                "annotations": {
+                    "local.path.provisioner/selected-node": "devops",
+                    "pv.kubernetes.io/provisioned-by": "rancher.io/local-path"
+                },
+                "creationTimestamp": "2026-10-24T03:51:51Z",
+                "finalizers": [
+                    "kubernetes.io/pv-protection"
+                ],
+                "name": "pvc-27bbd708-99f8-4e81-b07e-df7646b0f280",
+                "resourceVersion": "14454905",
+                "uid": "09757607-bd64-4e49-9643-9977f64ee6b8"
+            },
+            "spec": {
+                "accessModes": [
+                    "ReadWriteOnce"
+                ],
+                "capacity": {
+                    "storage": "2Gi"
+                },
+                "claimRef": {
+                    "apiVersion": "v1",
+                    "kind": "PersistentVolumeClaim",
+                    "name": "peach-data",
+                    "namespace": "platform-apps",
+                    "resourceVersion": "14454871",
+                    "uid": "27bbd708-99f8-4e81-b07e-df7646b0f280"
+                },
+                "local": {
+                    "path": "/var/lib/rancher/k3s/storage/pvc-27bbd708-99f8-4e81-b07e-df7646b0f280_platform-apps_peach-data"
+                },
+                "nodeAffinity": {
+                    "required": {
+                        "nodeSelectorTerms": [
+                            {
+                                "matchExpressions": [
+                                    {
+                                        "key": "kubernetes.io/hostname",
+                                        "operator": "In",
+                                        "values": [
+                                            "devops"
+                                        ]
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                },
+                "persistentVolumeReclaimPolicy": "Delete",
+                "storageClassName": "local-path",
+                "volumeMode": "Filesystem"
+            },
+            "status": {
+                "lastPhaseTransitionTime": "2026-10-24T03:51:51Z",
+                "phase": "Bound"
+            }
+        },
+        {
+            "apiVersion": "v1",
+            "kind": "PersistentVolume",
+            "metadata": {
+                "annotations": {
+                    "local.path.provisioner/selected-node": "devops",
+                    "pv.kubernetes.io/provisioned-by": "rancher.io/local-path"
+                },
+                "creationTimestamp": "2026-04-28T08:39:36Z",
+                "finalizers": [
+                    "kubernetes.io/pv-protection"
+                ],
+                "name": "pvc-2ce7c5f7-5f8c-4d97-9d46-831f7a37e35a",
+                "resourceVersion": "551756",
+                "uid": "48b2e816-d2d1-49b1-ac94-99e918ef83ad"
+            },
+            "spec": {
+                "accessModes": [
+                    "ReadWriteOnce"
+                ],
+                "capacity": {
+                    "storage": "5Gi"
+                },
+                "claimRef": {
+                    "apiVersion": "v1",
+                    "kind": "PersistentVolumeClaim",
+                    "name": "harbor-registry",
+                    "namespace": "harbor",
+                    "resourceVersion": "551665",
+                    "uid": "2ce7c5f7-5f8c-4d97-9d46-831f7a37e35a"
+                },
+                "local": {
+                    "path": "/var/lib/rancher/k3s/storage/pvc-2ce7c5f7-5f8c-4d97-9d46-831f7a37e35a_harbor_harbor-registry"
+                },
+                "nodeAffinity": {
+                    "required": {
+                        "nodeSelectorTerms": [
+                            {
+                                "matchExpressions": [
+                                    {
+                                        "key": "kubernetes.io/hostname",
+                                        "operator": "In",
+                                        "values": [
+                                            "devops"
+                                        ]
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                },
+                "persistentVolumeReclaimPolicy": "Delete",
+                "storageClassName": "local-path",
+                "volumeMode": "Filesystem"
+            },
+            "status": {
+                "lastPhaseTransitionTime": "2026-04-28T08:39:36Z",
+                "phase": "Bound"
+            }
+        },
+        {
+            "apiVersion": "v1",
+            "kind": "PersistentVolume",
+            "metadata": {
+                "annotations": {
+                    "local.path.provisioner/selected-node": "devops",
+                    "pv.kubernetes.io/provisioned-by": "rancher.io/local-path"
+                },
+                "creationTimestamp": "2026-04-28T08:39:39Z",
+                "finalizers": [
+                    "kubernetes.io/pv-protection"
+                ],
+                "name": "pvc-39559740-0911-4d04-a956-758794ecac8f",
+                "resourceVersion": "551784",
+                "uid": "8921f796-358f-4afe-b59b-f219366d4787"
+            },
+            "spec": {
+                "accessModes": [
+                    "ReadWriteOnce"
+                ],
+                "capacity": {
+                    "storage": "1Gi"
+                },
+                "claimRef": {
+                    "apiVersion": "v1",
+                    "kind": "PersistentVolumeClaim",
+                    "name": "database-data-harbor-database-0",
+                    "namespace": "harbor",
+                    "resourceVersion": "551685",
+                    "uid": "39559740-0911-4d04-a956-758794ecac8f"
+                },
+                "local": {
+                    "path": "/var/lib/rancher/k3s/storage/pvc-39559740-0911-4d04-a956-758794ecac8f_harbor_database-data-harbor-database-0"
+                },
+                "nodeAffinity": {
+                    "required": {
+                        "nodeSelectorTerms": [
+                            {
+                                "matchExpressions": [
+                                    {
+                                        "key": "kubernetes.io/hostname",
+                                        "operator": "In",
+                                        "values": [
+                                            "devops"
+                                        ]
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                },
+                "persistentVolumeReclaimPolicy": "Delete",
+                "storageClassName": "local-path",
+                "volumeMode": "Filesystem"
+            },
+            "status": {
+                "lastPhaseTransitionTime": "2026-04-28T08:39:39Z",
+                "phase": "Bound"
+            }
+        },
+        {
+            "apiVersion": "v1",
+            "kind": "PersistentVolume",
+            "metadata": {
+                "annotations": {
+                    "local.path.provisioner/selected-node": "devops",
+                    "pv.kubernetes.io/provisioned-by": "rancher.io/local-path"
+                },
+                "creationTimestamp": "2026-10-14T05:40:11Z",
+                "finalizers": [
+                    "kubernetes.io/pv-protection"
+                ],
+                "name": "pvc-399ca13c-fb18-4c5e-9e6f-4bfcec51763a",
+                "resourceVersion": "12454888",
+                "uid": "c70e0680-5f78-4736-8501-5dfaca389c7d"
+            },
+            "spec": {
+                "accessModes": [
+                    "ReadWriteOnce"
+                ],
+                "capacity": {
+                    "storage": "1Gi"
+                },
+                "claimRef": {
+                    "apiVersion": "v1",
+                    "kind": "PersistentVolumeClaim",
+                    "name": "alertmanager-platform-db-alertmanager-platform-0",
+                    "namespace": "monitoring",
+                    "resourceVersion": "12454814",
+                    "uid": "399ca13c-fb18-4c5e-9e6f-4bfcec51763a"
+                },
+                "local": {
+                    "path": "/var/lib/rancher/k3s/storage/pvc-399ca13c-fb18-4c5e-9e6f-4bfcec51763a_monitoring_alertmanager-platform-db-alertmanager-platform-0"
+                },
+                "nodeAffinity": {
+                    "required": {
+                        "nodeSelectorTerms": [
+                            {
+                                "matchExpressions": [
+                                    {
+                                        "key": "kubernetes.io/hostname",
+                                        "operator": "In",
+                                        "values": [
+                                            "devops"
+                                        ]
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                },
+                "persistentVolumeReclaimPolicy": "Delete",
+                "storageClassName": "local-path",
+                "volumeMode": "Filesystem"
+            },
+            "status": {
+                "lastPhaseTransitionTime": "2026-10-14T05:40:11Z",
+                "phase": "Bound"
+            }
+        },
+        {
+            "apiVersion": "v1",
+            "kind": "PersistentVolume",
+            "metadata": {
+                "annotations": {
+                    "local.path.provisioner/selected-node": "devops",
+                    "pv.kubernetes.io/provisioned-by": "rancher.io/local-path"
+                },
+                "creationTimestamp": "2026-08-11T03:40:32Z",
+                "finalizers": [
+                    "kubernetes.io/pv-protection"
+                ],
+                "name": "pvc-4da56878-b3e9-4588-b6a4-21c90821002f",
+                "resourceVersion": "6052426",
+                "uid": "5bd313bd-1eb3-485b-960d-36aad6afcfe8"
+            },
+            "spec": {
+                "accessModes": [
+                    "ReadWriteOnce"
+                ],
+                "capacity": {
+                    "storage": "2Gi"
+                },
+                "claimRef": {
+                    "apiVersion": "v1",
+                    "kind": "PersistentVolumeClaim",
+                    "name": "postgresql-data",
+                    "namespace": "ns-data",
+                    "resourceVersion": "6052348",
+                    "uid": "4da56878-b3e9-4588-b6a4-21c90821002f"
+                },
+                "local": {
+                    "path": "/var/lib/rancher/k3s/storage/pvc-4da56878-b3e9-4588-b6a4-21c90821002f_ns-data_postgresql-data"
+                },
+                "nodeAffinity": {
+                    "required": {
+                        "nodeSelectorTerms": [
+                            {
+                                "matchExpressions": [
+                                    {
+                                        "key": "kubernetes.io/hostname",
+                                        "operator": "In",
+                                        "values": [
+                                            "devops"
+                                        ]
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                },
+                "persistentVolumeReclaimPolicy": "Delete",
+                "storageClassName": "local-path",
+                "volumeMode": "Filesystem"
+            },
+            "status": {
+                "lastPhaseTransitionTime": "2026-08-11T03:40:32Z",
+                "phase": "Bound"
+            }
+        },
+        {
+            "apiVersion": "v1",
+            "kind": "PersistentVolume",
+            "metadata": {
+                "annotations": {
+                    "local.path.provisioner/selected-node": "devops",
+                    "pv.kubernetes.io/provisioned-by": "rancher.io/local-path"
+                },
+                "creationTimestamp": "2026-04-21T07:37:33Z",
+                "finalizers": [
+                    "kubernetes.io/pv-protection"
+                ],
+                "name": "pvc-61354b9d-38dc-4a7c-8a9b-b7402cdba3f0",
+                "resourceVersion": "114073",
+                "uid": "d0f858de-e6ee-407f-8150-8db0f477d35b"
+            },
+            "spec": {
+                "accessModes": [
+                    "ReadWriteOnce"
+                ],
+                "capacity": {
+                    "storage": "20Gi"
+                },
+                "claimRef": {
+                    "apiVersion": "v1",
+                    "kind": "PersistentVolumeClaim",
+                    "name": "minio",
+                    "namespace": "data-infra",
+                    "resourceVersion": "114042",
+                    "uid": "61354b9d-38dc-4a7c-8a9b-b7402cdba3f0"
+                },
+                "local": {
+                    "path": "/var/lib/rancher/k3s/storage/pvc-61354b9d-38dc-4a7c-8a9b-b7402cdba3f0_data-infra_minio"
+                },
+                "nodeAffinity": {
+                    "required": {
+                        "nodeSelectorTerms": [
+                            {
+                                "matchExpressions": [
+                                    {
+                                        "key": "kubernetes.io/hostname",
+                                        "operator": "In",
+                                        "values": [
+                                            "devops"
+                                        ]
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                },
+                "persistentVolumeReclaimPolicy": "Delete",
+                "storageClassName": "local-path",
+                "volumeMode": "Filesystem"
+            },
+            "status": {
+                "lastPhaseTransitionTime": "2026-04-21T07:37:33Z",
+                "phase": "Bound"
+            }
+        },
+        {
+            "apiVersion": "v1",
+            "kind": "PersistentVolume",
+            "metadata": {
+                "annotations": {
+                    "local.path.provisioner/selected-node": "devops",
+                    "pv.kubernetes.io/provisioned-by": "rancher.io/local-path"
+                },
+                "creationTimestamp": "2026-09-07T13:16:37Z",
+                "finalizers": [
+                    "kubernetes.io/pv-protection"
+                ],
+                "name": "pvc-834ac42b-7742-46b9-951c-0fb3c4ebfed0",
+                "resourceVersion": "9785202",
+                "uid": "04c46ed1-0bba-4043-86ce-ae5ed30a1b33"
+            },
+            "spec": {
+                "accessModes": [
+                    "ReadWriteOnce"
+                ],
+                "capacity": {
+                    "storage": "1Gi"
+                },
+                "claimRef": {
+                    "apiVersion": "v1",
+                    "kind": "PersistentVolumeClaim",
+                    "name": "harbor-redis-arm64-data",
+                    "namespace": "harbor",
+                    "resourceVersion": "9785128",
+                    "uid": "834ac42b-7742-46b9-951c-0fb3c4ebfed0"
+                },
+                "local": {
+                    "path": "/var/lib/rancher/k3s/storage/pvc-834ac42b-7742-46b9-951c-0fb3c4ebfed0_harbor_harbor-redis-arm64-data"
+                },
+                "nodeAffinity": {
+                    "required": {
+                        "nodeSelectorTerms": [
+                            {
+                                "matchExpressions": [
+                                    {
+                                        "key": "kubernetes.io/hostname",
+                                        "operator": "In",
+                                        "values": [
+                                            "devops"
+                                        ]
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                },
+                "persistentVolumeReclaimPolicy": "Delete",
+                "storageClassName": "local-path",
+                "volumeMode": "Filesystem"
+            },
+            "status": {
+                "lastPhaseTransitionTime": "2026-09-07T13:16:37Z",
+                "phase": "Bound"
+            }
+        },
+        {
+            "apiVersion": "v1",
+            "kind": "PersistentVolume",
+            "metadata": {
+                "annotations": {
+                    "local.path.provisioner/selected-node": "devops",
+                    "pv.kubernetes.io/provisioned-by": "rancher.io/local-path"
+                },
+                "creationTimestamp": "2026-10-23T08:20:01Z",
+                "finalizers": [
+                    "kubernetes.io/pv-protection"
+                ],
+                "name": "pvc-8aab8abf-a91d-4afe-a7a6-21cbcc6e5bc5",
+                "resourceVersion": "14247960",
+                "uid": "5f7e204e-3dfc-48e0-9ab7-3e8852e89d7e"
+            },
+            "spec": {
+                "accessModes": [
+                    "ReadWriteOnce"
+                ],
+                "capacity": {
+                    "storage": "2Gi"
+                },
+                "claimRef": {
+                    "apiVersion": "v1",
+                    "kind": "PersistentVolumeClaim",
+                    "name": "data-rabbitmq-0",
+                    "namespace": "data-infra",
+                    "resourceVersion": "14247804",
+                    "uid": "8aab8abf-a91d-4afe-a7a6-21cbcc6e5bc5"
+                },
+                "local": {
+                    "path": "/var/lib/rancher/k3s/storage/pvc-8aab8abf-a91d-4afe-a7a6-21cbcc6e5bc5_data-infra_data-rabbitmq-0"
+                },
+                "nodeAffinity": {
+                    "required": {
+                        "nodeSelectorTerms": [
+                            {
+                                "matchExpressions": [
+                                    {
+                                        "key": "kubernetes.io/hostname",
+                                        "operator": "In",
+                                        "values": [
+                                            "devops"
+                                        ]
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                },
+                "persistentVolumeReclaimPolicy": "Delete",
+                "storageClassName": "local-path",
+                "volumeMode": "Filesystem"
+            },
+            "status": {
+                "lastPhaseTransitionTime": "2026-10-23T08:20:01Z",
+                "phase": "Bound"
+            }
+        },
+        {
+            "apiVersion": "v1",
+            "kind": "PersistentVolume",
+            "metadata": {
+                "annotations": {
+                    "local.path.provisioner/selected-node": "devops",
+                    "pv.kubernetes.io/provisioned-by": "rancher.io/local-path"
+                },
+                "creationTimestamp": "2026-04-17T09:46:09Z",
+                "finalizers": [
+                    "kubernetes.io/pv-protection"
+                ],
+                "name": "pvc-9793680c-4abe-4907-9f3e-775204245ad2",
+                "resourceVersion": "4466",
+                "uid": "39801e94-5faa-4bf8-a02b-db6a74026e94"
+            },
+            "spec": {
+                "accessModes": [
+                    "ReadWriteOnce"
+                ],
+                "capacity": {
+                    "storage": "100Gi"
+                },
+                "claimRef": {
+                    "apiVersion": "v1",
+                    "kind": "PersistentVolumeClaim",
+                    "name": "logs-airflow-triggerer-0",
+                    "namespace": "data-infra",
+                    "resourceVersion": "4413",
+                    "uid": "9793680c-4abe-4907-9f3e-775204245ad2"
+                },
+                "local": {
+                    "path": "/var/lib/rancher/k3s/storage/pvc-9793680c-4abe-4907-9f3e-775204245ad2_data-infra_logs-airflow-triggerer-0"
+                },
+                "nodeAffinity": {
+                    "required": {
+                        "nodeSelectorTerms": [
+                            {
+                                "matchExpressions": [
+                                    {
+                                        "key": "kubernetes.io/hostname",
+                                        "operator": "In",
+                                        "values": [
+                                            "devops"
+                                        ]
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                },
+                "persistentVolumeReclaimPolicy": "Delete",
+                "storageClassName": "local-path",
+                "volumeMode": "Filesystem"
+            },
+            "status": {
+                "lastPhaseTransitionTime": "2026-04-17T09:46:09Z",
+                "phase": "Bound"
+            }
+        },
+        {
+            "apiVersion": "v1",
+            "kind": "PersistentVolume",
+            "metadata": {
+                "annotations": {
+                    "local.path.provisioner/selected-node": "devops",
+                    "pv.kubernetes.io/provisioned-by": "rancher.io/local-path"
+                },
+                "creationTimestamp": "2026-04-28T08:39:39Z",
+                "finalizers": [
+                    "kubernetes.io/pv-protection"
+                ],
+                "name": "pvc-aeec864a-1b0d-4352-ba99-2ec9b3d5ae72",
+                "resourceVersion": "551795",
+                "uid": "8c14c740-e2e7-49be-b7df-11a5ebd23a39"
+            },
+            "spec": {
+                "accessModes": [
+                    "ReadWriteOnce"
+                ],
+                "capacity": {
+                    "storage": "1Gi"
+                },
+                "claimRef": {
+                    "apiVersion": "v1",
+                    "kind": "PersistentVolumeClaim",
+                    "name": "data-harbor-redis-0",
+                    "namespace": "harbor",
+                    "resourceVersion": "551687",
+                    "uid": "aeec864a-1b0d-4352-ba99-2ec9b3d5ae72"
+                },
+                "local": {
+                    "path": "/var/lib/rancher/k3s/storage/pvc-aeec864a-1b0d-4352-ba99-2ec9b3d5ae72_harbor_data-harbor-redis-0"
+                },
+                "nodeAffinity": {
+                    "required": {
+                        "nodeSelectorTerms": [
+                            {
+                                "matchExpressions": [
+                                    {
+                                        "key": "kubernetes.io/hostname",
+                                        "operator": "In",
+                                        "values": [
+                                            "devops"
+                                        ]
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                },
+                "persistentVolumeReclaimPolicy": "Delete",
+                "storageClassName": "local-path",
+                "volumeMode": "Filesystem"
+            },
+            "status": {
+                "lastPhaseTransitionTime": "2026-04-28T08:39:39Z",
+                "phase": "Bound"
+            }
+        },
+        {
+            "apiVersion": "v1",
+            "kind": "PersistentVolume",
+            "metadata": {
+                "annotations": {
+                    "local.path.provisioner/selected-node": "devops",
+                    "pv.kubernetes.io/provisioned-by": "rancher.io/local-path"
+                },
+                "creationTimestamp": "2026-09-02T11:24:25Z",
+                "finalizers": [
+                    "kubernetes.io/pv-protection"
+                ],
+                "name": "pvc-b527812f-d2ea-4a46-b7dd-1b96bd7298c8",
+                "resourceVersion": "9359324",
+                "uid": "c1f5e120-efad-453c-bb06-4b91527ce9ca"
+            },
+            "spec": {
+                "accessModes": [
+                    "ReadWriteOnce"
+                ],
+                "capacity": {
+                    "storage": "10Gi"
+                },
+                "claimRef": {
+                    "apiVersion": "v1",
+                    "kind": "PersistentVolumeClaim",
+                    "name": "kube-stack-grafana",
+                    "namespace": "monitoring",
+                    "resourceVersion": "9343120",
+                    "uid": "b527812f-d2ea-4a46-b7dd-1b96bd7298c8"
+                },
+                "local": {
+                    "path": "/var/lib/rancher/k3s/storage/pvc-b527812f-d2ea-4a46-b7dd-1b96bd7298c8_monitoring_kube-stack-grafana"
+                },
+                "nodeAffinity": {
+                    "required": {
+                        "nodeSelectorTerms": [
+                            {
+                                "matchExpressions": [
+                                    {
+                                        "key": "kubernetes.io/hostname",
+                                        "operator": "In",
+                                        "values": [
+                                            "devops"
+                                        ]
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                },
+                "persistentVolumeReclaimPolicy": "Delete",
+                "storageClassName": "local-path",
+                "volumeMode": "Filesystem"
+            },
+            "status": {
+                "lastPhaseTransitionTime": "2026-09-02T11:24:27Z",
+                "phase": "Bound"
+            }
+        },
+        {
+            "apiVersion": "v1",
+            "kind": "PersistentVolume",
+            "metadata": {
+                "annotations": {
+                    "local.path.provisioner/selected-node": "devops",
+                    "pv.kubernetes.io/provisioned-by": "rancher.io/local-path"
+                },
+                "creationTimestamp": "2026-04-27T11:31:24Z",
+                "finalizers": [
+                    "kubernetes.io/pv-protection"
+                ],
+                "name": "pvc-c1078a18-d56f-4f2e-b86e-a268b2059ab6",
+                "resourceVersion": "514000",
+                "uid": "fe7ec6ae-2205-47c8-b7ea-2aaac256eea6"
+            },
+            "spec": {
+                "accessModes": [
+                    "ReadWriteOnce"
+                ],
+                "capacity": {
+                    "storage": "10Gi"
+                },
+                "claimRef": {
+                    "apiVersion": "v1",
+                    "kind": "PersistentVolumeClaim",
+                    "name": "sonarqube-data",
+                    "namespace": "sonarqube",
+                    "resourceVersion": "513978",
+                    "uid": "c1078a18-d56f-4f2e-b86e-a268b2059ab6"
+                },
+                "local": {
+                    "path": "/var/lib/rancher/k3s/storage/pvc-c1078a18-d56f-4f2e-b86e-a268b2059ab6_sonarqube_sonarqube-data"
+                },
+                "nodeAffinity": {
+                    "required": {
+                        "nodeSelectorTerms": [
+                            {
+                                "matchExpressions": [
+                                    {
+                                        "key": "kubernetes.io/hostname",
+                                        "operator": "In",
+                                        "values": [
+                                            "devops"
+                                        ]
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                },
+                "persistentVolumeReclaimPolicy": "Delete",
+                "storageClassName": "local-path",
+                "volumeMode": "Filesystem"
+            },
+            "status": {
+                "lastPhaseTransitionTime": "2026-04-27T11:31:24Z",
+                "phase": "Bound"
+            }
+        },
+        {
+            "apiVersion": "v1",
+            "kind": "PersistentVolumeClaim",
+            "metadata": {
+                "annotations": {
+                    "pv.kubernetes.io/bind-completed": "yes",
+                    "pv.kubernetes.io/bound-by-controller": "yes",
+                    "volume.beta.kubernetes.io/storage-provisioner": "rancher.io/local-path",
+                    "volume.kubernetes.io/selected-node": "devops",
+                    "volume.kubernetes.io/storage-provisioner": "rancher.io/local-path"
+                },
+                "creationTimestamp": "2026-10-23T08:19:26Z",
+                "finalizers": [
+                    "kubernetes.io/pvc-protection"
+                ],
+                "labels": {
+                    "app.kubernetes.io/name": "rabbitmq"
+                },
+                "name": "data-rabbitmq-0",
+                "namespace": "data-infra",
+                "resourceVersion": "14247963",
+                "uid": "8aab8abf-a91d-4afe-a7a6-21cbcc6e5bc5"
+            },
+            "spec": {
+                "accessModes": [
+                    "ReadWriteOnce"
+                ],
+                "resources": {
+                    "requests": {
+                        "storage": "2Gi"
+                    }
+                },
+                "storageClassName": "local-path",
+                "volumeMode": "Filesystem",
+                "volumeName": "pvc-8aab8abf-a91d-4afe-a7a6-21cbcc6e5bc5"
+            },
+            "status": {
+                "accessModes": [
+                    "ReadWriteOnce"
+                ],
+                "capacity": {
+                    "storage": "2Gi"
+                },
+                "phase": "Bound"
+            }
+        },
+        {
+            "apiVersion": "v1",
+            "kind": "PersistentVolumeClaim",
+            "metadata": {
+                "annotations": {
+                    "pv.kubernetes.io/bind-completed": "yes",
+                    "pv.kubernetes.io/bound-by-controller": "yes",
+                    "volume.beta.kubernetes.io/storage-provisioner": "rancher.io/local-path",
+                    "volume.kubernetes.io/selected-node": "devops",
+                    "volume.kubernetes.io/storage-provisioner": "rancher.io/local-path"
+                },
+                "creationTimestamp": "2026-04-17T09:45:56Z",
+                "finalizers": [
+                    "kubernetes.io/pvc-protection"
+                ],
+                "labels": {
+                    "component": "triggerer",
+                    "release": "airflow",
+                    "tier": "airflow"
+                },
+                "name": "logs-airflow-triggerer-0",
+                "namespace": "data-infra",
+                "resourceVersion": "4468",
+                "uid": "9793680c-4abe-4907-9f3e-775204245ad2"
+            },
+            "spec": {
+                "accessModes": [
+                    "ReadWriteOnce"
+                ],
+                "resources": {
+                    "requests": {
+                        "storage": "100Gi"
+                    }
+                },
+                "storageClassName": "local-path",
+                "volumeMode": "Filesystem",
+                "volumeName": "pvc-9793680c-4abe-4907-9f3e-775204245ad2"
+            },
+            "status": {
+                "accessModes": [
+                    "ReadWriteOnce"
+                ],
+                "capacity": {
+                    "storage": "100Gi"
+                },
+                "phase": "Bound"
+            }
+        },
+        {
+            "apiVersion": "v1",
+            "kind": "PersistentVolumeClaim",
+            "metadata": {
+                "annotations": {
+                    "meta.helm.sh/release-name": "minio",
+                    "meta.helm.sh/release-namespace": "data-infra",
+                    "pv.kubernetes.io/bind-completed": "yes",
+                    "pv.kubernetes.io/bound-by-controller": "yes",
+                    "volume.beta.kubernetes.io/storage-provisioner": "rancher.io/local-path",
+                    "volume.kubernetes.io/selected-node": "devops",
+                    "volume.kubernetes.io/storage-provisioner": "rancher.io/local-path"
+                },
+                "creationTimestamp": "2026-04-21T07:37:30Z",
+                "finalizers": [
+                    "kubernetes.io/pvc-protection"
+                ],
+                "labels": {
+                    "app": "minio",
+                    "app.kubernetes.io/managed-by": "Helm",
+                    "chart": "minio-5.4.0",
+                    "heritage": "Helm",
+                    "release": "minio"
+                },
+                "name": "minio",
+                "namespace": "data-infra",
+                "resourceVersion": "114075",
+                "uid": "61354b9d-38dc-4a7c-8a9b-b7402cdba3f0"
+            },
+            "spec": {
+                "accessModes": [
+                    "ReadWriteOnce"
+                ],
+                "resources": {
+                    "requests": {
+                        "storage": "20Gi"
+                    }
+                },
+                "storageClassName": "local-path",
+                "volumeMode": "Filesystem",
+                "volumeName": "pvc-61354b9d-38dc-4a7c-8a9b-b7402cdba3f0"
+            },
+            "status": {
+                "accessModes": [
+                    "ReadWriteOnce"
+                ],
+                "capacity": {
+                    "storage": "20Gi"
+                },
+                "phase": "Bound"
+            }
+        },
+        {
+            "apiVersion": "v1",
+            "kind": "PersistentVolumeClaim",
+            "metadata": {
+                "annotations": {
+                    "pv.kubernetes.io/bind-completed": "yes",
+                    "pv.kubernetes.io/bound-by-controller": "yes",
+                    "volume.beta.kubernetes.io/storage-provisioner": "rancher.io/local-path",
+                    "volume.kubernetes.io/selected-node": "devops",
+                    "volume.kubernetes.io/storage-provisioner": "rancher.io/local-path"
+                },
+                "creationTimestamp": "2026-04-28T08:39:32Z",
+                "finalizers": [
+                    "kubernetes.io/pvc-protection"
+                ],
+                "labels": {
+                    "app": "harbor",
+                    "chart": "harbor",
+                    "component": "redis",
+                    "heritage": "Helm",
+                    "release": "harbor"
+                },
+                "name": "data-harbor-redis-0",
+                "namespace": "harbor",
+                "resourceVersion": "551797",
+                "uid": "aeec864a-1b0d-4352-ba99-2ec9b3d5ae72"
+            },
+            "spec": {
+                "accessModes": [
+                    "ReadWriteOnce"
+                ],
+                "resources": {
+                    "requests": {
+                        "storage": "1Gi"
+                    }
+                },
+                "storageClassName": "local-path",
+                "volumeMode": "Filesystem",
+                "volumeName": "pvc-aeec864a-1b0d-4352-ba99-2ec9b3d5ae72"
+            },
+            "status": {
+                "accessModes": [
+                    "ReadWriteOnce"
+                ],
+                "capacity": {
+                    "storage": "1Gi"
+                },
+                "phase": "Bound"
+            }
+        },
+        {
+            "apiVersion": "v1",
+            "kind": "PersistentVolumeClaim",
+            "metadata": {
+                "annotations": {
+                    "pv.kubernetes.io/bind-completed": "yes",
+                    "pv.kubernetes.io/bound-by-controller": "yes",
+                    "volume.beta.kubernetes.io/storage-provisioner": "rancher.io/local-path",
+                    "volume.kubernetes.io/selected-node": "devops",
+                    "volume.kubernetes.io/storage-provisioner": "rancher.io/local-path"
+                },
+                "creationTimestamp": "2026-04-28T08:39:32Z",
+                "finalizers": [
+                    "kubernetes.io/pvc-protection"
+                ],
+                "labels": {
+                    "app": "harbor",
+                    "chart": "harbor",
+                    "component": "trivy",
+                    "heritage": "Helm",
+                    "release": "harbor"
+                },
+                "name": "data-harbor-trivy-0",
+                "namespace": "harbor",
+                "resourceVersion": "551814",
+                "uid": "262fbaec-19cb-49dd-b8e2-fd2be46ab2d7"
+            },
+            "spec": {
+                "accessModes": [
+                    "ReadWriteOnce"
+                ],
+                "resources": {
+                    "requests": {
+                        "storage": "5Gi"
+                    }
+                },
+                "storageClassName": "local-path",
+                "volumeMode": "Filesystem",
+                "volumeName": "pvc-262fbaec-19cb-49dd-b8e2-fd2be46ab2d7"
+            },
+            "status": {
+                "accessModes": [
+                    "ReadWriteOnce"
+                ],
+                "capacity": {
+                    "storage": "5Gi"
+                },
+                "phase": "Bound"
+            }
+        },
+        {
+            "apiVersion": "v1",
+            "kind": "PersistentVolumeClaim",
+            "metadata": {
+                "annotations": {
+                    "pv.kubernetes.io/bind-completed": "yes",
+                    "pv.kubernetes.io/bound-by-controller": "yes",
+                    "volume.beta.kubernetes.io/storage-provisioner": "rancher.io/local-path",
+                    "volume.kubernetes.io/selected-node": "devops",
+                    "volume.kubernetes.io/storage-provisioner": "rancher.io/local-path"
+                },
+                "creationTimestamp": "2026-04-28T08:39:32Z",
+                "finalizers": [
+                    "kubernetes.io/pvc-protection"
+                ],
+                "labels": {
+                    "app": "harbor",
+                    "chart": "harbor",
+                    "component": "database",
+                    "heritage": "Helm",
+                    "release": "harbor"
+                },
+                "name": "database-data-harbor-database-0",
+                "namespace": "harbor",
+                "resourceVersion": "551786",
+                "uid": "39559740-0911-4d04-a956-758794ecac8f"
+            },
+            "spec": {
+                "accessModes": [
+                    "ReadWriteOnce"
+                ],
+                "resources": {
+                    "requests": {
+                        "storage": "1Gi"
+                    }
+                },
+                "storageClassName": "local-path",
+                "volumeMode": "Filesystem",
+                "volumeName": "pvc-39559740-0911-4d04-a956-758794ecac8f"
+            },
+            "status": {
+                "accessModes": [
+                    "ReadWriteOnce"
+                ],
+                "capacity": {
+                    "storage": "1Gi"
+                },
+                "phase": "Bound"
+            }
+        },
+        {
+            "apiVersion": "v1",
+            "kind": "PersistentVolumeClaim",
+            "metadata": {
+                "annotations": {
+                    "helm.sh/resource-policy": "keep",
+                    "meta.helm.sh/release-name": "harbor",
+                    "meta.helm.sh/release-namespace": "harbor",
+                    "pv.kubernetes.io/bind-completed": "yes",
+                    "pv.kubernetes.io/bound-by-controller": "yes",
+                    "volume.beta.kubernetes.io/storage-provisioner": "rancher.io/local-path",
+                    "volume.kubernetes.io/selected-node": "devops",
+                    "volume.kubernetes.io/storage-provisioner": "rancher.io/local-path"
+                },
+                "creationTimestamp": "2026-04-28T08:39:32Z",
+                "finalizers": [
+                    "kubernetes.io/pvc-protection"
+                ],
+                "labels": {
+                    "app": "harbor",
+                    "app.kubernetes.io/component": "jobservice",
+                    "app.kubernetes.io/instance": "harbor",
+                    "app.kubernetes.io/managed-by": "Helm",
+                    "app.kubernetes.io/name": "harbor",
+                    "app.kubernetes.io/part-of": "harbor",
+                    "app.kubernetes.io/version": "2.14.3",
+                    "chart": "harbor",
+                    "component": "jobservice",
+                    "heritage": "Helm",
+                    "release": "harbor"
+                },
+                "name": "harbor-jobservice",
+                "namespace": "harbor",
+                "resourceVersion": "3502636",
+                "uid": "1e828a7b-9362-4dd3-986d-0f4931c08d8e"
+            },
+            "spec": {
+                "accessModes": [
+                    "ReadWriteOnce"
+                ],
+                "resources": {
+                    "requests": {
+                        "storage": "1Gi"
+                    }
+                },
+                "storageClassName": "local-path",
+                "volumeMode": "Filesystem",
+                "volumeName": "pvc-1e828a7b-9362-4dd3-986d-0f4931c08d8e"
+            },
+            "status": {
+                "accessModes": [
+                    "ReadWriteOnce"
+                ],
+                "capacity": {
+                    "storage": "1Gi"
+                },
+                "phase": "Bound"
+            }
+        },
+        {
+            "apiVersion": "v1",
+            "kind": "PersistentVolumeClaim",
+            "metadata": {
+                "annotations": {
+                    "kubectl.kubernetes.io/last-applied-configuration": "{\"apiVersion\":\"v1\",\"kind\":\"PersistentVolumeClaim\",\"metadata\":{\"annotations\":{},\"name\":\"harbor-redis-arm64-data\",\"namespace\":\"harbor\"},\"spec\":{\"accessModes\":[\"ReadWriteOnce\"],\"resources\":{\"requests\":{\"storage\":\"1Gi\"}},\"storageClassName\":\"local-path\"}}\n",
+                    "pv.kubernetes.io/bind-completed": "yes",
+                    "pv.kubernetes.io/bound-by-controller": "yes",
+                    "volume.beta.kubernetes.io/storage-provisioner": "rancher.io/local-path",
+                    "volume.kubernetes.io/selected-node": "devops",
+                    "volume.kubernetes.io/storage-provisioner": "rancher.io/local-path"
+                },
+                "creationTimestamp": "2026-09-07T13:16:07Z",
+                "finalizers": [
+                    "kubernetes.io/pvc-protection"
+                ],
+                "name": "harbor-redis-arm64-data",
+                "namespace": "harbor",
+                "resourceVersion": "9785205",
+                "uid": "834ac42b-7742-46b9-951c-0fb3c4ebfed0"
+            },
+            "spec": {
+                "accessModes": [
+                    "ReadWriteOnce"
+                ],
+                "resources": {
+                    "requests": {
+                        "storage": "1Gi"
+                    }
+                },
+                "storageClassName": "local-path",
+                "volumeMode": "Filesystem",
+                "volumeName": "pvc-834ac42b-7742-46b9-951c-0fb3c4ebfed0"
+            },
+            "status": {
+                "accessModes": [
+                    "ReadWriteOnce"
+                ],
+                "capacity": {
+                    "storage": "1Gi"
+                },
+                "phase": "Bound"
+            }
+        },
+        {
+            "apiVersion": "v1",
+            "kind": "PersistentVolumeClaim",
+            "metadata": {
+                "annotations": {
+                    "helm.sh/resource-policy": "keep",
+                    "kubectl.kubernetes.io/last-applied-configuration": "{\"apiVersion\":\"v1\",\"kind\":\"PersistentVolumeClaim\",\"metadata\":{\"annotations\":{\"helm.sh/resource-policy\":\"keep\"},\"labels\":{\"app\":\"harbor\",\"app.kubernetes.io/component\":\"registry\",\"app.kubernetes.io/instance\":\"harbor\",\"app.kubernetes.io/managed-by\":\"Helm\",\"app.kubernetes.io/name\":\"harbor\",\"app.kubernetes.io/part-of\":\"harbor\",\"app.kubernetes.io/version\":\"2.14.3\",\"chart\":\"harbor\",\"component\":\"registry\",\"heritage\":\"Helm\",\"release\":\"harbor\"},\"name\":\"harbor-registry\",\"namespace\":\"harbor\"},\"spec\":{\"accessModes\":[\"ReadWriteOnce\"],\"resources\":{\"requests\":{\"storage\":\"5Gi\"}}}}\n",
+                    "meta.helm.sh/release-name": "harbor",
+                    "meta.helm.sh/release-namespace": "harbor",
+                    "pv.kubernetes.io/bind-completed": "yes",
+                    "pv.kubernetes.io/bound-by-controller": "yes",
+                    "volume.beta.kubernetes.io/storage-provisioner": "rancher.io/local-path",
+                    "volume.kubernetes.io/selected-node": "devops",
+                    "volume.kubernetes.io/storage-provisioner": "rancher.io/local-path"
+                },
+                "creationTimestamp": "2026-04-28T08:39:32Z",
+                "finalizers": [
+                    "kubernetes.io/pvc-protection"
+                ],
+                "labels": {
+                    "app": "harbor",
+                    "app.kubernetes.io/component": "registry",
+                    "app.kubernetes.io/instance": "harbor",
+                    "app.kubernetes.io/managed-by": "Helm",
+                    "app.kubernetes.io/name": "harbor",
+                    "app.kubernetes.io/part-of": "harbor",
+                    "app.kubernetes.io/version": "2.14.3",
+                    "chart": "harbor",
+                    "component": "registry",
+                    "heritage": "Helm",
+                    "release": "harbor"
+                },
+                "name": "harbor-registry",
+                "namespace": "harbor",
+                "resourceVersion": "9518696",
+                "uid": "2ce7c5f7-5f8c-4d97-9d46-831f7a37e35a"
+            },
+            "spec": {
+                "accessModes": [
+                    "ReadWriteOnce"
+                ],
+                "resources": {
+                    "requests": {
+                        "storage": "5Gi"
+                    }
+                },
+                "storageClassName": "local-path",
+                "volumeMode": "Filesystem",
+                "volumeName": "pvc-2ce7c5f7-5f8c-4d97-9d46-831f7a37e35a"
+            },
+            "status": {
+                "accessModes": [
+                    "ReadWriteOnce"
+                ],
+                "capacity": {
+                    "storage": "5Gi"
+                },
+                "phase": "Bound"
+            }
+        },
+        {
+            "apiVersion": "v1",
+            "kind": "PersistentVolumeClaim",
+            "metadata": {
+                "annotations": {
+                    "pv.kubernetes.io/bind-completed": "yes",
+                    "pv.kubernetes.io/bound-by-controller": "yes",
+                    "volume.beta.kubernetes.io/storage-provisioner": "rancher.io/local-path",
+                    "volume.kubernetes.io/selected-node": "devops",
+                    "volume.kubernetes.io/storage-provisioner": "rancher.io/local-path"
+                },
+                "creationTimestamp": "2026-10-14T05:39:48Z",
+                "finalizers": [
+                    "kubernetes.io/pvc-protection"
+                ],
+                "labels": {
+                    "alertmanager": "platform",
+                    "app.kubernetes.io/instance": "platform",
+                    "app.kubernetes.io/managed-by": "prometheus-operator",
+                    "app.kubernetes.io/name": "alertmanager"
+                },
+                "name": "alertmanager-platform-db-alertmanager-platform-0",
+                "namespace": "monitoring",
+                "resourceVersion": "12454890",
+                "uid": "399ca13c-fb18-4c5e-9e6f-4bfcec51763a"
+            },
+            "spec": {
+                "accessModes": [
+                    "ReadWriteOnce"
+                ],
+                "resources": {
+                    "requests": {
+                        "storage": "1Gi"
+                    }
+                },
+                "storageClassName": "local-path",
+                "volumeMode": "Filesystem",
+                "volumeName": "pvc-399ca13c-fb18-4c5e-9e6f-4bfcec51763a"
+            },
+            "status": {
+                "accessModes": [
+                    "ReadWriteOnce"
+                ],
+                "capacity": {
+                    "storage": "1Gi"
+                },
+                "phase": "Bound"
+            }
+        },
+        {
+            "apiVersion": "v1",
+            "kind": "PersistentVolumeClaim",
+            "metadata": {
+                "annotations": {
+                    "kubectl.kubernetes.io/last-applied-configuration": "{\"apiVersion\":\"v1\",\"kind\":\"PersistentVolumeClaim\",\"metadata\":{\"annotations\":{},\"name\":\"kube-stack-grafana\",\"namespace\":\"monitoring\"},\"spec\":{\"accessModes\":[\"ReadWriteOnce\"],\"resources\":{\"requests\":{\"storage\":\"10Gi\"}}}}\n",
+                    "pv.kubernetes.io/bind-completed": "yes",
+                    "pv.kubernetes.io/bound-by-controller": "yes",
+                    "volume.beta.kubernetes.io/storage-provisioner": "rancher.io/local-path",
+                    "volume.kubernetes.io/selected-node": "devops",
+                    "volume.kubernetes.io/storage-provisioner": "rancher.io/local-path"
+                },
+                "creationTimestamp": "2026-08-30T04:20:01Z",
+                "finalizers": [
+                    "kubernetes.io/pvc-protection"
+                ],
+                "name": "kube-stack-grafana",
+                "namespace": "monitoring",
+                "resourceVersion": "9359345",
+                "uid": "b527812f-d2ea-4a46-b7dd-1b96bd7298c8"
+            },
+            "spec": {
+                "accessModes": [
+                    "ReadWriteOnce"
+                ],
+                "resources": {
+                    "requests": {
+                        "storage": "10Gi"
+                    }
+                },
+                "storageClassName": "local-path",
+                "volumeMode": "Filesystem",
+                "volumeName": "pvc-b527812f-d2ea-4a46-b7dd-1b96bd7298c8"
+            },
+            "status": {
+                "accessModes": [
+                    "ReadWriteOnce"
+                ],
+                "capacity": {
+                    "storage": "10Gi"
+                },
+                "phase": "Bound"
+            }
+        },
+        {
+            "apiVersion": "v1",
+            "kind": "PersistentVolumeClaim",
+            "metadata": {
+                "annotations": {
+                    "kubectl.kubernetes.io/last-applied-configuration": "{\"apiVersion\":\"v1\",\"kind\":\"PersistentVolumeClaim\",\"metadata\":{\"annotations\":{},\"name\":\"postgresql-data\",\"namespace\":\"ns-data\"},\"spec\":{\"accessModes\":[\"ReadWriteOnce\"],\"resources\":{\"requests\":{\"storage\":\"2Gi\"}},\"storageClassName\":\"local-path\"}}\n",
+                    "pv.kubernetes.io/bind-completed": "yes",
+                    "pv.kubernetes.io/bound-by-controller": "yes",
+                    "volume.beta.kubernetes.io/storage-provisioner": "rancher.io/local-path",
+                    "volume.kubernetes.io/selected-node": "devops",
+                    "volume.kubernetes.io/storage-provisioner": "rancher.io/local-path"
+                },
+                "creationTimestamp": "2026-08-11T03:23:39Z",
+                "finalizers": [
+                    "kubernetes.io/pvc-protection"
+                ],
+                "name": "postgresql-data",
+                "namespace": "ns-data",
+                "resourceVersion": "6052430",
+                "uid": "4da56878-b3e9-4588-b6a4-21c90821002f"
+            },
+            "spec": {
+                "accessModes": [
+                    "ReadWriteOnce"
+                ],
+                "resources": {
+                    "requests": {
+                        "storage": "2Gi"
+                    }
+                },
+                "storageClassName": "local-path",
+                "volumeMode": "Filesystem",
+                "volumeName": "pvc-4da56878-b3e9-4588-b6a4-21c90821002f"
+            },
+            "status": {
+                "accessModes": [
+                    "ReadWriteOnce"
+                ],
+                "capacity": {
+                    "storage": "2Gi"
+                },
+                "phase": "Bound"
+            }
+        },
+        {
+            "apiVersion": "v1",
+            "kind": "PersistentVolumeClaim",
+            "metadata": {
+                "annotations": {
+                    "kubectl.kubernetes.io/last-applied-configuration": "{\"apiVersion\":\"v1\",\"kind\":\"PersistentVolumeClaim\",\"metadata\":{\"annotations\":{},\"name\":\"gitlab-pvc\",\"namespace\":\"ns-devops\"},\"spec\":{\"accessModes\":[\"ReadWriteOnce\"],\"resources\":{\"requests\":{\"storage\":\"30Gi\"}},\"storageClassName\":\"local-path\"}}\n",
+                    "pv.kubernetes.io/bind-completed": "yes",
+                    "pv.kubernetes.io/bound-by-controller": "yes"
+                },
+                "creationTimestamp": "2026-04-20T06:13:57Z",
+                "finalizers": [
+                    "kubernetes.io/pvc-protection"
+                ],
+                "name": "gitlab-pvc",
+                "namespace": "ns-devops",
+                "resourceVersion": "95408",
+                "uid": "7a333a2e-dd0f-4acf-8718-f03b28057bef"
+            },
+            "spec": {
+                "accessModes": [
+                    "ReadWriteOnce"
+                ],
+                "resources": {
+                    "requests": {
+                        "storage": "30Gi"
+                    }
+                },
+                "storageClassName": "local-path",
+                "volumeMode": "Filesystem",
+                "volumeName": "gitlab-pv"
+            },
+            "status": {
+                "accessModes": [
+                    "ReadWriteOnce"
+                ],
+                "capacity": {
+                    "storage": "30Gi"
+                },
+                "phase": "Bound"
+            }
+        },
+        {
+            "apiVersion": "v1",
+            "kind": "PersistentVolumeClaim",
+            "metadata": {
+                "annotations": {
+                    "kubectl.kubernetes.io/last-applied-configuration": "{\"apiVersion\":\"v1\",\"kind\":\"PersistentVolumeClaim\",\"metadata\":{\"annotations\":{},\"name\":\"jenkins-pvc\",\"namespace\":\"ns-devops\"},\"spec\":{\"accessModes\":[\"ReadWriteOnce\"],\"resources\":{\"requests\":{\"storage\":\"10Gi\"}},\"storageClassName\":\"local-path\"}}\n",
+                    "pv.kubernetes.io/bind-completed": "yes",
+                    "pv.kubernetes.io/bound-by-controller": "yes",
+                    "volume.beta.kubernetes.io/storage-provisioner": "rancher.io/local-path",
+                    "volume.kubernetes.io/selected-node": "devops",
+                    "volume.kubernetes.io/storage-provisioner": "rancher.io/local-path"
+                },
+                "creationTimestamp": "2026-04-19T02:12:11Z",
+                "finalizers": [
+                    "kubernetes.io/pvc-protection"
+                ],
+                "name": "jenkins-pvc",
+                "namespace": "ns-devops",
+                "resourceVersion": "57190",
+                "uid": "14c139bf-5717-4b2f-9997-4c77fa03f409"
+            },
+            "spec": {
+                "accessModes": [
+                    "ReadWriteOnce"
+                ],
+                "resources": {
+                    "requests": {
+                        "storage": "10Gi"
+                    }
+                },
+                "storageClassName": "local-path",
+                "volumeMode": "Filesystem",
+                "volumeName": "pvc-14c139bf-5717-4b2f-9997-4c77fa03f409"
+            },
+            "status": {
+                "accessModes": [
+                    "ReadWriteOnce"
+                ],
+                "capacity": {
+                    "storage": "10Gi"
+                },
+                "phase": "Bound"
+            }
+        },
+        {
+            "apiVersion": "v1",
+            "kind": "PersistentVolumeClaim",
+            "metadata": {
+                "annotations": {
+                    "kubectl.kubernetes.io/last-applied-configuration": "{\"apiVersion\":\"v1\",\"kind\":\"PersistentVolumeClaim\",\"metadata\":{\"annotations\":{},\"name\":\"pvc-openclaw-data\",\"namespace\":\"ns-openclaw\"},\"spec\":{\"accessModes\":[\"ReadWriteOnce\"],\"resources\":{\"requests\":{\"storage\":\"5Gi\"}},\"storageClassName\":\"local-storage\"}}\n",
+                    "pv.kubernetes.io/bind-completed": "yes",
+                    "pv.kubernetes.io/bound-by-controller": "yes"
+                },
+                "creationTimestamp": "2026-04-17T09:25:01Z",
+                "finalizers": [
+                    "kubernetes.io/pvc-protection"
+                ],
+                "name": "pvc-openclaw-data",
+                "namespace": "ns-openclaw",
+                "resourceVersion": "2423",
+                "uid": "84f96510-c926-416d-9730-1290d143b5af"
+            },
+            "spec": {
+                "accessModes": [
+                    "ReadWriteOnce"
+                ],
+                "resources": {
+                    "requests": {
+                        "storage": "5Gi"
+                    }
+                },
+                "storageClassName": "local-storage",
+                "volumeMode": "Filesystem",
+                "volumeName": "pv-openclaw-data"
+            },
+            "status": {
+                "accessModes": [
+                    "ReadWriteOnce"
+                ],
+                "capacity": {
+                    "storage": "5Gi"
+                },
+                "phase": "Bound"
+            }
+        },
+        {
+            "apiVersion": "v1",
+            "kind": "PersistentVolumeClaim",
+            "metadata": {
+                "annotations": {
+                    "pv.kubernetes.io/bind-completed": "yes",
+                    "pv.kubernetes.io/bound-by-controller": "yes",
+                    "volume.beta.kubernetes.io/storage-provisioner": "rancher.io/local-path",
+                    "volume.kubernetes.io/selected-node": "devops",
+                    "volume.kubernetes.io/storage-provisioner": "rancher.io/local-path"
+                },
+                "creationTimestamp": "2026-10-24T03:51:46Z",
+                "finalizers": [
+                    "kubernetes.io/pvc-protection"
+                ],
+                "labels": {
+                    "app.kubernetes.io/instance": "platform-peach",
+                    "app.kubernetes.io/name": "peach",
+                    "app.kubernetes.io/part-of": "platform-apps"
+                },
+                "name": "peach-data",
+                "namespace": "platform-apps",
+                "resourceVersion": "14454908",
+                "uid": "27bbd708-99f8-4e81-b07e-df7646b0f280"
+            },
+            "spec": {
+                "accessModes": [
+                    "ReadWriteOnce"
+                ],
+                "resources": {
+                    "requests": {
+                        "storage": "2Gi"
+                    }
+                },
+                "storageClassName": "local-path",
+                "volumeMode": "Filesystem",
+                "volumeName": "pvc-27bbd708-99f8-4e81-b07e-df7646b0f280"
+            },
+            "status": {
+                "accessModes": [
+                    "ReadWriteOnce"
+                ],
+                "capacity": {
+                    "storage": "2Gi"
+                },
+                "phase": "Bound"
+            }
+        },
+        {
+            "apiVersion": "v1",
+            "kind": "PersistentVolumeClaim",
+            "metadata": {
+                "annotations": {
+                    "kubectl.kubernetes.io/last-applied-configuration": "{\"apiVersion\":\"v1\",\"kind\":\"PersistentVolumeClaim\",\"metadata\":{\"annotations\":{},\"name\":\"sonarqube-data\",\"namespace\":\"sonarqube\"},\"spec\":{\"accessModes\":[\"ReadWriteOnce\"],\"resources\":{\"requests\":{\"storage\":\"10Gi\"}},\"storageClassName\":\"local-path\"}}\n",
+                    "pv.kubernetes.io/bind-completed": "yes",
+                    "pv.kubernetes.io/bound-by-controller": "yes",
+                    "volume.beta.kubernetes.io/storage-provisioner": "rancher.io/local-path",
+                    "volume.kubernetes.io/selected-node": "devops",
+                    "volume.kubernetes.io/storage-provisioner": "rancher.io/local-path"
+                },
+                "creationTimestamp": "2026-04-27T11:31:05Z",
+                "finalizers": [
+                    "kubernetes.io/pvc-protection"
+                ],
+                "name": "sonarqube-data",
+                "namespace": "sonarqube",
+                "resourceVersion": "514002",
+                "uid": "c1078a18-d56f-4f2e-b86e-a268b2059ab6"
+            },
+            "spec": {
+                "accessModes": [
+                    "ReadWriteOnce"
+                ],
+                "resources": {
+                    "requests": {
+                        "storage": "10Gi"
+                    }
+                },
+                "storageClassName": "local-path",
+                "volumeMode": "Filesystem",
+                "volumeName": "pvc-c1078a18-d56f-4f2e-b86e-a268b2059ab6"
+            },
+            "status": {
+                "accessModes": [
+                    "ReadWriteOnce"
+                ],
+                "capacity": {
+                    "storage": "10Gi"
+                },
+                "phase": "Bound"
+            }
+        }
+    ],
+    "kind": "List",
+    "metadata": {
+        "resourceVersion": ""
+    }
+}

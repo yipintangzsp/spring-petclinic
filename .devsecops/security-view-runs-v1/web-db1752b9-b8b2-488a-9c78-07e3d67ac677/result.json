@@ -1,0 +1,188 @@
+{
+  "runId": "web-db1752b9-b8b2-488a-9c78-07e3d67ac677",
+  "pluginId": "kyverno",
+  "projectId": "kyverno-supply-chain",
+  "scenarioId": "clean",
+  "configurationSnapshot": {
+    "revision": 38,
+    "updatedAt": "2026-11-12T10:17:20.202Z",
+    "settings": {
+      "enabled": true,
+      "securityLevel": "standard",
+      "plugins": {
+        "gitleaks": {
+          "enabled": true
+        },
+        "semgrep": {
+          "enabled": true
+        },
+        "cosign": {
+          "enabled": true
+        },
+        "sbom": {
+          "enabled": true
+        },
+        "trivy": {
+          "enabled": true
+        },
+        "kyverno": {
+          "enabled": true
+        }
+      }
+    },
+    "source": {
+      "kind": "LOCAL_EXPLICIT_OVERRIDE",
+      "path": ".devsecops/security-view-controls-v1.json",
+      "settingsDigest": "347dafd18186853e5fa4ad88c349630ef52b59af6e8d4c3568ceb40493d6637a"
+    },
+    "configurationOrigins": [
+      {
+        "layer": "global",
+        "securityLevel": "standard",
+        "policyVersion": "baseline-v1"
+      },
+      {
+        "layer": "registryDefaults",
+        "plugins": {
+          "build-provenance": {
+            "enabled": false
+          },
+          "cosign": {
+            "enabled": true
+          },
+          "falco": {
+            "enabled": false
+          },
+          "gitleaks": {
+            "enabled": true
+          },
+          "kubescape": {
+            "enabled": false
+          },
+          "kyverno": {
+            "enabled": true
+          },
+          "provenance": {
+            "enabled": false
+          },
+          "sbom": {
+            "enabled": true
+          },
+          "semgrep": {
+            "enabled": true
+          },
+          "sonarqube": {
+            "enabled": false
+          },
+          "sops": {
+            "enabled": false
+          },
+          "trivy": {
+            "enabled": true
+          },
+          "zap": {
+            "enabled": false
+          }
+        }
+      },
+      {
+        "layer": "globalExplicit",
+        "values": {
+          "enabled": true,
+          "securityLevel": "standard",
+          "plugins": {
+            "gitleaks": {
+              "enabled": true
+            },
+            "semgrep": {
+              "enabled": true
+            },
+            "cosign": {
+              "enabled": true
+            },
+            "sbom": {
+              "enabled": true
+            },
+            "trivy": {
+              "enabled": true
+            },
+            "kyverno": {
+              "enabled": true
+            }
+          },
+          "globalMode": "audit",
+          "profile": "java-web",
+          "policyVersion": "baseline-v1"
+        }
+      },
+      {
+        "layer": "profile",
+        "values": {}
+      },
+      {
+        "layer": "project",
+        "values": {}
+      }
+    ],
+    "effectiveConfigDigest": "c54df718aea1b4c06e7fff7c40f3a3145c4f9b4f7eadf20a613a4938f530b240"
+  },
+  "securityLevel": "standard",
+  "startedAt": "2026-11-12T15:09:20.554Z",
+  "kind": "LocalValidationRequest",
+  "executionLocation": "LINUX_RESTRICTED",
+  "state": "COMPLETED",
+  "evidenceClass": "REAL",
+  "scannerExecuted": true,
+  "policyDecision": "PASS",
+  "evaluationCount": 1,
+  "resultDigest": "20df1f7e17e104d07c859f77674d05f2112bf484ab3a70281e4fcfd7bc731ea6",
+  "artifactDigest": "dfd45450f3454b12624a0b2b9181b41bd8a7426921bd0eb1e35a0c3a4a28e193",
+  "source": ".devsecops/security-view-runs-v1/web-db1752b9-b8b2-488a-9c78-07e3d67ac677/artifact/kyverno.result.json",
+  "reason": null,
+  "executionDiagnostic": null,
+  "caseId": "signed",
+  "allowed": true,
+  "policyName": "devsecops-signed-images",
+  "namespace": "devsecops-supply-chain",
+  "image": "core.harbor.domain/petclinic/signature-fixtures@sha256:86ddc3e1ac2ad2b34dd47ffaf6a181953ebad77f4b1a656f055ddb01fc354cc7",
+  "toolVersion": "1.36.1",
+  "toolSha256": "2240e9f7fd8cf36e9998d7ef18781975780d724b59408174618ec15b410891dc",
+  "executionIdentity": "security-kyverno",
+  "executionHost": "devops/192.168.1.58",
+  "router": [
+    {
+      "consumerId": "dry-run",
+      "deliveryDecision": "DRY_RUN"
+    },
+    {
+      "consumerId": "local-evidence",
+      "deliveryDecision": "DELIVERED_LOCAL_ONLY"
+    }
+  ],
+  "cleanup": "VERIFIED",
+  "lokiDelivery": {
+    "consumerId": "loki-candidate",
+    "automatic": true,
+    "sourceClassification": "REAL_CONTROLLED_EXECUTION",
+    "runId": "web-db1752b9-b8b2-488a-9c78-07e3d67ac677",
+    "resultDigest": "20df1f7e17e104d07c859f77674d05f2112bf484ab3a70281e4fcfd7bc731ea6",
+    "pushState": "ACKNOWLEDGED",
+    "pushHttpStatus": 204,
+    "receiptDigest": "27b0b32f4b45f1f82061c1cfac802ea1e6fef84343208a68b502dfb3b6f25322",
+    "httpRequestCount": 1,
+    "queryState": "VERIFIED",
+    "state": "DELIVERED",
+    "reason": null,
+    "deliveryAt": "2026-11-12T15:09:25.887Z",
+    "grafanaUrl": "http://grafana.devops.local/d/security-manager-v2-candidate/devsecops-security-manager-v2-overview?var-DS_LOKI=loki&var-project=kyverno-supply-chain&var-run=web-db1752b9-b8b2-488a-9c78-07e3d67ac677&var-resultDigest=20df1f7e17e104d07c859f77674d05f2112bf484ab3a70281e4fcfd7bc731ea6&from=1794496105531&to=1794496465531",
+    "receiptSource": "loki-delivery/router-receipt.json",
+    "queryAt": "2026-11-12T15:09:25.942Z",
+    "queryHttpStatus": 200,
+    "matchedEvents": 1
+  },
+  "completedAt": "2026-11-12T15:09:25.944Z",
+  "durationMs": 5379,
+  "releaseCount": 0,
+  "rolloutCount": 0,
+  "auditDigest": "94cad2afa67ddc67eb44db69aac68a7c19ccbf63246038f81a9258f7258299f1"
+}

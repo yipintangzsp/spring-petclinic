@@ -1,0 +1,142 @@
+{
+  "classification": "IMPLEMENTATION_READINESS_NOT_SOURCE_COMPATIBILITY_REVALIDATION",
+  "probes": [
+    {
+      "source": "sops",
+      "classification": "SYNTHETIC_REPORT_PROJECTION_ONLY_NOT_REAL_EXECUTION",
+      "production": "infra/security/secrets-gate.mjs",
+      "adapter": "infra/security/policy/sops-evidence.mjs",
+      "required": [
+        "prerequisites",
+        "targets[*].decrypt",
+        "targets[*].actual",
+        "targets[*].after",
+        "rbac",
+        "reportWriteSucceeded"
+      ],
+      "engineStatus": "NOT_CONFIGURED",
+      "engineDecision": null,
+      "inputUnchanged": true,
+      "runtimeCollector": "NOT_IMPLEMENTED",
+      "frozenCompatibilityStatus": "UNCHANGED; these probes do not alter prior adapter verification",
+      "blocker": "Native success/status records cannot substitute for the adapter-required raw execution observations"
+    },
+    {
+      "source": "kyverno",
+      "classification": "SYNTHETIC_REPORT_PROJECTION_ONLY_NOT_REAL_EXECUTION",
+      "production": "infra/security/rbac-contract.mjs + infra/security/admission-gate.mjs",
+      "adapter": "infra/security/policy/kyverno-parent.mjs",
+      "required": [
+        "configuration",
+        "observations.rbac[*] raw command results",
+        "observations.policy",
+        "observations.probes",
+        "observations.owners",
+        "observations.workloads"
+      ],
+      "engineStatus": "NOT_CONFIGURED",
+      "engineDecision": null,
+      "inputUnchanged": true,
+      "runtimeCollector": "NOT_IMPLEMENTED",
+      "frozenCompatibilityStatus": "UNCHANGED; these probes do not alter prior adapter verification",
+      "blocker": "Native success/status records cannot substitute for the adapter-required raw execution observations"
+    },
+    {
+      "source": "kubescape",
+      "classification": "SYNTHETIC_REPORT_PROJECTION_ONLY_NOT_REAL_EXECUTION",
+      "production": "infra/security/governance/kubescape.mjs",
+      "adapter": "infra/security/policy/kubescape-parent.mjs",
+      "required": [
+        "lock",
+        "observations.hashes",
+        "observations.lease",
+        "observations.scans",
+        "observations.cleanup"
+      ],
+      "engineStatus": "NOT_CONFIGURED",
+      "engineDecision": null,
+      "inputUnchanged": true,
+      "runtimeCollector": "NOT_IMPLEMENTED",
+      "frozenCompatibilityStatus": "UNCHANGED; these probes do not alter prior adapter verification",
+      "blocker": "Native success/status records cannot substitute for the adapter-required raw execution observations"
+    },
+    {
+      "source": "falco-baseline",
+      "classification": "SYNTHETIC_REPORT_PROJECTION_ONLY_NOT_REAL_EXECUTION",
+      "production": "infra/security/runtime/health.mjs",
+      "adapter": "infra/security/policy/falco-parent.mjs",
+      "required": [
+        "configuration",
+        "observations",
+        "raw time/sample binding"
+      ],
+      "engineStatus": "NOT_CONFIGURED",
+      "engineDecision": null,
+      "inputUnchanged": true,
+      "runtimeCollector": "NOT_IMPLEMENTED",
+      "frozenCompatibilityStatus": "UNCHANGED; these probes do not alter prior adapter verification",
+      "blocker": "Native success/status records cannot substitute for the adapter-required raw execution observations"
+    },
+    {
+      "source": "falco-final",
+      "classification": "SYNTHETIC_REPORT_PROJECTION_ONLY_NOT_REAL_EXECUTION",
+      "production": "infra/security/runtime/health.mjs",
+      "adapter": "infra/security/policy/falco-parent.mjs",
+      "required": [
+        "configuration",
+        "observations",
+        "raw time/sample binding"
+      ],
+      "engineStatus": "NOT_CONFIGURED",
+      "engineDecision": null,
+      "inputUnchanged": true,
+      "runtimeCollector": "NOT_IMPLEMENTED",
+      "frozenCompatibilityStatus": "UNCHANGED; these probes do not alter prior adapter verification",
+      "blocker": "Native success/status records cannot substitute for the adapter-required raw execution observations"
+    },
+    {
+      "source": "cosign",
+      "classification": "SYNTHETIC_REPORT_PROJECTION_ONLY_NOT_REAL_EXECUTION",
+      "production": "infra/security/signing.mjs",
+      "adapter": "infra/security/policy/cosign-parent.mjs",
+      "required": [
+        "stage",
+        "configuration",
+        "environment",
+        "runtime",
+        "files",
+        "commands",
+        "io"
+      ],
+      "engineStatus": "NOT_CONFIGURED",
+      "engineDecision": null,
+      "inputUnchanged": true,
+      "runtimeCollector": "NOT_IMPLEMENTED",
+      "frozenCompatibilityStatus": "UNCHANGED; these probes do not alter prior adapter verification",
+      "blocker": "Native success/status records cannot substitute for the adapter-required raw execution observations"
+    },
+    {
+      "source": "defectdojo",
+      "classification": "SYNTHETIC_REPORT_PROJECTION_ONLY_NOT_REAL_EXECUTION",
+      "production": "infra/security/governance/defectdojo.mjs",
+      "adapter": "infra/security/policy/dojo-parent.mjs",
+      "required": [
+        "files",
+        "target",
+        "api request/response observations",
+        "credentials presence only"
+      ],
+      "engineStatus": "NOT_CONFIGURED",
+      "engineDecision": null,
+      "inputUnchanged": true,
+      "runtimeCollector": "NOT_IMPLEMENTED",
+      "frozenCompatibilityStatus": "UNCHANGED; these probes do not alter prior adapter verification",
+      "blocker": "Native success/status records cannot substitute for the adapter-required raw execution observations"
+    }
+  ],
+  "allProbesExplicitlyAbsent": true,
+  "observationCaptureIsPossible": true,
+  "existingPrecedent": "evidence/2026-11-02/sops-authoritative-differential-02/observer.mjs",
+  "limitation": "Existing SOPS observer is fixture-specific and includes fault-injection hooks. It is NOT a general production collector and has not been installed here.",
+  "minimalFix": "Implement and differentially test passive in-memory observation capture for each missing source; remove fixture injection from a production collector; preserve original arguments, process exits, IO outcomes and protected data handling; then atomically migrate the actual owners and consumers."
+}

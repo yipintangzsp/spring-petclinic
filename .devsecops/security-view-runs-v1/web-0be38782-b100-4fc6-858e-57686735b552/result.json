@@ -1,0 +1,193 @@
+{
+  "runId": "web-0be38782-b100-4fc6-858e-57686735b552",
+  "pluginId": "sonarqube",
+  "projectId": "sonarqube-petclinic",
+  "scenarioId": "controlled-finding",
+  "configurationSnapshot": {
+    "revision": 42,
+    "updatedAt": "2026-11-12T18:44:00.150Z",
+    "settings": {
+      "enabled": true,
+      "securityLevel": "standard",
+      "plugins": {
+        "gitleaks": {
+          "enabled": true
+        },
+        "semgrep": {
+          "enabled": true
+        },
+        "cosign": {
+          "enabled": true
+        },
+        "sbom": {
+          "enabled": true
+        },
+        "trivy": {
+          "enabled": true
+        },
+        "kyverno": {
+          "enabled": true
+        },
+        "sonarqube": {
+          "enabled": true
+        }
+      }
+    },
+    "source": {
+      "kind": "LOCAL_EXPLICIT_OVERRIDE",
+      "path": ".devsecops/security-view-controls-v1.json",
+      "settingsDigest": "4cf072e65080b709af760b6bd36e9ff50a42f6f48890b201db5ffd16d49fe9ae"
+    },
+    "configurationOrigins": [
+      {
+        "layer": "global",
+        "securityLevel": "standard",
+        "policyVersion": "baseline-v1"
+      },
+      {
+        "layer": "registryDefaults",
+        "plugins": {
+          "build-provenance": {
+            "enabled": false
+          },
+          "cosign": {
+            "enabled": true
+          },
+          "falco": {
+            "enabled": false
+          },
+          "gitleaks": {
+            "enabled": true
+          },
+          "kubescape": {
+            "enabled": false
+          },
+          "kyverno": {
+            "enabled": true
+          },
+          "provenance": {
+            "enabled": false
+          },
+          "sbom": {
+            "enabled": true
+          },
+          "semgrep": {
+            "enabled": true
+          },
+          "sonarqube": {
+            "enabled": true
+          },
+          "sops": {
+            "enabled": false
+          },
+          "trivy": {
+            "enabled": true
+          },
+          "zap": {
+            "enabled": false
+          }
+        }
+      },
+      {
+        "layer": "globalExplicit",
+        "values": {
+          "enabled": true,
+          "securityLevel": "standard",
+          "plugins": {
+            "gitleaks": {
+              "enabled": true
+            },
+            "semgrep": {
+              "enabled": true
+            },
+            "cosign": {
+              "enabled": true
+            },
+            "sbom": {
+              "enabled": true
+            },
+            "trivy": {
+              "enabled": true
+            },
+            "kyverno": {
+              "enabled": true
+            },
+            "sonarqube": {
+              "enabled": true
+            }
+          },
+          "globalMode": "audit",
+          "profile": "java-web",
+          "policyVersion": "baseline-v1"
+        }
+      },
+      {
+        "layer": "profile",
+        "values": {}
+      },
+      {
+        "layer": "project",
+        "values": {}
+      }
+    ],
+    "effectiveConfigDigest": "9a8602b7f8bd1f0dd3ead1f6cf32539421956adec0c15280d8b3c56b81bf4ca4"
+  },
+  "securityLevel": "standard",
+  "startedAt": "2026-11-12T18:47:58.647Z",
+  "kind": "LocalValidationRequest",
+  "executionLocation": "LINUX_RESTRICTED",
+  "state": "COMPLETED",
+  "evidenceClass": "REAL",
+  "scannerExecuted": true,
+  "policyDecision": "FAIL",
+  "evaluationCount": 1,
+  "resultDigest": "b5b58efbe8f71af425d1a982ab32f6f9e0c4fc476a8772b9c024c3d55b951daf",
+  "artifactDigest": "550cfb05ae4d9ca98cb8007a7ccf655fa3a54ca6715f637e5698dfbf852613fb",
+  "source": ".devsecops/security-view-runs-v1/web-0be38782-b100-4fc6-858e-57686735b552/artifact/sonarqube.result.json",
+  "reason": null,
+  "executionDiagnostic": null,
+  "caseId": "violating-scan",
+  "gateStatus": "ERROR",
+  "analysisId": "dda0be7a-f29c-4149-9cd1-1ac5dedea1af",
+  "componentKey": "smv2-gatelab-0be38782",
+  "toolVersion": "7.2.0.5079",
+  "toolSha256": "74cb84987b22f200074a861d37eeb699fb39c0c09cdfe592afea3e21da6586c2",
+  "executionIdentity": "security-sonar",
+  "executionHost": "devops/192.168.1.58",
+  "router": [
+    {
+      "consumerId": "dry-run",
+      "deliveryDecision": "DRY_RUN"
+    },
+    {
+      "consumerId": "local-evidence",
+      "deliveryDecision": "DELIVERED_LOCAL_ONLY"
+    }
+  ],
+  "cleanup": "VERIFIED",
+  "lokiDelivery": {
+    "consumerId": "loki-candidate",
+    "automatic": true,
+    "sourceClassification": "REAL_CONTROLLED_EXECUTION",
+    "runId": "web-0be38782-b100-4fc6-858e-57686735b552",
+    "resultDigest": "b5b58efbe8f71af425d1a982ab32f6f9e0c4fc476a8772b9c024c3d55b951daf",
+    "pushState": "ACKNOWLEDGED",
+    "pushHttpStatus": 204,
+    "receiptDigest": "b769958a6ba42c08835607db02d5ee1a337d05e72268bf5911faa44e33d06169",
+    "httpRequestCount": 1,
+    "queryState": "VERIFIED",
+    "state": "DELIVERED",
+    "reason": null,
+    "deliveryAt": "2026-11-12T18:48:35.887Z",
+    "grafanaUrl": "http://grafana.devops.local/d/security-manager-v2-candidate/devsecops-security-manager-v2-overview?var-DS_LOKI=loki&var-project=sonarqube-petclinic&var-run=web-0be38782-b100-4fc6-858e-57686735b552&var-resultDigest=b5b58efbe8f71af425d1a982ab32f6f9e0c4fc476a8772b9c024c3d55b951daf&from=1794509255577&to=1794509615577",
+    "receiptSource": "loki-delivery/router-receipt.json",
+    "queryAt": "2026-11-12T18:48:35.929Z",
+    "queryHttpStatus": 200,
+    "matchedEvents": 1
+  },
+  "completedAt": "2026-11-12T18:48:35.931Z",
+  "durationMs": 37263,
+  "releaseCount": 0,
+  "rolloutCount": 0,
+  "auditDigest": "b3bf81204dab0db977c8ad1121c3718321c8e36cf8a8d62ac966e6775f78bfce"
+}

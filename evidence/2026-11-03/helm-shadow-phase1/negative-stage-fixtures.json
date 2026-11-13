@@ -1,0 +1,162 @@
+[
+  {
+    "fixture": "missing-digest",
+    "classification": "REAL_CONTROLLED_LOCAL_OFFLINE_STAGE_EXECUTION",
+    "phase": "render",
+    "exitStatus": 1,
+    "pipelineMetadata": {
+      "schemaVersion": 1,
+      "validationBuild": "local",
+      "mode": "SHADOW_ONLY",
+      "SecurityManagerPlugin": false,
+      "securitySourceCountChange": 0,
+      "release": 0,
+      "rollout": 0,
+      "HELM_RENDER_STATUS": "FAIL",
+      "error": "Helm render failed: Error: values don't meet the specifications of the schema(s) in the following chart(s):\npetclinic:\n- at '/image/digest': '' does not match pattern '^sha256:[a-f0-9]{64}$'\n\n"
+    },
+    "productionFilesChanged": false,
+    "temporaryFixtureRemoved": true
+  },
+  {
+    "fixture": "malformed-digest",
+    "classification": "REAL_CONTROLLED_LOCAL_OFFLINE_STAGE_EXECUTION",
+    "phase": "render",
+    "exitStatus": 1,
+    "pipelineMetadata": {
+      "schemaVersion": 1,
+      "validationBuild": "local",
+      "mode": "SHADOW_ONLY",
+      "SecurityManagerPlugin": false,
+      "securitySourceCountChange": 0,
+      "release": 0,
+      "rollout": 0,
+      "HELM_RENDER_STATUS": "FAIL",
+      "error": "Helm render failed: Error: values don't meet the specifications of the schema(s) in the following chart(s):\npetclinic:\n- at '/image/digest': 'invalid' does not match pattern '^sha256:[a-f0-9]{64}$'\n\n"
+    },
+    "productionFilesChanged": false,
+    "temporaryFixtureRemoved": true
+  },
+  {
+    "fixture": "tag-image",
+    "classification": "REAL_CONTROLLED_LOCAL_OFFLINE_STAGE_EXECUTION",
+    "phase": "render",
+    "exitStatus": 1,
+    "pipelineMetadata": {
+      "schemaVersion": 1,
+      "validationBuild": "local",
+      "mode": "SHADOW_ONLY",
+      "SecurityManagerPlugin": false,
+      "securitySourceCountChange": 0,
+      "release": 0,
+      "rollout": 0,
+      "HELM_RENDER_STATUS": "FAIL",
+      "error": "Helm render failed: Error: values don't meet the specifications of the schema(s) in the following chart(s):\npetclinic:\n- at '/image': additional properties 'tag' not allowed\n\n"
+    },
+    "productionFilesChanged": false,
+    "temporaryFixtureRemoved": true
+  },
+  {
+    "fixture": "selector-mismatch",
+    "classification": "REAL_CONTROLLED_LOCAL_OFFLINE_STAGE_EXECUTION",
+    "phase": "validate",
+    "exitStatus": 1,
+    "pipelineMetadata": {
+      "schemaVersion": 1,
+      "validationBuild": "local",
+      "mode": "SHADOW_ONLY",
+      "SecurityManagerPlugin": false,
+      "securitySourceCountChange": 0,
+      "release": 0,
+      "rollout": 0,
+      "renderedSha256": "ff35019a22b6279ccd08daf99679a518554dca7ff1e2725166af023dc556c8ac",
+      "HELM_RENDER_STATUS": "PASS",
+      "HELM_SCHEMA_STATUS": "FAIL",
+      "error": "Deployment selector mismatch"
+    },
+    "productionFilesChanged": false,
+    "temporaryFixtureRemoved": true
+  },
+  {
+    "fixture": "service-selector-mismatch",
+    "classification": "REAL_CONTROLLED_LOCAL_OFFLINE_STAGE_EXECUTION",
+    "phase": "validate",
+    "exitStatus": 1,
+    "pipelineMetadata": {
+      "schemaVersion": 1,
+      "validationBuild": "local",
+      "mode": "SHADOW_ONLY",
+      "SecurityManagerPlugin": false,
+      "securitySourceCountChange": 0,
+      "release": 0,
+      "rollout": 0,
+      "renderedSha256": "06c17859ecb3e6c3ef94c16349ffc3914a7553994bede0231d36405ff73eb985",
+      "HELM_RENDER_STATUS": "PASS",
+      "HELM_SCHEMA_STATUS": "FAIL",
+      "error": "Service selector mismatch"
+    },
+    "productionFilesChanged": false,
+    "temporaryFixtureRemoved": true
+  },
+  {
+    "fixture": "invalid-template",
+    "classification": "REAL_CONTROLLED_LOCAL_OFFLINE_STAGE_EXECUTION",
+    "phase": "render",
+    "exitStatus": 1,
+    "pipelineMetadata": {
+      "schemaVersion": 1,
+      "validationBuild": "local",
+      "mode": "SHADOW_ONLY",
+      "SecurityManagerPlugin": false,
+      "securitySourceCountChange": 0,
+      "release": 0,
+      "rollout": 0,
+      "HELM_RENDER_STATUS": "FAIL",
+      "error": "Helm render failed: Error: parse error at (petclinic/templates/bad.yaml:1): function \"missingFunction\" not defined\n\nUse --debug flag to render out invalid YAML\n"
+    },
+    "productionFilesChanged": false,
+    "temporaryFixtureRemoved": true
+  },
+  {
+    "fixture": "privileged-container",
+    "classification": "REAL_CONTROLLED_LOCAL_OFFLINE_STAGE_EXECUTION",
+    "phase": "policy",
+    "exitStatus": 1,
+    "pipelineMetadata": {
+      "schemaVersion": 1,
+      "validationBuild": "local",
+      "mode": "SHADOW_ONLY",
+      "SecurityManagerPlugin": false,
+      "securitySourceCountChange": 0,
+      "release": 0,
+      "rollout": 0,
+      "renderedSha256": "b150c0d87c91c235adbad8a29f185fcc1c27a0e10530feae424b5659e17db0a1",
+      "HELM_RENDER_STATUS": "PASS",
+      "HELM_POLICY_STATUS": "FAIL",
+      "error": "Frozen container security drift"
+    },
+    "productionFilesChanged": false,
+    "temporaryFixtureRemoved": true
+  },
+  {
+    "fixture": "missing-request",
+    "classification": "REAL_CONTROLLED_LOCAL_OFFLINE_STAGE_EXECUTION",
+    "phase": "validate",
+    "exitStatus": 1,
+    "pipelineMetadata": {
+      "schemaVersion": 1,
+      "validationBuild": "local",
+      "mode": "SHADOW_ONLY",
+      "SecurityManagerPlugin": false,
+      "securitySourceCountChange": 0,
+      "release": 0,
+      "rollout": 0,
+      "renderedSha256": "8d094b8cad1abb0b51a6246d5d70fadc460aafcb91be2e0d8ffa149784aa4a99",
+      "HELM_RENDER_STATUS": "PASS",
+      "HELM_SCHEMA_STATUS": "FAIL",
+      "error": "Resource request absent"
+    },
+    "productionFilesChanged": false,
+    "temporaryFixtureRemoved": true
+  }
+]

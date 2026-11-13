@@ -1,0 +1,80 @@
+{
+ "item": "6b-trivy-autodelivery",
+ "at": "2026-11-12T14:27:04Z scan completed; verification 2026-11-12 ~22:29 CST",
+ "baseline": "b36b7554 + uncommitted observability changes (5 M files, untouched by this item)",
+ "newRun": {
+  "runId": "web-c7dd2b89-cba4-433d-87c0-eafd2c99e1f4",
+  "state": "COMPLETED",
+  "evidenceClass": "REAL",
+  "scannerExecuted": true,
+  "findingCount": 64,
+  "nativeSeverity": {
+   "HIGH": 2,
+   "MEDIUM": 58,
+   "LOW": 4
+  },
+  "policyDecision": "FAIL",
+  "evaluationCount": 1,
+  "resultDigest": "46f4d75d6e04b4f7048ce1c18a60ac82566edf25af596c3efdaf38fbbc8ed2ff",
+  "artifactDigest": "c1594e90685721aa27734c70b61cc7715bdf835e37b1b2aa4630579c3f49aad0",
+  "cleanup": "VERIFIED",
+  "target": "core.harbor.domain/petclinic/petclinic index sha256:2fbaea65ab030c56c60c62e3ee9fbe362deb8bbbb8216a891ef4c7bbbcea6d55, scanned platform linux/arm64 sha256:06a515708b6783db7d545544bbefb02e9f94abfc0fdf13a7355ccbe2deb3ed42 (arm64 sub-manifest only, same scope as prior acceptance)",
+  "marker": "formal-scan-attempt.json consumed by this run (backup of previous marker: formal-scan-attempt.json.bak-20261112-2225-autodeliv)"
+ },
+ "priorBlockedAttempt": {
+  "runId": "web-96d1320a-a6ae-4710-87c0-eafd2c99e1f4",
+  "state": "BLOCKED",
+  "reason": "RESOURCE_BUDGET_BLOCKED",
+  "scannerExecuted": false,
+  "markerConsumed": false,
+  "note": "Not a formal scan attempt; same precedent as web-31df4134 in policy-fix round. Transcript raw/attempt1-resource-blocked.log"
+ },
+ "autoDelivery": {
+  "automatic": true,
+  "state": "FAILED",
+  "pushState": "ERROR",
+  "pushHttpStatus": null,
+  "httpRequestCount": 0,
+  "queryState": "NOT_VERIFIED",
+  "reason": "LOKI_FRESH_EXECUTION_EVIDENCE_REQUIRED",
+  "receiptDigest": "74451a5e042ad378fe95ee91ffa16baf78b014f9ce24a7284bad3c33d030e05c",
+  "deliveryAt": "2026-11-12T14:27:04.600Z",
+  "receiptSource": "loki-delivery/router-receipt.json",
+  "replayOrBackfillUsed": false
+ },
+ "diagnosis": {
+  "failedCheck": "consumers/loki.mjs prepareLoki freshRunId gate (line 83): requires r.runtimeFacts.validationRunId===freshRunId",
+  "trivyRuntimeFacts": "entry packet shape carries runId (== web-c7dd2b89-...) and classification REAL_CONTROLLED_EXECUTION, completedAt fresh (<1s before delivery attempt); NO validationRunId field exists",
+  "otherRunners": "gitleaks-real.mjs:98, semgrep-real.mjs:85, sbom-real.mjs:30, cosign-real.mjs:60 all set runtimeFacts.validationRunId=runId",
+  "trivyProducer": "trivy-real.mjs:54-55 runtimeFacts = entry packet minus rawReport + classification; evidenceRefs also use runId not validationRunId",
+  "whitelistStatus": "FIXED in current workspace: loki.mjs selection gate and counts() include trivy (uncommitted diff); trivy-loki.test.mjs 6/6 pass on archived artifact; previous run web-4d4b4773 failed earlier at LOKI_PLUGIN_SELECTION_REJECTED, this run passed selection and counts and failed later at the fresh-evidence field contract",
+  "requiredFix": "Add validationRunId: runId to trivy-real runtimeFacts (and evidenceRefs for consistency with other runners) in trivy-real.mjs - NOT one of the 5 protected files - plus regression test, then reset marker and rerun one new formal scan to re-verify. Alternative: accept runId fallback in loki.mjs fresh gate, but loki.mjs IS one of the 5 protected uncommitted files. No code changed in this item per instructions."
+ },
+ "lokiDirectQuery": {
+  "method": "devops curl to Loki 10.43.7.197:3100 query_range, selector {service_name=security-manager-v2,environment=validation,schema_version=1,job=devsecops-security-v2} | json | runId=<id>",
+  "newRunEntries": 0,
+  "controlOldRun": "web-4d4b4773: 1 stream, 1 value, sourceClassification=SEALED_ARTIFACT_REPLAY_NOT_NEW_SCAN, policyDecision=FAIL, findingCount=64"
+ },
+ "grafanaQuery": {
+  "method": "devops in-session Grafana admin credentials from k8s secret kube-stack-grafana (values never printed/stored), GET /api/datasources/proxy/uid/loki/loki/api/v1/query_range - read-only",
+  "newRunStreams": 0,
+  "controlOldRunStreams": 1,
+  "controlOldRunValues": 1,
+  "dashboardApiStatus": 200,
+  "note": "Viewer SA token in Mac Login Keychain is not readable from SSH context (Security framework OSStatus -25293; security CLI returns empty) - same documented limitation as prior rounds; Grafana-Loki link itself proven functional by control query."
+ },
+ "flags": {
+  "TRIVY_NEW_SCAN": "PASS",
+  "TRIVY_AUTO_LOKI_DELIVERY": "BLOCKED",
+  "TRIVY_GRAFANA_LINK": "BLOCKED"
+ },
+ "redlines": {
+  "productionManager": "NOT_ACTIVE unchanged",
+  "productionWorkloadChanged": false,
+  "push": false,
+  "commits": 0,
+  "protectedFilesTouched": false,
+  "sourceCodeChanged": false,
+  "replayUsedAsAutoDelivery": false
+ }
+}

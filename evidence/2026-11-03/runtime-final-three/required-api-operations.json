@@ -1,0 +1,61 @@
+{
+  "trivy": [
+    {
+      "method": "GET",
+      "endpoint": "/api/v2.0/projects/petclinic/repositories/petclinic/artifacts/{candidate-or-arch-digest}",
+      "scope": "selected preexisting validation image + children",
+      "classification": "READ_ONLY_REQUIRED",
+      "permission": "artifact:read"
+    },
+    {
+      "method": "POST",
+      "endpoint": ".../artifacts/{arch-digest}/scan",
+      "scope": "validation architecture digest only; exclude active release root/children",
+      "classification": "SCAN_TRIGGER_REQUIRED",
+      "permission": "scan:create"
+    },
+    {
+      "method": "GET",
+      "endpoint": ".../artifacts/{arch-digest}?with_scan_overview=true",
+      "scope": "validation digest",
+      "classification": "READ_ONLY_REQUIRED",
+      "permission": "artifact:read / scan:read"
+    },
+    {
+      "method": "GET",
+      "endpoint": ".../artifacts/{arch-digest}/additions/vulnerabilities",
+      "scope": "same validation digest",
+      "classification": "READ_ONLY_REQUIRED",
+      "permission": "artifact:read / scan:read"
+    },
+    {
+      "method": "PUT/POST/DELETE",
+      "endpoint": "candidate import, copy, tag, artifact deletion",
+      "scope": "not allowed; candidate must exist before frozen && parent",
+      "classification": "UNEXPECTED",
+      "permission": "DENIED_BY_BOUNDARY"
+    }
+  ],
+  "dojo": [
+    {
+      "action": "Product/Engagement/Test create/read",
+      "minimum": "new validation user restricted to new validation Product only"
+    },
+    {
+      "action": "import-scan/reimport-scan",
+      "minimum": "validation Engagement/Test creation and finding lifecycle"
+    },
+    {
+      "action": "query/findings pagination",
+      "minimum": "read only validation product"
+    },
+    {
+      "action": "dedupe",
+      "minimum": "same-report reimport within exact Test IDs"
+    },
+    {
+      "action": "cleanup",
+      "minimum": "delete own Test/Engagement if supported; otherwise explicit isolated VALIDATION_RETAINED"
+    }
+  ]
+}

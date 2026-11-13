@@ -1,0 +1,41 @@
+{
+  "status": "BLOCKED",
+  "code": "DEFECTDOJO_MINIMUM_IDENTITY_AND_NATIVE_CHAIN_UNAVAILABLE",
+  "currentCredential": "Existing CI token, nonstaff/non-superuser",
+  "realReadEvidence": [
+    {
+      "path": "/api/v2/products/2/",
+      "status": 200
+    },
+    {
+      "path": "/api/v2/engagements/",
+      "status": 200
+    },
+    {
+      "path": "/api/v2/users/",
+      "status": 403
+    },
+    {
+      "path": "/api/v2/product_members/?product=2",
+      "status": 404
+    },
+    {
+      "path": "/api/v2/roles/",
+      "status": 404
+    }
+  ],
+  "independentIdentityCreated": false,
+  "validationProductExisting": 2,
+  "validationEngagementExisting": 2,
+  "newProductEngagementTestIds": [],
+  "productionObjectsMutated": 0,
+  "importRequests": 0,
+  "missing": [
+    "Current credential cannot access /api/v2/users/ (403); no authorized narrower user/token provisioning endpoint has been established",
+    "No verified validation-scoped delete/close authorization before any import",
+    "Complete real frozen parent requires bound Trivy reports plus four Kubescape native reports, Gitleaks, Semgrep, ZAP, Sonar; no full current validation-run chain exists while Trivy remains blocked"
+  ],
+  "inMemoryReplayRuntimeClaim": false,
+  "minimumFix": "Provide/provision a dedicated limited validation identity through an authorized management surface, verify exact-run cleanup/retention rights, then pass complete current validation-native inputs to unchanged parent. No staff escalation or production Test reuse.",
+  "cleanup": "No Dojo validation writes/objects created."
+}

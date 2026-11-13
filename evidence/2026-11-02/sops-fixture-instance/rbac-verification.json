@@ -1,0 +1,249 @@
+{
+  "checks": [
+    {
+      "identity": "platform-secret-reconciler",
+      "verb": "get",
+      "resource": "secret/petclinic-db",
+      "namespace": "petclinic",
+      "expectedAllowed": true,
+      "observed": "yes",
+      "exitCode": 0
+    },
+    {
+      "identity": "platform-secret-reconciler",
+      "verb": "patch",
+      "resource": "secret/petclinic-db",
+      "namespace": "petclinic",
+      "expectedAllowed": true,
+      "observed": "yes",
+      "exitCode": 0
+    },
+    {
+      "identity": "platform-secret-reconciler",
+      "verb": "get",
+      "resource": "secret/rabbitmq-client",
+      "namespace": "petclinic",
+      "expectedAllowed": true,
+      "observed": "yes",
+      "exitCode": 0
+    },
+    {
+      "identity": "platform-secret-reconciler",
+      "verb": "patch",
+      "resource": "secret/rabbitmq-client",
+      "namespace": "petclinic",
+      "expectedAllowed": true,
+      "observed": "yes",
+      "exitCode": 0
+    },
+    {
+      "identity": "platform-secret-reconciler",
+      "verb": "get",
+      "resource": "secret/petclinic-harbor-pull",
+      "namespace": "petclinic",
+      "expectedAllowed": true,
+      "observed": "yes",
+      "exitCode": 0
+    },
+    {
+      "identity": "platform-secret-reconciler",
+      "verb": "patch",
+      "resource": "secret/petclinic-harbor-pull",
+      "namespace": "petclinic",
+      "expectedAllowed": true,
+      "observed": "yes",
+      "exitCode": 0
+    },
+    {
+      "identity": "platform-secret-reconciler",
+      "verb": "get",
+      "resource": "secret/kyverno-registry-pull",
+      "namespace": "devsecops-system",
+      "expectedAllowed": true,
+      "observed": "yes",
+      "exitCode": 0
+    },
+    {
+      "identity": "platform-secret-reconciler",
+      "verb": "patch",
+      "resource": "secret/kyverno-registry-pull",
+      "namespace": "devsecops-system",
+      "expectedAllowed": true,
+      "observed": "yes",
+      "exitCode": 0
+    },
+    {
+      "identity": "platform-secret-reconciler",
+      "verb": "get",
+      "resource": "secret/unrelated-secret",
+      "namespace": "devsecops-system",
+      "expectedAllowed": false,
+      "observed": "no",
+      "exitCode": 1
+    },
+    {
+      "identity": "platform-secret-reconciler",
+      "verb": "list",
+      "resource": "secrets",
+      "namespace": "devsecops-system",
+      "expectedAllowed": false,
+      "observed": "no",
+      "exitCode": 1
+    },
+    {
+      "identity": "platform-secret-reconciler",
+      "verb": "create",
+      "resource": "secrets",
+      "namespace": "devsecops-system",
+      "expectedAllowed": false,
+      "observed": "no",
+      "exitCode": 1
+    },
+    {
+      "identity": "platform-secret-reconciler",
+      "verb": "get",
+      "resource": "secret/unrelated-secret",
+      "namespace": "petclinic",
+      "expectedAllowed": false,
+      "observed": "no",
+      "exitCode": 1
+    },
+    {
+      "identity": "platform-secret-reconciler",
+      "verb": "create",
+      "resource": "secrets",
+      "namespace": "petclinic",
+      "expectedAllowed": false,
+      "observed": "no",
+      "exitCode": 1
+    },
+    {
+      "identity": "platform-secret-reconciler",
+      "verb": "list",
+      "resource": "secrets",
+      "namespace": "petclinic",
+      "expectedAllowed": false,
+      "observed": "no",
+      "exitCode": 1
+    },
+    {
+      "identity": "platform-secret-reconciler",
+      "verb": "get",
+      "resource": "secret/rabbitmq-auth",
+      "namespace": "data-infra",
+      "expectedAllowed": false,
+      "observed": "no",
+      "exitCode": 1
+    },
+    {
+      "identity": "kyverno-admission-controller",
+      "verb": "get",
+      "resource": "secret/kyverno-registry-pull",
+      "namespace": "devsecops-system",
+      "expectedAllowed": true,
+      "observed": "yes",
+      "exitCode": 0
+    },
+    {
+      "identity": "kyverno-admission-controller",
+      "verb": "get",
+      "resource": "secret/petclinic-harbor-pull",
+      "namespace": "petclinic",
+      "expectedAllowed": false,
+      "observed": "no",
+      "exitCode": 1
+    },
+    {
+      "identity": "kyverno-admission-controller",
+      "verb": "get",
+      "resource": "secret/petclinic-db",
+      "namespace": "petclinic",
+      "expectedAllowed": false,
+      "observed": "no",
+      "exitCode": 1
+    },
+    {
+      "identity": "kyverno-admission-controller",
+      "verb": "list",
+      "resource": "secrets",
+      "namespace": "petclinic",
+      "expectedAllowed": false,
+      "observed": "no",
+      "exitCode": 1
+    },
+    {
+      "identity": "kyverno-admission-controller",
+      "verb": "patch",
+      "resource": "secret/petclinic-db",
+      "namespace": "petclinic",
+      "expectedAllowed": false,
+      "observed": "no",
+      "exitCode": 1
+    },
+    {
+      "identity": "security-fixture-executor",
+      "verb": "get",
+      "resource": "lease/platform-heavy",
+      "namespace": "data-infra",
+      "expectedAllowed": true,
+      "observed": "yes",
+      "exitCode": 0
+    },
+    {
+      "identity": "security-fixture-executor",
+      "verb": "get",
+      "resource": "secret/petclinic-db",
+      "namespace": "petclinic",
+      "expectedAllowed": false,
+      "observed": "no",
+      "exitCode": 1
+    },
+    {
+      "identity": "security-fixture-executor",
+      "verb": "list",
+      "resource": "secrets",
+      "namespace": "petclinic",
+      "expectedAllowed": false,
+      "observed": "no",
+      "exitCode": 1
+    },
+    {
+      "identity": "security-fixture-executor",
+      "verb": "create",
+      "resource": "secrets",
+      "namespace": "petclinic",
+      "expectedAllowed": false,
+      "observed": "no",
+      "exitCode": 1
+    },
+    {
+      "identity": "security-fixture-executor",
+      "verb": "delete",
+      "resource": "secrets",
+      "namespace": "petclinic",
+      "expectedAllowed": false,
+      "observed": "no",
+      "exitCode": 1
+    },
+    {
+      "identity": "security-fixture-executor",
+      "verb": "get",
+      "resource": "nodes",
+      "namespace": "default",
+      "expectedAllowed": false,
+      "observed": "no",
+      "exitCode": 1
+    },
+    {
+      "identity": "security-fixture-executor",
+      "verb": "create",
+      "resource": "namespaces",
+      "namespace": "default",
+      "expectedAllowed": false,
+      "observed": "no",
+      "exitCode": 1
+    }
+  ],
+  "allMatched": true,
+  "secretValueReads": 0
+}

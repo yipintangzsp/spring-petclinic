@@ -1,0 +1,393 @@
+{
+  "originalSmoke3": "FAILURE",
+  "fixedCases": [
+    {
+      "build": 4,
+      "case": "off",
+      "historicalAssertion": "PASS",
+      "modules": [
+        {
+          "tool": "gitleaks",
+          "status": "disabled",
+          "reason": "mode=off"
+        },
+        {
+          "tool": "semgrep",
+          "status": "disabled",
+          "reason": "mode=off"
+        },
+        {
+          "tool": "kubescape",
+          "status": "disabled",
+          "reason": "mode=off"
+        },
+        {
+          "tool": "defectdojo",
+          "status": "disabled",
+          "reason": "mode=off"
+        }
+      ]
+    },
+    {
+      "build": 5,
+      "case": "semgrep-disabled",
+      "historicalAssertion": "PASS",
+      "modules": [
+        {
+          "tool": "semgrep",
+          "status": "skipped",
+          "displayStatus": "SKIPPED",
+          "reason": "DISABLED",
+          "enabled": false
+        },
+        {
+          "tool": "kubescape",
+          "status": "not_configured",
+          "reason": "Required project target/credential settings absent; no fabricated result"
+        },
+        {
+          "tool": "defectdojo",
+          "status": "not_configured",
+          "reason": "Required project target/credential settings absent; no fabricated result"
+        },
+        {
+          "tool": "gitleaks",
+          "stage": "gitleaks",
+          "exitCode": 0,
+          "status": "success",
+          "platform": false
+        }
+      ]
+    },
+    {
+      "build": 6,
+      "case": "gitleaks-disabled",
+      "historicalAssertion": "PASS",
+      "modules": [
+        {
+          "tool": "gitleaks",
+          "status": "skipped",
+          "displayStatus": "SKIPPED",
+          "reason": "DISABLED",
+          "enabled": false
+        },
+        {
+          "tool": "kubescape",
+          "status": "not_configured",
+          "reason": "Required project target/credential settings absent; no fabricated result"
+        },
+        {
+          "tool": "semgrep",
+          "stage": "semgrep",
+          "exitCode": 10,
+          "status": "warn",
+          "platform": false
+        },
+        {
+          "tool": "defectdojo",
+          "stage": "defectdojo",
+          "exitCode": 10,
+          "status": "warn",
+          "platform": false
+        }
+      ]
+    },
+    {
+      "build": 7,
+      "case": "enforce",
+      "historicalAssertion": "PASS",
+      "modules": [
+        {
+          "tool": "kubescape",
+          "status": "skipped",
+          "displayStatus": "SKIPPED",
+          "reason": "DISABLED",
+          "enabled": false
+        },
+        {
+          "tool": "defectdojo",
+          "status": "skipped",
+          "displayStatus": "SKIPPED",
+          "reason": "DISABLED",
+          "enabled": false
+        },
+        {
+          "tool": "gitleaks",
+          "stage": "gitleaks",
+          "exitCode": 0,
+          "status": "success",
+          "platform": false
+        },
+        {
+          "tool": "semgrep",
+          "stage": "semgrep",
+          "exitCode": 10,
+          "status": "failed",
+          "platform": false
+        }
+      ]
+    }
+  ],
+  "historical270": {
+    "build": 270,
+    "build_result": "SUCCESS",
+    "source": "9a78cc89f22fa98fb1ffcc43e2ae279299471793",
+    "recorded_at": "2026-10-30T03:27:41.202Z",
+    "provenance_status": "success",
+    "build_provenance_status": "success",
+    "attestation_verification": {
+      "status": "success",
+      "buildNumber": 270,
+      "tests": [
+        {
+          "case": "correct",
+          "result": "PASS"
+        },
+        {
+          "case": "digest",
+          "result": "REJECTED"
+        },
+        {
+          "case": "commit",
+          "result": "REJECTED"
+        },
+        {
+          "case": "tampered",
+          "result": "REJECTED"
+        }
+      ],
+      "candidateImage": "core.harbor.domain/petclinic/petclinic@sha256:2fbaea65ab030c56c60c62e3ee9fbe362deb8bbbb8216a891ef4c7bbbcea6d55",
+      "commit": "9a78cc89f22fa98fb1ffcc43e2ae279299471793"
+    },
+    "build_attestation_verification": {
+      "status": "success",
+      "candidateImage": "core.harbor.domain/petclinic/petclinic@sha256:2fbaea65ab030c56c60c62e3ee9fbe362deb8bbbb8216a891ef4c7bbbcea6d55",
+      "expected": {
+        "image": "core.harbor.domain/petclinic/petclinic@sha256:2fbaea65ab030c56c60c62e3ee9fbe362deb8bbbb8216a891ef4c7bbbcea6d55",
+        "commit": "9a78cc89f22fa98fb1ffcc43e2ae279299471793",
+        "repository": "http://gitlab-service.ns-devops.svc.cluster.local/root/petclinic-platform.git",
+        "builder": "http://jenkins.devops.local/job/petclinic-candidate-build",
+        "buildNumber": "2"
+      },
+      "tests": [
+        {
+          "case": "correct",
+          "result": "PASS"
+        },
+        {
+          "case": "digest",
+          "result": "REJECTED"
+        },
+        {
+          "case": "source",
+          "result": "REJECTED"
+        },
+        {
+          "case": "builder",
+          "result": "REJECTED"
+        },
+        {
+          "case": "tampered",
+          "result": "REJECTED"
+        }
+      ],
+      "temporaryPrivateFilesRemoved": true
+    },
+    "kubescape_status": "success",
+    "defectdojo_status": "success",
+    "defectdojo_total_findings": 6625,
+    "defectdojo_duplicates": 5209,
+    "runtimeImage": "core.harbor.domain/petclinic/petclinic@sha256:489cb821573ff1f98edd846d5949d74bf3391b24e2f1fe5bcfb71c6be0793137"
+  },
+  "historicalOverview": {
+    "status": "success",
+    "build": 270,
+    "dashboard": {
+      "status": 200,
+      "uid": "devsecops-security-overview",
+      "title": "DevSecOps Security Overview",
+      "panels": [
+        {
+          "id": 1,
+          "title": "\u6570\u636e\u8303\u56f4",
+          "type": "text",
+          "targets": 0
+        },
+        {
+          "id": 2,
+          "title": "Jenkins \u6700\u8fd1\u6784\u5efa\u7ed3\u679c",
+          "type": "logs",
+          "targets": 1
+        },
+        {
+          "id": 3,
+          "title": "Gitleaks \u544a\u8b66\u6570",
+          "type": "stat",
+          "targets": 1
+        },
+        {
+          "id": 4,
+          "title": "Semgrep Findings",
+          "type": "stat",
+          "targets": 1
+        },
+        {
+          "id": 5,
+          "title": "Trivy Critical / High / Medium / Low",
+          "type": "stat",
+          "targets": 4
+        },
+        {
+          "id": 6,
+          "title": "SBOM \u751f\u6210\u72b6\u6001",
+          "type": "stat",
+          "targets": 1
+        },
+        {
+          "id": 7,
+          "title": "Cosign \u7b7e\u540d\u9a8c\u8bc1\u72b6\u6001",
+          "type": "stat",
+          "targets": 1
+        },
+        {
+          "id": 8,
+          "title": "ZAP Findings",
+          "type": "stat",
+          "targets": 1
+        },
+        {
+          "id": 9,
+          "title": "SonarQube Security / Vulnerability",
+          "type": "stat",
+          "targets": 2
+        },
+        {
+          "id": 10,
+          "title": "Kyverno \u62d2\u7edd\u8bf7\u6c42\u7d2f\u8ba1",
+          "type": "stat",
+          "targets": 1
+        },
+        {
+          "id": 11,
+          "title": "Kyverno \u7b56\u7565\u5931\u8d25\u7d2f\u8ba1",
+          "type": "stat",
+          "targets": 1
+        },
+        {
+          "id": 12,
+          "title": "Falco Runtime Alerts",
+          "type": "logs",
+          "targets": 1
+        },
+        {
+          "id": 13,
+          "title": "Kubescape - scan status",
+          "type": "stat",
+          "targets": 1
+        },
+        {
+          "id": 14,
+          "title": "Kubescape - failed controls AUDIT",
+          "type": "stat",
+          "targets": 1
+        },
+        {
+          "id": 15,
+          "title": "Kubescape - high-risk findings AUDIT",
+          "type": "stat",
+          "targets": 1
+        },
+        {
+          "id": 16,
+          "title": "DefectDojo - import status",
+          "type": "stat",
+          "targets": 1
+        },
+        {
+          "id": 17,
+          "title": "Kubescape - framework / compliance summary",
+          "type": "logs",
+          "targets": 1
+        },
+        {
+          "id": 18,
+          "title": "DefectDojo - open findings",
+          "type": "stat",
+          "targets": 1
+        },
+        {
+          "id": 19,
+          "title": "DefectDojo - open severity",
+          "type": "stat",
+          "targets": 4
+        },
+        {
+          "id": 20,
+          "title": "DefectDojo - accepted risk",
+          "type": "stat",
+          "targets": 1
+        },
+        {
+          "id": 21,
+          "title": "DefectDojo - mitigated / closed",
+          "type": "stat",
+          "targets": 1
+        },
+        {
+          "id": 22,
+          "title": "DefectDojo - reviewed false positives",
+          "type": "stat",
+          "targets": 1
+        },
+        {
+          "id": 23,
+          "title": "DefectDojo - duplicate records",
+          "type": "stat",
+          "targets": 1
+        },
+        {
+          "id": 24,
+          "title": "Candidate approval / GitOps promotion / runtime digest",
+          "type": "logs",
+          "targets": 1
+        },
+        {
+          "id": 25,
+          "title": "Shared Security Manager / project / mode / profile",
+          "type": "logs",
+          "targets": 1
+        },
+        {
+          "id": 26,
+          "title": "Candidate Provenance / Attestation",
+          "type": "logs",
+          "targets": 1
+        },
+        {
+          "id": 27,
+          "title": "Image Build Provenance / Attestation",
+          "type": "logs",
+          "targets": 1
+        }
+      ]
+    },
+    "nativeChecks": {
+      "kyverno_denials": {
+        "http": 200,
+        "status": "success",
+        "series": 1
+      },
+      "kyverno_violations": {
+        "http": 200,
+        "status": "success",
+        "series": 1
+      },
+      "falco_history": {
+        "http": 200,
+        "status": "success",
+        "series": 5
+      }
+    }
+  },
+  "currentLiveState": "NOT_TESTED"
+}

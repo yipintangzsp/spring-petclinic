@@ -1,0 +1,74 @@
+{
+  "basis": "ACTUAL_FROZEN_defectdojo.mjs_AND_dojo-client.mjs",
+  "operations": [
+    {
+      "method": "GET",
+      "endpoint": "/api/v2/products/{product}/",
+      "objectType": "Product",
+      "classification": "READ",
+      "permissionAndScope": "read target validation Product"
+    },
+    {
+      "method": "GET",
+      "endpoint": "/api/v2/tests/?limit=100&engagement={engagement}",
+      "objectType": "Test",
+      "classification": "READ",
+      "permissionAndScope": "read Tests in target validation Engagement; follow same-origin next pages, max100"
+    },
+    {
+      "method": "POST",
+      "endpoint": "/api/v2/import-scan/",
+      "objectType": "Test/Finding",
+      "classification": "CREATE_VALIDATION",
+      "permissionAndScope": "import permitted parser into existing validation Engagement; auto_create_context=false"
+    },
+    {
+      "method": "POST",
+      "endpoint": "/api/v2/reimport-scan/",
+      "objectType": "Test/Finding",
+      "classification": "UPDATE_VALIDATION",
+      "permissionAndScope": "reimport only target Test; close_old_findings=false; do_not_reactivate=true on reimport"
+    },
+    {
+      "method": "GET",
+      "endpoint": "/api/v2/findings/?limit=200&test={test}",
+      "objectType": "Finding",
+      "classification": "READ",
+      "permissionAndScope": "query back validation Test Findings; same-origin bounded pagination"
+    },
+    {
+      "method": "PATCH",
+      "endpoint": "/api/v2/findings/{id}/",
+      "objectType": "Finding",
+      "classification": "UPDATE_VALIDATION",
+      "permissionAndScope": "only source-gate-proven false positive; file/line/rule/hash bound; validation object only"
+    },
+    {
+      "method": "GET",
+      "endpoint": "/api/v2/findings/?limit=200&test__engagement__product={product}",
+      "objectType": "Finding",
+      "classification": "READ",
+      "permissionAndScope": "final validation Product Finding query; bounded pagination"
+    },
+    {
+      "method": "GET",
+      "endpoint": "/api/issues/search?componentKeys=petclinic&types=VULNERABILITY&ps=500",
+      "objectType": "Sonar issues",
+      "classification": "PRODUCTION_BOUND",
+      "permissionAndScope": "existing Sonar read identity; native issues must be complete; no update"
+    }
+  ],
+  "productCreateInFrozenParent": false,
+  "engagementCreateInFrozenParent": false,
+  "testCreate": "import-scan API (not direct Test create)",
+  "closeArchiveDeleteInFrozenParent": false,
+  "unknownOperations": [],
+  "validationBootstrapIfPrerequisitesLaterAvailable": {
+    "productCreate": "CREATE_VALIDATION",
+    "engagementCreate": "CREATE_VALIDATION",
+    "userAndTokenCreate": "CREATE_VALIDATION",
+    "cleanup": "DELETE_VALIDATION only after own IDs and absence of tests/findings proven, otherwise VALIDATION_RETAINED; no automatic privilege elevation"
+  },
+  "apiOperationsExecutedThisRound": 0,
+  "dojoWritesThisRound": 0
+}

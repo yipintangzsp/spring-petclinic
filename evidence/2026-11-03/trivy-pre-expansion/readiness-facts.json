@@ -1,0 +1,56 @@
+{
+  "gates": {
+    "HOST_CAPACITY_READINESS": "NOT_READY",
+    "BACKUP_READINESS": "NOT_READY",
+    "BACKUP_VALIDATION": "INCOMPLETE",
+    "RESTORE_READINESS": "NOT_READY",
+    "VM_MAINTENANCE_READINESS": "NOT_READY",
+    "BACKING_DISK_RESIZE_READINESS": "NOT_READY",
+    "GUEST_PARTITION_GROW_READINESS": "READY",
+    "FILESYSTEM_GROW_READINESS": "READY"
+  },
+  "backupPrerequisites": {
+    "capacityReady": false,
+    "targetVerified": false,
+    "strategySelected": false,
+    "sourceIdentityBound": true,
+    "platformHealthy": true,
+    "jobsIdle": true,
+    "gcIdle": true,
+    "refreshIdle": true,
+    "registryMaintenanceIdle": null,
+    "exclusiveWindowPlanned": false,
+    "restorePlanDefined": false
+  },
+  "currentImageUseGuardFacts": {
+    "vmState": "Running",
+    "fresh": false,
+    "qemuPids": [
+      18121
+    ],
+    "imageOpenHandles": [
+      {
+        "fd": 18,
+        "access": "u/read-write",
+        "disk": "Data/450FFAC4-2D45-4A41-B8C7-76EDE35C4877.qcow2"
+      }
+    ],
+    "allWritersChecked": true
+  },
+  "backupValidationFacts": {
+    "exists": false,
+    "sourceWasStopped": false,
+    "sourceImageReleased": false,
+    "sourceIdentityMatches": false,
+    "sizeMatches": false,
+    "hashMatches": false,
+    "recognizedFormat": false,
+    "offlineCheckPassed": false,
+    "notTruncated": false
+  },
+  "imageInUseGuard": "BLOCKED_RUNNING_AND_NOT_FRESH_FOR_MUTATION",
+  "resizeCommandAllowed": false,
+  "independentPlanReadinessMeaning": "Guest partition/filesystem READY means correct tool and geometry-bound procedure identified. It is not permission to execute; global gates and fresh larger-parent checks remain mandatory.",
+  "currentExclusiveMaintenanceFence": "NOT_ACQUIRED_NO_MUTATION_PHASE",
+  "destructiveMaintenanceElsewhere": "NOT_GLOBALLY_PROVEN; current nodes/health recorded and no owned maintenance action exists"
+}

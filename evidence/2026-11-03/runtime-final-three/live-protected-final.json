@@ -1,0 +1,84 @@
+{
+  "classification": "LIVE_READ_ONLY_FINAL",
+  "productionSignaturePolicy": {
+    "uid": "4f2459cf-1ad8-4da8-8f4f-632135ac0c4b",
+    "generation": 2,
+    "specUnchanged": true,
+    "specSha256": "2bdcb835061d3781b55eb45af5954ccf7f55d65f65381e4139a4067c2a04429b"
+  },
+  "existingWebhook": {
+    "uid": "d2e5a17a-c54f-40c3-85ae-7a82426ea573",
+    "generation": 3,
+    "selectors": [
+      {
+        "name": "mutate.kyverno.svc-fail",
+        "namespaceSelector": {
+          "matchExpressions": [
+            {
+              "key": "kubernetes.io/metadata.name",
+              "operator": "In",
+              "values": [
+                "devsecops-execution",
+                "devsecops-supply-chain",
+                "petclinic",
+                "devsecops-system",
+                "monitoring",
+                "sonarqube"
+              ]
+            }
+          ]
+        }
+      }
+    ],
+    "testNamespaceIncluded": false
+  },
+  "temporaryLabeledResourceCount": 0,
+  "temporaryRegistrySecretAbsent": true,
+  "productionSecretReads": 0,
+  "petclinicPods": [
+    {
+      "name": "petclinic-7b9fc47976-7gqqx",
+      "uid": "32543aa9-4b6f-418f-be1b-3795796f37b6",
+      "node": "devops",
+      "ready": true,
+      "deletionTimestamp": null
+    },
+    {
+      "name": "petclinic-7b9fc47976-v7pbv",
+      "uid": "d82f840e-aaea-40f9-b877-4628dcc2522f",
+      "node": "devops",
+      "ready": true,
+      "deletionTimestamp": null
+    },
+    {
+      "name": "petclinic-7b9fc47976-z9q2p",
+      "uid": "3134d6ae-f33d-4a8e-9d61-ea9fae117db6",
+      "node": "devops",
+      "ready": true,
+      "deletionTimestamp": null
+    }
+  ],
+  "endpoints": [
+    {
+      "nodeName": "devops",
+      "ready": true,
+      "targetUid": "d82f840e-aaea-40f9-b877-4628dcc2522f"
+    },
+    {
+      "nodeName": "devops",
+      "ready": true,
+      "targetUid": "32543aa9-4b6f-418f-be1b-3795796f37b6"
+    },
+    {
+      "nodeName": "devops",
+      "ready": true,
+      "targetUid": "3134d6ae-f33d-4a8e-9d61-ea9fae117db6"
+    }
+  ],
+  "http": {
+    "url": "http://10.43.39.130:80/",
+    "status": 200,
+    "readOnlyGet": true
+  },
+  "productionMutation": 0
+}

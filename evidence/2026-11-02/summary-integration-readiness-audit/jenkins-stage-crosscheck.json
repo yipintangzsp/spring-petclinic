@@ -1,0 +1,219 @@
+{
+  "files": [
+    {
+      "path": "Jenkinsfile",
+      "sha256": "c46ac48976d581890592968272ed664e93bf4de9f86beab13c2144d67ef67b9b",
+      "stages": [
+        {
+          "line": 26,
+          "name": "Checkout Info"
+        },
+        {
+          "line": 57,
+          "name": "Infrastructure Preflight"
+        },
+        {
+          "line": 76,
+          "name": "Pretest Idle Scanner Slot"
+        },
+        {
+          "line": 87,
+          "name": "Test"
+        },
+        {
+          "line": 99,
+          "name": "Package"
+        },
+        {
+          "line": 112,
+          "name": "DevSecOps Source & Admission"
+        },
+        {
+          "line": 130,
+          "name": "DevSecOps SBOM"
+        },
+        {
+          "line": 139,
+          "name": "Restore Scanner Before Analysis"
+        },
+        {
+          "line": 144,
+          "name": "SonarQube Analysis"
+        },
+        {
+          "line": 182,
+          "name": "Release Idle Scanner Memory"
+        },
+        {
+          "line": 193,
+          "name": "GitLab Source Audit"
+        },
+        {
+          "line": 201,
+          "name": "Sign Existing Release Baselines"
+        },
+        {
+          "line": 211,
+          "name": "DevSecOps GitOps Sync"
+        },
+        {
+          "line": 238,
+          "name": "Encrypted Business Credentials"
+        },
+        {
+          "line": 247,
+          "name": "Signature Admission Gate"
+        },
+        {
+          "line": 256,
+          "name": "Terraform Provider Native Build"
+        },
+        {
+          "line": 261,
+          "name": "Multi-Arch Build & Push"
+        },
+        {
+          "line": 294,
+          "name": "Registry Verify"
+        },
+        {
+          "line": 327,
+          "name": "Harbor Push & Scan"
+        },
+        {
+          "line": 343,
+          "name": "Terraform Runtime Build & Scan"
+        },
+        {
+          "line": 352,
+          "name": "DevSecOps Release Evidence"
+        },
+        {
+          "line": 361,
+          "name": "RabbitMQ Worker Deployment"
+        },
+        {
+          "line": 367,
+          "name": "Git Promotion"
+        },
+        {
+          "line": 376,
+          "name": "Wait for ArgoCD Sync"
+        },
+        {
+          "line": 396,
+          "name": "Rollout Verify"
+        },
+        {
+          "line": 430,
+          "name": "Health Verify"
+        },
+        {
+          "line": 460,
+          "name": "DAST Read-only Gate"
+        },
+        {
+          "line": 465,
+          "name": "RabbitMQ Release Event"
+        },
+        {
+          "line": 471,
+          "name": "Kafka Release Event"
+        },
+        {
+          "line": 477,
+          "name": "Terraform Isolated Plan"
+        },
+        {
+          "line": 482,
+          "name": "Terraform Shared State"
+        },
+        {
+          "line": 489,
+          "name": "Terraform Failure Cleanup"
+        },
+        {
+          "line": 494,
+          "name": "Restore Build Services"
+        },
+        {
+          "line": 507,
+          "name": "DevSecOps Final Health"
+        }
+      ]
+    },
+    {
+      "path": "Jenkinsfile.security-audit",
+      "sha256": "e6e7c1b8f838e42e8bc9b3aa35e731515e2e05feb300bd1833d64aa921c54ed2",
+      "stages": [
+        {
+          "line": 22,
+          "name": "Audit Checkout"
+        },
+        {
+          "line": 23,
+          "name": "Snapshot Before"
+        },
+        {
+          "line": 32,
+          "name": "Admission Resources"
+        },
+        {
+          "line": 33,
+          "name": "Security Manager"
+        },
+        {
+          "line": 34,
+          "name": "Read Only Release Verification"
+        },
+        {
+          "line": 44,
+          "name": "Candidate Approval Evidence"
+        },
+        {
+          "line": 52,
+          "name": "Candidate Sign and Approve"
+        },
+        {
+          "line": 61,
+          "name": "Approved Promotion"
+        }
+      ]
+    },
+    {
+      "path": "Jenkinsfile.candidate-build",
+      "sha256": "728823efbed710a1aae2ad8ca80a9162020e8fa8393fd905981699b3b2cbe2b8",
+      "stages": [
+        {
+          "line": 11,
+          "name": "Source"
+        },
+        {
+          "line": 12,
+          "name": "Admission"
+        },
+        {
+          "line": 13,
+          "name": "Compile Candidate"
+        },
+        {
+          "line": 14,
+          "name": "Build Dual Architecture Candidate"
+        },
+        {
+          "line": 15,
+          "name": "Preserve Candidate in Harbor"
+        },
+        {
+          "line": 16,
+          "name": "Attest Actual Image Build"
+        }
+      ]
+    }
+  ],
+  "authoritativeSecurityEntry": "Jenkinsfile.security-audit:33 -> securityManager(adapter=petclinic, mode=enforce) -> 14 resource-defined sources + 2 conditional provenance modules",
+  "additionalSources": "Command Analysis included before Semgrep; security approval/promotion downstream",
+  "sourceCount": 18,
+  "nonSecurityOperationalStages": "Build, resource admission, messaging, rollout, Terraform/runtime and service restore are not invented as extra scanner sources; no operational work executed",
+  "frozenInvocationScope": "Existing production security-adapter and accepted source-specific parent contracts; not all hypothetical modes/invocations or all infrastructure correctness"
+}

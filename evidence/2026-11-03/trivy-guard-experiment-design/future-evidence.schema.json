@@ -1,0 +1,130 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Future isolated Trivy disk guard experiment run (not executed)",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "runId",
+    "classification",
+    "case",
+    "status",
+    "environment",
+    "implementation",
+    "artifacts",
+    "guard",
+    "initial",
+    "timeline",
+    "peak",
+    "directories",
+    "final",
+    "cleanup",
+    "failure",
+    "repeatGroup",
+    "productionImpact",
+    "integrity"
+  ],
+  "properties": {
+    "schemaVersion": {
+      "type": "integer",
+      "description": "Versioned evidence format",
+      "const": 1
+    },
+    "runId": {
+      "type": "string",
+      "description": "Unique immutable run identity"
+    },
+    "classification": {
+      "type": "string",
+      "description": "Controlled isolated execution only",
+      "enum": [
+        "REAL_CONTROLLED_EXECUTION"
+      ]
+    },
+    "case": {
+      "type": "string",
+      "description": "A-H case ID",
+      "enum": [
+        "A",
+        "B",
+        "C",
+        "D",
+        "E",
+        "F",
+        "G",
+        "H"
+      ]
+    },
+    "status": {
+      "type": "string",
+      "description": "Do not map missing proof to success",
+      "enum": [
+        "SUCCESS",
+        "FAILED",
+        "GUARD_REJECTED",
+        "NO_ACTION",
+        "CENSORED",
+        "NOT_APPLICABLE"
+      ]
+    },
+    "environment": {
+      "type": "object",
+      "description": "VM identity, architecture, kernel, imageID, snapshotter, UID/GID, controller version/temp, filesystem device/type/features/block size/reserved ratio/mounts, overlay/temp/cache placement, virtual and physical capacity, egress policy result; only synthetic/lab identity."
+    },
+    "implementation": {
+      "type": "object",
+      "description": "frozen source paths+SHA256, Trivy --version/binary SHA, image digest, effective argv with credential references redacted, guard source unchanged."
+    },
+    "artifacts": {
+      "type": "object",
+      "description": "official manifest bytes SHA256, Docker-Content-Digest, layer digest/media/size, mirror source, pinned public old/new DB identities; no bearer token."
+    },
+    "guard": {
+      "type": "object",
+      "description": "capacityBytes, formulaVersion, nodefs/imagefs stat freshness, initial headroom band, owned lab Lease proof, guard rejection/acceptance before any download; no lowered threshold."
+    },
+    "initial": {
+      "type": "object",
+      "description": "df/statvfs/allocated du/apparent sizes, DB+metadata hashes, device/inodes, cache/temp/upperdir/backing baseline."
+    },
+    "peak": {
+      "type": "object",
+      "description": "per-device sampled high-water, reconstructed peak bytes, algorithm/version, event counts/loss/gaps/errorBound, measurement confidence; null truePeak if not proven. Unit bytes. Include simultaneous components and host backing peak separately."
+    },
+    "directories": {
+      "type": "object",
+      "description": "cache/db/java-db, /tmp/oci-download, nested temporary dirs, upper/work dirs/controller-temp growth; inode and st_blocks to dedupe."
+    },
+    "final": {
+      "type": "object",
+      "description": "DB logical/allocated sizes, metadata and schema/freshness, isolated offline readability result, residual temp and DB checksums."
+    },
+    "cleanup": {
+      "type": "object",
+      "description": "process/pid ownership stop, open deleted allocations, per-directory residue at exit/+1/+10/+60s, CLEAN/RESIDUE/PARTIAL/UNKNOWN; isolated destruction receipt after seal."
+    },
+    "failure": {
+      "type": "object",
+      "description": "phase, requested trigger, observed operation, errno/signal, exitStatus, diagnostic sanitized; null-trigger success separate."
+    },
+    "productionImpact": {
+      "type": "object",
+      "description": "production writes/refresh/scan/rollout/release=0; proof of isolated API and denied prod addresses. Any nonzero invalidates run."
+    },
+    "integrity": {
+      "type": "object",
+      "description": "relative paths/SHA256/bytes of every artifact, external manifest digest; no mutable self-certification as approval."
+    },
+    "timeline": {
+      "type": "array",
+      "description": "Full UTC+monotonic statvfs and event trace references with clock mapping and gaps",
+      "items": {
+        "type": "object"
+      }
+    },
+    "repeatGroup": {
+      "type": "string",
+      "description": "Same initial seed + target digest + FS; no silently merging changed tag/digest cohorts"
+    }
+  }
+}

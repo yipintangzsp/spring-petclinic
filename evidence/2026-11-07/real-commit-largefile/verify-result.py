@@ -1,0 +1,16 @@
+import pathlib,json,urllib.request,urllib.error,hashlib,datetime
+h=pathlib.Path(__file__).resolve().parent;x=json.loads((h/'build9-observed.json').read_text());prep=json.loads((h/'prepared.json').read_text());assert x['causes']==['com.dabsquared.gitlabjenkins.cause.GitLabWebHookCause'];m=x['manager'];assert m['state']=='COMPLETED'and m['evaluationCount']==1 and m['evidenceClass']=='REAL'and m['policyDecision']in ['PASS','FAIL'];assert x['result']==('SUCCESS'if m['policyDecision']=='PASS'else'FAILURE')
+base='http://security.devops.local:17862';o=urllib.request.build_opener(urllib.request.ProxyHandler({}));cred=json.loads(pathlib.Path('.devsecops/security-view-project-access-v1.json').read_text());heads={'Authorization':'Bearer '+cred['operatorToken']}
+def get(path,headers=heads):
+ with o.open(urllib.request.Request(base+path,headers=headers),timeout=10)as q:return json.load(q)
+r=get('/api/runs/'+m['runId']);assert all(r[k]==m[k]for k in ['resultDigest','artifactDigest','ciContext','projectId','policyDecision']);assert r['sourceMode']=='REAL_COMMIT_SNAPSHOT'and r['sourceCommitSha']==prep['triggerCommit']and r['sourceTreeOid']==prep['rootTreeOid'];assert r['sourceCleanup']=='VERIFIED'and r['cleanup']=='VERIFIED';assert r['sourceFileCount']==830 and r['sourceExpandedBytes']>46162000
+hit=r['sourceBudgetExceptionHits'];assert len(hit)==1 and hit[0]['path']=='infra/security/controller.json'and hit[0]['bytes']==6221319 and hit[0]['limit']==8388608 and hit[0]['sha256']=='106b6ceaee1eb0400eadefcfbbf9e96c277da1001085b9f33b76eeee902fb238'
+artifact=pathlib.Path('.devsecops/security-view-runs-v1')/r['runId']/'artifact';f=json.loads((artifact/'gitleaks.runtime-facts.json').read_text());assert f['command']['argv'][0:4]==['dir',f['sourceDir']['path'],'--max-target-megabytes','0'];assert f['sourceSnapshot']['fileCount']==r['sourceFileCount'];raw=json.loads((artifact/'gitleaks.raw.json').read_text());assert len(raw)==r['findingsCount']and all(v['Secret']=='[REDACTED]'and'Match'not in v for v in raw)
+for hdr in [{},{'X-Project-Token':cred['projects']['java-sbom-demo']}]:
+ try:get('/api/runs/'+r['runId'],hdr);raise AssertionError('CI_RESULT_LEAK')
+ except urllib.error.HTTPError as e:assert e.code==403
+with o.open(base+'/#live-validation',timeout=10)as q:assert q.status==200
+with(h/'real-run.json').open('x')as q:json.dump(r,q,indent=2)
+summary={'verifiedAt':datetime.datetime.now(datetime.timezone.utc).isoformat(),'commitSha':r['sourceCommitSha'],'rootTreeOid':r['sourceTreeOid'],'runId':r['runId'],'sourceSnapshotSha256':r['sourceSnapshotSha256'],'actualFiles':r['sourceFileCount'],'actualBytes':r['sourceExpandedBytes'],'budgetExceptionHits':hit,'policyDecision':r['policyDecision'],'policyEvaluationCount':1,'resultDigest':r['resultDigest'],'scannerExitCode':r['scannerExitCode'],'findingsCount':r['findingsCount'],'buildUrl':x['url'],'jenkinsResult':x['result'],'sourceMode':'REAL_COMMIT_SNAPSHOT','maxTargetSizeSkipDisabled':True,'rawReportRedacted':True,'sourceCleanup':r['sourceCleanup'],'lokiDelivery':r['lokiDelivery'],'webHttp':200,'otherProjectResultDenied':True,'browserClick':'NOT_TESTED'}
+with(h/'acceptance.json').open('x')as q:json.dump(summary,q,indent=2)
+print(json.dumps(summary))

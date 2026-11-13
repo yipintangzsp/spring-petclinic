@@ -1,0 +1,26 @@
+{
+  "status": "NOT_TESTED",
+  "scope": "Full Sonar positive/negative frozen acceptance incomplete",
+  "verified": [
+    "Trusted host identity: all three key types match pre-existing trusted host",
+    "CE task/project/analysisId binding",
+    "Exact analysis Quality Gate OK and three full conditions",
+    "Positive standard decision PASS matches original Jenkins270 PASSED; raw facts unchanged",
+    "Sonar adapter does not recalculate metrics/thresholds"
+  ],
+  "missingEvidence": [
+    "Real analysis with ERROR/FAILED and original Jenkins failure log",
+    "Direct per-build archived report-task/action task binding (workspace plus time correlation currently available)"
+  ],
+  "blocker": {
+    "http": 403,
+    "endpoint": "/api/project_analyses/search?project=petclinic&ps=100",
+    "existingCredential": "sonar-token",
+    "permissionChanged": false
+  },
+  "syntheticErrorTest": "NOT_TESTED for real failure parity; local mapping test only",
+  "summaryModified": false,
+  "gateModified": false,
+  "productionRollout": false,
+  "nextStep": "Use an already authorized read-only Browse identity to export specific failed CE task, exact-analysis Gate response and matching Jenkins log/task artifact; do not change Gate or rerun production."
+}

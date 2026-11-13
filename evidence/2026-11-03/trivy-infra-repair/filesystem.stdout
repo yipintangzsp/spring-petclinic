@@ -1,0 +1,100 @@
+Filesystem     Type    1B-blocks         Used   Available Use% Mounted on
+/dev/vda2      ext4 270430261248 210624167936 46621712384  82% /
+Filesystem       Inodes   IUsed    IFree IUse% Mounted on
+/dev/vda2      16842752 1520390 15322362   10% /
+{
+   "filesystems": [
+      {
+         "target": "/",
+         "source": "/dev/vda2",
+         "fstype": "ext4",
+         "options": "rw,relatime"
+      }
+   ]
+}
+"/var/lib/docker"
+Images space usage:
+
+REPOSITORY                                           TAG                          IMAGE ID       CREATED         SIZE      SHARED SIZE   UNIQUE SIZE   CONTAINERS
+127.0.0.1:13050/petclinic/petclinic                  0.10.0-ci-1000002            2fbaea65ab03   4 days ago      483MB     970.8MB       -4.874e+08B   0
+127.0.0.1:13050/petclinic/petclinic                  brotli-fixed-20261029        489cb821573f   4 days ago      1.6GB     970.8MB       632.7MB       0
+<none>                                               <none>                       ccee9de64bae   5 days ago      1.19GB    203.6MB       986.2MB       4
+mysql                                                9.7                          86b390ef642f   6 days ago      1.3GB     0B            1.298GB       0
+127.0.0.1:13050/petclinic/petclinic                  0.10.0-ci-207                c8160221d553   7 days ago      482MB     1.023GB       -5.408e+08B   0
+127.0.0.1:13050/petclinic/terraform-runner           isolation-ci-207             8e3d717d0b5b   7 days ago      317MB     32B           317.3MB       0
+127.0.0.1:13050/petclinic/petclinic                  0.10.0-ci-190                30409763d6fe   9 days ago      482MB     1.023GB       -5.408e+08B   0
+127.0.0.1:13050/petclinic/petclinic                  0.10.0-ci-189                19f5e9e77fa4   9 days ago      482MB     1.023GB       -5.408e+08B   0
+<none>                                               <none>                       da1e530addac   9 days ago      463MB     0B            463MB         1
+127.0.0.1:13050/petclinic/petclinic                  0.10.0-ci-184                1eab3ddc6268   10 days ago     482MB     1.023GB       -5.408e+08B   0
+127.0.0.1:13050/petclinic/petclinic                  0.10.0-ci-183                a102d6d46aca   10 days ago     482MB     1.023GB       -5.408e+08B   0
+registry-native-recovery                             20261023                     7b1f785d57d9   10 days ago     44.2MB    0B            44.19MB       0
+127.0.0.1:30050/platform-repair/harbor-registryctl   2.14.2-arm64-20261022        4e213a9725d3   11 days ago     51.8MB    0B            51.78MB       0
+python                                               3.14.8-slim-trixie           fbecd461fc72   13 days ago     206MB     203.6MB       2.195MB       0
+proxynodehub-local                                   f03ae81-no-pw-length-arm64   e6f6d06bdf93   2 weeks ago     276MB     274.5MB       1.491MB       1
+ghcr.io/astral-sh/uv                                 0.13.1                       6be16527e572   2 weeks ago     72.1MB    0B            72.13MB       0
+proxynodehub-runtime                                 mcr-819bd3649d8b-arm64       0888e226d096   2 weeks ago     275MB     274.5MB       3.878kB       0
+valkey/valkey                                        9.1.2-alpine                 eb5a657e0701   6 weeks ago     66.5MB    13.5MB        52.99MB       1
+postgres                                             18.6-alpine                  89f747171c4b   6 weeks ago     425MB     13.5MB        411.3MB       1
+petclinic                                            0.1.0                        5e29eefdabdc   2 months ago    644MB     518.9MB       125.3MB       1
+postgres                                             18.4                         0826e5f29960   3 months ago    665MB     0B            665.3MB       3
+127.0.0.1:13050/platform-upgrade/eclipse-temurin     21-jre-local                 69bc3d67c3f9   3 months ago    971MB     970.8MB       12.12kB       0
+portainer/portainer-ce                               2.39.0                       3267f1869e0f   8 months ago    230MB     32B           230MB         1
+127.0.0.1:30050/platform-upgrade/alertmanager        v0.31.1-arm64                88b605de9aba   8 months ago    112MB     32B           112.3MB       0
+goharbor/harbor-registryctl                          v2.14.2                      e148259c1f76   9 months ago    238MB     57.77MB       179.8MB       0
+goharbor/registry-photon                             v2.14.2                      d4d062d50456   9 months ago    124MB     57.77MB       65.89MB       0
+testcontainers/ryuk                                  0.14.0                       79e2fbedad76   13 months ago   4.26MB    0B            4.257MB       0
+
+Containers space usage:
+
+CONTAINER ID   IMAGE                                           COMMAND                  LOCAL VOLUMES   SIZE      CREATED        STATUS                      NAMES
+9054ea3560b1   postgres:18.4                                   "docker-entrypoint.s…"   1               16.4kB    11 hours ago   Exited (0) 11 hours ago     runtime-sbom-build-9lbr9g-postgres-1
+3108147db2ed   ccee9de64bae                                    "/wait-for-it.sh pos…"   1               45.1kB    4 days ago     Up 2 days                   platform-defectdojo-uwsgi-1
+3f77088081e8   da1e530addac                                    "/entrypoint-nginx.sh"   1               164kB     5 days ago     Up 2 days                   platform-defectdojo-nginx-1
+304dae775d0e   ccee9de64bae                                    "/wait-for-it.sh pos…"   1               4.23MB    5 days ago     Up 2 days                   platform-defectdojo-celerybeat-1
+a14ad0dc5fe9   ccee9de64bae                                    "/wait-for-it.sh pos…"   1               36.9kB    5 days ago     Up 2 days                   platform-defectdojo-celeryworker-1
+ad9de1a0854e   ccee9de64bae                                    "/wait-for-it.sh pos…"   1               36.9kB    5 days ago     Exited (0) 5 days ago       platform-defectdojo-initializer-1
+89801ecda41b   89f747171c4b                                    "docker-entrypoint.s…"   2               20.5kB    5 days ago     Up 2 days (healthy)         platform-defectdojo-postgres-1
+cc3efe7be07b   eb5a657e0701                                    "tini -- docker-entr…"   1               4.1kB     5 days ago     Up 2 days (healthy)         platform-defectdojo-valkey-1
+e59440708107   proxynodehub-local:f03ae81-no-pw-length-arm64   "dotnet ProxyNodeHub…"   0               12.3kB    5 days ago     Up 2 days (healthy)         proxynodehub
+ef61c419177c   portainer/portainer-ce:2.39.0                   "/portainer"             0               16.4kB    6 days ago     Up 2 days                   portainer
+c7abe6942396   postgres:18.4                                   "docker-entrypoint.s…"   1               16.4kB    4 weeks ago    Exited (0) 4 weeks ago      petclinic-upgrade-20260930-postgres-1
+2c997f04bab8   postgres:18.4                                   "docker-entrypoint.s…"   1               16.4kB    2 months ago   Exited (0) 2 months ago     petclinic-devops-lab-postgres-1
+0f8a5b423aa0   petclinic:0.1.0                                 "java -jar /app/app.…"   0               73.7kB    2 months ago   Exited (255) 2 months ago   petclinic-v010
+
+Local Volumes space usage:
+
+VOLUME NAME                                                        LINKS     SIZE
+e8281efc07b5cf897a6abcfed1aca6b1844829b63f6ef479897ad3023238c639   1         49.03MB
+platform-defectdojo_dojo_media                                     5         0B
+platform-defectdojo_dojo_postgres                                  1         195.7MB
+platform-defectdojo_dojo_valkey                                    1         38.81MB
+9481c8e7fe5378a2a54dbcd85a5c98c4418e76300e462738eda362d6de1da859   1         66.2MB
+be925cb193189697e3e32a50a33c8cd3925c2f46f6889ae85d371aef54254f02   1         49.03MB
+3cbd1fc2fde8764bf155692ea6bb3102b66d55d0bb45bb3909c7b160171f5b03   1         0B
+72776c07101c43ebd4493423a552393f624d12342c6d98f313a443c2e749bbef   0         49.03MB
+
+Build cache usage: 1.167GB
+
+CACHE ID       CACHE TYPE   SIZE      CREATED       LAST USED      USAGE     SHARED
+q56m48b2jzg9   regular      40.7MB    2 weeks ago   2 weeks ago    1         true
+opl1dxczlj7c   regular      388B      2 weeks ago   2 weeks ago    1         true
+26ye7drfyowf   regular      29.4MB    2 weeks ago   2 weeks ago    1         true
+j6q4c54bshnn   regular      52.3MB    2 weeks ago   2 weeks ago    1         true
+yf338iexyn20   regular      158B      2 weeks ago   2 weeks ago    1         true
+n08ymyawze7h   regular      30.2MB    9 days ago    9 days ago     1         true
+t184l7hxebpv   regular      1.27MB    9 days ago    9 days ago     1         true
+slt5qpafn0t4   regular      12.3MB    9 days ago    9 days ago     1         true
+nd8onfg7pzt7   regular      250B      9 days ago    9 days ago     2         true
+3thtfthek6xn   regular      35.7MB    9 days ago    9 days ago     1         true
+ie3y1xpdqqkg   regular      8.19kB    9 days ago    9 days ago     2         true
+kdx9vzw57nb1   regular      45.4MB    4 days ago    4 days ago     1         false
+pmvf7utp8giz   regular      2.28kB    2 weeks ago   4 days ago     4         true
+t82jeqa2rmnr   regular      46.5MB    4 days ago    4 days ago     2         false
+x3ayhxzwekad   regular      45.4MB    4 days ago    4 days ago     2         false
+n1oexia2w85m   regular      130MB     4 days ago    4 days ago     1         false
+lz699dd0exgq   regular      115MB     4 days ago    4 days ago     1         false
+pcczsy46ba33   regular      452MB     2 weeks ago   3 days ago     4         true
+oj5y29allbti   regular      8.29kB    4 days ago    32 hours ago   2         false
+v32j3wogc9r9   regular      438kB     9 days ago    32 hours ago   2         true
+0cd2eax2r1xj   regular      130MB     4 days ago    32 hours ago   2         false
+anv93d56ucc4   regular      8.29kB    4 days ago    32 hours ago   2         false

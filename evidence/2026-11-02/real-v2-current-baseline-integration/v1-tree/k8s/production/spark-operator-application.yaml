@@ -1,0 +1,36 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: spark-operator
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: https://kubeflow.github.io/spark-operator
+    chart: spark-operator
+    targetRevision: 2.5.0
+    helm:
+      releaseName: spark-operator
+      values: |
+        image:
+          tag: 2.5.1
+        controller:
+          replicas: 1
+          resources:
+            requests: {cpu: 100m, memory: 1Gi}
+            limits: {cpu: "1", memory: 1Gi}
+        webhook:
+          enable: true
+          replicas: 1
+          resources:
+            requests: {cpu: 100m, memory: 256Mi}
+            limits: {cpu: "1", memory: 256Mi}
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: ns-bigdata
+  syncPolicy:
+    automated:
+      prune: false
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=false

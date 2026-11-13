@@ -1,0 +1,33 @@
+{
+  "apiVersion": "argoproj.io/v1alpha1",
+  "kind": "Application",
+  "metadata": {
+    "name": "platform-rollouts",
+    "labels": {
+      "petclinic.devops.local/owner": "rollouts-lab"
+    },
+    "namespace": "argocd"
+  },
+  "spec": {
+    "project": "default",
+    "source": {
+      "repoURL": "http://gitlab-service.ns-devops.svc.cluster.local/root/petclinic-platform.git",
+      "targetRevision": "main",
+      "path": "infra/devops-lab/rollouts-controller"
+    },
+    "destination": {
+      "server": "https://kubernetes.default.svc",
+      "namespace": "rollouts-lab"
+    },
+    "syncPolicy": {
+      "automated": {
+        "prune": false,
+        "selfHeal": true
+      },
+      "syncOptions": [
+        "CreateNamespace=true",
+        "ServerSideApply=true"
+      ]
+    }
+  }
+}

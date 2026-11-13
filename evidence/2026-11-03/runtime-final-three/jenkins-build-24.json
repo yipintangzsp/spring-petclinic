@@ -1,0 +1,121 @@
+{
+  "job": "security-runtime-facts-20261102",
+  "build": 24,
+  "building": false,
+  "result": "FAILURE",
+  "duration": 3492,
+  "startedAtMs": 1793668841307,
+  "artifacts": {
+    ".devsecops/runtime-controlled/build-24/robot-sign-created.json": {
+      "phase": "sign",
+      "pushAllowed": true,
+      "level": "project",
+      "permissions": [
+        {
+          "access": [
+            {
+              "resource": "repository",
+              "action": "pull"
+            },
+            {
+              "resource": "repository",
+              "action": "push"
+            },
+            {
+              "resource": "artifact",
+              "action": "read"
+            }
+          ],
+          "kind": "project",
+          "namespace": "petclinic"
+        }
+      ],
+      "validationRunId": "rf3-20261103-7d6715",
+      "name": "robot$petclinic+rf3-20261103-7d6715-sign",
+      "productionAdmin": false,
+      "id": 248,
+      "artifactDeleteAllowed": false,
+      "expiresAt": 1793755243
+    },
+    ".devsecops/runtime-controlled/build-24/robot-sign-verified.json": {
+      "level": "project",
+      "permissions": [
+        {
+          "access": [
+            {
+              "resource": "repository",
+              "action": "pull"
+            },
+            {
+              "resource": "repository",
+              "action": "push"
+            },
+            {
+              "resource": "artifact",
+              "action": "read"
+            }
+          ],
+          "kind": "project",
+          "namespace": "petclinic"
+        }
+      ],
+      "liveVerified": true,
+      "name": "robot$petclinic+rf3-20261103-7d6715-sign",
+      "id": 248
+    }
+  },
+  "artifactHashes": {
+    ".devsecops/runtime-controlled/build-24/robot-sign-created.json": "e381d24081f774ea730a0c098252b4afd26a5169dac97a56590beaaadaa1619e",
+    ".devsecops/runtime-controlled/build-24/robot-sign-verified.json": "755aafe09fe6b6bf58b47cbc12e38d1fa29ccf6e5f64513bc02f89a6df6947a7"
+  },
+  "regression": [],
+  "definitionSha256": "e4430a9e5cf2d0d42ec59f142f7221a3270cff2929e059495b4af87d3f42944c",
+  "consoleTail": [
+    "[...truncated 18 lines...]",
+    "[Pipeline] { (Create isolated sign robot)",
+    "[Pipeline] withCredentials",
+    "Masking supported pattern matches of $HARBOR_PASS",
+    "[Pipeline] {",
+    "[Pipeline] sh",
+    "+ node infra/security/runtime-facts/harbor-validation-identity.mjs sign create",
+    "{\"phase\":\"sign\",\"status\":\"CREATED_MINIMUM_PROJECT_ROBOT\",\"id\":248,\"secretArchived\":false}",
+    "+ node infra/security/runtime-facts/harbor-validation-identity.mjs sign verify",
+    "{\"id\":248,\"permissionsVerified\":true}",
+    "[Pipeline] }",
+    "[Pipeline] // withCredentials",
+    "[Pipeline] }",
+    "[Pipeline] // stage",
+    "[Pipeline] stage",
+    "[Pipeline] { (Disposable test trust)",
+    "[Pipeline] sh",
+    "+ node infra/security/runtime-facts/cosign-test-material.mjs create",
+    "file:///var/jenkins_home/workspace/security-runtime-facts-20261102/infra/security/runtime-facts/cosign-test-material.mjs:5",
+    "function exec(bin,args,env={},input){const r=spawnSync(tools.root+'/'+bin,args,{env:{...process.env,...env,NODE_OPTIONS:''},input,encoding:'utf8',timeout:60000,maxBuffer:2*1024*1024});if(r.status!==0)throw Error('Disposable '+bin+' failed; output suppressed');return r.stdout;}",
+    "                                                                                                                                                                                                              ^",
+    "",
+    "Error: Disposable sops failed; output suppressed",
+    "    at exec (file:///var/jenkins_home/workspace/security-runtime-facts-20261102/infra/security/runtime-facts/cosign-test-material.mjs:5:207)",
+    "    at file:///var/jenkins_home/workspace/security-runtime-facts-20261102/infra/security/runtime-facts/cosign-test-material.mjs:11:19",
+    "    at ModuleJob.run (node:internal/modules/esm/module_job:263:25)",
+    "    at async ModuleLoader.import (node:internal/modules/esm/loader:540:24)",
+    "    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:117:5)",
+    "",
+    "Node.js v20.19.2",
+    "[Pipeline] }",
+    "[Pipeline] // stage",
+    "[Pipeline] stage",
+    "[Pipeline] { (Declarative: Post Actions)",
+    "[Pipeline] archiveArtifacts",
+    "Archiving artifacts",
+    "[Pipeline] }",
+    "[Pipeline] // stage",
+    "[Pipeline] }",
+    "[Pipeline] // timeout",
+    "[Pipeline] }",
+    "[Pipeline] // node",
+    "[Pipeline] End of Pipeline",
+    "ERROR: script returned exit code 1",
+    "Finished: FAILURE"
+  ],
+  "productionJobModified": false
+}

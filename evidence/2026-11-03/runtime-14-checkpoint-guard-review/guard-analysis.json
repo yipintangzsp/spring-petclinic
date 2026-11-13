@@ -1,0 +1,120 @@
+{
+  "guardSource": "infra/observability/scanner-db-refresh.mjs",
+  "line": 71,
+  "function": "scannerRefreshIO().assertOwner",
+  "classification": "CALCULATED_FROM_FILESYSTEM_STATE",
+  "formula": "stats.capacityBytes * 0.15 + 12 * 1024 ** 3",
+  "rounding": "Code compares Number values directly; availableBytes is integer, minimum passing integer is ceil(required). 49.78 GiB is two-decimal display, not a fixed constant.",
+  "appliesTo": [
+    "node.fs",
+    "node.runtime.imageFs"
+  ],
+  "aggregation": "each passes separately; same backing device is not counted twice",
+  "terms": [
+    {
+      "name": "capacity",
+      "value": 270430261248,
+      "unit": "bytes",
+      "source": "current kubelet node.fs capacityBytes",
+      "dynamic": true,
+      "reason": "actual filesystem capacity, not VM virtual disk nominal size"
+    },
+    {
+      "name": "capacityFraction",
+      "value": 0.15,
+      "unit": "ratio",
+      "source": "scanner-db-refresh.mjs:71; original base guard commit11e1b1b8",
+      "dynamic": false,
+      "reason": "platform free-capacity reserve"
+    },
+    {
+      "name": "baseTaskReserve",
+      "value": 8589934592,
+      "unit": "bytes",
+      "source": "release-preflight.mjs:43 and RECOVERY-20261021.md:24",
+      "dynamic": false,
+      "reason": "documented platform task headroom"
+    },
+    {
+      "name": "refreshTemporaryAllowance",
+      "value": 4294967296,
+      "unit": "bytes",
+      "source": "scanner-db-refresh.mjs:71-72 + commit8028e55f",
+      "dynamic": false,
+      "reason": "extra refresh temporary allowance; no measured peak derivation found"
+    },
+    {
+      "name": "combinedFixedAllowance",
+      "value": 12884901888,
+      "unit": "bytes",
+      "source": "literal12 in actual guard; base8+refresh4",
+      "dynamic": false,
+      "reason": "exact original code term, not new artifact sum"
+    }
+  ],
+  "currentCapacityBytes": 270430261248,
+  "currentCapacityGiB": 251.85780715942383,
+  "requiredNumberBytes": 53449441075.2,
+  "minimumPassingIntegerBytes": 53449441076,
+  "displayGiB": 49.78,
+  "baseHeadroomNumberBytes": 49154473779.2,
+  "incrementalRefreshAllowanceBytes": 4294967296,
+  "currentAvailableBytes": 45981765632,
+  "currentShortfallToIntegerGuardBytes": 7467675444,
+  "introductionCommit": "8028e55fd5e1120acd833770dc1bd0611dd4d641",
+  "introductionDate": "2026-10-23T15:19:17+08:00",
+  "baseGuardIntroductionCommit": "11e1b1b8f95eb028b7ff070fa2bd1b462fecd0fa",
+  "laterRouteChangeCommit": "5e301a36",
+  "callers": [
+    {
+      "path": "infra/observability/release-preflight.mjs",
+      "lines": [
+        130,
+        131
+      ],
+      "role": "production preflight constructs IO and calls ensureScannerDatabases only after assessment.ok"
+    },
+    {
+      "path": "infra/observability/scanner-db-refresh.mjs",
+      "lines": [
+        29,
+        35,
+        36,
+        37
+      ],
+      "role": "expired kinds serially; assertOwner before upstream/download"
+    },
+    {
+      "path": "infra/security/policy/trivy-db-replay.mjs",
+      "role": "in-memory frozen code replay, not a production updater"
+    }
+  ],
+  "guardInputsDoNotInclude": [
+    "manifest layer size",
+    "SQL file size",
+    "archive extraction size",
+    "existing DB size",
+    "rollback copy size"
+  ],
+  "safetyMargin": {
+    "classification": "CODE_DEFINED",
+    "alsoDocumentedPolicy": true,
+    "baseReserveNumberBytes": 49154473779.2,
+    "baseReserveCapacityPercent": 15,
+    "baseReserveAdditionalBytes": 8589934592,
+    "refreshAllowanceBytes": 4294967296,
+    "marginAboveActualPeakBytes": null,
+    "refreshAllowanceMeasuredDerivationFound": false,
+    "evidence": [
+      "guard-introduction.txt",
+      "base-guard-introduction.txt",
+      "docs/RECOVERY-20261021.md:24",
+      "docs/ANALYTICS-E2E-20261024.md:60"
+    ]
+  },
+  "TRIVY_DISK_GUARD_VALIDITY": "GUARD_REQUIRES_REVALIDATION",
+  "TRIVY_DISK_GUARD_REVALIDATION_REQUIRED": "YES",
+  "reason": "Origin and platform reserve policy proven; no current CLI extraction/atomic replacement lifecycle or measured peak proving sufficiency/conservatism of additional4GiB. Current SQL sizes and compressed manifests cannot prove peak or justify lowering platform reserve.",
+  "thresholdModified": false,
+  "newApprovedGuard": null
+}

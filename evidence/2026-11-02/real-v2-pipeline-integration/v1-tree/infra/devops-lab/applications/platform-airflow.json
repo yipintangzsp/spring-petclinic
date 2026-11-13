@@ -1,0 +1,79 @@
+{
+  "apiVersion": "argoproj.io/v1alpha1",
+  "kind": "Application",
+  "metadata": {
+    "name": "airflow",
+    "namespace": "argocd",
+    "labels": {
+      "petclinic.devops.local/owner": "platform-airflow"
+    }
+  },
+  "spec": {
+    "destination": {
+      "namespace": "data-infra",
+      "server": "https://kubernetes.default.svc"
+    },
+    "project": "default",
+    "source": {
+      "kustomize": {
+        "patches": [
+          {
+            "patch": "{\"apiVersion\": \"apps/v1\", \"kind\": \"Deployment\", \"metadata\": {\"name\": \"airflow-api-server\"}, \"spec\": {\"template\": {\"metadata\": {\"annotations\": {\"petclinic.devops.local/revision\": \"0a51371151c57cf40b0389595ced3334e6645aef\"}}, \"spec\": {\"containers\": [{\"name\": \"api-server\", \"env\": [{\"name\": \"PETCLINIC_ANALYTICS_SCHEDULE\", \"value\": \"30 2 * * 1\"}]}]}}}}",
+            "target": {
+              "kind": "Deployment",
+              "name": "airflow-api-server"
+            }
+          },
+          {
+            "patch": "{\"apiVersion\": \"apps/v1\", \"kind\": \"Deployment\", \"metadata\": {\"name\": \"airflow-scheduler\"}, \"spec\": {\"template\": {\"metadata\": {\"annotations\": {\"petclinic.devops.local/revision\": \"0a51371151c57cf40b0389595ced3334e6645aef\"}}, \"spec\": {\"containers\": [{\"name\": \"scheduler\", \"env\": [{\"name\": \"PETCLINIC_ANALYTICS_SCHEDULE\", \"value\": \"30 2 * * 1\"}]}]}}}}",
+            "target": {
+              "kind": "Deployment",
+              "name": "airflow-scheduler"
+            }
+          },
+          {
+            "patch": "{\"apiVersion\": \"apps/v1\", \"kind\": \"Deployment\", \"metadata\": {\"name\": \"airflow-dag-processor\"}, \"spec\": {\"template\": {\"metadata\": {\"annotations\": {\"petclinic.devops.local/revision\": \"0a51371151c57cf40b0389595ced3334e6645aef\"}}, \"spec\": {\"containers\": [{\"name\": \"dag-processor\", \"env\": [{\"name\": \"PETCLINIC_ANALYTICS_SCHEDULE\", \"value\": \"30 2 * * 1\"}]}]}}}}",
+            "target": {
+              "kind": "Deployment",
+              "name": "airflow-dag-processor"
+            }
+          }
+        ],
+        "replicas": [
+          {
+            "count": 1,
+            "name": "airflow-api-server"
+          },
+          {
+            "count": 1,
+            "name": "airflow-scheduler"
+          },
+          {
+            "count": 1,
+            "name": "airflow-dag-processor"
+          },
+          {
+            "count": 1,
+            "name": "airflow-statsd"
+          },
+          {
+            "count": 0,
+            "name": "airflow-triggerer"
+          }
+        ]
+      },
+      "path": "infra/analytics",
+      "repoURL": "http://gitlab-service.ns-devops.svc.cluster.local/root/petclinic-platform.git",
+      "targetRevision": "0a51371151c57cf40b0389595ced3334e6645aef"
+    },
+    "syncPolicy": {
+      "automated": {
+        "prune": false,
+        "selfHeal": true
+      },
+      "syncOptions": [
+        "CreateNamespace=true"
+      ]
+    }
+  }
+}

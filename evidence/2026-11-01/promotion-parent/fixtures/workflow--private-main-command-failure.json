@@ -1,0 +1,22 @@
+{
+  "schema": 1,
+  "stage": "eligibility",
+  "complete": true,
+  "classification": "CONTROLLED_REPLAY",
+  "conditions": {
+    "selected": true,
+    "stages": [
+      "Git Promotion"
+    ],
+    "action": "dry-run",
+    "initialResult": "SUCCESS"
+  },
+  "execution": {
+    "failed": true,
+    "reason": "original step nonzero: privateMain"
+  },
+  "observations": [
+    "node infra/observability/release-preflight.mjs target/platform/preflight-before-promotion.json",
+    "node infra/observability/promote-private.mjs"
+  ]
+}

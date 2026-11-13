@@ -1,0 +1,54 @@
+{
+  "status": "BLOCKED_DO_NOT_REFRESH",
+  "classification": "READ_ONLY_CURRENT_CAPACITY_PREFLIGHT_NOT_PEAK_EXPERIMENT",
+  "samples": [
+    {
+      "domain": "nodeFs",
+      "measuredAt": "2026-11-03T17:09:58Z",
+      "capacityBytes": 270430261248,
+      "availableBytes": 46328987648,
+      "availableGiB": 43.14723205566406,
+      "productionRefreshRequiredBytes": 53449441076,
+      "validationHardFloorBytes": 49154473780,
+      "validationHardFloorGiB": 45.77867107465863,
+      "shortfallBeforeAnyAdditionalWritesBytes": 2825486132,
+      "safeEvenWithZeroAdditionalWrites": false
+    },
+    {
+      "domain": "imageFs",
+      "measuredAt": "2026-11-03T17:09:52Z",
+      "capacityBytes": 270430261248,
+      "availableBytes": 46328987648,
+      "availableGiB": 43.14723205566406,
+      "productionRefreshRequiredBytes": 53449441076,
+      "validationHardFloorBytes": 49154473780,
+      "validationHardFloorGiB": 45.77867107465863,
+      "shortfallBeforeAnyAdditionalWritesBytes": 2825486132,
+      "safeEvenWithZeroAdditionalWrites": false
+    }
+  ],
+  "sharedFilesystemAccounting": "nodeFs and imageFs refer to the same devops backing; do not add their free bytes",
+  "localBacking": {
+    "availableBytes": 23715840000,
+    "availableGiB": 22.08709716796875,
+    "physicalCOWUpperBoundProven": false
+  },
+  "peakAdditionalAllocationUpperBound": null,
+  "instantaneousWriteUpperBound": null,
+  "failureCleanupBudget": null,
+  "otherWriterBound": null,
+  "DBArtifactsBoundToApprovedProof": false,
+  "isolatedValidationStorageProven": false,
+  "blockers": [
+    "AVAILABLE_BELOW_FIXED_VALIDATION_HARD_FLOOR",
+    "REFRESH_EXTRACTION_OLD_NEW_TEMP_SCAN_PEAK_UPPER_BOUND_UNKNOWN",
+    "INSTANTANEOUS_WRITE_AND_STOP_LATENCY_RISK_NOT_BOUNDED",
+    "FAILURE_CLEANUP_SPACE_NOT_PROVEN",
+    "PHYSICAL_BACKING_COW_BOUND_AND_WRITER_ISOLATION_NOT_PROVEN"
+  ],
+  "realRefreshAllowed": false,
+  "thresholdChangedToPass": false,
+  "TrivyExecuted": 0,
+  "DojoExecuted": 0,
+  "phase3Allowed": false
+}

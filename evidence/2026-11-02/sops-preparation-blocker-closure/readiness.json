@@ -1,0 +1,90 @@
+{
+  "scope": "PREPARATION_HARNESS_ONLY_NOT_SOPS_COMPATIBILITY",
+  "SOPS_PREPARATION_BLOCKERS": "CLOSED",
+  "SOPS_FIXTURE_PREPARATION_READINESS": "READY",
+  "blockers": {
+    "B1": "CLOSED",
+    "B2": "CLOSED",
+    "B3": "CLOSED"
+  },
+  "criteria": {
+    "approvedGuardReused": {
+      "status": "SATISFIED_FOR_PREPARATION",
+      "evidence": "same original module, no independent Kubernetes path"
+    },
+    "explicitPortableProfiles": {
+      "status": "SATISFIED_FOR_PREPARATION",
+      "evidence": "29 guard cases passed on host+Linux; no default profile/binding"
+    },
+    "linuxExecutorDesign": {
+      "status": "SATISFIED_FOR_PREPARATION",
+      "evidence": "Native Linux aarch64 sentinels+same guard shim, no host paths/mounts; final image not built by design"
+    },
+    "exactInventory": {
+      "status": "SATISFIED_FOR_PREPARATION",
+      "evidence": "fixture-inventory-amendment.json: 23 planned objects, 0 created"
+    },
+    "minimumRbac": {
+      "status": "SATISFIED_FOR_PREPARATION",
+      "evidence": "rbac-design-amendment.json + minimum-rbac-identity-design.json; SA TokenRequest design, no final admin credential"
+    },
+    "syntheticData": {
+      "status": "SATISFIED_FOR_PREPARATION",
+      "evidence": "previous deterministic 4 Secret model retained, no production values"
+    },
+    "ageLifecycle": {
+      "status": "SATISFIED_FOR_PREPARATION",
+      "evidence": "two independent temporary pairs explicitly approved, consistency tests passed; none generated"
+    },
+    "encryptedMapping": {
+      "status": "SATISFIED_FOR_PREPARATION",
+      "evidence": "four exact frozen paths retained, no ciphertext created"
+    },
+    "executionMatrix": {
+      "status": "SATISFIED_FOR_PREPARATION",
+      "evidence": "12 applicable future cases retained; actual execution remains NOT_TESTED"
+    },
+    "sameFactsComparisonContract": {
+      "status": "SATISFIED_FOR_PREPARATION",
+      "evidence": "old-vs-baseline-v1 standard contract unchanged; 0 comparisons run"
+    },
+    "observationMechanisms": {
+      "status": "SATISFIED_FOR_PREPARATION",
+      "evidence": "33 observation tests host+Linux, real sentinel exits + explicit synthetic local/read observations"
+    },
+    "rawFactsSeparated": {
+      "status": "SATISFIED_FOR_PREPARATION",
+      "evidence": "runtime recursive decision-key rejection + JSON Schema validation of archived records"
+    },
+    "officialToolchainPlan": {
+      "status": "SATISFIED_FOR_PREPARATION",
+      "evidence": "previous official release metadata digests retained, no download/crypto verification claim"
+    },
+    "cleanup": {
+      "status": "SATISFIED_FOR_PREPARATION",
+      "evidence": "previous UID/ownership/absence order amended for 3 SAs/2 keypairs/no CSR; test containers removed"
+    },
+    "noProductionCredentialOrFallback": {
+      "status": "SATISFIED_FOR_PREPARATION",
+      "evidence": "hashes unchanged, exact profile/env/token/UID rejection tests, no production API use"
+    },
+    "noRestartDependency": {
+      "status": "SATISFIED_FOR_PREPARATION",
+      "evidence": "runtime/VM/Colima/Docker configuration not changed or restarted"
+    }
+  },
+  "realMinRbacApiExecution": "NOT_TESTED: no SA/token/RBAC created this round",
+  "realSopsGateCompatibility": "NOT_TESTED; previous compatibility status retained",
+  "policyCompatibilityTestsAdded": 0,
+  "realSopsExecutions": 0,
+  "nextPermittedPhase": "Only after next explicit fixture-phase authorization: prepare isolated fixture using amended inventory, same guard and real observed facts; do not run automatically",
+  "automaticFixtureCreationAllowed": false,
+  "remainingPreparationBlockers": [],
+  "futureExecutionPreflights": [
+    "issue trusted short-lived test SA credential and pin snapshot/issuer/audience/UID",
+    "guard must validate actual authenticated min identity and namespace/cluster UID",
+    "verify official SOPS/age binary and signature/production lock after authorized download",
+    "bootstrap self access review/discovery and reachable TLS API endpoint must work or stop",
+    "wire actual same-execution Gate observations to existing adapter; no synthetic substitution"
+  ]
+}

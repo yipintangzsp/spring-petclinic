@@ -1,0 +1,57 @@
+{
+  "classification": "READ_ONLY_EXISTING_CONTEXTS_AND_SAMPLER_ONLY_NO_REFRESH",
+  "contexts": [
+    {
+      "context": "colima-security-test",
+      "endpoint": "unix:///Users/zhangsir/.colima/security-test/docker.sock",
+      "socketExists": true,
+      "readExit": 0,
+      "engine": {
+        "version": "29.5.2",
+        "architecture": "aarch64",
+        "OS": "linux",
+        "storageDriver": "overlayfs",
+        "root": "/var/lib/docker",
+        "runningContainers": 1
+      }
+    },
+    {
+      "context": "default",
+      "endpoint": "unix:///var/run/docker.sock",
+      "socketExists": false
+    },
+    {
+      "context": "desktop-linux",
+      "endpoint": "unix:///Users/zhangsir/.docker/run/docker.sock",
+      "socketExists": false
+    }
+  ],
+  "existingKindInspectExit": 1,
+  "existingKindRead": {
+    "exit": 0,
+    "metadata": "aarch64\nFilesystem        1-blocks       Used  Available Capacity Mounted on\noverlay        10461925376 2507997184 7400386560      26% /\ntmpfs           1027379200          0 1027379200       0% /tmp\n/dev/vdb1      10461925376 2507997184 7400386560      26% /var\n/|overlayfs|4096|2554181|1806735\n/tmp|tmpfs|4096|250825|250825\n/var/lib/containerd|ext2/ext3|4096|2554181|1806735\n"
+  },
+  "samplerCalibration": {
+    "exit": 0,
+    "result": {
+      "classification": "READ_ONLY_SAMPLER_CALIBRATION_ONLY",
+      "samples": 100,
+      "clockResolutionSeconds": 1e-09,
+      "wallMs": 1105.575083,
+      "cpuMs": 13.351786,
+      "cpuFraction": 0.012076779049478632,
+      "minGapMs": 10.111227,
+      "maxGapMs": 15.779097,
+      "meanGapMs": 11.036545868686868,
+      "statvfsPath": "/mnt/lima-colima-security-test",
+      "minAvailableBytes": 7400386560,
+      "allocationTraceAvailableTools": {
+        "bpftrace": false,
+        "trace-cmd": false,
+        "perf": false
+      },
+      "zeroDBRefreshes": true,
+      "fullPeakMeasurementProven": false
+    }
+  }
+}

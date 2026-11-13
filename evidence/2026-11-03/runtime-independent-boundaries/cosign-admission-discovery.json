@@ -1,0 +1,683 @@
+{
+  "time": "2026-11-03T05:30:42.332291+00:00",
+  "webhooks": [
+    {
+      "kind": "validatingwebhookconfigurations",
+      "name": "kyverno-cel-exception-validating-webhook-cfg",
+      "uid": "74ad1cc3-3293-4d71-b6b3-f224a1b53e96",
+      "webhooks": [
+        {
+          "name": "kyverno-svc.devsecops-system.svc",
+          "namespaceSelector": {},
+          "objectSelector": {},
+          "failurePolicy": "Fail",
+          "rules": [
+            {
+              "apiGroups": [
+                "policies.kyverno.io"
+              ],
+              "apiVersions": [
+                "v1alpha1",
+                "v1beta1",
+                "v1"
+              ],
+              "operations": [
+                "CREATE",
+                "UPDATE"
+              ],
+              "resources": [
+                "policyexceptions"
+              ],
+              "scope": "*"
+            }
+          ],
+          "clientService": {
+            "name": "kyverno-svc",
+            "namespace": "devsecops-system",
+            "path": "/celexception/validate",
+            "port": 443
+          }
+        }
+      ]
+    },
+    {
+      "kind": "validatingwebhookconfigurations",
+      "name": "kyverno-exception-validating-webhook-cfg",
+      "uid": "9079d350-8c1c-4d95-9a3c-54d4b7cb8f3a",
+      "webhooks": [
+        {
+          "name": "kyverno-svc.devsecops-system.svc",
+          "namespaceSelector": {},
+          "objectSelector": {},
+          "failurePolicy": "Fail",
+          "rules": [
+            {
+              "apiGroups": [
+                "kyverno.io"
+              ],
+              "apiVersions": [
+                "v2alpha1",
+                "v2beta1"
+              ],
+              "operations": [
+                "CREATE",
+                "UPDATE"
+              ],
+              "resources": [
+                "policyexceptions"
+              ],
+              "scope": "*"
+            }
+          ],
+          "clientService": {
+            "name": "kyverno-svc",
+            "namespace": "devsecops-system",
+            "path": "/exceptionvalidate",
+            "port": 443
+          }
+        }
+      ]
+    },
+    {
+      "kind": "validatingwebhookconfigurations",
+      "name": "kyverno-global-context-validating-webhook-cfg",
+      "uid": "93c6f132-317e-439a-bc34-c2a8025acb49",
+      "webhooks": [
+        {
+          "name": "kyverno-svc.devsecops-system.svc",
+          "namespaceSelector": {},
+          "objectSelector": {},
+          "failurePolicy": "Fail",
+          "rules": [
+            {
+              "apiGroups": [
+                "kyverno.io"
+              ],
+              "apiVersions": [
+                "v2alpha1"
+              ],
+              "operations": [
+                "CREATE",
+                "UPDATE"
+              ],
+              "resources": [
+                "globalcontextentries"
+              ],
+              "scope": "*"
+            }
+          ],
+          "clientService": {
+            "name": "kyverno-svc",
+            "namespace": "devsecops-system",
+            "path": "/globalcontextvalidate",
+            "port": 443
+          }
+        }
+      ]
+    },
+    {
+      "kind": "validatingwebhookconfigurations",
+      "name": "kyverno-policy-validating-webhook-cfg",
+      "uid": "ef7c2506-fa71-4179-8ba4-a92c8aa236bd",
+      "webhooks": [
+        {
+          "name": "validate-policy.kyverno.svc",
+          "namespaceSelector": {},
+          "objectSelector": {},
+          "failurePolicy": "Fail",
+          "rules": [
+            {
+              "apiGroups": [
+                "kyverno.io"
+              ],
+              "apiVersions": [
+                "v1",
+                "v2beta1"
+              ],
+              "operations": [
+                "CREATE",
+                "UPDATE"
+              ],
+              "resources": [
+                "clusterpolicies",
+                "policies"
+              ],
+              "scope": "*"
+            },
+            {
+              "apiGroups": [
+                "policies.kyverno.io"
+              ],
+              "apiVersions": [
+                "v1alpha1",
+                "v1beta1",
+                "v1"
+              ],
+              "operations": [
+                "CREATE",
+                "UPDATE"
+              ],
+              "resources": [
+                "validatingpolicies"
+              ],
+              "scope": "*"
+            },
+            {
+              "apiGroups": [
+                "policies.kyverno.io"
+              ],
+              "apiVersions": [
+                "v1beta1",
+                "v1"
+              ],
+              "operations": [
+                "CREATE",
+                "UPDATE"
+              ],
+              "resources": [
+                "namespacedvalidatingpolicies"
+              ],
+              "scope": "*"
+            },
+            {
+              "apiGroups": [
+                "policies.kyverno.io"
+              ],
+              "apiVersions": [
+                "v1alpha1",
+                "v1beta1",
+                "v1"
+              ],
+              "operations": [
+                "CREATE",
+                "UPDATE"
+              ],
+              "resources": [
+                "imagevalidatingpolicies"
+              ],
+              "scope": "*"
+            },
+            {
+              "apiGroups": [
+                "policies.kyverno.io"
+              ],
+              "apiVersions": [
+                "v1beta1",
+                "v1"
+              ],
+              "operations": [
+                "CREATE",
+                "UPDATE"
+              ],
+              "resources": [
+                "namespacedimagevalidatingpolicies"
+              ],
+              "scope": "*"
+            },
+            {
+              "apiGroups": [
+                "policies.kyverno.io"
+              ],
+              "apiVersions": [
+                "v1alpha1",
+                "v1beta1",
+                "v1"
+              ],
+              "operations": [
+                "CREATE",
+                "UPDATE"
+              ],
+              "resources": [
+                "generatingpolicies"
+              ],
+              "scope": "*"
+            },
+            {
+              "apiGroups": [
+                "policies.kyverno.io"
+              ],
+              "apiVersions": [
+                "v1beta1",
+                "v1"
+              ],
+              "operations": [
+                "CREATE",
+                "UPDATE"
+              ],
+              "resources": [
+                "namespacedgeneratingpolicies"
+              ],
+              "scope": "*"
+            },
+            {
+              "apiGroups": [
+                "policies.kyverno.io"
+              ],
+              "apiVersions": [
+                "v1alpha1",
+                "v1beta1",
+                "v1"
+              ],
+              "operations": [
+                "CREATE",
+                "UPDATE"
+              ],
+              "resources": [
+                "mutatingpolicies"
+              ],
+              "scope": "*"
+            },
+            {
+              "apiGroups": [
+                "policies.kyverno.io"
+              ],
+              "apiVersions": [
+                "v1beta1",
+                "v1"
+              ],
+              "operations": [
+                "CREATE",
+                "UPDATE"
+              ],
+              "resources": [
+                "namespacedmutatingpolicies"
+              ],
+              "scope": "*"
+            },
+            {
+              "apiGroups": [
+                "policies.kyverno.io"
+              ],
+              "apiVersions": [
+                "v1alpha1",
+                "v1beta1",
+                "v1"
+              ],
+              "operations": [
+                "CREATE",
+                "UPDATE"
+              ],
+              "resources": [
+                "deletingpolicies"
+              ],
+              "scope": "*"
+            }
+          ],
+          "clientService": {
+            "name": "kyverno-svc",
+            "namespace": "devsecops-system",
+            "path": "/policyvalidate",
+            "port": 443
+          }
+        }
+      ]
+    },
+    {
+      "kind": "validatingwebhookconfigurations",
+      "name": "kyverno-resource-validating-webhook-cfg",
+      "uid": "c24f8f39-9152-4d2e-9dc8-ec2084214b1e",
+      "webhooks": [
+        {
+          "name": "protect-generation-labels.kyverno.svc",
+          "namespaceSelector": {},
+          "objectSelector": {
+            "matchExpressions": [
+              {
+                "key": "generate.kyverno.io/policy-name",
+                "operator": "Exists"
+              }
+            ]
+          },
+          "failurePolicy": "Fail",
+          "rules": [
+            {
+              "apiGroups": [
+                "*"
+              ],
+              "apiVersions": [
+                "*"
+              ],
+              "operations": [
+                "CREATE",
+                "UPDATE"
+              ],
+              "resources": [
+                "*/*"
+              ],
+              "scope": "*"
+            }
+          ],
+          "clientService": {
+            "name": "kyverno-svc",
+            "namespace": "devsecops-system",
+            "path": "/protect-generation-labels",
+            "port": 443
+          }
+        },
+        {
+          "name": "validate.kyverno.svc-fail",
+          "namespaceSelector": {
+            "matchExpressions": [
+              {
+                "key": "kubernetes.io/metadata.name",
+                "operator": "In",
+                "values": [
+                  "devsecops-execution",
+                  "devsecops-supply-chain",
+                  "petclinic",
+                  "devsecops-system",
+                  "monitoring",
+                  "sonarqube"
+                ]
+              }
+            ]
+          },
+          "objectSelector": {},
+          "failurePolicy": "Fail",
+          "rules": [
+            {
+              "apiGroups": [
+                ""
+              ],
+              "apiVersions": [
+                "v1"
+              ],
+              "operations": [
+                "CONNECT",
+                "CREATE",
+                "DELETE",
+                "UPDATE"
+              ],
+              "resources": [
+                "pods",
+                "pods/ephemeralcontainers"
+              ],
+              "scope": "Namespaced"
+            }
+          ],
+          "clientService": {
+            "name": "kyverno-svc",
+            "namespace": "devsecops-system",
+            "path": "/validate/fail",
+            "port": 443
+          }
+        }
+      ]
+    },
+    {
+      "kind": "mutatingwebhookconfigurations",
+      "name": "kyverno-policy-mutating-webhook-cfg",
+      "uid": "a1904f5c-02a5-4e50-ba1f-9ade43fed7aa",
+      "webhooks": [
+        {
+          "name": "mutate-policy.kyverno.svc",
+          "namespaceSelector": {},
+          "objectSelector": {},
+          "failurePolicy": "Fail",
+          "rules": [
+            {
+              "apiGroups": [
+                "kyverno.io"
+              ],
+              "apiVersions": [
+                "v1",
+                "v2beta1"
+              ],
+              "operations": [
+                "CREATE",
+                "UPDATE"
+              ],
+              "resources": [
+                "clusterpolicies",
+                "policies"
+              ],
+              "scope": "*"
+            }
+          ],
+          "clientService": {
+            "name": "kyverno-svc",
+            "namespace": "devsecops-system",
+            "path": "/policymutate",
+            "port": 443
+          }
+        }
+      ]
+    },
+    {
+      "kind": "mutatingwebhookconfigurations",
+      "name": "kyverno-resource-mutating-webhook-cfg",
+      "uid": "d2e5a17a-c54f-40c3-85ae-7a82426ea573",
+      "webhooks": [
+        {
+          "name": "mutate.kyverno.svc-fail",
+          "namespaceSelector": {
+            "matchExpressions": [
+              {
+                "key": "kubernetes.io/metadata.name",
+                "operator": "In",
+                "values": [
+                  "devsecops-execution",
+                  "devsecops-supply-chain",
+                  "petclinic",
+                  "devsecops-system",
+                  "monitoring",
+                  "sonarqube"
+                ]
+              }
+            ]
+          },
+          "objectSelector": {},
+          "failurePolicy": "Fail",
+          "rules": [
+            {
+              "apiGroups": [
+                ""
+              ],
+              "apiVersions": [
+                "v1"
+              ],
+              "operations": [
+                "CREATE",
+                "UPDATE"
+              ],
+              "resources": [
+                "pods",
+                "pods/ephemeralcontainers"
+              ],
+              "scope": "Namespaced"
+            }
+          ],
+          "clientService": {
+            "name": "kyverno-svc",
+            "namespace": "devsecops-system",
+            "path": "/mutate/fail",
+            "port": 443
+          }
+        }
+      ]
+    },
+    {
+      "kind": "mutatingwebhookconfigurations",
+      "name": "kyverno-verify-mutating-webhook-cfg",
+      "uid": "26e3c558-16c7-417d-912d-92331acb7e36",
+      "webhooks": [
+        {
+          "name": "monitor-webhooks.kyverno.svc",
+          "namespaceSelector": {},
+          "objectSelector": {
+            "matchLabels": {
+              "app.kubernetes.io/name": "kyverno"
+            }
+          },
+          "failurePolicy": "Ignore",
+          "rules": [
+            {
+              "apiGroups": [
+                "coordination.k8s.io"
+              ],
+              "apiVersions": [
+                "v1"
+              ],
+              "operations": [
+                "UPDATE"
+              ],
+              "resources": [
+                "leases"
+              ],
+              "scope": "*"
+            }
+          ],
+          "clientService": {
+            "name": "kyverno-svc",
+            "namespace": "devsecops-system",
+            "path": "/verifymutate",
+            "port": 443
+          }
+        }
+      ]
+    }
+  ],
+  "productionSignaturePolicy": {
+    "apiVersion": "kyverno.io/v1",
+    "kind": "ClusterPolicy",
+    "metadata": {
+      "annotations": {
+        "pod-policies.kyverno.io/autogen-controllers": "none"
+      },
+      "creationTimestamp": "2026-10-27T17:03:01Z",
+      "generation": 2,
+      "labels": {
+        "app.kubernetes.io/instance": "platform-devsecops",
+        "petclinic.devops.local/owner": "platform-devsecops"
+      },
+      "name": "devsecops-signed-images",
+      "resourceVersion": "15427791",
+      "uid": "4f2459cf-1ad8-4da8-8f4f-632135ac0c4b"
+    },
+    "spec": {
+      "admission": true,
+      "background": false,
+      "emitWarning": false,
+      "rules": [
+        {
+          "match": {
+            "any": [
+              {
+                "resources": {
+                  "kinds": [
+                    "Pod"
+                  ],
+                  "namespaces": [
+                    "petclinic",
+                    "devsecops-supply-chain"
+                  ]
+                }
+              }
+            ]
+          },
+          "name": "verify-private-petclinic-image",
+          "skipBackgroundRequests": true,
+          "verifyImages": [
+            {
+              "attestors": [
+                {
+                  "count": 1,
+                  "entries": [
+                    {
+                      "keys": {
+                        "publicKeys": "-----BEGIN PUBLIC KEY-----\nMFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAEDcDmCR1VAKgVHFo0oCkd6XeqXn14\nACzzOaks1UDTLAl7c2WBQSpQwiK6DpovLg9IFgHlwqR96xaECMITPawOaw==\n-----END PUBLIC KEY-----\n",
+                        "rekor": {
+                          "ignoreTlog": true
+                        },
+                        "signatureAlgorithm": "sha256"
+                      },
+                      "signatureAlgorithm": "sha256"
+                    }
+                  ]
+                }
+              ],
+              "imageReferences": [
+                "core.harbor.domain/petclinic/*"
+              ],
+              "imageRegistryCredentials": {
+                "allowInsecureRegistry": true,
+                "secrets": [
+                  "kyverno-registry-pull"
+                ]
+              },
+              "mutateDigest": true,
+              "required": true,
+              "type": "Cosign",
+              "useCache": false,
+              "verifyDigest": true
+            }
+          ]
+        }
+      ],
+      "validationFailureAction": "Enforce",
+      "webhookConfiguration": {
+        "failurePolicy": "Fail",
+        "timeoutSeconds": 20
+      }
+    },
+    "status": {
+      "autogen": {},
+      "conditions": [
+        {
+          "lastTransitionTime": "2026-10-27T17:03:01Z",
+          "message": "Ready",
+          "reason": "Succeeded",
+          "status": "True",
+          "type": "Ready"
+        }
+      ],
+      "rulecount": {
+        "generate": 0,
+        "mutate": 0,
+        "validate": 0,
+        "verifyimages": 1
+      },
+      "validatingadmissionpolicy": {
+        "generated": false,
+        "message": ""
+      }
+    }
+  },
+  "relevantNamespaces": [
+    {
+      "name": "devsecops-execution",
+      "labels": {
+        "app.kubernetes.io/instance": "platform-devsecops",
+        "kubernetes.io/metadata.name": "devsecops-execution",
+        "petclinic.devops.local/owner": "platform-devsecops"
+      }
+    },
+    {
+      "name": "devsecops-supply-chain",
+      "labels": {
+        "app.kubernetes.io/instance": "platform-devsecops",
+        "kubernetes.io/metadata.name": "devsecops-supply-chain",
+        "petclinic.devops.local/owner": "platform-devsecops"
+      }
+    },
+    {
+      "name": "devsecops-system",
+      "labels": {
+        "app.kubernetes.io/instance": "platform-devsecops",
+        "kubernetes.io/metadata.name": "devsecops-system",
+        "petclinic.devops.local/owner": "platform-devsecops"
+      }
+    },
+    {
+      "name": "devsecops-test",
+      "labels": {
+        "app.kubernetes.io/instance": "platform-devsecops",
+        "kubernetes.io/metadata.name": "devsecops-test",
+        "petclinic.devops.local/owner": "platform-runtime-security",
+        "pod-security.kubernetes.io/enforce": "restricted"
+      }
+    }
+  ],
+  "privateKeyAccess": 0,
+  "writes": 0
+}

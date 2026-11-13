@@ -1,0 +1,37 @@
+{
+  "spec": {
+    "template": {
+      "spec": {
+        "containers": [
+          {
+            "name": "registryctl",
+            "image": "127.0.0.1:30050/platform-repair/harbor-registryctl@sha256:4e213a9725d3300d6e4c80c2d815ed51f20c76fbb5e803e34152c40418508e92",
+            "resources": {
+              "requests": {
+                "cpu": "50m",
+                "memory": "128Mi"
+              },
+              "limits": {
+                "cpu": "500m",
+                "memory": "256Mi"
+              }
+            }
+          },
+          {
+            "name": "registry",
+            "resources": {
+              "requests": {
+                "cpu": "50m",
+                "memory": "128Mi"
+              },
+              "limits": {
+                "cpu": "500m",
+                "memory": "512Mi"
+              }
+            }
+          }
+        ]
+      }
+    }
+  }
+}

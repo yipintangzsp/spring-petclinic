@@ -1,0 +1,145 @@
+{
+  "job": "security-runtime-facts-20261102",
+  "build": 16,
+  "building": false,
+  "result": "SUCCESS",
+  "duration": 12148,
+  "artifacts": {
+    ".devsecops/runtime-controlled/build-16/readonly-boundary-discovery.json": {
+      "externalWriteCount": 0,
+      "scope": "LIVE_READ_ONLY",
+      "validationRunId": "rfv-20261103-29dad1",
+      "harbor": {
+        "candidateCleanupAuthorization": "NOT_ESTABLISHED",
+        "currentUserHttpStatus": 200,
+        "immutableRules": {
+          "httpStatus": 200,
+          "count": 0,
+          "rulesSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        },
+        "identity": {
+          "sysadminFlag": true,
+          "username": "admin"
+        },
+        "project": {
+          "name": "petclinic",
+          "id": 3
+        },
+        "validationCandidate": "NOT_ESTABLISHED"
+      },
+      "requests": [
+        {
+          "path": "/api/v2.0/users/current",
+          "system": "Harbor",
+          "method": "GET",
+          "httpStatus": 200
+        },
+        {
+          "path": "/api/v2.0/projects/petclinic",
+          "system": "Harbor",
+          "method": "GET",
+          "httpStatus": 200
+        },
+        {
+          "path": "/api/v2.0/projects/3/immutabletagrules",
+          "system": "Harbor",
+          "method": "GET",
+          "httpStatus": 200
+        },
+        {
+          "path": "/api/v2/products/?limit=100",
+          "system": "DefectDojo",
+          "method": "GET",
+          "httpStatus": 200
+        },
+        {
+          "path": "/api/v2/engagements/?limit=100",
+          "system": "DefectDojo",
+          "method": "GET",
+          "httpStatus": 200
+        }
+      ],
+      "defectdojo": {
+        "engagementListHttpStatus": 200,
+        "productListHttpStatus": 200,
+        "visibleProducts": [
+          {
+            "product": null,
+            "name": "PetClinic",
+            "id": 1
+          },
+          {
+            "product": null,
+            "name": "Security Manager Contract Samples",
+            "id": 2
+          }
+        ],
+        "realIsolatedParentAvailable": false,
+        "cleanupAuthorization": "NOT_ESTABLISHED_NO_WRITE_PROBE",
+        "configuredTarget": {
+          "baseUrl": "http://192.168.64.11:18095",
+          "product": 1,
+          "engagement": 1
+        },
+        "visibleEngagements": [
+          {
+            "product": 1,
+            "name": "Continuous Read-Only Security",
+            "id": 1
+          },
+          {
+            "product": 2,
+            "name": "Shared Library Mode Contracts",
+            "id": 2
+          }
+        ]
+      }
+    }
+  },
+  "regression": [],
+  "definitionSha256": "13ddea61e9e7c73e09572b8e1890ccd54c84e6e6bff8fdb973fb5c7b056f1ef7",
+  "consoleTail": [
+    "Started",
+    "[Pipeline] Start of Pipeline",
+    "[Pipeline] node",
+    "Running on Jenkins in /var/jenkins_home/workspace/security-runtime-facts-20261102",
+    "[Pipeline] {",
+    "[Pipeline] timeout",
+    "Timeout set to expire in 5 min 0 sec",
+    "[Pipeline] {",
+    "[Pipeline] stage",
+    "[Pipeline] { (Verify source and accepted runtime baseline)",
+    "[Pipeline] sh",
+    "+ node infra/security/runtime-facts/verify-bundle.mjs",
+    "Exact uploaded source identities verified; non-release only",
+    "+ node infra/security/runtime-facts/baseline-smoke.mjs",
+    "{\"acceptedBaselineBuild\":12,\"receiptsValidated\":10,\"policyReevaluations\":0,\"reboundAsCurrentBuildFacts\":false,\"sopsScopePreserved\":true,\"sonarLineagePreserved\":true}",
+    "[Pipeline] }",
+    "[Pipeline] // stage",
+    "[Pipeline] stage",
+    "[Pipeline] { (Read existing Harbor and Dojo authorization boundary)",
+    "[Pipeline] withCredentials",
+    "Masking supported pattern matches of $HARBOR_PASS or $DEFECTDOJO_TOKEN",
+    "[Pipeline] {",
+    "[Pipeline] sh",
+    "+ node infra/security/runtime-facts/boundary-readonly.mjs",
+    "{\"readOnlyRequests\":5,\"externalWriteCount\":0,\"report\":\".devsecops/runtime-controlled/build-16/readonly-boundary-discovery.json\"}",
+    "[Pipeline] }",
+    "[Pipeline] // withCredentials",
+    "[Pipeline] }",
+    "[Pipeline] // stage",
+    "[Pipeline] stage",
+    "[Pipeline] { (Declarative: Post Actions)",
+    "[Pipeline] archiveArtifacts",
+    "Archiving artifacts",
+    "[Pipeline] }",
+    "[Pipeline] // stage",
+    "[Pipeline] }",
+    "[Pipeline] // timeout",
+    "[Pipeline] }",
+    "[Pipeline] // node",
+    "[Pipeline] End of Pipeline",
+    "Finished: SUCCESS"
+  ],
+  "productionJobModified": false
+}

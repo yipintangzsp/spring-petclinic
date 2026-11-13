@@ -1,0 +1,24 @@
+{
+  "REAL_V2_PIPELINE_INTEGRATION": "FAILED",
+  "SUMMARY_V2_MIGRATION": "FAILED",
+  "meaning": "Compatibility acceptance preflight FAILED. Real V2 pipeline was NOT started; original production V1 has not regressed or been changed by this work.",
+  "blocker": "falco-parent uses raw.now+i*16000 for sample ends. Production waits 16000 only AFTER first sample IO; the actual next Date.now includes IO/scheduling latency. Complete passive facts cannot be represented faithfully for both windows by the single raw.now field.",
+  "affectedSources": [
+    "falco-baseline",
+    "falco-final"
+  ],
+  "evidenceClass": "CONTROLLED_ORIGINAL_PRODUCTION_BODY_REPLAY_NOT_LIVE_PIPELINE",
+  "minimalFix": "STOP integration. Correct the frozen adapter to consume actual observed per-sample clock bounds only in a separately reviewed compatibility revalidation; do not change production timing, drop events, shift timestamps, or mark this source skipped.",
+  "preexistingB1": "OPEN; real runtime capture not implemented",
+  "preexistingB2": "OPEN; real single authoritative owner not installed",
+  "preexistingB3": "OPEN; actual consumers not migrated",
+  "newCompatibilityBlocker": "Confirmed FAIL->PASS in unchanged frozen Falco adapter for delayed two-window sampling; requires explicit source compatibility revalidation before integration.",
+  "artifactComplete": false,
+  "realSummaryV2Generated": false,
+  "runtimeDifferential": "NOT_EXECUTED",
+  "runtimeAntiSelfApproval": "NOT_TESTED",
+  "runtimeRollback": "NOT_TESTED_NOT_SWITCHED",
+  "release": 0,
+  "rollout": 0,
+  "stopped": true
+}

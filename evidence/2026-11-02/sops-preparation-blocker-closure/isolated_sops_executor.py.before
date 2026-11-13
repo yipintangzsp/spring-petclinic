@@ -1,0 +1,321 @@
+"""Test-only Kubernetes boundary. CLI permits identity check or fixed sentinel, never SOPS.
+
+Requires existing PyYAML; no installer, production imports, fixture logic, or Gate invocation.
+Scope: accidental/default Kubernetes configuration fallback, not a malicious-child sandbox.
+"""
+import argparse
+import base64
+import hashlib
+import http.client
+import json
+import os
+from pathlib import Path
+import ssl
+import stat
+import subprocess
+import sys
+import tempfile
+from dataclasses import dataclass, field
+
+import yaml
+
+
+@dataclass(frozen=True)
+class Binding:
+    path: Path = Path('/private/tmp/security-manager-kind-gdasvx1h/kubeconfig')
+    context: str = 'kind-security-test-sops'
+    cluster: str = 'kind-security-test-sops'
+    server: str = 'https://127.0.0.1:59645'
+    uid: str = '54f300a4-5f1b-4e1e-86a1-d173e5a402d8'
+    ca_sha: str = '90507a6f34d0b4e9b31cf862d74b7c2694b465c2e959f99bb45705ef0c8a46d8'
+    config_sha: str = 'ce4f1a493632c692bc23bf7470460dbea17af70247d13f9a0c9c0bbf553946d9'
+
+
+EXPECTED = Binding()
+REAL_KUBECTL = Path('/opt/homebrew/bin/kubectl')
+
+
+class BoundaryError(Exception):
+    """Only stable reason codes are returned; config/key/parser contents are suppressed."""
+
+
+@dataclass
+class Audit:
+    api_attempts: int = 0
+    kubectl_invocations: int = 0
+    child_executions: int = 0
+
+
+@dataclass(repr=False)
+class Validated:
+    raw: bytes = field(repr=False)
+    ca: str = field(repr=False)
+    cert: bytes = field(repr=False)
+    key: bytes = field(repr=False)
+
+
+class UniqueLoader(yaml.SafeLoader):
+    pass
+
+
+def unique_map(loader, node, deep=False):
+    result = {}
+    for key_node, value_node in node.value:
+        key = loader.construct_object(key_node, deep=deep)
+        if not isinstance(key, str) or key in result:
+            raise BoundaryError('MALFORMED_CONFIG')
+        result[key] = loader.construct_object(value_node, deep=deep)
+    return result
+
+
+UniqueLoader.add_constructor(yaml.resolver.BaseResolver.DEFAULT_MAPPING_TAG, unique_map)
+
+
+def reject(condition, reason):
+    if not condition:
+        raise BoundaryError(reason)
+
+
+def decode(value):
+    reject(isinstance(value, str) and 0 < len(value) < 131072, 'INVALID_EMBEDDED_CERTIFICATE')
+    try:
+        return base64.b64decode(value, validate=True)
+    except Exception:
+        raise BoundaryError('INVALID_EMBEDDED_CERTIFICATE') from None
+
+
+def validate(argument, environ, binding=EXPECTED):
+    """Offline only. Test injection may replace file binding; CLI never exposes that option."""
+    reject('KUBECONFIG' in environ, 'KUBECONFIG_UNSET')
+    value = environ['KUBECONFIG'].strip()
+    reject(bool(value), 'KUBECONFIG_EMPTY')
+    reject(os.pathsep not in value, 'MULTIPLE_KUBECONFIG_FILES')
+    reject(isinstance(argument, str) and bool(argument.strip()), 'EXPLICIT_ARGUMENT_REQUIRED')
+    reject(os.pathsep not in argument, 'MULTIPLE_KUBECONFIG_FILES')
+    reject(Path(value).is_absolute() and Path(argument).is_absolute(), 'ABSOLUTE_PATH_REQUIRED')
+    path = Path(value)
+    try:
+        resolved = path.resolve(strict=True)
+        arg_resolved = Path(argument).resolve(strict=True)
+    except (OSError, RuntimeError, ValueError):
+        raise BoundaryError('CONFIG_FILE_MISSING') from None
+    reject(resolved == arg_resolved, 'ARGUMENT_ENV_PATH_MISMATCH')
+    try:
+        info = resolved.stat()
+    except OSError:
+        raise BoundaryError('CONFIG_FILE_UNAVAILABLE') from None
+    reject(stat.S_ISREG(info.st_mode), 'CONFIG_NOT_REGULAR_FILE')
+    reject(resolved == binding.path.resolve(), 'UNEXPECTED_CONFIG_PATH')
+    reject(info.st_uid == os.getuid(), 'CONFIG_OWNER_MISMATCH')
+    reject(stat.S_IMODE(info.st_mode) in (0o400, 0o600), 'CONFIG_PERMISSIONS_UNSAFE')
+    reject(0 < info.st_size <= 262144, 'CONFIG_SIZE_INVALID')
+    try:
+        fd = os.open(resolved, os.O_RDONLY | os.O_NOFOLLOW | os.O_NONBLOCK)
+        with os.fdopen(fd, 'rb') as source:
+            current = os.fstat(source.fileno())
+            reject((current.st_dev, current.st_ino, current.st_mode, current.st_uid) ==
+                   (info.st_dev, info.st_ino, info.st_mode, info.st_uid), 'CONFIG_CHANGED_DURING_READ')
+            raw = source.read(262145)
+        reject(0 < len(raw) <= 262144, 'CONFIG_SIZE_INVALID')
+        tokens = yaml.scan(raw)
+        reject(not any(isinstance(t, (yaml.tokens.AliasToken, yaml.tokens.AnchorToken)) for t in tokens), 'MALFORMED_CONFIG')
+        config = yaml.load(raw, Loader=UniqueLoader)
+    except BoundaryError:
+        raise
+    except Exception:
+        raise BoundaryError('MALFORMED_CONFIG') from None
+    reject(isinstance(config, dict), 'MALFORMED_CONFIG')
+    reject(config.get('kind') == 'Config' and config.get('apiVersion') == 'v1', 'MALFORMED_CONFIG')
+    reject(config.get('current-context') == binding.context, 'CONTEXT_IDENTITY_MISMATCH')
+    for collection in ('contexts', 'clusters', 'users'):
+        reject(isinstance(config.get(collection), list) and len(config[collection]) == 1, 'SINGLE_CONFIG_IDENTITY_REQUIRED')
+    try:
+        context, cluster, user = config['contexts'][0], config['clusters'][0], config['users'][0]
+        reject(context['name'] == binding.context and context['context']['cluster'] == binding.cluster and
+               cluster['name'] == binding.cluster and context['context']['user'] == user['name'] == binding.context,
+               'CLUSTER_IDENTITY_MISMATCH')
+        data = cluster['cluster']
+        reject(data.get('server') == binding.server, 'SERVER_MISMATCH')
+        reject(set(data) == {'server', 'certificate-authority-data'}, 'CLUSTER_CONNECTION_OVERRIDE_FORBIDDEN')
+        reject(set(user['user']) == {'client-certificate-data', 'client-key-data'}, 'EXTERNAL_AUTH_FORBIDDEN')
+        ca = decode(data['certificate-authority-data']).decode('ascii')
+        ca_der = ssl.PEM_cert_to_DER_cert(ca)
+        reject(hashlib.sha256(ca_der).hexdigest() == binding.ca_sha, 'CA_IDENTITY_MISMATCH')
+        cert = decode(user['user']['client-certificate-data'])
+        key = decode(user['user']['client-key-data'])
+    except BoundaryError:
+        raise
+    except Exception:
+        raise BoundaryError('MALFORMED_CONFIG') from None
+    reject(hashlib.sha256(raw).hexdigest() == binding.config_sha, 'CONFIG_DIGEST_MISMATCH')
+    return Validated(raw, ca, cert, key)
+
+
+def write_private(path, data, mode=0o400):
+    fd = os.open(path, os.O_WRONLY | os.O_CREAT | os.O_EXCL, mode)
+    with os.fdopen(fd, 'wb') as target:
+        target.write(data)
+
+
+def verify_live(validated, root, audit, binding=EXPECTED):
+    """Exactly one metadata request; literal local host, pinned CA, no proxies/redirects."""
+    cert, key = root / 'client.crt', root / 'client.key'
+    write_private(cert, validated.cert)
+    write_private(key, validated.key)
+    try:
+        context = ssl.create_default_context(cadata=validated.ca)
+        context.load_cert_chain(cert, key)
+        connection = http.client.HTTPSConnection('127.0.0.1', 59645, context=context, timeout=10)
+        audit.api_attempts += 1
+        try:
+            connection.request('GET', '/api/v1/namespaces/kube-system', headers={'Accept': 'application/json'})
+            response = connection.getresponse()
+            reject(response.status == 200, 'IDENTITY_HTTP_ERROR')
+            body = response.read(1048577)
+            reject(len(body) <= 1048576, 'IDENTITY_RESPONSE_TOO_LARGE')
+            obj = json.loads(body)
+            reject(obj.get('kind') == 'Namespace' and obj.get('metadata', {}).get('name') == 'kube-system' and
+                   obj['metadata'].get('uid') == binding.uid, 'LIVE_NAMESPACE_UID_MISMATCH')
+        finally:
+            connection.close()
+    except BoundaryError:
+        raise
+    except Exception:
+        raise BoundaryError('IDENTITY_TLS_OR_NETWORK_FAILED') from None
+    finally:
+        cert.unlink(missing_ok=True)
+        key.unlink(missing_ok=True)
+
+
+def child_environment(root, inherited):
+    """Default deny. No cloud/SOPS/age/KUBE*/Docker/SSH/proxy credentials inherited."""
+    env = {k: inherited[k] for k in ('LANG', 'LC_ALL', 'TZ') if k in inherited}
+    env.update(HOME=str(root / 'home'), KUBECONFIG=str(root / 'kubeconfig'),
+               PATH=str(root / 'bin') + ':/usr/bin:/bin:/usr/local/bin:/opt/homebrew/bin',
+               TMPDIR=str(root / 'tmp'), XDG_CACHE_HOME=str(root / 'cache'),
+               PYTHONDONTWRITEBYTECODE='1', ISOLATED_BOUNDARY_CONTEXT=str(root / 'context.json'))
+    return env
+
+
+DENIED_FLAGS = {'--kubeconfig', '--context', '--cluster', '--user', '--server', '-s', '--token',
+                '--username', '--password', '--client-certificate', '--client-key', '--certificate-authority',
+                '--insecure-skip-tls-verify', '--tls-server-name', '--proxy-url', '--cache-dir'}
+
+
+def proxy_argv(args, env):
+    """Pin every inherited production-runtime `kubectl` invocation. Never consult defaults."""
+    context_path = env.get('ISOLATED_BOUNDARY_CONTEXT', '')
+    reject(bool(context_path), 'BOUNDARY_CONTEXT_MISSING')
+    path = Path(context_path)
+    reject(path.is_absolute() and path.name == 'context.json', 'BOUNDARY_CONTEXT_INVALID')
+    info = path.stat()
+    reject(info.st_uid == os.getuid() and stat.S_IMODE(info.st_mode) == 0o400, 'BOUNDARY_CONTEXT_INVALID')
+    state = json.loads(path.read_text())
+    root = path.parent
+    reject(env.get('HOME') == str(root / 'home') and env.get('KUBECONFIG') == str(root / 'kubeconfig'), 'CHILD_ENVIRONMENT_CHANGED')
+    reject(state == {'configSha': EXPECTED.config_sha, 'context': EXPECTED.context,
+                     'realKubectl': str(REAL_KUBECTL)}, 'BOUNDARY_CONTEXT_INVALID')
+    reject(hashlib.sha256((root / 'kubeconfig').read_bytes()).hexdigest() == EXPECTED.config_sha, 'CHILD_CONFIG_CHANGED')
+    for arg in args:
+        reject(arg.split('=', 1)[0] not in DENIED_FLAGS and not (arg.startswith('-s') and not arg.startswith('--')),
+               'CONNECTION_OVERRIDE_FORBIDDEN')
+        value = arg.partition('=')[2] if '=' in arg else arg
+        reject(not value.startswith(('https://', 'http://')), 'EXTERNAL_URL_FORBIDDEN')
+    return [str(REAL_KUBECTL), '--kubeconfig', env['KUBECONFIG'], '--context', EXPECTED.context, *args]
+
+
+SENTINEL = r'''
+import json,os,pathlib
+home=pathlib.Path(os.environ['HOME']);config=pathlib.Path(os.environ['KUBECONFIG'])
+assert not (home/'.kube').exists()
+assert home.parent==config.parent and config.is_file()
+assert os.environ['PATH'].split(':')[0]==str(home.parent/'bin')
+assert not any(k.startswith(('AWS_','AGE','SOPS_','SSH_')) or (k.startswith('KUBE') and k!='KUBECONFIG') or k in ['DOCKER_HOST','BUSINESS_AGE_FILE','HTTP_PROXY','HTTPS_PROXY','http_proxy','https_proxy'] for k in os.environ)
+print('ISOLATED_KUBECONFIG_SENTINEL_OK')
+print(json.dumps({'explicitKubeconfig':True,'privateSnapshot':True,'cleanHome':True,'sanitizedEnvironment':True,'envNames':sorted(os.environ)}))
+'''
+
+
+def execute(argument, environ, mode='check', audit=None, binding=EXPECTED, child_command=None, child_cwd=None):
+    """Library may launch an explicitly supplied trusted child after all guards.
+
+    Current CLI deliberately exposes check/sentinel only. No Gate command is constructed here.
+    Future fixture-specific input/environment integration is outside this boundary module.
+    """
+    audit = audit or Audit()
+    reject(mode in ('check', 'sentinel', 'child'), 'INVALID_EXECUTION_MODE')
+    if mode == 'child':
+        reject(isinstance(child_command, (list, tuple)) and bool(child_command) and
+               all(isinstance(a, str) and '\x00' not in a for a in child_command) and
+               Path(child_command[0]).is_absolute(), 'EXPLICIT_TRUSTED_CHILD_REQUIRED')
+        reject(child_cwd is not None and Path(child_cwd).is_absolute(), 'EXPLICIT_PRIVATE_CHILD_CWD_REQUIRED')
+        cwd_info = Path(child_cwd).stat()
+        reject(stat.S_ISDIR(cwd_info.st_mode) and cwd_info.st_uid == os.getuid() and
+               stat.S_IMODE(cwd_info.st_mode) & 0o077 == 0, 'PRIVATE_CHILD_CWD_REQUIRED')
+    else:
+        reject(child_command is None and child_cwd is None, 'UNEXPECTED_CHILD_COMMAND')
+    validated = validate(argument, environ, binding)  # No subprocess/socket before this returns.
+    result = {'status': 'ACCEPTED', 'sourceKubeconfig': str(binding.path), 'server': binding.server,
+              'kubeSystemUID': binding.uid, 'wouldPermitChild': False,
+              'gateExecuted': False if mode in ('check', 'sentinel') else None}
+    with tempfile.TemporaryDirectory(prefix='isolated-sops-boundary-') as directory:
+        root = Path(directory)
+        for name in ('home', 'bin', 'tmp', 'cache'):
+            (root / name).mkdir(mode=0o700)
+        write_private(root / 'kubeconfig', validated.raw)
+        write_private(root / 'context.json', json.dumps({'configSha': EXPECTED.config_sha,
+                      'context': EXPECTED.context, 'realKubectl': str(REAL_KUBECTL)}).encode())
+        shim = '#!' + sys.executable + '\nimport os,sys\nos.execve(' + repr(sys.executable) + ',[' + repr(sys.executable) + ',' + repr(str(Path(__file__).resolve())) + ',"--kubectl-proxy",*sys.argv[1:]],dict(os.environ))\n'
+        write_private(root / 'bin' / 'kubectl', shim.encode(), 0o500)
+        verify_live(validated, root, audit, binding)
+        result['wouldPermitChild'] = True
+        env = child_environment(root, environ)
+        result['environment'] = {'preserved': sorted(set(env) & {'LANG', 'LC_ALL', 'TZ'}),
+                                 'explicitlySet': sorted(set(env) - {'LANG', 'LC_ALL', 'TZ'}),
+                                 'removedInheritedNames': sorted(set(environ) - set(env)),
+                                 'sourceAndSnapshotBytesIdentical': True, 'defaultKubeconfigAbsent': True}
+        if mode in ('sentinel', 'child'):
+            audit.child_executions += 1
+            command = [sys.executable, '-I', '-c', SENTINEL] if mode == 'sentinel' else list(child_command)
+            child = subprocess.run(command, env=env, cwd=root / 'home' if mode == 'sentinel' else child_cwd,
+                                   capture_output=True, text=True, timeout=15 if mode == 'sentinel' else None)
+            reject(child.returncode == 0, 'CHILD_FAILED')
+            if mode == 'sentinel':
+                reject('ISOLATED_KUBECONFIG_SENTINEL_OK' in child.stdout, 'SENTINEL_FAILED')
+                result['sentinel'] = {'exit': child.returncode, 'stdout': child.stdout}
+            else:
+                # Future production child output may contain sensitive data: never return it.
+                result['trustedChild'] = {'exit': child.returncode, 'outputSuppressed': True}
+        result['temporaryDirectory'] = str(root)
+    result['temporaryDirectoryRemoved'] = not root.exists()
+    result['audit'] = vars(audit)
+    return result
+
+
+def main():
+    if len(sys.argv) > 1 and sys.argv[1] == '--kubectl-proxy':
+        try:
+            argv = proxy_argv(sys.argv[2:], os.environ)
+            os.execve(argv[0], argv, dict(os.environ))
+        except Exception:
+            print('BOUNDARY_KUBECTL_REJECTED', file=sys.stderr)
+            return 42
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument('--kubeconfig', required=True)
+    parser.add_argument('--mode', choices=('check', 'sentinel'), default='check')
+    options = parser.parse_args()
+    audit = Audit()
+    try:
+        result = execute(options.kubeconfig, os.environ, options.mode, audit)
+        print(json.dumps(result))
+        return 0
+    except BoundaryError as error:
+        print(json.dumps({'status': 'REJECTED', 'reason': str(error), 'audit': vars(audit), 'gateExecuted': False}))
+        return 42
+    except Exception:
+        print(json.dumps({'status': 'REJECTED', 'reason': 'BOUNDARY_INTERNAL_ERROR', 'audit': vars(audit), 'gateExecuted': False}))
+        return 42
+
+
+if __name__ == '__main__':
+    sys.exit(main())

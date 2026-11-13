@@ -1,0 +1,123 @@
+{
+  "classification": "READ_ONLY_SOURCE_TO_RUNTIME_MAPPING",
+  "files": [
+    {
+      "path": "/Users/zhangsir/Library/Application Support/v2rayN/binConfigs/config.json",
+      "referencedByOldCheckpoint": true,
+      "contentClass": "RUNTIME_GENERATED",
+      "semanticProtectionRequired": true,
+      "immutableByteSource": false,
+      "reason": "Generated runtime config controls proxy security semantics; must not be silently excluded"
+    },
+    {
+      "path": "/Users/zhangsir/Library/Application Support/v2rayN/guiConfigs/guiNConfig.json",
+      "referencedByOldCheckpoint": false,
+      "contentClass": "GUI_STATE",
+      "contractClass": "SEMANTIC_CONFIG_BUT_MUTABLE",
+      "reason": "GUI settings and source selection, with observed same-byte mtime/inode replacement"
+    },
+    {
+      "path": "/Users/zhangsir/Library/Application Support/v2rayN/guiConfigs/guiNDB.db",
+      "referencedByOldCheckpoint": false,
+      "contentClass": "CONFIG",
+      "contractClass": "SEMANTIC_CONFIG_BUT_MUTABLE",
+      "reason": "Selected profiles, subscriptions and routing records; also mutable state; not an immutable DB byte snapshot"
+    },
+    {
+      "path": "/Users/zhangsir/Library/Application Support/v2rayN/guiConfigs/grok-managed.yaml",
+      "referencedByOldCheckpoint": false,
+      "contentClass": "SUBSCRIPTION",
+      "contractClass": "SEMANTIC_CONFIG_BUT_MUTABLE",
+      "reason": "Output configured in existing helper source; not evidence that helper executed"
+    },
+    {
+      "path": "/Users/zhangsir/Library/Application Support/v2rayN/guiLogs/",
+      "referencedByOldCheckpoint": false,
+      "contentClass": "LOG",
+      "contractClass": "LOG"
+    },
+    {
+      "path": "/Users/zhangsir/Library/Application Support/v2rayN/binConfigs/configTest*.json",
+      "referencedByOldCheckpoint": false,
+      "contentClass": "RUNTIME_GENERATED",
+      "contractClass": "VOLATILE_STATE",
+      "reason": "Speed-test output per tagged source; must establish active-core distinction before any future exemption"
+    }
+  ],
+  "map": [
+    "guiConfigs/guiNConfig.json: GUI source settings and selected IndexId",
+    "guiConfigs/guiNDB.db: selected ProfileItem, RoutingItem, SubItem",
+    "v2rayN GUI GenerateClientConfig writes binConfigs/config.json",
+    "main xray PID 6529, parent GUI 84672, config.json relative to binConfigs cwd"
+  ],
+  "writerAssessment": {
+    "likelyWriter": "v2rayN GUI runtime config generator",
+    "confidence": "INFERENCE_ONLY",
+    "historicalActualWriter": "UNKNOWN",
+    "historicalTrigger": "UNKNOWN",
+    "processStartMatchesNewMtimeToSecond": true,
+    "fileWriteAuditAvailable": false
+  },
+  "historicalByteDiff": {
+    "status": "NOT_POSSIBLE_WITH_AVAILABLE_EVIDENCE",
+    "beforeContentRetained": false,
+    "oldContentFoundInBoundedSearch": false,
+    "sizeDeltaBytes": -342,
+    "exactChangedFields": "UNKNOWN",
+    "semanticVsOrderingVsTimestampClassification": "UNKNOWN"
+  },
+  "normalization": {
+    "implementedInOfficialCheckpoint": false,
+    "analysisOnly": true,
+    "allFieldsPreserved": true,
+    "objectKeysSortedForAnalysis": true,
+    "arrayOrderPreserved": true,
+    "duplicateKeysRejected": true,
+    "excludedFields": []
+  },
+  "refreshAssessment": {
+    "subscriptionGlobalInterval": 0,
+    "subscriptionRowCount": 8,
+    "subscriptionRowIntervals": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "subscriptionRowsEnabled": [
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1
+    ],
+    "statisticsEnabled": true,
+    "realTimeSpeedEnabled": true,
+    "messageAutoRefresh": true,
+    "clashProxiesAutoRefresh": false,
+    "clashConnectionsAutoRefresh": false,
+    "speedTestTimeoutSeconds": 30,
+    "speedTestConcurrency": 10,
+    "automaticSpeedTestSchedule": "NOT_ESTABLISHED",
+    "guiPersistence": "Same-byte inode/mtime replacement observed; exact writer/trigger not captured",
+    "selectedServerPersistence": "IndexId present and matching record exists; tagged ConfigHandler saves selection",
+    "generatedRewrite": "Generator available on core load; historical triggering event UNKNOWN",
+    "startupShutdownSave": "Tagged SaveConfig path exists; historical log only WindowClosing, not proof of process termination",
+    "existingLaunchAgentIntervalSeconds": 1800,
+    "launchAgentRuntime": "Query returned 113 for gui/501; no loaded/running state conclusion",
+    "cron": "crontab returned 1; no proxy-related lines obtained",
+    "automaticRefreshCausedHistoricalDrift": "NOT_PROVEN"
+  },
+  "sourceLinks": [
+    "https://github.com/2dust/v2rayN/blob/7.20.4/v2rayN/ServiceLib/Handler/CoreConfigHandler.cs",
+    "https://github.com/2dust/v2rayN/blob/7.20.4/v2rayN/ServiceLib/Manager/CoreManager.cs",
+    "https://github.com/2dust/v2rayN/blob/7.20.4/v2rayN/ServiceLib/Handler/ConfigHandler.cs"
+  ]
+}

@@ -1,0 +1,448 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: petclinic-v09-dashboard
+  namespace: petclinic
+  labels:
+    grafana_dashboard: "1"
+data:
+  petclinic-v09.json: |
+    {
+      "uid": "petclinic-v09",
+      "title": "Petclinic · 0.9 全栈观测",
+      "description": "真实数据库聚合、HTTP 指标、所有平台部署状态、OSINT 聚合与 Loki 日志。跨副本业务数量取 max，避免重复计数。",
+      "schemaVersion": 39,
+      "version": 1,
+      "refresh": "30s",
+      "time": {
+        "from": "now-1h",
+        "to": "now"
+      },
+      "tags": [
+        "petclinic",
+        "platform",
+        "v09"
+      ],
+      "panels": [
+        {
+          "id": 1,
+          "title": "主人总数",
+          "type": "stat",
+          "gridPos": {
+            "x": 0,
+            "y": 0,
+            "w": 6,
+            "h": 5
+          },
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "targets": [
+            {
+              "refId": "A",
+              "expr": "max(petclinic_business_records{namespace=\"petclinic\",entity=\"owners\"})",
+              "instant": false
+            }
+          ],
+          "fieldConfig": {
+            "defaults": {
+              "unit": "short"
+            },
+            "overrides": []
+          },
+          "options": {
+            "reduceOptions": {
+              "calcs": [
+                "lastNotNull"
+              ],
+              "fields": "",
+              "values": false
+            },
+            "textMode": "auto",
+            "colorMode": "background"
+          }
+        },
+        {
+          "id": 2,
+          "title": "宠物总数",
+          "type": "stat",
+          "gridPos": {
+            "x": 6,
+            "y": 0,
+            "w": 6,
+            "h": 5
+          },
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "targets": [
+            {
+              "refId": "A",
+              "expr": "max(petclinic_business_records{namespace=\"petclinic\",entity=\"pets\"})",
+              "instant": false
+            }
+          ],
+          "fieldConfig": {
+            "defaults": {
+              "unit": "short"
+            },
+            "overrides": []
+          },
+          "options": {
+            "reduceOptions": {
+              "calcs": [
+                "lastNotNull"
+              ],
+              "fields": "",
+              "values": false
+            },
+            "textMode": "auto",
+            "colorMode": "background"
+          }
+        },
+        {
+          "id": 3,
+          "title": "兽医总数",
+          "type": "stat",
+          "gridPos": {
+            "x": 12,
+            "y": 0,
+            "w": 6,
+            "h": 5
+          },
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "targets": [
+            {
+              "refId": "A",
+              "expr": "max(petclinic_business_records{namespace=\"petclinic\",entity=\"vets\"})",
+              "instant": false
+            }
+          ],
+          "fieldConfig": {
+            "defaults": {
+              "unit": "short"
+            },
+            "overrides": []
+          },
+          "options": {
+            "reduceOptions": {
+              "calcs": [
+                "lastNotNull"
+              ],
+              "fields": "",
+              "values": false
+            },
+            "textMode": "auto",
+            "colorMode": "background"
+          }
+        },
+        {
+          "id": 4,
+          "title": "就诊总数",
+          "type": "stat",
+          "gridPos": {
+            "x": 18,
+            "y": 0,
+            "w": 6,
+            "h": 5
+          },
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "targets": [
+            {
+              "refId": "A",
+              "expr": "max(petclinic_business_records{namespace=\"petclinic\",entity=\"visits\"})",
+              "instant": false
+            }
+          ],
+          "fieldConfig": {
+            "defaults": {
+              "unit": "short"
+            },
+            "overrides": []
+          },
+          "options": {
+            "reduceOptions": {
+              "calcs": [
+                "lastNotNull"
+              ],
+              "fields": "",
+              "values": false
+            },
+            "textMode": "auto",
+            "colorMode": "background"
+          }
+        },
+        {
+          "id": 5,
+          "title": "请求吞吐",
+          "type": "timeseries",
+          "gridPos": {
+            "x": 0,
+            "y": 5,
+            "w": 12,
+            "h": 7
+          },
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "targets": [
+            {
+              "refId": "A",
+              "expr": "sum(rate(http_server_requests_seconds_count{namespace=\"petclinic\",uri!~\"/actuator.*\"}[5m]))",
+              "instant": false
+            }
+          ],
+          "fieldConfig": {
+            "defaults": {
+              "unit": "reqps"
+            },
+            "overrides": []
+          },
+          "options": {}
+        },
+        {
+          "id": 6,
+          "title": "P95 请求延迟",
+          "type": "timeseries",
+          "gridPos": {
+            "x": 12,
+            "y": 5,
+            "w": 12,
+            "h": 7
+          },
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "targets": [
+            {
+              "refId": "A",
+              "expr": "histogram_quantile(0.95,sum by(le)(rate(http_server_requests_seconds_bucket{namespace=\"petclinic\",uri!~\"/actuator.*\"}[5m])))",
+              "instant": false
+            }
+          ],
+          "fieldConfig": {
+            "defaults": {
+              "unit": "s"
+            },
+            "overrides": []
+          },
+          "options": {}
+        },
+        {
+          "id": 7,
+          "title": "平台部署就绪副本",
+          "type": "table",
+          "gridPos": {
+            "x": 0,
+            "y": 12,
+            "w": 12,
+            "h": 10
+          },
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "targets": [
+            {
+              "refId": "A",
+              "expr": "max by(software,namespace)(petclinic_platform_workload{state=\"ready\"})",
+              "instant": true
+            }
+          ],
+          "fieldConfig": {
+            "defaults": {
+              "unit": "short"
+            },
+            "overrides": []
+          },
+          "options": {}
+        },
+        {
+          "id": 8,
+          "title": "平台期望副本",
+          "type": "table",
+          "gridPos": {
+            "x": 12,
+            "y": 12,
+            "w": 12,
+            "h": 10
+          },
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "targets": [
+            {
+              "refId": "A",
+              "expr": "max by(software,namespace)(petclinic_platform_workload{state=\"desired\"})",
+              "instant": true
+            }
+          ],
+          "fieldConfig": {
+            "defaults": {
+              "unit": "short"
+            },
+            "overrides": []
+          },
+          "options": {}
+        },
+        {
+          "id": 9,
+          "title": "采集快照年龄",
+          "type": "stat",
+          "gridPos": {
+            "x": 0,
+            "y": 22,
+            "w": 6,
+            "h": 5
+          },
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "targets": [
+            {
+              "refId": "A",
+              "expr": "max(petclinic_platform_snapshot_age_seconds{namespace=\"petclinic\"})",
+              "instant": false
+            }
+          ],
+          "fieldConfig": {
+            "defaults": {
+              "unit": "s"
+            },
+            "overrides": []
+          },
+          "options": {
+            "reduceOptions": {
+              "calcs": [
+                "lastNotNull"
+              ],
+              "fields": "",
+              "values": false
+            },
+            "textMode": "auto",
+            "colorMode": "background"
+          }
+        },
+        {
+          "id": 10,
+          "title": "Petclinic 就绪副本",
+          "type": "stat",
+          "gridPos": {
+            "x": 6,
+            "y": 22,
+            "w": 6,
+            "h": 5
+          },
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "targets": [
+            {
+              "refId": "A",
+              "expr": "sum(up{namespace=\"petclinic\",job=\"petclinic\"})",
+              "instant": false
+            }
+          ],
+          "fieldConfig": {
+            "defaults": {
+              "unit": "short"
+            },
+            "overrides": []
+          },
+          "options": {
+            "reduceOptions": {
+              "calcs": [
+                "lastNotNull"
+              ],
+              "fields": "",
+              "values": false
+            },
+            "textMode": "auto",
+            "colorMode": "background"
+          }
+        },
+        {
+          "id": 11,
+          "title": "独立工具任务状态（聚合）",
+          "type": "table",
+          "gridPos": {
+            "x": 12,
+            "y": 22,
+            "w": 12,
+            "h": 6
+          },
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "targets": [
+            {
+              "refId": "A",
+              "expr": "max by(tool,status)(petclinic_osint_jobs{namespace=\"petclinic\"})",
+              "instant": true
+            }
+          ],
+          "fieldConfig": {
+            "defaults": {
+              "unit": "short"
+            },
+            "overrides": []
+          },
+          "options": {}
+        },
+        {
+          "id": 12,
+          "title": "业务与请求结构化日志",
+          "type": "logs",
+          "gridPos": {
+            "x": 0,
+            "y": 28,
+            "w": 24,
+            "h": 12
+          },
+          "datasource": {
+            "type": "loki",
+            "uid": "loki"
+          },
+          "targets": [
+            {
+              "refId": "A",
+              "expr": "{app=\"petclinic\",namespace=\"petclinic\"} | json",
+              "instant": false
+            }
+          ],
+          "fieldConfig": {
+            "defaults": {
+              "unit": "short"
+            },
+            "overrides": []
+          },
+          "options": {}
+        }
+      ],
+      "links": [
+        {
+          "title": "Kibana 请求与业务日志",
+          "url": "http://kibana.devops.local/app/discover",
+          "targetBlank": true
+        },
+        {
+          "title": "Jaeger 请求追踪",
+          "url": "http://jaeger.devops.local/search?service=petclinic",
+          "targetBlank": true
+        }
+      ]
+    }

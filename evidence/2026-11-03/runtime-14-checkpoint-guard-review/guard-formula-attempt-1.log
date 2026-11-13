@@ -1,0 +1,44 @@
+✔ guard parses from actual frozen source, capacity derived not artifact size (3.290833ms)
+✔ minimum integral available byte passes unchanged guard (7.827541ms)
+✔ one byte below required ceil fails closed (1.16425ms)
+✖ rounded 49.78 GiB is display text, not an authoritative replacement constant (2.26225ms)
+✔ nodefs and imagefs must each pass; they are not summed (1.898875ms)
+✔ imagefs uses its own reported capacity (0.972042ms)
+✔ stale sample fails before scanner inspection (0.686417ms)
+✔ future sample outside tolerance fails (0.645417ms)
+✔ under guard emits no upstream or download command (0.424333ms)
+✔ 12 GiB is exact base8 plus updater4, independent of current SQL size (0.697834ms)
+ℹ tests 10
+ℹ suites 0
+ℹ pass 9
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 149.070834
+
+✖ failing tests:
+
+test at evidence/2026-11-03/runtime-14-checkpoint-guard-review/guard-formula.test.mjs:10:1
+✖ rounded 49.78 GiB is display text, not an authoritative replacement constant (2.26225ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  + actual - expected
+  
+  + 2576980377.5999985
+  - 2576980377.6
+               ^
+  
+      at TestContext.<anonymous> (file:///Users/zhangsir/code/petclinic-platform-20261011/evidence/2026-11-03/runtime-14-checkpoint-guard-review/guard-formula.test.mjs:10:147)
+      at Test.runInAsyncScope (node:async_hooks:226:14)
+      at Test.run (node:internal/test_runner/test:1201:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:831:18)
+      at Test.postRun (node:internal/test_runner/test:1330:19)
+      at Test.run (node:internal/test_runner/test:1258:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:831:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 2576980377.5999985,
+    expected: 2576980377.6,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }

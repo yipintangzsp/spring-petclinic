@@ -1,0 +1,44 @@
+{
+  "readOnly": true,
+  "mountedOrUnlockedByReview": false,
+  "queries": [
+    {
+      "command": [
+        "tmutil",
+        "listlocalsnapshots",
+        "/"
+      ],
+      "exit": 0,
+      "stdout": "Snapshots for disk /:\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "tmutil",
+        "listbackups"
+      ],
+      "exit": 1,
+      "stdout": "Command exited with status 1.\n",
+      "stderr": "No machine directory found for host.\n"
+    },
+    {
+      "command": [
+        "diskutil",
+        "apfs",
+        "listSnapshots",
+        "/"
+      ],
+      "exit": 0,
+      "stdout": "Snapshot for disk3s1s1 (1 found)\n|\n+-- BBEA0D51-A9D6-4EB2-B1CD-3EC884556B18\n    Name:        com.apple.os.update-182F06D70C9D02A9A9077E3BC880E61BFCEE97BDF8F6804B657B29E28EBBCDF0\n    XID:         17387873\n    Purgeable:   No\n    NOTE:        This snapshot limits the minimum size of APFS Container disk3\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "mount"
+      ],
+      "exit": 0,
+      "stdout": "/dev/disk3s1s1 on / (apfs, sealed, local, read-only, journaled)\ndevfs on /dev (devfs, local, nobrowse)\n/dev/disk3s6 on /System/Volumes/VM (apfs, local, noexec, journaled, noatime, nobrowse)\n/dev/disk3s2 on /System/Volumes/Preboot (apfs, local, journaled, nobrowse)\n/dev/disk3s4 on /System/Volumes/Update (apfs, local, journaled, nobrowse)\n/dev/disk1s2 on /System/Volumes/xarts (apfs, local, noexec, journaled, noatime, nobrowse)\n/dev/disk1s1 on /System/Volumes/iSCPreboot (apfs, local, journaled, nobrowse)\n/dev/disk1s3 on /System/Volumes/Hardware (apfs, local, journaled, nobrowse)\n/dev/disk3s5 on /System/Volumes/Data (apfs, local, journaled, nobrowse, protect, root data)\nmap auto_home on /System/Volumes/Data/home (autofs, automounted, nobrowse)\n/dev/disk3s3 on /Volumes/Recovery (apfs, local, journaled, nobrowse)\n",
+      "stderr": ""
+    }
+  ]
+}

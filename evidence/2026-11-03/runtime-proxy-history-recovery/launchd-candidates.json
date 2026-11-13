@@ -1,0 +1,53 @@
+{
+  "agents": [
+    {
+      "path": "/Users/zhangsir/Library/LaunchAgents/com.zhangsir.v2rayn-grok-refresh.plist",
+      "sha256": "a5048ce5f86a3e1525a32ed1a9e6b543510026c7c8d0ee89027cc636f57f4aee",
+      "label": "com.zhangsir.v2rayn-grok-refresh",
+      "program": "",
+      "programArguments": [
+        "/Users/zhangsir/code/v2rayn-node-automation/gmail_refresh.sh"
+      ],
+      "startInterval": 1800,
+      "startCalendarInterval": null,
+      "runAtLoad": true,
+      "keepAlive": null
+    },
+    {
+      "path": "/Users/zhangsir/Library/LaunchAgents/com.litellm.proxy.plist",
+      "sha256": "9667ae37d0de62672aeead26ca809a02750b1d021a949ba276f000792cb2b1ab",
+      "label": "com.litellm.proxy",
+      "program": "",
+      "programArguments": [
+        "/Library/Frameworks/Python.framework/Versions/3.13/bin/litellm",
+        "--model",
+        "VALUE_SHA256:98265472ce3a43b739571909284de7d52ce3b2c7efc2dddf1d9ace460664b49c",
+        "--port",
+        "VALUE_SHA256:b090147020e033534635010c4f7eb6fc270d44e5df67ea9e744a8087df9ca106"
+      ],
+      "startInterval": null,
+      "startCalendarInterval": null,
+      "runAtLoad": true,
+      "keepAlive": true
+    },
+    {
+      "path": "/Users/zhangsir/Library/LaunchAgents/com.zhangsir.v2rayn-grok-http.plist",
+      "sha256": "40638cbcb5bb91644354778b7e7ff7466e4ac4dd113d1aebd79f8ce42e9958e4",
+      "label": "com.zhangsir.v2rayn-grok-http",
+      "program": "",
+      "programArguments": [
+        "/usr/local/bin/python3",
+        "-m",
+        "VALUE_SHA256:32fdd251f36202408f8f3127a42de48efd9716c6463679de13c59078cfe30fd3",
+        "VALUE_SHA256:5ac94c081182ef29b8390bd538b6249914a45176e88bb2312255d7f7cca5eef4",
+        "--bind",
+        "VALUE_SHA256:12ca17b49af2289436f303e0166030a21e525d266e209267433801a8fd4071a0"
+      ],
+      "startInterval": null,
+      "startCalendarInterval": null,
+      "runAtLoad": true,
+      "keepAlive": true
+    }
+  ],
+  "actions": "READ_ONLY_NO_LOAD_BOOTSTRAP_KICKSTART"
+}

@@ -1,0 +1,553 @@
+{
+  "schema": 1,
+  "sourceId": "sops",
+  "execution": {
+    "errorClass": null,
+    "signal": null,
+    "command": "/fixture/node/bin/node infra/security/secrets-gate.mjs",
+    "exitStatus": 0
+  },
+  "reports": [],
+  "evidence": [
+    {
+      "sampleWindows": [],
+      "observerPackets": 1,
+      "kind": "ACTUAL_PROCESS_EXECUTION",
+      "sourcePayloadClass": "PASSIVE_IN_MEMORY_ORIGINAL_GATE_OBSERVATIONS",
+      "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdoutSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "events": [
+        {
+          "completedAtMs": 1793636489744,
+          "kind": "command",
+          "bin": "kubectl",
+          "errorClass": null,
+          "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "argv": [
+            "--request-timeout=20s",
+            "-n",
+            "data-infra",
+            "get",
+            "lease",
+            "platform-heavy",
+            "-o",
+            "json"
+          ],
+          "stdoutSha256": "68718d44eb7a33cbc4a153dfbfe5d234ae0056bbe7ab39932d573afeafe13965",
+          "startedAtMs": 1793636489601,
+          "exitStatus": 0
+        },
+        {
+          "completedAtMs": 1793636489823,
+          "kind": "command",
+          "bin": "/var/jenkins_home/platform-security/20261027/sops",
+          "errorClass": null,
+          "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "argv": [
+            "decrypt",
+            "infra/security/secrets/petclinic-db.enc.json"
+          ],
+          "stdoutSha256": "d3f1a0cbcce13695c7818cbc7cd2743d1088684c893f7d3cd8317ae2be5d3144",
+          "startedAtMs": 1793636489802,
+          "exitStatus": 0
+        },
+        {
+          "completedAtMs": 1793636489978,
+          "kind": "command",
+          "bin": "kubectl",
+          "errorClass": null,
+          "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "argv": [
+            "--request-timeout=20s",
+            "--as=system:serviceaccount:devsecops-system:platform-secret-reconciler",
+            "-n",
+            "petclinic",
+            "get",
+            "secret",
+            "petclinic-db",
+            "-o",
+            "json"
+          ],
+          "stdoutSha256": "c2b0963cdce21c0decb13662acf055e49f91fbffd9565e636ed90b5bcdf2eb63",
+          "startedAtMs": 1793636489824,
+          "exitStatus": 0
+        },
+        {
+          "completedAtMs": 1793636490141,
+          "kind": "command",
+          "bin": "kubectl",
+          "errorClass": null,
+          "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "argv": [
+            "--request-timeout=20s",
+            "--as=system:serviceaccount:devsecops-system:platform-secret-reconciler",
+            "-n",
+            "petclinic",
+            "get",
+            "secret",
+            "petclinic-db",
+            "-o",
+            "json"
+          ],
+          "stdoutSha256": "c2b0963cdce21c0decb13662acf055e49f91fbffd9565e636ed90b5bcdf2eb63",
+          "startedAtMs": 1793636489979,
+          "exitStatus": 0
+        },
+        {
+          "completedAtMs": 1793636490152,
+          "kind": "command",
+          "bin": "/var/jenkins_home/platform-security/20261027/sops",
+          "errorClass": null,
+          "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "argv": [
+            "decrypt",
+            "infra/security/secrets/rabbitmq-client.enc.json"
+          ],
+          "stdoutSha256": "d0881627975276da41eeb81b96b38d48387d2bd3a47f64a7ea9901d22319437e",
+          "startedAtMs": 1793636490141,
+          "exitStatus": 0
+        },
+        {
+          "completedAtMs": 1793636490344,
+          "kind": "command",
+          "bin": "kubectl",
+          "errorClass": null,
+          "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "argv": [
+            "--request-timeout=20s",
+            "--as=system:serviceaccount:devsecops-system:platform-secret-reconciler",
+            "-n",
+            "petclinic",
+            "get",
+            "secret",
+            "rabbitmq-client",
+            "-o",
+            "json"
+          ],
+          "stdoutSha256": "6f9c47477834ba6c156b00da8ebdbb4e2abb8712851adb75c3610f449d86b08d",
+          "startedAtMs": 1793636490152,
+          "exitStatus": 0
+        },
+        {
+          "completedAtMs": 1793636490506,
+          "kind": "command",
+          "bin": "kubectl",
+          "errorClass": null,
+          "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "argv": [
+            "--request-timeout=20s",
+            "--as=system:serviceaccount:devsecops-system:platform-secret-reconciler",
+            "-n",
+            "petclinic",
+            "get",
+            "secret",
+            "rabbitmq-client",
+            "-o",
+            "json"
+          ],
+          "stdoutSha256": "6f9c47477834ba6c156b00da8ebdbb4e2abb8712851adb75c3610f449d86b08d",
+          "startedAtMs": 1793636490344,
+          "exitStatus": 0
+        },
+        {
+          "completedAtMs": 1793636490519,
+          "kind": "command",
+          "bin": "/var/jenkins_home/platform-security/20261027/sops",
+          "errorClass": null,
+          "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "argv": [
+            "decrypt",
+            "infra/security/secrets/petclinic-harbor-pull.enc.json"
+          ],
+          "stdoutSha256": "e9519cf8075cdbcb37e4ae226b18b495c63169fa44026b407c06c90f4e9625f9",
+          "startedAtMs": 1793636490506,
+          "exitStatus": 0
+        },
+        {
+          "completedAtMs": 1793636490676,
+          "kind": "command",
+          "bin": "kubectl",
+          "errorClass": null,
+          "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "argv": [
+            "--request-timeout=20s",
+            "--as=system:serviceaccount:devsecops-system:platform-secret-reconciler",
+            "-n",
+            "petclinic",
+            "get",
+            "secret",
+            "petclinic-harbor-pull",
+            "-o",
+            "json"
+          ],
+          "stdoutSha256": "a97aa1efa5a5b33c90eab2ca9bcd006d4d6d7e49ccddb692118279b61539dae7",
+          "startedAtMs": 1793636490519,
+          "exitStatus": 0
+        },
+        {
+          "completedAtMs": 1793636490839,
+          "kind": "command",
+          "bin": "kubectl",
+          "errorClass": null,
+          "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "argv": [
+            "--request-timeout=20s",
+            "--as=system:serviceaccount:devsecops-system:platform-secret-reconciler",
+            "-n",
+            "petclinic",
+            "get",
+            "secret",
+            "petclinic-harbor-pull",
+            "-o",
+            "json"
+          ],
+          "stdoutSha256": "a97aa1efa5a5b33c90eab2ca9bcd006d4d6d7e49ccddb692118279b61539dae7",
+          "startedAtMs": 1793636490676,
+          "exitStatus": 0
+        },
+        {
+          "completedAtMs": 1793636490851,
+          "kind": "command",
+          "bin": "/var/jenkins_home/platform-security/20261027/sops",
+          "errorClass": null,
+          "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "argv": [
+            "decrypt",
+            "infra/security/secrets/kyverno-registry-pull.enc.json"
+          ],
+          "stdoutSha256": "d48252be114d4b6fa7b2db5de1a0079b975f49e08fb5e02f1d62a182a4395037",
+          "startedAtMs": 1793636490839,
+          "exitStatus": 0
+        },
+        {
+          "completedAtMs": 1793636491024,
+          "kind": "command",
+          "bin": "kubectl",
+          "errorClass": null,
+          "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "argv": [
+            "--request-timeout=20s",
+            "--as=system:serviceaccount:devsecops-system:platform-secret-reconciler",
+            "-n",
+            "devsecops-system",
+            "get",
+            "secret",
+            "kyverno-registry-pull",
+            "-o",
+            "json"
+          ],
+          "stdoutSha256": "f2736f082070e231eecb4d6d9de572a8b220eb377db61ba72a838e030a5d4df2",
+          "startedAtMs": 1793636490851,
+          "exitStatus": 0
+        },
+        {
+          "completedAtMs": 1793636491238,
+          "kind": "command",
+          "bin": "kubectl",
+          "errorClass": null,
+          "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "argv": [
+            "--request-timeout=20s",
+            "--as=system:serviceaccount:devsecops-system:platform-secret-reconciler",
+            "-n",
+            "devsecops-system",
+            "get",
+            "secret",
+            "kyverno-registry-pull",
+            "-o",
+            "json"
+          ],
+          "stdoutSha256": "f2736f082070e231eecb4d6d9de572a8b220eb377db61ba72a838e030a5d4df2",
+          "startedAtMs": 1793636491025,
+          "exitStatus": 0
+        },
+        {
+          "completedAtMs": 1793636491389,
+          "kind": "command",
+          "bin": "kubectl",
+          "errorClass": null,
+          "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "argv": [
+            "--request-timeout=20s",
+            "auth",
+            "can-i",
+            "get",
+            "secret/kyverno-registry-pull",
+            "-n",
+            "devsecops-system",
+            "--as=system:serviceaccount:devsecops-system:platform-secret-reconciler"
+          ],
+          "stdoutSha256": "5040625b1fb6fa4af07226683f6e6003b29e5e70b16f8cfb24be7a752393f0ee",
+          "startedAtMs": 1793636491238,
+          "exitStatus": 0
+        },
+        {
+          "completedAtMs": 1793636491533,
+          "kind": "command",
+          "bin": "kubectl",
+          "errorClass": null,
+          "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "argv": [
+            "--request-timeout=20s",
+            "auth",
+            "can-i",
+            "get",
+            "secret/unrelated-secret",
+            "-n",
+            "devsecops-system",
+            "--as=system:serviceaccount:devsecops-system:platform-secret-reconciler"
+          ],
+          "stdoutSha256": "564739ea8fa5926d4fa5c9734fed462061960a22e6b8d5c06e94969d97891bf2",
+          "startedAtMs": 1793636491389,
+          "exitStatus": 1
+        },
+        {
+          "completedAtMs": 1793636491685,
+          "kind": "command",
+          "bin": "kubectl",
+          "errorClass": null,
+          "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "argv": [
+            "--request-timeout=20s",
+            "auth",
+            "can-i",
+            "list",
+            "secrets",
+            "-n",
+            "devsecops-system",
+            "--as=system:serviceaccount:devsecops-system:platform-secret-reconciler"
+          ],
+          "stdoutSha256": "564739ea8fa5926d4fa5c9734fed462061960a22e6b8d5c06e94969d97891bf2",
+          "startedAtMs": 1793636491533,
+          "exitStatus": 1
+        },
+        {
+          "completedAtMs": 1793636491830,
+          "kind": "command",
+          "bin": "kubectl",
+          "errorClass": null,
+          "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "argv": [
+            "--request-timeout=20s",
+            "auth",
+            "can-i",
+            "create",
+            "secrets",
+            "-n",
+            "devsecops-system",
+            "--as=system:serviceaccount:devsecops-system:platform-secret-reconciler"
+          ],
+          "stdoutSha256": "564739ea8fa5926d4fa5c9734fed462061960a22e6b8d5c06e94969d97891bf2",
+          "startedAtMs": 1793636491685,
+          "exitStatus": 1
+        },
+        {
+          "completedAtMs": 1793636491982,
+          "kind": "command",
+          "bin": "kubectl",
+          "errorClass": null,
+          "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "argv": [
+            "--request-timeout=20s",
+            "auth",
+            "can-i",
+            "get",
+            "secret/petclinic-db",
+            "-n",
+            "petclinic",
+            "--as=system:serviceaccount:devsecops-system:platform-secret-reconciler"
+          ],
+          "stdoutSha256": "5040625b1fb6fa4af07226683f6e6003b29e5e70b16f8cfb24be7a752393f0ee",
+          "startedAtMs": 1793636491831,
+          "exitStatus": 0
+        },
+        {
+          "completedAtMs": 1793636492132,
+          "kind": "command",
+          "bin": "kubectl",
+          "errorClass": null,
+          "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "argv": [
+            "--request-timeout=20s",
+            "auth",
+            "can-i",
+            "get",
+            "secret/unrelated-secret",
+            "-n",
+            "petclinic",
+            "--as=system:serviceaccount:devsecops-system:platform-secret-reconciler"
+          ],
+          "stdoutSha256": "564739ea8fa5926d4fa5c9734fed462061960a22e6b8d5c06e94969d97891bf2",
+          "startedAtMs": 1793636491982,
+          "exitStatus": 1
+        },
+        {
+          "completedAtMs": 1793636492280,
+          "kind": "command",
+          "bin": "kubectl",
+          "errorClass": null,
+          "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "argv": [
+            "--request-timeout=20s",
+            "auth",
+            "can-i",
+            "create",
+            "secrets",
+            "-n",
+            "petclinic",
+            "--as=system:serviceaccount:devsecops-system:platform-secret-reconciler"
+          ],
+          "stdoutSha256": "564739ea8fa5926d4fa5c9734fed462061960a22e6b8d5c06e94969d97891bf2",
+          "startedAtMs": 1793636492133,
+          "exitStatus": 1
+        },
+        {
+          "completedAtMs": 1793636492423,
+          "kind": "command",
+          "bin": "kubectl",
+          "errorClass": null,
+          "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "argv": [
+            "--request-timeout=20s",
+            "auth",
+            "can-i",
+            "list",
+            "secrets",
+            "-n",
+            "petclinic",
+            "--as=system:serviceaccount:devsecops-system:platform-secret-reconciler"
+          ],
+          "stdoutSha256": "564739ea8fa5926d4fa5c9734fed462061960a22e6b8d5c06e94969d97891bf2",
+          "startedAtMs": 1793636492280,
+          "exitStatus": 1
+        },
+        {
+          "completedAtMs": 1793636492568,
+          "kind": "command",
+          "bin": "kubectl",
+          "errorClass": null,
+          "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "argv": [
+            "--request-timeout=20s",
+            "auth",
+            "can-i",
+            "get",
+            "secret/rabbitmq-auth",
+            "-n",
+            "data-infra",
+            "--as=system:serviceaccount:devsecops-system:platform-secret-reconciler"
+          ],
+          "stdoutSha256": "564739ea8fa5926d4fa5c9734fed462061960a22e6b8d5c06e94969d97891bf2",
+          "startedAtMs": 1793636492423,
+          "exitStatus": 1
+        },
+        {
+          "completedAtMs": 1793636492703,
+          "kind": "command",
+          "bin": "kubectl",
+          "errorClass": null,
+          "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "argv": [
+            "--request-timeout=20s",
+            "auth",
+            "can-i",
+            "get",
+            "secret/kyverno-registry-pull",
+            "-n",
+            "devsecops-system",
+            "--as=system:serviceaccount:devsecops-system:kyverno-admission-controller"
+          ],
+          "stdoutSha256": "5040625b1fb6fa4af07226683f6e6003b29e5e70b16f8cfb24be7a752393f0ee",
+          "startedAtMs": 1793636492568,
+          "exitStatus": 0
+        },
+        {
+          "completedAtMs": 1793636492837,
+          "kind": "command",
+          "bin": "kubectl",
+          "errorClass": null,
+          "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "argv": [
+            "--request-timeout=20s",
+            "auth",
+            "can-i",
+            "get",
+            "secret/petclinic-harbor-pull",
+            "-n",
+            "petclinic",
+            "--as=system:serviceaccount:devsecops-system:kyverno-admission-controller"
+          ],
+          "stdoutSha256": "564739ea8fa5926d4fa5c9734fed462061960a22e6b8d5c06e94969d97891bf2",
+          "startedAtMs": 1793636492703,
+          "exitStatus": 1
+        },
+        {
+          "completedAtMs": 1793636492971,
+          "kind": "command",
+          "bin": "kubectl",
+          "errorClass": null,
+          "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "argv": [
+            "--request-timeout=20s",
+            "auth",
+            "can-i",
+            "get",
+            "secret/petclinic-db",
+            "-n",
+            "petclinic",
+            "--as=system:serviceaccount:devsecops-system:kyverno-admission-controller"
+          ],
+          "stdoutSha256": "564739ea8fa5926d4fa5c9734fed462061960a22e6b8d5c06e94969d97891bf2",
+          "startedAtMs": 1793636492837,
+          "exitStatus": 1
+        },
+        {
+          "completedAtMs": 1793636493103,
+          "kind": "command",
+          "bin": "kubectl",
+          "errorClass": null,
+          "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "argv": [
+            "--request-timeout=20s",
+            "auth",
+            "can-i",
+            "list",
+            "secrets",
+            "-n",
+            "petclinic",
+            "--as=system:serviceaccount:devsecops-system:kyverno-admission-controller"
+          ],
+          "stdoutSha256": "564739ea8fa5926d4fa5c9734fed462061960a22e6b8d5c06e94969d97891bf2",
+          "startedAtMs": 1793636492971,
+          "exitStatus": 1
+        }
+      ]
+    },
+    {
+      "productionAgeKeyAccess": 0,
+      "productionSecretAccess": 0,
+      "scenario": "POSITIVE",
+      "nodeExecutableSha256": "d09e299258c24f7cdf6f5d5ec185e3a56512b27a697113735dac909f1cac7b8d",
+      "executionScope": "CONTROLLED_ISOLATED_RUNTIME",
+      "classification": "CONTROLLED_ISOLATED_RUNTIME",
+      "canonicalCurrentResult": true
+    }
+  ],
+  "rawPayloadPersisted": false,
+  "kind": "RuntimeSourceFacts",
+  "evidenceComplete": true,
+  "resultDigest": "419d4e908db6a574c99b7438f4be348e412d61a2ad112a6fd3488c015cfb0014",
+  "evaluationCount": 1,
+  "buildBinding": {
+    "candidate": "core.harbor.domain/petclinic/petclinic@sha256:489cb821573ff1f98edd846d5949d74bf3391b24e2f1fe5bcfb71c6be0793137",
+    "build": 12,
+    "project": "petclinic",
+    "source": "741ea2866ea142b24c7838e1ef25c8327c79d279",
+    "runId": "security-runtime-facts-20261102#12",
+    "job": "security-runtime-facts-20261102",
+    "targetScope": "runtime"
+  },
+  "envelopeDigest": "5404b33f8d0f0ec2cd5c4bf2f5fc892b828d8130f99d8b6b0c45982112c6073b",
+  "rawFactDigest": "850098bc81a6e897e56ba95539ac0f4158d21a6a5669c134717f54e281bc0d16",
+  "presence": "executed"
+}

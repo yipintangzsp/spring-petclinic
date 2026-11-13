@@ -1,0 +1,96 @@
+{
+  "validationRunId": "rf3-20261103-9730f2",
+  "namespace": "rf3-20261103-9730f2-cosign",
+  "identity": "system:serviceaccount:rf3-20261103-9730f2-cosign:signature-executor",
+  "policy": "devsecops-signed-images",
+  "policyScope": "NAMESPACED_VALIDATION_ONLY",
+  "publicKeySha256": "c92bf03766ebfe16e52d27e50fe04334bc6126ba174f76ea07c1ecfc06a6fdec",
+  "registrySecretName": "rf3-20261103-9730f2-registry",
+  "productionKeyAccess": 0,
+  "objects": [
+    {
+      "kind": "Namespace",
+      "name": "rf3-20261103-9730f2-cosign",
+      "namespace": null,
+      "uid": "77fe7606-c958-47c6-81cb-1a72e9a9813e",
+      "apiVersion": "v1"
+    },
+    {
+      "kind": "ServiceAccount",
+      "name": "signature-executor",
+      "namespace": "rf3-20261103-9730f2-cosign",
+      "uid": "e3b1e321-cd6c-4ff0-8974-884eed332bfe",
+      "apiVersion": "v1"
+    },
+    {
+      "kind": "Role",
+      "name": "rf3-20261103-9730f2-dryrun",
+      "namespace": "rf3-20261103-9730f2-cosign",
+      "uid": "edbc4b3f-1ba3-49db-8aa4-e54efffc9bd6",
+      "apiVersion": "rbac.authorization.k8s.io/v1"
+    },
+    {
+      "kind": "RoleBinding",
+      "name": "rf3-20261103-9730f2-dryrun",
+      "namespace": "rf3-20261103-9730f2-cosign",
+      "uid": "84c6556f-5414-4f60-a545-b9a7ab2a616d",
+      "apiVersion": "rbac.authorization.k8s.io/v1"
+    },
+    {
+      "kind": "Role",
+      "name": "rf3-20261103-9730f2-lease-read",
+      "namespace": "data-infra",
+      "uid": "e3fca001-c36f-4852-a01f-1def6191186f",
+      "apiVersion": "rbac.authorization.k8s.io/v1"
+    },
+    {
+      "kind": "RoleBinding",
+      "name": "rf3-20261103-9730f2-lease-read",
+      "namespace": "data-infra",
+      "uid": "0064d121-ecc9-42a5-88d7-9b08dac25570",
+      "apiVersion": "rbac.authorization.k8s.io/v1"
+    },
+    {
+      "kind": "Secret",
+      "name": "rf3-20261103-9730f2-registry",
+      "namespace": "devsecops-system",
+      "uid": "300e19d8-4104-4404-b6ee-513817af39ad",
+      "apiVersion": "v1"
+    },
+    {
+      "kind": "Role",
+      "name": "rf3-20261103-9730f2-test-registry-read",
+      "namespace": "devsecops-system",
+      "uid": "2f1fbfc7-bc6b-484e-b750-7f502219fe86",
+      "apiVersion": "rbac.authorization.k8s.io/v1"
+    },
+    {
+      "kind": "RoleBinding",
+      "name": "rf3-20261103-9730f2-test-registry-read",
+      "namespace": "devsecops-system",
+      "uid": "088dcd52-9a48-43e7-ac54-08ed904dc50a",
+      "apiVersion": "rbac.authorization.k8s.io/v1"
+    },
+    {
+      "kind": "Policy",
+      "name": "devsecops-signed-images",
+      "namespace": "rf3-20261103-9730f2-cosign",
+      "uid": "af4a0b45-1f9b-45b5-a786-f92b2c5b3752",
+      "apiVersion": "kyverno.io/v1"
+    },
+    {
+      "kind": "MutatingWebhookConfiguration",
+      "name": "rf3-20261103-9730f2-mutate",
+      "namespace": null,
+      "uid": "76f6811d-9729-4a24-9989-b15324115dca",
+      "apiVersion": "admissionregistration.k8s.io/v1"
+    },
+    {
+      "kind": "ValidatingWebhookConfiguration",
+      "name": "rf3-20261103-9730f2-validate",
+      "namespace": null,
+      "uid": "2d47ad64-5cc4-44dc-a40b-abc275e95d37",
+      "apiVersion": "admissionregistration.k8s.io/v1"
+    }
+  ]
+}

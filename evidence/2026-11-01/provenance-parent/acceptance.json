@@ -1,0 +1,122 @@
+{
+  "source": "provenance",
+  "finalStatus": "VERIFIED",
+  "scope": "Frozen production security-validation/v1 source compatibility with Policy Engine baseline-v1 / standard only; complete plugin JS and unchanged Shared Library local Groovy replay, not new production provenance generation or SLSA certification",
+  "productionImplementationLocations": [
+    "vars/securityProvenance.groovy",
+    "vars/securityManager.groovy",
+    "Jenkinsfile.security-audit",
+    "infra/security/provenance/plugin.mjs",
+    "infra/security/provenance/contract.mjs",
+    "infra/security/scanner-runtime.mjs"
+  ],
+  "artifactFormat": {
+    "predicateType": "https://devops.local/attestation/security-validation/v1",
+    "predicate": "provenance.json metadata",
+    "envelope": "DSSE payloadType/base64 payload/signatures; in-toto statement from existing Cosign",
+    "reports": [
+      "attestation-create.json",
+      "attestation-envelope.json",
+      "attestation-verification.json",
+      "provenance-status.json"
+    ]
+  },
+  "subjectDigestBinding": "Exactly one subject; sha256 strictly equals candidate @sha256 suffix via existing validate(); candidateImage strictly equals expected full ref",
+  "sourceIdentityBinding": "repository and commit strict equality; expected commit from .git-sha must equal PROVENANCE_COMMIT and match 40 lowercase hex",
+  "builderIdentityBinding": "JENKINS_URL+job/+JOB_NAME, pipelineIdentity JOB_NAME, numeric current BUILD_NUMBER; timestamp parseable and existing buildType equality",
+  "adapterImplemented": true,
+  "historicalArtifacts": 3,
+  "historicalEnvelopeLocallyReverified": 1,
+  "wholeStageRealHistoricalDifferentials": 0,
+  "historicalNaturalParentFailure": "DEFERRED_REAL_NEGATIVE_EVIDENCE",
+  "controlledReplayInputs": 181,
+  "controlledReplayScriptInputs": 130,
+  "controlledReplayWorkflowInputs": 51,
+  "syntheticDisposableSignedArtifactInputs": 22,
+  "syntheticUnitOnlyMissingEvidenceTests": 6,
+  "newLiveProductionExecutions": 0,
+  "newProductionSignatures": 0,
+  "missingSamples": 1,
+  "malformedSamples": 8,
+  "digestMismatchSamples": 6,
+  "sourceMismatchSamples": 8,
+  "builderMismatchSamples": 4,
+  "otherIdentitySamples": 12,
+  "tamperReplacementSamples": 7,
+  "infrastructureSamples": 9,
+  "executionSamples": 2,
+  "IOReportSamples": 20,
+  "prerequisiteSamples": 24,
+  "scriptActions": {
+    "generate": 18,
+    "create": 31,
+    "verify": 80,
+    "invalid": 1
+  },
+  "scriptBranches": {
+    "positive": 4,
+    "io": 20,
+    "prerequisite": 24,
+    "reference": 6,
+    "source": 8,
+    "infrastructure": 9,
+    "identity": 12,
+    "existing-generation-semantics": 3,
+    "execution": 2,
+    "missing": 1,
+    "malformed": 8,
+    "digest": 6,
+    "builder": 4,
+    "tamper": 7,
+    "existing-verifier-semantics": 2,
+    "negative-control": 2,
+    "existing-prerequisite-semantics": 2,
+    "aggregation": 9,
+    "generation": 1
+  },
+  "oldDecisions": {
+    "PASS": 30,
+    "FAIL": 142,
+    "WARN": 4,
+    "SKIPPED": 5
+  },
+  "standardDecisions": {
+    "PASS": 30,
+    "FAIL": 142,
+    "WARN": 4,
+    "SKIPPED": 5
+  },
+  "completeDifferentials": 181,
+  "decisionBearingDifferentials": 176,
+  "explicitSkippedDifferentials": 5,
+  "matched": 181,
+  "mismatched": 0,
+  "rawFactsPreserved": true,
+  "persistedFixtureVerification": {
+    "completeInputs": 181,
+    "decisions": 176,
+    "explicitSkipped": 5,
+    "inputHashesMatched": 181,
+    "decisionsMatched": 181,
+    "rawUnchanged": 181,
+    "noSeverityInvented": true
+  },
+  "policyTestsPassed": 864,
+  "policyTestsFailed": 0,
+  "newPolicyTests": 188,
+  "remainingStructuralCompatibilityGaps": [],
+  "remainingEvidenceGaps": [
+    "Historical full CLI/prerequisite transcript not available; complete replay is CONTROLLED_REPLAY",
+    "No new live production provenance generation, registry, Jenkins CPS/credentials or current service health acceptance",
+    "Historical natural parent FAIL incident deferred; archived controlled negative checks and controlled replay kept distinct"
+  ],
+  "readyToLeaveProvenanceCompatibilityPhase": true,
+  "summaryIntegrated": false,
+  "nextSourceStarted": false,
+  "productionMutation": false,
+  "privateKeyExported": false,
+  "globalBlockers": {
+    "SOPS/age": "NOT_TESTED / ENVIRONMENT_BLOCKED",
+    "Sonar negative": "DEFERRED_REAL_NEGATIVE_EVIDENCE"
+  }
+}

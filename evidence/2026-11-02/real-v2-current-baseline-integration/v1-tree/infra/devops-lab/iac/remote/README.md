@@ -1,0 +1,17 @@
+# Terraform remote state and scoped runtime
+
+This extends the accepted local-state exercise without migrating or modifying its state. It uses the existing Kubernetes backend over the cluster API with CA verification. No additional Deployment, database, bucket or long-lived token is installed.
+
+`bootstrap.json` owns only two new namespaces, two metadata-only quotas, one ServiceAccount and two pairs of Role/RoleBinding. `terraform-state` holds the backend Secret and Lease; `tf-remote-lab` holds a public demo ConfigMap. The ServiceAccount may manage ConfigMaps only in the demo namespace and Secrets/Leases only in the state namespace. It cannot create namespaces, Pods, PVCs or workloads, read application Secrets, or access PetClinic ConfigMaps. The current K3s instance has Secret encryption at rest disabled; this demonstration stores no sensitive payload and does not change cluster-wide encryption.
+
+The existing privileged Jenkins identity performs the scoped bootstrap after all original quality, image scan, GitOps, rollout, health and release-event stages pass. Terraform subprocesses run with a clean environment, isolated HOME, cluster CA and a newly issued ten-minute scoped token. Jenkins process-tree cleanup cookies are retained so cancellation can stop children. This separates runtime credentials but does not remove the existing Jenkins administrator privileges or constitute a hardened multi-tenant execution service.
+
+The Terraform Shared State stage uses two independent private working directories. Client A applies the demo ConfigMap and a state-only `terraform_data` probe whose only command is a bounded sleep. While A holds a real backend apply Lease, client B attempts a plan and must fail specifically with that lock ID. After the writer exits normally, B reads the same state and produces a no-change plan. Only the virtual probe is removed; the final ConfigMap and remote state are intentionally preserved. Both clients must then report identical lineage/serial/hash and no changes. The backend Lease object normally remains with no holder; an existing foreign/active lock must be preserved, never force-unlocked.
+
+The runtime validates actual 403 responses for forbidden reads and SelfSubjectAccessReviews for allowed/denied writes. It rejects foreign pre-existing bootstrap objects, untracked ConfigMaps, unknown state resources and replacement/deletion of the real ConfigMap. Provider downloads use the committed 2.38.0 read-only lock and the existing CI-wide heavy Lease protects shared plugin cache access. No nested heavy Lease is acquired.
+
+Only a sanitized report is archived as `target/platform/terraform-remote.json`. Plans, logs and a state snapshot stay in an owner-only Jenkins persistent directory outside Git. Credentials must be absent from backend metadata, plan JSON and pulled state. Old local-state exercises and their evidence remain intact. This is Kubernetes-backed shared state in the existing single control-plane environment, not off-site backup, HA, encrypted-at-rest storage or production resource adoption.
+
+On failure, inspect the stage logs, private working directory, backend Lease holder/UID and preserved state. Do not destroy namespaces, delete the state Secret or force-unlock another client's lock. New work requires a fresh plan and the existing resource guard. Runtime acceptance and exact IDs are recorded after the full release in docs/TERRAFORM-20261024.md.
+
+Official reference: https://developer.hashicorp.com/terraform/language/backend/kubernetes

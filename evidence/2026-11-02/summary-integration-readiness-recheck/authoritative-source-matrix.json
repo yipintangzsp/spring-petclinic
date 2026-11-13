@@ -1,0 +1,1092 @@
+{
+  "productionSourceCount": 18,
+  "counts": {
+    "VERIFIED": 17,
+    "DEFERRED": 1,
+    "ENVIRONMENT_BLOCKED": 0,
+    "NOT_TESTED": 0,
+    "FAILED": 0
+  },
+  "sources": [
+    {
+      "source": "sbom",
+      "productionStage": "Package SBOM",
+      "productionEntry": "( nice -n 10 ./mvnw -B package -DskipTests && node infra/security/sbom-verify.mjs )",
+      "productionImplementationPaths": [
+        "infra/security/sbom-verify.mjs"
+      ],
+      "sourceHashes": {
+        "infra/security/sbom-verify.mjs": "eaa2909490561beffb67a4fde0d345d1bb837f1b876b7c4288b70d1a0f8763ff"
+      },
+      "classifierAdapterPath": "infra/security/policy/sbom-parent.mjs",
+      "adapterSha256": "356dd47da0886719bfd832fd2037cb65cd00c53d3386c87f58135a1678f68448",
+      "adapterMatchesAuthoritativeSnapshot": true,
+      "policyMappingPath": "infra/security/policy/engine.mjs",
+      "policyMappingSha256": "dcfe4d6b0716897c6fc16c959bd89fef5dd3f62f8f85048d371efa073c308102",
+      "policyVersionPath": "infra/security/policy/versions/baseline-v1.json",
+      "latestCompatibilityStatus": "VERIFIED",
+      "parentStageEvidenceStatus": "VERIFIED",
+      "parentStageSampleCount": 171,
+      "partialPositiveSamples": 0,
+      "statistics": {
+        "samples": 171,
+        "matches": 171,
+        "drifts": 0,
+        "rawPreserved": true,
+        "oldDecisions": {
+          "PASS": 45,
+          "FAIL": 121,
+          "NOT_CONFIGURED": 1,
+          "SKIPPED": 4
+        },
+        "policyDecisions": {
+          "PASS": 45,
+          "FAIL": 121,
+          "NOT_CONFIGURED": 1,
+          "SKIPPED": 4
+        }
+      },
+      "evidenceDirectories": [
+        "evidence/2026-11-01/sbom-parent"
+      ],
+      "evidenceFiles": [
+        "evidence/2026-11-01/sbom-parent/acceptance.json",
+        "evidence/2026-11-01/sbom-parent/differential.json",
+        "evidence/2026-11-01/sbom-parent/workflow-differential.json"
+      ],
+      "evidenceIndexes": [
+        "evidence/2026-11-01/sbom-parent/artifact-sha256.json",
+        "evidence/2026-11-01/sbom-parent/historical-index.json",
+        "evidence/2026-11-01/security-manager-contract/evidence-index.json"
+      ],
+      "evidenceClassifications": [
+        "CONTROLLED_REPLAY"
+      ],
+      "remainingEvidenceGaps": [
+        "Historical original JAR/Maven source bytes and full generator/CLI/prerequisite transcript not all archived; complete execution proof is CONTROLLED_REPLAY",
+        "No new actual Maven/CycloneDX generation, online Jenkins CPS, registry, image attestation or current service health certification",
+        "Current Gate has no SBOM image/digest attestation; compatibility does not add one"
+      ],
+      "aggregateAliasOf": null
+    },
+    {
+      "source": "regression",
+      "productionStage": "Regression",
+      "productionEntry": "node --test --test-concurrency=1 infra/observability/*.test.mjs infra/security/*.test.mjs",
+      "productionImplementationPaths": [],
+      "sourceHashes": {},
+      "classifierAdapterPath": "infra/security/policy/regression-evidence.mjs",
+      "adapterSha256": "e18ce2af742506ff7770ffaff8238a3d4bdc11325d5459ed4772961c53e136ee",
+      "adapterMatchesAuthoritativeSnapshot": true,
+      "policyMappingPath": "infra/security/policy/engine.mjs",
+      "policyMappingSha256": "dcfe4d6b0716897c6fc16c959bd89fef5dd3f62f8f85048d371efa073c308102",
+      "policyVersionPath": "infra/security/policy/versions/baseline-v1.json",
+      "latestCompatibilityStatus": "VERIFIED",
+      "parentStageEvidenceStatus": "VERIFIED",
+      "parentStageSampleCount": 38,
+      "partialPositiveSamples": 0,
+      "statistics": {
+        "samples": 38,
+        "matches": 38,
+        "drifts": 0,
+        "rawPreserved": true,
+        "oldDecisions": {
+          "PASS": 9,
+          "FAIL": 29
+        },
+        "policyDecisions": {
+          "PASS": 9,
+          "FAIL": 29
+        }
+      },
+      "evidenceDirectories": [
+        "evidence/2026-11-01/regression-parent"
+      ],
+      "evidenceFiles": [
+        "evidence/2026-11-01/regression-parent/acceptance.json",
+        "evidence/2026-11-01/regression-parent/differential.json"
+      ],
+      "evidenceIndexes": [
+        "evidence/2026-11-01/regression-parent/artifact-sha256.json",
+        "evidence/2026-11-01/regression-parent/historical-evidence-index.json",
+        "evidence/2026-11-01/security-manager-contract/evidence-index.json"
+      ],
+      "evidenceClassifications": [
+        "CONTROLLED_REPLAY",
+        "REAL_HISTORICAL"
+      ],
+      "remainingEvidenceGaps": [
+        "No new live Jenkins CPS acceptance, no natural historical failed Regression transcript",
+        "Historical #270 has complete command/TAP/exit observations, but not full host prerequisite transcript",
+        "Controlled failures occurred only in disposable checkout or inert stubs; not production incidents"
+      ],
+      "aggregateAliasOf": null
+    },
+    {
+      "source": "falco-baseline",
+      "productionStage": "Falco Baseline",
+      "productionEntry": "node infra/security/runtime/health.mjs baseline",
+      "productionImplementationPaths": [
+        "infra/security/runtime/health.mjs"
+      ],
+      "sourceHashes": {
+        "infra/security/runtime/health.mjs": "65ab133a4248b9900265a47d943f9e6430b9ec9581ddd624b1d9257322b0d921"
+      },
+      "classifierAdapterPath": "infra/security/policy/falco-parent.mjs",
+      "adapterSha256": "2c31980a19c9443215fd196e6aab3e89e312c6bca535857a869b6fe2a610519b",
+      "adapterMatchesAuthoritativeSnapshot": true,
+      "policyMappingPath": "infra/security/policy/engine.mjs",
+      "policyMappingSha256": "dcfe4d6b0716897c6fc16c959bd89fef5dd3f62f8f85048d371efa073c308102",
+      "policyVersionPath": "infra/security/policy/versions/baseline-v1.json",
+      "latestCompatibilityStatus": "VERIFIED",
+      "parentStageEvidenceStatus": "VERIFIED",
+      "parentStageSampleCount": 89,
+      "partialPositiveSamples": 0,
+      "statistics": {
+        "samples": 89,
+        "matches": 89,
+        "drifts": 0,
+        "rawPreserved": true,
+        "oldDecisions": {
+          "PASS": 26,
+          "FAIL": 63
+        },
+        "policyDecisions": {
+          "PASS": 26,
+          "FAIL": 63
+        }
+      },
+      "evidenceDirectories": [
+        "evidence/2026-11-02/falco-time-contract-repair"
+      ],
+      "evidenceFiles": [
+        "evidence/2026-11-02/falco-time-contract-repair/acceptance.json",
+        "evidence/2026-11-02/falco-time-contract-repair/differential.json",
+        "evidence/2026-11-02/falco-time-contract-repair/timing-after.json",
+        "evidence/2026-11-02/falco-time-contract-repair/time-contract.json",
+        "evidence/2026-11-02/falco-time-contract-repair/authoritative-falco-matrix.json",
+        "evidence/2026-11-02/falco-time-contract-repair/evidence-supersession.json",
+        "evidence/2026-11-02/falco-time-contract-repair/source-preservation.json",
+        "evidence/2026-11-02/falco-time-contract-repair/timing-before.json"
+      ],
+      "evidenceIndexes": [
+        "evidence/2026-11-02/falco-time-contract-repair/artifact-sha256.json",
+        "evidence/2026-11-01/security-manager-contract/evidence-index.json"
+      ],
+      "evidenceClassifications": [
+        "CONTROLLED_CAPTURED_TIMING_REPLAY_NOT_LIVE_SENSOR",
+        "CONTROLLED_COMPLETE_STAGE_WITH_HISTORICAL_SENSOR_IDENTITY",
+        "CONTROLLED_REPLAY_NOT_LIVE_RUNTIME"
+      ],
+      "remainingEvidenceGaps": [],
+      "aggregateAliasOf": null,
+      "currentAuthority": "FALCO_TIME_CONTRACT_REPAIRED",
+      "historicalEvidence": {
+        "directory": "evidence/2026-11-01/falco-parent",
+        "status": "SUPERSEDED_FOR_TIME_BOUNDARY_COVERAGE",
+        "retained": true,
+        "counted": false
+      },
+      "adapterVersionTransition": {
+        "path": "infra/security/policy/falco-parent.mjs",
+        "oldSha256": "906addbb70afed7178f8bfa8c09cdd53f7d5a4de02526e21596056bdeb837803",
+        "newSha256": "2c31980a19c9443215fd196e6aab3e89e312c6bca535857a869b6fe2a610519b",
+        "archivedOldPath": "evidence/2026-11-02/falco-time-contract-repair/before/infra/security/policy/falco-parent.mjs",
+        "archivedOldSha256": "906addbb70afed7178f8bfa8c09cdd53f7d5a4de02526e21596056bdeb837803",
+        "reason": "Observed per-sample time contract repair"
+      }
+    },
+    {
+      "source": "kyverno",
+      "productionStage": "Kyverno",
+      "productionEntry": "( node infra/security/rbac-contract.mjs && node infra/security/admission-gate.mjs )",
+      "productionImplementationPaths": [
+        "infra/security/admission-gate.mjs",
+        "infra/security/rbac-contract.mjs"
+      ],
+      "sourceHashes": {
+        "infra/security/admission-gate.mjs": "c322cca450c1d4be33963ccaaea100c36894fe3f1690224dcd1e68ec90dbe409",
+        "infra/security/rbac-contract.mjs": "132a8be7bf8234d86d35ccfd82dcce16a4402982aa47dc97b87c54ee69a16259"
+      },
+      "classifierAdapterPath": "infra/security/policy/kyverno-parent.mjs",
+      "adapterSha256": "ca5e4afbdf76fcc9b3fddf881556d2e40292c67ad73a7cc7412cb8acd2a99e16",
+      "adapterMatchesAuthoritativeSnapshot": true,
+      "policyMappingPath": "infra/security/policy/engine.mjs",
+      "policyMappingSha256": "dcfe4d6b0716897c6fc16c959bd89fef5dd3f62f8f85048d371efa073c308102",
+      "policyVersionPath": "infra/security/policy/versions/baseline-v1.json",
+      "latestCompatibilityStatus": "VERIFIED",
+      "parentStageEvidenceStatus": "VERIFIED",
+      "parentStageSampleCount": 49,
+      "partialPositiveSamples": 0,
+      "statistics": {
+        "samples": 49,
+        "matches": 49,
+        "drifts": 0,
+        "rawPreserved": true,
+        "oldDecisions": {
+          "PASS": 5,
+          "FAIL": 44
+        },
+        "policyDecisions": {
+          "PASS": 5,
+          "FAIL": 44
+        }
+      },
+      "evidenceDirectories": [
+        "evidence/2026-11-01/kyverno-parent"
+      ],
+      "evidenceFiles": [
+        "evidence/2026-11-01/kyverno-parent/acceptance.json",
+        "evidence/2026-11-01/kyverno-parent/parent-differential.json"
+      ],
+      "evidenceIndexes": [
+        "evidence/2026-11-01/kyverno-parent/evidence-hashes.json",
+        "evidence/2026-11-01/security-manager-contract/evidence-index.json"
+      ],
+      "evidenceClassifications": [
+        "SYNTHETIC_COMPLETE_PARENT_WITH_HISTORICAL_PROBE_RESULTS"
+      ],
+      "remainingEvidenceGaps": [],
+      "aggregateAliasOf": null
+    },
+    {
+      "source": "kubescape",
+      "productionStage": "Kubescape Audit",
+      "productionEntry": "node --max-old-space-size=128 infra/security/governance/kubescape.mjs",
+      "productionImplementationPaths": [
+        "infra/security/governance/kubescape.mjs"
+      ],
+      "sourceHashes": {
+        "infra/security/governance/kubescape.mjs": "23a23a7db0a413e474cb72ae4725dd0756fb596e1a62a9b9c43caa62dfc66f42"
+      },
+      "classifierAdapterPath": "infra/security/policy/kubescape-parent.mjs",
+      "adapterSha256": "e3881e99fdc6815c03f7fc44687af3ff2729b5b7567f0cfc111e83f120be9270",
+      "adapterMatchesAuthoritativeSnapshot": true,
+      "policyMappingPath": "infra/security/policy/engine.mjs",
+      "policyMappingSha256": "dcfe4d6b0716897c6fc16c959bd89fef5dd3f62f8f85048d371efa073c308102",
+      "policyVersionPath": "infra/security/policy/versions/baseline-v1.json",
+      "latestCompatibilityStatus": "VERIFIED",
+      "parentStageEvidenceStatus": "VERIFIED",
+      "parentStageSampleCount": 45,
+      "partialPositiveSamples": 0,
+      "statistics": {
+        "samples": 45,
+        "matches": 45,
+        "drifts": 0,
+        "rawPreserved": true,
+        "oldDecisions": {
+          "PASS": 4,
+          "FAIL": 41
+        },
+        "policyDecisions": {
+          "PASS": 4,
+          "FAIL": 41
+        }
+      },
+      "evidenceDirectories": [
+        "evidence/2026-11-01/kubescape-parent"
+      ],
+      "evidenceFiles": [
+        "evidence/2026-11-01/kubescape-parent/acceptance.json",
+        "evidence/2026-11-01/kubescape-parent/differential.json"
+      ],
+      "evidenceIndexes": [
+        "evidence/2026-11-01/kubescape-parent/evidence-hashes.json",
+        "evidence/2026-11-01/security-manager-contract/evidence-index.json"
+      ],
+      "evidenceClassifications": [
+        "CONTROLLED_COMPLETE_GATE_WITH_HISTORICAL_CONSUMED_FIELDS",
+        "SYNTHETIC_COMPLETE_GATE"
+      ],
+      "remainingEvidenceGaps": [],
+      "aggregateAliasOf": null
+    },
+    {
+      "source": "gitleaks",
+      "productionStage": "Secret Source",
+      "productionEntry": "node infra/security/source-gate.mjs",
+      "productionImplementationPaths": [
+        "infra/security/source-gate.mjs"
+      ],
+      "sourceHashes": {
+        "infra/security/source-gate.mjs": "35de5317f6b14ffc4d986236410f2bdf488653e47f02eeb2dbe0bc372cc2cd00"
+      },
+      "classifierAdapterPath": "infra/security/policy/gitleaks-parent.mjs",
+      "adapterSha256": "005b8f37d03690fb19ba4a2915d0856bad26719a9ba36da72a2b0481cb1c339d",
+      "adapterMatchesAuthoritativeSnapshot": true,
+      "policyMappingPath": "infra/security/policy/engine.mjs",
+      "policyMappingSha256": "dcfe4d6b0716897c6fc16c959bd89fef5dd3f62f8f85048d371efa073c308102",
+      "policyVersionPath": "infra/security/policy/versions/baseline-v1.json",
+      "latestCompatibilityStatus": "VERIFIED",
+      "parentStageEvidenceStatus": "VERIFIED",
+      "parentStageSampleCount": 127,
+      "partialPositiveSamples": 0,
+      "statistics": {
+        "samples": 127,
+        "matches": 127,
+        "drifts": 0,
+        "rawPreserved": true,
+        "oldDecisions": {
+          "PASS": 15,
+          "FAIL": 112
+        },
+        "policyDecisions": {
+          "PASS": 15,
+          "FAIL": 112
+        }
+      },
+      "evidenceDirectories": [
+        "evidence/2026-11-01/gitleaks-parent"
+      ],
+      "evidenceFiles": [
+        "evidence/2026-11-01/gitleaks-parent/acceptance.json",
+        "evidence/2026-11-01/gitleaks-parent/differential.json",
+        "evidence/2026-11-01/gitleaks-parent/workflow-differential.json"
+      ],
+      "evidenceIndexes": [
+        "evidence/2026-11-01/gitleaks-parent/artifact-sha256.json",
+        "evidence/2026-11-01/gitleaks-parent/implementation-hashes.json",
+        "evidence/2026-11-01/security-manager-contract/evidence-index.json"
+      ],
+      "evidenceClassifications": [
+        "CONTROLLED_REPLAY"
+      ],
+      "remainingEvidenceGaps": [
+        "No full historical source-gate execution transcript located by bounded local filename search; real historical full-parent sample count 0",
+        "No new live Gitleaks binary/toolchain/Kubernetes/isolation/cleanup health certification; controlled external observations only",
+        "Selected original Manager executes local Groovy with inert DSL, not live Jenkins CPS"
+      ],
+      "aggregateAliasOf": null
+    },
+    {
+      "source": "semgrep",
+      "productionStage": "Semgrep",
+      "productionEntry": "( node infra/security/command-audit.mjs && node --max-old-space-size=128 infra/security/semgrep-gate.mjs )",
+      "productionImplementationPaths": [
+        "infra/security/command-audit.mjs",
+        "infra/security/semgrep-gate.mjs"
+      ],
+      "sourceHashes": {
+        "infra/security/command-audit.mjs": "b721866fa5ad6200cd15648315378e8dcef5814ba35243063854b11f29af2245",
+        "infra/security/semgrep-gate.mjs": "d734f5f83274bad82c7871ffaaf3048dee42894d94c65ff5306c26468a7f8c9a"
+      },
+      "classifierAdapterPath": "infra/security/policy/command-parent.mjs",
+      "adapterSha256": "2224775abf08312e32af9fb09019e3b983b4c04009f651feb59f614a92f2629a",
+      "adapterMatchesAuthoritativeSnapshot": true,
+      "policyMappingPath": "infra/security/policy/engine.mjs",
+      "policyMappingSha256": "dcfe4d6b0716897c6fc16c959bd89fef5dd3f62f8f85048d371efa073c308102",
+      "policyVersionPath": "infra/security/policy/versions/baseline-v1.json",
+      "latestCompatibilityStatus": "VERIFIED",
+      "parentStageEvidenceStatus": "VERIFIED",
+      "parentStageSampleCount": 136,
+      "partialPositiveSamples": 0,
+      "statistics": {
+        "samples": 136,
+        "matches": 136,
+        "drifts": 0,
+        "rawPreserved": true,
+        "oldDecisions": {
+          "PASS": 26,
+          "FAIL": 110
+        },
+        "policyDecisions": {
+          "PASS": 26,
+          "FAIL": 110
+        }
+      },
+      "evidenceDirectories": [
+        "evidence/2026-11-01/command-parent"
+      ],
+      "evidenceFiles": [
+        "evidence/2026-11-01/command-parent/acceptance.json",
+        "evidence/2026-11-01/command-parent/differential.json",
+        "evidence/2026-11-01/command-parent/workflow-differential.json"
+      ],
+      "evidenceIndexes": [
+        "evidence/2026-11-01/command-parent/artifact-sha256.json",
+        "evidence/2026-11-01/command-parent/historical-index.json",
+        "evidence/2026-11-01/security-manager-contract/evidence-index.json"
+      ],
+      "evidenceClassifications": [
+        "CONTROLLED_REPLAY",
+        "REAL_HISTORICAL"
+      ],
+      "remainingEvidenceGaps": [
+        "Historical parent exit/reports are available, full per-command prerequisite/CLI transcript not all archived",
+        "No new real Semgrep CLI scan or Kubernetes Pod lifecycle/isolation/production service health validation; lifecycle is CONTROLLED_REPLAY",
+        "No natural failed production incident manufactured; direct negative examples use static-only fixture analysis"
+      ],
+      "aggregateAliasOf": "semgrep-command-audit"
+    },
+    {
+      "source": "sops",
+      "productionStage": "Encrypted Credentials",
+      "productionEntry": "node infra/security/secrets-gate.mjs",
+      "productionImplementationPaths": [
+        "infra/security/secrets-gate.mjs"
+      ],
+      "sourceHashes": {
+        "infra/security/secrets-gate.mjs": "cb3bc63884f238fe125d8adbe5c6cddd165db5f00d3c7c8eeab5e6883ec7869e"
+      },
+      "classifierAdapterPath": "infra/security/policy/sops-evidence.mjs",
+      "adapterSha256": "f7c77a3138b7a7002baf18972ab3c0c70952d5f1de64affee7462e1fcabbf2f8",
+      "adapterMatchesAuthoritativeSnapshot": true,
+      "policyMappingPath": "infra/security/policy/engine.mjs",
+      "policyMappingSha256": "dcfe4d6b0716897c6fc16c959bd89fef5dd3f62f8f85048d371efa073c308102",
+      "policyVersionPath": "infra/security/policy/versions/baseline-v1.json",
+      "latestCompatibilityStatus": "VERIFIED",
+      "parentStageEvidenceStatus": "VERIFIED",
+      "parentStageSampleCount": 12,
+      "partialPositiveSamples": 0,
+      "statistics": {
+        "samples": 12,
+        "matches": 12,
+        "drifts": 0,
+        "rawPreserved": true,
+        "oldDecisions": {
+          "PASS": 1,
+          "FAIL": 11
+        },
+        "policyDecisions": {
+          "PASS": 1,
+          "FAIL": 11
+        }
+      },
+      "evidenceDirectories": [
+        "evidence/2026-11-02/sops-authoritative-differential-02"
+      ],
+      "evidenceFiles": [
+        "evidence/2026-11-02/sops-authoritative-differential-02/compatibility-verdict.json",
+        "evidence/2026-11-02/sops-authoritative-differential-02/final-evidence-index.json",
+        "evidence/2026-11-02/sops-authoritative-differential-02/final-index-validation.json",
+        "evidence/2026-11-02/sops-authoritative-differential-02/precleanup-acceptance.json",
+        "evidence/2026-11-02/sops-authoritative-differential-02/cleanup-result.json",
+        "evidence/2026-11-02/sops-authoritative-differential-02/comparison-contract.json",
+        "evidence/2026-11-02/sops-authoritative-differential-02/final-clean-state.json"
+      ],
+      "evidenceIndexes": [
+        "evidence/2026-11-01/security-manager-contract/evidence-index.json",
+        "evidence/2026-11-02/sops-authoritative-differential-02/precleanup-evidence-index.json",
+        "evidence/2026-11-02/sops-authoritative-differential-02/final-evidence-index.json"
+      ],
+      "evidenceClassifications": [
+        "REAL_CONTROLLED_EXECUTION"
+      ],
+      "remainingEvidenceGaps": [
+        "Historical negative incidents remain deferred; approved controlled real execution proves frozen-code compatibility, not production rerun"
+      ],
+      "aggregateAliasOf": null
+    },
+    {
+      "source": "trivy",
+      "productionStage": "Trivy",
+      "productionEntry": "( node infra/security/ensure-audit-candidate.mjs && node infra/security/audit-trivy.mjs )",
+      "productionImplementationPaths": [
+        "infra/security/audit-trivy.mjs",
+        "infra/security/ensure-audit-candidate.mjs"
+      ],
+      "sourceHashes": {
+        "infra/security/audit-trivy.mjs": "7c36099392e5b90ae5d0d20150e693f2250429c7939fcfd606cf9658c37c5741",
+        "infra/security/ensure-audit-candidate.mjs": "2757bf7b3b1a8612481f17542ad045bc1dbf424766e7b3cdbc47b2e3a2d51027"
+      },
+      "classifierAdapterPath": "infra/security/policy/trivy-parent.mjs",
+      "adapterSha256": "b0b6b034228e26ec8c9b4d052202505999ac9e5534f8106713e55eb6a4f167c6",
+      "adapterMatchesAuthoritativeSnapshot": true,
+      "policyMappingPath": "infra/security/policy/engine.mjs",
+      "policyMappingSha256": "dcfe4d6b0716897c6fc16c959bd89fef5dd3f62f8f85048d371efa073c308102",
+      "policyVersionPath": "infra/security/policy/versions/baseline-v1.json",
+      "latestCompatibilityStatus": "VERIFIED",
+      "parentStageEvidenceStatus": "VERIFIED",
+      "parentStageSampleCount": 123,
+      "partialPositiveSamples": 0,
+      "statistics": {
+        "samples": 123,
+        "matches": 123,
+        "drifts": 0,
+        "rawPreserved": true,
+        "oldDecisions": {
+          "PASS": 43,
+          "FAIL": 80
+        },
+        "policyDecisions": {
+          "PASS": 43,
+          "FAIL": 80
+        }
+      },
+      "evidenceDirectories": [
+        "evidence/2026-11-01/trivy-parent"
+      ],
+      "evidenceFiles": [
+        "evidence/2026-11-01/trivy-parent/acceptance.json",
+        "evidence/2026-11-01/trivy-parent/differential.json",
+        "evidence/2026-11-01/trivy-parent/workflow-differential.json"
+      ],
+      "evidenceIndexes": [
+        "evidence/2026-11-01/trivy-parent/artifact-sha256.json",
+        "evidence/2026-11-01/trivy-parent/implementation-hashes.json",
+        "evidence/2026-11-01/trivy-parent/historical-index.json",
+        "evidence/2026-11-01/security-manager-contract/evidence-index.json"
+      ],
+      "evidenceClassifications": [
+        "CONTROLLED_REPLAY"
+      ],
+      "remainingEvidenceGaps": [
+        "No complete historical parent CLI/HTTP/prerequisite execution transcript; real historical parent sample count0",
+        "No new online Harbor/Trivy binary/database/isolation health certification; all external effects controlled",
+        "Manager ran original local Groovy with inert Jenkins DSL, not Jenkins CPS",
+        "DB refresh is an upstream release-preflight dependency; no new DB freshness rule imposed on security-audit Trivy"
+      ],
+      "aggregateAliasOf": null
+    },
+    {
+      "source": "cosign",
+      "productionStage": "Cosign Admission",
+      "productionEntry": "node infra/security/signing.mjs admission",
+      "productionImplementationPaths": [
+        "infra/security/signing.mjs"
+      ],
+      "sourceHashes": {
+        "infra/security/signing.mjs": "660da0a00d773df86fb6f503b73b7284f684cb01def073ddc2f31f6d9a358aba"
+      },
+      "classifierAdapterPath": "infra/security/policy/cosign-parent.mjs",
+      "adapterSha256": "cacf526148868324f82e8b0ad073674eaf59bdeb9da4123d833fa7b008bd3d33",
+      "adapterMatchesAuthoritativeSnapshot": true,
+      "policyMappingPath": "infra/security/policy/engine.mjs",
+      "policyMappingSha256": "dcfe4d6b0716897c6fc16c959bd89fef5dd3f62f8f85048d371efa073c308102",
+      "policyVersionPath": "infra/security/policy/versions/baseline-v1.json",
+      "latestCompatibilityStatus": "VERIFIED",
+      "parentStageEvidenceStatus": "VERIFIED",
+      "parentStageSampleCount": 260,
+      "partialPositiveSamples": 0,
+      "statistics": {
+        "samples": 260,
+        "matches": 260,
+        "drifts": 0,
+        "rawPreserved": true,
+        "oldDecisions": {
+          "PASS": 18,
+          "FAIL": 242
+        },
+        "policyDecisions": {
+          "PASS": 18,
+          "FAIL": 242
+        }
+      },
+      "evidenceDirectories": [
+        "evidence/2026-11-01/cosign-parent"
+      ],
+      "evidenceFiles": [
+        "evidence/2026-11-01/cosign-parent/acceptance.json",
+        "evidence/2026-11-01/cosign-parent/differential.json"
+      ],
+      "evidenceIndexes": [
+        "evidence/2026-11-01/cosign-parent/artifact-sha256.json",
+        "evidence/2026-11-01/cosign-parent/historical-receipt-index.json",
+        "evidence/2026-11-01/security-manager-contract/evidence-index.json"
+      ],
+      "evidenceClassifications": [
+        "SYNTHETIC_FROZEN_COMPLETE_STAGE"
+      ],
+      "remainingEvidenceGaps": [
+        "Historical archive lacks full raw CLI/prerequisite transcript; no historical complete-stage differential claimed",
+        "No live crypto/registry/admission/service health certification in this iteration"
+      ],
+      "aggregateAliasOf": null
+    },
+    {
+      "source": "sonarqube",
+      "productionStage": "SonarQube",
+      "productionEntry": "nice -n 10 ./mvnw -B org.sonarsource.scanner.maven:sonar-maven-plugin:5.8.0.7211:sonar -Dsonar.projectKey=petclinic -Dsonar.qualitygate.wait=true -Dsonar.qualitygate.timeout=300",
+      "productionImplementationPaths": [
+        "Jenkinsfile",
+        "Jenkinsfile.security-audit",
+        "resources/security-manager/petclinic-adapter.json",
+        "vars/securityManager.groovy"
+      ],
+      "sourceHashes": {
+        "Jenkinsfile": "c46ac48976d581890592968272ed664e93bf4de9f86beab13c2144d67ef67b9b",
+        "Jenkinsfile.security-audit": "e6e7c1b8f838e42e8bc9b3aa35e731515e2e05feb300bd1833d64aa921c54ed2",
+        "resources/security-manager/petclinic-adapter.json": "b7ffcdcb7466e679ad8739d1d910343b8ccab7217ba24a3d2e3f1f363215fc57",
+        "vars/securityManager.groovy": "ae297e7313cbf9bdde9e38acb32a3ee3310c571f2d70e289783c5c1c448811af"
+      },
+      "classifierAdapterPath": "infra/security/policy/sonar-evidence.mjs",
+      "adapterSha256": "8465057458da4aa4bf43458afbfe99ca8ae9c5f6fca52c7e54023e6276d2ef2f",
+      "adapterMatchesAuthoritativeSnapshot": true,
+      "policyMappingPath": "infra/security/policy/engine.mjs",
+      "policyMappingSha256": "dcfe4d6b0716897c6fc16c959bd89fef5dd3f62f8f85048d371efa073c308102",
+      "policyVersionPath": "infra/security/policy/versions/baseline-v1.json",
+      "latestCompatibilityStatus": "DEFERRED",
+      "parentStageEvidenceStatus": "PARTIAL_REAL_POSITIVE_VERIFIED_NEGATIVE_DEFERRED",
+      "parentStageSampleCount": 0,
+      "partialPositiveSamples": 1,
+      "statistics": {
+        "samples": 1,
+        "matches": 1,
+        "drifts": 0,
+        "rawPreserved": true,
+        "oldDecisions": {
+          "PASS": 1
+        },
+        "policyDecisions": {
+          "PASS": 1
+        }
+      },
+      "evidenceDirectories": [
+        "evidence/2026-11-01/sonar-policy"
+      ],
+      "evidenceFiles": [
+        "evidence/2026-11-01/sonar-policy/positive-differential.json",
+        "evidence/2026-11-01/sonar-policy/analysis-bound-facts.json",
+        "evidence/2026-11-01/sonar-policy/analysis-linkage.json",
+        "evidence/2026-11-01/sonar-policy/negative-evidence-disposition.json",
+        "evidence/2026-11-01/sonar-policy/negative-artifact-validation.json"
+      ],
+      "evidenceIndexes": [
+        "evidence/2026-11-01/sonar-policy/evidence-hashes.json",
+        "evidence/2026-11-01/sonar-policy/negative-search-evidence-hashes.json",
+        "evidence/2026-11-01/security-manager-contract/evidence-index.json"
+      ],
+      "evidenceClassifications": [
+        "HISTORICAL_ARCHIVE"
+      ],
+      "remainingEvidenceGaps": [
+        "Jenkins failed-build directly archived ceTaskId/report-task/Sonar action",
+        "That task ID to analysis ID mapping",
+        "Analysis-ID-bound Quality Gate response matching failed build",
+        "Positive Jenkins association is workspace/time correlation; directArchivedBuildTaskBinding=NOT_TESTED"
+      ],
+      "aggregateAliasOf": null
+    },
+    {
+      "source": "zap",
+      "productionStage": "ZAP Passive",
+      "productionEntry": "node infra/security/zap-gate.mjs",
+      "productionImplementationPaths": [
+        "infra/security/zap-gate.mjs"
+      ],
+      "sourceHashes": {
+        "infra/security/zap-gate.mjs": "14282b5a65267ba2f4c386cfb840a8eb69641b47bbbc9adbfecd1edf99a54d98"
+      },
+      "classifierAdapterPath": "infra/security/policy/zap-parent.mjs",
+      "adapterSha256": "dcac14ed90e483bb19b38f62f6e5f5eb7d399c3a6f4a0e190bf5b6606fbd35fb",
+      "adapterMatchesAuthoritativeSnapshot": true,
+      "policyMappingPath": "infra/security/policy/engine.mjs",
+      "policyMappingSha256": "dcfe4d6b0716897c6fc16c959bd89fef5dd3f62f8f85048d371efa073c308102",
+      "policyVersionPath": "infra/security/policy/versions/baseline-v1.json",
+      "latestCompatibilityStatus": "VERIFIED",
+      "parentStageEvidenceStatus": "VERIFIED",
+      "parentStageSampleCount": 191,
+      "partialPositiveSamples": 0,
+      "statistics": {
+        "samples": 191,
+        "matches": 191,
+        "drifts": 0,
+        "rawPreserved": true,
+        "oldDecisions": {
+          "PASS": 34,
+          "FAIL": 157
+        },
+        "policyDecisions": {
+          "PASS": 34,
+          "FAIL": 157
+        }
+      },
+      "evidenceDirectories": [
+        "evidence/2026-11-02/zap-parent"
+      ],
+      "evidenceFiles": [
+        "evidence/2026-11-02/zap-parent/acceptance.json",
+        "evidence/2026-11-02/zap-parent/differential.json",
+        "evidence/2026-11-02/zap-parent/workflow-differential.json"
+      ],
+      "evidenceIndexes": [
+        "evidence/2026-11-02/zap-parent/artifact-sha256.json",
+        "evidence/2026-11-02/zap-parent/implementation-hashes.json",
+        "evidence/2026-11-01/security-manager-contract/evidence-index.json"
+      ],
+      "evidenceClassifications": [
+        "CONTROLLED_REPLAY"
+      ],
+      "remainingEvidenceGaps": [
+        "No complete real historical parent transcript located in bounded local search; real historical complete count0",
+        "No live ZAP binary/JVM/scanner/network/cluster/service health or exploit/authentication certification",
+        "Original local Groovy/inert DSL replay is not live Jenkins CPS",
+        "Synthetic controlled tool manifest/hash observations do not certify current production tool bytes; Java helper observed as subprocess outcome, not executed against real services"
+      ],
+      "aggregateAliasOf": null
+    },
+    {
+      "source": "falco-final",
+      "productionStage": "Falco Final",
+      "productionEntry": "node infra/security/runtime/health.mjs",
+      "productionImplementationPaths": [
+        "infra/security/runtime/health.mjs"
+      ],
+      "sourceHashes": {
+        "infra/security/runtime/health.mjs": "65ab133a4248b9900265a47d943f9e6430b9ec9581ddd624b1d9257322b0d921"
+      },
+      "classifierAdapterPath": "infra/security/policy/falco-parent.mjs",
+      "adapterSha256": "2c31980a19c9443215fd196e6aab3e89e312c6bca535857a869b6fe2a610519b",
+      "adapterMatchesAuthoritativeSnapshot": true,
+      "policyMappingPath": "infra/security/policy/engine.mjs",
+      "policyMappingSha256": "dcfe4d6b0716897c6fc16c959bd89fef5dd3f62f8f85048d371efa073c308102",
+      "policyVersionPath": "infra/security/policy/versions/baseline-v1.json",
+      "latestCompatibilityStatus": "VERIFIED",
+      "parentStageEvidenceStatus": "VERIFIED",
+      "parentStageSampleCount": 91,
+      "partialPositiveSamples": 0,
+      "statistics": {
+        "samples": 91,
+        "matches": 91,
+        "drifts": 0,
+        "rawPreserved": true,
+        "oldDecisions": {
+          "PASS": 25,
+          "FAIL": 66
+        },
+        "policyDecisions": {
+          "PASS": 25,
+          "FAIL": 66
+        }
+      },
+      "evidenceDirectories": [
+        "evidence/2026-11-02/falco-time-contract-repair"
+      ],
+      "evidenceFiles": [
+        "evidence/2026-11-02/falco-time-contract-repair/acceptance.json",
+        "evidence/2026-11-02/falco-time-contract-repair/differential.json",
+        "evidence/2026-11-02/falco-time-contract-repair/timing-after.json",
+        "evidence/2026-11-02/falco-time-contract-repair/time-contract.json",
+        "evidence/2026-11-02/falco-time-contract-repair/authoritative-falco-matrix.json",
+        "evidence/2026-11-02/falco-time-contract-repair/evidence-supersession.json",
+        "evidence/2026-11-02/falco-time-contract-repair/source-preservation.json",
+        "evidence/2026-11-02/falco-time-contract-repair/timing-before.json"
+      ],
+      "evidenceIndexes": [
+        "evidence/2026-11-02/falco-time-contract-repair/artifact-sha256.json",
+        "evidence/2026-11-01/security-manager-contract/evidence-index.json"
+      ],
+      "evidenceClassifications": [
+        "CONTROLLED_CAPTURED_TIMING_REPLAY_NOT_LIVE_SENSOR",
+        "CONTROLLED_COMPLETE_STAGE_WITH_HISTORICAL_SENSOR_IDENTITY",
+        "CONTROLLED_REPLAY_NOT_LIVE_RUNTIME"
+      ],
+      "remainingEvidenceGaps": [],
+      "aggregateAliasOf": null,
+      "currentAuthority": "FALCO_TIME_CONTRACT_REPAIRED",
+      "historicalEvidence": {
+        "directory": "evidence/2026-11-01/falco-parent",
+        "status": "SUPERSEDED_FOR_TIME_BOUNDARY_COVERAGE",
+        "retained": true,
+        "counted": false
+      },
+      "adapterVersionTransition": {
+        "path": "infra/security/policy/falco-parent.mjs",
+        "oldSha256": "906addbb70afed7178f8bfa8c09cdd53f7d5a4de02526e21596056bdeb837803",
+        "newSha256": "2c31980a19c9443215fd196e6aab3e89e312c6bca535857a869b6fe2a610519b",
+        "archivedOldPath": "evidence/2026-11-02/falco-time-contract-repair/before/infra/security/policy/falco-parent.mjs",
+        "archivedOldSha256": "906addbb70afed7178f8bfa8c09cdd53f7d5a4de02526e21596056bdeb837803",
+        "reason": "Observed per-sample time contract repair"
+      }
+    },
+    {
+      "source": "defectdojo",
+      "productionStage": "DefectDojo Governance",
+      "productionEntry": "node --max-old-space-size=192 infra/security/governance/defectdojo.mjs",
+      "productionImplementationPaths": [
+        "infra/security/governance/defectdojo.mjs"
+      ],
+      "sourceHashes": {
+        "infra/security/governance/defectdojo.mjs": "f620f0a85650fc834aff56cbc7aeaf8f0d99de971136bfadcfff6a763d4148b7"
+      },
+      "classifierAdapterPath": "infra/security/policy/dojo-parent.mjs",
+      "adapterSha256": "237f6dfce80c0b395c7c2a5b3d7f14b1c7b3714a132db57d6e27011258a3b0f6",
+      "adapterMatchesAuthoritativeSnapshot": true,
+      "policyMappingPath": "infra/security/policy/engine.mjs",
+      "policyMappingSha256": "dcfe4d6b0716897c6fc16c959bd89fef5dd3f62f8f85048d371efa073c308102",
+      "policyVersionPath": "infra/security/policy/versions/baseline-v1.json",
+      "latestCompatibilityStatus": "VERIFIED",
+      "parentStageEvidenceStatus": "VERIFIED",
+      "parentStageSampleCount": 68,
+      "partialPositiveSamples": 0,
+      "statistics": {
+        "samples": 68,
+        "matches": 68,
+        "drifts": 0,
+        "rawPreserved": true,
+        "oldDecisions": {
+          "PASS": 19,
+          "FAIL": 49
+        },
+        "policyDecisions": {
+          "PASS": 19,
+          "FAIL": 49
+        }
+      },
+      "evidenceDirectories": [
+        "evidence/2026-11-01/dojo-parent"
+      ],
+      "evidenceFiles": [
+        "evidence/2026-11-01/dojo-parent/acceptance.json",
+        "evidence/2026-11-01/dojo-parent/differential.json"
+      ],
+      "evidenceIndexes": [
+        "evidence/2026-11-01/dojo-parent/evidence-hashes.json",
+        "evidence/2026-11-01/security-manager-contract/evidence-index.json"
+      ],
+      "evidenceClassifications": [
+        "SYNTHETIC_COMPLETE_STAGE_WITH_HISTORICAL_RECEIPT_IDENTITIES"
+      ],
+      "remainingEvidenceGaps": [],
+      "aggregateAliasOf": null
+    },
+    {
+      "source": "provenance",
+      "productionStage": "Conditional securityProvenance",
+      "productionEntry": "vars/securityProvenance.groovy",
+      "productionImplementationPaths": [
+        "vars/securityProvenance.groovy"
+      ],
+      "sourceHashes": {
+        "vars/securityProvenance.groovy": "db2025f5b6347cd7131835aafca08a9b503232494c6881d7ea94f6969e1d7a3d"
+      },
+      "classifierAdapterPath": "infra/security/policy/provenance-parent.mjs",
+      "adapterSha256": "8da28e5365ab2218506a464b3d1317a10cb6045be813788624ec4b3d9d749725",
+      "adapterMatchesAuthoritativeSnapshot": true,
+      "policyMappingPath": "infra/security/policy/engine.mjs",
+      "policyMappingSha256": "dcfe4d6b0716897c6fc16c959bd89fef5dd3f62f8f85048d371efa073c308102",
+      "policyVersionPath": "infra/security/policy/versions/baseline-v1.json",
+      "latestCompatibilityStatus": "VERIFIED",
+      "parentStageEvidenceStatus": "VERIFIED",
+      "parentStageSampleCount": 181,
+      "partialPositiveSamples": 0,
+      "statistics": {
+        "samples": 181,
+        "matches": 181,
+        "drifts": 0,
+        "rawPreserved": true,
+        "oldDecisions": {
+          "PASS": 30,
+          "FAIL": 142,
+          "WARN": 4,
+          "SKIPPED": 5
+        },
+        "policyDecisions": {
+          "PASS": 30,
+          "FAIL": 142,
+          "WARN": 4,
+          "SKIPPED": 5
+        }
+      },
+      "evidenceDirectories": [
+        "evidence/2026-11-01/provenance-parent"
+      ],
+      "evidenceFiles": [
+        "evidence/2026-11-01/provenance-parent/acceptance.json",
+        "evidence/2026-11-01/provenance-parent/differential.json",
+        "evidence/2026-11-01/provenance-parent/workflow-differential.json"
+      ],
+      "evidenceIndexes": [
+        "evidence/2026-11-01/provenance-parent/artifact-sha256.json",
+        "evidence/2026-11-01/provenance-parent/historical-evidence-index.json",
+        "evidence/2026-11-01/security-manager-contract/evidence-index.json"
+      ],
+      "evidenceClassifications": [
+        "CONTROLLED_REPLAY"
+      ],
+      "remainingEvidenceGaps": [
+        "Historical full CLI/prerequisite transcript not available; complete replay is CONTROLLED_REPLAY",
+        "No new live production provenance generation, registry, Jenkins CPS/credentials or current service health acceptance",
+        "Historical natural parent FAIL incident deferred; archived controlled negative checks and controlled replay kept distinct"
+      ],
+      "aggregateAliasOf": null
+    },
+    {
+      "source": "build-provenance",
+      "productionStage": "Conditional securityBuildProvenance",
+      "productionEntry": "vars/securityBuildProvenance.groovy",
+      "productionImplementationPaths": [
+        "vars/securityBuildProvenance.groovy"
+      ],
+      "sourceHashes": {
+        "vars/securityBuildProvenance.groovy": "fc30d9ea48352c15b9e79400a0e6818236d6cf6531b4992700ef86186b77213d"
+      },
+      "classifierAdapterPath": "infra/security/policy/build-provenance-evidence.mjs",
+      "adapterSha256": "4a427b2a1242d2df39494c41b8529b78117c73ab79a5b48fdf33bd7ddab40316",
+      "adapterMatchesAuthoritativeSnapshot": true,
+      "policyMappingPath": "infra/security/policy/engine.mjs",
+      "policyMappingSha256": "dcfe4d6b0716897c6fc16c959bd89fef5dd3f62f8f85048d371efa073c308102",
+      "policyVersionPath": "infra/security/policy/versions/baseline-v1.json",
+      "latestCompatibilityStatus": "VERIFIED",
+      "parentStageEvidenceStatus": "VERIFIED",
+      "parentStageSampleCount": 363,
+      "partialPositiveSamples": 0,
+      "statistics": {
+        "samples": 363,
+        "matches": 363,
+        "drifts": 0,
+        "rawPreserved": true,
+        "oldDecisions": {
+          "PASS": 30,
+          "FAIL": 322,
+          "WARN": 7,
+          "SKIPPED": 4
+        },
+        "policyDecisions": {
+          "PASS": 30,
+          "FAIL": 322,
+          "WARN": 7,
+          "SKIPPED": 4
+        }
+      },
+      "evidenceDirectories": [
+        "evidence/2026-11-01/build-provenance-parent"
+      ],
+      "evidenceFiles": [
+        "evidence/2026-11-01/build-provenance-parent/acceptance.json",
+        "evidence/2026-11-01/build-provenance-parent/differential.json",
+        "evidence/2026-11-01/build-provenance-parent/workflow-differential.json"
+      ],
+      "evidenceIndexes": [
+        "evidence/2026-11-01/build-provenance-parent/artifact-sha256.json",
+        "evidence/2026-11-01/build-provenance-parent/historical-index.json",
+        "evidence/2026-11-01/security-manager-contract/evidence-index.json"
+      ],
+      "evidenceClassifications": [
+        "CONTROLLED_REPLAY"
+      ],
+      "remainingEvidenceGaps": [
+        "Historical 81 source/artifact file bodies and raw final registry index absent; no new hashing/build/online certification claimed",
+        "Complete producer CLI/prerequisite transcript not archived; replay uses frozen external observations",
+        "No live Jenkins CPS, credentials, Maven, Buildx, registry or current service health validation"
+      ],
+      "aggregateAliasOf": null
+    },
+    {
+      "source": "semgrep-command-audit",
+      "productionStage": "Command Analysis before/in Semgrep",
+      "productionEntry": "infra/security/command-audit.mjs + script/ssh/interpreter Python policies",
+      "productionImplementationPaths": [
+        "infra/security/command-audit.mjs",
+        "infra/security/semgrep-gate.mjs"
+      ],
+      "sourceHashes": {
+        "infra/security/command-audit.mjs": "b721866fa5ad6200cd15648315378e8dcef5814ba35243063854b11f29af2245",
+        "infra/security/semgrep-gate.mjs": "d734f5f83274bad82c7871ffaaf3048dee42894d94c65ff5306c26468a7f8c9a"
+      },
+      "classifierAdapterPath": "infra/security/policy/command-parent.mjs",
+      "adapterSha256": "2224775abf08312e32af9fb09019e3b983b4c04009f651feb59f614a92f2629a",
+      "adapterMatchesAuthoritativeSnapshot": true,
+      "policyMappingPath": "infra/security/policy/engine.mjs",
+      "policyMappingSha256": "dcfe4d6b0716897c6fc16c959bd89fef5dd3f62f8f85048d371efa073c308102",
+      "policyVersionPath": "infra/security/policy/versions/baseline-v1.json",
+      "latestCompatibilityStatus": "VERIFIED",
+      "parentStageEvidenceStatus": "VERIFIED",
+      "parentStageSampleCount": 136,
+      "partialPositiveSamples": 0,
+      "statistics": {
+        "samples": 136,
+        "matches": 136,
+        "drifts": 0,
+        "rawPreserved": true,
+        "oldDecisions": {
+          "PASS": 26,
+          "FAIL": 110
+        },
+        "policyDecisions": {
+          "PASS": 26,
+          "FAIL": 110
+        }
+      },
+      "evidenceDirectories": [
+        "evidence/2026-11-01/command-parent"
+      ],
+      "evidenceFiles": [
+        "evidence/2026-11-01/command-parent/acceptance.json",
+        "evidence/2026-11-01/command-parent/differential.json",
+        "evidence/2026-11-01/command-parent/workflow-differential.json"
+      ],
+      "evidenceIndexes": [
+        "evidence/2026-11-01/command-parent/artifact-sha256.json",
+        "evidence/2026-11-01/command-parent/historical-index.json",
+        "evidence/2026-11-01/security-manager-contract/evidence-index.json"
+      ],
+      "evidenceClassifications": [
+        "CONTROLLED_REPLAY",
+        "REAL_HISTORICAL"
+      ],
+      "remainingEvidenceGaps": [
+        "Historical parent exit/reports are available, full per-command prerequisite/CLI transcript not all archived",
+        "No new real Semgrep CLI scan or Kubernetes Pod lifecycle/isolation/production service health validation; lifecycle is CONTROLLED_REPLAY",
+        "No natural failed production incident manufactured; direct negative examples use static-only fixture analysis"
+      ],
+      "aggregateAliasOf": null
+    },
+    {
+      "source": "security-approval-promotion",
+      "productionStage": "Security Approval / Approved Promotion / Git Promotion",
+      "productionEntry": "infra/security/promotion + gate-contract.mjs + Jenkinsfile",
+      "productionImplementationPaths": [
+        "infra/security/promotion/contract.mjs",
+        "infra/security/promotion/evidence.mjs",
+        "infra/security/promotion/promote.mjs",
+        "infra/security/promotion/sign-approve.mjs"
+      ],
+      "sourceHashes": {
+        "infra/security/promotion/contract.mjs": "109410034fd99c131ed88ae0b9f1b001e52ac3e948396587eed7a3f554d094bc",
+        "infra/security/promotion/evidence.mjs": "70432e2516327418d7acac94e158c14df5351183be402b510ac2ea647205c201",
+        "infra/security/promotion/promote.mjs": "51760b5d0f565ff0b4414711e66a4852c4244c0633c92854e936a7aded9a375c",
+        "infra/security/promotion/sign-approve.mjs": "927555d967062cc9e44c46fb2993df0be220e90ad97e2f64c011a531fee98f42"
+      },
+      "classifierAdapterPath": "infra/security/policy/promotion-evidence.mjs",
+      "adapterSha256": "39e209e3a7c30ebc0df0b81ccad97a8dcf44deec3524c08d72abc6076a9d186d",
+      "adapterMatchesAuthoritativeSnapshot": true,
+      "policyMappingPath": "infra/security/policy/engine.mjs",
+      "policyMappingSha256": "dcfe4d6b0716897c6fc16c959bd89fef5dd3f62f8f85048d371efa073c308102",
+      "policyVersionPath": "infra/security/policy/versions/baseline-v1.json",
+      "latestCompatibilityStatus": "VERIFIED",
+      "parentStageEvidenceStatus": "VERIFIED",
+      "parentStageSampleCount": 258,
+      "partialPositiveSamples": 0,
+      "statistics": {
+        "samples": 258,
+        "matches": 258,
+        "drifts": 0,
+        "rawPreserved": true,
+        "oldDecisions": {
+          "PASS": 16,
+          "FAIL": 239,
+          "SKIPPED": 3
+        },
+        "policyDecisions": {
+          "PASS": 16,
+          "FAIL": 239,
+          "SKIPPED": 3
+        }
+      },
+      "evidenceDirectories": [
+        "evidence/2026-11-01/promotion-parent"
+      ],
+      "evidenceFiles": [
+        "evidence/2026-11-01/promotion-parent/acceptance.json",
+        "evidence/2026-11-01/promotion-parent/differential.json",
+        "evidence/2026-11-01/promotion-parent/workflow-differential.json"
+      ],
+      "evidenceIndexes": [
+        "evidence/2026-11-01/promotion-parent/artifact-sha256.json",
+        "evidence/2026-11-01/promotion-parent/historical-index.json",
+        "evidence/2026-11-01/security-manager-contract/evidence-index.json"
+      ],
+      "evidenceClassifications": [
+        "CONTROLLED_REPLAY",
+        "REAL_HISTORICAL"
+      ],
+      "remainingEvidenceGaps": [
+        "Historical real successful dry-run/deploy and signatures preserved; full per-call prerequisite/CLI transcript incomplete",
+        "No new live Jenkins CPS, Cosign/Harbor, GitOps/Argo or current service health certification; complete operational negatives are CONTROLLED_REPLAY",
+        "Current approval has no createdAt expiry and no explicit Provenance predicate requirement; those rules were not invented"
+      ],
+      "aggregateAliasOf": null
+    }
+  ]
+}

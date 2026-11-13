@@ -23,6 +23,7 @@ import {zapProjects,zapReady,zapBlockedReason,zapUiCase} from '../zap-real.mjs';
 import {kubescapeProjects,kubescapeReady,kubescapeBlockedReason,kubescapeUiCase} from '../kubescape-real.mjs';
 import {sonarProjects,sonarReady,sonarBlockedReason,sonarUiCase} from '../sonar-real.mjs';
 import {deliverRunToLoki} from './loki-delivery.mjs';
+import {withReplayAudit} from './loki-replay.mjs';
 const ids=['gitleaks','semgrep','cosign','sbom','trivy','kyverno','sonarqube','kubescape','zap','provenance','build-provenance','sops'],scenarios=['clean','controlled-finding'];
 const directory=path.join(root,'.devsecops/security-view-runs-v1');
 const identifier=/^web-[a-f0-9-]{36}$/;
@@ -71,7 +72,8 @@ export function getRun(runId){
   if(digest(d)!==diagnosticDigest||d.runId!==runId||d.relatedResultAuditDigest!==auditDigest||!Array.isArray(d.stages)||d.stages.length>32)throw fault('EXECUTION_DIAGNOSTIC_BINDING',503);
   return {...result,executionDiagnostic:d};
  }
- return result;
+ const replayPath=path.join(dir,'loki-replay-audit.json');
+ return fs.existsSync(replayPath)?withReplayAudit(result,read(replayPath)):result;
 }
 export function recentRuns(){init();return fs.readdirSync(directory).filter(n=>identifier.test(n)).sort().map(n=>getRun(n)).sort((a,b)=>b.startedAt.localeCompare(a.startedAt));}
 export function submit(value,ciContext=null){

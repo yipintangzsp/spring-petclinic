@@ -1,0 +1,82 @@
+{
+  "REAL_RUNTIME_FACT_CAPTURE": "INCOMPLETE",
+  "REAL_POLICY_OWNER": "INCOMPLETE",
+  "IMMUTABLE_ARTIFACT_RUNTIME": "INCOMPLETE",
+  "SUMMARY_V2_MIGRATION": "INCOMPLETE",
+  "canonical": 16,
+  "previouslyWired": 5,
+  "newlyWired": [
+    "sbom",
+    "provenance",
+    "build-provenance"
+  ],
+  "sameRunCaptured": 8,
+  "missing": [
+    "gitleaks",
+    "sops",
+    "trivy",
+    "cosign",
+    "sonarqube",
+    "zap",
+    "defectdojo",
+    "semgrep-command-audit"
+  ],
+  "blockers": [
+    {
+      "id": "EXTERNAL_WRITE_BOUNDARY",
+      "sources": [
+        "gitleaks",
+        "semgrep-command-audit",
+        "trivy",
+        "cosign",
+        "zap",
+        "defectdojo"
+      ],
+      "status": "FACT_CONTRACT_INCOMPLETE / RUNTIME_OBSERVATION_BLOCKED",
+      "evidence": "remaining-source-inventory.json; reviewed original stages create scanner Pods / POST scan / sign/push / Dojo import/PATCH. Pre-write boundary lacks full scanner/import/cleanup/verification outcomes. No direct write path executed.",
+      "minimalFix": "Attach passive collection at a complete, already-authorized actual stage boundary; or separately review an isolated controlled execution and ephemeral fact transport. Read-only success summaries cannot substitute."
+    },
+    {
+      "id": "SOPS_ISOLATION",
+      "sources": [
+        "sops"
+      ],
+      "status": "RUNTIME_OBSERVATION_BLOCKED",
+      "evidence": "Prior private fixture removed; only redacted archive shapes remain. Fresh MIN_RBAC guard/tool/key/input context and same-owner secure transport are not available in this dedicated Jenkins run.",
+      "minimalFix": "Re-establish the specifically approved isolated fixture/executor path and collect fresh positive/decrypt/prerequisite facts without production Secret/key access; never reconstruct plaintext from hashes."
+    },
+    {
+      "id": "SONAR_LINEAGE",
+      "sources": [
+        "sonarqube"
+      ],
+      "status": "FACT_CONTRACT_INCOMPLETE",
+      "evidence": "Current authorized exact-task/exact-analysis GETs both 200, Gate OK, but origin #270 source/audit candidate differs from current bound source/runtime candidate; direct archived build-task binding NOT_TESTED. Anonymous 401 did not trigger a privilege escalation.",
+      "minimalFix": "Provide a current-candidate/source-verifiable analysis association, then feed unchanged real facts into the sole owner. Preserve real negative DEFERRED status; no new production analysis merely for proof."
+    },
+    {
+      "id": "ENABLED_HELPER_SCOPE",
+      "sources": [
+        "provenance",
+        "build-provenance"
+      ],
+      "status": "ENABLED_BRANCH_NOT_OBSERVED",
+      "evidence": "Original frozen helpers really returned SKIPPED for empty configuration. No attestation/signing/registry branch executed. Historical #270 enabled success is not copied into this run.",
+      "minimalFix": "If enabled-branch runtime proof is required, supply complete read-only current-candidate verification facts under the authorized identity; never enable signing/push for collection."
+    },
+    {
+      "id": "FULL_ARTIFACT_INPUTS",
+      "status": "NOT_READY",
+      "evidence": "Only 8/16 source receipts; candidate writer correctly rejects completeness. Full aggregate external checks / V1 projection / r2 producer inputs not wired to a complete live set.",
+      "minimalFix": "After complete source capture and reuse proof, wire real bound artifact producer and aggregation inputs. No synthetic completion or Summary activation."
+    }
+  ],
+  "productionBuildsTriggered": 0,
+  "validationBuildsThisIteration": 5,
+  "validationBuildsLifetime": 9,
+  "release": 0,
+  "rollout": 0,
+  "approval": 0,
+  "promotion": 0,
+  "summaryActivated": false
+}

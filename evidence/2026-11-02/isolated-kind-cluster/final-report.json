@@ -1,0 +1,50 @@
+{
+  "01_kind_version": "v0.31.0 darwin/arm64",
+  "02_kubectl_version": "v1.35.0 darwin/arm64",
+  "03_selected_node_image": "docker.io/kindest/node:v1.35.0@sha256:452d707d4862f52530247495d180205e029056831160e22870e37e3f6c1ac31f",
+  "04_architecture_compatibility": "Official index digest verified, arm64 platform present; actual pulled image and node arm64",
+  "05_docker_endpoint": "unix:///Users/zhangsir/.colima/security-test/docker.sock",
+  "06_cluster_name": "security-test-sops",
+  "07_node_container_identity": {
+    "name": "/security-test-sops-control-plane",
+    "id": "9813796eee581bf765b2cd0fb93c26c632b4cb47a075b6c99a29e77597b19697"
+  },
+  "08_api_endpoint": "https://127.0.0.1:59645",
+  "09_dedicated_kubeconfig": "/private/tmp/security-manager-kind-gdasvx1h/kubeconfig",
+  "10_ca_fingerprint_sha256_der": "90507a6f34d0b4e9b31cf862d74b7c2694b465c2e959f99bb45705ef0c8a46d8",
+  "11_kube_system_uid": "54f300a4-5f1b-4e1e-86a1-d173e5a402d8",
+  "12_default_namespace_uid": "95e89e62-5d99-4dab-be07-b8e86856f05d",
+  "13_kubernetes_version": "v1.35.0",
+  "14_node_architecture_runtime": [
+    "arm64",
+    "containerd://2.2.0"
+  ],
+  "15_production_identity_comparison": "Endpoint, kube-system UID, node name, cluster config identity and config path differ. Production CA fingerprint unavailable in archive: NOT_COMPARABLE. No production API used.",
+  "16_production_credential_mount_check": "PASS: no host HOME/production mounts. Only standard VM-local read-only /lib/modules bind and owned /var volume; no production auth env; proxy entries unset.",
+  "17_namespace_smoke": "PASS create/read metadata/delete; final namespace absent",
+  "18_cleanup": "Smoke namespace removed. Authorized kind node/volume/network/private test kubeconfig retained; exact IDs recorded. Future guarded deletion prepared, not executed.",
+  "19_user_kubeconfig_unchanged": "YES",
+  "20_ssh_default_context_protected": "YES; all hashes unchanged; global Docker context default",
+  "21_production_api_access_count": 0,
+  "22_secret_credential_value_read_count": {
+    "production": 0,
+    "kubernetesSecretValues": 0,
+    "testKubeconfig": "New dedicated test credentials necessarily consumed by kind/kubectl; not exported or archived"
+  },
+  "23_files_resources_created": {
+    "ownedResources": {
+      "dockerEndpoint": "unix:///Users/zhangsir/.colima/security-test/docker.sock",
+      "nodeContainer": "9813796eee581bf765b2cd0fb93c26c632b4cb47a075b6c99a29e77597b19697",
+      "volume": "289d891f7426cde46bc46ae897f14fa4b2fbf84703f0513a999f56206d13cd13",
+      "network": "4a0ea7b2181bc3a1fd8896aa5158aec85c162ab8084a7760d6f753935b2a063a",
+      "kubeconfig": "/private/tmp/security-manager-kind-gdasvx1h/kubeconfig",
+      "workspace": "/private/tmp/security-manager-kind-gdasvx1h"
+    },
+    "newEvidence": "evidence/2026-11-02/isolated-kind-cluster",
+    "newDocument": "docs/ISOLATED-KIND-CLUSTER-20261102.md",
+    "existingFilesUnchanged": 3792
+  },
+  "24_ISOLATED_KIND_CLUSTER": "READY",
+  "25_blocker": null,
+  "26_next_permitted_action": "Separately scoped isolated executor/locked-toolchain/full-fixture prerequisite review only; no automatic SOPS/age or other fixtures."
+}

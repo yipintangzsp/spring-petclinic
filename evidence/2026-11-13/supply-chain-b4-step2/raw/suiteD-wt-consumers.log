@@ -1,0 +1,983 @@
+✔ REPLAY Gitleaks actual finding becomes a redacted Generic finding with versioned default severity (19.160667ms)
+✔ REPLAY Semgrep native rules/severity/locations preserved separately from Policy (30.042834ms)
+✔ REPLAY Cosign supply-chain failure explicitly UNSUPPORTED, no invented CVE (16.070416ms)
+✔ REPLAY three-plugin same-run candidate prepares independent sources without Trivy (4.772042ms)
+✔ REPLAY noncomplete D-gitleaks-disabled cannot close history or emit scan PASS (8.078833ms)
+✔ REPLAY noncomplete C-semgrep-disabled cannot close history or emit scan PASS (7.3395ms)
+✔ REPLAY noncomplete I-cosign-timeout cannot close history or emit scan PASS (9.732959ms)
+✔ REPLAY noncomplete Q-cross-project-identity-rejected cannot close history or emit scan PASS (9.693333ms)
+✔ FIXTURE Trivy blocked is independent and does not prevent Gitleaks/Semgrep preparation (208.295541ms)
+✔ REPLAY project B maps to a distinct nonproduction Product/Engagement/Test plan (18.981125ms)
+✔ REPLAY offline repeated preparation and delivery preserve exact facts and reuse the sealed payload (46.379584ms)
+✔ FIXTURE equal finding in different projects has different stable identity (248.224ms)
+✔ FIXTURE equal title/location across plugins and scope is not a shared identity (0.187208ms)
+✔ FIXTURE invalid production IDs, colliding aliases or profile mapping rejected (0.986458ms)
+✔ FIXTURE unknown project is NOT_CONFIGURED and never auto-creates context (320.7025ms)
+✔ FIXTURE missing raw report reference blocks only that plugin, no synthetic PASS (370.658542ms)
+✔ FIXTURE corrupted raw bytes fail artifact validation before any consumer delivery (213.141625ms)
+✔ FIXTURE payload digest mismatch rejected (7.30475ms)
+✔ REPLAY Policy FAIL remains FAIL through Router and receipt with same result/fact digests (49.399834ms)
+✔ REPLAY consumer delivery error is independent and retry reuses original Policy results (83.162792ms)
+✔ FIXTURE redaction drops Secret/Match/source snippets/messages/email regardless of caller text (262.755042ms)
+✔ REPLAY no history-close actions in disabled/error/empty reports (14.220167ms)
+✔ STATIC no token/remote destination accepted, no HTTP success receipt fabricated (71.556875ms)
+✔ STATIC arbitrary registry transform and private Product CLI parameters rejected (0.27525ms)
+✔ REPLAY actual CLI prepares consumer artifacts without starting scanners/Policy (249.609125ms)
+✔ REPLAY rediscovery across two real prior runs keeps stable finding identity, distinct result binding (14.642459ms)
+✔ FIXTURE token smuggling via a resealed plan is rejected (8.044583ms)
+✔ FIXTURE no arbitrary inline endpoint, raw source field or lifecycle state in Generic Finding (3.419167ms)
+✔ REPLAY Router refuses remote options without changing other consumer or result (7.523833ms)
+✔ FIXTURE consumer cannot write preparation output into immutable input artifact (233.724917ms)
+✖ REPLAY real HTTP multipart gitleaks mapping and fact/result reuse (334.644041ms)
+✖ REPLAY real HTTP multipart semgrep mapping and fact/result reuse (343.660334ms)
+✖ FIXTURE mixed findings use both existing mappings over actual HTTP (677.036084ms)
+✔ REPLAY disabled source does not block other HTTP import D-gitleaks-disabled (153.417458ms)
+✔ REPLAY disabled source does not block other HTTP import C-semgrep-disabled (133.942333ms)
+✔ FIXTURE ERROR retains null Policy and independent other plugin delivery (401.37625ms)
+✔ FIXTURE POLICY_ERROR retains null Policy and independent other plugin delivery (357.726959ms)
+✔ FIXTURE blocked Trivy and REPLAY Cosign failure never become synthetic HTTP findings (558.787667ms)
+✖ HTTP 400 is rejected, no mutation retries or secret echo (242.048459ms)
+✖ HTTP 401 is rejected, no mutation retries or secret echo (192.79675ms)
+✖ HTTP 403 is rejected, no mutation retries or secret echo (192.5435ms)
+✖ HTTP 404 is rejected, no mutation retries or secret echo (114.05575ms)
+✖ HTTP 409 never treated as successful or blindly retried (107.115792ms)
+✖ HTTP 500 never treated as successful or blindly retried (186.67975ms)
+✖ HTTP 503 never treated as successful or blindly retried (148.503416ms)
+✔ HTTP POST 429 is retryable only after read-only recovery, no blind resend (78.335ms)
+✔ HTTP safe GET retries with bounded backoff 429 (76.901958ms)
+✔ HTTP safe GET retries with bounded backoff 500 (96.273083ms)
+✔ HTTP safe GET retries with bounded backoff 503 (103.048708ms)
+✔ HTTP GET retry exhaustion cannot trigger import (48.617792ms)
+✔ HTTP connection refused is bounded, never starts a write (118.990083ms)
+✔ HTTP GET timeout is bounded and preserves NOT_SENT semantics (128.987084ms)
+✔ HTTP ambiguous write postTimeout persists uncertainty across calls (371.277625ms)
+✔ HTTP ambiguous write responseLost persists uncertainty across calls (295.539708ms)
+✔ HTTP ambiguous write malformed persists uncertainty across calls (226.525792ms)
+✔ HTTP ambiguous write oversized persists uncertainty across calls (226.720917ms)
+✔ HTTP ambiguous write noTest persists uncertainty across calls (294.975667ms)
+✔ HTTP ambiguous write redirect persists uncertainty across calls (303.179167ms)
+✖ HTTP delivered-but-lost response is reconciled by exact Test and Finding identities, not promoted to ACK (467.463459ms)
+✔ HTTP ambiguous multiple remote tests block replay (308.764166ms)
+✖ HTTP repeated acknowledged result uses durable receipts without another request (339.758959ms)
+✔ HTTP a fresh client journal cannot duplicate an already existing Test (291.592541ms)
+✔ HTTP simultaneous clients sharing journal cannot both POST (210.5585ms)
+✔ HTTP consumer failure affects receipt, not Policy or another plugin (327.848084ms)
+✔ HTTP default is disabled and legacy Router remains offline (79.324542ms)
+✔ HTTP unknown profile or mismatched project rejects before any socket (9.243167ms)
+✖ HTTP allowlist cannot accept arbitrary URL, address, Product, token or fetch override (2.194542ms)
+✔ HTTP timeout/retry bounds reject weakening (0.582333ms)
+✔ HTTP credential channel rejects symlink, hardlink, broad permissions and real token (1.807208ms)
+✔ HTTP unapproved redirect and pagination URL are never followed (71.4335ms)
+✔ HTTP Product binding and Finding test binding cannot be guessed (233.77125ms)
+✔ HTTP journal damage fails closed, does not replay (117.337542ms)
+✔ HTTP journal must be private and separate from immutable input (207.258042ms)
+✔ HTTP manufactured transport handle cannot start network (2.6475ms)
+✔ HTTP CLI refuses remote destination/inline token/real opt-in (0.378792ms)
+✔ HTTP actual async Candidate CLI sends to only local Mock using protected credential (354.296625ms)
+✔ HTTP 200 and nested 201 success accepted only with matching Test/Finding query (137.297417ms)
+✔ STATIC HTTP implementation has no scanner/Policy imports or reimport writes (1.6755ms)
+✔ HTTP response content-type mismatch is UNKNOWN, never another POST (61.821666ms)
+✔ HTTP payload bytes on the wire bind to the durable SENT SHA256 (191.298208ms)
+✖ HTTP project B uses its own mock Product/Engagement only (220.860042ms)
+✔ HTTP corrupt Candidate artifact is rejected before network or journal (150.918083ms)
+✔ HTTP wrong artifact seal cannot start a request (2.318875ms)
+✔ HTTP serialized transport handle is unusable and contains no credential (0.861959ms)
+✖ HTTP no scanner or Policy result is changed by protocol rejections (138.44525ms)
+✖ HTTP limitation: independent concurrent journals are not a distributed exactly-once guarantee (142.510542ms)
+✔ HTTP 202 acceptance is not a completed import ACK (61.142667ms)
+✔ HTTP real journal permission failure blocks dispatch and preserves Policy (11.665666ms)
+✔ HTTP all-disabled Candidate has no request and cannot close findings (5.043333ms)
+✖ REPLAY A-three-valid same Result in Dojo offline and Loki real HTTP (116.552667ms)
+✖ REPLAY H-gitleaks-fail same Result in Dojo offline and Loki real HTTP (88.26225ms)
+✖ REPLAY G-semgrep-fail same Result in Dojo offline and Loki real HTTP (96.959292ms)
+✖ REPLAY F-cosign-tampered same Result in Dojo offline and Loki real HTTP (96.295666ms)
+✖ REPLAY D-gitleaks-disabled same Result in Dojo offline and Loki real HTTP (87.683083ms)
+✖ REPLAY I-cosign-timeout same Result in Dojo offline and Loki real HTTP (99.067083ms)
+✖ REPLAY P-service-project same Result in Dojo offline and Loki real HTTP (91.745833ms)
+✖ default transport is local dry-run with zero HTTP (48.46725ms)
+✔ disabled Consumer needs no writable output and sends zero HTTP (7.2605ms)
+✖ HTTP 400 rejected without retry (40.191875ms)
+✖ HTTP 401 rejected without retry (45.788833ms)
+✖ HTTP 403 rejected without retry (62.877083ms)
+✖ HTTP 404 rejected without retry (77.216791ms)
+✖ HTTP 429 bounded retries preserve exact bytes and Policy (63.924375ms)
+✖ HTTP 500 bounded retries preserve exact bytes and Policy (72.377167ms)
+✖ HTTP 503 bounded retries preserve exact bytes and Policy (50.338958ms)
+✖ retry then 204 ACK never claims exactly-once (52.125292ms)
+✖ connection refused retries bounded to three (103.676292ms)
+✖ timeout is UNKNOWN_REMOTE_STATE, no blind retry (49.131458ms)
+✖ lost is UNKNOWN_REMOTE_STATE, no blind retry (43.745958ms)
+✖ HTTP 200 is not ingestion ACK (44.925375ms)
+✖ HTTP 201 is not ingestion ACK (34.774083ms)
+✖ HTTP 202 is not ingestion ACK (36.237333ms)
+✖ redirect rejected, never followed (33.795125ms)
+✔ transport denies url override (0.212084ms)
+✔ transport denies targetId override (0.043708ms)
+✔ transport denies headers override (0.034875ms)
+✔ transport denies token override (0.038875ms)
+✔ transport denies proxy override (0.028958ms)
+✔ transport denies tenant override (0.02825ms)
+✔ transport denies mode override (0.030208ms)
+✔ transport denies maxAttempts override (0.040167ms)
+✔ transport denies timeoutMs override (0.034458ms)
+✔ transport denies backoffMs override (0.032292ms)
+✔ plan and transport must be genuine capability handles (7.568958ms)
+✔ cross-project artifact or receipt rejected (51.571792ms)
+✔ stable identities, timestamps and content across repeated projection (11.964209ms)
+✔ project and plugin identity never share eventIdentity (11.557625ms)
+✔ native findings retained, severity not invented, Cosign never CVE (16.52175ms)
+✔ disabled and runner error are unknown findings, never zero/PASS (9.771333ms)
+✖ actual core master OFF performs zero evaluations, Router emits DISABLED, no PASS (277.050542ms)
+✖ explicit Policy ERROR FIXTURE remains error, never PASS (273.40775ms)
+✖ secrets and source snippets never enter push, receipt or test log (268.823667ms)
+✔ oversized untrusted failureReason is replaced by fixed error enum (278.894125ms)
+✔ oversized identity fails closed without HTTP (198.791667ms)
+✔ timestamp invalid refused without retimestamp (244.556166ms)
+✔ timestamp old refused without retimestamp (214.766334ms)
+✔ timestamp future refused without retimestamp (224.427875ms)
+✔ payload validator rejects extra-label (8.717583ms)
+✔ payload validator rejects changed-label (5.483417ms)
+✔ payload validator rejects duplicate-event (5.41225ms)
+✔ payload validator rejects timestamp-number (10.992416ms)
+✔ payload validator rejects unknown-field (9.052083ms)
+✔ payload validator rejects unknown-severity (5.581042ms)
+✔ payload validator rejects finding-unknown-zero (4.798458ms)
+✔ label values are bounded enumerations and contain no project/run/digests (5.3365ms)
+✔ duplicate source receipts collapse by stable identity (40.776708ms)
+✔ sealed payload reused without rewriting evidence; output symlink and input overlap denied (35.72525ms)
+✖ Dojo offline ERROR does not stop Loki ACK (40.39375ms)
+✖ Loki ERROR preserves successful Dojo offline preparation and Policy FAIL (85.128458ms)
+✖ both Consumer failures remain separate hashed receipts (38.110625ms)
+✔ Loki preparation error produces isolated receipt without changing Dojo (45.912416ms)
+✖ own ACK is an actual receipt event only in an explicit subsequent batch (27.445125ms)
+✔ Consumer code has no scanner or Policy evaluation import/call (0.337916ms)
+✖ real HTTP invalid push receives 400 at Mock protocol boundary (5.373ms)
+✔ CLI defaults local-only and rejects target/token/unknown/duplicate arguments (2.949333ms)
+✖ Dojo HTTP rejection and Loki HTTP ACK are independent over shared Result (1.773875ms)
+✔ archived real Trivy FAIL preserves identity, native counts and redacted projection (16.220834ms)
+✔ unknown plugins, cross-project requests, changed digest and false fresh claims rejected (24.835709ms)
+✔ existing plugin selection remains bounded: gitleaks (10.640375ms)
+✔ existing plugin selection remains bounded: semgrep (7.178292ms)
+✔ existing plugin selection remains bounded: cosign (5.758084ms)
+✔ existing plugin selection remains bounded: sbom (4.77875ms)
+ℹ tests 162
+ℹ suites 0
+ℹ pass 114
+ℹ fail 48
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 10981.563625
+
+✖ failing tests:
+
+test at infra/security/manager-v2/consumers/dojo-http.test.mjs:75:99
+✖ REPLAY real HTTP multipart gitleaks mapping and fact/result reuse (334.644041ms)
+  Error: EEXIST: file already exists, open '/Users/zhangsir/code/petclinic-platform-20261011/http-protocol-samples/gitleaks-success.json'
+      at Object.openSync (node:fs:556:18)
+      at Object.writeFileSync (node:fs:2412:35)
+      at sample (file:///Users/zhangsir/code/petclinic-platform-20261011/infra/security/manager-v2/consumers/dojo-http.test.mjs:73:55)
+      at file:///Users/zhangsir/code/petclinic-platform-20261011/infra/security/manager-v2/consumers/dojo-http.test.mjs:76:674
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async withMock (file:///Users/zhangsir/code/petclinic-platform-20261011/infra/security/manager-v2/consumers/dojo-http.test.mjs:66:76)
+      at async Test.run (node:internal/test_runner/test:1208:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:385:3) {
+    errno: -17,
+    code: 'EEXIST',
+    syscall: 'open',
+    path: '/Users/zhangsir/code/petclinic-platform-20261011/http-protocol-samples/gitleaks-success.json'
+  }
+
+test at infra/security/manager-v2/consumers/dojo-http.test.mjs:75:99
+✖ REPLAY real HTTP multipart semgrep mapping and fact/result reuse (343.660334ms)
+  Error: EEXIST: file already exists, open '/Users/zhangsir/code/petclinic-platform-20261011/http-protocol-samples/semgrep-success.json'
+      at Object.openSync (node:fs:556:18)
+      at Object.writeFileSync (node:fs:2412:35)
+      at sample (file:///Users/zhangsir/code/petclinic-platform-20261011/infra/security/manager-v2/consumers/dojo-http.test.mjs:73:55)
+      at file:///Users/zhangsir/code/petclinic-platform-20261011/infra/security/manager-v2/consumers/dojo-http.test.mjs:76:674
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async withMock (file:///Users/zhangsir/code/petclinic-platform-20261011/infra/security/manager-v2/consumers/dojo-http.test.mjs:66:76)
+      at async Test.run (node:internal/test_runner/test:1208:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:831:7) {
+    errno: -17,
+    code: 'EEXIST',
+    syscall: 'open',
+    path: '/Users/zhangsir/code/petclinic-platform-20261011/http-protocol-samples/semgrep-success.json'
+  }
+
+test at infra/security/manager-v2/consumers/dojo-http.test.mjs:79:1
+✖ FIXTURE mixed findings use both existing mappings over actual HTTP (677.036084ms)
+  Error: EEXIST: file already exists, open '/Users/zhangsir/code/petclinic-platform-20261011/http-protocol-samples/mixed-fixture.json'
+      at Object.openSync (node:fs:556:18)
+      at Object.writeFileSync (node:fs:2412:35)
+      at sample (file:///Users/zhangsir/code/petclinic-platform-20261011/infra/security/manager-v2/consumers/dojo-http.test.mjs:73:55)
+      at file:///Users/zhangsir/code/petclinic-platform-20261011/infra/security/manager-v2/consumers/dojo-http.test.mjs:79:346
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async withMock (file:///Users/zhangsir/code/petclinic-platform-20261011/infra/security/manager-v2/consumers/dojo-http.test.mjs:66:76)
+      at async Test.run (node:internal/test_runner/test:1208:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:831:7) {
+    errno: -17,
+    code: 'EEXIST',
+    syscall: 'open',
+    path: '/Users/zhangsir/code/petclinic-platform-20261011/http-protocol-samples/mixed-fixture.json'
+  }
+
+test at infra/security/manager-v2/consumers/dojo-http.test.mjs:83:37
+✖ HTTP 400 is rejected, no mutation retries or secret echo (242.048459ms)
+  Error: EEXIST: file already exists, open '/Users/zhangsir/code/petclinic-platform-20261011/http-protocol-samples/http-400.json'
+      at Object.openSync (node:fs:556:18)
+      at Object.writeFileSync (node:fs:2412:35)
+      at sample (file:///Users/zhangsir/code/petclinic-platform-20261011/infra/security/manager-v2/consumers/dojo-http.test.mjs:73:55)
+      at file:///Users/zhangsir/code/petclinic-platform-20261011/infra/security/manager-v2/consumers/dojo-http.test.mjs:83:435
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async withMock (file:///Users/zhangsir/code/petclinic-platform-20261011/infra/security/manager-v2/consumers/dojo-http.test.mjs:66:76)
+      at async Test.run (node:internal/test_runner/test:1208:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:831:7) {
+    errno: -17,
+    code: 'EEXIST',
+    syscall: 'open',
+    path: '/Users/zhangsir/code/petclinic-platform-20261011/http-protocol-samples/http-400.json'
+  }
+
+test at infra/security/manager-v2/consumers/dojo-http.test.mjs:83:37
+✖ HTTP 401 is rejected, no mutation retries or secret echo (192.79675ms)
+  Error: EEXIST: file already exists, open '/Users/zhangsir/code/petclinic-platform-20261011/http-protocol-samples/http-401.json'
+      at Object.openSync (node:fs:556:18)
+      at Object.writeFileSync (node:fs:2412:35)
+      at sample (file:///Users/zhangsir/code/petclinic-platform-20261011/infra/security/manager-v2/consumers/dojo-http.test.mjs:73:55)
+      at file:///Users/zhangsir/code/petclinic-platform-20261011/infra/security/manager-v2/consumers/dojo-http.test.mjs:83:435
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async withMock (file:///Users/zhangsir/code/petclinic-platform-20261011/infra/security/manager-v2/consumers/dojo-http.test.mjs:66:76)
+      at async Test.run (node:internal/test_runner/test:1208:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:831:7) {
+    errno: -17,
+    code: 'EEXIST',
+    syscall: 'open',
+    path: '/Users/zhangsir/code/petclinic-platform-20261011/http-protocol-samples/http-401.json'
+  }
+
+test at infra/security/manager-v2/consumers/dojo-http.test.mjs:83:37
+✖ HTTP 403 is rejected, no mutation retries or secret echo (192.5435ms)
+  Error: EEXIST: file already exists, open '/Users/zhangsir/code/petclinic-platform-20261011/http-protocol-samples/http-403.json'
+      at Object.openSync (node:fs:556:18)
+      at Object.writeFileSync (node:fs:2412:35)
+      at sample (file:///Users/zhangsir/code/petclinic-platform-20261011/infra/security/manager-v2/consumers/dojo-http.test.mjs:73:55)
+      at file:///Users/zhangsir/code/petclinic-platform-20261011/infra/security/manager-v2/consumers/dojo-http.test.mjs:83:435
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async withMock (file:///Users/zhangsir/code/petclinic-platform-20261011/infra/security/manager-v2/consumers/dojo-http.test.mjs:66:76)
+      at async Test.run (node:internal/test_runner/test:1208:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:831:7) {
+    errno: -17,
+    code: 'EEXIST',
+    syscall: 'open',
+    path: '/Users/zhangsir/code/petclinic-platform-20261011/http-protocol-samples/http-403.json'
+  }
+
+test at infra/security/manager-v2/consumers/dojo-http.test.mjs:83:37
+✖ HTTP 404 is rejected, no mutation retries or secret echo (114.05575ms)
+  Error: EEXIST: file already exists, open '/Users/zhangsir/code/petclinic-platform-20261011/http-protocol-samples/http-404.json'
+      at Object.openSync (node:fs:556:18)
+      at Object.writeFileSync (node:fs:2412:35)
+      at sample (file:///Users/zhangsir/code/petclinic-platform-20261011/infra/security/manager-v2/consumers/dojo-http.test.mjs:73:55)
+      at file:///Users/zhangsir/code/petclinic-platform-20261011/infra/security/manager-v2/consumers/dojo-http.test.mjs:83:435
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async withMock (file:///Users/zhangsir/code/petclinic-platform-20261011/infra/security/manager-v2/consumers/dojo-http.test.mjs:66:76)
+      at async Test.run (node:internal/test_runner/test:1208:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:831:7) {
+    errno: -17,
+    code: 'EEXIST',
+    syscall: 'open',
+    path: '/Users/zhangsir/code/petclinic-platform-20261011/http-protocol-samples/http-404.json'
+  }
+
+test at infra/security/manager-v2/consumers/dojo-http.test.mjs:84:33
+✖ HTTP 409 never treated as successful or blindly retried (107.115792ms)
+  Error: EEXIST: file already exists, open '/Users/zhangsir/code/petclinic-platform-20261011/http-protocol-samples/ambiguous-409.json'
+      at Object.openSync (node:fs:556:18)
+      at Object.writeFileSync (node:fs:2412:35)
+      at sample (file:///Users/zhangsir/code/petclinic-platform-20261011/infra/security/manager-v2/consumers/dojo-http.test.mjs:73:55)
+      at file:///Users/zhangsir/code/petclinic-platform-20261011/infra/security/manager-v2/consumers/dojo-http.test.mjs:84:484
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async withMock (file:///Users/zhangsir/code/petclinic-platform-20261011/infra/security/manager-v2/consumers/dojo-http.test.mjs:66:76)
+      at async Test.run (node:internal/test_runner/test:1208:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:831:7) {
+    errno: -17,
+    code: 'EEXIST',
+    syscall: 'open',
+    path: '/Users/zhangsir/code/petclinic-platform-20261011/http-protocol-samples/ambiguous-409.json'
+  }
+
+test at infra/security/manager-v2/consumers/dojo-http.test.mjs:84:33
+✖ HTTP 500 never treated as successful or blindly retried (186.67975ms)
+  Error: EEXIST: file already exists, open '/Users/zhangsir/code/petclinic-platform-20261011/http-protocol-samples/ambiguous-500.json'
+      at Object.openSync (node:fs:556:18)
+      at Object.writeFileSync (node:fs:2412:35)
+      at sample (file:///Users/zhangsir/code/petclinic-platform-20261011/infra/security/manager-v2/consumers/dojo-http.test.mjs:73:55)
+      at file:///Users/zhangsir/code/petclinic-platform-20261011/infra/security/manager-v2/consumers/dojo-http.test.mjs:84:484
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async withMock (file:///Users/zhangsir/code/petclinic-platform-20261011/infra/security/manager-v2/consumers/dojo-http.test.mjs:66:76)
+      at async Test.run (node:internal/test_runner/test:1208:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:831:7) {
+    errno: -17,
+    code: 'EEXIST',
+    syscall: 'open',
+    path: '/Users/zhangsir/code/petclinic-platform-20261011/http-protocol-samples/ambiguous-500.json'
+  }
+
+test at infra/security/manager-v2/consumers/dojo-http.test.mjs:84:33
+✖ HTTP 503 never treated as successful or blindly retried (148.503416ms)
+  Error: EEXIST: file already exists, open '/Users/zhangsir/code/petclinic-platform-20261011/http-protocol-samples/ambiguous-503.json'
+      at Object.openSync (node:fs:556:18)
+      at Object.writeFileSync (node:fs:2412:35)
+      at sample (file:///Users/zhangsir/code/petclinic-platform-20261011/infra/security/manager-v2/consumers/dojo-http.test.mjs:73:55)
+      at file:///Users/zhangsir/code/petclinic-platform-20261011/infra/security/manager-v2/consumers/dojo-http.test.mjs:84:484
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async withMock (file:///Users/zhangsir/code/petclinic-platform-20261011/infra/security/manager-v2/consumers/dojo-http.test.mjs:66:76)
+      at async Test.run (node:internal/test_runner/test:1208:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:831:7) {
+    errno: -17,
+    code: 'EEXIST',
+    syscall: 'open',
+    path: '/Users/zhangsir/code/petclinic-platform-20261011/http-protocol-samples/ambiguous-503.json'
+  }
+
+test at infra/security/manager-v2/consumers/dojo-http.test.mjs:91:1
+✖ HTTP delivered-but-lost response is reconciled by exact Test and Finding identities, not promoted to ACK (467.463459ms)
+  Error: EEXIST: file already exists, open '/Users/zhangsir/code/petclinic-platform-20261011/http-protocol-samples/response-lost-reconciled.json'
+      at Object.openSync (node:fs:556:18)
+      at Object.writeFileSync (node:fs:2412:35)
+      at sample (file:///Users/zhangsir/code/petclinic-platform-20261011/infra/security/manager-v2/consumers/dojo-http.test.mjs:73:55)
+      at file:///Users/zhangsir/code/petclinic-platform-20261011/infra/security/manager-v2/consumers/dojo-http.test.mjs:91:489
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async withMock (file:///Users/zhangsir/code/petclinic-platform-20261011/infra/security/manager-v2/consumers/dojo-http.test.mjs:66:76)
+      at async Test.run (node:internal/test_runner/test:1208:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:831:7) {
+    errno: -17,
+    code: 'EEXIST',
+    syscall: 'open',
+    path: '/Users/zhangsir/code/petclinic-platform-20261011/http-protocol-samples/response-lost-reconciled.json'
+  }
+
+test at infra/security/manager-v2/consumers/dojo-http.test.mjs:93:1
+✖ HTTP repeated acknowledged result uses durable receipts without another request (339.758959ms)
+  Error: EEXIST: file already exists, open '/Users/zhangsir/code/petclinic-platform-20261011/http-protocol-samples/acknowledged-repeat.json'
+      at Object.openSync (node:fs:556:18)
+      at Object.writeFileSync (node:fs:2412:35)
+      at sample (file:///Users/zhangsir/code/petclinic-platform-20261011/infra/security/manager-v2/consumers/dojo-http.test.mjs:73:55)
+      at file:///Users/zhangsir/code/petclinic-platform-20261011/infra/security/manager-v2/consumers/dojo-http.test.mjs:93:540
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async withMock (file:///Users/zhangsir/code/petclinic-platform-20261011/infra/security/manager-v2/consumers/dojo-http.test.mjs:66:76)
+      at async Test.run (node:internal/test_runner/test:1208:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:831:7) {
+    errno: -17,
+    code: 'EEXIST',
+    syscall: 'open',
+    path: '/Users/zhangsir/code/petclinic-platform-20261011/http-protocol-samples/acknowledged-repeat.json'
+  }
+
+test at infra/security/manager-v2/consumers/dojo-http.test.mjs:99:1
+✖ HTTP allowlist cannot accept arbitrary URL, address, Product, token or fetch override (2.194542ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
+  + actual - expected
+  
+  + [
+  +   'dojo-demo-java-v1'
+  + ]
+  - []
+  
+      at TestContext.<anonymous> (file:///Users/zhangsir/code/petclinic-platform-20261011/infra/security/manager-v2/consumers/dojo-http.test.mjs:99:451)
+      at Test.runInAsyncScope (node:async_hooks:226:14)
+      at Test.run (node:internal/test_runner/test:1201:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:831:18)
+      at Test.postRun (node:internal/test_runner/test:1330:19)
+      at Test.run (node:internal/test_runner/test:1258:12)
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:831:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: [ 'dojo-demo-java-v1' ],
+    expected: [],
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }
+
+test at infra/security/manager-v2/consumers/dojo-http.test.mjs:116:1
+✖ HTTP project B uses its own mock Product/Engagement only (220.860042ms)
+  Error: EEXIST: file already exists, open '/Users/zhangsir/code/petclinic-platform-20261011/http-protocol-samples/service-project.json'
+      at Object.openSync (node:fs:556:18)
+      at Object.writeFileSync (node:fs:2412:35)
+      at sample (file:///Users/zhangsir/code/petclinic-platform-20261011/infra/security/manager-v2/consumers/dojo-http.test.mjs:73:55)
+      at file:///Users/zhangsir/code/petclinic-platform-20261011/infra/security/manager-v2/consumers/dojo-http.test.mjs:116:392
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async withMock (file:///Users/zhangsir/code/petclinic-platform-20261011/infra/security/manager-v2/consumers/dojo-http.test.mjs:66:76)
+      at async Test.run (node:internal/test_runner/test:1208:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:831:7) {
+    errno: -17,
+    code: 'EEXIST',
+    syscall: 'open',
+    path: '/Users/zhangsir/code/petclinic-platform-20261011/http-protocol-samples/service-project.json'
+  }
+
+test at infra/security/manager-v2/consumers/dojo-http.test.mjs:120:1
+✖ HTTP no scanner or Policy result is changed by protocol rejections (138.44525ms)
+  Error: EEXIST: file already exists, open '/Users/zhangsir/code/petclinic-platform-20261011/http-protocol-samples/forbidden-result-reused.json'
+      at Object.openSync (node:fs:556:18)
+      at Object.writeFileSync (node:fs:2412:35)
+      at sample (file:///Users/zhangsir/code/petclinic-platform-20261011/infra/security/manager-v2/consumers/dojo-http.test.mjs:73:55)
+      at file:///Users/zhangsir/code/petclinic-platform-20261011/infra/security/manager-v2/consumers/dojo-http.test.mjs:120:536
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async withMock (file:///Users/zhangsir/code/petclinic-platform-20261011/infra/security/manager-v2/consumers/dojo-http.test.mjs:66:76)
+      at async Test.run (node:internal/test_runner/test:1208:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:831:7) {
+    errno: -17,
+    code: 'EEXIST',
+    syscall: 'open',
+    path: '/Users/zhangsir/code/petclinic-platform-20261011/http-protocol-samples/forbidden-result-reused.json'
+  }
+
+test at infra/security/manager-v2/consumers/dojo-http.test.mjs:122:1
+✖ HTTP limitation: independent concurrent journals are not a distributed exactly-once guarantee (142.510542ms)
+  Error: EEXIST: file already exists, open '/Users/zhangsir/code/petclinic-platform-20261011/http-protocol-samples/documented-cross-journal-race.json'
+      at Object.openSync (node:fs:556:18)
+      at Object.writeFileSync (node:fs:2412:35)
+      at sample (file:///Users/zhangsir/code/petclinic-platform-20261011/infra/security/manager-v2/consumers/dojo-http.test.mjs:73:55)
+      at file:///Users/zhangsir/code/petclinic-platform-20261011/infra/security/manager-v2/consumers/dojo-http.test.mjs:122:413
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async withMock (file:///Users/zhangsir/code/petclinic-platform-20261011/infra/security/manager-v2/consumers/dojo-http.test.mjs:66:76)
+      at async Test.run (node:internal/test_runner/test:1208:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:831:7) {
+    errno: -17,
+    code: 'EEXIST',
+    syscall: 'open',
+    path: '/Users/zhangsir/code/petclinic-platform-20261011/http-protocol-samples/documented-cross-journal-race.json'
+  }
+
+test at infra/security/manager-v2/consumers/loki.test.mjs:25:153
+✖ REPLAY A-three-valid same Result in Dojo offline and Loki real HTTP (116.552667ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  + actual - expected
+  
+  + 'ERROR'
+  - 'ACKNOWLEDGED'
+  
+      at file:///Users/zhangsir/code/petclinic-platform-20261011/infra/security/manager-v2/consumers/loki.test.mjs:27:9
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async withMock (file:///Users/zhangsir/code/petclinic-platform-20261011/infra/security/manager-v2/consumers/loki.test.mjs:22:64)
+      at async Test.run (node:internal/test_runner/test:1208:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:385:3) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 'ERROR',
+    expected: 'ACKNOWLEDGED',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at infra/security/manager-v2/consumers/loki.test.mjs:25:153
+✖ REPLAY H-gitleaks-fail same Result in Dojo offline and Loki real HTTP (88.26225ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  + actual - expected
+  
+  + 'ERROR'
+  - 'ACKNOWLEDGED'
+  
+      at file:///Users/zhangsir/code/petclinic-platform-20261011/infra/security/manager-v2/consumers/loki.test.mjs:27:9
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async withMock (file:///Users/zhangsir/code/petclinic-platform-20261011/infra/security/manager-v2/consumers/loki.test.mjs:22:64)
+      at async Test.run (node:internal/test_runner/test:1208:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:831:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 'ERROR',
+    expected: 'ACKNOWLEDGED',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at infra/security/manager-v2/consumers/loki.test.mjs:25:153
+✖ REPLAY G-semgrep-fail same Result in Dojo offline and Loki real HTTP (96.959292ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  + actual - expected
+  
+  + 'ERROR'
+  - 'ACKNOWLEDGED'
+  
+      at file:///Users/zhangsir/code/petclinic-platform-20261011/infra/security/manager-v2/consumers/loki.test.mjs:27:9
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async withMock (file:///Users/zhangsir/code/petclinic-platform-20261011/infra/security/manager-v2/consumers/loki.test.mjs:22:64)
+      at async Test.run (node:internal/test_runner/test:1208:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:831:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 'ERROR',
+    expected: 'ACKNOWLEDGED',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at infra/security/manager-v2/consumers/loki.test.mjs:25:153
+✖ REPLAY F-cosign-tampered same Result in Dojo offline and Loki real HTTP (96.295666ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  + actual - expected
+  
+  + 'ERROR'
+  - 'ACKNOWLEDGED'
+  
+      at file:///Users/zhangsir/code/petclinic-platform-20261011/infra/security/manager-v2/consumers/loki.test.mjs:27:9
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async withMock (file:///Users/zhangsir/code/petclinic-platform-20261011/infra/security/manager-v2/consumers/loki.test.mjs:22:64)
+      at async Test.run (node:internal/test_runner/test:1208:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:831:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 'ERROR',
+    expected: 'ACKNOWLEDGED',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at infra/security/manager-v2/consumers/loki.test.mjs:25:153
+✖ REPLAY D-gitleaks-disabled same Result in Dojo offline and Loki real HTTP (87.683083ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  + actual - expected
+  
+  + 'ERROR'
+  - 'ACKNOWLEDGED'
+  
+      at file:///Users/zhangsir/code/petclinic-platform-20261011/infra/security/manager-v2/consumers/loki.test.mjs:27:9
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async withMock (file:///Users/zhangsir/code/petclinic-platform-20261011/infra/security/manager-v2/consumers/loki.test.mjs:22:64)
+      at async Test.run (node:internal/test_runner/test:1208:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:831:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 'ERROR',
+    expected: 'ACKNOWLEDGED',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at infra/security/manager-v2/consumers/loki.test.mjs:25:153
+✖ REPLAY I-cosign-timeout same Result in Dojo offline and Loki real HTTP (99.067083ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  + actual - expected
+  
+  + 'ERROR'
+  - 'ACKNOWLEDGED'
+  
+      at file:///Users/zhangsir/code/petclinic-platform-20261011/infra/security/manager-v2/consumers/loki.test.mjs:27:9
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async withMock (file:///Users/zhangsir/code/petclinic-platform-20261011/infra/security/manager-v2/consumers/loki.test.mjs:22:64)
+      at async Test.run (node:internal/test_runner/test:1208:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:831:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 'ERROR',
+    expected: 'ACKNOWLEDGED',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at infra/security/manager-v2/consumers/loki.test.mjs:25:153
+✖ REPLAY P-service-project same Result in Dojo offline and Loki real HTTP (91.745833ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  + actual - expected
+  
+  + 'ERROR'
+  - 'ACKNOWLEDGED'
+  
+      at file:///Users/zhangsir/code/petclinic-platform-20261011/infra/security/manager-v2/consumers/loki.test.mjs:27:9
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async withMock (file:///Users/zhangsir/code/petclinic-platform-20261011/infra/security/manager-v2/consumers/loki.test.mjs:22:64)
+      at async Test.run (node:internal/test_runner/test:1208:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:831:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 'ERROR',
+    expected: 'ACKNOWLEDGED',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at infra/security/manager-v2/consumers/loki.test.mjs:29:1
+✖ default transport is local dry-run with zero HTTP (48.46725ms)
+  Error: EEXIST: file already exists, open '/Users/zhangsir/code/petclinic-platform-20261011/loki-protocol-samples/default-dry-run.json'
+      at Object.openSync (node:fs:556:18)
+      at Object.writeFileSync (node:fs:2412:35)
+      at sample (file:///Users/zhangsir/code/petclinic-platform-20261011/infra/security/manager-v2/consumers/loki.test.mjs:24:552)
+      at file:///Users/zhangsir/code/petclinic-platform-20261011/infra/security/manager-v2/consumers/loki.test.mjs:29:297
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async withMock (file:///Users/zhangsir/code/petclinic-platform-20261011/infra/security/manager-v2/consumers/loki.test.mjs:22:64)
+      at async Test.run (node:internal/test_runner/test:1208:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:831:7) {
+    errno: -17,
+    code: 'EEXIST',
+    syscall: 'open',
+    path: '/Users/zhangsir/code/petclinic-platform-20261011/loki-protocol-samples/default-dry-run.json'
+  }
+
+test at infra/security/manager-v2/consumers/loki.test.mjs:31:39
+✖ HTTP 400 rejected without retry (40.191875ms)
+  Error: LOKI_TIMESTAMP_OUTSIDE_WINDOW
+      at must (file:///Users/zhangsir/code/petclinic-platform-20261011/infra/security/manager-v2/consumers/loki.mjs:8:42)
+      at validateLokiPush (file:///Users/zhangsir/code/petclinic-platform-20261011/infra/security/manager-v2/consumers/loki.mjs:107:20)
+      at publishLoki (file:///Users/zhangsir/code/petclinic-platform-20261011/infra/security/manager-v2/consumers/loki.mjs:140:2)
+      at file:///Users/zhangsir/code/petclinic-platform-20261011/infra/security/manager-v2/consumers/loki.test.mjs:31:164
+      at withMock (file:///Users/zhangsir/code/petclinic-platform-20261011/infra/security/manager-v2/consumers/loki.test.mjs:22:70)
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async Test.run (node:internal/test_runner/test:1208:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:831:7) {
+    code: 'LOKI_TIMESTAMP_OUTSIDE_WINDOW'
+  }
+
+test at infra/security/manager-v2/consumers/loki.test.mjs:31:39
+✖ HTTP 401 rejected without retry (45.788833ms)
+  Error: LOKI_TIMESTAMP_OUTSIDE_WINDOW
+      at must (file:///Users/zhangsir/code/petclinic-platform-20261011/infra/security/manager-v2/consumers/loki.mjs:8:42)
+      at validateLokiPush (file:///Users/zhangsir/code/petclinic-platform-20261011/infra/security/manager-v2/consumers/loki.mjs:107:20)
+      at publishLoki (file:///Users/zhangsir/code/petclinic-platform-20261011/infra/security/manager-v2/consumers/loki.mjs:140:2)
+      at file:///Users/zhangsir/code/petclinic-platform-20261011/infra/security/manager-v2/consumers/loki.test.mjs:31:164
+      at withMock (file:///Users/zhangsir/code/petclinic-platform-20261011/infra/security/manager-v2/consumers/loki.test.mjs:22:70)
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async Test.run (node:internal/test_runner/test:1208:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:831:7) {
+    code: 'LOKI_TIMESTAMP_OUTSIDE_WINDOW'
+  }
+
+test at infra/security/manager-v2/consumers/loki.test.mjs:31:39
+✖ HTTP 403 rejected without retry (62.877083ms)
+  Error: LOKI_TIMESTAMP_OUTSIDE_WINDOW
+      at must (file:///Users/zhangsir/code/petclinic-platform-20261011/infra/security/manager-v2/consumers/loki.mjs:8:42)
+      at validateLokiPush (file:///Users/zhangsir/code/petclinic-platform-20261011/infra/security/manager-v2/consumers/loki.mjs:107:20)
+      at publishLoki (file:///Users/zhangsir/code/petclinic-platform-20261011/infra/security/manager-v2/consumers/loki.mjs:140:2)
+      at file:///Users/zhangsir/code/petclinic-platform-20261011/infra/security/manager-v2/consumers/loki.test.mjs:31:164
+      at withMock (file:///Users/zhangsir/code/petclinic-platform-20261011/infra/security/manager-v2/consumers/loki.test.mjs:22:70)
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async Test.run (node:internal/test_runner/test:1208:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:831:7) {
+    code: 'LOKI_TIMESTAMP_OUTSIDE_WINDOW'
+  }
+
+test at infra/security/manager-v2/consumers/loki.test.mjs:31:39
+✖ HTTP 404 rejected without retry (77.216791ms)
+  Error: LOKI_TIMESTAMP_OUTSIDE_WINDOW
+      at must (file:///Users/zhangsir/code/petclinic-platform-20261011/infra/security/manager-v2/consumers/loki.mjs:8:42)
+      at validateLokiPush (file:///Users/zhangsir/code/petclinic-platform-20261011/infra/security/manager-v2/consumers/loki.mjs:107:20)
+      at publishLoki (file:///Users/zhangsir/code/petclinic-platform-20261011/infra/security/manager-v2/consumers/loki.mjs:140:2)
+      at file:///Users/zhangsir/code/petclinic-platform-20261011/infra/security/manager-v2/consumers/loki.test.mjs:31:164
+      at withMock (file:///Users/zhangsir/code/petclinic-platform-20261011/infra/security/manager-v2/consumers/loki.test.mjs:22:70)
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async Test.run (node:internal/test_runner/test:1208:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:831:7) {
+    code: 'LOKI_TIMESTAMP_OUTSIDE_WINDOW'
+  }
+
+test at infra/security/manager-v2/consumers/loki.test.mjs:32:35
+✖ HTTP 429 bounded retries preserve exact bytes and Policy (63.924375ms)
+  Error: LOKI_TIMESTAMP_OUTSIDE_WINDOW
+      at must (file:///Users/zhangsir/code/petclinic-platform-20261011/infra/security/manager-v2/consumers/loki.mjs:8:42)
+      at validateLokiPush (file:///Users/zhangsir/code/petclinic-platform-20261011/infra/security/manager-v2/consumers/loki.mjs:107:20)
+      at publishLoki (file:///Users/zhangsir/code/petclinic-platform-20261011/infra/security/manager-v2/consumers/loki.mjs:140:2)
+      at file:///Users/zhangsir/code/petclinic-platform-20261011/infra/security/manager-v2/consumers/loki.test.mjs:32:213
+      at withMock (file:///Users/zhangsir/code/petclinic-platform-20261011/infra/security/manager-v2/consumers/loki.test.mjs:22:70)
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async Test.run (node:internal/test_runner/test:1208:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:831:7) {
+    code: 'LOKI_TIMESTAMP_OUTSIDE_WINDOW'
+  }
+
+test at infra/security/manager-v2/consumers/loki.test.mjs:32:35
+✖ HTTP 500 bounded retries preserve exact bytes and Policy (72.377167ms)
+  Error: LOKI_TIMESTAMP_OUTSIDE_WINDOW
+      at must (file:///Users/zhangsir/code/petclinic-platform-20261011/infra/security/manager-v2/consumers/loki.mjs:8:42)
+      at validateLokiPush (file:///Users/zhangsir/code/petclinic-platform-20261011/infra/security/manager-v2/consumers/loki.mjs:107:20)
+      at publishLoki (file:///Users/zhangsir/code/petclinic-platform-20261011/infra/security/manager-v2/consumers/loki.mjs:140:2)
+      at file:///Users/zhangsir/code/petclinic-platform-20261011/infra/security/manager-v2/consumers/loki.test.mjs:32:213
+      at withMock (file:///Users/zhangsir/code/petclinic-platform-20261011/infra/security/manager-v2/consumers/loki.test.mjs:22:70)
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async Test.run (node:internal/test_runner/test:1208:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:831:7) {
+    code: 'LOKI_TIMESTAMP_OUTSIDE_WINDOW'
+  }
+
+test at infra/security/manager-v2/consumers/loki.test.mjs:32:35
+✖ HTTP 503 bounded retries preserve exact bytes and Policy (50.338958ms)
+  Error: LOKI_TIMESTAMP_OUTSIDE_WINDOW
+      at must (file:///Users/zhangsir/code/petclinic-platform-20261011/infra/security/manager-v2/consumers/loki.mjs:8:42)
+      at validateLokiPush (file:///Users/zhangsir/code/petclinic-platform-20261011/infra/security/manager-v2/consumers/loki.mjs:107:20)
+      at publishLoki (file:///Users/zhangsir/code/petclinic-platform-20261011/infra/security/manager-v2/consumers/loki.mjs:140:2)
+      at file:///Users/zhangsir/code/petclinic-platform-20261011/infra/security/manager-v2/consumers/loki.test.mjs:32:213
+      at withMock (file:///Users/zhangsir/code/petclinic-platform-20261011/infra/security/manager-v2/consumers/loki.test.mjs:22:70)
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async Test.run (node:internal/test_runner/test:1208:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:831:7) {
+    code: 'LOKI_TIMESTAMP_OUTSIDE_WINDOW'
+  }
+
+test at infra/security/manager-v2/consumers/loki.test.mjs:33:1
+✖ retry then 204 ACK never claims exactly-once (52.125292ms)
+  Error: LOKI_TIMESTAMP_OUTSIDE_WINDOW
+      at must (file:///Users/zhangsir/code/petclinic-platform-20261011/infra/security/manager-v2/consumers/loki.mjs:8:42)
+      at validateLokiPush (file:///Users/zhangsir/code/petclinic-platform-20261011/infra/security/manager-v2/consumers/loki.mjs:107:20)
+      at publishLoki (file:///Users/zhangsir/code/petclinic-platform-20261011/infra/security/manager-v2/consumers/loki.mjs:140:2)
+      at file:///Users/zhangsir/code/petclinic-platform-20261011/infra/security/manager-v2/consumers/loki.test.mjs:33:120
+      at withMock (file:///Users/zhangsir/code/petclinic-platform-20261011/infra/security/manager-v2/consumers/loki.test.mjs:22:70)
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async Test.run (node:internal/test_runner/test:1208:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:831:7) {
+    code: 'LOKI_TIMESTAMP_OUTSIDE_WINDOW'
+  }
+
+test at infra/security/manager-v2/consumers/loki.test.mjs:34:1
+✖ connection refused retries bounded to three (103.676292ms)
+  Error: LOKI_TIMESTAMP_OUTSIDE_WINDOW
+      at must (file:///Users/zhangsir/code/petclinic-platform-20261011/infra/security/manager-v2/consumers/loki.mjs:8:42)
+      at validateLokiPush (file:///Users/zhangsir/code/petclinic-platform-20261011/infra/security/manager-v2/consumers/loki.mjs:107:20)
+      at publishLoki (file:///Users/zhangsir/code/petclinic-platform-20261011/infra/security/manager-v2/consumers/loki.mjs:140:2)
+      at TestContext.<anonymous> (file:///Users/zhangsir/code/petclinic-platform-20261011/infra/security/manager-v2/consumers/loki.test.mjs:34:102)
+      at Test.runInAsyncScope (node:async_hooks:226:14)
+      at Test.run (node:internal/test_runner/test:1201:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:831:18)
+      at Test.postRun (node:internal/test_runner/test:1330:19)
+      at Test.run (node:internal/test_runner/test:1258:12)
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5) {
+    code: 'LOKI_TIMESTAMP_OUTSIDE_WINDOW'
+  }
+
+test at infra/security/manager-v2/consumers/loki.test.mjs:35:38
+✖ timeout is UNKNOWN_REMOTE_STATE, no blind retry (49.131458ms)
+  Error: LOKI_TIMESTAMP_OUTSIDE_WINDOW
+      at must (file:///Users/zhangsir/code/petclinic-platform-20261011/infra/security/manager-v2/consumers/loki.mjs:8:42)
+      at validateLokiPush (file:///Users/zhangsir/code/petclinic-platform-20261011/infra/security/manager-v2/consumers/loki.mjs:107:20)
+      at publishLoki (file:///Users/zhangsir/code/petclinic-platform-20261011/infra/security/manager-v2/consumers/loki.mjs:140:2)
+      at file:///Users/zhangsir/code/petclinic-platform-20261011/infra/security/manager-v2/consumers/loki.test.mjs:35:175
+      at withMock (file:///Users/zhangsir/code/petclinic-platform-20261011/infra/security/manager-v2/consumers/loki.test.mjs:22:70)
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async Test.run (node:internal/test_runner/test:1208:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:831:7) {
+    code: 'LOKI_TIMESTAMP_OUTSIDE_WINDOW'
+  }
+
+test at infra/security/manager-v2/consumers/loki.test.mjs:35:38
+✖ lost is UNKNOWN_REMOTE_STATE, no blind retry (43.745958ms)
+  Error: LOKI_TIMESTAMP_OUTSIDE_WINDOW
+      at must (file:///Users/zhangsir/code/petclinic-platform-20261011/infra/security/manager-v2/consumers/loki.mjs:8:42)
+      at validateLokiPush (file:///Users/zhangsir/code/petclinic-platform-20261011/infra/security/manager-v2/consumers/loki.mjs:107:20)
+      at publishLoki (file:///Users/zhangsir/code/petclinic-platform-20261011/infra/security/manager-v2/consumers/loki.mjs:140:2)
+      at file:///Users/zhangsir/code/petclinic-platform-20261011/infra/security/manager-v2/consumers/loki.test.mjs:35:175
+      at withMock (file:///Users/zhangsir/code/petclinic-platform-20261011/infra/security/manager-v2/consumers/loki.test.mjs:22:70)
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async Test.run (node:internal/test_runner/test:1208:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:831:7) {
+    code: 'LOKI_TIMESTAMP_OUTSIDE_WINDOW'
+  }
+
+test at infra/security/manager-v2/consumers/loki.test.mjs:36:35
+✖ HTTP 200 is not ingestion ACK (44.925375ms)
+  Error: LOKI_TIMESTAMP_OUTSIDE_WINDOW
+      at must (file:///Users/zhangsir/code/petclinic-platform-20261011/infra/security/manager-v2/consumers/loki.mjs:8:42)
+      at validateLokiPush (file:///Users/zhangsir/code/petclinic-platform-20261011/infra/security/manager-v2/consumers/loki.mjs:107:20)
+      at publishLoki (file:///Users/zhangsir/code/petclinic-platform-20261011/infra/security/manager-v2/consumers/loki.mjs:140:2)
+      at file:///Users/zhangsir/code/petclinic-platform-20261011/infra/security/manager-v2/consumers/loki.test.mjs:36:130
+      at withMock (file:///Users/zhangsir/code/petclinic-platform-20261011/infra/security/manager-v2/consumers/loki.test.mjs:22:70)
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async Test.run (node:internal/test_runner/test:1208:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:831:7) {
+    code: 'LOKI_TIMESTAMP_OUTSIDE_WINDOW'
+  }
+
+test at infra/security/manager-v2/consumers/loki.test.mjs:36:35
+✖ HTTP 201 is not ingestion ACK (34.774083ms)
+  Error: LOKI_TIMESTAMP_OUTSIDE_WINDOW
+      at must (file:///Users/zhangsir/code/petclinic-platform-20261011/infra/security/manager-v2/consumers/loki.mjs:8:42)
+      at validateLokiPush (file:///Users/zhangsir/code/petclinic-platform-20261011/infra/security/manager-v2/consumers/loki.mjs:107:20)
+      at publishLoki (file:///Users/zhangsir/code/petclinic-platform-20261011/infra/security/manager-v2/consumers/loki.mjs:140:2)
+      at file:///Users/zhangsir/code/petclinic-platform-20261011/infra/security/manager-v2/consumers/loki.test.mjs:36:130
+      at withMock (file:///Users/zhangsir/code/petclinic-platform-20261011/infra/security/manager-v2/consumers/loki.test.mjs:22:70)
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async Test.run (node:internal/test_runner/test:1208:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:831:7) {
+    code: 'LOKI_TIMESTAMP_OUTSIDE_WINDOW'
+  }
+
+test at infra/security/manager-v2/consumers/loki.test.mjs:36:35
+✖ HTTP 202 is not ingestion ACK (36.237333ms)
+  Error: LOKI_TIMESTAMP_OUTSIDE_WINDOW
+      at must (file:///Users/zhangsir/code/petclinic-platform-20261011/infra/security/manager-v2/consumers/loki.mjs:8:42)
+      at validateLokiPush (file:///Users/zhangsir/code/petclinic-platform-20261011/infra/security/manager-v2/consumers/loki.mjs:107:20)
+      at publishLoki (file:///Users/zhangsir/code/petclinic-platform-20261011/infra/security/manager-v2/consumers/loki.mjs:140:2)
+      at file:///Users/zhangsir/code/petclinic-platform-20261011/infra/security/manager-v2/consumers/loki.test.mjs:36:130
+      at withMock (file:///Users/zhangsir/code/petclinic-platform-20261011/infra/security/manager-v2/consumers/loki.test.mjs:22:70)
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async Test.run (node:internal/test_runner/test:1208:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:831:7) {
+    code: 'LOKI_TIMESTAMP_OUTSIDE_WINDOW'
+  }
+
+test at infra/security/manager-v2/consumers/loki.test.mjs:37:1
+✖ redirect rejected, never followed (33.795125ms)
+  Error: LOKI_TIMESTAMP_OUTSIDE_WINDOW
+      at must (file:///Users/zhangsir/code/petclinic-platform-20261011/infra/security/manager-v2/consumers/loki.mjs:8:42)
+      at validateLokiPush (file:///Users/zhangsir/code/petclinic-platform-20261011/infra/security/manager-v2/consumers/loki.mjs:107:20)
+      at publishLoki (file:///Users/zhangsir/code/petclinic-platform-20261011/infra/security/manager-v2/consumers/loki.mjs:140:2)
+      at file:///Users/zhangsir/code/petclinic-platform-20261011/infra/security/manager-v2/consumers/loki.test.mjs:37:100
+      at withMock (file:///Users/zhangsir/code/petclinic-platform-20261011/infra/security/manager-v2/consumers/loki.test.mjs:22:70)
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async Test.run (node:internal/test_runner/test:1208:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:831:7) {
+    code: 'LOKI_TIMESTAMP_OUTSIDE_WINDOW'
+  }
+
+test at infra/security/manager-v2/consumers/loki.test.mjs:45:1
+✖ actual core master OFF performs zero evaluations, Router emits DISABLED, no PASS (277.050542ms)
+  Error: EEXIST: file already exists, open '/Users/zhangsir/code/petclinic-platform-20261011/loki-protocol-samples/master-off-FIXTURE.json'
+      at Object.openSync (node:fs:556:18)
+      at Object.writeFileSync (node:fs:2412:35)
+      at sample (file:///Users/zhangsir/code/petclinic-platform-20261011/infra/security/manager-v2/consumers/loki.test.mjs:24:552)
+      at file:///Users/zhangsir/code/petclinic-platform-20261011/infra/security/manager-v2/consumers/loki.test.mjs:45:905
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async withMock (file:///Users/zhangsir/code/petclinic-platform-20261011/infra/security/manager-v2/consumers/loki.test.mjs:22:64)
+      at async Test.run (node:internal/test_runner/test:1208:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:831:7) {
+    errno: -17,
+    code: 'EEXIST',
+    syscall: 'open',
+    path: '/Users/zhangsir/code/petclinic-platform-20261011/loki-protocol-samples/master-off-FIXTURE.json'
+  }
+
+test at infra/security/manager-v2/consumers/loki.test.mjs:46:1
+✖ explicit Policy ERROR FIXTURE remains error, never PASS (273.40775ms)
+  Error: LOKI_TIMESTAMP_OUTSIDE_WINDOW
+      at must (file:///Users/zhangsir/code/petclinic-platform-20261011/infra/security/manager-v2/consumers/loki.mjs:8:42)
+      at validateLokiPush (file:///Users/zhangsir/code/petclinic-platform-20261011/infra/security/manager-v2/consumers/loki.mjs:107:20)
+      at publishLoki (file:///Users/zhangsir/code/petclinic-platform-20261011/infra/security/manager-v2/consumers/loki.mjs:140:2)
+      at file:///Users/zhangsir/code/petclinic-platform-20261011/infra/security/manager-v2/consumers/loki.test.mjs:46:497
+      at withMock (file:///Users/zhangsir/code/petclinic-platform-20261011/infra/security/manager-v2/consumers/loki.test.mjs:22:70)
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async Test.run (node:internal/test_runner/test:1208:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:831:7) {
+    code: 'LOKI_TIMESTAMP_OUTSIDE_WINDOW'
+  }
+
+test at infra/security/manager-v2/consumers/loki.test.mjs:47:1
+✖ secrets and source snippets never enter push, receipt or test log (268.823667ms)
+  Error: LOKI_TIMESTAMP_OUTSIDE_WINDOW
+      at must (file:///Users/zhangsir/code/petclinic-platform-20261011/infra/security/manager-v2/consumers/loki.mjs:8:42)
+      at validateLokiPush (file:///Users/zhangsir/code/petclinic-platform-20261011/infra/security/manager-v2/consumers/loki.mjs:107:20)
+      at publishLoki (file:///Users/zhangsir/code/petclinic-platform-20261011/infra/security/manager-v2/consumers/loki.mjs:140:2)
+      at file:///Users/zhangsir/code/petclinic-platform-20261011/infra/security/manager-v2/consumers/loki.test.mjs:47:459
+      at withMock (file:///Users/zhangsir/code/petclinic-platform-20261011/infra/security/manager-v2/consumers/loki.test.mjs:22:70)
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async TestContext.<anonymous> (file:///Users/zhangsir/code/petclinic-platform-20261011/infra/security/manager-v2/consumers/loki.test.mjs:47:354)
+      at async Test.run (node:internal/test_runner/test:1208:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:831:7) {
+    code: 'LOKI_TIMESTAMP_OUTSIDE_WINDOW'
+  }
+
+test at infra/security/manager-v2/consumers/loki.test.mjs:55:1
+✖ Dojo offline ERROR does not stop Loki ACK (40.39375ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  + actual - expected
+  
+  + 'ERROR'
+  - 'ACKNOWLEDGED'
+  
+      at file:///Users/zhangsir/code/petclinic-platform-20261011/infra/security/manager-v2/consumers/loki.test.mjs:55:366
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async withMock (file:///Users/zhangsir/code/petclinic-platform-20261011/infra/security/manager-v2/consumers/loki.test.mjs:22:64)
+      at async Test.run (node:internal/test_runner/test:1208:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:831:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 'ERROR',
+    expected: 'ACKNOWLEDGED',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at infra/security/manager-v2/consumers/loki.test.mjs:56:1
+✖ Loki ERROR preserves successful Dojo offline preparation and Policy FAIL (85.128458ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  + actual - expected
+  
+  + 'ERROR'
+  - 'RETRYABLE_FAILURE'
+  
+      at file:///Users/zhangsir/code/petclinic-platform-20261011/infra/security/manager-v2/consumers/loki.test.mjs:56:360
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async withMock (file:///Users/zhangsir/code/petclinic-platform-20261011/infra/security/manager-v2/consumers/loki.test.mjs:22:64)
+      at async Test.run (node:internal/test_runner/test:1208:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:831:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 'ERROR',
+    expected: 'RETRYABLE_FAILURE',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at infra/security/manager-v2/consumers/loki.test.mjs:57:1
+✖ both Consumer failures remain separate hashed receipts (38.110625ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  + actual - expected
+  
+  + 'ERROR'
+  - 'REJECTED'
+  
+      at file:///Users/zhangsir/code/petclinic-platform-20261011/infra/security/manager-v2/consumers/loki.test.mjs:57:389
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async withMock (file:///Users/zhangsir/code/petclinic-platform-20261011/infra/security/manager-v2/consumers/loki.test.mjs:22:64)
+      at async Test.run (node:internal/test_runner/test:1208:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:831:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 'ERROR',
+    expected: 'REJECTED',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at infra/security/manager-v2/consumers/loki.test.mjs:59:1
+✖ own ACK is an actual receipt event only in an explicit subsequent batch (27.445125ms)
+  Error: LOKI_TIMESTAMP_OUTSIDE_WINDOW
+      at must (file:///Users/zhangsir/code/petclinic-platform-20261011/infra/security/manager-v2/consumers/loki.mjs:8:42)
+      at validateLokiPush (file:///Users/zhangsir/code/petclinic-platform-20261011/infra/security/manager-v2/consumers/loki.mjs:107:20)
+      at publishLoki (file:///Users/zhangsir/code/petclinic-platform-20261011/infra/security/manager-v2/consumers/loki.mjs:140:2)
+      at file:///Users/zhangsir/code/petclinic-platform-20261011/infra/security/manager-v2/consumers/loki.test.mjs:59:164
+      at withMock (file:///Users/zhangsir/code/petclinic-platform-20261011/infra/security/manager-v2/consumers/loki.test.mjs:22:70)
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async Test.run (node:internal/test_runner/test:1208:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:831:7) {
+    code: 'LOKI_TIMESTAMP_OUTSIDE_WINDOW'
+  }
+
+test at infra/security/manager-v2/consumers/loki.test.mjs:61:1
+✖ real HTTP invalid push receives 400 at Mock protocol boundary (5.373ms)
+  Error: EEXIST: file already exists, open '/Users/zhangsir/code/petclinic-platform-20261011/loki-protocol-samples/invalid-payload-real-http.json'
+      at Object.openSync (node:fs:556:18)
+      at Object.writeFileSync (node:fs:2412:35)
+      at sample (file:///Users/zhangsir/code/petclinic-platform-20261011/infra/security/manager-v2/consumers/loki.test.mjs:24:552)
+      at file:///Users/zhangsir/code/petclinic-platform-20261011/infra/security/manager-v2/consumers/loki.test.mjs:61:507
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async withMock (file:///Users/zhangsir/code/petclinic-platform-20261011/infra/security/manager-v2/consumers/loki.test.mjs:22:64)
+      at async Test.run (node:internal/test_runner/test:1208:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:831:7) {
+    errno: -17,
+    code: 'EEXIST',
+    syscall: 'open',
+    path: '/Users/zhangsir/code/petclinic-platform-20261011/loki-protocol-samples/invalid-payload-real-http.json'
+  }
+
+test at infra/security/manager-v2/consumers/loki.test.mjs:63:1
+✖ Dojo HTTP rejection and Loki HTTP ACK are independent over shared Result (1.773875ms)
+  Error: listen EADDRINUSE: address already in use 127.0.0.1:32185
+      at Server.setupListenHandle [as _listen2] (node:net:2008:16)
+      at listenInCluster (node:net:2065:12)
+      at node:net:2274:7
+      at process.processTicksAndRejections (node:internal/process/task_queues:90:21) {
+    code: 'EADDRINUSE',
+    errno: -48,
+    syscall: 'listen',
+    address: '127.0.0.1',
+    port: 32185
+  }

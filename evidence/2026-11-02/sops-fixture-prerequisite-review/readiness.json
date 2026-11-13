@@ -1,0 +1,47 @@
+{
+  "timestamp": "2026-11-02T03:54:09.594822+00:00",
+  "SOPS_FIXTURE_PREPARATION_READINESS": "NOT_READY",
+  "stopCondition": "Steps 6 and 7",
+  "blocker": "KUBECONFIG_FAIL_CLOSED_NOT_ESTABLISHED",
+  "evidence": [
+    "scanner-runtime.mjs:9-18",
+    "secrets-gate.mjs:3-6",
+    "petclinic-adapter Encrypted Credentials",
+    "securityManager.groovy module environment propagation",
+    "client-go v0.35.0 loader default HOME/config selection"
+  ],
+  "verifiedParts": [
+    "Existing isolated kind identity reconfirmed using explicit dedicated config only",
+    "Frozen tool manifest checksum matches tools-lock; expected SOPS 3.13.3 / age 1.3.2",
+    "Static four-target/three-namespace/Lease/two-SA contract and comparisons identified",
+    "All protected hashes unchanged"
+  ],
+  "uncompletedAfterStop": [
+    "Fail-closed isolated executor",
+    "Exact upstream binary source provenance",
+    "Final exact fixture/RBAC permissions and executor credential identity",
+    "Synthetic values and lifecycle",
+    "Execution matrix and expected per-case old/policy decisions",
+    "Full cleanup lifecycle and restart dependency review"
+  ],
+  "currentIdentity": {
+    "cluster": "security-test-sops",
+    "endpoint": "https://127.0.0.1:59645",
+    "kubeSystemUID": "54f300a4-5f1b-4e1e-86a1-d173e5a402d8",
+    "architecture": "arm64"
+  },
+  "scopeCounters": {
+    "productionApiRequests": 0,
+    "productionSecretCredentialValueReads": 0,
+    "fixtureResourcesCreated": 0,
+    "downloads": 0,
+    "gateExecutions": 0,
+    "policyDifferentialExecutions": 0,
+    "vmRestarts": 0
+  },
+  "productionCodeConfigModified": false,
+  "minimalNextStep": "Separately review a test-only fail-closed execution boundary that rejects unset/empty/missing/list/mismatched kubeconfig, pins explicit kubectl path/config/context and validates endpoint/CA/UID before Gate. Keep production Gate unchanged. Do not implement/run until separately scoped.",
+  "priorRuntimeKindReadinessUnchanged": true,
+  "sopsCompatibilityStatusUnchanged": "NOT_TESTED / ENVIRONMENT_BLOCKED",
+  "stop": true
+}

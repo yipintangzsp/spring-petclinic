@@ -1,0 +1,117 @@
+{
+  "status": "BLOCKED",
+  "code": "HARBOR_VALIDATION_SCOPE_NOT_EXPRESSIBLE_IN_FROZEN_PROJECT",
+  "observedLiveVersion": "Existing Harbor v2.14.3 deployment",
+  "proof": {
+    "schemaSource": "Running harbor-portal public swagger.json",
+    "schemaSha256": "65d0dcc9ca992417d384c7dee6ad7d61a582a374effc2617d4e2481bebda6ab2",
+    "RobotPermissionProperties": [
+      "kind",
+      "namespace",
+      "access"
+    ],
+    "AccessProperties": [
+      "resource",
+      "action",
+      "effect"
+    ],
+    "liveProjectResources": [
+      {
+        "resource": "repository",
+        "action": "read"
+      },
+      {
+        "resource": "repository",
+        "action": "update"
+      },
+      {
+        "resource": "repository",
+        "action": "delete"
+      },
+      {
+        "resource": "repository",
+        "action": "list"
+      },
+      {
+        "resource": "repository",
+        "action": "pull"
+      },
+      {
+        "resource": "repository",
+        "action": "push"
+      },
+      {
+        "resource": "artifact",
+        "action": "read"
+      },
+      {
+        "resource": "artifact",
+        "action": "create"
+      },
+      {
+        "resource": "artifact",
+        "action": "list"
+      },
+      {
+        "resource": "artifact",
+        "action": "delete"
+      },
+      {
+        "resource": "scan",
+        "action": "create"
+      },
+      {
+        "resource": "scan",
+        "action": "read"
+      },
+      {
+        "resource": "scan",
+        "action": "stop"
+      }
+    ]
+  },
+  "scopeLimitation": "Live robot schema supports namespace(kind=project/system) plus resource/action/effect. It has no artifact/digest condition. Project petclinic contains the active release and validation candidates; scan-create in that namespace is broader than validation-only candidate scan. A separate project is not accepted by frozen resolveAuditTarget/audit API paths.",
+  "identityCreated": false,
+  "forbiddenPermissionsGranted": [],
+  "scanTriggers": 0,
+  "noProductionFallback": true,
+  "newImageCreated": false,
+  "candidate": {
+    "architectures": [
+      {
+        "os": "linux",
+        "OsFeatures": null,
+        "architecture": "amd64"
+      },
+      {
+        "os": "linux",
+        "OsFeatures": null,
+        "architecture": "arm64"
+      },
+      {
+        "os": "unknown",
+        "OsFeatures": null,
+        "architecture": "unknown"
+      },
+      {
+        "os": "unknown",
+        "OsFeatures": null,
+        "architecture": "unknown"
+      }
+    ],
+    "size": 483416402,
+    "digest": "sha256:2fbaea65ab030c56c60c62e3ee9fbe362deb8bbbb8216a891ef4c7bbbcea6d55",
+    "type": "IMAGE",
+    "push_time": "2026-10-30T03:16:39.550Z",
+    "tags": [
+      {
+        "immutable": false,
+        "name": "0.10.0-ci-1000002"
+      }
+    ],
+    "annotationKeys": []
+  },
+  "candidateClassification": "EXISTING_NON_RELEASE_CANDIDATE_FROM_PRIOR_CANDIDATE_BUILD; exact digest and two real architectures observed, tag immutable=false; do not claim protected retention/immutable-tag policy",
+  "candidateRetention": "Preexisting artifact retained, no write/tag/delete performed",
+  "nextStep": "Review a validation-only Harbor project/repository target binding with unchanged vulnerability semantics, or an enforcement model that proves the credential itself cannot scan production. Do not widen the current project robot."
+}

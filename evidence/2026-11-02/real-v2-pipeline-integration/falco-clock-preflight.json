@@ -1,0 +1,596 @@
+{
+  "classification": "CONTROLLED_ORIGINAL_PRODUCTION_BODY_REPLAY_NOT_LIVE_PIPELINE",
+  "records": [
+    {
+      "classification": "CONTROLLED_REPLAY_NOT_LIVE_RUNTIME",
+      "mode": "baseline",
+      "firstSampleProcessingDelayMs": 0,
+      "productionWaitMs": 16000,
+      "actualSampleEnds": [
+        "2026-11-02T00:00:00.000Z",
+        "2026-11-02T00:00:16.000Z"
+      ],
+      "adapterSampleEnds": [
+        "2026-11-02T00:00:00.000Z",
+        "2026-11-02T00:00:16.000Z"
+      ],
+      "oldDecision": "FAIL",
+      "standardDecision": "FAIL",
+      "oldReason": "Persistent confirmed high-risk runtime behavior; see redacted event assessment",
+      "standardReason": "current fatal or persistent confirmed behavior",
+      "match": true,
+      "rawPreserved": true,
+      "sourceSha256": "65ab133a4248b9900265a47d943f9e6430b9ec9581ddd624b1d9257322b0d921",
+      "adapterSha256": "906addbb70afed7178f8bfa8c09cdd53f7d5a4de02526e21596056bdeb837803",
+      "rawSha256": "5df45d3ab554de54bb97e44e2c38af9f5630249b30bf140cc73ac55dfa5b8eff",
+      "originalRuntimeAssessment": {
+        "status": "failed",
+        "blocking": [
+          {
+            "key": "[\"controlled-app-uid\",\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"successful-critical-system-path-write\",\"cp\",\"/etc/ld.so.preload\"]",
+            "namespace": "petclinic",
+            "pod": "controlled-app",
+            "container": "app",
+            "podUid": "controlled-app-uid",
+            "containerId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "reason": "successful-critical-system-path-write",
+            "process": "cp",
+            "path": "/etc/ld.so.preload",
+            "count": 2,
+            "firstCount": 2,
+            "secondCount": 2
+          }
+        ],
+        "first": {
+          "start": "2026-11-01T23:59:45.000Z",
+          "end": "2026-11-02T00:00:00.000Z",
+          "candidates": [
+            {
+              "key": "[\"controlled-app-uid\",\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"successful-critical-system-path-write\",\"cp\",\"/etc/ld.so.preload\"]",
+              "namespace": "petclinic",
+              "pod": "controlled-app",
+              "container": "app",
+              "podUid": "controlled-app-uid",
+              "containerId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+              "reason": "successful-critical-system-path-write",
+              "process": "cp",
+              "path": "/etc/ld.so.preload",
+              "count": 2
+            }
+          ],
+          "warnings": {},
+          "scope": "Bounded local sensor window; raw commands and sensitive file contents are not included"
+        },
+        "second": {
+          "start": "2026-11-02T00:00:01.000Z",
+          "end": "2026-11-02T00:00:16.000Z",
+          "candidates": [
+            {
+              "key": "[\"controlled-app-uid\",\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"successful-critical-system-path-write\",\"cp\",\"/etc/ld.so.preload\"]",
+              "namespace": "petclinic",
+              "pod": "controlled-app",
+              "container": "app",
+              "podUid": "controlled-app-uid",
+              "containerId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+              "reason": "successful-critical-system-path-write",
+              "process": "cp",
+              "path": "/etc/ld.so.preload",
+              "count": 2
+            }
+          ],
+          "warnings": {},
+          "scope": "Bounded local sensor window; raw commands and sensitive file contents are not included"
+        },
+        "criteria": "Same live Pod UID/container/process/path; >=2 unique successful events in each of two disjoint 15-second windows"
+      },
+      "policyRuntimeAssessment": {
+        "status": "failed",
+        "blocking": [
+          {
+            "key": "[\"controlled-app-uid\",\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"successful-critical-system-path-write\",\"cp\",\"/etc/ld.so.preload\"]",
+            "namespace": "petclinic",
+            "pod": "controlled-app",
+            "container": "app",
+            "podUid": "controlled-app-uid",
+            "containerId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "reason": "successful-critical-system-path-write",
+            "process": "cp",
+            "path": "/etc/ld.so.preload",
+            "count": 2,
+            "firstCount": 2,
+            "secondCount": 2
+          }
+        ],
+        "first": {
+          "start": "2026-11-01T23:59:45.000Z",
+          "end": "2026-11-02T00:00:00.000Z",
+          "candidates": [
+            {
+              "key": "[\"controlled-app-uid\",\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"successful-critical-system-path-write\",\"cp\",\"/etc/ld.so.preload\"]",
+              "namespace": "petclinic",
+              "pod": "controlled-app",
+              "container": "app",
+              "podUid": "controlled-app-uid",
+              "containerId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+              "reason": "successful-critical-system-path-write",
+              "process": "cp",
+              "path": "/etc/ld.so.preload",
+              "count": 2
+            }
+          ],
+          "warnings": {},
+          "scope": "Bounded local sensor window; raw commands and sensitive file contents are not included"
+        },
+        "second": {
+          "start": "2026-11-02T00:00:01.000Z",
+          "end": "2026-11-02T00:00:16.000Z",
+          "candidates": [
+            {
+              "key": "[\"controlled-app-uid\",\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"successful-critical-system-path-write\",\"cp\",\"/etc/ld.so.preload\"]",
+              "namespace": "petclinic",
+              "pod": "controlled-app",
+              "container": "app",
+              "podUid": "controlled-app-uid",
+              "containerId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+              "reason": "successful-critical-system-path-write",
+              "process": "cp",
+              "path": "/etc/ld.so.preload",
+              "count": 2
+            }
+          ],
+          "warnings": {},
+          "scope": "Bounded local sensor window; raw commands and sensitive file contents are not included"
+        },
+        "criteria": "Same live Pod UID/container/process/path; >=2 unique successful events in each of two disjoint 15-second windows"
+      },
+      "existingProductionWrites": false
+    },
+    {
+      "classification": "CONTROLLED_REPLAY_NOT_LIVE_RUNTIME",
+      "mode": "baseline",
+      "firstSampleProcessingDelayMs": 2000,
+      "productionWaitMs": 16000,
+      "actualSampleEnds": [
+        "2026-11-02T00:00:00.000Z",
+        "2026-11-02T00:00:18.000Z"
+      ],
+      "adapterSampleEnds": [
+        "2026-11-02T00:00:00.000Z",
+        "2026-11-02T00:00:16.000Z"
+      ],
+      "oldDecision": "FAIL",
+      "standardDecision": "PASS",
+      "oldReason": "Persistent confirmed high-risk runtime behavior; see redacted event assessment",
+      "standardReason": null,
+      "match": false,
+      "rawPreserved": true,
+      "sourceSha256": "65ab133a4248b9900265a47d943f9e6430b9ec9581ddd624b1d9257322b0d921",
+      "adapterSha256": "906addbb70afed7178f8bfa8c09cdd53f7d5a4de02526e21596056bdeb837803",
+      "rawSha256": "dcc6d513960eea6d464dd9a53fde813d16640fec9625441dd2c6f72e9896fa75",
+      "originalRuntimeAssessment": {
+        "status": "failed",
+        "blocking": [
+          {
+            "key": "[\"controlled-app-uid\",\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"successful-critical-system-path-write\",\"cp\",\"/etc/ld.so.preload\"]",
+            "namespace": "petclinic",
+            "pod": "controlled-app",
+            "container": "app",
+            "podUid": "controlled-app-uid",
+            "containerId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "reason": "successful-critical-system-path-write",
+            "process": "cp",
+            "path": "/etc/ld.so.preload",
+            "count": 2,
+            "firstCount": 2,
+            "secondCount": 2
+          }
+        ],
+        "first": {
+          "start": "2026-11-01T23:59:45.000Z",
+          "end": "2026-11-02T00:00:00.000Z",
+          "candidates": [
+            {
+              "key": "[\"controlled-app-uid\",\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"successful-critical-system-path-write\",\"cp\",\"/etc/ld.so.preload\"]",
+              "namespace": "petclinic",
+              "pod": "controlled-app",
+              "container": "app",
+              "podUid": "controlled-app-uid",
+              "containerId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+              "reason": "successful-critical-system-path-write",
+              "process": "cp",
+              "path": "/etc/ld.so.preload",
+              "count": 2
+            }
+          ],
+          "warnings": {},
+          "scope": "Bounded local sensor window; raw commands and sensitive file contents are not included"
+        },
+        "second": {
+          "start": "2026-11-02T00:00:03.000Z",
+          "end": "2026-11-02T00:00:18.000Z",
+          "candidates": [
+            {
+              "key": "[\"controlled-app-uid\",\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"successful-critical-system-path-write\",\"cp\",\"/etc/ld.so.preload\"]",
+              "namespace": "petclinic",
+              "pod": "controlled-app",
+              "container": "app",
+              "podUid": "controlled-app-uid",
+              "containerId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+              "reason": "successful-critical-system-path-write",
+              "process": "cp",
+              "path": "/etc/ld.so.preload",
+              "count": 2
+            }
+          ],
+          "warnings": {},
+          "scope": "Bounded local sensor window; raw commands and sensitive file contents are not included"
+        },
+        "criteria": "Same live Pod UID/container/process/path; >=2 unique successful events in each of two disjoint 15-second windows"
+      },
+      "policyRuntimeAssessment": {
+        "status": "success",
+        "blocking": [],
+        "first": {
+          "start": "2026-11-01T23:59:45.000Z",
+          "end": "2026-11-02T00:00:00.000Z",
+          "candidates": [
+            {
+              "key": "[\"controlled-app-uid\",\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"successful-critical-system-path-write\",\"cp\",\"/etc/ld.so.preload\"]",
+              "namespace": "petclinic",
+              "pod": "controlled-app",
+              "container": "app",
+              "podUid": "controlled-app-uid",
+              "containerId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+              "reason": "successful-critical-system-path-write",
+              "process": "cp",
+              "path": "/etc/ld.so.preload",
+              "count": 2
+            }
+          ],
+          "warnings": {},
+          "scope": "Bounded local sensor window; raw commands and sensitive file contents are not included"
+        },
+        "second": {
+          "start": "2026-11-02T00:00:01.000Z",
+          "end": "2026-11-02T00:00:16.000Z",
+          "candidates": [],
+          "warnings": {
+            "historical-or-outside-window": 2
+          },
+          "scope": "Bounded local sensor window; raw commands and sensitive file contents are not included"
+        },
+        "criteria": "Same live Pod UID/container/process/path; >=2 unique successful events in each of two disjoint 15-second windows"
+      },
+      "policyWindow": [
+        {
+          "start": "2026-11-01T23:59:45.000Z",
+          "end": "2026-11-02T00:00:00.000Z",
+          "candidates": [
+            {
+              "key": "[\"controlled-app-uid\",\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"successful-critical-system-path-write\",\"cp\",\"/etc/ld.so.preload\"]",
+              "namespace": "petclinic",
+              "pod": "controlled-app",
+              "container": "app",
+              "podUid": "controlled-app-uid",
+              "containerId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+              "reason": "successful-critical-system-path-write",
+              "process": "cp",
+              "path": "/etc/ld.so.preload",
+              "count": 2
+            }
+          ],
+          "warnings": {},
+          "scope": "Bounded local sensor window; raw commands and sensitive file contents are not included"
+        },
+        {
+          "start": "2026-11-02T00:00:01.000Z",
+          "end": "2026-11-02T00:00:16.000Z",
+          "candidates": [],
+          "warnings": {
+            "historical-or-outside-window": 2
+          },
+          "scope": "Bounded local sensor window; raw commands and sensitive file contents are not included"
+        }
+      ],
+      "existingProductionWrites": false
+    },
+    {
+      "classification": "CONTROLLED_REPLAY_NOT_LIVE_RUNTIME",
+      "mode": "check",
+      "firstSampleProcessingDelayMs": 0,
+      "productionWaitMs": 16000,
+      "actualSampleEnds": [
+        "2026-11-02T00:00:00.000Z",
+        "2026-11-02T00:00:16.000Z"
+      ],
+      "adapterSampleEnds": [
+        "2026-11-02T00:00:00.000Z",
+        "2026-11-02T00:00:16.000Z"
+      ],
+      "oldDecision": "FAIL",
+      "standardDecision": "FAIL",
+      "oldReason": "Persistent confirmed high-risk runtime behavior; see redacted event assessment",
+      "standardReason": "current fatal or persistent confirmed behavior",
+      "match": true,
+      "rawPreserved": true,
+      "sourceSha256": "65ab133a4248b9900265a47d943f9e6430b9ec9581ddd624b1d9257322b0d921",
+      "adapterSha256": "906addbb70afed7178f8bfa8c09cdd53f7d5a4de02526e21596056bdeb837803",
+      "rawSha256": "04405e1de6fc6d485f65ee23b9745ad4e3e27c495a5a78cccfcbcdf1ccdc5e46",
+      "originalRuntimeAssessment": {
+        "status": "failed",
+        "blocking": [
+          {
+            "key": "[\"controlled-app-uid\",\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"successful-critical-system-path-write\",\"cp\",\"/etc/ld.so.preload\"]",
+            "namespace": "petclinic",
+            "pod": "controlled-app",
+            "container": "app",
+            "podUid": "controlled-app-uid",
+            "containerId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "reason": "successful-critical-system-path-write",
+            "process": "cp",
+            "path": "/etc/ld.so.preload",
+            "count": 2,
+            "firstCount": 2,
+            "secondCount": 2
+          }
+        ],
+        "first": {
+          "start": "2026-11-01T23:59:45.000Z",
+          "end": "2026-11-02T00:00:00.000Z",
+          "candidates": [
+            {
+              "key": "[\"controlled-app-uid\",\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"successful-critical-system-path-write\",\"cp\",\"/etc/ld.so.preload\"]",
+              "namespace": "petclinic",
+              "pod": "controlled-app",
+              "container": "app",
+              "podUid": "controlled-app-uid",
+              "containerId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+              "reason": "successful-critical-system-path-write",
+              "process": "cp",
+              "path": "/etc/ld.so.preload",
+              "count": 2
+            }
+          ],
+          "warnings": {},
+          "scope": "Bounded local sensor window; raw commands and sensitive file contents are not included"
+        },
+        "second": {
+          "start": "2026-11-02T00:00:01.000Z",
+          "end": "2026-11-02T00:00:16.000Z",
+          "candidates": [
+            {
+              "key": "[\"controlled-app-uid\",\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"successful-critical-system-path-write\",\"cp\",\"/etc/ld.so.preload\"]",
+              "namespace": "petclinic",
+              "pod": "controlled-app",
+              "container": "app",
+              "podUid": "controlled-app-uid",
+              "containerId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+              "reason": "successful-critical-system-path-write",
+              "process": "cp",
+              "path": "/etc/ld.so.preload",
+              "count": 2
+            }
+          ],
+          "warnings": {},
+          "scope": "Bounded local sensor window; raw commands and sensitive file contents are not included"
+        },
+        "criteria": "Same live Pod UID/container/process/path; >=2 unique successful events in each of two disjoint 15-second windows"
+      },
+      "policyRuntimeAssessment": {
+        "status": "failed",
+        "blocking": [
+          {
+            "key": "[\"controlled-app-uid\",\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"successful-critical-system-path-write\",\"cp\",\"/etc/ld.so.preload\"]",
+            "namespace": "petclinic",
+            "pod": "controlled-app",
+            "container": "app",
+            "podUid": "controlled-app-uid",
+            "containerId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "reason": "successful-critical-system-path-write",
+            "process": "cp",
+            "path": "/etc/ld.so.preload",
+            "count": 2,
+            "firstCount": 2,
+            "secondCount": 2
+          }
+        ],
+        "first": {
+          "start": "2026-11-01T23:59:45.000Z",
+          "end": "2026-11-02T00:00:00.000Z",
+          "candidates": [
+            {
+              "key": "[\"controlled-app-uid\",\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"successful-critical-system-path-write\",\"cp\",\"/etc/ld.so.preload\"]",
+              "namespace": "petclinic",
+              "pod": "controlled-app",
+              "container": "app",
+              "podUid": "controlled-app-uid",
+              "containerId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+              "reason": "successful-critical-system-path-write",
+              "process": "cp",
+              "path": "/etc/ld.so.preload",
+              "count": 2
+            }
+          ],
+          "warnings": {},
+          "scope": "Bounded local sensor window; raw commands and sensitive file contents are not included"
+        },
+        "second": {
+          "start": "2026-11-02T00:00:01.000Z",
+          "end": "2026-11-02T00:00:16.000Z",
+          "candidates": [
+            {
+              "key": "[\"controlled-app-uid\",\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"successful-critical-system-path-write\",\"cp\",\"/etc/ld.so.preload\"]",
+              "namespace": "petclinic",
+              "pod": "controlled-app",
+              "container": "app",
+              "podUid": "controlled-app-uid",
+              "containerId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+              "reason": "successful-critical-system-path-write",
+              "process": "cp",
+              "path": "/etc/ld.so.preload",
+              "count": 2
+            }
+          ],
+          "warnings": {},
+          "scope": "Bounded local sensor window; raw commands and sensitive file contents are not included"
+        },
+        "criteria": "Same live Pod UID/container/process/path; >=2 unique successful events in each of two disjoint 15-second windows"
+      },
+      "existingProductionWrites": false
+    },
+    {
+      "classification": "CONTROLLED_REPLAY_NOT_LIVE_RUNTIME",
+      "mode": "check",
+      "firstSampleProcessingDelayMs": 2000,
+      "productionWaitMs": 16000,
+      "actualSampleEnds": [
+        "2026-11-02T00:00:00.000Z",
+        "2026-11-02T00:00:18.000Z"
+      ],
+      "adapterSampleEnds": [
+        "2026-11-02T00:00:00.000Z",
+        "2026-11-02T00:00:16.000Z"
+      ],
+      "oldDecision": "FAIL",
+      "standardDecision": "PASS",
+      "oldReason": "Persistent confirmed high-risk runtime behavior; see redacted event assessment",
+      "standardReason": null,
+      "match": false,
+      "rawPreserved": true,
+      "sourceSha256": "65ab133a4248b9900265a47d943f9e6430b9ec9581ddd624b1d9257322b0d921",
+      "adapterSha256": "906addbb70afed7178f8bfa8c09cdd53f7d5a4de02526e21596056bdeb837803",
+      "rawSha256": "9fb692ba5dc47a069964d4db672a633cb8e9ecf66c7137839b7dac2eb0328fa0",
+      "originalRuntimeAssessment": {
+        "status": "failed",
+        "blocking": [
+          {
+            "key": "[\"controlled-app-uid\",\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"successful-critical-system-path-write\",\"cp\",\"/etc/ld.so.preload\"]",
+            "namespace": "petclinic",
+            "pod": "controlled-app",
+            "container": "app",
+            "podUid": "controlled-app-uid",
+            "containerId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "reason": "successful-critical-system-path-write",
+            "process": "cp",
+            "path": "/etc/ld.so.preload",
+            "count": 2,
+            "firstCount": 2,
+            "secondCount": 2
+          }
+        ],
+        "first": {
+          "start": "2026-11-01T23:59:45.000Z",
+          "end": "2026-11-02T00:00:00.000Z",
+          "candidates": [
+            {
+              "key": "[\"controlled-app-uid\",\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"successful-critical-system-path-write\",\"cp\",\"/etc/ld.so.preload\"]",
+              "namespace": "petclinic",
+              "pod": "controlled-app",
+              "container": "app",
+              "podUid": "controlled-app-uid",
+              "containerId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+              "reason": "successful-critical-system-path-write",
+              "process": "cp",
+              "path": "/etc/ld.so.preload",
+              "count": 2
+            }
+          ],
+          "warnings": {},
+          "scope": "Bounded local sensor window; raw commands and sensitive file contents are not included"
+        },
+        "second": {
+          "start": "2026-11-02T00:00:03.000Z",
+          "end": "2026-11-02T00:00:18.000Z",
+          "candidates": [
+            {
+              "key": "[\"controlled-app-uid\",\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"successful-critical-system-path-write\",\"cp\",\"/etc/ld.so.preload\"]",
+              "namespace": "petclinic",
+              "pod": "controlled-app",
+              "container": "app",
+              "podUid": "controlled-app-uid",
+              "containerId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+              "reason": "successful-critical-system-path-write",
+              "process": "cp",
+              "path": "/etc/ld.so.preload",
+              "count": 2
+            }
+          ],
+          "warnings": {},
+          "scope": "Bounded local sensor window; raw commands and sensitive file contents are not included"
+        },
+        "criteria": "Same live Pod UID/container/process/path; >=2 unique successful events in each of two disjoint 15-second windows"
+      },
+      "policyRuntimeAssessment": {
+        "status": "success",
+        "blocking": [],
+        "first": {
+          "start": "2026-11-01T23:59:45.000Z",
+          "end": "2026-11-02T00:00:00.000Z",
+          "candidates": [
+            {
+              "key": "[\"controlled-app-uid\",\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"successful-critical-system-path-write\",\"cp\",\"/etc/ld.so.preload\"]",
+              "namespace": "petclinic",
+              "pod": "controlled-app",
+              "container": "app",
+              "podUid": "controlled-app-uid",
+              "containerId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+              "reason": "successful-critical-system-path-write",
+              "process": "cp",
+              "path": "/etc/ld.so.preload",
+              "count": 2
+            }
+          ],
+          "warnings": {},
+          "scope": "Bounded local sensor window; raw commands and sensitive file contents are not included"
+        },
+        "second": {
+          "start": "2026-11-02T00:00:01.000Z",
+          "end": "2026-11-02T00:00:16.000Z",
+          "candidates": [],
+          "warnings": {
+            "historical-or-outside-window": 2
+          },
+          "scope": "Bounded local sensor window; raw commands and sensitive file contents are not included"
+        },
+        "criteria": "Same live Pod UID/container/process/path; >=2 unique successful events in each of two disjoint 15-second windows"
+      },
+      "policyWindow": [
+        {
+          "start": "2026-11-01T23:59:45.000Z",
+          "end": "2026-11-02T00:00:00.000Z",
+          "candidates": [
+            {
+              "key": "[\"controlled-app-uid\",\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"successful-critical-system-path-write\",\"cp\",\"/etc/ld.so.preload\"]",
+              "namespace": "petclinic",
+              "pod": "controlled-app",
+              "container": "app",
+              "podUid": "controlled-app-uid",
+              "containerId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+              "reason": "successful-critical-system-path-write",
+              "process": "cp",
+              "path": "/etc/ld.so.preload",
+              "count": 2
+            }
+          ],
+          "warnings": {},
+          "scope": "Bounded local sensor window; raw commands and sensitive file contents are not included"
+        },
+        {
+          "start": "2026-11-02T00:00:01.000Z",
+          "end": "2026-11-02T00:00:16.000Z",
+          "candidates": [],
+          "warnings": {
+            "historical-or-outside-window": 2
+          },
+          "scope": "Bounded local sensor window; raw commands and sensitive file contents are not included"
+        }
+      ],
+      "existingProductionWrites": false
+    }
+  ],
+  "cleanClockControlsMatch": true,
+  "delayedClockCasesDrift": true,
+  "sourceAndAdapterModified": false,
+  "blocker": "falco-parent uses raw.now+i*16000 for sample ends. Production waits 16000 only AFTER first sample IO; the actual next Date.now includes IO/scheduling latency. Complete passive facts cannot be represented faithfully for both windows by the single raw.now field.",
+  "requiredAction": "STOP integration. Correct the frozen adapter to consume actual observed per-sample clock bounds only in a separately reviewed compatibility revalidation; do not change production timing, drop events, shift timestamps, or mark this source skipped."
+}

@@ -1,0 +1,106 @@
+{
+  "apiVersion": "kyverno.io/v1",
+  "kind": "ClusterPolicy",
+  "metadata": {
+    "annotations": {
+      "pod-policies.kyverno.io/autogen-controllers": "none"
+    },
+    "creationTimestamp": "2026-10-27T17:03:01Z",
+    "generation": 2,
+    "labels": {
+      "app.kubernetes.io/instance": "platform-devsecops",
+      "petclinic.devops.local/owner": "platform-devsecops"
+    },
+    "name": "devsecops-signed-images",
+    "resourceVersion": "15427791",
+    "uid": "4f2459cf-1ad8-4da8-8f4f-632135ac0c4b"
+  },
+  "spec": {
+    "admission": true,
+    "background": false,
+    "emitWarning": false,
+    "rules": [
+      {
+        "match": {
+          "any": [
+            {
+              "resources": {
+                "kinds": [
+                  "Pod"
+                ],
+                "namespaces": [
+                  "petclinic",
+                  "devsecops-supply-chain"
+                ]
+              }
+            }
+          ]
+        },
+        "name": "verify-private-petclinic-image",
+        "skipBackgroundRequests": true,
+        "verifyImages": [
+          {
+            "attestors": [
+              {
+                "count": 1,
+                "entries": [
+                  {
+                    "keys": {
+                      "publicKeys": "-----BEGIN PUBLIC KEY-----\nMFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAEDcDmCR1VAKgVHFo0oCkd6XeqXn14\nACzzOaks1UDTLAl7c2WBQSpQwiK6DpovLg9IFgHlwqR96xaECMITPawOaw==\n-----END PUBLIC KEY-----\n",
+                      "rekor": {
+                        "ignoreTlog": true
+                      },
+                      "signatureAlgorithm": "sha256"
+                    },
+                    "signatureAlgorithm": "sha256"
+                  }
+                ]
+              }
+            ],
+            "imageReferences": [
+              "core.harbor.domain/petclinic/*"
+            ],
+            "imageRegistryCredentials": {
+              "allowInsecureRegistry": true,
+              "secrets": [
+                "kyverno-registry-pull"
+              ]
+            },
+            "mutateDigest": true,
+            "required": true,
+            "type": "Cosign",
+            "useCache": false,
+            "verifyDigest": true
+          }
+        ]
+      }
+    ],
+    "validationFailureAction": "Enforce",
+    "webhookConfiguration": {
+      "failurePolicy": "Fail",
+      "timeoutSeconds": 20
+    }
+  },
+  "status": {
+    "autogen": {},
+    "conditions": [
+      {
+        "lastTransitionTime": "2026-10-27T17:03:01Z",
+        "message": "Ready",
+        "reason": "Succeeded",
+        "status": "True",
+        "type": "Ready"
+      }
+    ],
+    "rulecount": {
+      "generate": 0,
+      "mutate": 0,
+      "validate": 0,
+      "verifyimages": 1
+    },
+    "validatingadmissionpolicy": {
+      "generated": false,
+      "message": ""
+    }
+  }
+}

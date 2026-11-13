@@ -1,0 +1,121 @@
+{
+  "classification": "STATIC_REVIEW_PARTIAL; NOT AN APPROVED OR EXECUTABLE FIXTURE",
+  "requiredNamespaces": [
+    "data-infra",
+    "devsecops-system",
+    "petclinic"
+  ],
+  "targets": [
+    {
+      "kind": "Secret",
+      "namespace": "petclinic",
+      "name": "petclinic-db",
+      "encryptedFile": "infra/security/secrets/petclinic-db.enc.json",
+      "typeRequirement": "Gate imposes equality of desired.type and actual.type; no hardcoded Secret type enum here. Exact future fixture type/data not finalized after STOP.",
+      "metadataRequirement": "kind=Secret; exact name/namespace. No label/annotation requirement in Gate; additional Kubernetes SSA schema validation applies to write branch.",
+      "dataRequirement": "desired.data truthy, desired.stringData falsy; actual.data deep-equals desired.data before write. No synthetic values generated.",
+      "uidRequirement": "Capture actual UID before apply; after UID identical, after.data deep-equals prior actual.data. Desired UID is not checked directly.",
+      "cleanup": "Future deletion must use recorded owned UID and dedicated kubeconfig only; no objects created now."
+    },
+    {
+      "kind": "Secret",
+      "namespace": "petclinic",
+      "name": "rabbitmq-client",
+      "encryptedFile": "infra/security/secrets/rabbitmq-client.enc.json",
+      "typeRequirement": "Gate imposes equality of desired.type and actual.type; no hardcoded Secret type enum here. Exact future fixture type/data not finalized after STOP.",
+      "metadataRequirement": "kind=Secret; exact name/namespace. No label/annotation requirement in Gate; additional Kubernetes SSA schema validation applies to write branch.",
+      "dataRequirement": "desired.data truthy, desired.stringData falsy; actual.data deep-equals desired.data before write. No synthetic values generated.",
+      "uidRequirement": "Capture actual UID before apply; after UID identical, after.data deep-equals prior actual.data. Desired UID is not checked directly.",
+      "cleanup": "Future deletion must use recorded owned UID and dedicated kubeconfig only; no objects created now."
+    },
+    {
+      "kind": "Secret",
+      "namespace": "petclinic",
+      "name": "petclinic-harbor-pull",
+      "encryptedFile": "infra/security/secrets/petclinic-harbor-pull.enc.json",
+      "typeRequirement": "Gate imposes equality of desired.type and actual.type; no hardcoded Secret type enum here. Exact future fixture type/data not finalized after STOP.",
+      "metadataRequirement": "kind=Secret; exact name/namespace. No label/annotation requirement in Gate; additional Kubernetes SSA schema validation applies to write branch.",
+      "dataRequirement": "desired.data truthy, desired.stringData falsy; actual.data deep-equals desired.data before write. No synthetic values generated.",
+      "uidRequirement": "Capture actual UID before apply; after UID identical, after.data deep-equals prior actual.data. Desired UID is not checked directly.",
+      "cleanup": "Future deletion must use recorded owned UID and dedicated kubeconfig only; no objects created now."
+    },
+    {
+      "kind": "Secret",
+      "namespace": "devsecops-system",
+      "name": "kyverno-registry-pull",
+      "encryptedFile": "infra/security/secrets/kyverno-registry-pull.enc.json",
+      "typeRequirement": "Gate imposes equality of desired.type and actual.type; no hardcoded Secret type enum here. Exact future fixture type/data not finalized after STOP.",
+      "metadataRequirement": "kind=Secret; exact name/namespace. No label/annotation requirement in Gate; additional Kubernetes SSA schema validation applies to write branch.",
+      "dataRequirement": "desired.data truthy, desired.stringData falsy; actual.data deep-equals desired.data before write. No synthetic values generated.",
+      "uidRequirement": "Capture actual UID before apply; after UID identical, after.data deep-equals prior actual.data. Desired UID is not checked directly.",
+      "cleanup": "Future deletion must use recorded owned UID and dedicated kubeconfig only; no objects created now."
+    }
+  ],
+  "lease": {
+    "namespace": "data-infra",
+    "name": "platform-heavy",
+    "holder": "HEAVY_HOLDER or jenkins-petclinic-${BUILD_NUMBER}",
+    "behavior": "Read existing Lease; holder must match; no nested acquisition. Not created this iteration."
+  },
+  "serviceAccounts": [
+    {
+      "namespace": "devsecops-system",
+      "name": "platform-secret-reconciler"
+    },
+    {
+      "namespace": "devsecops-system",
+      "name": "kyverno-admission-controller"
+    }
+  ],
+  "knownAuthorizationChecks": {
+    "reconcilerYes": [
+      "get petclinic/secret/petclinic-db",
+      "get devsecops-system/secret/kyverno-registry-pull"
+    ],
+    "reconcilerNo": [
+      "get devsecops-system/secret/unrelated-secret",
+      "list devsecops-system/secrets",
+      "create devsecops-system/secrets",
+      "get petclinic/secret/unrelated-secret",
+      "create petclinic/secrets",
+      "list petclinic/secrets",
+      "get data-infra/secret/rabbitmq-auth"
+    ],
+    "verifierYes": [
+      "get devsecops-system/secret/kyverno-registry-pull"
+    ],
+    "verifierNo": [
+      "get petclinic/secret/petclinic-harbor-pull",
+      "get petclinic/secret/petclinic-db",
+      "list petclinic/secrets"
+    ]
+  },
+  "reconcilerOperationalActions": "get before and after each of four targets; for full write branch, server-side apply field-manager=platform-secret-reconciler, hence exact named-target patch access must be reviewed. No list/create allowances invented.",
+  "executorIdentity": "NOT_FINALIZED; dedicated kind admin kubeconfig used for identity inspection is not approved as future Gate executor credential. Minimum impersonation/Lease/review privileges still need full review; no cluster-admin fixture design accepted.",
+  "ageContract": "BUSINESS_AGE_FILE required; child SOPS_AGE_KEY_FILE points there. No particular age recipient string or production key is hardcoded by Gate; future disposable synthetic key only.",
+  "sourceAndReport": {
+    "source": ".git-sha",
+    "report": ".devsecops/secrets-gate.json",
+    "readOnly": "DEVSECOPS_READ_ONLY=true skips apply only; still decrypts and reads Secret values twice."
+  },
+  "prerequisites": "runtime manifest-lock check at import -> requireLease -> verifyTools([sops]) -> BUSINESS_AGE_FILE presence -> source read -> try/finally report",
+  "pass": "All four target operations/data/type/UID comparisons, reconciler and verifier permission boundaries, final report write succeed.",
+  "fail": "Gate exceptions/nonzero subprocess status, validation mismatch, read/apply/read/permission failures or final report write error cause nonzero process; initial prerequisites occur before report try/finally, so a JSON report is not guaranteed on early error.",
+  "policyMappingObservedFromSource": "Adapter maps complete observed success to PASS; observed failed check to FAIL with failure kind; incomplete observations => NOT_CONFIGURED / decision null, not PASS. No differential executed.",
+  "notCompletedAfterStop": [
+    "Exact final RBAC Roles/Bindings and restricted executor identity",
+    "Final synthetic types/keys/value model",
+    "Key/encrypted-file lifecycle detail",
+    "Execution matrix and expected per-case decisions",
+    "Full future resource/credential cleanup design"
+  ],
+  "scopeCounts": {
+    "namespacesRequired": 3,
+    "targetSecrets": 4,
+    "encryptedFiles": 4,
+    "lease": 1,
+    "namedServiceAccounts": 2,
+    "syntheticKeypairProposed": 1,
+    "rbacObjectCount": "NOT_FINALIZED"
+  }
+}

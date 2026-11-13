@@ -1,0 +1,7 @@
+export function summarizeKubescape(d,scope,framework){
+ if(!Array.isArray(d.results)||!Array.isArray(d.resources)||!d.summaryDetails?.controls||!Number.isFinite(d.summaryDetails.complianceScore))throw Error('Invalid or incomplete Kubescape native report');
+ const controls=Object.values(d.summaryDetails.controls),failed=controls.filter(c=>c.status==='failed'),pairs=new Map();
+ for(const r of d.results)for(const c of r.controls??[])if(c.status?.status==='failed'){const severity=c.severity??d.summaryDetails.controls[c.controlID]?.severity??'Unknown';pairs.set(r.resourceID+'|'+c.controlID,{resourceId:r.resourceID,controlId:c.controlID,severity});}
+ return {scope,framework,resources:d.resources.length,controls:controls.length,failedControls:failed.map(c=>c.controlID),failedControlCount:failed.length,complianceScore:d.summaryDetails.complianceScore,resourceControlFindings:[...pairs.values()],nativeSeverityCounters:d.summaryDetails.resourcesSeverityCounters,status:'success',mode:'AUDIT'};
+}
+export function combineKubescape(scans){const controls=new Set(),pairs=new Map();for(const s of scans){for(const c of s.failedControls)controls.add(s.scope+'|'+c);for(const p of s.resourceControlFindings)pairs.set(s.scope+'|'+p.resourceId+'|'+p.controlId,p);}return {failedControls:controls.size,highRiskFindings:[...pairs.values()].filter(p=>['High','Critical'].includes(p.severity)).length,findings:pairs.size};}

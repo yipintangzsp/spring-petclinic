@@ -1,0 +1,45 @@
+{
+  "source": "Kyverno/RBAC",
+  "finalStatus": "VERIFIED",
+  "verificationScope": "baseline-v1/standard complete parent decision compatibility on frozen controlled inputs; not fresh production policy certification or security completeness",
+  "childDifferentialRetained": 49,
+  "newCompleteParentSamples": 49,
+  "totalCompleteParentSamples": 49,
+  "matched": 49,
+  "mismatched": 0,
+  "classification": "SYNTHETIC_COMPLETE_PARENT_WITH_HISTORICAL_PROBE_RESULTS",
+  "realCompleteParentExecutions": 0,
+  "realHistoricalChildAdmissionObservationsReused": 38,
+  "newProductionAdmissionRequests": 0,
+  "branches": {
+    "alignment/exception-valid": 1,
+    "alignment": 6,
+    "execution": 18,
+    "exception-owner": 4,
+    "exception-request": 3,
+    "exception-policy": 1,
+    "exception-policy-existing-limitation": 1,
+    "aggregation": 5,
+    "remaining-error-or-exception": 10
+  },
+  "rawFactsPreserved": true,
+  "totalPolicyTests": 186,
+  "missingStructuralParentBranches": [],
+  "knownLegacyLimitations": [
+    "Denied result checks policy-name regex, not exact rule",
+    "Policy alignment checks CEL/preconditions/match and Enforce, not every metadata/spec field",
+    "Owner lookup matches configured UID, not arbitrary extra metadata",
+    "Workload inventory WARN does not fail parent stage",
+    "Exception expiration is not implemented in current Gate and was not added"
+  ],
+  "historicalParentIncidentEvidence": "DEFERRED_REAL_NEGATIVE_EVIDENCE; not required to replace controlled frozen full-parent proof",
+  "readyToLeaveCompatibilityPhase": true,
+  "summaryIntegrated": false,
+  "nextSourceStarted": false,
+  "globalFinalPortabilityBlockedBy": {
+    "source": "SOPS/age",
+    "status": "NOT_TESTED",
+    "reason": "ENVIRONMENT_BLOCKED",
+    "requirement": "Requires disposable isolated Kubernetes environment for real controlled positive/negative execution and differential proof."
+  }
+}

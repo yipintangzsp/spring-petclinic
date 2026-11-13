@@ -1,0 +1,104 @@
+apiVersion: v1
+kind: Secret
+metadata:
+  name: alertmanager-platform
+  namespace: monitoring
+stringData:
+  alertmanager.yaml: |
+    global:
+      resolve_timeout: 5m
+    route:
+      receiver: platform-local
+      group_by: [alertname, namespace]
+      group_wait: 10s
+      group_interval: 1m
+      repeat_interval: 12h
+      routes:
+        - receiver: petclinic-local
+          matchers:
+            - 'namespace="petclinic"'
+        - receiver: analytics-local
+          matchers:
+            - 'namespace=~"data-infra|ns-bigdata"'
+    receivers:
+      - name: platform-local
+      - name: petclinic-local
+      - name: analytics-local
+---
+apiVersion: monitoring.coreos.com/v1
+kind: Alertmanager
+metadata:
+  name: platform
+  namespace: monitoring
+spec:
+  replicas: 1
+  version: v0.31.1
+  image: 192.168.1.58:30050/platform-upgrade/alertmanager@sha256:235048aacee1c2af6702eeec6291a9979b01870ef9f738e16d5821b2126ef5de
+  externalUrl: http://alertmanager.devops.local
+  nodeSelector:
+    kubernetes.io/hostname: devops
+  resources:
+    requests:
+      cpu: 10m
+      memory: 64Mi
+    limits:
+      cpu: 200m
+      memory: 128Mi
+  retention: 120h
+  storage:
+    volumeClaimTemplate:
+      spec:
+        accessModes: [ReadWriteOnce]
+        storageClassName: local-path
+        resources:
+          requests:
+            storage: 1Gi
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: alertmanager-platform
+  namespace: monitoring
+  labels:
+    app: alertmanager-platform
+spec:
+  selector:
+    alertmanager: platform
+  ports:
+    - name: web
+      port: 9093
+      targetPort: web
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: alertmanager-platform
+  namespace: monitoring
+spec:
+  ingressClassName: traefik
+  rules:
+    - host: alertmanager.devops.local
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: alertmanager-platform
+                port:
+                  number: 9093
+---
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: alertmanager-platform
+  namespace: monitoring
+  labels:
+    release: kube-stack
+spec:
+  selector:
+    matchLabels:
+      app: alertmanager-platform
+  endpoints:
+    - port: web
+      interval: 30s

@@ -1,0 +1,855 @@
+{
+  "input": {
+    "phase": "create",
+    "classification": "CONTROLLED_REPLAY",
+    "identity": {
+      "source": {
+        "commit": "9a78cc89f22fa98fb1ffcc43e2ae279299471793",
+        "repository": "http://gitlab-service.ns-devops.svc.cluster.local/root/petclinic-platform.git"
+      },
+      "builder": {
+        "identity": "http://jenkins.devops.local/job/petclinic-candidate-build",
+        "buildNumber": 2
+      },
+      "candidateImage": "core.harbor.domain/petclinic/petclinic@sha256:2fbaea65ab030c56c60c62e3ee9fbe362deb8bbbb8216a891ef4c7bbbcea6d55"
+    },
+    "now": 1793330060429,
+    "environment": {
+      "BUILD_NUMBER": "2",
+      "JENKINS_URL": "http://jenkins.devops.local/",
+      "JOB_NAME": "petclinic-candidate-build",
+      "HEAVY_HOLDER": "candidate-build-2",
+      "REGISTRY_API": "10.0.0.3:30050",
+      "FULL_IMAGE": "127.0.0.1:13050/petclinic/petclinic:0.10.0-ci-1000002",
+      "IMAGE_TAG": "0.10.0-ci-1000002",
+      "BUILD_PROVENANCE_IMAGE": "core.harbor.domain/petclinic/petclinic@sha256:2fbaea65ab030c56c60c62e3ee9fbe362deb8bbbb8216a891ef4c7bbbcea6d55",
+      "BUILD_SOURCE_COMMIT": "9a78cc89f22fa98fb1ffcc43e2ae279299471793",
+      "BUILD_SOURCE_REPOSITORY": "http://gitlab-service.ns-devops.svc.cluster.local/root/petclinic-platform.git",
+      "BUILD_BUILDER_IDENTITY": "http://jenkins.devops.local/job/petclinic-candidate-build",
+      "BUILD_SOURCE_NUMBER": "3",
+      "HARBOR_USER": "synthetic-user",
+      "HARBOR_PASS": "synthetic-password",
+      "SIGNING_AGE_FILE": "/fixture/NO_REAL_KEY",
+      "TRANSPORT_MAX_RETRIES": "2"
+    },
+    "runtime": {
+      "manifest": "{\n  \"root\": \"/var/jenkins_home/platform-security/20261027\",\n  \"baseImage\": \"127.0.0.1:30050/petclinic/petclinic@sha256:83c2ae787a3d160cad1681228a669ac46afb19000558f4eefb45da50f08bf05c\",\n  \"versions\": {\n    \"cosign\": \"3.1.4\",\n    \"sops\": \"3.13.3\",\n    \"age\": \"1.3.2\",\n    \"semgrep\": \"1.182.1\",\n    \"zap\": \"2.17.0\"\n  },\n  \"files\": [\n    {\n      \"path\": \"age\",\n      \"sha256\": \"41b072352f4561018949623c674d16ef704019b9108a9bbdbd21292efebfc94f\",\n      \"bytes\": 6540637\n    },\n    {\n      \"path\": \"age-keygen\",\n      \"sha256\": \"00b549cebf68302893fc489830f37e706712689ca877f84d85439d700d2997c7\",\n      \"bytes\": 3854433\n    },\n    {\n      \"path\": \"cosign\",\n      \"sha256\": \"ade83b7aac62e131cacfe96d958948b2150cc9efec46a570a2649b8e27dedad2\",\n      \"bytes\": 136437761\n    },\n    {\n      \"path\": \"semgrep/__init__.py\",\n      \"sha256\": \"16507ca81a83c9a71a3e0a5420249cd04d3bc89a8173b690afea86e7edd75362\",\n      \"bytes\": 566\n    },\n    {\n      \"path\": \"semgrep/__pycache__/__init__.cpython-312.pyc\",\n      \"sha256\": \"b0fb91d8fb68b8de5b0fe61f63867ca475b91e90289f5d65ab09bb8396ca0a6d\",\n      \"bytes\": 298\n    },\n    {\n      \"path\": \"semgrep/libs/libbz2.so.1\",\n      \"sha256\": \"1bd8fe2b796dd6cb7b6643824561cfb377bd58edf7dd69564644189e157a1b09\",\n      \"bytes\": 132816\n    },\n    {\n      \"path\": \"semgrep/libs/libcom_err.so.2\",\n      \"sha256\": \"9910183ec69e51b194b56e5bd37cb736047b0022125e1bc5617e4abf514ad024\",\n      \"bytes\": 132512\n    },\n    {\n      \"path\": \"semgrep/libs/libcrypto.so.3\",\n      \"sha256\": \"22ba24fe8b7d38ed1e9a1d88a430492530b42512db68876873a8f289b193f7fe\",\n      \"bytes\": 5347536\n    },\n    {\n      \"path\": \"semgrep/libs/libcurl.so.4\",\n      \"sha256\": \"6d1ff9e36d792f809ffecc5cfc5fec2f27824ce972410329a617bc18ec68a01c\",\n      \"bytes\": 533144\n    },\n    {\n      \"path\": \"semgrep/libs/libdw.so.1\",\n      \"sha256\": \"c40c525cc8e55f5f890134937e78b7398dd588fbd929300d7deac545a11182f3\",\n      \"bytes\": 731168\n    },\n    {\n      \"path\": \"semgrep/libs/libelf.so.1\",\n      \"sha256\": \"75ea3d5d91219ec1a0c52e2180d18091f45f8a8db414bd1e6ca27c2955268e16\",\n      \"bytes\": 200584\n    },\n    {\n      \"path\": \"semgrep/libs/libev.so.4\",\n      \"sha256\": \"e7857c4c7d2946bdd447f6f7993e14fb7f3786a011380137c8ffc261cecb0f29\",\n      \"bytes\": 134792\n    },\n    {\n      \"path\": \"semgrep/libs/libgcc_s.so.1\",\n      \"sha256\": \"b38a4ec2b2b36043bdcc7ba9c6b395a2e0e85b1733f5ed4f23c17e38e2a05f39\",\n      \"bytes\": 200728\n    },\n    {\n      \"path\": \"semgrep/libs/libgmp.so.10\",\n      \"sha256\": \"e55eda0c9a684035dc381b59f6f8771dc9d6962cf5fa25c272b21ef28893afdf\",\n      \"bytes\": 606264\n    },\n    {\n      \"path\": \"semgrep/libs/libgssapi_krb5.so.2\",\n      \"sha256\": \"ff7726889238897d0c42565ff080e67318619a9ba421df452ac24df01550544f\",\n      \"bytes\": 405096\n    },\n    {\n      \"path\": \"semgrep/libs/libk5crypto.so.3\",\n      \"sha256\": \"ab334856756ae5935940c7d56df057c3d09335cc0b763fe58b1a005719e9d801\",\n      \"bytes\": 201816\n    },\n    {\n      \"path\": \"semgrep/libs/libkeyutils.so.1\",\n      \"sha256\": \"c82adb48ef0d45a9c363e719c5c541583a472f46ec34f6e93eff188cc1149f8f\",\n      \"bytes\": 133448\n    },\n    {\n      \"path\": \"semgrep/libs/libkrb5.so.3\",\n      \"sha256\": \"8fe298e1dbb78304573497f2d5908d6dab9605b908c29f0bbd548e3aa6984a54\",\n      \"bytes\": 1008192\n    },\n    {\n      \"path\": \"semgrep/libs/libkrb5support.so.0\",\n      \"sha256\": \"eaac7301b08186c2774effe11b2f7131b600f283048125c2d5ade5c0a2a5dfb9\",\n      \"bytes\": 135800\n    },\n    {\n      \"path\": \"semgrep/libs/liblzma.so.5\",\n      \"sha256\": \"0bf6a4c931616dd2af40c316ef053a5fbbca1a257cb838eefcc9723529c66d20\",\n      \"bytes\": 266400\n    },\n    {\n      \"path\": \"semgrep/libs/libm.so.6\",\n      \"sha256\": \"5835646fd075206df576412df8ecb044d5008cd371948116be88e6fc2b74280d\",\n      \"bytes\": 673848\n    },\n    {\n      \"path\": \"semgrep/libs/libnghttp2.so.14\",\n      \"sha256\": \"34fad2dbd0b562e387e31f70ab98110d40c0d9ec23f9cdf3879bbcac3e9a66b8\",\n      \"bytes\": 269720\n    },\n    {\n      \"path\": \"semgrep/libs/libpcre2-8.so.0\",\n      \"sha256\": \"e3b07b7f71ef7541650a6b12a39ab3376a7b0949a292e38c5dd4f3604f0eb619\",\n      \"bytes\": 658880\n    },\n    {\n      \"path\": \"semgrep/libs/libresolv.so.2\",\n      \"sha256\": \"f0c5f3bc4c3190db156baa48385ec1690c6b630bc30eaec3299bdcd5a0093de3\",\n      \"bytes\": 134320\n    },\n    {\n      \"path\": \"semgrep/libs/libselinux.so.1\",\n      \"sha256\": \"aac04a94fe1b394c9d0619abd1209e45acb50bbd1561e53b6151d43e2c041d06\",\n      \"bytes\": 271616\n    },\n    {\n      \"path\": \"semgrep/libs/libssl.so.3\",\n      \"sha256\": \"c2894c5475b2f8301823dfac221712677036c0ee951cc09b23397c0a814b2967\",\n      \"bytes\": 1079440\n    },\n    {\n      \"path\": \"semgrep/libs/libstdc++.so.6\",\n      \"sha256\": \"fd0568b6f3166a7a8c78cae03ee2a816e0b57e99a035a48b1a9d9733fba9d1ac\",\n      \"bytes\": 2697560\n    },\n    {\n      \"path\": \"semgrep/libs/libtree-sitter.so.0.26\",\n      \"sha256\": \"3cf258ff04cad47f19ea8303d6b5a05b22a37e3828b642880a468a5d9c96b7b5\",\n      \"bytes\": 267944\n    },\n    {\n      \"path\": \"semgrep/libs/libunwind.so.8\",\n      \"sha256\": \"7708b275c1a81c46b07dcf3ee4d567f68f6ecebbc165b0470b6a5b87d7c1e9d0\",\n      \"bytes\": 133512\n    },\n    {\n      \"path\": \"semgrep/libs/libz.so.1\",\n      \"sha256\": \"310f2ad16d869d16641b8633659c3cd86c1503672ffadfc7a7448058c9554510\",\n      \"bytes\": 199576\n    },\n    {\n      \"path\": \"semgrep/libs/libzstd.so.1\",\n      \"sha256\": \"d512d8f534eda94e499e71276f83df565a72000e00e1f0010cf61847d5c333a1\",\n      \"bytes\": 727792\n    },\n    {\n      \"path\": \"semgrep/semgrep-core\",\n      \"sha256\": \"886b69c889897ea13e23aba5f541c59ee1356c55218ebc21e07b7ab45f1256d2\",\n      \"bytes\": 270684144\n    },\n    {\n      \"path\": \"sops\",\n      \"sha256\": \"53b0abacd38ef1b12a66d6c100956691b9cefce018d91f81e73ddf7438b94d77\",\n      \"bytes\": 48300194\n    },\n    {\n      \"path\": \"zap/README\",\n      \"sha256\": \"04e023815fe31ca1dc1479e457cdb32d79922fc4397bd6b5c4f325d185a71e22\",\n      \"bytes\": 2167\n    },\n    {\n      \"path\": \"zap/db/db.properties\",\n      \"sha256\": \"1b2b6e7f17d809b8a2e571a8f80dfe0bd7a197bb062b2d0e1aedfc9fb770384b\",\n      \"bytes\": 737\n    },\n    {\n      \"path\": \"zap/db/hsqldb.properties\",\n      \"sha256\": \"5e95b38b1d73e6da435442368d5023d1f55405d274634fea878f4fc8804641e2\",\n      \"bytes\": 12090\n    },\n    {\n      \"path\": \"zap/db/mysql.properties\",\n      \"sha256\": \"8992ec1f5466be1619dbcbce666e2dd096d01588130245b7b6ca94ed4d53e4c8\",\n      \"bytes\": 10407\n    },\n    {\n      \"path\": \"zap/db/mysql.schema\",\n      \"sha256\": \"109f84ea9773642f2d256cbb07fa9aeaa068b97e722438fa5b4abc82180c587d\",\n      \"bytes\": 9993\n    },\n    {\n      \"path\": \"zap/db/zapdb.properties\",\n      \"sha256\": \"a48ae99008e9ae6c94130386a6b44d9d10e01b2ee31adc57d6461287ee2eff2c\",\n      \"bytes\": 89\n    },\n    {\n      \"path\": \"zap/db/zapdb.script\",\n      \"sha256\": \"da82d66c646281afb2db8023940507a08d977836a28d27f51c225afba42f477d\",\n      \"bytes\": 5020\n    },\n    {\n      \"path\": \"zap/lang/Messages.properties\",\n      \"sha256\": \"35aa367d25f14b2ab4bf3e3ef1ac2321963a91da342ac3893b6174abbafb9e73\",\n      \"bytes\": 230521\n    },\n    {\n      \"path\": \"zap/lang/Messages_ar_SA.properties\",\n      \"sha256\": \"6436b40ec1ab79dbdf484f6ffa9d6a482242f3fc716cbdde0f351606d0158532\",\n      \"bytes\": 282948\n    },\n    {\n      \"path\": \"zap/lang/Messages_az_AZ.properties\",\n      \"sha256\": \"9867c6aeecf1b7769becd04ed11b47a1857137a6bdb11b1f6e10b577f7f3196f\",\n      \"bytes\": 236157\n    },\n    {\n      \"path\": \"zap/lang/Messages_bn_BD.properties\",\n      \"sha256\": \"1a30b115e2d5a781eaa3ec6197d398b2eea27b9418a646fe5a5ab0479889778b\",\n      \"bytes\": 252689\n    },\n    {\n      \"path\": \"zap/lang/Messages_bs_BA.properties\",\n      \"sha256\": \"170741032a790680cf9c2a52f4825d371b5c938efd3edcdfe76beb736bf36f61\",\n      \"bytes\": 233517\n    },\n    {\n      \"path\": \"zap/lang/Messages_ceb_PH.properties\",\n      \"sha256\": \"2a6222e17aed81fbbbcfa1632c7f9d7318a85bb64ea7289c6a63134ac92a25b3\",\n      \"bytes\": 244482\n    },\n    {\n      \"path\": \"zap/lang/Messages_da_DK.properties\",\n      \"sha256\": \"11d7c5cb5e65c359beacd3316b679b4afd5e9cd549f31c2bb7d2418ca1854250\",\n      \"bytes\": 229704\n    },\n    {\n      \"path\": \"zap/lang/Messages_de_DE.properties\",\n      \"sha256\": \"1cc465bb51bcf50e2483097f421562f86fb457097e1e5a9d675ab0e330eb6e5a\",\n      \"bytes\": 234400\n    },\n    {\n      \"path\": \"zap/lang/Messages_el_GR.properties\",\n      \"sha256\": \"df7cb4d13b68019f28b6a21bdba0103da759a837ee896b659c88577c09c658a8\",\n      \"bytes\": 284459\n    },\n    {\n      \"path\": \"zap/lang/Messages_es_ES.properties\",\n      \"sha256\": \"16da34f0a636e141c3f055865b14c13f867bba775b0ed4b30b14fc9ec93598b7\",\n      \"bytes\": 272468\n    },\n    {\n      \"path\": \"zap/lang/Messages_fa_IR.properties\",\n      \"sha256\": \"9db4767b73a5a1b4d4f53b1f3a180001c060ac1039167b37459075ed3fe95750\",\n      \"bytes\": 287204\n    },\n    {\n      \"path\": \"zap/lang/Messages_fil_PH.properties\",\n      \"sha256\": \"b89744f554f4aec986943d9c6d752243a8e60c4455dd8a7f46beadc12001d3a8\",\n      \"bytes\": 244256\n    },\n    {\n      \"path\": \"zap/lang/Messages_fr_FR.properties\",\n      \"sha256\": \"1a1b50d3f45d7ff8c3a3c95fa865993e18b94c74a7bc789029ec7446c042c37c\",\n      \"bytes\": 251717\n    },\n    {\n      \"path\": \"zap/lang/Messages_ha_HG.properties\",\n      \"sha256\": \"ff79b9eac41199a079f61523b995bd023afcfc38d48cce932058f217b11329ed\",\n      \"bytes\": 227979\n    },\n    {\n      \"path\": \"zap/lang/Messages_he_IL.properties\",\n      \"sha256\": \"ddfd756015ab82508147ed6909563463aa7c4985dc0b77f7a968f3ba9fd31978\",\n      \"bytes\": 235605\n    },\n    {\n      \"path\": \"zap/lang/Messages_hi_IN.properties\",\n      \"sha256\": \"6c131fff3baf08a7610b8160c7da10a1282fc31d7171e68daa0123c9ee0f508f\",\n      \"bytes\": 228700\n    },\n    {\n      \"path\": \"zap/lang/Messages_hr_HR.properties\",\n      \"sha256\": \"bf0704a750619a6ea07cff0e0799c2a9b6d2a49d1d7f699d1168b368d6aa6422\",\n      \"bytes\": 228278\n    },\n    {\n      \"path\": \"zap/lang/Messages_hu_HU.properties\",\n      \"sha256\": \"62118b5176f2b3bc82397d4e2d8f5c963a0968dcdc6f2f385b55d14f4483a2d0\",\n      \"bytes\": 237450\n    },\n    {\n      \"path\": \"zap/lang/Messages_id_ID.properties\",\n      \"sha256\": \"d09f3e2a548f5a32f37fb5b87717ee2b06dcc9e4aa1e8bd33ef217d917d6bd98\",\n      \"bytes\": 232821\n    },\n    {\n      \"path\": \"zap/lang/Messages_it_IT.properties\",\n      \"sha256\": \"2f288e68f673dd7357c678e6d276f9579da5e321573a4e0d3ec86960acaa040d\",\n      \"bytes\": 243083\n    },\n    {\n      \"path\": \"zap/lang/Messages_ja_JP.properties\",\n      \"sha256\": \"42c82f3886426b04be0432876192ef1c7b0951f3ab01ab13fb6aedf6b8000e88\",\n      \"bytes\": 401474\n    },\n    {\n      \"path\": \"zap/lang/Messages_ko_KR.properties\",\n      \"sha256\": \"1be31c720de6b7afabbd1a8d59092f98e255445d9cb4b56e8b74c810ca889eb7\",\n      \"bytes\": 243877\n    },\n    {\n      \"path\": \"zap/lang/Messages_mk_MK.properties\",\n      \"sha256\": \"ff79b9eac41199a079f61523b995bd023afcfc38d48cce932058f217b11329ed\",\n      \"bytes\": 227979\n    },\n    {\n      \"path\": \"zap/lang/Messages_ms_MY.properties\",\n      \"sha256\": \"9364e31cfe4823d31a89c2b17835b737ce7d7b7f1fa9bec7534e96bced2451c4\",\n      \"bytes\": 229031\n    },\n    {\n      \"path\": \"zap/lang/Messages_nb_NO.properties\",\n      \"sha256\": \"a0ee9eb0fc3f2153b7fb5d2fb038c609087357080dbce68f96eadf96bf95c88e\",\n      \"bytes\": 227980\n    },\n    {\n      \"path\": \"zap/lang/Messages_nl_NL.properties\",\n      \"sha256\": \"a2c2ba07ec60dae2c7950a3e28211661a63af7d239c3bdde1d5dbe8ab10b7400\",\n      \"bytes\": 233937\n    },\n    {\n      \"path\": \"zap/lang/Messages_pcm_NG.properties\",\n      \"sha256\": \"93b9273c6864dfefe758661c7d9f3028262ad7268be86aad172dedbe566840bc\",\n      \"bytes\": 228551\n    },\n    {\n      \"path\": \"zap/lang/Messages_pl_PL.properties\",\n      \"sha256\": \"c9efc889100f9eef244edbab7ee1b45341d8c2c9583513cc5208d01ce4ec690c\",\n      \"bytes\": 236660\n    },\n    {\n      \"path\": \"zap/lang/Messages_pt_BR.properties\",\n      \"sha256\": \"40b34f2f04ddcc4ebfc7f13ca2f36355533dd971e45a3e4bfb5e147ce7f49bba\",\n      \"bytes\": 253490\n    },\n    {\n      \"path\": \"zap/lang/Messages_pt_PT.properties\",\n      \"sha256\": \"7cf085219571b860c2159fbec6df36d1eea1402d0aff6e4d2b615ae5d75d1869\",\n      \"bytes\": 232341\n    },\n    {\n      \"path\": \"zap/lang/Messages_ro_RO.properties\",\n      \"sha256\": \"651d8a043f8f92b771190fdf9a30dcba5399c126a90ae02ceeb720bfdcb8589d\",\n      \"bytes\": 233237\n    },\n    {\n      \"path\": \"zap/lang/Messages_ru_RU.properties\",\n      \"sha256\": \"9da5d79034d0006cc4fa6c5148b9325b4307a366c80125f4cea0c8c8a843a9f1\",\n      \"bytes\": 616127\n    },\n    {\n      \"path\": \"zap/lang/Messages_si_LK.properties\",\n      \"sha256\": \"43ad5c4a968548609c8e94428bf092559094e1ad64c7b81532571e0ef8c54b21\",\n      \"bytes\": 228782\n    },\n    {\n      \"path\": \"zap/lang/Messages_sk_SK.properties\",\n      \"sha256\": \"6ce602ce5828f473a06b849cdc4f0a14d5376376dfdba2c12954c646b828118a\",\n      \"bytes\": 228474\n    },\n    {\n      \"path\": \"zap/lang/Messages_sl_SI.properties\",\n      \"sha256\": \"c3b02b50a95549b412952a7f57184cd97fd26f23570e5ad7b4dde7f22ae0bd00\",\n      \"bytes\": 229188\n    },\n    {\n      \"path\": \"zap/lang/Messages_sq_AL.properties\",\n      \"sha256\": \"893fb0a608fdf6c4ccdc2296080fe31967d296684cbc74edfdf4a237dd5029d8\",\n      \"bytes\": 228445\n    },\n    {\n      \"path\": \"zap/lang/Messages_sr_CS.properties\",\n      \"sha256\": \"26d6faeb3319d910eb84e3dbf4a59579c3e21b4ec968f3e93a424bb5d5f41ab8\",\n      \"bytes\": 228501\n    },\n    {\n      \"path\": \"zap/lang/Messages_sr_SP.properties\",\n      \"sha256\": \"af37408d2a24b864e3997236004dd63664e9c84157f1b67621848b599c5cdb9d\",\n      \"bytes\": 228250\n    },\n    {\n      \"path\": \"zap/lang/Messages_tr_TR.properties\",\n      \"sha256\": \"09637450491caab8f7ce95ffd5acce3cb33e5822e3d81dbe9168df88da0966c0\",\n      \"bytes\": 259546\n    },\n    {\n      \"path\": \"zap/lang/Messages_uk_UA.properties\",\n      \"sha256\": \"7fca94eee1f8898b3e1ae583ea5bb35b65091bc5e0aa78607ef7b5d2203b9b69\",\n      \"bytes\": 599492\n    },\n    {\n      \"path\": \"zap/lang/Messages_ur_PK.properties\",\n      \"sha256\": \"48a05b96ed4a2a2f73b374a8a2c86959ee5b92fe2441007d6d11e426f22c5030\",\n      \"bytes\": 247498\n    },\n    {\n      \"path\": \"zap/lang/Messages_vi_VN.properties\",\n      \"sha256\": \"c139aa002a55132b6ccedad272f1b60f8775e0e712c8e04730a1e826c1904407\",\n      \"bytes\": 228521\n    },\n    {\n      \"path\": \"zap/lang/Messages_yo_NG.properties\",\n      \"sha256\": \"4018a18c4f5c200da76ccab6b2c47dd92400cd44dee97b3b709c7dc6aebb3b2b\",\n      \"bytes\": 227962\n    },\n    {\n      \"path\": \"zap/lang/Messages_zh_CN.properties\",\n      \"sha256\": \"bca3b43a1babb0e72ad07727069cc0bc49358f72e560f038b65fd2c120705aa2\",\n      \"bytes\": 300034\n    },\n    {\n      \"path\": \"zap/lang/Messages_zh_TW.properties\",\n      \"sha256\": \"dc150013ad789ea3b25f68be18123d49bb9564645fc12f6f66aff55f3c4e4702\",\n      \"bytes\": 236845\n    },\n    {\n      \"path\": \"zap/lib/commons-beanutils-1.11.0.jar\",\n      \"sha256\": \"9e44ba68ec9a3f21286fa2a8bbb003b735c0f69101bb43144b79f4f8aaa74709\",\n      \"bytes\": 246806\n    },\n    {\n      \"path\": \"zap/lib/commons-codec-1.20.0.jar\",\n      \"sha256\": \"6af66595f9f6a7bb58ce66518d6888d40b547c366d2262f06676eee19528ff66\",\n      \"bytes\": 401021\n    },\n    {\n      \"path\": \"zap/lib/commons-collections-3.2.2.jar\",\n      \"sha256\": \"eeeae917917144a68a741d4c0dff66aa5c5c5fd85593ff217bced3fc8ca783b8\",\n      \"bytes\": 588337\n    },\n    {\n      \"path\": \"zap/lib/commons-configuration-1.10.jar\",\n      \"sha256\": \"95d4e6711e88ce78992c82c25bc03c8df9ecf5a357f0de0bec72a26db3399374\",\n      \"bytes\": 362679\n    },\n    {\n      \"path\": \"zap/lib/commons-csv-1.14.1.jar\",\n      \"sha256\": \"32be0e1e76673092f5d12cb790bd2acb6c2ab04c4ea6efc69ea5ee17911c24fe\",\n      \"bytes\": 60964\n    },\n    {\n      \"path\": \"zap/lib/commons-httpclient-3.1.jar\",\n      \"sha256\": \"dbd4953d013e10e7c1cc3701a3e6ccd8c950c892f08d804fabfac21705930443\",\n      \"bytes\": 305001\n    },\n    {\n      \"path\": \"zap/lib/commons-io-2.21.0.jar\",\n      \"sha256\": \"7d643a2afea8b058b762aa6fb90e5b256f6c729739f8b3784c3370ddc609e88d\",\n      \"bytes\": 585274\n    },\n    {\n      \"path\": \"zap/lib/commons-lang-2.6.jar\",\n      \"sha256\": \"50f11b09f877c294d56f24463f47d28f929cf5044f648661c0f0cfbae9a2f49c\",\n      \"bytes\": 284220\n    },\n    {\n      \"path\": \"zap/lib/commons-lang3-3.19.0.jar\",\n      \"sha256\": \"32733ab4bc90b45b63eb72677d886961003fd4ed113e07b1028f9877cb2ac735\",\n      \"bytes\": 709075\n    },\n    {\n      \"path\": \"zap/lib/commons-logging-1.3.5.jar\",\n      \"sha256\": \"6d7a744e4027649fbb50895df9497d109f98c766a637062fe8d2eabbb3140ba4\",\n      \"bytes\": 73737\n    },\n    {\n      \"path\": \"zap/lib/commons-text-1.14.0.jar\",\n      \"sha256\": \"121fce2282910c8f0c3ba793a5436b31beb710423cbe2d574a3fb7a73c508e92\",\n      \"bytes\": 259876\n    },\n    {\n      \"path\": \"zap/lib/ezmorph-1.0.6.jar\",\n      \"sha256\": \"2be06a2380f8656426b5c610db694bbd75314caf3e9191affcd7942721398ed7\",\n      \"bytes\": 86487\n    },\n    {\n      \"path\": \"zap/lib/flatlaf-3.7.jar\",\n      \"sha256\": \"1dc4f08cc0e01122f5bc6cebe1dcf253872c1fe8126208f43dab314d7deb0da2\",\n      \"bytes\": 1018560\n    },\n    {\n      \"path\": \"zap/lib/flatlaf-swingx-3.7.jar\",\n      \"sha256\": \"77332378483176b9fadeb1181b8ddc4b71667e2462c95c370ef1f71ce996e4d9\",\n      \"bytes\": 40210\n    },\n    {\n      \"path\": \"zap/lib/harlib-1.1.3.jar\",\n      \"sha256\": \"392abbd52c66061e872712c0572247f97e70485fc3881b453f0bc1e56a2373b6\",\n      \"bytes\": 123713\n    },\n    {\n      \"path\": \"zap/lib/hsqldb-2.7.4.jar\",\n      \"sha256\": \"5fab2bb4384ac06b762638c8fa2740c944b8d080e4796c0c6c2af8b90dd4e5ad\",\n      \"bytes\": 1662185\n    },\n    {\n      \"path\": \"zap/lib/jackson-core-asl-1.9.13.jar\",\n      \"sha256\": \"440a9cb5ca95b215f953d3a20a6b1a10da1f09b529a9ddea5f8a4905ddab4f5a\",\n      \"bytes\": 232248\n    },\n    {\n      \"path\": \"zap/lib/java-semver-0.10.2.jar\",\n      \"sha256\": \"a8e32e17575d0188c1f3e2e57bb95db09793883c8853fde828b63ecb1f99a63a\",\n      \"bytes\": 52003\n    },\n    {\n      \"path\": \"zap/lib/javahelp-2.0.05.jar\",\n      \"sha256\": \"fcf4922d38ff85184f1d2328317bb60826e14da948abd606ee3d5b8c6a70debd\",\n      \"bytes\": 562749\n    },\n    {\n      \"path\": \"zap/lib/jericho-html-3.4.jar\",\n      \"sha256\": \"20631d4b755e89dfb906c0dd3ca0b5212d9a6d446e4598849d652faa082bc73a\",\n      \"bytes\": 238398\n    },\n    {\n      \"path\": \"zap/lib/jfreechart-1.5.6.jar\",\n      \"sha256\": \"be7ae6310ca005ac98eceb74fa514af88cad098c808845786f762ca08a5b4bb3\",\n      \"bytes\": 1652288\n    },\n    {\n      \"path\": \"zap/lib/jgrapht-core-0.9.2.jar\",\n      \"sha256\": \"1a28d0c0c06c66e191088e32716c027951da061da0a78a53196e12d47a4d8f7b\",\n      \"bytes\": 397223\n    },\n    {\n      \"path\": \"zap/lib/json-lib-2.4-jdk15.jar\",\n      \"sha256\": \"8290f8871ebd3db52e36c6fa844fe172895b2c714ea589cfed3d78ad9c01a924\",\n      \"bytes\": 159123\n    },\n    {\n      \"path\": \"zap/lib/log4j-1.2-api-2.25.2.jar\",\n      \"sha256\": \"cb8e6efed1a386bb2789bfe45388850dd86b6d6b5858913e8c3f25690beb3251\",\n      \"bytes\": 358528\n    },\n    {\n      \"path\": \"zap/lib/log4j-api-2.25.2.jar\",\n      \"sha256\": \"9fd66c9fe0bea06fa9666c147989a46cafaa92b4a88753697d3945cc43338cbb\",\n      \"bytes\": 349595\n    },\n    {\n      \"path\": \"zap/lib/log4j-core-2.25.2.jar\",\n      \"sha256\": \"e50db7701430ff907981850ef527a41d51a53dd0017f53a0860afcbab8570277\",\n      \"bytes\": 2018265\n    },\n    {\n      \"path\": \"zap/lib/log4j-jul-2.25.2.jar\",\n      \"sha256\": \"544ac113f36a9876c8f52571a0e17ff37271eace2e8f63dadff72e5207008668\",\n      \"bytes\": 31959\n    },\n    {\n      \"path\": \"zap/lib/rsyntaxtextarea-3.6.0.jar\",\n      \"sha256\": \"bf00ec1015798edd433c3dfadf0c34a12a395b8c010f8f9fd8ec6ff4f44eb94c\",\n      \"bytes\": 1330192\n    },\n    {\n      \"path\": \"zap/lib/swingx-all-1.6.5-1.jar\",\n      \"sha256\": \"2a4f82979cd16d8f1c9eea232a985dff62bf69c4794a37b96099b20d322907c0\",\n      \"bytes\": 1495328\n    },\n    {\n      \"path\": \"zap/lib/xom-1.3.9.jar\",\n      \"sha256\": \"2b45f6d5b882ec3c13de86cf23512d01377c1943e8f8ad767298f67e03e561c5\",\n      \"bytes\": 326351\n    },\n    {\n      \"path\": \"zap/license/ApacheLicense-2.0.txt\",\n      \"sha256\": \"cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30\",\n      \"bytes\": 11358\n    },\n    {\n      \"path\": \"zap/license/COPYING\",\n      \"sha256\": \"6d7965f34e8dcf5dd2edec4ee1119dfebeb6c15ce6d3f46f5aa00cf1a05310f9\",\n      \"bytes\": 26992\n    },\n    {\n      \"path\": \"zap/license/OFL.txt\",\n      \"sha256\": \"ce243fd4a62b1b76c959ffba6ec16a7a3146b2362d441ae4f9f7f32fc3750d6c\",\n      \"bytes\": 4599\n    },\n    {\n      \"path\": \"zap/license/RSyntaxTextArea.License.txt\",\n      \"sha256\": \"a696d03aaee6ce59fdd33451144e4fddf5a32c266e682e25ec198626ca6d52b7\",\n      \"bytes\": 1492\n    },\n    {\n      \"path\": \"zap/license/TheClarifiedArtisticLicense.htm\",\n      \"sha256\": \"cc80d2087087e9ad4431bb926fa5bb4c3bc815eb7349bc4825722c969199ee7c\",\n      \"bytes\": 7400\n    },\n    {\n      \"path\": \"zap/license/TheClarifiedArtisticLicense.rtf\",\n      \"sha256\": \"9bb54a0b4c01538d5d1d26d9cf87a43910721aced991426aaba639d17d77bd98\",\n      \"bytes\": 7228\n    },\n    {\n      \"path\": \"zap/license/gpl-2.0.txt\",\n      \"sha256\": \"8177f97513213526df2cf6184d8ff986c675afb514d4e68a404010521b880643\",\n      \"bytes\": 18092\n    },\n    {\n      \"path\": \"zap/license/hsqldb_lic.txt\",\n      \"sha256\": \"68134cd00d07dc4d199cae67c7993613cf033c9f40656a2f8040f9d00c4bc184\",\n      \"bytes\": 1602\n    },\n    {\n      \"path\": \"zap/license/hypersonic_lic.txt\",\n      \"sha256\": \"96d85f5107fd9e5a64ff682b94cd76d2244bace466c8c79a583db2bf1be0e09b\",\n      \"bytes\": 3368\n    },\n    {\n      \"path\": \"zap/license/lgpl-3.0.txt\",\n      \"sha256\": \"da7eabb7bafdf7d3ae5e9f223aa5bdc1eece45ac569dc21b3b037520b4464768\",\n      \"bytes\": 7651\n    },\n    {\n      \"path\": \"zap/plugin/Readme.txt\",\n      \"sha256\": \"4f001303b59bd773cb84a33dfb99e5e5b13c2a944908bce78e9ef886c214409c\",\n      \"bytes\": 34\n    },\n    {\n      \"path\": \"zap/plugin/alertFilters-release-26.zap\",\n      \"sha256\": \"d6c9113aac962c31955627cda2683afe447cf9d84c0f803c6029180897c16648\",\n      \"bytes\": 594584\n    },\n    {\n      \"path\": \"zap/plugin/ascanrules-release-78.zap\",\n      \"sha256\": \"764a9f803304b6aa266d13f4c39f23b013e206c9e831435cd405871919a021fe\",\n      \"bytes\": 4641328\n    },\n    {\n      \"path\": \"zap/plugin/authhelper-beta-0.34.0.zap\",\n      \"sha256\": \"1e9f91db13638c3d625a01bf8b73c24cbc2396f502d279d8dbfe8c5ba1f46764\",\n      \"bytes\": 1556064\n    },\n    {\n      \"path\": \"zap/plugin/automation-beta-0.58.0.zap\",\n      \"sha256\": \"34958cd9b94264296cdd05bab585bcc72af7b0610d9b91cd4b8e280cb9915c6c\",\n      \"bytes\": 2150219\n    },\n    {\n      \"path\": \"zap/plugin/bruteforce-beta-20.zap\",\n      \"sha256\": \"c18de61b2d4082aca0e8dc4d916398ddb556179cf2e14caf065fe837713f985c\",\n      \"bytes\": 554460\n    },\n    {\n      \"path\": \"zap/plugin/callhome-release-0.20.0.zap\",\n      \"sha256\": \"a9e499dfa9f2fc85992faba66ab90db48d46b47e4241dc60106c78094412a679\",\n      \"bytes\": 326709\n    },\n    {\n      \"path\": \"zap/plugin/client-alpha-0.20.0.zap\",\n      \"sha256\": \"052a91c1b066d13b8959c7093581b7aa88d02deb6f0a1dbcfee1c12278268953\",\n      \"bytes\": 2784989\n    },\n    {\n      \"path\": \"zap/plugin/commonlib-release-1.39.0.zap\",\n      \"sha256\": \"477af158c562770951abedefb5bb988fda935ef253a80616c3e298174fc58fb0\",\n      \"bytes\": 11878908\n    },\n    {\n      \"path\": \"zap/plugin/database-alpha-0.9.0.zap\",\n      \"sha256\": \"4c58ca142288d9ddc6ae3fd8fe6815e3894462bae67eb0776e540a2d9ddaf87d\",\n      \"bytes\": 23342827\n    },\n    {\n      \"path\": \"zap/plugin/diff-beta-18.zap\",\n      \"sha256\": \"a0b1326c0d8a520cd3fd56cc422a73d2eba7b6a1853aad3e61a9f2ddf8dc0717\",\n      \"bytes\": 693652\n    },\n    {\n      \"path\": \"zap/plugin/directorylistv1-release-9.zap\",\n      \"sha256\": \"71e5b57bcf89774267375426f2e67f789cf13a4b69c97c8946a325fa321d18ce\",\n      \"bytes\": 961164\n    },\n    {\n      \"path\": \"zap/plugin/domxss-release-23.zap\",\n      \"sha256\": \"06f49771384cc44329f40ddbcf767b06427f4bc03aba5e6e0f798c78b028f22d\",\n      \"bytes\": 286682\n    },\n    {\n      \"path\": \"zap/plugin/encoder-release-1.8.0.zap\",\n      \"sha256\": \"2c1ecb22bb1f511a8141ab515fb48d58eaefb07f1c3d2ed76823464cc0b891cc\",\n      \"bytes\": 506276\n    },\n    {\n      \"path\": \"zap/plugin/exim-beta-0.16.0.zap\",\n      \"sha256\": \"2861fcff556858cbb261feda3919716c6fe150c884e984e5477565992016af6d\",\n      \"bytes\": 1140767\n    },\n    {\n      \"path\": \"zap/plugin/formhandler-beta-6.8.0.zap\",\n      \"sha256\": \"ba044f9ca74171bbb0a14a4fab804a278fab8989124ab6a543da9e57a34c0210\",\n      \"bytes\": 2128991\n    },\n    {\n      \"path\": \"zap/plugin/fuzz-beta-13.16.0.zap\",\n      \"sha256\": \"c39125db01a774b19b5f224d504a301a0f25a213e87a3ce58d90306a79a70701\",\n      \"bytes\": 2014901\n    },\n    {\n      \"path\": \"zap/plugin/gettingStarted-release-20.zap\",\n      \"sha256\": \"2f48cfe5b0bff4973279ef812510a4e61f064952aed215855c4358ad94ee7e07\",\n      \"bytes\": 968767\n    },\n    {\n      \"path\": \"zap/plugin/graaljs-alpha-0.12.0.zap\",\n      \"sha256\": \"09eef48f9d59da168ca6be03935001ceb927f3f71990ef617c4a53509bdb7757\",\n      \"bytes\": 27817739\n    },\n    {\n      \"path\": \"zap/plugin/graphql-alpha-0.29.0.zap\",\n      \"sha256\": \"6ba6b0135189dffe62933db3b3e8b29acab1aba8026af29be20cc896ff99e4ca\",\n      \"bytes\": 5643568\n    },\n    {\n      \"path\": \"zap/plugin/help-release-22.zap\",\n      \"sha256\": \"a99fcf18187ae3e232fafbe8150d3d65cbdd328c2284bd04016d82f2d2a5c945\",\n      \"bytes\": 647250\n    },\n    {\n      \"path\": \"zap/plugin/hud-beta-0.19.0.zap\",\n      \"sha256\": \"737239ce1b765ff32f9351a647594f22d725d319b94f7a2ef2cb153aadf832df\",\n      \"bytes\": 1382692\n    },\n    {\n      \"path\": \"zap/plugin/insights-alpha-0.0.1.zap\",\n      \"sha256\": \"7b6720f0112f33a614d67563fb4347c5ef4123d49a7b16d735c5fc635b7d3e4c\",\n      \"bytes\": 57558\n    },\n    {\n      \"path\": \"zap/plugin/invoke-beta-17.zap\",\n      \"sha256\": \"8f016524b25a73aae7b50f13f91c53483e1ff43d7b15d96cf0917cfe580e3b46\",\n      \"bytes\": 322515\n    },\n    {\n      \"path\": \"zap/plugin/network-beta-0.25.0.zap\",\n      \"sha256\": \"bf32c4d2c40c76171efa29da1987375a312cc09595ece29d67018e7ae54d6cf3\",\n      \"bytes\": 28165092\n    },\n    {\n      \"path\": \"zap/plugin/oast-beta-0.24.0.zap\",\n      \"sha256\": \"f06ecea02e2c1df4a164e737dd632afba4430225b2fdc2feb6042bdb1e976b3d\",\n      \"bytes\": 914676\n    },\n    {\n      \"path\": \"zap/plugin/onlineMenu-release-15.zap\",\n      \"sha256\": \"6d0c4706f0570f60143efaaaa86f98cb539fcf7279aa620af7e2934da43a141f\",\n      \"bytes\": 208866\n    },\n    {\n      \"path\": \"zap/plugin/openapi-beta-48.zap\",\n      \"sha256\": \"8384f8b71a0cb8a69bfc859603d7418f2d9b59ceb499063909e11e78e152c698\",\n      \"bytes\": 11688307\n    },\n    {\n      \"path\": \"zap/plugin/postman-alpha-0.9.0.zap\",\n      \"sha256\": \"2b3245707cd1f3e0525f81ca8628166ca8bf9543572ddc7fe44002f4c517dd80\",\n      \"bytes\": 289315\n    },\n    {\n      \"path\": \"zap/plugin/pscan-alpha-0.6.0.zap\",\n      \"sha256\": \"269ff66f0d8a8012f156e90e13238606a8d503b99521170649b62c9aa7295927\",\n      \"bytes\": 686354\n    },\n    {\n      \"path\": \"zap/plugin/pscanrules-release-70.zap\",\n      \"sha256\": \"ee159095941028ca96bed8988f019d15aec16ef52f207fe5c2a54457647215ef\",\n      \"bytes\": 1993526\n    },\n    {\n      \"path\": \"zap/plugin/quickstart-release-53.zap\",\n      \"sha256\": \"9912b0615de9ff3afa4983201de6901498f34f584f3a92a9bf53d979c641b2e2\",\n      \"bytes\": 777376\n    },\n    {\n      \"path\": \"zap/plugin/replacer-release-21.zap\",\n      \"sha256\": \"ed08e4eaef6bd3287525f9e6e5470435c7bbe9ff0889326969209b8feb61dc6e\",\n      \"bytes\": 447555\n    },\n    {\n      \"path\": \"zap/plugin/reports-release-0.43.0.zap\",\n      \"sha256\": \"af27617b76a5f89594fe25109c3f811a431dda01e3b58d814f1589b698fad8ee\",\n      \"bytes\": 16780200\n    },\n    {\n      \"path\": \"zap/plugin/requester-beta-7.9.0.zap\",\n      \"sha256\": \"88674b0fa8d5f343bf50049088108fc0cc2ea58ec7539b1eef74c5a9a1c867db\",\n      \"bytes\": 765192\n    },\n    {\n      \"path\": \"zap/plugin/retest-alpha-0.11.0.zap\",\n      \"sha256\": \"26ad328ba5bcb144c20076949aacacf6c352121ee74f5bf4a813ccdd8945e35f\",\n      \"bytes\": 259775\n    },\n    {\n      \"path\": \"zap/plugin/retire-release-0.52.0.zap\",\n      \"sha256\": \"e229a91d4ffc60b0958f0bc14d8d97158f84226b712eb6f5dbd6324a14558d8f\",\n      \"bytes\": 1010069\n    },\n    {\n      \"path\": \"zap/plugin/reveal-release-10.zap\",\n      \"sha256\": \"18368c13aa8a31a6470a465e9aef7c93d9a45b2c34cfe90f4200cbd04637fd0e\",\n      \"bytes\": 239142\n    },\n    {\n      \"path\": \"zap/plugin/scanpolicies-alpha-0.7.0.zap\",\n      \"sha256\": \"eb7a2f9af27b04a0fe3ec927a07f448d3181ddec7a4dc4238fe0d01b7a139832\",\n      \"bytes\": 335751\n    },\n    {\n      \"path\": \"zap/plugin/scripts-release-45.17.0.zap\",\n      \"sha256\": \"ea5302741955b00f0432fdcaea17c4ae68e13ca0ff3086006283a298b6a537ff\",\n      \"bytes\": 10168805\n    },\n    {\n      \"path\": \"zap/plugin/selenium-release-15.43.0.zap\",\n      \"sha256\": \"2f7fbf1b17813b6578057d590300ebc948d9a7d63483c95e7db0ba5a48d1ff74\",\n      \"bytes\": 34920099\n    },\n    {\n      \"path\": \"zap/plugin/sequence-beta-9.zap\",\n      \"sha256\": \"1b98b5e8a7600c469f039615222477989f132b3c8b730038a5a2de2b4937d573\",\n      \"bytes\": 1610735\n    },\n    {\n      \"path\": \"zap/plugin/soap-beta-29.zap\",\n      \"sha256\": \"7a84c2de787512cf64fbacd2a29bd23fc0c91ffd9f02e5de6ffda948c717fdac\",\n      \"bytes\": 13139906\n    },\n    {\n      \"path\": \"zap/plugin/spider-release-0.18.0.zap\",\n      \"sha256\": \"04259df95f9fc133e88876df740230fb9502a26fbffa1fcd9fa307ebd1e15cf7\",\n      \"bytes\": 1206016\n    },\n    {\n      \"path\": \"zap/plugin/spiderAjax-release-23.29.0.zap\",\n      \"sha256\": \"b57eacb990f6f08e3941798965b339e07f6d28bb7687d7464bad3327c4879fab\",\n      \"bytes\": 7636237\n    },\n    {\n      \"path\": \"zap/plugin/tips-beta-16.zap\",\n      \"sha256\": \"c75be57814a6f430d967edf22352ae51b9050ec6cf79215ee0e98b21cfe384d2\",\n      \"bytes\": 574653\n    },\n    {\n      \"path\": \"zap/plugin/webdriverlinux-release-169.zap\",\n      \"sha256\": \"310b477243b3255b1af01ec112e9faf695b0427055c5cc2eda4ae0de87f25fbc\",\n      \"bytes\": 15516482\n    },\n    {\n      \"path\": \"zap/plugin/websocket-release-35.zap\",\n      \"sha256\": \"ca7aecd3ab677419feadc7315eb85cc0faaa0f8ccb320730929d451d51e7d427\",\n      \"bytes\": 1416303\n    },\n    {\n      \"path\": \"zap/plugin/zest-beta-48.11.0.zap\",\n      \"sha256\": \"67ccc066a94086e1ac24af100f4030e924a8c13145d38e6adb0b1d68c77bb7fc\",\n      \"bytes\": 3047331\n    },\n    {\n      \"path\": \"zap/xml/config.xml\",\n      \"sha256\": \"ed0c13ac5010ad1c67222fdec2a44bd7ae31657bb111d38c2fb88aa1d7d726a0\",\n      \"bytes\": 3881\n    },\n    {\n      \"path\": \"zap/xml/drivers.dtd\",\n      \"sha256\": \"8af417928db60212dff039eda43b969269747ee267ea4be002aca81f6b9f8dd9\",\n      \"bytes\": 170\n    },\n    {\n      \"path\": \"zap/xml/reportCompare.xsl\",\n      \"sha256\": \"da14296e43ab578c611ebcf3de5f37e5706d6c51a8cc52857f98e7fe6752836f\",\n      \"bytes\": 3054\n    },\n    {\n      \"path\": \"zap/zap-2.17.0.jar\",\n      \"sha256\": \"015dda4709b5ef79736086bb41e8e2a4e95b04cf6625f14d6bcc02b197c99c0c\",\n      \"bytes\": 5542639\n    },\n    {\n      \"path\": \"zap/zap.bat\",\n      \"sha256\": \"6000967e72206b5ff91b242cf2918303deb3cdfe6cdece525af84a58757fb86d\",\n      \"bytes\": 188\n    },\n    {\n      \"path\": \"zap/zap.ico\",\n      \"sha256\": \"a47e59688ca797cc689d536a12e71b330f5b47963cb070b6e144689101265c08\",\n      \"bytes\": 123778\n    },\n    {\n      \"path\": \"zap/zap.sh\",\n      \"sha256\": \"14cbae7c389e1b9fdbfe43dab82163f44e486a391792f1fc74e77e7092f38999\",\n      \"bytes\": 5107\n    }\n  ],\n  \"runtimeReuse\": \"Existing running PetClinic Java runtime, public local-registry alias of identical immutable bytes; command overridden, no application Secrets mounted\"\n}\n",
+      "expectedManifestSha256": "4fdb335010b9bf57d61d5e28d1397285c813bfa9bbf2ac008efddb8f27e3b703",
+      "lease": {
+        "status": 0,
+        "stdout": "{\"spec\":{\"holderIdentity\":\"candidate-build-2\"}}",
+        "stderr": ""
+      },
+      "tools": {
+        "cosign": {
+          "sha256": "ade83b7aac62e131cacfe96d958948b2150cc9efec46a570a2649b8e27dedad2"
+        },
+        "sops": {
+          "sha256": "53b0abacd38ef1b12a66d6c100956691b9cefce018d91f81e73ddf7438b94d77"
+        }
+      }
+    },
+    "commands": {
+      "git": [
+        {
+          "status": 0,
+          "stdout": "9a78cc89f22fa98fb1ffcc43e2ae279299471793",
+          "stderr": ""
+        },
+        {
+          "status": 0,
+          "stdout": "http://gitlab-service.ns-devops.svc.cluster.local/root/petclinic-platform.git",
+          "stderr": ""
+        },
+        {
+          "status": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "status": 0,
+          "stdout": "9a78cc89f22fa98fb1ffcc43e2ae279299471793",
+          "stderr": ""
+        },
+        {
+          "status": 0,
+          "stdout": "http://gitlab-service.ns-devops.svc.cluster.local/root/petclinic-platform.git",
+          "stderr": ""
+        },
+        {
+          "status": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "status": 0,
+          "stdout": "9a78cc89f22fa98fb1ffcc43e2ae279299471793",
+          "stderr": ""
+        },
+        {
+          "status": 0,
+          "stdout": "http://gitlab-service.ns-devops.svc.cluster.local/root/petclinic-platform.git",
+          "stderr": ""
+        },
+        {
+          "status": 0,
+          "stdout": "",
+          "stderr": ""
+        }
+      ],
+      "nice": [
+        {
+          "status": 0,
+          "stdout": "",
+          "stderr": ""
+        }
+      ],
+      "docker": [
+        {
+          "status": 0,
+          "stdout": "",
+          "stderr": ""
+        }
+      ],
+      "sops": [
+        {
+          "status": 0,
+          "stdout": "{\"data\":{\"privateKey\":\"SYNTHETIC_NOT_A_PRIVATE_KEY\",\"password\":\"SYNTHETIC\"}}",
+          "stderr": ""
+        }
+      ],
+      "cosign": [
+        {
+          "status": 0,
+          "stdout": "-----BEGIN PUBLIC KEY-----\nMFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAEDcDmCR1VAKgVHFo0oCkd6XeqXn14\nACzzOaks1UDTLAl7c2WBQSpQwiK6DpovLg9IFgHlwqR96xaECMITPawOaw==\n-----END PUBLIC KEY-----\n",
+          "stderr": ""
+        },
+        {
+          "status": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "status": 0,
+          "stdout": "{\"payload\":\"eyJfdHlwZSI6Imh0dHBzOi8vaW4tdG90by5pby9TdGF0ZW1lbnQvdjAuMSIsICJzdWJqZWN0IjpbeyJuYW1lIjoiY29yZS5oYXJib3IuZG9tYWluL3BldGNsaW5pYy9wZXRjbGluaWMiLCAiZGlnZXN0Ijp7InNoYTI1NiI6IjJmYmFlYTY1YWIwMzBjNTZjNjBjNjJlM2VlOWZiZTM2MmRlYjhiYmJiODIxNmE4OTFlZjRjN2JiYmNlYTZkNTUifX1dLCAicHJlZGljYXRlVHlwZSI6Imh0dHBzOi8vZGV2b3BzLmxvY2FsL2F0dGVzdGF0aW9uL2ltYWdlLWJ1aWxkL3YxIiwgInByZWRpY2F0ZSI6eyJidWlsZFR5cGUiOiJwZXRjbGluaWMtbWF2ZW4tYnVpbGR4LXYxIiwgImJ1aWxkZXIiOnsiYnVpbGROdW1iZXIiOjIsICJpZGVudGl0eSI6Imh0dHA6Ly9qZW5raW5zLmRldm9wcy5sb2NhbC9qb2IvcGV0Y2xpbmljLWNhbmRpZGF0ZS1idWlsZCJ9LCAiYnVpbGRraXQiOnsibWV0YWRhdGFTaGEyNTYiOiIyYmQ1ZDAyNTE4OTk3NTNmMjZhNDJjNmQ2NzljMTZjOGU0N2NiMDQ4YzNjNGE1ZTc0MjY0NWQ1MDZhNmJhYmMyIiwgIm5hdGl2ZVByb3ZlbmFuY2UiOiJtb2RlPW1pbiIsICJvdXRwdXREaWdlc3QiOiJzaGEyNTY6MmZiYWVhNjVhYjAzMGM1NmM2MGM2MmUzZWU5ZmJlMzYyZGViOGJiYmI4MjE2YTg5MWVmNGM3YmJiY2VhNmQ1NSJ9LCAiY2FuZGlkYXRlSW1hZ2UiOiJjb3JlLmhhcmJvci5kb21haW4vcGV0Y2xpbmljL3BldGNsaW5pY0BzaGEyNTY6MmZiYWVhNjVhYjAzMGM1NmM2MGM2MmUzZWU5ZmJlMzYyZGViOGJiYmI4MjE2YTg5MWVmNGM3YmJiY2VhNmQ1NSIsICJjb21waWxhdGlvbiI6eyJidWlsZGVyIjp7ImJ1aWxkTnVtYmVyIjoyLCAiaWRlbnRpdHkiOiJodHRwOi8vamVua2lucy5kZXZvcHMubG9jYWwvam9iL3BldGNsaW5pYy1jYW5kaWRhdGUtYnVpbGQifSwgImZpbmlzaGVkQXQiOiIyMDI2LTEwLTMwVDAzOjE0OjM3Ljg1M1oiLCAiamFyU2hhMjU2IjoiN2Y1ZDQ5YTY1MTQ5ZDI1ZDE2ZTM4ZGJmN2M1ZDBjMjY4NmFjOGExNWFiNTNjMmQxYTA1YzE1NzVmNDRhODEwMCIsICJtYXZlbkRlcGVuZGVuY2llcyI6Ik5vdCBoZXJtZXRpYzogZXhpc3RpbmcgTWF2ZW4gcmVwb3NpdG9yeSBhbmQgcG9tIHJlc29sdXRpb247IG5vIFNMU0EgbGV2ZWwgY2xhaW1lZCIsICJzb3VyY2UiOnsiY29tbWl0IjoiOWE3OGNjODlmMjJmYTk4ZmIxZmZjYzQzZTJhZTI3OTI5OTQ3MTc5MyIsICJyZXBvc2l0b3J5IjoiaHR0cDovL2dpdGxhYi1zZXJ2aWNlLm5zLWRldm9wcy5zdmMuY2x1c3Rlci5sb2NhbC9yb290L3BldGNsaW5pYy1wbGF0Zm9ybS5naXQifSwgInNvdXJjZUNvbW1pdCI6IjlhNzhjYzg5ZjIyZmE5OGZiMWZmY2M0M2UyYWUyNzkyOTk0NzE3OTMiLCAic3RhcnRlZEF0IjoiMjAyNi0xMC0zMFQwMzoxNDoyMC40MjlaIn0sICJjb250ZXh0Ijp7ImZpbGVzIjpbeyJuYW1lIjoiLmRvY2tlcmlnbm9yZSIsICJzaGEyNTYiOiJmMjZjZTFlNjJkODBiZGMwOGMxNzU3MzgxMTMyMjY5ZjI0NjFlZmI4OTZiMjJiNTY3MjI3ZTBmNTkyYThlZjY4In0sIHsibmFtZSI6IkRvY2tlcmZpbGUiLCAic2hhMjU2IjoiZWJlNzk1YWJlZTJlMmMzM2MxYjUxMzcxOTZiZDA5MTE4OGQ0NjE1OTJjNjVlZThhOWM3M2RkNTNmZGY2MGE2ZCJ9LCB7Im5hbWUiOiJ0YXJnZXQvc2VjdXJpdHktcGFja2FnZXMvYW1kNjQvYnNkdXRpbHNfMi40MS4zLTN1YnVudHUyLjJfYW1kNjQuZGViIiwgInNoYTI1NiI6ImI0ZGFlYzAxYjZjNjZkYzA0NDc1ZTdlYmE1MGJmNDNhM2I1YzIyNjRjMzhhN2JlOWNiYWMxNDAzZDNhYmQ3N2QifSwgeyJuYW1lIjoidGFyZ2V0L3NlY3VyaXR5LXBhY2thZ2VzL2FtZDY0L2N1cmxfOC4xOC4wLTF1YnVudHUyLjhfYW1kNjQuZGViIiwgInNoYTI1NiI6IjJjNDE4YTYxZDcxNjVkMGNkZTAxZDljYjA1YWUwMjVjYzQxZmM3NWVmNmQzZjA5NTk5NmJkMDQ1YmEwOTQ1ZGMifSwgeyJuYW1lIjoidGFyZ2V0L3NlY3VyaXR5LXBhY2thZ2VzL2FtZDY0L2RpZmZ1dGlsc18zLjEyLTF1YnVudHUwLjFfYW1kNjQuZGViIiwgInNoYTI1NiI6IjBkNGEzYWQ3ZmMwNmRkZjczYzI1MGRiMmMzM2ZiMDllNmVlZmQ4MDIyNGQ0OWI2ZTZlOWVlMjViNjVmNGNjZGUifSwgeyJuYW1lIjoidGFyZ2V0L3NlY3VyaXR5LXBhY2thZ2VzL2FtZDY0L2Rpcm1uZ3JfMi40LjgtNHVidW50dTMuMV9hbWQ2NC5kZWIiLCAic2hhMjU2IjoiMGMyMWQyNTcyODgwNjE0NzYzY2UzZGQyM2EyZDZhOTZlMjVmYzcxY2EwMzhlMmNkYzA4NDRjYjAxN2FmMGUxNyJ9LCB7Im5hbWUiOiJ0YXJnZXQvc2VjdXJpdHktcGFja2FnZXMvYW1kNjQvZ251LWNvcmV1dGlsc185LjctM3VidW50dTIuMV9hbWQ2NC5kZWIiLCAic2hhMjU2IjoiZDlhNjcyNGY1MDc3NTlhYzA2ZDhiMDIxNGU0ZDMxZDY3YTRlNjY0N2JlNGQ3NzBhNzBhMWQ0MzA0MWJlNWZhMyJ9LCB7Im5hbWUiOiJ0YXJnZXQvc2VjdXJpdHktcGFja2FnZXMvYW1kNjQvZ251cGdfMi40LjgtNHVidW50dTMuMV9hbGwuZGViIiwgInNoYTI1NiI6ImY4ZTRlNzU0YTg0M2IxMzM0ZTkwMDkyYWFjNGMyNDQzMzgzNmQwNzU2Yzk5NmYzNzgyMmQzMzkwNWYyNTk2ZTUifSwgeyJuYW1lIjoidGFyZ2V0L3NlY3VyaXR5LXBhY2thZ2VzL2FtZDY0L2dwZy1hZ2VudF8yLjQuOC00dWJ1bnR1My4xX2FtZDY0LmRlYiIsICJzaGEyNTYiOiIzNTE3MDQ5N2MyMTkxZmE4ZjRkOWUyNWY4NjcwNTdkOTNkOGY1OWE2NTI5YjBkZWU5Njc4OGQwYzAyODY2ZGI2In0sIHsibmFtZSI6InRhcmdldC9zZWN1cml0eS1wYWNrYWdlcy9hbWQ2NC9ncGdfMi40LjgtNHVidW50dTMuMV9hbWQ2NC5kZWIiLCAic2hhMjU2IjoiZmI4ZGE0ZjY5MWI2ZTIxMzlmYTVjZGY3ZjU0ZDAwMGVmMWI3YjI3NzUzZWZiMmRiZGM1YTk1NDYwNTdhNjJjNiJ9LCB7Im5hbWUiOiJ0YXJnZXQvc2VjdXJpdHktcGFja2FnZXMvYW1kNjQvZ3BnY29uZl8yLjQuOC00dWJ1bnR1My4xX2FtZDY0LmRlYiIsICJzaGEyNTYiOiIzNzQ3ODkwZmQ3OWQ3YzY0ZWU3ZTM0OTZlNTQ3NDJkZDQ4MmNmZjAxNTc0ZDg4NWI4NGFkYjY0NWM3YWRlN2FmIn0sIHsibmFtZSI6InRhcmdldC9zZWN1cml0eS1wYWNrYWdlcy9hbWQ2NC9ncGdzbV8yLjQuOC00dWJ1bnR1My4xX2FtZDY0LmRlYiIsICJzaGEyNTYiOiJlMzZlZWRkZTQ1YjExNzRhNTkxZjU1Y2U5NGJlZWY5OWRmYjg5ZDU4MzA4Yjk2ZTEzNTRhMWU0NTg4ODIwMjI1In0sIHsibmFtZSI6InRhcmdldC9zZWN1cml0eS1wYWNrYWdlcy9hbWQ2NC9ncGd2XzIuNC44LTR1YnVudHUzLjFfYW1kNjQuZGViIiwgInNoYTI1NiI6IjBmY2NlNzI2NTY0MzlkOTA4MjFiYmQyMzU4MGFmYzc5NGEwMWVjMmYyODYyMmFlMzFiNGY1Mzk0YTgzMGJiMDkifSwgeyJuYW1lIjoidGFyZ2V0L3NlY3VyaXR5LXBhY2thZ2VzL2FtZDY0L2xpYmF0dHIxXzIuNS4yLTR1YnVudHUwLjFfYW1kNjQuZGViIiwgInNoYTI1NiI6ImMxMGI2MTkxZTJjNThjMTEwYWYwZDY0OGNiYmRlMmU1NWM1Y2ZhMzAzMjZjNWM2MDUxYmRjZjBhMTJlYzJkMjEifSwgeyJuYW1lIjoidGFyZ2V0L3NlY3VyaXR5LXBhY2thZ2VzL2FtZDY0L2xpYmJsa2lkMV8yLjQxLjMtM3VidW50dTIuMl9hbWQ2NC5kZWIiLCAic2hhMjU2IjoiOTI5ZWJlZGI2MTBmYTRkZmExNmNhZGE3NjNjZWE3ZThlZDRiZDM3YzY4NTczNTYzNDEwNjE0MTg5YmQ0ZTUzNyJ9LCB7Im5hbWUiOiJ0YXJnZXQvc2VjdXJpdHktcGFja2FnZXMvYW1kNjQvbGliYnJvdGxpMV8xLjIuMC0zdWJ1bnR1MC4xX2FtZDY0LmRlYiIsICJzaGEyNTYiOiJiZWRlZWYxY2YzMjY4ZjkwMzM4YzQxMWNkYjBhNDViMjI0ZDA2NjBmZDIyNDBmMzEwZjM4MDMxNmM4MjQ0NjA2In0sIHsibmFtZSI6InRhcmdldC9zZWN1cml0eS1wYWNrYWdlcy9hbWQ2NC9saWJiejItMS4wXzEuMC44LTZ1YnVudHUwLjFfYW1kNjQuZGViIiwgInNoYTI1NiI6ImY0YTAwOGY4MjE5MTE4YWNiN2Q1ZTAzNTZkNjE1ZjRmYzY4MjlhOWY1YTgzODM5NGQwZjdlMTAxZTljNWViZjgifSwgeyJuYW1lIjoidGFyZ2V0L3NlY3VyaXR5LXBhY2thZ2VzL2FtZDY0L2xpYmMtYmluXzIuNDMtMnVidW50dTIuNF9hbWQ2NC5kZWIiLCAic2hhMjU2IjoiYmM0ZjUwYTBhZWJiYjM0ODU5ODc0OWMyOTFhMzc0MmY5NDg1ZDk0YjA0NDcxNWQzODIzODg2MDdiOTE1OWExYiJ9LCB7Im5hbWUiOiJ0YXJnZXQvc2VjdXJpdHktcGFja2FnZXMvYW1kNjQvbGliYy1nY29udi1tb2R1bGVzLWV4dHJhXzIuNDMtMnVidW50dTIuNF9hbWQ2NC5kZWIiLCAic2hhMjU2IjoiYzIxOTRiODdjN2Y2Mjg3MjIwMzZiYmU5ZjliYmRmMjBjMWViZGIwNWVjZDY4YjdhM2E1MmRkMWE3NmYzYzVkNiJ9LCB7Im5hbWUiOiJ0YXJnZXQvc2VjdXJpdHktcGFja2FnZXMvYW1kNjQvbGliYzZfMi40My0ydWJ1bnR1Mi40X2FtZDY0LmRlYiIsICJzaGEyNTYiOiJhNjEzYjQ1N2YzZmY5Yzg0ZWJkMjhhZjhhMDVhZmRlYzIyNjA1YWQ5YWVkODdjNzFlM2E2YWU1MTcwYWViOWNhIn0sIHsibmFtZSI6InRhcmdldC9zZWN1cml0eS1wYWNrYWdlcy9hbWQ2NC9saWJjdXJsNHQ2NF84LjE4LjAtMXVidW50dTIuOF9hbWQ2NC5kZWIiLCAic2hhMjU2IjoiN2MwYjM3NTkyZjgzYTYyOWNjMjJmMGM5OGVmZmExNzZkYTllZGJkNmQ3N2IzZjM4MTg0YTlkMGRkYzVlMDI2NiJ9LCB7Im5hbWUiOiJ0YXJnZXQvc2VjdXJpdHktcGFja2FnZXMvYW1kNjQvbGliZXhwYXQxXzIuNy40LTF1YnVudHUwLjJfYW1kNjQuZGViIiwgInNoYTI1NiI6IjAwNjNlNjhkNzQyZmFjZmQzYzQ2ZDdkN2RmOWViMGQ4NWYxM2UwZmMyOTQ5MDhhNGYxMzhkNDU1NTc2MDc4MzcifSwgeyJuYW1lIjoidGFyZ2V0L3NlY3VyaXR5LXBhY2thZ2VzL2FtZDY0L2xpYmZyZWV0eXBlNl8yLjE0LjIrZGZzZy0xdWJ1bnR1MC4yX2FtZDY0LmRlYiIsICJzaGEyNTYiOiI2ZDdkNTMyYjdkMGM1NzYzOWRlYjNiMjI4ZjFmMGQ3ODZjZjUzMDVkNjEzZWY3ZGY5YmE3NmM3NzZhMGY4MzczIn0sIHsibmFtZSI6InRhcmdldC9zZWN1cml0eS1wYWNrYWdlcy9hbWQ2NC9saWJnY3J5cHQyMF8xLjEyLjAtMnVidW50dTEuMV9hbWQ2NC5kZWIiLCAic2hhMjU2IjoiOGU3NmQ3MTMxYmNmYzdmYmI5ZTdiY2RiY2FmOTM2MjE1YWI2NjdiN2FiMzNlOTBjYjljYjcyZWE3ZWJmODA2MCJ9LCB7Im5hbWUiOiJ0YXJnZXQvc2VjdXJpdHktcGFja2FnZXMvYW1kNjQvbGlibW91bnQxXzIuNDEuMy0zdWJ1bnR1Mi4yX2FtZDY0LmRlYiIsICJzaGEyNTYiOiI3YjhmMDVkNDM0NjA0OWM1MGQ4NDZlMTk0N2VjMTJhZmYzNmYzZGQ0NGNiZDVlZTRlODUwNTI0NWNkODZiNDYxIn0sIHsibmFtZSI6InRhcmdldC9zZWN1cml0eS1wYWNrYWdlcy9hbWQ2NC9saWJwbmcxNi0xNnQ2NF8xLjYuNTctMXVidW50dTAuMV9hbWQ2NC5kZWIiLCAic2hhMjU2IjoiZjI0YTdmN2MwNDI4ZDc0ZTMzZWE5MzQ2OTY5ODdiNzMzNmVjMDk2MmYyMTI1MzUxODVmMDQ5Mzc5MmU3NTM2ZSJ9LCB7Im5hbWUiOiJ0YXJnZXQvc2VjdXJpdHktcGFja2FnZXMvYW1kNjQvbGlic21hcnRjb2xzMV8yLjQxLjMtM3VidW50dTIuMl9hbWQ2NC5kZWIiLCAic2hhMjU2IjoiYWEyMjM5YmE3ZWZkODQ4YmJkZDVkY2IxMWRhOWQ0YTkxYzgxNjM4NDE0ZmUzODBmNDkxZDAzMGQ3OGYwOWZmYiJ9LCB7Im5hbWUiOiJ0YXJnZXQvc2VjdXJpdHktcGFja2FnZXMvYW1kNjQvbGlic3FsaXRlMy0wXzMuNDYuMS05dWJ1bnR1MC4zX2FtZDY0LmRlYiIsICJzaGEyNTYiOiJmZjRiNWExZTdjMDI4YTRiY2MzMDA3NmU0ZDgxOTdhYWQxYTkxMGRmNDRmNGRjOGRjZjI1M2U5ZWU5YTNhMzY3In0sIHsibmFtZSI6InRhcmdldC9zZWN1cml0eS1wYWNrYWdlcy9hbWQ2NC9saWJzc2gyLTF0NjRfMS4xMS4xLTF1YnVudHUwLjI2LjA0LjRfYW1kNjQuZGViIiwgInNoYTI1NiI6ImJiM2UzMzRkYzg4NWQxMjRkMzhjZDQzNTBmMWNiNDYwNmMwM2NlNThlOWY1M2RjNTFhODRjMmM4ZDExYzg0ZTEifSwgeyJuYW1lIjoidGFyZ2V0L3NlY3VyaXR5LXBhY2thZ2VzL2FtZDY0L2xpYnNzbDN0NjRfMy41LjUtMXVidW50dTMuN19hbWQ2NC5kZWIiLCAic2hhMjU2IjoiM2ZmNzNlMTIxZjZjZDRmMTllODBhYjQzMjlkZmQ5MTQxMDhiMzkzNmM5ZGIzNzA4MjAwMjAzYTliMjQ1YjM0ZCJ9LCB7Im5hbWUiOiJ0YXJnZXQvc2VjdXJpdHktcGFja2FnZXMvYW1kNjQvbGlic3lzdGVtZDBfMjU5LjktMHVidW50dTAuMV9hbWQ2NC5kZWIiLCAic2hhMjU2IjoiYjI1NTUyMWIxOGEyODlkNDAxNDllOTNhZWYxZWU4ODFmYjhkMjVjMTZmYTA5OTNkYjk3YzQxNjhmNGY4MmJiMSJ9LCB7Im5hbWUiOiJ0YXJnZXQvc2VjdXJpdHktcGFja2FnZXMvYW1kNjQvbGlidWRldjFfMjU5LjktMHVidW50dTAuMV9hbWQ2NC5kZWIiLCAic2hhMjU2IjoiNTc4YWYzNGUxYjcyMGZmZGYzZTgxNmUxNjhkZDQ3MTlkMDZmMmVmZDE1Y2MwYzE5M2EzNGI5ZDllZTYyMzdjYSJ9LCB7Im5hbWUiOiJ0YXJnZXQvc2VjdXJpdHktcGFja2FnZXMvYW1kNjQvbGlidXVpZDFfMi40MS4zLTN1YnVudHUyLjJfYW1kNjQuZGViIiwgInNoYTI1NiI6Ijc3ZTcwNzhmYmRiOTk0ZTNjOWM4NGNlNmZjNDY0ZjA0NTE1ODBkN2YwYjQ2Yzg3NzBkMDE4OWI0Njk1OWFkNDMifSwgeyJuYW1lIjoidGFyZ2V0L3NlY3VyaXR5LXBhY2thZ2VzL2FtZDY0L2xvY2FsZXNfMi40My0ydWJ1bnR1Mi40X2FsbC5kZWIiLCAic2hhMjU2IjoiYTFhYmY0MWI1MTdmNzY3MDE4ZDVlYWI1MTlkNTViOTI2OWZlMGEwNGFlNDllYTM1ZjdjM2FkMWI4ODcwYWIzMiJ9LCB7Im5hbWUiOiJ0YXJnZXQvc2VjdXJpdHktcGFja2FnZXMvYW1kNjQvbG9naW5fNC4xNi4wLTIrcmVhbGx5Mi40MS4zLTN1YnVudHUyLjJfYW1kNjQuZGViIiwgInNoYTI1NiI6IjExMWZjNzlmOWRhNGYyODFkOGE0Y2YzNjdlMGUyOWEzMGY5NDM2NWIwMDYyMWFlNTc2ODY0NTNkYzNhYjAzMWMifSwgeyJuYW1lIjoidGFyZ2V0L3NlY3VyaXR5LXBhY2thZ2VzL2FtZDY0L21vdW50XzIuNDEuMy0zdWJ1bnR1Mi4yX2FtZDY0LmRlYiIsICJzaGEyNTYiOiI5MDQ1Mzc5OGNiYjU3ZjQ4NTIwMWUxNDg1MzM4OGFmYzAxNDEwYjgxMmViNDMxZjM4ZGIyYTRmNzNjMGQyYzhlIn0sIHsibmFtZSI6InRhcmdldC9zZWN1cml0eS1wYWNrYWdlcy9hbWQ2NC9vcGVuc3NsLXByb3ZpZGVyLWxlZ2FjeV8zLjUuNS0xdWJ1bnR1My43X2FtZDY0LmRlYiIsICJzaGEyNTYiOiI1MWNmNDE4NTcxMDU5ODMxMDk2YWJkNDBlMGJkNWRlYmFhMWFlNDhhNmY4ZDg3ZDllNGU1ZjdmMTJhYTRkYjUyIn0sIHsibmFtZSI6InRhcmdldC9zZWN1cml0eS1wYWNrYWdlcy9hbWQ2NC9vcGVuc3NsXzMuNS41LTF1YnVudHUzLjdfYW1kNjQuZGViIiwgInNoYTI1NiI6IjY5NjVhYWZlNjllMGE0OWVmMzRkMmUyNmY4ZTgzZDA5ZDFjNjAzN2I3ZTllZTM3ZjE5YjI5MmEzYzY4NTE2MjEifSwgeyJuYW1lIjoidGFyZ2V0L3NlY3VyaXR5LXBhY2thZ2VzL2FtZDY0L3BlcmwtYmFzZV81LjQwLjEtN3VidW50dTAuM19hbWQ2NC5kZWIiLCAic2hhMjU2IjoiZWFlMjhlOTQ0ZWNjY2E4YWIxYTUzODdkZmVjNzEwZWQzMmY2NjUzMTg4MGE2YzJhMzI4NWZmZDk1ZDNiNTlmMiJ9LCB7Im5hbWUiOiJ0YXJnZXQvc2VjdXJpdHktcGFja2FnZXMvYW1kNjQvdXRpbC1saW51eF8yLjQxLjMtM3VidW50dTIuMl9hbWQ2NC5kZWIiLCAic2hhMjU2IjoiMTFmZDQxMGIxZDM3OTdiMWU5MTI3YjY4MzAyMTYwMjEzYzE1ZTE1NTM3NDVmYjY5ODJlMjcwYjFlMzJkMWYyYSJ9LCB7Im5hbWUiOiJ0YXJnZXQvc2VjdXJpdHktcGFja2FnZXMvYW1kNjQvemxpYjFnXzEuMy5kZnNnK3JlYWxseTEuMy4xLTF1YnVudHUzLjJfYW1kNjQuZGViIiwgInNoYTI1NiI6IjEwMDg0NjY2Zjc0NzI0NzU1MGMzZTgyZjlhMTJjYmZkOTE4NGMxOTI0MWE0MmViMzRkODg5M2VjYjhlMDNiMzUifSwgeyJuYW1lIjoidGFyZ2V0L3NlY3VyaXR5LXBhY2thZ2VzL2FybTY0L2JzZHV0aWxzXzIuNDEuMy0zdWJ1bnR1Mi4yX2FybTY0LmRlYiIsICJzaGEyNTYiOiI1N2UzMTE0NGNiNzk0M2UxYjNiNWUzMTdmM2MxMDY5Y2E1OTc2NDNhNjk1NWI2ZDg3OWNiZWM4OWE0YWMwYTQ2In0sIHsibmFtZSI6InRhcmdldC9zZWN1cml0eS1wYWNrYWdlcy9hcm02NC9jdXJsXzguMTguMC0xdWJ1bnR1Mi44X2FybTY0LmRlYiIsICJzaGEyNTYiOiJjMzZlYzBkZTY2ZDc5YWRjOWY4NzQ4ZDU0Y2QwYjJhYzZiM2QzNDU4ZTAxNDVkZDgzYzk1MjQzNDVmYjllNTYyIn0sIHsibmFtZSI6InRhcmdldC9zZWN1cml0eS1wYWNrYWdlcy9hcm02NC9kaWZmdXRpbHNfMy4xMi0xdWJ1bnR1MC4xX2FybTY0LmRlYiIsICJzaGEyNTYiOiI1ZDA1NTNlM2MwMjIyMWE4NGI3ZTZlMDUwMWMzNzcxMjY2ZDMxZjYzZjUxYTkxZjIzMzAzZTk5YmRmN2Q3MGNiIn0sIHsibmFtZSI6InRhcmdldC9zZWN1cml0eS1wYWNrYWdlcy9hcm02NC9kaXJtbmdyXzIuNC44LTR1YnVudHUzLjFfYXJtNjQuZGViIiwgInNoYTI1NiI6ImUxNWNkYTY1NjU2N2RmMTFkNGYyNjI2NDE4NzA0YTU0MjQ5NmE2YjZkMDM0YzkxZjcxMTEzOGJlMDEyZTQzOWIifSwgeyJuYW1lIjoidGFyZ2V0L3NlY3VyaXR5LXBhY2thZ2VzL2FybTY0L2dudS1jb3JldXRpbHNfOS43LTN1YnVudHUyLjFfYXJtNjQuZGViIiwgInNoYTI1NiI6IjEyMzgxMDgzNTAzMmQ1ZWZjOTY5Yzk3ZDNlODBkNDUxYjVkYTU0NjNlMTkxNmI4MzJlOGM5OTY4NGE4MzM1ODAifSwgeyJuYW1lIjoidGFyZ2V0L3NlY3VyaXR5LXBhY2thZ2VzL2FybTY0L2dudXBnXzIuNC44LTR1YnVudHUzLjFfYWxsLmRlYiIsICJzaGEyNTYiOiJmOGU0ZTc1NGE4NDNiMTMzNGU5MDA5MmFhYzRjMjQ0MzM4MzZkMDc1NmM5OTZmMzc4MjJkMzM5MDVmMjU5NmU1In0sIHsibmFtZSI6InRhcmdldC9zZWN1cml0eS1wYWNrYWdlcy9hcm02NC9ncGctYWdlbnRfMi40LjgtNHVidW50dTMuMV9hcm02NC5kZWIiLCAic2hhMjU2IjoiNGMxNTA3ODE1NWZiNGRmOGE2NWYzODY3OWYxYTI4Nzk2NDY4NzVlNmI3N2Y2YjAyNmMwYzJlYWE4YzMzMTgzNCJ9LCB7Im5hbWUiOiJ0YXJnZXQvc2VjdXJpdHktcGFja2FnZXMvYXJtNjQvZ3BnXzIuNC44LTR1YnVudHUzLjFfYXJtNjQuZGViIiwgInNoYTI1NiI6IjBhNzJkMDVlMTAwYmEwYWY4YzliOTZmODEwMjE0YzU0ZWYxNmYxY2E1OTVkMjZmMDE1MTVhMDdlMDQwYjM0OWQifSwgeyJuYW1lIjoidGFyZ2V0L3NlY3VyaXR5LXBhY2thZ2VzL2FybTY0L2dwZ2NvbmZfMi40LjgtNHVidW50dTMuMV9hcm02NC5kZWIiLCAic2hhMjU2IjoiMDYyOWFmMzIzNTMyYWYwYzYxODQyZWYxMmJmYWJiMzE2OGE4YzEzZWY5YjQyOWFhZTQ4N2FjMDY2MGY1M2Q5MyJ9LCB7Im5hbWUiOiJ0YXJnZXQvc2VjdXJpdHktcGFja2FnZXMvYXJtNjQvZ3Bnc21fMi40LjgtNHVidW50dTMuMV9hcm02NC5kZWIiLCAic2hhMjU2IjoiZDk5OTAwNzMzZDg1MDhhMTVmM2YyOWVjOWQ5YmZkZDgwYmU5YjZhZThkYTZiYmI4NGZlN2I1ZWQ2Y2U0MWExNyJ9LCB7Im5hbWUiOiJ0YXJnZXQvc2VjdXJpdHktcGFja2FnZXMvYXJtNjQvZ3Bndl8yLjQuOC00dWJ1bnR1My4xX2FybTY0LmRlYiIsICJzaGEyNTYiOiIyZGMyYmNkOTdkYWY5ZmFhYThiYzM5NzA5N2VjYmZmMTI3ZjlmODRkNDRhNjg4YmI5NzY2ZDAyODcyNmM2YTQzIn0sIHsibmFtZSI6InRhcmdldC9zZWN1cml0eS1wYWNrYWdlcy9hcm02NC9saWJhdHRyMV8yLjUuMi00dWJ1bnR1MC4xX2FybTY0LmRlYiIsICJzaGEyNTYiOiJhYTNkNzI1NWE1NjFjMjdjMzkyNjBkNjJkNzFmMGRmMzgxY2QwZGFiMDhlZmQxMTE4Mzc5ODdhMDljOTFjMzJiIn0sIHsibmFtZSI6InRhcmdldC9zZWN1cml0eS1wYWNrYWdlcy9hcm02NC9saWJibGtpZDFfMi40MS4zLTN1YnVudHUyLjJfYXJtNjQuZGViIiwgInNoYTI1NiI6IjQzOTVjZDE4NDc5YmM4OGE3MTA5ZmMxOTk0NzU4MDJlYmZjMDA3ZGUwN2YxY2YxNWM4NWYyNjAwM2ZkZDc1YWUifSwgeyJuYW1lIjoidGFyZ2V0L3NlY3VyaXR5LXBhY2thZ2VzL2FybTY0L2xpYmJyb3RsaTFfMS4yLjAtM3VidW50dTAuMV9hcm02NC5kZWIiLCAic2hhMjU2IjoiOTMxZDgzYmQ5OGFhM2M0NGJhNGZmNDMwNGU3YTY4NTVjMGE3NGJkMzc3MjIyMGQwZmQ3YTczY2Q4NDk2YTAxMiJ9LCB7Im5hbWUiOiJ0YXJnZXQvc2VjdXJpdHktcGFja2FnZXMvYXJtNjQvbGliYnoyLTEuMF8xLjAuOC02dWJ1bnR1MC4xX2FybTY0LmRlYiIsICJzaGEyNTYiOiI0MmM4ZTQxODJlODUwYTQ5ZjZmZTFlMTAwMTNjYTEzOTMxNTEzYTAzNzg3NWY3NjhhNTA1ZGI3NzMwNWFhMzBlIn0sIHsibmFtZSI6InRhcmdldC9zZWN1cml0eS1wYWNrYWdlcy9hcm02NC9saWJjLWJpbl8yLjQzLTJ1YnVudHUyLjRfYXJtNjQuZGViIiwgInNoYTI1NiI6IjdkYWU2ZjZjNWIxMWZiNmE4YWNmOWY4ZTZjYmEyOWEwNmEwMzQ3NTlhOTg0OWJhOTZiZDM0MGFjNDA0MDA1NDUifSwgeyJuYW1lIjoidGFyZ2V0L3NlY3VyaXR5LXBhY2thZ2VzL2FybTY0L2xpYmMtZ2NvbnYtbW9kdWxlcy1leHRyYV8yLjQzLTJ1YnVudHUyLjRfYXJtNjQuZGViIiwgInNoYTI1NiI6IjlkNGQ4Y2ZiOWU3NWViNmM3MzI0YzVkOWM1NDhlYjVlYWE0ZWE1ODRmZTI3NjI3MDY5YTliZGFkMzU4MThlZGEifSwgeyJuYW1lIjoidGFyZ2V0L3NlY3VyaXR5LXBhY2thZ2VzL2FybTY0L2xpYmM2XzIuNDMtMnVidW50dTIuNF9hcm02NC5kZWIiLCAic2hhMjU2IjoiMTY1MjU5N2M4YzM0MTliMjk4ZDhhODdkZDNkOGVlYTFmZGM1YTFhYmQ5YmNjYjVhNjZiOTI4ZjkyZWM0NjNjOSJ9LCB7Im5hbWUiOiJ0YXJnZXQvc2VjdXJpdHktcGFja2FnZXMvYXJtNjQvbGliY3VybDR0NjRfOC4xOC4wLTF1YnVudHUyLjhfYXJtNjQuZGViIiwgInNoYTI1NiI6ImExNDhiNjkyNzlkZmRlNmNmNWFhNzhhM2VlZTg1MDI3ZTlmYjNiYzFjMjM5ZDBhZTYyZGUxYzhlNTc0YWYzMWQifSwgeyJuYW1lIjoidGFyZ2V0L3NlY3VyaXR5LXBhY2thZ2VzL2FybTY0L2xpYmV4cGF0MV8yLjcuNC0xdWJ1bnR1MC4yX2FybTY0LmRlYiIsICJzaGEyNTYiOiJjNTUzY2Y1ODI3ZjkzN2Y5MmI2NWZjZWE4NmMxYjE5YzE4MjI0ZmYwNTMzYmMzMDMwNWUwZGJmZDMyYzE5N2ZmIn0sIHsibmFtZSI6InRhcmdldC9zZWN1cml0eS1wYWNrYWdlcy9hcm02NC9saWJmcmVldHlwZTZfMi4xNC4yK2Rmc2ctMXVidW50dTAuMl9hcm02NC5kZWIiLCAic2hhMjU2IjoiYTQwMmUwNGNkYjIyODZlNDYyOGMwMDViMzBiNjc3N2YzMDgzYTI4MTdkMDRiMzNhYWQ4OTk1MGU2NjlhY2YxYyJ9LCB7Im5hbWUiOiJ0YXJnZXQvc2VjdXJpdHktcGFja2FnZXMvYXJtNjQvbGliZ2NyeXB0MjBfMS4xMi4wLTJ1YnVudHUxLjFfYXJtNjQuZGViIiwgInNoYTI1NiI6ImE4YTZlMzkwZGQ2N2MwNzcxMTcxMmZhNzYwM2MxNTQ5NTUwMzViODNlZDlkMTYwMDdmY2QwZjJmMjQxZGJjNTYifSwgeyJuYW1lIjoidGFyZ2V0L3NlY3VyaXR5LXBhY2thZ2VzL2FybTY0L2xpYm1vdW50MV8yLjQxLjMtM3VidW50dTIuMl9hcm02NC5kZWIiLCAic2hhMjU2IjoiMzU5YmU2MzEwMmM2YmJkNDA1MmVkMmY1YjMzMThmNWYxYzc2MmI0YWMxODI2YTAwZjBkOGE0ODBiOTQyYWU1MyJ9LCB7Im5hbWUiOiJ0YXJnZXQvc2VjdXJpdHktcGFja2FnZXMvYXJtNjQvbGlicG5nMTYtMTZ0NjRfMS42LjU3LTF1YnVudHUwLjFfYXJtNjQuZGViIiwgInNoYTI1NiI6ImM2ODNlZTU1YmMwZGIwOTU0NGQ5ODc0Nzg2NzZiYzkyM2M3MmE5Njc1MGYxOWU0YmNhYjMwYzVmZTFlN2QyZGYifSwgeyJuYW1lIjoidGFyZ2V0L3NlY3VyaXR5LXBhY2thZ2VzL2FybTY0L2xpYnNtYXJ0Y29sczFfMi40MS4zLTN1YnVudHUyLjJfYXJtNjQuZGViIiwgInNoYTI1NiI6ImJhNzQxYjNhNTdhODA5ZmQ1NjA2ZWM2MzQwMTkxZTA0NDg3NjFhMDRhODAzZGJhYjlmMjI3YjI2NmYyZDQ2NzAifSwgeyJuYW1lIjoidGFyZ2V0L3NlY3VyaXR5LXBhY2thZ2VzL2FybTY0L2xpYnNxbGl0ZTMtMF8zLjQ2LjEtOXVidW50dTAuM19hcm02NC5kZWIiLCAic2hhMjU2IjoiYzc5ZWIxZTgyZWViMzUwOWFmMWE5NzkyYTU3NThmZjNjNGZlZDRiNjliYzhjZDdjNTg3MWFkYWZjMzBjMTlhOSJ9LCB7Im5hbWUiOiJ0YXJnZXQvc2VjdXJpdHktcGFja2FnZXMvYXJtNjQvbGlic3NoMi0xdDY0XzEuMTEuMS0xdWJ1bnR1MC4yNi4wNC40X2FybTY0LmRlYiIsICJzaGEyNTYiOiI0ZDZlYTNjOTRhZTcxOTAzMjA4NzlkZTdhYjI0ZTY5OGM5ZjI4ZTZkOTBkNTlmZjA2ZjFhNDc5NmRkZDFmNzBkIn0sIHsibmFtZSI6InRhcmdldC9zZWN1cml0eS1wYWNrYWdlcy9hcm02NC9saWJzc2wzdDY0XzMuNS41LTF1YnVudHUzLjdfYXJtNjQuZGViIiwgInNoYTI1NiI6IjlmZTg3YjZiZWVjNWRlNjM2YTcwZTRmYjYwNzY1MTdhMzlmNTA1M2M3ZTIzZTYyOGM5NDU5Yjk0Zjg1Yzc1ZmYifSwgeyJuYW1lIjoidGFyZ2V0L3NlY3VyaXR5LXBhY2thZ2VzL2FybTY0L2xpYnN5c3RlbWQwXzI1OS45LTB1YnVudHUwLjFfYXJtNjQuZGViIiwgInNoYTI1NiI6Ijc4YzMzMGU0OTBjNzRiODkwMDU3ZDEzMDk0ZWVlNzJmYTViMzJlYTEyN2ZjYzQzMzE2NzNiOTk4MGUwYTI5YjMifSwgeyJuYW1lIjoidGFyZ2V0L3NlY3VyaXR5LXBhY2thZ2VzL2FybTY0L2xpYnVkZXYxXzI1OS45LTB1YnVudHUwLjFfYXJtNjQuZGViIiwgInNoYTI1NiI6IjU2ZTBiYjdjYTZjOTAxOTU3MDU5MjRiNGJjN2M4MmVlMGMwYTgwMjIwYTkzZjkzODRlYTM5M2FmYTE4ZWY1YTQifSwgeyJuYW1lIjoidGFyZ2V0L3NlY3VyaXR5LXBhY2thZ2VzL2FybTY0L2xpYnV1aWQxXzIuNDEuMy0zdWJ1bnR1Mi4yX2FybTY0LmRlYiIsICJzaGEyNTYiOiIxMjk4ZjI3ODYxZjYwNzI5YTRkN2FkODZmYTkwNmFhZWJkYmM4OGJlOWZjMzMxNmU5ZWIxNTRkZTRmMDc5MmUzIn0sIHsibmFtZSI6InRhcmdldC9zZWN1cml0eS1wYWNrYWdlcy9hcm02NC9sb2NhbGVzXzIuNDMtMnVidW50dTIuNF9hbGwuZGViIiwgInNoYTI1NiI6ImExYWJmNDFiNTE3Zjc2NzAxOGQ1ZWFiNTE5ZDU1YjkyNjlmZTBhMDRhZTQ5ZWEzNWY3YzNhZDFiODg3MGFiMzIifSwgeyJuYW1lIjoidGFyZ2V0L3NlY3VyaXR5LXBhY2thZ2VzL2FybTY0L2xvZ2luXzQuMTYuMC0yK3JlYWxseTIuNDEuMy0zdWJ1bnR1Mi4yX2FybTY0LmRlYiIsICJzaGEyNTYiOiI3Y2VmNGQyZjNiMjlmYmRmYTc0MTEyZWUxZWIzZTFmMGZlZTc5Yjg1MzMyMWFmYWFhNzJhODY2ZDU5Yzk4N2Q3In0sIHsibmFtZSI6InRhcmdldC9zZWN1cml0eS1wYWNrYWdlcy9hcm02NC9tb3VudF8yLjQxLjMtM3VidW50dTIuMl9hcm02NC5kZWIiLCAic2hhMjU2IjoiNTIyYzVjMjNmNjY5NDhmMjg1YzM3ZmQ5NzhjZWFlZjJkZjhkYzNiM2YwY2QxOWQ1MTQ5OTEzMmIyZjlmNDQyMSJ9LCB7Im5hbWUiOiJ0YXJnZXQvc2VjdXJpdHktcGFja2FnZXMvYXJtNjQvb3BlbnNzbC1wcm92aWRlci1sZWdhY3lfMy41LjUtMXVidW50dTMuN19hcm02NC5kZWIiLCAic2hhMjU2IjoiNzU3ZWM4OTEyMGZlM2Y0MThhODQyMzQyYjNhMGM1OTZiODliMGUzZmIwYmE3NzAzNDdkZGExMjE5ZjIxOWJiZCJ9LCB7Im5hbWUiOiJ0YXJnZXQvc2VjdXJpdHktcGFja2FnZXMvYXJtNjQvb3BlbnNzbF8zLjUuNS0xdWJ1bnR1My43X2FybTY0LmRlYiIsICJzaGEyNTYiOiI2MjNlYTdlYzBlYjgwZGEzZjQwZTg5ZTMzMThhNGU4MmQ0YzY0MTQ2ZDIwNmM5MGNhYmJjZTY5OThkODIyZmE4In0sIHsibmFtZSI6InRhcmdldC9zZWN1cml0eS1wYWNrYWdlcy9hcm02NC9wZXJsLWJhc2VfNS40MC4xLTd1YnVudHUwLjNfYXJtNjQuZGViIiwgInNoYTI1NiI6ImQyYjAwNmI1NmFlM2NhMjA2NzY1ODFiMjkxOGI3YjQyNTBlNzhmYzRmZWUyNDA3YTRiZWEwYmEyMThlYmE3ZWYifSwgeyJuYW1lIjoidGFyZ2V0L3NlY3VyaXR5LXBhY2thZ2VzL2FybTY0L3V0aWwtbGludXhfMi40MS4zLTN1YnVudHUyLjJfYXJtNjQuZGViIiwgInNoYTI1NiI6IjkzMjFkOGFhZmUzMTg5ZjczMmQwZWU4NWExYjEyNTM4MjBmZDhjZTgyM2E1NWM2NWY4ZDYxMDlkMmZiYWYyZmIifSwgeyJuYW1lIjoidGFyZ2V0L3NlY3VyaXR5LXBhY2thZ2VzL2FybTY0L3psaWIxZ18xLjMuZGZzZytyZWFsbHkxLjMuMS0xdWJ1bnR1My4yX2FybTY0LmRlYiIsICJzaGEyNTYiOiJiOWI1Y2UxNTI4YWM3Zjg4NWM4ZmY3ZGMyMzE0Yzg5YzJiYTVkZDk3M2MyYTc5M2RjNGNmNWQwMmQ3NGIzODEwIn0sIHsibmFtZSI6InRhcmdldC9zcHJpbmctcGV0Y2xpbmljLTQuMC4wLVNOQVBTSE9ULmphciIsICJzaGEyNTYiOiI3ZjVkNDlhNjUxNDlkMjVkMTZlMzhkYmY3YzVkMGMyNjg2YWM4YTE1YWI1M2MyZDFhMDVjMTU3NWY0NGE4MTAwIn1dfSwgImZpbmlzaGVkQXQiOiIyMDI2LTEwLTMwVDAzOjE2OjI4LjA5N1oiLCAibGltaXRhdGlvbnMiOlsiSmVua2lucyBhZG1pbmlzdHJhdG9ycyBhbmQgdGhlIGV4aXN0aW5nIHNpZ25pbmcga2V5IGFyZSB0cnVzdGVkIiwgIk1hdmVuIGRlcGVuZGVuY3kgcmVzb2x1dGlvbiBpcyBub3QgaGVybWV0aWM7IG5vIFNMU0EgY2VydGlmaWNhdGlvbiBjbGFpbWVkIl0sICJwbGF0Zm9ybXMiOlsibGludXgvYW1kNjQiLCAibGludXgvYXJtNjQiXSwgInNvdXJjZSI6eyJjb21taXQiOiI5YTc4Y2M4OWYyMmZhOThmYjFmZmNjNDNlMmFlMjc5Mjk5NDcxNzkzIiwgInJlcG9zaXRvcnkiOiJodHRwOi8vZ2l0bGFiLXNlcnZpY2UubnMtZGV2b3BzLnN2Yy5jbHVzdGVyLmxvY2FsL3Jvb3QvcGV0Y2xpbmljLXBsYXRmb3JtLmdpdCJ9LCAic3RhcnRlZEF0IjoiMjAyNi0xMC0zMFQwMzoxNDoyMC40MjlaIn19\",\"payloadType\":\"application/vnd.in-toto+json\",\"signatures\":[{\"sig\":\"MEUCIQDockujsOO15xnG1DmA+cDou9lEE57o7BAdIHNgDqGHkgIgfZVdOwzp4u43jRwlRSxSZhxTHOflVsZqwgh/JwTDG0Y=\"}]}",
+          "stderr": ""
+        }
+      ]
+    },
+    "files": {
+      ".devsecops/build-compilation.json": {
+        "value": "{\"source\":{\"commit\":\"9a78cc89f22fa98fb1ffcc43e2ae279299471793\",\"repository\":\"http://gitlab-service.ns-devops.svc.cluster.local/root/petclinic-platform.git\"},\"builder\":{\"identity\":\"http://jenkins.devops.local/job/petclinic-candidate-build\",\"buildNumber\":2},\"startedAt\":\"2026-10-30T03:14:20.429Z\",\"finishedAt\":\"2026-10-30T03:14:37.853Z\",\"sourceCommit\":\"9a78cc89f22fa98fb1ffcc43e2ae279299471793\",\"jarSha256\":\"7f5d49a65149d25d16e38dbf7c5d0c2686ac8a15ab53c2d1a05c1575f44a8100\",\"mavenDependencies\":\"Not hermetic: existing Maven repository and pom resolution; no SLSA level claimed\"}"
+      },
+      ".devsecops/build-provenance.json": {
+        "value": "{\"buildType\":\"petclinic-maven-buildx-v1\",\"source\":{\"commit\":\"9a78cc89f22fa98fb1ffcc43e2ae279299471793\",\"repository\":\"http://gitlab-service.ns-devops.svc.cluster.local/root/petclinic-platform.git\"},\"builder\":{\"identity\":\"http://jenkins.devops.local/job/petclinic-candidate-build\",\"buildNumber\":2},\"startedAt\":\"2026-10-30T03:14:20.429Z\",\"finishedAt\":\"2026-10-30T03:16:28.097Z\",\"candidateImage\":\"core.harbor.domain/petclinic/petclinic@sha256:2fbaea65ab030c56c60c62e3ee9fbe362deb8bbbb8216a891ef4c7bbbcea6d55\",\"compilation\":{\"source\":{\"commit\":\"9a78cc89f22fa98fb1ffcc43e2ae279299471793\",\"repository\":\"http://gitlab-service.ns-devops.svc.cluster.local/root/petclinic-platform.git\"},\"builder\":{\"identity\":\"http://jenkins.devops.local/job/petclinic-candidate-build\",\"buildNumber\":2},\"startedAt\":\"2026-10-30T03:14:20.429Z\",\"finishedAt\":\"2026-10-30T03:14:37.853Z\",\"sourceCommit\":\"9a78cc89f22fa98fb1ffcc43e2ae279299471793\",\"jarSha256\":\"7f5d49a65149d25d16e38dbf7c5d0c2686ac8a15ab53c2d1a05c1575f44a8100\",\"mavenDependencies\":\"Not hermetic: existing Maven repository and pom resolution; no SLSA level claimed\"},\"context\":{\"files\":[{\"name\":\".dockerignore\",\"sha256\":\"f26ce1e62d80bdc08c1757381132269f2461efb896b22b567227e0f592a8ef68\"},{\"name\":\"Dockerfile\",\"sha256\":\"ebe795abee2e2c33c1b5137196bd091188d461592c65ee8a9c73dd53fdf60a6d\"},{\"name\":\"target/security-packages/amd64/bsdutils_2.41.3-3ubuntu2.2_amd64.deb\",\"sha256\":\"b4daec01b6c66dc04475e7eba50bf43a3b5c2264c38a7be9cbac1403d3abd77d\"},{\"name\":\"target/security-packages/amd64/curl_8.18.0-1ubuntu2.8_amd64.deb\",\"sha256\":\"2c418a61d7165d0cde01d9cb05ae025cc41fc75ef6d3f095996bd045ba0945dc\"},{\"name\":\"target/security-packages/amd64/diffutils_3.12-1ubuntu0.1_amd64.deb\",\"sha256\":\"0d4a3ad7fc06ddf73c250db2c33fb09e6eefd80224d49b6e6e9ee25b65f4ccde\"},{\"name\":\"target/security-packages/amd64/dirmngr_2.4.8-4ubuntu3.1_amd64.deb\",\"sha256\":\"0c21d2572880614763ce3dd23a2d6a96e25fc71ca038e2cdc0844cb017af0e17\"},{\"name\":\"target/security-packages/amd64/gnu-coreutils_9.7-3ubuntu2.1_amd64.deb\",\"sha256\":\"d9a6724f507759ac06d8b0214e4d31d67a4e6647be4d770a70a1d43041be5fa3\"},{\"name\":\"target/security-packages/amd64/gnupg_2.4.8-4ubuntu3.1_all.deb\",\"sha256\":\"f8e4e754a843b1334e90092aac4c24433836d0756c996f37822d33905f2596e5\"},{\"name\":\"target/security-packages/amd64/gpg-agent_2.4.8-4ubuntu3.1_amd64.deb\",\"sha256\":\"35170497c2191fa8f4d9e25f867057d93d8f59a6529b0dee96788d0c02866db6\"},{\"name\":\"target/security-packages/amd64/gpg_2.4.8-4ubuntu3.1_amd64.deb\",\"sha256\":\"fb8da4f691b6e2139fa5cdf7f54d000ef1b7b27753efb2dbdc5a9546057a62c6\"},{\"name\":\"target/security-packages/amd64/gpgconf_2.4.8-4ubuntu3.1_amd64.deb\",\"sha256\":\"3747890fd79d7c64ee7e3496e54742dd482cff01574d885b84adb645c7ade7af\"},{\"name\":\"target/security-packages/amd64/gpgsm_2.4.8-4ubuntu3.1_amd64.deb\",\"sha256\":\"e36eedde45b1174a591f55ce94beef99dfb89d58308b96e1354a1e4588820225\"},{\"name\":\"target/security-packages/amd64/gpgv_2.4.8-4ubuntu3.1_amd64.deb\",\"sha256\":\"0fcce72656439d90821bbd23580afc794a01ec2f28622ae31b4f5394a830bb09\"},{\"name\":\"target/security-packages/amd64/libattr1_2.5.2-4ubuntu0.1_amd64.deb\",\"sha256\":\"c10b6191e2c58c110af0d648cbbde2e55c5cfa30326c5c6051bdcf0a12ec2d21\"},{\"name\":\"target/security-packages/amd64/libblkid1_2.41.3-3ubuntu2.2_amd64.deb\",\"sha256\":\"929ebedb610fa4dfa16cada763cea7e8ed4bd37c68573563410614189bd4e537\"},{\"name\":\"target/security-packages/amd64/libbrotli1_1.2.0-3ubuntu0.1_amd64.deb\",\"sha256\":\"bedeef1cf3268f90338c411cdb0a45b224d0660fd2240f310f380316c8244606\"},{\"name\":\"target/security-packages/amd64/libbz2-1.0_1.0.8-6ubuntu0.1_amd64.deb\",\"sha256\":\"f4a008f8219118acb7d5e0356d615f4fc6829a9f5a838394d0f7e101e9c5ebf8\"},{\"name\":\"target/security-packages/amd64/libc-bin_2.43-2ubuntu2.4_amd64.deb\",\"sha256\":\"bc4f50a0aebbb348598749c291a3742f9485d94b044715d382388607b9159a1b\"},{\"name\":\"target/security-packages/amd64/libc-gconv-modules-extra_2.43-2ubuntu2.4_amd64.deb\",\"sha256\":\"c2194b87c7f628722036bbe9f9bbdf20c1ebdb05ecd68b7a3a52dd1a76f3c5d6\"},{\"name\":\"target/security-packages/amd64/libc6_2.43-2ubuntu2.4_amd64.deb\",\"sha256\":\"a613b457f3ff9c84ebd28af8a05afdec22605ad9aed87c71e3a6ae5170aeb9ca\"},{\"name\":\"target/security-packages/amd64/libcurl4t64_8.18.0-1ubuntu2.8_amd64.deb\",\"sha256\":\"7c0b37592f83a629cc22f0c98effa176da9edbd6d77b3f38184a9d0ddc5e0266\"},{\"name\":\"target/security-packages/amd64/libexpat1_2.7.4-1ubuntu0.2_amd64.deb\",\"sha256\":\"0063e68d742facfd3c46d7d7df9eb0d85f13e0fc294908a4f138d45557607837\"},{\"name\":\"target/security-packages/amd64/libfreetype6_2.14.2+dfsg-1ubuntu0.2_amd64.deb\",\"sha256\":\"6d7d532b7d0c57639deb3b228f1f0d786cf5305d613ef7df9ba76c776a0f8373\"},{\"name\":\"target/security-packages/amd64/libgcrypt20_1.12.0-2ubuntu1.1_amd64.deb\",\"sha256\":\"8e76d7131bcfc7fbb9e7bcdbcaf936215ab667b7ab33e90cb9cb72ea7ebf8060\"},{\"name\":\"target/security-packages/amd64/libmount1_2.41.3-3ubuntu2.2_amd64.deb\",\"sha256\":\"7b8f05d4346049c50d846e1947ec12aff36f3dd44cbd5ee4e8505245cd86b461\"},{\"name\":\"target/security-packages/amd64/libpng16-16t64_1.6.57-1ubuntu0.1_amd64.deb\",\"sha256\":\"f24a7f7c0428d74e33ea934696987b7336ec0962f212535185f0493792e7536e\"},{\"name\":\"target/security-packages/amd64/libsmartcols1_2.41.3-3ubuntu2.2_amd64.deb\",\"sha256\":\"aa2239ba7efd848bbdd5dcb11da9d4a91c81638414fe380f491d030d78f09ffb\"},{\"name\":\"target/security-packages/amd64/libsqlite3-0_3.46.1-9ubuntu0.3_amd64.deb\",\"sha256\":\"ff4b5a1e7c028a4bcc30076e4d8197aad1a910df44f4dc8dcf253e9ee9a3a367\"},{\"name\":\"target/security-packages/amd64/libssh2-1t64_1.11.1-1ubuntu0.26.04.4_amd64.deb\",\"sha256\":\"bb3e334dc885d124d38cd4350f1cb4606c03ce58e9f53dc51a84c2c8d11c84e1\"},{\"name\":\"target/security-packages/amd64/libssl3t64_3.5.5-1ubuntu3.7_amd64.deb\",\"sha256\":\"3ff73e121f6cd4f19e80ab4329dfd914108b3936c9db3708200203a9b245b34d\"},{\"name\":\"target/security-packages/amd64/libsystemd0_259.9-0ubuntu0.1_amd64.deb\",\"sha256\":\"b255521b18a289d40149e93aef1ee881fb8d25c16fa0993db97c4168f4f82bb1\"},{\"name\":\"target/security-packages/amd64/libudev1_259.9-0ubuntu0.1_amd64.deb\",\"sha256\":\"578af34e1b720ffdf3e816e168dd4719d06f2efd15cc0c193a34b9d9ee6237ca\"},{\"name\":\"target/security-packages/amd64/libuuid1_2.41.3-3ubuntu2.2_amd64.deb\",\"sha256\":\"77e7078fbdb994e3c9c84ce6fc464f0451580d7f0b46c8770d0189b46959ad43\"},{\"name\":\"target/security-packages/amd64/locales_2.43-2ubuntu2.4_all.deb\",\"sha256\":\"a1abf41b517f767018d5eab519d55b9269fe0a04ae49ea35f7c3ad1b8870ab32\"},{\"name\":\"target/security-packages/amd64/login_4.16.0-2+really2.41.3-3ubuntu2.2_amd64.deb\",\"sha256\":\"111fc79f9da4f281d8a4cf367e0e29a30f94365b00621ae57686453dc3ab031c\"},{\"name\":\"target/security-packages/amd64/mount_2.41.3-3ubuntu2.2_amd64.deb\",\"sha256\":\"90453798cbb57f485201e14853388afc01410b812eb431f38db2a4f73c0d2c8e\"},{\"name\":\"target/security-packages/amd64/openssl-provider-legacy_3.5.5-1ubuntu3.7_amd64.deb\",\"sha256\":\"51cf418571059831096abd40e0bd5debaa1ae48a6f8d87d9e4e5f7f12aa4db52\"},{\"name\":\"target/security-packages/amd64/openssl_3.5.5-1ubuntu3.7_amd64.deb\",\"sha256\":\"6965aafe69e0a49ef34d2e26f8e83d09d1c6037b7e9ee37f19b292a3c6851621\"},{\"name\":\"target/security-packages/amd64/perl-base_5.40.1-7ubuntu0.3_amd64.deb\",\"sha256\":\"eae28e944eccca8ab1a5387dfec710ed32f66531880a6c2a3285ffd95d3b59f2\"},{\"name\":\"target/security-packages/amd64/util-linux_2.41.3-3ubuntu2.2_amd64.deb\",\"sha256\":\"11fd410b1d3797b1e9127b68302160213c15e1553745fb6982e270b1e32d1f2a\"},{\"name\":\"target/security-packages/amd64/zlib1g_1.3.dfsg+really1.3.1-1ubuntu3.2_amd64.deb\",\"sha256\":\"10084666f747247550c3e82f9a12cbfd9184c19241a42eb34d8893ecb8e03b35\"},{\"name\":\"target/security-packages/arm64/bsdutils_2.41.3-3ubuntu2.2_arm64.deb\",\"sha256\":\"57e31144cb7943e1b3b5e317f3c1069ca597643a6955b6d879cbec89a4ac0a46\"},{\"name\":\"target/security-packages/arm64/curl_8.18.0-1ubuntu2.8_arm64.deb\",\"sha256\":\"c36ec0de66d79adc9f8748d54cd0b2ac6b3d3458e0145dd83c9524345fb9e562\"},{\"name\":\"target/security-packages/arm64/diffutils_3.12-1ubuntu0.1_arm64.deb\",\"sha256\":\"5d0553e3c02221a84b7e6e0501c3771266d31f63f51a91f23303e99bdf7d70cb\"},{\"name\":\"target/security-packages/arm64/dirmngr_2.4.8-4ubuntu3.1_arm64.deb\",\"sha256\":\"e15cda656567df11d4f2626418704a542496a6b6d034c91f711138be012e439b\"},{\"name\":\"target/security-packages/arm64/gnu-coreutils_9.7-3ubuntu2.1_arm64.deb\",\"sha256\":\"123810835032d5efc969c97d3e80d451b5da5463e1916b832e8c99684a833580\"},{\"name\":\"target/security-packages/arm64/gnupg_2.4.8-4ubuntu3.1_all.deb\",\"sha256\":\"f8e4e754a843b1334e90092aac4c24433836d0756c996f37822d33905f2596e5\"},{\"name\":\"target/security-packages/arm64/gpg-agent_2.4.8-4ubuntu3.1_arm64.deb\",\"sha256\":\"4c15078155fb4df8a65f38679f1a2879646875e6b77f6b026c0c2eaa8c331834\"},{\"name\":\"target/security-packages/arm64/gpg_2.4.8-4ubuntu3.1_arm64.deb\",\"sha256\":\"0a72d05e100ba0af8c9b96f810214c54ef16f1ca595d26f01515a07e040b349d\"},{\"name\":\"target/security-packages/arm64/gpgconf_2.4.8-4ubuntu3.1_arm64.deb\",\"sha256\":\"0629af323532af0c61842ef12bfabb3168a8c13ef9b429aae487ac0660f53d93\"},{\"name\":\"target/security-packages/arm64/gpgsm_2.4.8-4ubuntu3.1_arm64.deb\",\"sha256\":\"d99900733d8508a15f3f29ec9d9bfdd80be9b6ae8da6bbb84fe7b5ed6ce41a17\"},{\"name\":\"target/security-packages/arm64/gpgv_2.4.8-4ubuntu3.1_arm64.deb\",\"sha256\":\"2dc2bcd97daf9faaa8bc397097ecbff127f9f84d44a688bb9766d028726c6a43\"},{\"name\":\"target/security-packages/arm64/libattr1_2.5.2-4ubuntu0.1_arm64.deb\",\"sha256\":\"aa3d7255a561c27c39260d62d71f0df381cd0dab08efd111837987a09c91c32b\"},{\"name\":\"target/security-packages/arm64/libblkid1_2.41.3-3ubuntu2.2_arm64.deb\",\"sha256\":\"4395cd18479bc88a7109fc199475802ebfc007de07f1cf15c85f26003fdd75ae\"},{\"name\":\"target/security-packages/arm64/libbrotli1_1.2.0-3ubuntu0.1_arm64.deb\",\"sha256\":\"931d83bd98aa3c44ba4ff4304e7a6855c0a74bd3772220d0fd7a73cd8496a012\"},{\"name\":\"target/security-packages/arm64/libbz2-1.0_1.0.8-6ubuntu0.1_arm64.deb\",\"sha256\":\"42c8e4182e850a49f6fe1e10013ca13931513a037875f768a505db77305aa30e\"},{\"name\":\"target/security-packages/arm64/libc-bin_2.43-2ubuntu2.4_arm64.deb\",\"sha256\":\"7dae6f6c5b11fb6a8acf9f8e6cba29a06a034759a9849ba96bd340ac40400545\"},{\"name\":\"target/security-packages/arm64/libc-gconv-modules-extra_2.43-2ubuntu2.4_arm64.deb\",\"sha256\":\"9d4d8cfb9e75eb6c7324c5d9c548eb5eaa4ea584fe27627069a9bdad35818eda\"},{\"name\":\"target/security-packages/arm64/libc6_2.43-2ubuntu2.4_arm64.deb\",\"sha256\":\"1652597c8c3419b298d8a87dd3d8eea1fdc5a1abd9bccb5a66b928f92ec463c9\"},{\"name\":\"target/security-packages/arm64/libcurl4t64_8.18.0-1ubuntu2.8_arm64.deb\",\"sha256\":\"a148b69279dfde6cf5aa78a3eee85027e9fb3bc1c239d0ae62de1c8e574af31d\"},{\"name\":\"target/security-packages/arm64/libexpat1_2.7.4-1ubuntu0.2_arm64.deb\",\"sha256\":\"c553cf5827f937f92b65fcea86c1b19c18224ff0533bc30305e0dbfd32c197ff\"},{\"name\":\"target/security-packages/arm64/libfreetype6_2.14.2+dfsg-1ubuntu0.2_arm64.deb\",\"sha256\":\"a402e04cdb2286e4628c005b30b6777f3083a2817d04b33aad89950e669acf1c\"},{\"name\":\"target/security-packages/arm64/libgcrypt20_1.12.0-2ubuntu1.1_arm64.deb\",\"sha256\":\"a8a6e390dd67c07711712fa7603c154955035b83ed9d16007fcd0f2f241dbc56\"},{\"name\":\"target/security-packages/arm64/libmount1_2.41.3-3ubuntu2.2_arm64.deb\",\"sha256\":\"359be63102c6bbd4052ed2f5b3318f5f1c762b4ac1826a00f0d8a480b942ae53\"},{\"name\":\"target/security-packages/arm64/libpng16-16t64_1.6.57-1ubuntu0.1_arm64.deb\",\"sha256\":\"c683ee55bc0db09544d987478676bc923c72a96750f19e4bcab30c5fe1e7d2df\"},{\"name\":\"target/security-packages/arm64/libsmartcols1_2.41.3-3ubuntu2.2_arm64.deb\",\"sha256\":\"ba741b3a57a809fd5606ec6340191e0448761a04a803dbab9f227b266f2d4670\"},{\"name\":\"target/security-packages/arm64/libsqlite3-0_3.46.1-9ubuntu0.3_arm64.deb\",\"sha256\":\"c79eb1e82eeb3509af1a9792a5758ff3c4fed4b69bc8cd7c5871adafc30c19a9\"},{\"name\":\"target/security-packages/arm64/libssh2-1t64_1.11.1-1ubuntu0.26.04.4_arm64.deb\",\"sha256\":\"4d6ea3c94ae7190320879de7ab24e698c9f28e6d90d59ff06f1a4796ddd1f70d\"},{\"name\":\"target/security-packages/arm64/libssl3t64_3.5.5-1ubuntu3.7_arm64.deb\",\"sha256\":\"9fe87b6beec5de636a70e4fb6076517a39f5053c7e23e628c9459b94f85c75ff\"},{\"name\":\"target/security-packages/arm64/libsystemd0_259.9-0ubuntu0.1_arm64.deb\",\"sha256\":\"78c330e490c74b890057d13094eee72fa5b32ea127fcc4331673b9980e0a29b3\"},{\"name\":\"target/security-packages/arm64/libudev1_259.9-0ubuntu0.1_arm64.deb\",\"sha256\":\"56e0bb7ca6c90195705924b4bc7c82ee0c0a80220a93f9384ea393afa18ef5a4\"},{\"name\":\"target/security-packages/arm64/libuuid1_2.41.3-3ubuntu2.2_arm64.deb\",\"sha256\":\"1298f27861f60729a4d7ad86fa906aaebdbc88be9fc3316e9eb154de4f0792e3\"},{\"name\":\"target/security-packages/arm64/locales_2.43-2ubuntu2.4_all.deb\",\"sha256\":\"a1abf41b517f767018d5eab519d55b9269fe0a04ae49ea35f7c3ad1b8870ab32\"},{\"name\":\"target/security-packages/arm64/login_4.16.0-2+really2.41.3-3ubuntu2.2_arm64.deb\",\"sha256\":\"7cef4d2f3b29fbdfa74112ee1eb3e1f0fee79b853321afaaa72a866d59c987d7\"},{\"name\":\"target/security-packages/arm64/mount_2.41.3-3ubuntu2.2_arm64.deb\",\"sha256\":\"522c5c23f66948f285c37fd978ceaef2df8dc3b3f0cd19d51499132b2f9f4421\"},{\"name\":\"target/security-packages/arm64/openssl-provider-legacy_3.5.5-1ubuntu3.7_arm64.deb\",\"sha256\":\"757ec89120fe3f418a842342b3a0c596b89b0e3fb0ba770347dda1219f219bbd\"},{\"name\":\"target/security-packages/arm64/openssl_3.5.5-1ubuntu3.7_arm64.deb\",\"sha256\":\"623ea7ec0eb80da3f40e89e3318a4e82d4c64146d206c90cabbce6998d822fa8\"},{\"name\":\"target/security-packages/arm64/perl-base_5.40.1-7ubuntu0.3_arm64.deb\",\"sha256\":\"d2b006b56ae3ca20676581b2918b7b4250e78fc4fee2407a4bea0ba218eba7ef\"},{\"name\":\"target/security-packages/arm64/util-linux_2.41.3-3ubuntu2.2_arm64.deb\",\"sha256\":\"9321d8aafe3189f732d0ee85a1b1253820fd8ce823a55c65f8d6109d2fbaf2fb\"},{\"name\":\"target/security-packages/arm64/zlib1g_1.3.dfsg+really1.3.1-1ubuntu3.2_arm64.deb\",\"sha256\":\"b9b5ce1528ac7f885c8ff7dc2314c89c2ba5dd973c2a793dc4cf5d02d74b3810\"},{\"name\":\"target/spring-petclinic-4.0.0-SNAPSHOT.jar\",\"sha256\":\"7f5d49a65149d25d16e38dbf7c5d0c2686ac8a15ab53c2d1a05c1575f44a8100\"}]},\"platforms\":[\"linux/amd64\",\"linux/arm64\"],\"buildkit\":{\"metadataSha256\":\"2bd5d0251899753f26a42c6d679c16c8e47cb048c3c4a5e742645d506a6babc2\",\"outputDigest\":\"sha256:2fbaea65ab030c56c60c62e3ee9fbe362deb8bbbb8216a891ef4c7bbbcea6d55\",\"nativeProvenance\":\"mode=min\"},\"limitations\":[\"Jenkins administrators and the existing signing key are trusted\",\"Maven dependency resolution is not hermetic; no SLSA certification claimed\"]}"
+      },
+      "infra/security/cosign.pub": {
+        "value": "-----BEGIN PUBLIC KEY-----\nMFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAEDcDmCR1VAKgVHFo0oCkd6XeqXn14\nACzzOaks1UDTLAl7c2WBQSpQwiK6DpovLg9IFgHlwqR96xaECMITPawOaw==\n-----END PUBLIC KEY-----\n"
+      },
+      ".dockerignore": {
+        "value": "**\n!Dockerfile\n!target/\n!target/security-packages/\n!target/security-packages/**\n!target/spring-petclinic-4.0.0-SNAPSHOT.jar\n",
+        "measuredSha256": "f26ce1e62d80bdc08c1757381132269f2461efb896b22b567227e0f592a8ef68"
+      },
+      "Dockerfile": {
+        "measuredSha256": "ebe795abee2e2c33c1b5137196bd091188d461592c65ee8a9c73dd53fdf60a6d"
+      },
+      "target/security-packages/amd64/bsdutils_2.41.3-3ubuntu2.2_amd64.deb": {
+        "measuredSha256": "b4daec01b6c66dc04475e7eba50bf43a3b5c2264c38a7be9cbac1403d3abd77d"
+      },
+      "target/security-packages/amd64/curl_8.18.0-1ubuntu2.8_amd64.deb": {
+        "measuredSha256": "2c418a61d7165d0cde01d9cb05ae025cc41fc75ef6d3f095996bd045ba0945dc"
+      },
+      "target/security-packages/amd64/diffutils_3.12-1ubuntu0.1_amd64.deb": {
+        "measuredSha256": "0d4a3ad7fc06ddf73c250db2c33fb09e6eefd80224d49b6e6e9ee25b65f4ccde"
+      },
+      "target/security-packages/amd64/dirmngr_2.4.8-4ubuntu3.1_amd64.deb": {
+        "measuredSha256": "0c21d2572880614763ce3dd23a2d6a96e25fc71ca038e2cdc0844cb017af0e17"
+      },
+      "target/security-packages/amd64/gnu-coreutils_9.7-3ubuntu2.1_amd64.deb": {
+        "measuredSha256": "d9a6724f507759ac06d8b0214e4d31d67a4e6647be4d770a70a1d43041be5fa3"
+      },
+      "target/security-packages/amd64/gnupg_2.4.8-4ubuntu3.1_all.deb": {
+        "measuredSha256": "f8e4e754a843b1334e90092aac4c24433836d0756c996f37822d33905f2596e5"
+      },
+      "target/security-packages/amd64/gpg-agent_2.4.8-4ubuntu3.1_amd64.deb": {
+        "measuredSha256": "35170497c2191fa8f4d9e25f867057d93d8f59a6529b0dee96788d0c02866db6"
+      },
+      "target/security-packages/amd64/gpg_2.4.8-4ubuntu3.1_amd64.deb": {
+        "measuredSha256": "fb8da4f691b6e2139fa5cdf7f54d000ef1b7b27753efb2dbdc5a9546057a62c6"
+      },
+      "target/security-packages/amd64/gpgconf_2.4.8-4ubuntu3.1_amd64.deb": {
+        "measuredSha256": "3747890fd79d7c64ee7e3496e54742dd482cff01574d885b84adb645c7ade7af"
+      },
+      "target/security-packages/amd64/gpgsm_2.4.8-4ubuntu3.1_amd64.deb": {
+        "measuredSha256": "e36eedde45b1174a591f55ce94beef99dfb89d58308b96e1354a1e4588820225"
+      },
+      "target/security-packages/amd64/gpgv_2.4.8-4ubuntu3.1_amd64.deb": {
+        "measuredSha256": "0fcce72656439d90821bbd23580afc794a01ec2f28622ae31b4f5394a830bb09"
+      },
+      "target/security-packages/amd64/libattr1_2.5.2-4ubuntu0.1_amd64.deb": {
+        "measuredSha256": "c10b6191e2c58c110af0d648cbbde2e55c5cfa30326c5c6051bdcf0a12ec2d21"
+      },
+      "target/security-packages/amd64/libblkid1_2.41.3-3ubuntu2.2_amd64.deb": {
+        "measuredSha256": "929ebedb610fa4dfa16cada763cea7e8ed4bd37c68573563410614189bd4e537"
+      },
+      "target/security-packages/amd64/libbrotli1_1.2.0-3ubuntu0.1_amd64.deb": {
+        "measuredSha256": "bedeef1cf3268f90338c411cdb0a45b224d0660fd2240f310f380316c8244606"
+      },
+      "target/security-packages/amd64/libbz2-1.0_1.0.8-6ubuntu0.1_amd64.deb": {
+        "measuredSha256": "f4a008f8219118acb7d5e0356d615f4fc6829a9f5a838394d0f7e101e9c5ebf8"
+      },
+      "target/security-packages/amd64/libc-bin_2.43-2ubuntu2.4_amd64.deb": {
+        "measuredSha256": "bc4f50a0aebbb348598749c291a3742f9485d94b044715d382388607b9159a1b"
+      },
+      "target/security-packages/amd64/libc-gconv-modules-extra_2.43-2ubuntu2.4_amd64.deb": {
+        "measuredSha256": "c2194b87c7f628722036bbe9f9bbdf20c1ebdb05ecd68b7a3a52dd1a76f3c5d6"
+      },
+      "target/security-packages/amd64/libc6_2.43-2ubuntu2.4_amd64.deb": {
+        "measuredSha256": "a613b457f3ff9c84ebd28af8a05afdec22605ad9aed87c71e3a6ae5170aeb9ca"
+      },
+      "target/security-packages/amd64/libcurl4t64_8.18.0-1ubuntu2.8_amd64.deb": {
+        "measuredSha256": "7c0b37592f83a629cc22f0c98effa176da9edbd6d77b3f38184a9d0ddc5e0266"
+      },
+      "target/security-packages/amd64/libexpat1_2.7.4-1ubuntu0.2_amd64.deb": {
+        "measuredSha256": "0063e68d742facfd3c46d7d7df9eb0d85f13e0fc294908a4f138d45557607837"
+      },
+      "target/security-packages/amd64/libfreetype6_2.14.2+dfsg-1ubuntu0.2_amd64.deb": {
+        "measuredSha256": "6d7d532b7d0c57639deb3b228f1f0d786cf5305d613ef7df9ba76c776a0f8373"
+      },
+      "target/security-packages/amd64/libgcrypt20_1.12.0-2ubuntu1.1_amd64.deb": {
+        "measuredSha256": "8e76d7131bcfc7fbb9e7bcdbcaf936215ab667b7ab33e90cb9cb72ea7ebf8060"
+      },
+      "target/security-packages/amd64/libmount1_2.41.3-3ubuntu2.2_amd64.deb": {
+        "measuredSha256": "7b8f05d4346049c50d846e1947ec12aff36f3dd44cbd5ee4e8505245cd86b461"
+      },
+      "target/security-packages/amd64/libpng16-16t64_1.6.57-1ubuntu0.1_amd64.deb": {
+        "measuredSha256": "f24a7f7c0428d74e33ea934696987b7336ec0962f212535185f0493792e7536e"
+      },
+      "target/security-packages/amd64/libsmartcols1_2.41.3-3ubuntu2.2_amd64.deb": {
+        "measuredSha256": "aa2239ba7efd848bbdd5dcb11da9d4a91c81638414fe380f491d030d78f09ffb"
+      },
+      "target/security-packages/amd64/libsqlite3-0_3.46.1-9ubuntu0.3_amd64.deb": {
+        "measuredSha256": "ff4b5a1e7c028a4bcc30076e4d8197aad1a910df44f4dc8dcf253e9ee9a3a367"
+      },
+      "target/security-packages/amd64/libssh2-1t64_1.11.1-1ubuntu0.26.04.4_amd64.deb": {
+        "measuredSha256": "bb3e334dc885d124d38cd4350f1cb4606c03ce58e9f53dc51a84c2c8d11c84e1"
+      },
+      "target/security-packages/amd64/libssl3t64_3.5.5-1ubuntu3.7_amd64.deb": {
+        "measuredSha256": "3ff73e121f6cd4f19e80ab4329dfd914108b3936c9db3708200203a9b245b34d"
+      },
+      "target/security-packages/amd64/libsystemd0_259.9-0ubuntu0.1_amd64.deb": {
+        "measuredSha256": "b255521b18a289d40149e93aef1ee881fb8d25c16fa0993db97c4168f4f82bb1"
+      },
+      "target/security-packages/amd64/libudev1_259.9-0ubuntu0.1_amd64.deb": {
+        "measuredSha256": "578af34e1b720ffdf3e816e168dd4719d06f2efd15cc0c193a34b9d9ee6237ca"
+      },
+      "target/security-packages/amd64/libuuid1_2.41.3-3ubuntu2.2_amd64.deb": {
+        "measuredSha256": "77e7078fbdb994e3c9c84ce6fc464f0451580d7f0b46c8770d0189b46959ad43"
+      },
+      "target/security-packages/amd64/locales_2.43-2ubuntu2.4_all.deb": {
+        "measuredSha256": "a1abf41b517f767018d5eab519d55b9269fe0a04ae49ea35f7c3ad1b8870ab32"
+      },
+      "target/security-packages/amd64/login_4.16.0-2+really2.41.3-3ubuntu2.2_amd64.deb": {
+        "measuredSha256": "111fc79f9da4f281d8a4cf367e0e29a30f94365b00621ae57686453dc3ab031c"
+      },
+      "target/security-packages/amd64/mount_2.41.3-3ubuntu2.2_amd64.deb": {
+        "measuredSha256": "90453798cbb57f485201e14853388afc01410b812eb431f38db2a4f73c0d2c8e"
+      },
+      "target/security-packages/amd64/openssl-provider-legacy_3.5.5-1ubuntu3.7_amd64.deb": {
+        "measuredSha256": "51cf418571059831096abd40e0bd5debaa1ae48a6f8d87d9e4e5f7f12aa4db52"
+      },
+      "target/security-packages/amd64/openssl_3.5.5-1ubuntu3.7_amd64.deb": {
+        "measuredSha256": "6965aafe69e0a49ef34d2e26f8e83d09d1c6037b7e9ee37f19b292a3c6851621"
+      },
+      "target/security-packages/amd64/perl-base_5.40.1-7ubuntu0.3_amd64.deb": {
+        "measuredSha256": "eae28e944eccca8ab1a5387dfec710ed32f66531880a6c2a3285ffd95d3b59f2"
+      },
+      "target/security-packages/amd64/util-linux_2.41.3-3ubuntu2.2_amd64.deb": {
+        "measuredSha256": "11fd410b1d3797b1e9127b68302160213c15e1553745fb6982e270b1e32d1f2a"
+      },
+      "target/security-packages/amd64/zlib1g_1.3.dfsg+really1.3.1-1ubuntu3.2_amd64.deb": {
+        "measuredSha256": "10084666f747247550c3e82f9a12cbfd9184c19241a42eb34d8893ecb8e03b35"
+      },
+      "target/security-packages/arm64/bsdutils_2.41.3-3ubuntu2.2_arm64.deb": {
+        "measuredSha256": "57e31144cb7943e1b3b5e317f3c1069ca597643a6955b6d879cbec89a4ac0a46"
+      },
+      "target/security-packages/arm64/curl_8.18.0-1ubuntu2.8_arm64.deb": {
+        "measuredSha256": "c36ec0de66d79adc9f8748d54cd0b2ac6b3d3458e0145dd83c9524345fb9e562"
+      },
+      "target/security-packages/arm64/diffutils_3.12-1ubuntu0.1_arm64.deb": {
+        "measuredSha256": "5d0553e3c02221a84b7e6e0501c3771266d31f63f51a91f23303e99bdf7d70cb"
+      },
+      "target/security-packages/arm64/dirmngr_2.4.8-4ubuntu3.1_arm64.deb": {
+        "measuredSha256": "e15cda656567df11d4f2626418704a542496a6b6d034c91f711138be012e439b"
+      },
+      "target/security-packages/arm64/gnu-coreutils_9.7-3ubuntu2.1_arm64.deb": {
+        "measuredSha256": "123810835032d5efc969c97d3e80d451b5da5463e1916b832e8c99684a833580"
+      },
+      "target/security-packages/arm64/gnupg_2.4.8-4ubuntu3.1_all.deb": {
+        "measuredSha256": "f8e4e754a843b1334e90092aac4c24433836d0756c996f37822d33905f2596e5"
+      },
+      "target/security-packages/arm64/gpg-agent_2.4.8-4ubuntu3.1_arm64.deb": {
+        "measuredSha256": "4c15078155fb4df8a65f38679f1a2879646875e6b77f6b026c0c2eaa8c331834"
+      },
+      "target/security-packages/arm64/gpg_2.4.8-4ubuntu3.1_arm64.deb": {
+        "measuredSha256": "0a72d05e100ba0af8c9b96f810214c54ef16f1ca595d26f01515a07e040b349d"
+      },
+      "target/security-packages/arm64/gpgconf_2.4.8-4ubuntu3.1_arm64.deb": {
+        "measuredSha256": "0629af323532af0c61842ef12bfabb3168a8c13ef9b429aae487ac0660f53d93"
+      },
+      "target/security-packages/arm64/gpgsm_2.4.8-4ubuntu3.1_arm64.deb": {
+        "measuredSha256": "d99900733d8508a15f3f29ec9d9bfdd80be9b6ae8da6bbb84fe7b5ed6ce41a17"
+      },
+      "target/security-packages/arm64/gpgv_2.4.8-4ubuntu3.1_arm64.deb": {
+        "measuredSha256": "2dc2bcd97daf9faaa8bc397097ecbff127f9f84d44a688bb9766d028726c6a43"
+      },
+      "target/security-packages/arm64/libattr1_2.5.2-4ubuntu0.1_arm64.deb": {
+        "measuredSha256": "aa3d7255a561c27c39260d62d71f0df381cd0dab08efd111837987a09c91c32b"
+      },
+      "target/security-packages/arm64/libblkid1_2.41.3-3ubuntu2.2_arm64.deb": {
+        "measuredSha256": "4395cd18479bc88a7109fc199475802ebfc007de07f1cf15c85f26003fdd75ae"
+      },
+      "target/security-packages/arm64/libbrotli1_1.2.0-3ubuntu0.1_arm64.deb": {
+        "measuredSha256": "931d83bd98aa3c44ba4ff4304e7a6855c0a74bd3772220d0fd7a73cd8496a012"
+      },
+      "target/security-packages/arm64/libbz2-1.0_1.0.8-6ubuntu0.1_arm64.deb": {
+        "measuredSha256": "42c8e4182e850a49f6fe1e10013ca13931513a037875f768a505db77305aa30e"
+      },
+      "target/security-packages/arm64/libc-bin_2.43-2ubuntu2.4_arm64.deb": {
+        "measuredSha256": "7dae6f6c5b11fb6a8acf9f8e6cba29a06a034759a9849ba96bd340ac40400545"
+      },
+      "target/security-packages/arm64/libc-gconv-modules-extra_2.43-2ubuntu2.4_arm64.deb": {
+        "measuredSha256": "9d4d8cfb9e75eb6c7324c5d9c548eb5eaa4ea584fe27627069a9bdad35818eda"
+      },
+      "target/security-packages/arm64/libc6_2.43-2ubuntu2.4_arm64.deb": {
+        "measuredSha256": "1652597c8c3419b298d8a87dd3d8eea1fdc5a1abd9bccb5a66b928f92ec463c9"
+      },
+      "target/security-packages/arm64/libcurl4t64_8.18.0-1ubuntu2.8_arm64.deb": {
+        "measuredSha256": "a148b69279dfde6cf5aa78a3eee85027e9fb3bc1c239d0ae62de1c8e574af31d"
+      },
+      "target/security-packages/arm64/libexpat1_2.7.4-1ubuntu0.2_arm64.deb": {
+        "measuredSha256": "c553cf5827f937f92b65fcea86c1b19c18224ff0533bc30305e0dbfd32c197ff"
+      },
+      "target/security-packages/arm64/libfreetype6_2.14.2+dfsg-1ubuntu0.2_arm64.deb": {
+        "measuredSha256": "a402e04cdb2286e4628c005b30b6777f3083a2817d04b33aad89950e669acf1c"
+      },
+      "target/security-packages/arm64/libgcrypt20_1.12.0-2ubuntu1.1_arm64.deb": {
+        "measuredSha256": "a8a6e390dd67c07711712fa7603c154955035b83ed9d16007fcd0f2f241dbc56"
+      },
+      "target/security-packages/arm64/libmount1_2.41.3-3ubuntu2.2_arm64.deb": {
+        "measuredSha256": "359be63102c6bbd4052ed2f5b3318f5f1c762b4ac1826a00f0d8a480b942ae53"
+      },
+      "target/security-packages/arm64/libpng16-16t64_1.6.57-1ubuntu0.1_arm64.deb": {
+        "measuredSha256": "c683ee55bc0db09544d987478676bc923c72a96750f19e4bcab30c5fe1e7d2df"
+      },
+      "target/security-packages/arm64/libsmartcols1_2.41.3-3ubuntu2.2_arm64.deb": {
+        "measuredSha256": "ba741b3a57a809fd5606ec6340191e0448761a04a803dbab9f227b266f2d4670"
+      },
+      "target/security-packages/arm64/libsqlite3-0_3.46.1-9ubuntu0.3_arm64.deb": {
+        "measuredSha256": "c79eb1e82eeb3509af1a9792a5758ff3c4fed4b69bc8cd7c5871adafc30c19a9"
+      },
+      "target/security-packages/arm64/libssh2-1t64_1.11.1-1ubuntu0.26.04.4_arm64.deb": {
+        "measuredSha256": "4d6ea3c94ae7190320879de7ab24e698c9f28e6d90d59ff06f1a4796ddd1f70d"
+      },
+      "target/security-packages/arm64/libssl3t64_3.5.5-1ubuntu3.7_arm64.deb": {
+        "measuredSha256": "9fe87b6beec5de636a70e4fb6076517a39f5053c7e23e628c9459b94f85c75ff"
+      },
+      "target/security-packages/arm64/libsystemd0_259.9-0ubuntu0.1_arm64.deb": {
+        "measuredSha256": "78c330e490c74b890057d13094eee72fa5b32ea127fcc4331673b9980e0a29b3"
+      },
+      "target/security-packages/arm64/libudev1_259.9-0ubuntu0.1_arm64.deb": {
+        "measuredSha256": "56e0bb7ca6c90195705924b4bc7c82ee0c0a80220a93f9384ea393afa18ef5a4"
+      },
+      "target/security-packages/arm64/libuuid1_2.41.3-3ubuntu2.2_arm64.deb": {
+        "measuredSha256": "1298f27861f60729a4d7ad86fa906aaebdbc88be9fc3316e9eb154de4f0792e3"
+      },
+      "target/security-packages/arm64/locales_2.43-2ubuntu2.4_all.deb": {
+        "measuredSha256": "a1abf41b517f767018d5eab519d55b9269fe0a04ae49ea35f7c3ad1b8870ab32"
+      },
+      "target/security-packages/arm64/login_4.16.0-2+really2.41.3-3ubuntu2.2_arm64.deb": {
+        "measuredSha256": "7cef4d2f3b29fbdfa74112ee1eb3e1f0fee79b853321afaaa72a866d59c987d7"
+      },
+      "target/security-packages/arm64/mount_2.41.3-3ubuntu2.2_arm64.deb": {
+        "measuredSha256": "522c5c23f66948f285c37fd978ceaef2df8dc3b3f0cd19d51499132b2f9f4421"
+      },
+      "target/security-packages/arm64/openssl-provider-legacy_3.5.5-1ubuntu3.7_arm64.deb": {
+        "measuredSha256": "757ec89120fe3f418a842342b3a0c596b89b0e3fb0ba770347dda1219f219bbd"
+      },
+      "target/security-packages/arm64/openssl_3.5.5-1ubuntu3.7_arm64.deb": {
+        "measuredSha256": "623ea7ec0eb80da3f40e89e3318a4e82d4c64146d206c90cabbce6998d822fa8"
+      },
+      "target/security-packages/arm64/perl-base_5.40.1-7ubuntu0.3_arm64.deb": {
+        "measuredSha256": "d2b006b56ae3ca20676581b2918b7b4250e78fc4fee2407a4bea0ba218eba7ef"
+      },
+      "target/security-packages/arm64/util-linux_2.41.3-3ubuntu2.2_arm64.deb": {
+        "measuredSha256": "9321d8aafe3189f732d0ee85a1b1253820fd8ce823a55c65f8d6109d2fbaf2fb"
+      },
+      "target/security-packages/arm64/zlib1g_1.3.dfsg+really1.3.1-1ubuntu3.2_arm64.deb": {
+        "measuredSha256": "b9b5ce1528ac7f885c8ff7dc2314c89c2ba5dd973c2a793dc4cf5d02d74b3810"
+      },
+      "target/spring-petclinic-4.0.0-SNAPSHOT.jar": {
+        "measuredSha256": "7f5d49a65149d25d16e38dbf7c5d0c2686ac8a15ab53c2d1a05c1575f44a8100"
+      }
+    },
+    "walk": {
+      "target/security-packages": [
+        {
+          "name": "amd64",
+          "type": "directory"
+        },
+        {
+          "name": "arm64",
+          "type": "directory"
+        }
+      ],
+      "target/security-packages/amd64": [
+        {
+          "name": "bsdutils_2.41.3-3ubuntu2.2_amd64.deb",
+          "type": "file"
+        },
+        {
+          "name": "curl_8.18.0-1ubuntu2.8_amd64.deb",
+          "type": "file"
+        },
+        {
+          "name": "diffutils_3.12-1ubuntu0.1_amd64.deb",
+          "type": "file"
+        },
+        {
+          "name": "dirmngr_2.4.8-4ubuntu3.1_amd64.deb",
+          "type": "file"
+        },
+        {
+          "name": "gnu-coreutils_9.7-3ubuntu2.1_amd64.deb",
+          "type": "file"
+        },
+        {
+          "name": "gnupg_2.4.8-4ubuntu3.1_all.deb",
+          "type": "file"
+        },
+        {
+          "name": "gpg-agent_2.4.8-4ubuntu3.1_amd64.deb",
+          "type": "file"
+        },
+        {
+          "name": "gpg_2.4.8-4ubuntu3.1_amd64.deb",
+          "type": "file"
+        },
+        {
+          "name": "gpgconf_2.4.8-4ubuntu3.1_amd64.deb",
+          "type": "file"
+        },
+        {
+          "name": "gpgsm_2.4.8-4ubuntu3.1_amd64.deb",
+          "type": "file"
+        },
+        {
+          "name": "gpgv_2.4.8-4ubuntu3.1_amd64.deb",
+          "type": "file"
+        },
+        {
+          "name": "libattr1_2.5.2-4ubuntu0.1_amd64.deb",
+          "type": "file"
+        },
+        {
+          "name": "libblkid1_2.41.3-3ubuntu2.2_amd64.deb",
+          "type": "file"
+        },
+        {
+          "name": "libbrotli1_1.2.0-3ubuntu0.1_amd64.deb",
+          "type": "file"
+        },
+        {
+          "name": "libbz2-1.0_1.0.8-6ubuntu0.1_amd64.deb",
+          "type": "file"
+        },
+        {
+          "name": "libc-bin_2.43-2ubuntu2.4_amd64.deb",
+          "type": "file"
+        },
+        {
+          "name": "libc-gconv-modules-extra_2.43-2ubuntu2.4_amd64.deb",
+          "type": "file"
+        },
+        {
+          "name": "libc6_2.43-2ubuntu2.4_amd64.deb",
+          "type": "file"
+        },
+        {
+          "name": "libcurl4t64_8.18.0-1ubuntu2.8_amd64.deb",
+          "type": "file"
+        },
+        {
+          "name": "libexpat1_2.7.4-1ubuntu0.2_amd64.deb",
+          "type": "file"
+        },
+        {
+          "name": "libfreetype6_2.14.2+dfsg-1ubuntu0.2_amd64.deb",
+          "type": "file"
+        },
+        {
+          "name": "libgcrypt20_1.12.0-2ubuntu1.1_amd64.deb",
+          "type": "file"
+        },
+        {
+          "name": "libmount1_2.41.3-3ubuntu2.2_amd64.deb",
+          "type": "file"
+        },
+        {
+          "name": "libpng16-16t64_1.6.57-1ubuntu0.1_amd64.deb",
+          "type": "file"
+        },
+        {
+          "name": "libsmartcols1_2.41.3-3ubuntu2.2_amd64.deb",
+          "type": "file"
+        },
+        {
+          "name": "libsqlite3-0_3.46.1-9ubuntu0.3_amd64.deb",
+          "type": "file"
+        },
+        {
+          "name": "libssh2-1t64_1.11.1-1ubuntu0.26.04.4_amd64.deb",
+          "type": "file"
+        },
+        {
+          "name": "libssl3t64_3.5.5-1ubuntu3.7_amd64.deb",
+          "type": "file"
+        },
+        {
+          "name": "libsystemd0_259.9-0ubuntu0.1_amd64.deb",
+          "type": "file"
+        },
+        {
+          "name": "libudev1_259.9-0ubuntu0.1_amd64.deb",
+          "type": "file"
+        },
+        {
+          "name": "libuuid1_2.41.3-3ubuntu2.2_amd64.deb",
+          "type": "file"
+        },
+        {
+          "name": "locales_2.43-2ubuntu2.4_all.deb",
+          "type": "file"
+        },
+        {
+          "name": "login_4.16.0-2+really2.41.3-3ubuntu2.2_amd64.deb",
+          "type": "file"
+        },
+        {
+          "name": "mount_2.41.3-3ubuntu2.2_amd64.deb",
+          "type": "file"
+        },
+        {
+          "name": "openssl-provider-legacy_3.5.5-1ubuntu3.7_amd64.deb",
+          "type": "file"
+        },
+        {
+          "name": "openssl_3.5.5-1ubuntu3.7_amd64.deb",
+          "type": "file"
+        },
+        {
+          "name": "perl-base_5.40.1-7ubuntu0.3_amd64.deb",
+          "type": "file"
+        },
+        {
+          "name": "util-linux_2.41.3-3ubuntu2.2_amd64.deb",
+          "type": "file"
+        },
+        {
+          "name": "zlib1g_1.3.dfsg+really1.3.1-1ubuntu3.2_amd64.deb",
+          "type": "file"
+        }
+      ],
+      "target/security-packages/arm64": [
+        {
+          "name": "bsdutils_2.41.3-3ubuntu2.2_arm64.deb",
+          "type": "file"
+        },
+        {
+          "name": "curl_8.18.0-1ubuntu2.8_arm64.deb",
+          "type": "file"
+        },
+        {
+          "name": "diffutils_3.12-1ubuntu0.1_arm64.deb",
+          "type": "file"
+        },
+        {
+          "name": "dirmngr_2.4.8-4ubuntu3.1_arm64.deb",
+          "type": "file"
+        },
+        {
+          "name": "gnu-coreutils_9.7-3ubuntu2.1_arm64.deb",
+          "type": "file"
+        },
+        {
+          "name": "gnupg_2.4.8-4ubuntu3.1_all.deb",
+          "type": "file"
+        },
+        {
+          "name": "gpg-agent_2.4.8-4ubuntu3.1_arm64.deb",
+          "type": "file"
+        },
+        {
+          "name": "gpg_2.4.8-4ubuntu3.1_arm64.deb",
+          "type": "file"
+        },
+        {
+          "name": "gpgconf_2.4.8-4ubuntu3.1_arm64.deb",
+          "type": "file"
+        },
+        {
+          "name": "gpgsm_2.4.8-4ubuntu3.1_arm64.deb",
+          "type": "file"
+        },
+        {
+          "name": "gpgv_2.4.8-4ubuntu3.1_arm64.deb",
+          "type": "file"
+        },
+        {
+          "name": "libattr1_2.5.2-4ubuntu0.1_arm64.deb",
+          "type": "file"
+        },
+        {
+          "name": "libblkid1_2.41.3-3ubuntu2.2_arm64.deb",
+          "type": "file"
+        },
+        {
+          "name": "libbrotli1_1.2.0-3ubuntu0.1_arm64.deb",
+          "type": "file"
+        },
+        {
+          "name": "libbz2-1.0_1.0.8-6ubuntu0.1_arm64.deb",
+          "type": "file"
+        },
+        {
+          "name": "libc-bin_2.43-2ubuntu2.4_arm64.deb",
+          "type": "file"
+        },
+        {
+          "name": "libc-gconv-modules-extra_2.43-2ubuntu2.4_arm64.deb",
+          "type": "file"
+        },
+        {
+          "name": "libc6_2.43-2ubuntu2.4_arm64.deb",
+          "type": "file"
+        },
+        {
+          "name": "libcurl4t64_8.18.0-1ubuntu2.8_arm64.deb",
+          "type": "file"
+        },
+        {
+          "name": "libexpat1_2.7.4-1ubuntu0.2_arm64.deb",
+          "type": "file"
+        },
+        {
+          "name": "libfreetype6_2.14.2+dfsg-1ubuntu0.2_arm64.deb",
+          "type": "file"
+        },
+        {
+          "name": "libgcrypt20_1.12.0-2ubuntu1.1_arm64.deb",
+          "type": "file"
+        },
+        {
+          "name": "libmount1_2.41.3-3ubuntu2.2_arm64.deb",
+          "type": "file"
+        },
+        {
+          "name": "libpng16-16t64_1.6.57-1ubuntu0.1_arm64.deb",
+          "type": "file"
+        },
+        {
+          "name": "libsmartcols1_2.41.3-3ubuntu2.2_arm64.deb",
+          "type": "file"
+        },
+        {
+          "name": "libsqlite3-0_3.46.1-9ubuntu0.3_arm64.deb",
+          "type": "file"
+        },
+        {
+          "name": "libssh2-1t64_1.11.1-1ubuntu0.26.04.4_arm64.deb",
+          "type": "file"
+        },
+        {
+          "name": "libssl3t64_3.5.5-1ubuntu3.7_arm64.deb",
+          "type": "file"
+        },
+        {
+          "name": "libsystemd0_259.9-0ubuntu0.1_arm64.deb",
+          "type": "file"
+        },
+        {
+          "name": "libudev1_259.9-0ubuntu0.1_arm64.deb",
+          "type": "file"
+        },
+        {
+          "name": "libuuid1_2.41.3-3ubuntu2.2_arm64.deb",
+          "type": "file"
+        },
+        {
+          "name": "locales_2.43-2ubuntu2.4_all.deb",
+          "type": "file"
+        },
+        {
+          "name": "login_4.16.0-2+really2.41.3-3ubuntu2.2_arm64.deb",
+          "type": "file"
+        },
+        {
+          "name": "mount_2.41.3-3ubuntu2.2_arm64.deb",
+          "type": "file"
+        },
+        {
+          "name": "openssl-provider-legacy_3.5.5-1ubuntu3.7_arm64.deb",
+          "type": "file"
+        },
+        {
+          "name": "openssl_3.5.5-1ubuntu3.7_arm64.deb",
+          "type": "file"
+        },
+        {
+          "name": "perl-base_5.40.1-7ubuntu0.3_arm64.deb",
+          "type": "file"
+        },
+        {
+          "name": "util-linux_2.41.3-3ubuntu2.2_arm64.deb",
+          "type": "file"
+        },
+        {
+          "name": "zlib1g_1.3.dfsg+really1.3.1-1ubuntu3.2_arm64.deb",
+          "type": "file"
+        }
+      ]
+    },
+    "network": {},
+    "io": {
+      "mkdir:.devsecops": {},
+      "mkdir:target/platform": {},
+      "mkdir:/tmp/build-attestation-frozen/docker": {},
+      "write:.devsecops/build-compilation.json": {},
+      "write:.devsecops/build-provenance.json": {},
+      "write:target/platform/harbor-copy.json": {},
+      "write:/tmp/build-attestation-frozen/key": {},
+      "write:/tmp/build-attestation-frozen/docker/config.json": {},
+      "write:.devsecops/build-attestation-envelope.json": {},
+      "write:.devsecops/build-attestation-verification.json": {},
+      "temp-create": {},
+      "temp-chmod": {},
+      "temp-remove": {},
+      "temp-stat": {}
+    },
+    "tempExists": false
+  },
+  "verifiedFacts": {
+    "schema": 1,
+    "source": "build-provenance-verification",
+    "policyVersion": "baseline-v1",
+    "phase": "create",
+    "classification": "CONTROLLED_REPLAY",
+    "complete": true,
+    "execution": {
+      "exitCode": 1,
+      "diagnostic": "Build identity mismatch"
+    },
+    "inputIdentity": {
+      "source": {
+        "commit": "9a78cc89f22fa98fb1ffcc43e2ae279299471793",
+        "repository": "http://gitlab-service.ns-devops.svc.cluster.local/root/petclinic-platform.git"
+      },
+      "builder": {
+        "identity": "http://jenkins.devops.local/job/petclinic-candidate-build",
+        "buildNumber": 2
+      },
+      "candidateImage": "core.harbor.domain/petclinic/petclinic@sha256:2fbaea65ab030c56c60c62e3ee9fbe362deb8bbbb8216a891ef4c7bbbcea6d55",
+      "requestedVerification": {
+        "image": "core.harbor.domain/petclinic/petclinic@sha256:2fbaea65ab030c56c60c62e3ee9fbe362deb8bbbb8216a891ef4c7bbbcea6d55",
+        "commit": "9a78cc89f22fa98fb1ffcc43e2ae279299471793",
+        "repository": "http://gitlab-service.ns-devops.svc.cluster.local/root/petclinic-platform.git",
+        "builder": "http://jenkins.devops.local/job/petclinic-candidate-build",
+        "buildNumber": "3"
+      }
+    },
+    "observations": [
+      {
+        "type": "checksum-observation",
+        "path": "/var/jenkins_home/platform-security/20261027/cosign",
+        "sha256": "ade83b7aac62e131cacfe96d958948b2150cc9efec46a570a2649b8e27dedad2",
+        "freshSourceHashComputed": false
+      },
+      {
+        "type": "checksum-observation",
+        "path": "/var/jenkins_home/platform-security/20261027/sops",
+        "sha256": "53b0abacd38ef1b12a66d6c100956691b9cefce018d91f81e73ddf7438b94d77",
+        "freshSourceHashComputed": false
+      },
+      {
+        "type": "lease-query",
+        "args": [
+          "--request-timeout=20s",
+          "-n",
+          "data-infra",
+          "get",
+          "lease",
+          "platform-heavy",
+          "-o",
+          "json"
+        ],
+        "result": {
+          "status": 0,
+          "stdout": "{\"spec\":{\"holderIdentity\":\"candidate-build-2\"}}",
+          "stderr": ""
+        }
+      },
+      {
+        "type": "io",
+        "key": "temp-create"
+      },
+      {
+        "type": "io",
+        "key": "temp-chmod"
+      },
+      {
+        "type": "io",
+        "key": "mkdir:/tmp/build-attestation-frozen/docker"
+      },
+      {
+        "type": "io",
+        "key": "write:/tmp/build-attestation-frozen/docker/config.json"
+      },
+      {
+        "type": "file-read",
+        "path": ".devsecops/build-provenance.json",
+        "index": 0
+      },
+      {
+        "type": "existing-build-validator",
+        "valid": false,
+        "expected": {
+          "image": "core.harbor.domain/petclinic/petclinic@sha256:2fbaea65ab030c56c60c62e3ee9fbe362deb8bbbb8216a891ef4c7bbbcea6d55",
+          "commit": "9a78cc89f22fa98fb1ffcc43e2ae279299471793",
+          "repository": "http://gitlab-service.ns-devops.svc.cluster.local/root/petclinic-platform.git",
+          "builder": "http://jenkins.devops.local/job/petclinic-candidate-build",
+          "buildNumber": "3"
+        },
+        "diagnostic": "Build identity mismatch"
+      },
+      {
+        "type": "io",
+        "key": "temp-remove"
+      },
+      {
+        "type": "io",
+        "key": "temp-stat"
+      },
+      {
+        "type": "io",
+        "key": "mkdir:.devsecops"
+      },
+      {
+        "type": "io",
+        "key": "write:.devsecops/build-attestation-verification.json"
+      }
+    ],
+    "artifacts": {
+      ".devsecops/build-attestation-verification.json": "{\n  \"status\": \"failed\",\n  \"candidateImage\": \"core.harbor.domain/petclinic/petclinic@sha256:2fbaea65ab030c56c60c62e3ee9fbe362deb8bbbb8216a891ef4c7bbbcea6d55\",\n  \"expected\": {\n    \"image\": \"core.harbor.domain/petclinic/petclinic@sha256:2fbaea65ab030c56c60c62e3ee9fbe362deb8bbbb8216a891ef4c7bbbcea6d55\",\n    \"commit\": \"9a78cc89f22fa98fb1ffcc43e2ae279299471793\",\n    \"repository\": \"http://gitlab-service.ns-devops.svc.cluster.local/root/petclinic-platform.git\",\n    \"builder\": \"http://jenkins.devops.local/job/petclinic-candidate-build\",\n    \"buildNumber\": \"3\"\n  },\n  \"tests\": [],\n  \"temporaryPrivateFilesRemoved\": true\n}"
+    }
+  }
+}

@@ -1,0 +1,894 @@
+{
+  "job": "security-runtime-facts-20261102",
+  "build": 26,
+  "building": false,
+  "result": "FAILURE",
+  "duration": 23310,
+  "startedAtMs": 1793668962934,
+  "artifacts": {
+    ".devsecops/runtime-controlled/build-26/cosign-kube-audit.json": [
+      {
+        "at": "2026-11-03T01:22:47.455Z",
+        "kind": "lease",
+        "physicalInput": null,
+        "error": null,
+        "exitStatus": 0
+      },
+      {
+        "image": "core.harbor.domain/petclinic/signature-fixtures@sha256:393c43470be77284506de6ceac4be85d8dbab8cc173109939775af2a14caedfc",
+        "at": "2026-11-03T01:23:00.039Z",
+        "kind": "admission-dry-run",
+        "namespace": "rf3-20261103-7d6715-cosign",
+        "physicalInput": {
+          "metadata": {
+            "name": "signature-signed",
+            "namespace": "rf3-20261103-7d6715-cosign"
+          },
+          "apiVersion": "v1",
+          "kind": "Pod",
+          "spec": {
+            "automountServiceAccountToken": false,
+            "containers": [
+              {
+                "image": "core.harbor.domain/petclinic/signature-fixtures@sha256:393c43470be77284506de6ceac4be85d8dbab8cc173109939775af2a14caedfc",
+                "name": "probe",
+                "command": [
+                  "/never-executed"
+                ]
+              }
+            ],
+            "restartPolicy": "Never"
+          }
+        },
+        "error": null,
+        "exitStatus": 0
+      },
+      {
+        "image": "core.harbor.domain/petclinic/signature-fixtures@sha256:cabc2d6d8b6154a537c70ce7297c2cb8f93f8ab55daf6f119070df20cb716796",
+        "at": "2026-11-03T01:23:00.834Z",
+        "kind": "admission-dry-run",
+        "namespace": "rf3-20261103-7d6715-cosign",
+        "physicalInput": {
+          "metadata": {
+            "name": "signature-unsigned",
+            "namespace": "rf3-20261103-7d6715-cosign"
+          },
+          "apiVersion": "v1",
+          "kind": "Pod",
+          "spec": {
+            "automountServiceAccountToken": false,
+            "containers": [
+              {
+                "image": "core.harbor.domain/petclinic/signature-fixtures@sha256:cabc2d6d8b6154a537c70ce7297c2cb8f93f8ab55daf6f119070df20cb716796",
+                "name": "probe",
+                "command": [
+                  "/never-executed"
+                ]
+              }
+            ],
+            "restartPolicy": "Never"
+          }
+        },
+        "error": null,
+        "exitStatus": 0
+      }
+    ],
+    ".devsecops/runtime-controlled/build-26/cosign-runtime-receipt.json": {
+      "sourceId": "cosign",
+      "policyDecision": "FAIL",
+      "release": 0,
+      "trustPublicKeySha256": "3d537f14db1f5088b4a88666d584cfbcc71cef2381e628b00bfcaea8f388d896",
+      "binding": {
+        "candidate": "core.harbor.domain/petclinic/signature-fixtures@sha256:393c43470be77284506de6ceac4be85d8dbab8cc173109939775af2a14caedfc",
+        "build": 26,
+        "project": "petclinic",
+        "source": "741ea2866ea142b24c7838e1ef25c8327c79d279",
+        "runId": "security-runtime-facts-20261102#26",
+        "job": "security-runtime-facts-20261102",
+        "targetScope": "candidate"
+      },
+      "factDigest": "716e3870f12666803e30bc7f87ad69014514efa3dff89b8580c58e855ad33e73",
+      "startedAt": "2026-11-03T01:22:46.872Z",
+      "error": null,
+      "GateInputDigest": "92bcc507fa6ad1d6b24ca19598895da1f9ff49fb5538c81e34f1a85d274ba498",
+      "oldDecision": "FAIL",
+      "credentialIdentity": "robot$petclinic+rf3-20261103-7d6715-sign",
+      "originalError": "Actual signature admission mismatch: unsigned ",
+      "validationRunId": "rf3-20261103-7d6715",
+      "originalReportStatus": "failed",
+      "credentialCleanup": "TEST_TRUST_AND_ROBOT_POST; KUBE_IDENTITY_MANAGER_REQUIRED",
+      "completedAt": "2026-11-03T01:23:00.920Z",
+      "cases": [
+        {
+          "cliVerified": true,
+          "image": "core.harbor.domain/petclinic/signature-fixtures@sha256:393c43470be77284506de6ceac4be85d8dbab8cc173109939775af2a14caedfc",
+          "allowed": true,
+          "diagnostic": "server dry-run accepted; no Pod created",
+          "case": "signed"
+        }
+      ],
+      "oldExit": 1,
+      "productionPrivateKeyReads": 0,
+      "rollout": 0,
+      "temporaryWorkspaceRemoved": true,
+      "inputArtifact": {
+        "wrong-key": {
+          "image": "core.harbor.domain/petclinic/signature-fixtures@sha256:fef2d952d868d524b4a50fc843d04e74ed912f6c6a246bddb8a6a1b024c1f221",
+          "manifestDigest": "sha256:fef2d952d868d524b4a50fc843d04e74ed912f6c6a246bddb8a6a1b024c1f221",
+          "configDigest": "sha256:751cddb51e048c7df12b88f69d32ec89ca503bb9b9b6a2626114f104b974eba6",
+          "tag": "ci-26-wrong-key"
+        },
+        "signed": {
+          "image": "core.harbor.domain/petclinic/signature-fixtures@sha256:393c43470be77284506de6ceac4be85d8dbab8cc173109939775af2a14caedfc",
+          "manifestDigest": "sha256:393c43470be77284506de6ceac4be85d8dbab8cc173109939775af2a14caedfc",
+          "configDigest": "sha256:61383ec34dcc75a631ce10728485942f3d3bc4d9ea1b48146488f2523a3e2350",
+          "tag": "ci-26-signed"
+        },
+        "unsigned": {
+          "image": "core.harbor.domain/petclinic/signature-fixtures@sha256:cabc2d6d8b6154a537c70ce7297c2cb8f93f8ab55daf6f119070df20cb716796",
+          "manifestDigest": "sha256:cabc2d6d8b6154a537c70ce7297c2cb8f93f8ab55daf6f119070df20cb716796",
+          "configDigest": "sha256:5d13bd58ed3839666d1ae16be4a81d01a41ac74ecc991b062fca613e2db2a357",
+          "tag": "ci-26-unsigned"
+        }
+      },
+      "permissionScope": "project pull/push/artifact-read; pinned command and request guard restrict writes to this build signature-fixtures",
+      "externalSystem": "http://harbor-core.harbor.svc.cluster.local",
+      "resultDigest": "92bcc507fa6ad1d6b24ca19598895da1f9ff49fb5538c81e34f1a85d274ba498",
+      "evaluationId": "security-runtime-facts-20261102#26:cosign",
+      "evaluationCount": 1,
+      "executionScope": "CONTROLLED_NON_RELEASE",
+      "factsComplete": true,
+      "rawReport": [
+        {
+          "path": ".devsecops/signing-admission.json",
+          "sha256": "366454bcd6a73a85a06a2ae2ea8f14ef881bd610a76d42f58643b3390e7db5ff",
+          "bytes": 787
+        }
+      ]
+    },
+    ".devsecops/runtime-controlled/build-26/cosign-test-trust-cleanup.json": {
+      "privateMaterialRemoved": true,
+      "productionPrivateKeyReads": 0,
+      "validationRunId": "rf3-20261103-7d6715"
+    },
+    ".devsecops/runtime-controlled/build-26/owner-snapshot.json": {
+      "sources": [
+        {
+          "schema": 1,
+          "sourceId": "cosign",
+          "result": {
+            "securityLevel": "standard",
+            "policyVersion": "baseline-v1",
+            "appliedOverrides": [],
+            "decision": "FAIL",
+            "profile": "java-web",
+            "effectivePolicy": {
+              "approval-evidence": {
+                "High": "FAIL",
+                "Low": "WARN",
+                "Medium": "WARN",
+                "Critical": "FAIL",
+                "Info": "WARN"
+              },
+              "approval-signatures": {
+                "High": "FAIL",
+                "Low": "WARN",
+                "Medium": "WARN",
+                "Critical": "FAIL",
+                "Info": "WARN"
+              },
+              "gitleaks": {
+                "High": "FAIL",
+                "Low": "WARN",
+                "Medium": "WARN",
+                "Critical": "FAIL",
+                "Info": "WARN"
+              },
+              "kyverno-admission": {
+                "High": "FAIL",
+                "Low": "WARN",
+                "Medium": "WARN",
+                "Critical": "FAIL",
+                "Info": "WARN"
+              },
+              "build-provenance": {
+                "High": "FAIL",
+                "Low": "WARN",
+                "Medium": "WARN",
+                "Critical": "FAIL",
+                "Info": "WARN"
+              },
+              "semgrep": {
+                "High": "FAIL",
+                "Low": "WARN",
+                "Medium": "WARN",
+                "Critical": "FAIL",
+                "Info": "WARN"
+              },
+              "falco-continuity": {
+                "High": "FAIL",
+                "Low": "WARN",
+                "Medium": "WARN",
+                "Critical": "FAIL",
+                "Info": "WARN"
+              },
+              "provenance": {
+                "High": "FAIL",
+                "Low": "WARN",
+                "Medium": "WARN",
+                "Critical": "FAIL",
+                "Info": "WARN"
+              },
+              "kyverno": {
+                "High": "FAIL",
+                "Low": "WARN",
+                "Medium": "WARN",
+                "Critical": "FAIL",
+                "Info": "WARN"
+              },
+              "sbom": {
+                "High": "FAIL",
+                "Low": "WARN",
+                "Medium": "WARN",
+                "Critical": "FAIL",
+                "Info": "WARN"
+              },
+              "falco-baseline": {
+                "High": "FAIL",
+                "Low": "WARN",
+                "Medium": "WARN",
+                "Critical": "FAIL",
+                "Info": "WARN"
+              },
+              "sonarqube": {
+                "High": "FAIL",
+                "Low": "WARN",
+                "Medium": "WARN",
+                "Critical": "FAIL",
+                "Info": "WARN"
+              },
+              "falco-prior-exit": {
+                "High": "FAIL",
+                "Low": "WARN",
+                "Medium": "WARN",
+                "Critical": "FAIL",
+                "Info": "WARN"
+              },
+              "build-provenance-signature": {
+                "High": "FAIL",
+                "Low": "WARN",
+                "Medium": "WARN",
+                "Critical": "FAIL",
+                "Info": "WARN"
+              },
+              "cosign": {
+                "High": "FAIL",
+                "Low": "WARN",
+                "Medium": "WARN",
+                "Critical": "FAIL",
+                "Info": "WARN"
+              },
+              "zap": {
+                "High": "FAIL",
+                "Low": "WARN",
+                "Medium": "WARN",
+                "Critical": "FAIL",
+                "Info": "WARN"
+              },
+              "sops": {
+                "High": "FAIL",
+                "Low": "WARN",
+                "Medium": "WARN",
+                "Critical": "FAIL",
+                "Info": "WARN"
+              },
+              "cosign-cli": {
+                "High": "FAIL",
+                "Low": "WARN",
+                "Medium": "WARN",
+                "Critical": "FAIL",
+                "Info": "WARN"
+              },
+              "falco-final": {
+                "High": "FAIL",
+                "Low": "WARN",
+                "Medium": "WARN",
+                "Critical": "FAIL",
+                "Info": "WARN"
+              },
+              "provenance-signature": {
+                "High": "FAIL",
+                "Low": "WARN",
+                "Medium": "WARN",
+                "Critical": "FAIL",
+                "Info": "WARN"
+              },
+              "regression": {
+                "High": "FAIL",
+                "Low": "WARN",
+                "Medium": "WARN",
+                "Critical": "FAIL",
+                "Info": "WARN"
+              },
+              "trivy": {
+                "High": "FAIL",
+                "Low": "WARN",
+                "Medium": "WARN",
+                "Critical": "FAIL",
+                "Info": "WARN"
+              },
+              "kyverno-rbac": {
+                "High": "FAIL",
+                "Low": "WARN",
+                "Medium": "WARN",
+                "Critical": "FAIL",
+                "Info": "WARN"
+              },
+              "falco": {
+                "High": "FAIL",
+                "Low": "WARN",
+                "Medium": "WARN",
+                "Critical": "FAIL",
+                "Info": "WARN"
+              },
+              "falco-persistence": {
+                "High": "FAIL",
+                "Low": "WARN",
+                "Medium": "WARN",
+                "Critical": "FAIL",
+                "Info": "WARN"
+              },
+              "kubescape": {
+                "High": "FAIL",
+                "Low": "WARN",
+                "Medium": "WARN",
+                "Critical": "FAIL",
+                "Info": "WARN"
+              },
+              "semgrep-command-audit": {
+                "High": "FAIL",
+                "Low": "WARN",
+                "Medium": "WARN",
+                "Critical": "FAIL",
+                "Info": "WARN"
+              },
+              "security-approval-promotion": {
+                "High": "FAIL",
+                "Low": "WARN",
+                "Medium": "WARN",
+                "Critical": "FAIL",
+                "Info": "WARN"
+              },
+              "defectdojo": {
+                "High": "FAIL",
+                "Low": "WARN",
+                "Medium": "WARN",
+                "Critical": "FAIL",
+                "Info": "WARN"
+              }
+            },
+            "status": "FAIL"
+          },
+          "component": "cosign",
+          "kind": "ResolvedPolicyResult",
+          "evidenceComplete": true,
+          "scope": "pre-approval",
+          "configDigest": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a",
+          "binding": {
+            "candidate": "core.harbor.domain/petclinic/signature-fixtures@sha256:393c43470be77284506de6ceac4be85d8dbab8cc173109939775af2a14caedfc",
+            "build": 26,
+            "project": "petclinic",
+            "source": "741ea2866ea142b24c7838e1ef25c8327c79d279",
+            "runId": "security-runtime-facts-20261102#26",
+            "job": "security-runtime-facts-20261102",
+            "targetScope": "candidate"
+          },
+          "rawFactDigest": "716e3870f12666803e30bc7f87ad69014514efa3dff89b8580c58e855ad33e73",
+          "error": null,
+          "resultDigest": "92bcc507fa6ad1d6b24ca19598895da1f9ff49fb5538c81e34f1a85d274ba498"
+        }
+      ],
+      "canonicalSources": [
+        "sbom",
+        "regression",
+        "falco-baseline",
+        "kyverno",
+        "kubescape",
+        "gitleaks",
+        "sops",
+        "trivy",
+        "cosign",
+        "sonarqube",
+        "zap",
+        "falco-final",
+        "defectdojo",
+        "provenance",
+        "build-provenance",
+        "semgrep-command-audit"
+      ],
+      "missing": [
+        "sbom",
+        "regression",
+        "falco-baseline",
+        "kyverno",
+        "kubescape",
+        "gitleaks",
+        "sops",
+        "trivy",
+        "sonarqube",
+        "zap",
+        "falco-final",
+        "defectdojo",
+        "provenance",
+        "build-provenance",
+        "semgrep-command-audit"
+      ],
+      "evaluationCounts": {
+        "cosign": 1
+      },
+      "binding": {
+        "candidate": "core.harbor.domain/petclinic/signature-fixtures@sha256:393c43470be77284506de6ceac4be85d8dbab8cc173109939775af2a14caedfc",
+        "build": 26,
+        "project": "petclinic",
+        "source": "741ea2866ea142b24c7838e1ef25c8327c79d279",
+        "runId": "security-runtime-facts-20261102#26",
+        "job": "security-runtime-facts-20261102",
+        "targetScope": "candidate"
+      },
+      "gate": {
+        "cosign": {
+          "sourceId": "cosign",
+          "decision": "FAIL",
+          "observedStatus": "failed",
+          "resultDigest": "92bcc507fa6ad1d6b24ca19598895da1f9ff49fb5538c81e34f1a85d274ba498",
+          "status": "FAIL"
+        }
+      },
+      "complete": false
+    },
+    ".devsecops/runtime-controlled/build-26/results/cosign.capture.json": {
+      "schema": 1,
+      "sourceId": "cosign",
+      "execution": {
+        "errorClass": null,
+        "signal": null,
+        "command": "node infra/security/signing.mjs admission",
+        "exitStatus": 1
+      },
+      "reports": [
+        {
+          "path": ".devsecops/signing-admission.json",
+          "sha256": "366454bcd6a73a85a06a2ae2ea8f14ef881bd610a76d42f58643b3390e7db5ff",
+          "bytes": 787
+        }
+      ],
+      "evidence": [
+        {
+          "sampleWindows": [],
+          "observerPackets": 1,
+          "kind": "ACTUAL_PROCESS_EXECUTION",
+          "sourcePayloadClass": "PASSIVE_IN_MEMORY_ORIGINAL_GATE_OBSERVATIONS",
+          "stderrSha256": "3a0b607eeb3de929fc94682784fd1b717c696742ad8bafeefddccb209bf62b6b",
+          "stdoutSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "events": []
+        },
+        {
+          "trust": "DISPOSABLE_TEST_KEY",
+          "completedAt": "2026-11-03T01:23:00.884Z",
+          "productionPrivateKeyReads": 0,
+          "before": [
+            {
+              "httpStatus": 404,
+              "tag": "ci-26-signed"
+            },
+            {
+              "httpStatus": 404,
+              "tag": "ci-26-unsigned"
+            },
+            {
+              "httpStatus": 404,
+              "tag": "ci-26-wrong-key"
+            }
+          ],
+          "executionScope": "CONTROLLED_NON_RELEASE",
+          "validationRunId": "rf3-20261103-7d6715",
+          "namespace": "rf3-20261103-7d6715-cosign",
+          "startedAt": "2026-11-03T01:22:46.872Z",
+          "publicKeySha256": "3d537f14db1f5088b4a88666d584cfbcc71cef2381e628b00bfcaea8f388d896",
+          "registryScope": "petclinic/signature-fixtures/current-validation-build-only"
+        }
+      ],
+      "rawPayloadPersisted": false,
+      "kind": "RuntimeSourceFacts",
+      "evidenceComplete": true,
+      "resultDigest": "92bcc507fa6ad1d6b24ca19598895da1f9ff49fb5538c81e34f1a85d274ba498",
+      "evaluationCount": 1,
+      "buildBinding": {
+        "candidate": "core.harbor.domain/petclinic/signature-fixtures@sha256:393c43470be77284506de6ceac4be85d8dbab8cc173109939775af2a14caedfc",
+        "build": 26,
+        "project": "petclinic",
+        "source": "741ea2866ea142b24c7838e1ef25c8327c79d279",
+        "runId": "security-runtime-facts-20261102#26",
+        "job": "security-runtime-facts-20261102",
+        "targetScope": "candidate"
+      },
+      "envelopeDigest": "935934b783b16424e7d422b4d013a2d63dc1fbe07cffd1d69876cf62749c7d13",
+      "rawFactDigest": "716e3870f12666803e30bc7f87ad69014514efa3dff89b8580c58e855ad33e73",
+      "presence": "executed"
+    },
+    ".devsecops/runtime-controlled/build-26/results/cosign.gate.json": {
+      "sourceId": "cosign",
+      "decision": "FAIL",
+      "observedStatus": "failed",
+      "resultDigest": "92bcc507fa6ad1d6b24ca19598895da1f9ff49fb5538c81e34f1a85d274ba498",
+      "status": "FAIL"
+    },
+    ".devsecops/runtime-controlled/build-26/results/cosign.result.json": {
+      "schema": 1,
+      "sourceId": "cosign",
+      "result": {
+        "securityLevel": "standard",
+        "policyVersion": "baseline-v1",
+        "appliedOverrides": [],
+        "decision": "FAIL",
+        "profile": "java-web",
+        "effectivePolicy": {
+          "approval-evidence": {
+            "High": "FAIL",
+            "Low": "WARN",
+            "Medium": "WARN",
+            "Critical": "FAIL",
+            "Info": "WARN"
+          },
+          "approval-signatures": {
+            "High": "FAIL",
+            "Low": "WARN",
+            "Medium": "WARN",
+            "Critical": "FAIL",
+            "Info": "WARN"
+          },
+          "gitleaks": {
+            "High": "FAIL",
+            "Low": "WARN",
+            "Medium": "WARN",
+            "Critical": "FAIL",
+            "Info": "WARN"
+          },
+          "kyverno-admission": {
+            "High": "FAIL",
+            "Low": "WARN",
+            "Medium": "WARN",
+            "Critical": "FAIL",
+            "Info": "WARN"
+          },
+          "build-provenance": {
+            "High": "FAIL",
+            "Low": "WARN",
+            "Medium": "WARN",
+            "Critical": "FAIL",
+            "Info": "WARN"
+          },
+          "semgrep": {
+            "High": "FAIL",
+            "Low": "WARN",
+            "Medium": "WARN",
+            "Critical": "FAIL",
+            "Info": "WARN"
+          },
+          "falco-continuity": {
+            "High": "FAIL",
+            "Low": "WARN",
+            "Medium": "WARN",
+            "Critical": "FAIL",
+            "Info": "WARN"
+          },
+          "provenance": {
+            "High": "FAIL",
+            "Low": "WARN",
+            "Medium": "WARN",
+            "Critical": "FAIL",
+            "Info": "WARN"
+          },
+          "kyverno": {
+            "High": "FAIL",
+            "Low": "WARN",
+            "Medium": "WARN",
+            "Critical": "FAIL",
+            "Info": "WARN"
+          },
+          "sbom": {
+            "High": "FAIL",
+            "Low": "WARN",
+            "Medium": "WARN",
+            "Critical": "FAIL",
+            "Info": "WARN"
+          },
+          "falco-baseline": {
+            "High": "FAIL",
+            "Low": "WARN",
+            "Medium": "WARN",
+            "Critical": "FAIL",
+            "Info": "WARN"
+          },
+          "sonarqube": {
+            "High": "FAIL",
+            "Low": "WARN",
+            "Medium": "WARN",
+            "Critical": "FAIL",
+            "Info": "WARN"
+          },
+          "falco-prior-exit": {
+            "High": "FAIL",
+            "Low": "WARN",
+            "Medium": "WARN",
+            "Critical": "FAIL",
+            "Info": "WARN"
+          },
+          "build-provenance-signature": {
+            "High": "FAIL",
+            "Low": "WARN",
+            "Medium": "WARN",
+            "Critical": "FAIL",
+            "Info": "WARN"
+          },
+          "cosign": {
+            "High": "FAIL",
+            "Low": "WARN",
+            "Medium": "WARN",
+            "Critical": "FAIL",
+            "Info": "WARN"
+          },
+          "zap": {
+            "High": "FAIL",
+            "Low": "WARN",
+            "Medium": "WARN",
+            "Critical": "FAIL",
+            "Info": "WARN"
+          },
+          "sops": {
+            "High": "FAIL",
+            "Low": "WARN",
+            "Medium": "WARN",
+            "Critical": "FAIL",
+            "Info": "WARN"
+          },
+          "cosign-cli": {
+            "High": "FAIL",
+            "Low": "WARN",
+            "Medium": "WARN",
+            "Critical": "FAIL",
+            "Info": "WARN"
+          },
+          "falco-final": {
+            "High": "FAIL",
+            "Low": "WARN",
+            "Medium": "WARN",
+            "Critical": "FAIL",
+            "Info": "WARN"
+          },
+          "provenance-signature": {
+            "High": "FAIL",
+            "Low": "WARN",
+            "Medium": "WARN",
+            "Critical": "FAIL",
+            "Info": "WARN"
+          },
+          "regression": {
+            "High": "FAIL",
+            "Low": "WARN",
+            "Medium": "WARN",
+            "Critical": "FAIL",
+            "Info": "WARN"
+          },
+          "trivy": {
+            "High": "FAIL",
+            "Low": "WARN",
+            "Medium": "WARN",
+            "Critical": "FAIL",
+            "Info": "WARN"
+          },
+          "kyverno-rbac": {
+            "High": "FAIL",
+            "Low": "WARN",
+            "Medium": "WARN",
+            "Critical": "FAIL",
+            "Info": "WARN"
+          },
+          "falco": {
+            "High": "FAIL",
+            "Low": "WARN",
+            "Medium": "WARN",
+            "Critical": "FAIL",
+            "Info": "WARN"
+          },
+          "falco-persistence": {
+            "High": "FAIL",
+            "Low": "WARN",
+            "Medium": "WARN",
+            "Critical": "FAIL",
+            "Info": "WARN"
+          },
+          "kubescape": {
+            "High": "FAIL",
+            "Low": "WARN",
+            "Medium": "WARN",
+            "Critical": "FAIL",
+            "Info": "WARN"
+          },
+          "semgrep-command-audit": {
+            "High": "FAIL",
+            "Low": "WARN",
+            "Medium": "WARN",
+            "Critical": "FAIL",
+            "Info": "WARN"
+          },
+          "security-approval-promotion": {
+            "High": "FAIL",
+            "Low": "WARN",
+            "Medium": "WARN",
+            "Critical": "FAIL",
+            "Info": "WARN"
+          },
+          "defectdojo": {
+            "High": "FAIL",
+            "Low": "WARN",
+            "Medium": "WARN",
+            "Critical": "FAIL",
+            "Info": "WARN"
+          }
+        },
+        "status": "FAIL"
+      },
+      "component": "cosign",
+      "kind": "ResolvedPolicyResult",
+      "evidenceComplete": true,
+      "scope": "pre-approval",
+      "configDigest": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a",
+      "binding": {
+        "candidate": "core.harbor.domain/petclinic/signature-fixtures@sha256:393c43470be77284506de6ceac4be85d8dbab8cc173109939775af2a14caedfc",
+        "build": 26,
+        "project": "petclinic",
+        "source": "741ea2866ea142b24c7838e1ef25c8327c79d279",
+        "runId": "security-runtime-facts-20261102#26",
+        "job": "security-runtime-facts-20261102",
+        "targetScope": "candidate"
+      },
+      "rawFactDigest": "716e3870f12666803e30bc7f87ad69014514efa3dff89b8580c58e855ad33e73",
+      "error": null,
+      "resultDigest": "92bcc507fa6ad1d6b24ca19598895da1f9ff49fb5538c81e34f1a85d274ba498"
+    },
+    ".devsecops/runtime-controlled/build-26/results/owner-claim.json": {
+      "owner": "runtime-facts/owner.mjs:createRuntimeOwner",
+      "binding": {
+        "candidate": "core.harbor.domain/petclinic/signature-fixtures@sha256:393c43470be77284506de6ceac4be85d8dbab8cc173109939775af2a14caedfc",
+        "build": 26,
+        "project": "petclinic",
+        "source": "741ea2866ea142b24c7838e1ef25c8327c79d279",
+        "runId": "security-runtime-facts-20261102#26",
+        "job": "security-runtime-facts-20261102",
+        "targetScope": "candidate"
+      },
+      "pid": 42154
+    },
+    ".devsecops/runtime-controlled/build-26/robot-sign-deleted.json": {
+      "privateCredentialRemoved": true,
+      "name": "robot$petclinic+rf3-20261103-7d6715-sign",
+      "absent": true,
+      "id": 248,
+      "productionIdentityModified": false
+    },
+    ".devsecops/runtime-controlled/build-26/robot-sign-verified.json": {
+      "level": "project",
+      "permissions": [
+        {
+          "access": [
+            {
+              "resource": "repository",
+              "action": "pull"
+            },
+            {
+              "resource": "repository",
+              "action": "push"
+            },
+            {
+              "resource": "artifact",
+              "action": "read"
+            }
+          ],
+          "kind": "project",
+          "namespace": "petclinic"
+        }
+      ],
+      "liveVerified": true,
+      "name": "robot$petclinic+rf3-20261103-7d6715-sign",
+      "id": 248
+    },
+    ".devsecops/runtime-controlled/build-26/signing-admission.json": {
+      "mode": "admission",
+      "images": [
+        {
+          "image": "core.harbor.domain/petclinic/signature-fixtures@sha256:393c43470be77284506de6ceac4be85d8dbab8cc173109939775af2a14caedfc",
+          "verified": true
+        }
+      ],
+      "temporaryPrivateFilesRemoved": true,
+      "cases": [
+        {
+          "cliVerified": true,
+          "image": "core.harbor.domain/petclinic/signature-fixtures@sha256:393c43470be77284506de6ceac4be85d8dbab8cc173109939775af2a14caedfc",
+          "allowed": true,
+          "diagnostic": "server dry-run accepted; no Pod created",
+          "case": "signed"
+        }
+      ],
+      "startedAt": "2026-11-03T01:22:48.235Z",
+      "source": "741ea2866ea142b24c7838e1ef25c8327c79d279",
+      "error": "Actual signature admission mismatch: unsigned ",
+      "status": "failed",
+      "finishedAt": "2026-11-03T01:23:00.856Z"
+    }
+  },
+  "artifactHashes": {
+    ".devsecops/runtime-controlled/build-26/cosign-kube-audit.json": "1fdb0ed1548f6ead5ebce695a9fa08c998b23947a27a43064a045e011e2b778c",
+    ".devsecops/runtime-controlled/build-26/cosign-runtime-receipt.json": "1bd3f4950698e43ffeed87aa2334db2a55fcdd33d7568bcd7674b87f4cb4b2b2",
+    ".devsecops/runtime-controlled/build-26/cosign-test-trust-cleanup.json": "9aa5b4a757be8a4caa6d38044ba59240f31a8d7f021b25e1d3ba5c111eb2bd76",
+    ".devsecops/runtime-controlled/build-26/owner-snapshot.json": "640f9d8f3d964015e05dbccca75be8fbf93e99a3ee5df506d89a5ad0ffa4f84d",
+    ".devsecops/runtime-controlled/build-26/results/cosign.capture.json": "e1855ae540dfdd0a967d1107b547f3a1d8098d6cb96224adcde07a1494bea16b",
+    ".devsecops/runtime-controlled/build-26/results/cosign.gate.json": "bfce913274e220e70827776cf2363b77c6449e210531574d56dd4663ffc07c19",
+    ".devsecops/runtime-controlled/build-26/results/cosign.result.json": "ad6b8f2de6f8eb2c25eb5aa9982d12847dab2d135fe382a6d265256aa18a9c62",
+    ".devsecops/runtime-controlled/build-26/results/owner-claim.json": "d744108d4dbc37533241dba98989e4567a83b03503a48abc0c175c4a4ed684ec",
+    ".devsecops/runtime-controlled/build-26/robot-sign-deleted.json": "d2d5fc6932dae152e725dc0bb7e706f08ae37b7876f2c6bf4ff6d6b1b5e18272",
+    ".devsecops/runtime-controlled/build-26/robot-sign-verified.json": "755aafe09fe6b6bf58b47cbc12e38d1fa29ccf6e5f64513bc02f89a6df6947a7",
+    ".devsecops/runtime-controlled/build-26/signing-admission.json": "366454bcd6a73a85a06a2ae2ea8f14ef881bd610a76d42f58643b3390e7db5ff"
+  },
+  "regression": [],
+  "definitionSha256": "5d70a90ff1410a4f79b8306918fbd0d5094e7a1bc4c4f39f4570c8e126fd2646",
+  "consoleTail": [
+    "[...truncated 32 lines...]",
+    "[Pipeline] { (Original heavy Lease)",
+    "[Pipeline] sh",
+    "+ node infra/observability/heavy-lease.mjs acquire",
+    "{\"holder\":\"runtime-three-rf3-20261103-7d6715\",\"availableMiB\":5413,\"reservedMiB\":1250,\"additionalBudgetMiB\":1800}",
+    "[Pipeline] }",
+    "[Pipeline] // stage",
+    "[Pipeline] stage",
+    "[Pipeline] { (Original Cosign parent with disposable trust \u2192 owner \u2192 Gate)",
+    "[Pipeline] sh",
+    "+ node infra/security/runtime-facts/run-cosign-validation.mjs",
+    "{\"sourceId\":\"cosign\",\"oldDecision\":\"FAIL\",\"policyDecision\":\"FAIL\",\"factsComplete\":true,\"evaluationCount\":1,\"gateDigestReused\":true}",
+    "[Pipeline] }",
+    "[Pipeline] // stage",
+    "[Pipeline] stage",
+    "[Pipeline] { (Declarative: Post Actions)",
+    "[Pipeline] sh",
+    "+ node infra/observability/heavy-lease.mjs release",
+    "Owned heavy lease released",
+    "[Pipeline] sh",
+    "+ node infra/security/runtime-facts/cosign-test-material.mjs delete",
+    "[Pipeline] withCredentials",
+    "Masking supported pattern matches of $HARBOR_PASS",
+    "[Pipeline] {",
+    "[Pipeline] sh",
+    "+ node infra/security/runtime-facts/harbor-validation-identity.mjs sign delete",
+    "{\"phase\":\"sign\",\"status\":\"REMOVED\",\"id\":248}",
+    "[Pipeline] }",
+    "[Pipeline] // withCredentials",
+    "[Pipeline] sh",
+    "+ node infra/security/runtime-facts/thirteen-smoke.mjs",
+    "{\"acceptedCapabilities\":13,\"originalReceipts\":16,\"policyEvaluations\":0,\"historicalBindingPreserved\":true,\"noCrossRunArtifactMerge\":true}",
+    "[Pipeline] archiveArtifacts",
+    "Archiving artifacts",
+    "[Pipeline] }",
+    "[Pipeline] // stage",
+    "[Pipeline] }",
+    "[Pipeline] // timeout",
+    "[Pipeline] }",
+    "[Pipeline] // withEnv",
+    "[Pipeline] }",
+    "[Pipeline] // node",
+    "[Pipeline] End of Pipeline",
+    "ERROR: script returned exit code 1",
+    "Finished: FAILURE"
+  ],
+  "productionJobModified": false
+}

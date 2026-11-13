@@ -1,0 +1,69 @@
+{
+  "runtime": {
+    "command": [
+      "/opt/homebrew/bin/docker",
+      "--host",
+      "unix:///Users/zhangsir/.colima/security-test/docker.sock",
+      "info",
+      "--format",
+      "{{.ID}}|{{.Name}}"
+    ],
+    "exit": 0,
+    "stdout": "f0a9c4bb-ef14-4087-b0b1-7d5f02aa1ff8|security-test\n",
+    "stderr": ""
+  },
+  "ownedNode": {
+    "id": "9813796eee581bf765b2cd0fb93c26c632b4cb47a075b6c99a29e77597b19697",
+    "name": "/security-test-sops-control-plane",
+    "apiPortBinding": {
+      "6443/tcp": [
+        {
+          "HostIp": "127.0.0.1",
+          "HostPort": "59645"
+        }
+      ]
+    },
+    "running": true
+  },
+  "kubeSystem": {
+    "command": [
+      "/opt/homebrew/bin/kubectl",
+      "--kubeconfig",
+      "/private/tmp/security-manager-kind-gdasvx1h/kubeconfig",
+      "--context",
+      "kind-security-test-sops",
+      "--request-timeout=20s",
+      "get",
+      "namespace",
+      "kube-system",
+      "-o",
+      "jsonpath={.metadata.uid}"
+    ],
+    "exit": 0,
+    "stdout": "54f300a4-5f1b-4e1e-86a1-d173e5a402d8",
+    "stderr": ""
+  },
+  "nodes": {
+    "command": [
+      "/opt/homebrew/bin/kubectl",
+      "--kubeconfig",
+      "/private/tmp/security-manager-kind-gdasvx1h/kubeconfig",
+      "--context",
+      "kind-security-test-sops",
+      "--request-timeout=20s",
+      "get",
+      "nodes",
+      "-o",
+      "json"
+    ],
+    "exit": 0,
+    "stdout": "{\n    \"apiVersion\": \"v1\",\n    \"items\": [\n        {\n            \"apiVersion\": \"v1\",\n            \"kind\": \"Node\",\n            \"metadata\": {\n                \"annotations\": {\n                    \"node.alpha.kubernetes.io/ttl\": \"0\",\n                    \"volumes.kubernetes.io/controller-managed-attach-detach\": \"true\"\n                },\n                \"creationTimestamp\": \"2026-11-02T03:35:34Z\",\n                \"labels\": {\n                    \"beta.kubernetes.io/arch\": \"arm64\",\n                    \"beta.kubernetes.io/os\": \"linux\",\n                    \"kubernetes.io/arch\": \"arm64\",\n                    \"kubernetes.io/hostname\": \"security-test-sops-control-plane\",\n                    \"kubernetes.io/os\": \"linux\",\n                    \"node-role.kubernetes.io/control-plane\": \"\"\n                },\n                \"name\": \"security-test-sops-control-plane\",\n                \"resourceVersion\": \"1335\",\n                \"uid\": \"115f6029-63a1-4303-afb9-31afb3174705\"\n            },\n            \"spec\": {\n                \"podCIDR\": \"10.244.0.0/24\",\n                \"podCIDRs\": [\n                    \"10.244.0.0/24\"\n                ],\n                \"providerID\": \"kind://docker/security-test-sops/security-test-sops-control-plane\"\n            },\n            \"status\": {\n                \"addresses\": [\n                    {\n                        \"address\": \"172.18.0.2\",\n                        \"type\": \"InternalIP\"\n                    },\n                    {\n                        \"address\": \"security-test-sops-control-plane\",\n                        \"type\": \"Hostname\"\n                    }\n                ],\n                \"allocatable\": {\n                    \"cpu\": \"2\",\n                    \"ephemeral-storage\": \"10216724Ki\",\n                    \"hugepages-1Gi\": \"0\",\n                    \"hugepages-2Mi\": \"0\",\n                    \"hugepages-32Mi\": \"0\",\n                    \"hugepages-64Ki\": \"0\",\n                    \"memory\": \"2006604Ki\",\n                    \"pods\": \"110\"\n                },\n                \"capacity\": {\n                    \"cpu\": \"2\",\n                    \"ephemeral-storage\": \"10216724Ki\",\n                    \"hugepages-1Gi\": \"0\",\n                    \"hugepages-2Mi\": \"0\",\n                    \"hugepages-32Mi\": \"0\",\n                    \"hugepages-64Ki\": \"0\",\n                    \"memory\": \"2006604Ki\",\n                    \"pods\": \"110\"\n                },\n                \"conditions\": [\n                    {\n                        \"lastHeartbeatTime\": \"2026-11-02T03:46:31Z\",\n                        \"lastTransitionTime\": \"2026-11-02T03:35:33Z\",\n                        \"message\": \"kubelet has sufficient memory available\",\n                        \"reason\": \"KubeletHasSufficientMemory\",\n                        \"status\": \"False\",\n                        \"type\": \"MemoryPressure\"\n                    },\n                    {\n                        \"lastHeartbeatTime\": \"2026-11-02T03:46:31Z\",\n                        \"lastTransitionTime\": \"2026-11-02T03:35:33Z\",\n                        \"message\": \"kubelet has no disk pressure\",\n                        \"reason\": \"KubeletHasNoDiskPressure\",\n                        \"status\": \"False\",\n                        \"type\": \"DiskPressure\"\n                    },\n                    {\n                        \"lastHeartbeatTime\": \"2026-11-02T03:46:31Z\",\n                        \"lastTransitionTime\": \"2026-11-02T03:35:33Z\",\n                        \"message\": \"kubelet has sufficient PID available\",\n                        \"reason\": \"KubeletHasSufficientPID\",\n                        \"status\": \"False\",\n                        \"type\": \"PIDPressure\"\n                    },\n                    {\n                        \"lastHeartbeatTime\": \"2026-11-02T03:46:31Z\",\n                        \"lastTransitionTime\": \"2026-11-02T03:35:56Z\",\n                        \"message\": \"kubelet is posting ready status\",\n                        \"reason\": \"KubeletReady\",\n                        \"status\": \"True\",\n                        \"type\": \"Ready\"\n                    }\n                ],\n                \"daemonEndpoints\": {\n                    \"kubeletEndpoint\": {\n                        \"Port\": 10250\n                    }\n                },\n                \"features\": {\n                    \"supplementalGroupsPolicy\": true\n                },\n                \"images\": [\n                    {\n                        \"names\": [\n                            \"registry.k8s.io/kube-apiserver-arm64:v1.35.0\",\n                            \"registry.k8s.io/kube-apiserver:v1.35.0\"\n                        ],\n                        \"sizeBytes\": 85010172\n                    },\n                    {\n                        \"names\": [\n                            \"registry.k8s.io/kube-proxy-arm64:v1.35.0\",\n                            \"registry.k8s.io/kube-proxy:v1.35.0\"\n                        ],\n                        \"sizeBytes\": 74104521\n                    },\n                    {\n                        \"names\": [\n                            \"registry.k8s.io/kube-controller-manager-arm64:v1.35.0\",\n                            \"registry.k8s.io/kube-controller-manager:v1.35.0\"\n                        ],\n                        \"sizeBytes\": 72164958\n                    },\n                    {\n                        \"names\": [\n                            \"registry.k8s.io/kube-scheduler-arm64:v1.35.0\",\n                            \"registry.k8s.io/kube-scheduler:v1.35.0\"\n                        ],\n                        \"sizeBytes\": 49817186\n                    },\n                    {\n                        \"names\": [\n                            \"docker.io/kindest/kindnetd:v20251212-v0.29.0-alpha-105-g20ccfc88\"\n                        ],\n                        \"sizeBytes\": 38502448\n                    },\n                    {\n                        \"names\": [\n                            \"docker.io/kindest/local-path-provisioner:v20251212-v0.29.0-alpha-105-g20ccfc88\"\n                        ],\n                        \"sizeBytes\": 22025314\n                    },\n                    {\n                        \"names\": [\n                            \"registry.k8s.io/etcd:3.6.6-0\"\n                        ],\n                        \"sizeBytes\": 21749640\n                    },\n                    {\n                        \"names\": [\n                            \"registry.k8s.io/coredns/coredns:v1.13.1\"\n                        ],\n                        \"sizeBytes\": 21168808\n                    },\n                    {\n                        \"names\": [\n                            \"docker.io/kindest/local-path-helper:v20251211-v0.29.0-alpha-100-g82a92c5d\"\n                        ],\n                        \"sizeBytes\": 2954518\n                    },\n                    {\n                        \"names\": [\n                            \"registry.k8s.io/pause:3.10\"\n                        ],\n                        \"sizeBytes\": 267933\n                    }\n                ],\n                \"nodeInfo\": {\n                    \"architecture\": \"arm64\",\n                    \"bootID\": \"04fa73c7-d4bd-473e-8212-259bfc1e99df\",\n                    \"containerRuntimeVersion\": \"containerd://2.2.0\",\n                    \"kernelVersion\": \"6.8.0-117-generic\",\n                    \"kubeProxyVersion\": \"\",\n                    \"kubeletVersion\": \"v1.35.0\",\n                    \"machineID\": \"4ac38c0959164891899f4d130ffe617b\",\n                    \"operatingSystem\": \"linux\",\n                    \"osImage\": \"Debian GNU/Linux 12 (bookworm)\",\n                    \"systemUUID\": \"d31cfa43-7f1c-430a-ad56-f0ae104faa10\"\n                },\n                \"runtimeHandlers\": [\n                    {\n                        \"features\": {\n                            \"recursiveReadOnlyMounts\": true,\n                            \"userNamespaces\": true\n                        },\n                        \"name\": \"\"\n                    },\n                    {\n                        \"features\": {\n                            \"recursiveReadOnlyMounts\": true,\n                            \"userNamespaces\": true\n                        },\n                        \"name\": \"runc\"\n                    },\n                    {\n                        \"features\": {\n                            \"recursiveReadOnlyMounts\": true,\n                            \"userNamespaces\": true\n                        },\n                        \"name\": \"test-handler\"\n                    }\n                ]\n            }\n        }\n    ],\n    \"kind\": \"List\",\n    \"metadata\": {\n        \"resourceVersion\": \"\"\n    }\n}\n",
+    "stderr": ""
+  },
+  "clusterName": "security-test-sops",
+  "endpoint": "https://127.0.0.1:59645",
+  "kubeSystemUID": "54f300a4-5f1b-4e1e-86a1-d173e5a402d8",
+  "architecture": "arm64",
+  "productionApiRequests": 0,
+  "status": "RECONFIRMED"
+}

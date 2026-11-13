@@ -1,0 +1,315 @@
+{
+  "items": [
+    {
+      "number": 1,
+      "name": "pressured filesystem",
+      "result": "/dev/vda2, ext4, mounted /；nodefs/imagefs为该文件系统。"
+    },
+    {
+      "number": 2,
+      "name": "before total/used/available",
+      "result": "251.86 / 196.16 / 43.42 GiB。"
+    },
+    {
+      "number": 3,
+      "name": "inode status",
+      "result": "16,842,752 total，1,520,390 used，约10%；不是inode耗尽。"
+    },
+    {
+      "number": 4,
+      "name": "required available threshold",
+      "result": "49.78 GiB = 15% capacity + 12GiB；原值不变。"
+    },
+    {
+      "number": 5,
+      "name": "shortfall",
+      "result": "最末采样缺6.39 GiB至guard，缺8.61 GiB至52GiB目标。"
+    },
+    {
+      "number": 6,
+      "name": "image count",
+      "result": "CRI113；另Docker27，均保留；不将共享layers size相加当作reclaim。"
+    },
+    {
+      "number": 7,
+      "name": "current production image identity",
+      "result": "sha256:489cb821573ff1f98edd846d5949d74bf3391b24e2f1fe5bcfb71c6be0793137，Harbor GET200。"
+    },
+    {
+      "number": 8,
+      "name": "rollback images retained",
+      "result": "立即前序RS revision163=83c2ae…（ci-218）、文档#214=a8c03e…均GET200；所有现存RS/离线依赖保留，candidate2fba…GET200。"
+    },
+    {
+      "number": 9,
+      "name": "safe ephemeral reclaim candidates",
+      "result": "/tmp94,208B、/var/tmp37,273,600B；无逐文件ownership/过期/归档证明，不能直接删除。"
+    },
+    {
+      "number": 10,
+      "name": "build-cache candidates",
+      "result": "Docker22 entries共约1.167GB，仅报告512.9MB reclaimable且部分shared；具体owner/重建证明不足，未prune。"
+    },
+    {
+      "number": 11,
+      "name": "log candidates",
+      "result": "/var/log约2.23GiB，含当前incident/journal/pod日志；没有证明可删除的已归档过期集合。"
+    },
+    {
+      "number": 12,
+      "name": "image candidates",
+      "result": "113逐image引用图：82强引用保留C，31外部证明不完整D；全部safe_delete=false。"
+    },
+    {
+      "number": 13,
+      "name": "UNKNOWN candidates retained",
+      "result": "31镜像及未知workspaces/cache/log/volume均保留。图的外部缺口显式标注；没有宣称完整引用图通过。"
+    },
+    {
+      "number": 14,
+      "name": "expected safe reclaim",
+      "result": "0已证明可安全执行的bytes；512.9MB只是未批准的cache上界，远不足目标。"
+    },
+    {
+      "number": 15,
+      "name": "actual reclaimed",
+      "result": "0；没有任何delete/truncate/prune/GC。"
+    },
+    {
+      "number": 16,
+      "name": "after available space",
+      "result": "43.39 GiB；自然变化不计入cleanup收益。"
+    },
+    {
+      "number": 17,
+      "name": "disk guard PASS/FAIL",
+      "result": "FAIL；按PART11停止。"
+    },
+    {
+      "number": 18,
+      "name": "Harbor health after cleanup",
+      "result": "未清理；只读健康复核7个Pod Ready，四个需保留artifact GET200。"
+    },
+    {
+      "number": 19,
+      "name": "Jenkins health after cleanup",
+      "result": "未清理；petclinic-ci #270 SUCCESS，validation #30 SUCCESS且未运行。"
+    },
+    {
+      "number": 20,
+      "name": "node health after cleanup",
+      "result": "未清理；三个node Ready，MemoryPressure等见nodes.stdout。"
+    },
+    {
+      "number": 21,
+      "name": "PetClinic health after cleanup",
+      "result": "未清理；3/3Ready，generation175/revision164保持，HTTP200。"
+    },
+    {
+      "number": 22,
+      "name": "xray before-listener",
+      "result": "127.0.0.1:10808，mixed/noauth；配置hash见local-baseline.json，不输出认证/出口内容。"
+    },
+    {
+      "number": 23,
+      "name": "Harbor-required proxy address",
+      "result": "http://192.168.1.238:10808。"
+    },
+    {
+      "number": 24,
+      "name": "before proxy connectivity",
+      "result": "Mac loopback到GHCR=401 challenge（连通）；Mac LAN curl exit7；Harbor container wget connection refused。"
+    },
+    {
+      "number": 25,
+      "name": "selected proxy fix",
+      "result": "尚未选择实施；候选B是特定LAN地址上的独立可撤销forward，必须先证明来源ACL；不直接开启noauth全LAN代理。因PART11 STOP未进入修改。"
+    },
+    {
+      "number": 26,
+      "name": "exact bind scope",
+      "result": "实际仍127.0.0.1:10808；没有新增listener。候选仅192.168.1.238:10808，禁止0.0.0.0。"
+    },
+    {
+      "number": 27,
+      "name": "firewall/exposure result",
+      "result": "无新增暴露。forward来源ACL/firewall/WAN验证尚未执行，不能宣称修复后安全验证通过。"
+    },
+    {
+      "number": 28,
+      "name": "proxy rollback",
+      "result": "本轮未改配置/未创建forward，无需恢复。未来B方案须先记录专属PID/nonce，撤销只能终止该PID并验证LAN listener消失、loopback保持；源配置不应被触碰。"
+    },
+    {
+      "number": 29,
+      "name": "after TCP connectivity",
+      "result": "NOT_EXECUTED；没有proxy修改。"
+    },
+    {
+      "number": 30,
+      "name": "after actual upstream connectivity",
+      "result": "NOT_EXECUTED；当前LAN路径仍拒绝连接。"
+    },
+    {
+      "number": 31,
+      "name": "Trivy DB source",
+      "result": "保留原ghcr.io/aquasecurity/trivy-db:2、trivy-java-db:1及原refresh脚本的经官方manifest校验路径。无替代下载。"
+    },
+    {
+      "number": 32,
+      "name": "DB refresh result",
+      "result": "NOT_EXECUTED，本轮磁盘前置保护未满足。"
+    },
+    {
+      "number": 33,
+      "name": "DB version/timestamp",
+      "result": "原db Version2、java-db Version1，NextUpdate均2026-10-31，已过期；metadata.stdout原样保留。"
+    },
+    {
+      "number": 34,
+      "name": "DB checksum/identity",
+      "result": "本轮未下载/替换DB，无新checksum；不得凭历史manifest宣称本轮fresh。"
+    },
+    {
+      "number": 35,
+      "name": "DB refresh failure classification if any",
+      "result": "BLOCKED_DISK_PREREQUISITE；既有proxy TCP refusal也未修复。本轮不是download/parse失败。"
+    },
+    {
+      "number": 36,
+      "name": "Trivy validation identity if reached",
+      "result": "未达到阶段21，不创建新robot/SA/token。"
+    },
+    {
+      "number": 37,
+      "name": "Trivy candidate digest if reached",
+      "result": "未执行；保留既有2fbaea65…候选GET200，不对其触发扫描。"
+    },
+    {
+      "number": 38,
+      "name": "Trivy runtime result if reached",
+      "result": "NOT_EXECUTED，不复用旧#23FAIL当本轮结果。"
+    },
+    {
+      "number": 39,
+      "name": "Trivy Policy evaluation count",
+      "result": "本轮Trivy=0；只运行原单元/契约测试。"
+    },
+    {
+      "number": 40,
+      "name": "Trivy Gate digest reuse",
+      "result": "NOT_EXECUTED，无新Trivy结果。"
+    },
+    {
+      "number": 41,
+      "name": "files/images deleted",
+      "result": "空集合。"
+    },
+    {
+      "number": 42,
+      "name": "evidence retained",
+      "result": "当前/历史REPORT、receipts、hash manifests、snapshots全部保留；本轮新增清单/保守引用图/健康及测试证据。"
+    },
+    {
+      "number": 43,
+      "name": "unintended deletions",
+      "result": "0；无删除命令。"
+    },
+    {
+      "number": 44,
+      "name": "production image retained YES/NO",
+      "result": "YES，Harbor GET200及现PodReady。"
+    },
+    {
+      "number": 45,
+      "name": "rollback image retained YES/NO",
+      "result": "YES，即时前序163、文档#214及原RS镜像均未删除；前三个指定Harbor对象与candidate均200。"
+    },
+    {
+      "number": 46,
+      "name": "production V1 state",
+      "result": "V1 active；Summary hash ec9ee51a…不变，455冻结Gate source引用哈希保持，2202 count不变。"
+    },
+    {
+      "number": 47,
+      "name": "production Jenkins state",
+      "result": "仍#270 SUCCESS；专用validation仍#30 SUCCESS，无新build。"
+    },
+    {
+      "number": 48,
+      "name": "release count",
+      "result": "0。"
+    },
+    {
+      "number": 49,
+      "name": "rollout count",
+      "result": "0。"
+    },
+    {
+      "number": 50,
+      "name": "DISK_RECLAMATION_READINESS",
+      "result": "NOT_READY"
+    },
+    {
+      "number": 51,
+      "name": "DISK_RECLAMATION_EXECUTION",
+      "result": "INCOMPLETE"
+    },
+    {
+      "number": 52,
+      "name": "PROXY_REACHABILITY",
+      "result": "INCOMPLETE"
+    },
+    {
+      "number": 53,
+      "name": "TRIVY_DB_REFRESH",
+      "result": "INCOMPLETE"
+    },
+    {
+      "number": 54,
+      "name": "TRIVY_RUNTIME_FACT_CAPTURE",
+      "result": "INCOMPLETE"
+    },
+    {
+      "number": 55,
+      "name": "REAL_RUNTIME_FACT_CAPTURE",
+      "result": "INCOMPLETE"
+    },
+    {
+      "number": 56,
+      "name": "REAL_POLICY_OWNER",
+      "result": "INCOMPLETE"
+    },
+    {
+      "number": 57,
+      "name": "IMMUTABLE_ARTIFACT_RUNTIME",
+      "result": "INCOMPLETE"
+    },
+    {
+      "number": 58,
+      "name": "SUMMARY_V2_MIGRATION",
+      "result": "INCOMPLETE"
+    },
+    {
+      "number": 59,
+      "name": "exact blocker if incomplete",
+      "result": "已证明的安全候选不足以恢复至少52GiB；31镜像及外部tag/GitOps/Helm/Compose引用仍未知，不能以未运行作删除依据。最大43GB目录是registry，禁止手动删除；其他大项是业务/PVC/恢复资产。"
+    },
+    {
+      "number": 60,
+      "name": "exact next permitted action",
+      "result": "先只读补齐外部引用和registry生命周期/存储扩容的具体影响方案。若发现可证明且足量的A/B候选，重新出dry-run计划；若需GC/扩容另明确范围与回滚。现在按PART11 STOP，不改proxy、不刷新DB、不继续Cosign/Dojo。"
+    }
+  ],
+  "verdict": {
+    "DISK_RECLAMATION_READINESS": "NOT_READY",
+    "DISK_RECLAMATION_EXECUTION": "INCOMPLETE",
+    "PROXY_REACHABILITY": "INCOMPLETE",
+    "TRIVY_DB_REFRESH": "INCOMPLETE",
+    "TRIVY_RUNTIME_FACT_CAPTURE": "INCOMPLETE",
+    "REAL_RUNTIME_FACT_CAPTURE": "INCOMPLETE",
+    "REAL_POLICY_OWNER": "INCOMPLETE",
+    "IMMUTABLE_ARTIFACT_RUNTIME": "INCOMPLETE",
+    "SUMMARY_V2_MIGRATION": "INCOMPLETE"
+  }
+}

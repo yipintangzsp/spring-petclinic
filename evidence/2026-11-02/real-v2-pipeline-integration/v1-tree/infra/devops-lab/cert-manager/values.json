@@ -1,0 +1,98 @@
+{
+  "crds": {
+    "enabled": true,
+    "keep": true
+  },
+  "replicaCount": 1,
+  "nodeSelector": {
+    "kubernetes.io/hostname": "devops",
+    "kubernetes.io/os": "linux"
+  },
+  "resources": {
+    "requests": {
+      "cpu": "100m",
+      "memory": "128Mi",
+      "ephemeral-storage": "16Mi"
+    },
+    "limits": {
+      "cpu": "500m",
+      "memory": "256Mi",
+      "ephemeral-storage": "128Mi"
+    }
+  },
+  "global": {
+    "leaderElection": {
+      "namespace": "cert-manager"
+    }
+  },
+  "webhook": {
+    "replicaCount": 1,
+    "nodeSelector": {
+      "kubernetes.io/hostname": "devops",
+      "kubernetes.io/os": "linux"
+    },
+    "timeoutSeconds": 5,
+    "resources": {
+      "requests": {
+        "cpu": "50m",
+        "memory": "64Mi",
+        "ephemeral-storage": "16Mi"
+      },
+      "limits": {
+        "cpu": "500m",
+        "memory": "128Mi",
+        "ephemeral-storage": "128Mi"
+      }
+    }
+  },
+  "cainjector": {
+    "replicaCount": 1,
+    "nodeSelector": {
+      "kubernetes.io/hostname": "devops",
+      "kubernetes.io/os": "linux"
+    },
+    "resources": {
+      "requests": {
+        "cpu": "50m",
+        "memory": "128Mi",
+        "ephemeral-storage": "16Mi"
+      },
+      "limits": {
+        "cpu": "500m",
+        "memory": "256Mi",
+        "ephemeral-storage": "128Mi"
+      }
+    }
+  },
+  "startupapicheck": {
+    "nodeSelector": {
+      "kubernetes.io/hostname": "devops",
+      "kubernetes.io/os": "linux"
+    },
+    "timeout": "2m",
+    "backoffLimit": 1,
+    "resources": {
+      "requests": {
+        "cpu": "10m",
+        "memory": "32Mi",
+        "ephemeral-storage": "16Mi"
+      },
+      "limits": {
+        "cpu": "100m",
+        "memory": "64Mi",
+        "ephemeral-storage": "128Mi"
+      }
+    }
+  },
+  "prometheus": {
+    "enabled": true,
+    "servicemonitor": {
+      "enabled": true,
+      "labels": {
+        "release": "kube-stack"
+      },
+      "interval": "30s",
+      "scrapeTimeout": "10s"
+    }
+  }
+}

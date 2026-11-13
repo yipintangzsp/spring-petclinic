@@ -1,0 +1,117 @@
+{
+  "source": "sbom",
+  "finalStatus": "VERIFIED",
+  "scope": "Complete frozen SBOM verifier/production Maven-and-verifier shell, generic SBOM module, SBOM-isolated original Manager wrapper compatibility with baseline-v1/standard only; no actual rebuild/generation",
+  "productionImplementationLocations": [
+    "pom.xml inherited Spring Boot 4.1.1 CycloneDX config",
+    "resources/security-manager/petclinic-adapter.json sbom command",
+    "Jenkinsfile DevSecOps SBOM",
+    "infra/security/sbom-verify.mjs",
+    "infra/security/manager/tool.mjs sbom branch",
+    "vars/securityManager.groovy"
+  ],
+  "formatVersion": {
+    "production": "CycloneDX 1.6",
+    "generic": "CycloneDX with components array; no version/minimum count restriction"
+  },
+  "generatorModel": {
+    "plugin": "org.cyclonedx:cyclonedx-maven-plugin",
+    "version": "2.9.3 from local parent cache and historical #270 logs",
+    "goal": "makeAggregateBom",
+    "phase": "generate-resources",
+    "productionParentCommand": "( nice -n 10 ./mvnw -B package -DskipTests && node infra/security/sbom-verify.mjs )",
+    "actualGenerationExecuted": false
+  },
+  "artifactBinding": "JAR META-INF/sbom/application.cdx.json bytes must equal Maven target/classes output. SHA256 recorded in original summary. Generic uses checkout-scoped report path. No current SBOM Gate binds to a candidate image/digest or cryptographically verifies source revision. No such rule invented.",
+  "checks": "Production CycloneDX1.6, components array length>=10, dependencies.length truthy, nonempty unique bom-ref. Generic CycloneDX and array only. No vulnerability severity/risk inference.",
+  "adapterImplemented": true,
+  "historicalArtifactCount": 4,
+  "historicalGeneratorLogExcerpt": 1,
+  "historicalProductionComponents": 143,
+  "historicalProductionDependencyNodes": 144,
+  "historicalGenericComponents": 0,
+  "historicalGenericVersion": "1.5",
+  "fullHistoricalCommandTranscripts": 0,
+  "controlledReplaySamples": 171,
+  "scriptSamples": 126,
+  "workflowSamples": 45,
+  "stageCounts": {
+    "standalone": 38,
+    "production": 43,
+    "generic": 45
+  },
+  "syntheticUnitOnlyAuxiliaryTests": 6,
+  "validDecisionSamples": 45,
+  "missingSamples": 8,
+  "malformedSamples": 12,
+  "artifactByteOrPathBindingSamples": 6,
+  "imageDigestMismatchSamples": 0,
+  "imageDigestBindingStatus": "NOT_APPLICABLE: no such branch in current SBOM Gate; not claimed as verified",
+  "generationFailureSamples": 5,
+  "extractionFailureSamples": 10,
+  "prerequisiteSamples": 4,
+  "infrastructureSamples": 1,
+  "IOWriteSamples": 8,
+  "branches": {
+    "positive": 3,
+    "missing": 8,
+    "extraction": 10,
+    "binding": 6,
+    "io": 8,
+    "malformed": 12,
+    "inventory": 53,
+    "existing-no-source-attestation": 6,
+    "prerequisite": 4,
+    "infrastructure": 1,
+    "audit-semantics": 2,
+    "historical-generic": 1,
+    "generation": 5,
+    "existing-no-image-attestation": 2,
+    "inventory-not-vulnerability": 3,
+    "existing-parser-semantics": 2
+  },
+  "oldDecisions": {
+    "PASS": 45,
+    "FAIL": 121,
+    "NOT_CONFIGURED": 1,
+    "SKIPPED": 4
+  },
+  "standardDecisions": {
+    "PASS": 45,
+    "FAIL": 121,
+    "NOT_CONFIGURED": 1,
+    "SKIPPED": 4
+  },
+  "completeDifferentials": 171,
+  "matched": 171,
+  "mismatched": 0,
+  "rawFactsPreserved": true,
+  "persistedFixtureChecks": {
+    "fixtures": 171,
+    "inputHashesMatched": 171,
+    "decisionsMatched": 171,
+    "rawUnchanged": 171,
+    "noSeverityInvented": true
+  },
+  "remainingCompatibilityBlockers": [],
+  "remainingEvidenceGaps": [
+    "Historical original JAR/Maven source bytes and full generator/CLI/prerequisite transcript not all archived; complete execution proof is CONTROLLED_REPLAY",
+    "No new actual Maven/CycloneDX generation, online Jenkins CPS, registry, image attestation or current service health certification",
+    "Current Gate has no SBOM image/digest attestation; compatibility does not add one"
+  ],
+  "finalSBOMStatus": "VERIFIED",
+  "policyTestsPassed": 1413,
+  "policyTestsFailed": 0,
+  "newPolicyTests": 177,
+  "readyToLeaveCompatibilityPhase": true,
+  "noRebuild": true,
+  "noProductionGateModification": true,
+  "noActualSummaryModification": true,
+  "noReleaseModification": true,
+  "noRollout": true,
+  "nextSourceStarted": false,
+  "globalBlockers": {
+    "SOPS/age": "NOT_TESTED / ENVIRONMENT_BLOCKED",
+    "SonarQube real negative": "DEFERRED_REAL_NEGATIVE_EVIDENCE"
+  }
+}

@@ -1,0 +1,40 @@
+// BEGIN clinic-message-worker owned log source v1
+// Preserve the existing PetClinic, Cook and other discovery chains.
+discovery.relabel "clinic_message_worker" {
+  targets = discovery.kubernetes.pods.targets
+  rule {
+    source_labels = ["__meta_kubernetes_namespace"]
+    regex = "petclinic"
+    action = "keep"
+  }
+  rule {
+    source_labels = ["__meta_kubernetes_pod_label_app"]
+    regex = "clinic-message-worker"
+    action = "keep"
+  }
+  rule {
+    source_labels = ["__meta_kubernetes_namespace"]
+    target_label = "namespace"
+  }
+  rule {
+    source_labels = ["__meta_kubernetes_pod_name"]
+    target_label = "pod"
+  }
+  rule {
+    source_labels = ["__meta_kubernetes_pod_container_name"]
+    target_label = "container"
+  }
+  rule {
+    source_labels = ["__meta_kubernetes_pod_node_name"]
+    target_label = "node"
+  }
+  rule {
+    target_label = "app"
+    replacement = "clinic-message-worker"
+  }
+}
+loki.source.kubernetes "clinic_message_worker" {
+  targets = discovery.relabel.clinic_message_worker.output
+  forward_to = [loki.write.default.receiver]
+}
+// END clinic-message-worker owned log source v1

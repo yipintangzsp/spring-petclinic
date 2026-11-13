@@ -1,0 +1,35 @@
+{
+  "scope": "EARLY_STOP_NO_NEW_STORAGE_NO_DETAILED_CANDIDATE_VALIDATION_OR_BENCHMARK",
+  "optionA": {
+    "activeVm": "Current internal bundle retained as authoritative",
+    "backupDestination": null,
+    "externalRequiredBytesConservative": 367958706200,
+    "hostRequiredBytes": 39728447488,
+    "hostShortfallBytes": 12662255616,
+    "risk": "No independent backup, current host below guard",
+    "verdict": "BLOCKED"
+  },
+  "optionB": {
+    "externalVmCandidate": null,
+    "originalInternalCopy": "MUST_RETAIN_UNTOUCHED_NO_RECLAIM_ASSUMED",
+    "requiredExternalBytes": "Must fit cold copy plus future growth, metadata, operational/restore staging margin, based on target measurements",
+    "hostRequirement": "NOT_DERIVED_NO_TARGET_OR_SELECTED_MIGRATION_ARCHITECTURE; do not mechanically apply or lower 37GiB",
+    "independence": "External primary alone is not a backup; original internal or another independent validated backup must remain",
+    "risks": [
+      "Disconnect/power loss/performance/boot reliability unmeasured",
+      "Installed UTM external-storage compatibility and target sparse/large-file semantics not validated",
+      "Need CPU/RAM and all-network-off restore validation; no concurrent clone attempted"
+    ],
+    "performance": "NOT_TESTED_NO_DEVICE",
+    "downtime": "NOT_ESTIMATED_NO_TARGET_THROUGHPUT",
+    "restoreComplexity": "NOT_VALIDATED",
+    "futureExpansion": "NOT_PROVEN",
+    "verdict": "BLOCKED"
+  },
+  "PREFERRED_STORAGE_ARCHITECTURE": "NONE_EXECUTABLE_NO_NEW_INDEPENDENT_STORAGE",
+  "backupFormatPreferredWhenReady": "FULL_COLD_UTM_BUNDLE_COPY_PENDING_DESTINATION",
+  "storageClassRecommendation": "NOT_REACHED_EARLY_STOP; no marketing capacity recommendation or untested 207GiB acceptance",
+  "noShutdown": true,
+  "noMigration": true,
+  "noResize": true
+}

@@ -1,0 +1,112 @@
+{
+  "classification": "CONTROLLED_CAPTURED_TIMING_REPLAY_NOT_LIVE_SENSOR",
+  "mode": "check",
+  "now": 1793577600000,
+  "build": "controlled-clock",
+  "configuration": {},
+  "observations": {
+    "leaseOwned": true,
+    "files": {
+      "proof": {
+        "value": "{\"kind\":\"actual isolated sensor validation; not real production attacks or successful escapes\",\"rulesetLabel\":\"59752c1132f0\",\"testPodUid\":\"08215dcc-8457-4296-9bf0-197ae73adeed\",\"cleanup\":{\"pod\":\"runtime-20261028223232\",\"uid\":\"08215dcc-8457-4296-9bf0-197ae73adeed\",\"removed\":true,\"privilegedTestPodsCreated\":0},\"cases\":[{\"case\":\"shell\",\"status\":\"PASS\",\"event\":{\"time\":\"2026-10-28T14:32:47.348280206Z\",\"rule\":\"Platform Runtime Shell\",\"output_fields\":{\"container.id\":\"e6a1f3df6fa3\",\"container.name\":\"test\",\"evt.res\":\"SUCCESS\",\"evt.type\":\"execve\",\"k8s.ns.name\":\"devsecops-test\",\"k8s.pod.name\":\"runtime-20261028223232\",\"proc.name\":\"sh\",\"user.uid\":10001}}},{\"case\":\"sensitive-read\",\"status\":\"PASS\",\"event\":{\"time\":\"2026-10-28T14:32:49.874654345Z\",\"rule\":\"Platform Runtime Sensitive Read\",\"output_fields\":{\"container.id\":\"e6a1f3df6fa3\",\"container.name\":\"test\",\"evt.arg.name\":\"/etc/passwd\",\"evt.res\":\"SUCCESS\",\"evt.type\":\"openat\",\"k8s.ns.name\":\"devsecops-test\",\"k8s.pod.name\":\"runtime-20261028223232\",\"proc.name\":\"cat\",\"user.uid\":10001}}},{\"case\":\"package-manager\",\"status\":\"PASS\",\"event\":{\"time\":\"2026-10-28T14:32:52.334084774Z\",\"rule\":\"Platform Runtime Package Manager\",\"output_fields\":{\"container.id\":\"e6a1f3df6fa3\",\"container.name\":\"test\",\"evt.res\":\"SUCCESS\",\"evt.type\":\"execve\",\"k8s.ns.name\":\"devsecops-test\",\"k8s.pod.name\":\"runtime-20261028223232\",\"proc.name\":\"apt-get\",\"user.uid\":10001}}},{\"case\":\"network-tool\",\"status\":\"PASS\",\"event\":{\"time\":\"2026-10-28T14:32:54.940036892Z\",\"rule\":\"Platform Runtime HTTP Utility\",\"output_fields\":{\"container.id\":\"e6a1f3df6fa3\",\"container.name\":\"test\",\"evt.res\":\"SUCCESS\",\"evt.type\":\"execve\",\"k8s.ns.name\":\"devsecops-test\",\"k8s.pod.name\":\"runtime-20261028223232\",\"proc.name\":\"curl\",\"user.uid\":10001}}},{\"case\":\"readonly-write\",\"status\":\"PASS\",\"event\":{\"time\":\"2026-10-28T14:32:57.535197104Z\",\"rule\":\"Platform Runtime Sensitive Write\",\"output_fields\":{\"container.id\":\"e6a1f3df6fa3\",\"container.name\":\"test\",\"evt.arg.name\":\"/etc/runtime-20261028223232\",\"evt.res\":\"EROFS\",\"evt.type\":\"openat\",\"k8s.ns.name\":\"devsecops-test\",\"k8s.pod.name\":\"runtime-20261028223232\",\"proc.name\":\"touch\",\"user.uid\":10001}}},{\"case\":\"namespace-tool\",\"status\":\"PASS\",\"event\":{\"time\":\"2026-10-28T14:32:59.961745408Z\",\"rule\":\"Platform Runtime Namespace Or Mount\",\"output_fields\":{\"container.id\":\"e6a1f3df6fa3\",\"container.name\":\"test\",\"evt.res\":\"SUCCESS\",\"evt.type\":\"execve\",\"k8s.ns.name\":\"devsecops-test\",\"k8s.pod.name\":\"runtime-20261028223232\",\"proc.name\":\"nsenter\",\"user.uid\":10001}}}]}"
+      },
+      "lock": {
+        "value": "{\"chart\":\"falco\",\"chartVersion\":\"9.2.1\",\"falcoVersion\":\"0.45.1\",\"chartSha256\":\"726c1fe08c3fd3e2789d4072b34f9eee94ecccad734fee471cc7546124570c6c\",\"officialImage\":\"docker.io/falcosecurity/falco:0.45.1\",\"arm64ManifestDigest\":\"sha256:3c5ccde1c8b50ccc8baf016090a5376d182e08dc8751df2b37d8ff2a13499558\",\"manifestSha256\":\"efd2432cd36b224c0b68e39833d64a6f5e6fe0f5de26c4347e1d3bcaeb766bea\",\"coverage\":[\"devops\"],\"notCovered\":[\"aliyun-worker\",\"ucloud-worker\"],\"renderAdjustments\":[\"Argo top-level tracking labels and ServiceMonitor selector\",\"original ARM64 digest in existing Registry\",\"remove unused kernel-module host mounts\",\"hostPID for BPF iterators, no service-account token\",\"read-only containerd socket directory; trusted collector still has socket API access\"],\"rulesetSha256\":\"59752c1132f09a68bfc9a2248c4764c779ea72a341f737a509762fbd8e38ecd0\",\"rulesetLabel\":\"59752c1132f0\"}"
+      },
+      "manifestHash": {
+        "value": "efd2432cd36b224c0b68e39833d64a6f5e6fe0f5de26c4347e1d3bcaeb766bea"
+      },
+      "source": {
+        "value": "cccccccccccccccccccccccccccccccccccccccc"
+      },
+      "baseline": {
+        "value": "{\"podUid\":\"controlled-sensor-uid\",\"nodeBootId\":\"controlled-boot\",\"containerId\":\"containerd://bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb\",\"runningSince\":\"2026-11-01T23:00:00.000Z\",\"image\":\"registry.invalid/sensor@sha256:3c5ccde1c8b50ccc8baf016090a5376d182e08dc8751df2b37d8ff2a13499558\",\"restarts\":0,\"ready\":true,\"source\":\"cccccccccccccccccccccccccccccccccccccccc\",\"build\":\"controlled-clock\",\"capturedAt\":\"2026-11-01T23:59:00.000Z\"}"
+      }
+    },
+    "baselineExists": true,
+    "ds": {
+      "status": 0,
+      "stdout": "{\"status\":{\"desiredNumberScheduled\":1,\"numberReady\":1}}",
+      "stderr": ""
+    },
+    "sensorPods": {
+      "status": 0,
+      "stdout": "{\"items\":[{\"metadata\":{\"uid\":\"controlled-sensor-uid\",\"name\":\"controlled-sensor\",\"labels\":{\"petclinic.devops.local/runtime-ruleset\":\"59752c1132f0\"}},\"spec\":{\"nodeName\":\"devops\",\"containers\":[{\"name\":\"falco\",\"image\":\"registry.invalid/sensor@sha256:3c5ccde1c8b50ccc8baf016090a5376d182e08dc8751df2b37d8ff2a13499558\"}]},\"status\":{\"podIP\":\"127.0.0.1\",\"containerStatuses\":[{\"name\":\"falco\",\"containerID\":\"containerd://bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb\",\"restartCount\":0,\"ready\":true,\"state\":{\"running\":{\"startedAt\":\"2026-11-01T23:00:00.000Z\"}},\"lastState\":{}}]}}]}",
+      "stderr": ""
+    },
+    "node": {
+      "status": 0,
+      "stdout": "{\"status\":{\"nodeInfo\":{\"bootID\":\"controlled-boot\"}}}",
+      "stderr": ""
+    },
+    "diagnosticLog": {
+      "status": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    "samples": [
+      {
+        "log": {
+          "status": 0,
+          "stdout": "{\"time\":\"2026-11-01T23:59:52.000Z\",\"rule\":\"Platform Runtime Sensitive Write\",\"priority\":\"Warning\",\"output_fields\":{\"k8s.ns.name\":\"petclinic\",\"k8s.pod.name\":\"controlled-app\",\"container.name\":\"app\",\"container.id\":\"aaaaaaaaaaaa\",\"evt.res\":\"SUCCESS\",\"evt.type\":\"openat\",\"evt.arg.name\":\"/etc/ld.so.preload\",\"proc.name\":\"cp\"}}\n{\"time\":\"2026-11-01T23:59:45.001Z\",\"rule\":\"Platform Runtime Sensitive Write\",\"priority\":\"Warning\",\"output_fields\":{\"k8s.ns.name\":\"petclinic\",\"k8s.pod.name\":\"controlled-app\",\"container.name\":\"app\",\"container.id\":\"aaaaaaaaaaaa\",\"evt.res\":\"SUCCESS\",\"evt.type\":\"openat\",\"evt.arg.name\":\"/etc/ld.so.preload\",\"proc.name\":\"cp\"}}",
+          "stderr": ""
+        },
+        "workloads": {
+          "status": 0,
+          "stdout": "{\"items\":[{\"metadata\":{\"name\":\"controlled-app\",\"uid\":\"controlled-app-uid\"},\"spec\":{\"nodeName\":\"devops\"},\"status\":{\"containerStatuses\":[{\"name\":\"app\",\"containerID\":\"containerd://aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"ready\":true,\"state\":{\"running\":{\"startedAt\":\"2026-11-01T23:00:00.000Z\"}}}]}}]}",
+          "stderr": ""
+        },
+        "windowEndMs": 1793577600000
+      },
+      {
+        "log": {
+          "status": 0,
+          "stdout": "{\"time\":\"2026-11-02T00:00:08.000Z\",\"rule\":\"Platform Runtime Sensitive Write\",\"priority\":\"Warning\",\"output_fields\":{\"k8s.ns.name\":\"petclinic\",\"k8s.pod.name\":\"controlled-app\",\"container.name\":\"app\",\"container.id\":\"aaaaaaaaaaaa\",\"evt.res\":\"SUCCESS\",\"evt.type\":\"openat\",\"evt.arg.name\":\"/etc/ld.so.preload\",\"proc.name\":\"cp\"}}\n{\"time\":\"2026-11-02T00:00:15.500Z\",\"rule\":\"Platform Runtime Sensitive Write\",\"priority\":\"Warning\",\"output_fields\":{\"k8s.ns.name\":\"petclinic\",\"k8s.pod.name\":\"controlled-app\",\"container.name\":\"app\",\"container.id\":\"aaaaaaaaaaaa\",\"evt.res\":\"SUCCESS\",\"evt.type\":\"openat\",\"evt.arg.name\":\"/etc/ld.so.preload\",\"proc.name\":\"cp\"}}",
+          "stderr": ""
+        },
+        "workloads": {
+          "status": 0,
+          "stdout": "{\"items\":[{\"metadata\":{\"name\":\"controlled-app\",\"uid\":\"controlled-app-uid\"},\"spec\":{\"nodeName\":\"devops\"},\"status\":{\"containerStatuses\":[{\"name\":\"app\",\"containerID\":\"containerd://aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"ready\":true,\"state\":{\"running\":{\"startedAt\":\"2026-11-01T23:00:00.000Z\"}}}]}}]}",
+          "stderr": ""
+        },
+        "windowEndMs": 1793577616000
+      }
+    ],
+    "health": {
+      "ok": true,
+      "status": 200
+    },
+    "mkdirSucceeded": true,
+    "baselineWriteSucceeded": true,
+    "reportWriteSucceeded": true
+  },
+  "timing": {
+    "clockSource": "Date.now",
+    "observations": [
+      {
+        "index": 0,
+        "startedAtMs": 1793577600000,
+        "windowStartMs": 1793577585000,
+        "windowEndMs": 1793577600000,
+        "querySince": "2026-11-01T23:59:45.000Z",
+        "completedAtMs": 1793577600000,
+        "ioDurationMs": 0
+      },
+      {
+        "index": 1,
+        "startedAtMs": 1793577616000,
+        "windowStartMs": 1793577601000,
+        "windowEndMs": 1793577616000,
+        "querySince": "2026-11-02T00:00:01.000Z",
+        "completedAtMs": 1793577616000,
+        "ioDurationMs": 0
+      }
+    ],
+    "wait": {
+      "startedAtMs": 1793577600000,
+      "requestedMs": 16000,
+      "completedAtMs": 1793577616000
+    },
+    "retries": 0
+  }
+}

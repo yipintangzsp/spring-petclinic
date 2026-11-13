@@ -1,0 +1,251 @@
+{
+  "namespace": "rf4-20261103-004987",
+  "deploymentUid": "be6b38c5-e41b-4f8a-9659-5e3362d785fe",
+  "serviceUid": "b8f01135-87f8-4f1a-99b2-19eda512cf83",
+  "serviceIP": "10.43.42.36",
+  "image": "127.0.0.1:30050/petclinic/petclinic@sha256:489cb821573ff1f98edd846d5949d74bf3391b24e2f1fe5bcfb71c6be0793137",
+  "readyReplicas": 1,
+  "actualH2ConnectionObserved": true,
+  "actualValidationHttpRequests": [
+    {
+      "method": "GET",
+      "route": "/",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "route": "/",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "route": "/",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "route": "/",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "route": "/owners/find",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "route": "/owners/find",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "route": "/owners/find",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "route": "/owners/find",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "route": "/vets.html",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "route": "/vets.html",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "route": "/vets.html",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "route": "/vets.html",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "route": "/",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "route": "/owners/find",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "route": "/vets.html",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "route": "/",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "route": "/",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "route": "/",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "route": "/",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "route": "/owners/find",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "route": "/owners/find",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "route": "/owners/find",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "route": "/owners/find",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "route": "/vets.html",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "route": "/vets.html",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "route": "/vets.html",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "route": "/vets.html",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "route": "/",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "route": "/owners/find",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "route": "/vets.html",
+      "status": 200
+    }
+  ],
+  "allObservedMethodsGet": true,
+  "networkPolicySpecs": [
+    {
+      "name": "app-from-validation-scanner",
+      "uid": "526f976b-879f-4f05-af82-8837fbbdcd2c",
+      "spec": {
+        "ingress": [
+          {
+            "from": [
+              {
+                "podSelector": {
+                  "matchLabels": {
+                    "petclinic.devops.local/scan-kind": "zap"
+                  }
+                }
+              }
+            ],
+            "ports": [
+              {
+                "port": 8080,
+                "protocol": "TCP"
+              }
+            ]
+          }
+        ],
+        "podSelector": {
+          "matchLabels": {
+            "runtime-validation-app": "rf4-20261103-004987"
+          }
+        },
+        "policyTypes": [
+          "Ingress"
+        ]
+      }
+    },
+    {
+      "name": "deny-all",
+      "uid": "832fa09d-16f0-47aa-a182-9eaed8dbef96",
+      "spec": {
+        "podSelector": {},
+        "policyTypes": [
+          "Ingress",
+          "Egress"
+        ]
+      }
+    },
+    {
+      "name": "scanner-to-validation-only",
+      "uid": "7a74933e-2c50-450e-acc7-28477a5f0893",
+      "spec": {
+        "egress": [
+          {
+            "ports": [
+              {
+                "port": 8080,
+                "protocol": "TCP"
+              }
+            ],
+            "to": [
+              {
+                "podSelector": {
+                  "matchLabels": {
+                    "runtime-validation-app": "rf4-20261103-004987"
+                  }
+                }
+              }
+            ]
+          }
+        ],
+        "podSelector": {
+          "matchLabels": {
+            "petclinic.devops.local/scan-kind": "zap"
+          }
+        },
+        "policyTypes": [
+          "Egress"
+        ]
+      }
+    }
+  ],
+  "pods": [
+    {
+      "name": "petclinic-6557c6496b-85tg5",
+      "uid": "747298ea-a93b-45b8-93df-14a3127e1edc",
+      "imageID": "127.0.0.1:30050/petclinic/petclinic@sha256:489cb821573ff1f98edd846d5949d74bf3391b24e2f1fe5bcfb71c6be0793137"
+    }
+  ],
+  "productionDatabaseCredentialsUsed": false,
+  "productionTargetHttpRequests": 0,
+  "noResponseBodiesArchived": true
+}

@@ -1,0 +1,66 @@
+{
+  "kind": "TrivyHarborScanRerunAddendum",
+  "date": "2026-11-12",
+  "authorization": "User explicit authorization 2026-11-12 19:22 CST: fix db-cache permissions + reset one-time marker + rerun the formal Harbor scan. Scope limited to those three actions.",
+  "permissionFix": {
+    "path": "/var/lib/security-trivy/db-cache",
+    "before": {"owner": "root:root", "mode": "755", "writableByScanner": false},
+    "action": "chgrp security-trivy + chmod 775 (root ownership kept, matching sibling dirs db/java-db root:security-trivy association; no other-write)",
+    "after": {"owner": "root:security-trivy", "mode": "775", "writableByScanner": true, "verification": "sudo -u security-trivy mkdir+rmdir inside db-cache OK"},
+    "dbContentUntouched": {"db/metadata.json sha256": "442de28864c1b59bc8b7512560b41cfd8f7355de21ec15a91278497847f8df9b", "java-db/metadata.json sha256": "2dd38a9e5c3c46eccc54de846c94655246e3003b638719c24960327a3276ed89"},
+    "productionProof": "Scanner itself created db-cache/fanal (security-trivy:security-trivy 700) during the rerun at 19:25 CST."
+  },
+  "markerReset": {
+    "path": "/var/lib/security-trivy/data/formal-scan-attempt.json",
+    "codeSemantics": "entry.py lines 39-41: marker created with O_EXCL after all gates; pre-existing marker raises FORMAL_SCAN_ALREADY_CONSUMED; absence == unconsumed (closure baseline state).",
+    "backup": "/var/lib/security-trivy/data/formal-scan-attempt.json.bak-20261112-1925-rerun (126 bytes, mode 600 preserved, content = run web-1a147370 record)",
+    "action": "cp -a backup, then rm original. No other state files touched.",
+    "consumedAgainBy": {"runId": "web-c4192b33-1c7f-4457-a45c-7edd26ea43c6", "startedAt": "2026-11-12T11:25:27.169Z"}
+  },
+  "rerun": {
+    "runId": "web-c4192b33-1c7f-4457-a45c-7edd26ea43c6",
+    "path": "REPRODUCE.md section 2: service start -> capability BLOCKED/TRIVY_EXECUTION_NOT_ARMED -> operator arming file (0600) -> capability READY -> formal attempt submit (revision 38, settingsDigest 347dafd18186853e5fa4ad88c349630ef52b59af6e8d4c3568ceb40493d6637a, unchanged)",
+    "entryStages": ["SOURCE_READY", "SCANNER_START_ATTEMPT", "SCANNER_STARTED pid 1689690", "SCANNER_EXITED exitCode 0", "RESULT_VALIDATED", "RUN_COMPLETED"],
+    "scannerDuration": "2026-11-12T11:25:27.171Z -> 11:25:43.087Z (about 16 s)",
+    "executionLogPermissionDeniedCount": 0,
+    "findings": {
+      "total": 64,
+      "nativeSeverity": {"CRITICAL": 0, "HIGH": 2, "MEDIUM": 58, "LOW": 4},
+      "adapterNormalized": {"High": 2, "Medium": 58, "Low": 4},
+      "targets": {"ubuntu-26.04 OS packages": 63, "Java": 1},
+      "artifact": "core.harbor.domain/petclinic/petclinic@sha256:06a515708b6783db7d545544bbefb02e9f94abfc0fdf13a7355ccbe2deb3ed42",
+      "indexDigest": "sha256:2fbaea65ab030c56c60c62e3ee9fbe362deb8bbbb8216a891ef4c7bbbcea6d55",
+      "nativeReportSha256": "2921b6e862f046bd3c14f6faaeb6d95c9bf64aab66cda5d203b2f9ebd7dd0854",
+      "rawReportDigest": "f6e9ee7601a963b95e8460807aad84a3a1964ff1e8c3a855fc54ef0926ba405e",
+      "factDigest": "b4a8f2a3baa28ae4b04fe50767deaac58425af421785445443641e8749c17548",
+      "fixedVersionPresent": 31, "fixedVersionAbsent": 33,
+      "classification": "REAL_CONTROLLED_EXECUTION"
+    },
+    "policy": {
+      "evaluationCount": 1,
+      "decision": null,
+      "finalState": "POLICY_ERROR",
+      "stopPoint": "POLICY_ERROR: non-JSON value",
+      "throwSite": "infra/security/summary-v2/codec.mjs canonical(): rejects non-plain objects (prototype not Object.prototype/null) and non-finite numbers; codec digest imported by infra/security/manager-v2/trivy-real.mjs",
+      "diagnosisBoundary": "All on-disk artifacts of this run (facts/raw/result) are plain JSON and parse cleanly; the offending value exists only in an in-memory structure during the formal-path digest computation. Pinpointing the exact field requires instrumenting the runner (code change) - outside this authorization, NOT done and NOT worked around.",
+      "fixed": false
+    },
+    "lokiRouter": {
+      "receipts": [{"consumerId": "dry-run", "deliveryDecision": "DRY_RUN"}, {"consumerId": "local-evidence", "deliveryDecision": "DELIVERED_LOCAL_ONLY"}],
+      "localEvidenceSeal": "router/local-evidence/delivered-candidate.json 20477 bytes sha256 22f7b3cabff7690b24167e23744277d5031df59dc9cfec4b0837819176212356",
+      "realLokiDelivery": "NOT_TESTED - frozen design realDeliveryApproved=false, unchanged"
+    },
+    "grafanaUi": {
+      "ui": "Run fully visible through candidate console API (state, reason, evaluationCount, router receipts, artifact/result digests) - console-surface acceptance OK.",
+      "grafana": "NOT_TESTED - board reads real Loki ingestion, which remains frozen-off (see lokiRouter.realLokiDelivery)."
+    },
+    "cleanup": "VERIFIED (runner cleanup status VERIFIED, processExited true)",
+    "releaseCount": 0,
+    "rolloutCount": 0,
+    "resultDigest": "22dcaa7922ceaac59c31b23f69d99bb81c893937731ecb2b6f3b390d04b42484",
+    "artifactDigest": "b505d0bb02626c8307bc271b75dfcf4634fd358c9ce67fa2e86e9c6139ba4b7c",
+    "sealedResultJsonSha256Prefix16": "035c55653b735590"
+  },
+  "evidenceFiles": ["harbor-scan-rerun.json", "raw/harbor-scan-rerun.log", "raw/harbor-scan-rerun-driver.mjs", "raw/run-web-c4192b33-1c7f-4457-a45c-7edd26ea43c6/ (result.json, request.json, entry-stages.json, entry-execution.log, artifact/ 19 files)"],
+  "redLines": "Production Manager NOT_ACTIVE untouched; no push; no commit; frozen backlog untouched (Summary V2 codec is backlog territory - diagnosed read-only only); cluster zero changes; credentials file not modified in this rerun; DB not refreshed (freshness gate passed on 2026-11-12 databases); arming file removed after run; page service stopped back to found state."
+}

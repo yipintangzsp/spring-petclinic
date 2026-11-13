@@ -1,0 +1,45 @@
+{
+  "containers": {
+    "command": [
+      "/opt/homebrew/bin/docker",
+      "--host",
+      "unix:///Users/zhangsir/.colima/security-test/docker.sock",
+      "ps",
+      "-a",
+      "--no-trunc",
+      "--format",
+      "{{json .}}"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  "volumes": {
+    "command": [
+      "/opt/homebrew/bin/docker",
+      "--host",
+      "unix:///Users/zhangsir/.colima/security-test/docker.sock",
+      "volume",
+      "ls",
+      "--format",
+      "{{json .}}"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  "networks": {
+    "command": [
+      "/opt/homebrew/bin/docker",
+      "--host",
+      "unix:///Users/zhangsir/.colima/security-test/docker.sock",
+      "network",
+      "ls",
+      "--format",
+      "{{json .}}"
+    ],
+    "exit": 0,
+    "stdout": "{\"CreatedAt\":\"2026-11-02 09:06:56.597178372 +0800 CST\",\"Driver\":\"bridge\",\"ID\":\"f8cdd74e5f74\",\"IPv4\":\"true\",\"IPv6\":\"false\",\"Internal\":\"false\",\"Labels\":\"\",\"Name\":\"bridge\",\"Scope\":\"local\"}\n{\"CreatedAt\":\"2026-11-02 09:06:56.595464456 +0800 CST\",\"Driver\":\"host\",\"ID\":\"cd9897b64724\",\"IPv4\":\"true\",\"IPv6\":\"false\",\"Internal\":\"false\",\"Labels\":\"\",\"Name\":\"host\",\"Scope\":\"local\"}\n{\"CreatedAt\":\"2026-11-02 09:06:56.587482331 +0800 CST\",\"Driver\":\"null\",\"ID\":\"5c4f87bd92ed\",\"IPv4\":\"true\",\"IPv6\":\"false\",\"Internal\":\"false\",\"Labels\":\"\",\"Name\":\"none\",\"Scope\":\"local\"}\n",
+    "stderr": ""
+  }
+}

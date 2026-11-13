@@ -1,0 +1,247 @@
+{
+  "source": "trivy",
+  "productionImplementationLocations": [
+    "infra/security/ensure-audit-candidate.mjs",
+    "infra/security/audit-trivy.mjs",
+    "infra/security/audit-target.mjs",
+    "infra/security/trivy-medium-policy.mjs",
+    "infra/security/trivy-medium-review.json",
+    "infra/security/governance/scan-counts.mjs",
+    "infra/observability/scanner-db-refresh.mjs",
+    "infra/observability/release-preflight.mjs",
+    "infra/observability/publish-artifacts.mjs",
+    "resources/security-manager/petclinic-adapter.json",
+    "vars/securityManager.groovy",
+    "Jenkinsfile",
+    "Jenkinsfile.security-audit"
+  ],
+  "layers": [
+    "prerequisite/capability",
+    "execution/transport/DB dependency",
+    "raw vulnerability reports",
+    "existing reachability/fixability classifier evidence",
+    "original parent process/Manager aggregation"
+  ],
+  "items": [
+    {
+      "item": "Jenkins/stage",
+      "currentModel": "Security audit pipeline调用Security Manager petclinic adapter中Trivy模块；原固定&&命令；普通发布另有Harbor Push & Scan扫描健康检查，不混同漏洞分类",
+      "evidence": {
+        "path": "resources/security-manager/petclinic-adapter.json",
+        "line": 67
+      }
+    },
+    {
+      "item": "Modules",
+      "currentModel": "ensure-audit-candidate -> resolveAuditTarget/transportFetch；audit-trivy ->相同target/transport及原classifyVulnerability；candidate缺失时调用原harbor-copy child",
+      "evidence": {
+        "path": "infra/security/ensure-audit-candidate.mjs",
+        "line": 1
+      }
+    },
+    {
+      "item": "scanner-runtime prerequisite",
+      "currentModel": "当前audit-trivy/ensure不导入scanner-runtime，无独立scanner Pod/verifyTools/Lease检查；Manager外层Admission Resources持有Lease，不把未调用的条件补成新Gate",
+      "evidence": {
+        "path": "infra/security/audit-trivy.mjs",
+        "line": 1
+      }
+    },
+    {
+      "item": "Candidate image/digest",
+      "currentModel": "显式candidate只允许固定Harbor PetClinic SHA256；空candidate用live Deployment image，仍须digest pinned；不要求candidate=runtime image",
+      "evidence": {
+        "path": "infra/security/audit-target.mjs",
+        "line": 1
+      }
+    },
+    {
+      "item": "Registry prerequisites",
+      "currentModel": "ensure先查Harbor；404才取本地registry index bytes并SHA核对、创建当前build alias、调用harbor-copy、查digest；403/其他状态/child非0失败",
+      "evidence": {
+        "path": "infra/security/ensure-audit-candidate.mjs",
+        "line": 4
+      }
+    },
+    {
+      "item": "Trivy availability",
+      "currentModel": "通过Harbor API扫描adapter。审计命令不调用trivy --version、不读本地binary；backend不可用表现为HTTP/scan Error/Stopped/超时",
+      "evidence": {
+        "path": "infra/security/audit-trivy.mjs",
+        "line": 10
+      }
+    },
+    {
+      "item": "DB prerequisite",
+      "currentModel": "普通发布preflight收集db/java-db metadata；ensureScannerDatabases对版本/时间校验，过期才owned refresh，刷新后必须fresh。security-audit的Trivy命令无直接DB检查",
+      "evidence": {
+        "path": "infra/observability/release-preflight.mjs",
+        "line": 93
+      }
+    },
+    {
+      "item": "Architectures",
+      "currentModel": "audit选择root.references中arm64/amd64 child串行scan；无匹配child则scan index，无恰好两架构限制；release harbor-scan另外明确要求两条runtime children",
+      "evidence": {
+        "path": "infra/security/audit-trivy.mjs",
+        "line": 10
+      }
+    },
+    {
+      "item": "Invocation",
+      "currentModel": "Harbor POST artifact/scan，GET artifact?with_scan_overview=true轮询，GET additions/vulnerabilities取JSON；不是Trivy CLI漏洞扫描",
+      "evidence": {
+        "path": "infra/security/audit-trivy.mjs",
+        "line": 10
+      }
+    },
+    {
+      "item": "Outputs",
+      "currentModel": "audit最终.devsecops/trivy-audit.json，包括每child scan/raw/classifications/runtime context/medium governance；release target/platform/harbor.json",
+      "evidence": {
+        "path": "infra/security/audit-trivy.mjs",
+        "line": 10
+      }
+    },
+    {
+      "item": "Exit semantics",
+      "currentModel": "HTTP传输/JSON/exec/file异常抛出原Node非0；scan findings FAIL也原Node非0；scanner CLI exit codes不由audit直接消费；candidate child status必须0，source观察保留两种失败身份",
+      "evidence": {
+        "path": "infra/security/ensure-audit-candidate.mjs",
+        "line": 7
+      }
+    },
+    {
+      "item": "Report parsing",
+      "currentModel": "取Object.values(native).flatMap(vulnerabilities??[])；不增加schema验证。{}或vulnerabilities:null可空结果PASS；损坏JSON/null/不合法内容按原执行结果失败",
+      "evidence": {
+        "path": "infra/security/audit-trivy.mjs",
+        "line": 10
+      }
+    },
+    {
+      "item": "Severity counts",
+      "currentModel": "复用既有trivyCounts单独验证C/H/M/L计数，缺/坏/partial报告不捏造0；auditGate本身按classifications.failures判定",
+      "evidence": {
+        "path": "infra/security/governance/scan-counts.mjs",
+        "line": 3
+      }
+    },
+    {
+      "item": "Medium",
+      "currentModel": "仅review.image精确匹配且id/package/version匹配，mustFix=true、reachability=confirmed、fixVersion非空及positive/negative/businessPath均有证据才FAIL；其他WARN",
+      "evidence": {
+        "path": "infra/security/trivy-medium-policy.mjs",
+        "line": 6
+      }
+    },
+    {
+      "item": "Critical/High",
+      "currentModel": "原分类器大小写归一化后C/H强制FAIL，不受GATE_TRIVY=warn改变；原始severity值未改",
+      "evidence": {
+        "path": "infra/security/trivy-medium-policy.mjs",
+        "line": 3
+      }
+    },
+    {
+      "item": "PASS/WARN/FAIL",
+      "currentModel": "父audit无独立WARN退出；Medium/Low WARN可使完整父Gate PASS，C/H/确认Medium令FAIL；缺证Policy null/NOT_TESTED",
+      "evidence": {
+        "path": "infra/security/audit-trivy.mjs",
+        "line": 10
+      }
+    },
+    {
+      "item": "Missing report",
+      "currentModel": "API 404/空体或json错误按原request/parse失败；本地SBOM/review缺读错误保留；不能将缺失变0",
+      "evidence": {
+        "path": "infra/security/audit-trivy.mjs",
+        "line": 4
+      }
+    },
+    {
+      "item": "Malformed report",
+      "currentModel": "HTTP response.json、kubectl JSON、SBOM/review JSON与结构访问错误按现有catch/finally失败；无证据新增schema规则",
+      "evidence": {
+        "path": "infra/security/audit-trivy.mjs",
+        "line": 5
+      }
+    },
+    {
+      "item": "Registry error",
+      "currentModel": "transportFetch最多3次；可重试408/429/502/503/504以及TypeError/TimeoutError/AbortError；认证错误不重试；audit request允许409再处理原结果",
+      "evidence": {
+        "path": "infra/security/audit-target.mjs",
+        "line": 6
+      }
+    },
+    {
+      "item": "DB normal/fallback",
+      "currentModel": "fresh不更新；过期db/java-db串行更新。official manifest curl配置proxy时先proxy后direct，无proxy只direct；manifest SHA/layer验证后从镜像仓库按digest下载，没有任意旧cache降级",
+      "evidence": {
+        "path": "infra/observability/scanner-db-refresh.mjs",
+        "line": 29
+      }
+    },
+    {
+      "item": "Timeout/execution",
+      "currentModel": "audit每request20s，scan最多180次/5s；Error/Stopped立即FAIL；runtime maps15s异常只记录observed=false；candidate child600s；release子扫描deadline15min",
+      "evidence": {
+        "path": "infra/security/audit-trivy.mjs",
+        "line": 10
+      }
+    },
+    {
+      "item": "Filesystem",
+      "currentModel": "audit mkdir/SBOM/review read/最终write错误；DB临时manifest目录/headers/cleanup错误保持原语义",
+      "evidence": {
+        "path": "infra/security/audit-trivy.mjs",
+        "line": 4
+      }
+    },
+    {
+      "item": "Report write",
+      "currentModel": "audit finally写report；写失败仍使Node失败，即使扫描成功；release成功/错误状态写Harbor报告也保留写入异常",
+      "evidence": {
+        "path": "infra/security/audit-trivy.mjs",
+        "line": 10
+      }
+    },
+    {
+      "item": "Cleanup",
+      "currentModel": "audit无scanner Pod/临时文件清理流程：NOT_APPLICABLE。DB updater有owned-token pid终止/检查/移除及manifest临时目录finally清理，单列覆盖",
+      "evidence": {
+        "path": "infra/observability/scanner-db-refresh.mjs",
+        "line": 109
+      }
+    },
+    {
+      "item": "Parent aggregation",
+      "currentModel": "candidate exit0才audit，否则&&短路；原Manager只选Trivy执行原Groovy，不执行其他模块/实际Summary；credential绑定、module shell及archive写失败都保持FAIL",
+      "evidence": {
+        "path": "vars/securityManager.groovy",
+        "line": 58
+      }
+    }
+  ],
+  "sharedScannerRuntimeStatus": "NOT_APPLICABLE: production audit does not import shared scanner-runtime; no new check invented",
+  "candidateHarborCopyBoundary": {
+    "model": "Original child process result is an external execution observation. Full harbor-copy internals already have frozen compatibility proof in previous Build Provenance; not rerun or recounted",
+    "retainedReference": "evidence/2026-11-01/build-provenance-parent/acceptance.json",
+    "scope": "No new copy/upload/Git operation; no claim of a live child execution"
+  },
+  "auditCleanup": {
+    "status": "NOT_APPLICABLE",
+    "reason": "audit-trivy finally only persists report; it neither creates scanner Pod nor owns a disposable local scan directory"
+  },
+  "limits": [
+    "Audit does not directly attest freshness/version of Harbor backend DB or scanner binary",
+    "Audit HTTP409 allowed for all requests by existing helper",
+    "No audit exact-two-architecture count gate; release helper has a separate exact-two-entry check",
+    "Report response identity/header/child platform uniqueness not additionally validated",
+    "Raw fix_version is not compared against review.fixVersion; existing review evidence drives confirmed Medium",
+    "Review expiration is metadata only, no new blocking rule",
+    "Bounded runtime maps read failure is recorded, not Gate failure",
+    "No real full historical Trivy parent receipt located by bounded local search; no historical108/8 claim made"
+  ]
+}

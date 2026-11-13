@@ -1,0 +1,20 @@
+// Operator-only, fixed existing platform Loki channel; not a Web arbitrary-destination API.
+import fs from 'node:fs';
+import path from 'node:path';
+import assert from 'node:assert/strict';
+import {prepareLoki,publishLoki,createLokiTransport,validateLokiPush} from '../../../infra/security/manager-v2/consumers/loki.mjs';
+const [runId,plugin,phase]=process.argv.slice(2);
+assert.match(runId,/^web-[a-f0-9-]{36}$/);assert(['gitleaks','semgrep','cosign'].includes(plugin));assert(['historical','recent','fresh'].includes(phase));
+const root=path.resolve('.devsecops/security-view-runs-v1',runId),record=JSON.parse(fs.readFileSync(root+'/result.json'));
+assert.equal(record.evidenceClass,'REAL');assert.equal(record.state,'COMPLETED');assert.equal(record.pluginId,plugin);assert.equal(record.evaluationCount,1);
+const summary=JSON.parse(fs.readFileSync(root+'/artifact/candidate-summary.json'));
+const plan=prepareLoki({run:{summary},artifactDirectory:root+'/artifact',expectedSealDigest:record.artifactDigest,expectedProjectId:summary.projectId,singlePluginId:plugin,freshRunId:phase==='fresh'?runId:null});
+assert.equal(plan.events.length,1);const event=plan.events[0];assert.equal(event.resultDigest,record.resultDigest);assert.equal(event.policyDecision,record.policyDecision);
+assert.equal(event.timestamp,summary.pluginResults.find(r=>r.pluginId===plugin).completedAt);assert.equal(event.sourceClassification,phase==='fresh'?'REAL_CONTROLLED_EXECUTION':'SEALED_ARTIFACT_REPLAY_NOT_NEW_SCAN');
+validateLokiPush(plan.payload,{nowMs:Date.now()});
+assert.ok(plan.payload.streams.every(s=>!Object.keys(s.stream).some(k=>/run|digest|project/i.test(k))));
+const output=path.resolve('evidence/2026-11-06/loki-real-observability',phase);fs.mkdirSync(output,{mode:0o700});
+const receipt=await publishLoki(plan,{output,transport:createLokiTransport({mode:'real-http',targetId:'existing-security-loki-v1',timeoutMs:5000,maxAttempts:1})});
+fs.writeFileSync(output+'/delivery.json',JSON.stringify({plan,receipt},null,2)+'\n',{flag:'wx',mode:0o400});
+assert.equal(receipt.httpStatus,204);assert.equal(receipt.deliveryState,'ACKNOWLEDGED');assert.equal(receipt.productionDelivery,true);
+console.log(JSON.stringify({runId,plugin,phase,timestamp:event.timestamp,policy:event.policyDecision,resultDigest:event.resultDigest,pushHttp:receipt.httpStatus,eventCount:plan.events.length,sourceClassification:event.sourceClassification,queryStillRequired:true}));

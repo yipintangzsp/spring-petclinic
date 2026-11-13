@@ -1,0 +1,99 @@
+{
+  "options": [
+    {
+      "id": "A",
+      "method": "Clean shutdown + full UTM bundle copy",
+      "consistency": "Static/offline disk and config; application-consistency must follow guest clean shutdown proof",
+      "downtime": "Shutdown + copy + source/backup hashing + offline check + original boot/health; throughput/time not yet measured",
+      "requiredBackupBytes": 367958706200,
+      "independence": "Separate volume best; local distinct file still shares physical disk failure domain",
+      "restore": "Stop target, preserve failed copy within capacity, verified backup back to exact original bundle path, boot original identity",
+      "status": "NOT_READY_NO_CAPACITY_OR_TARGET"
+    },
+    {
+      "id": "B",
+      "method": "Clean shutdown + disk copy + config/EFI receipts",
+      "consistency": "Static disk after full guest shutdown",
+      "downtime": "Same offline copy/validation time class",
+      "requiredBackupBytes": 367958706200,
+      "independence": "Disk-only without config/EFI is insufficient; must include known metadata",
+      "restore": "Restore all drive/config/EFI identity bindings, not just qcow2 bytes",
+      "status": "NOT_SELECTED_FULL_BUNDLE_PREFERRED"
+    },
+    {
+      "id": "C",
+      "method": "UTM supported clone/snapshot or APFS file clone",
+      "consistency": "Not proven for installed UTM4.7.5; offline clone required unless supported live method proven",
+      "downtime": "Offline method by default",
+      "requiredBackupBytes": "COW metadata initially small, later changed extents need explicit budget; not zero",
+      "independence": "Logical file clone may protect against original-file edits, shares storage failure domain; actual VM restore not validated",
+      "restore": "Version-specific verified UTM/clone restore required",
+      "status": "NOT_VERIFIED_NOT_SELECTED"
+    },
+    {
+      "id": "D",
+      "method": "Separate mounted external volume + option A",
+      "consistency": "Offline full bundle",
+      "downtime": "Copy/hash/check duration unmeasured",
+      "requiredBackupBytes": 367958706200,
+      "independence": "Can be separate medium if actual volume is suitable/reliable",
+      "restore": "Verified exact external path to original or isolated target with budget",
+      "status": "NOT_AVAILABLE"
+    },
+    {
+      "id": "E",
+      "method": "APFS volume snapshot",
+      "consistency": "Host snapshot of changing live qcow2 is not proven VM consistency; no Data snapshot present",
+      "downtime": "Requires quiescence/offline proof for intended rollback",
+      "requiredBackupBytes": "Changed extents + safety reserve; unknown until scoped",
+      "independence": "Same APFS container; whole-volume rollback could affect unrelated Mac data",
+      "restore": "VM-only extraction/restore must be demonstrated, not global rollback",
+      "status": "NOT_SELECTED_NOT_RESTORABLE_PROVEN"
+    },
+    {
+      "id": "F",
+      "method": "qcow2 internal snapshot",
+      "consistency": "No supported/version-bound snapshot management demonstrated; do not modify running image",
+      "downtime": "Offline default; phase allows qemu-img INFO/CHECK only",
+      "requiredBackupBytes": "Memory/COW disk overhead unknown",
+      "independence": "Same qcow2 file; not independent protection against image corruption",
+      "restore": "Snapshot restoration not validated",
+      "status": "NOT_SELECTED"
+    }
+  ],
+  "BACKUP_STRATEGY_SELECTED": "NONE_CURRENTLY_EXECUTABLE",
+  "preferredOncePrerequisitesExist": "A with D: clean shutdown + full bundle on verified independent external APFS volume",
+  "backupDestination": null,
+  "backupCreated": false,
+  "backupValidation": "INCOMPLETE",
+  "doNotCopyChangingLiveQcow2": true,
+  "copyToolFixture": {
+    "scope": "DISPOSABLE_SYNTHETIC_HOST_COPY_TOOL_TEST_NOT_VM_BACKUP",
+    "productionImageRead": false,
+    "backupCreated": false,
+    "filesystem": "APFS same host volume only; external target not tested",
+    "command": [
+      "rsync",
+      "-aS",
+      "--extended-attributes",
+      "SOURCE_FIXTURE",
+      "DESTINATION_FIXTURE"
+    ],
+    "exitStatus": 0,
+    "stderr": "",
+    "sourceLogicalBytes": 67108864,
+    "destinationLogicalBytes": 67108864,
+    "sourceAllocatedBytes": 32768,
+    "destinationAllocatedBytes": 32768,
+    "hashMatches": true,
+    "modePreserved": true,
+    "mtimePreserved": true,
+    "xattrPreserved": true,
+    "distinctInodes": true,
+    "sourceUnaffectedByDestinationWrite": true,
+    "sparseCopyObserved": true,
+    "verifiedScope": "Small synthetic same-APFS file copy only; NOT consistency/restore proof for a VM or external filesystem",
+    "temporaryFilesRemoved": true
+  },
+  "sparseFixtureIsNotVmBackup": true
+}

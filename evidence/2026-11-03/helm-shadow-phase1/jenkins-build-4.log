@@ -1,0 +1,234 @@
+Started by user admin
+[Pipeline] Start of Pipeline
+[Pipeline] node
+Running on Jenkins in /var/jenkins_home/workspace/petclinic-helm-shadow-20261103
+[Pipeline] {
+[Pipeline] timeout
+Timeout set to expire in 15 min
+[Pipeline] {
+[Pipeline] stage
+[Pipeline] { (Review Bundle Identity)
+[Pipeline] sh
++ node infra/helm/verify-review-bundle.mjs 57f908ff9a1bf0d3915f74d521233712604b59aa1887be5cd69bda60ed09cbc8
+{"classification":"DEDICATED_REVIEW_BUNDLE_NOT_PRODUCTION_CHECKOUT","files":33,"manifestSha256":"57f908ff9a1bf0d3915f74d521233712604b59aa1887be5cd69bda60ed09cbc8","release":0,"rollout":0}
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] stage
+[Pipeline] { (HELM_ENABLED=false Compatibility)
+[Pipeline] script
+[Pipeline] {
+[Pipeline] load
+[Pipeline] { (vars/helmShadow.groovy)
+[Pipeline] }
+[Pipeline] // load
+[Pipeline] sh
++ node --test infra/helm/pipeline-contract.test.mjs
+TAP version 13
+# Subtest: disabled integration preserves exact original production pipeline text
+ok 1 - disabled integration preserves exact original production pipeline text
+  ---
+  duration_ms: 2.064924
+  ...
+# Subtest: flag defaults false and helper disabled returns before any step
+ok 2 - flag defaults false and helper disabled returns before any step
+  ---
+  duration_ms: 0.456418
+  ...
+# Subtest: shadow mode denies promotion before frozen stage execution
+ok 3 - shadow mode denies promotion before frozen stage execution
+  ---
+  duration_ms: 0.172625
+  ...
+# Subtest: Helm validates after frozen manager and before approval; no gate stage reorder
+ok 4 - Helm validates after frozen manager and before approval; no gate stage reorder
+  ---
+  duration_ms: 0.166959
+  ...
+# Subtest: active and shadow CI entrypoints contain no direct deployment
+ok 5 - active and shadow CI entrypoints contain no direct deployment
+  ---
+  duration_ms: 1.143379
+  ...
+# Subtest: direct deploy denied: helm upgrade x
+ok 6 - direct deploy denied: helm upgrade x
+  ---
+  duration_ms: 0.468627
+  ...
+# Subtest: direct deploy denied: helm install x
+ok 7 - direct deploy denied: helm install x
+  ---
+  duration_ms: 0.257418
+  ...
+# Subtest: direct deploy denied: helm rollback x
+ok 8 - direct deploy denied: helm rollback x
+  ---
+  duration_ms: 0.27875
+  ...
+# Subtest: direct deploy denied: $HELM_BIN upgrade x
+ok 9 - direct deploy denied: $HELM_BIN upgrade x
+  ---
+  duration_ms: 0.41296
+  ...
+# Subtest: direct deploy denied: kubectl apply -f x
+ok 10 - direct deploy denied: kubectl apply -f x
+  ---
+  duration_ms: 0.763877
+  ...
+# Subtest: direct deploy denied: kubectl -n petclinic patch deploy petclinic
+ok 11 - direct deploy denied: kubectl -n petclinic patch deploy petclinic
+  ---
+  duration_ms: 0.133834
+  ...
+# Subtest: non-mutating deployment diagnostics allowed
+ok 12 - non-mutating deployment diagnostics allowed
+  ---
+  duration_ms: 0.739627
+  ...
+# Subtest: shadow metadata never writes actual security summary or invokes promotion
+ok 13 - shadow metadata never writes actual security summary or invokes promotion
+  ---
+  duration_ms: 0.890378
+  ...
+1..13
+# tests 13
+# suites 0
+# pass 13
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 266.876095
+[Pipeline] }
+[Pipeline] // script
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] stage
+[Pipeline] { (Helm Validation Preparation)
+[Pipeline] script
+[Pipeline] {
+[Pipeline] load
+[Pipeline] { (vars/helmShadow.groovy)
+[Pipeline] }
+[Pipeline] // load
+[Pipeline] withEnv
+[Pipeline] {
+[Pipeline] sh
++ node infra/helm/pipeline.mjs prepare
+{"phase":"prepare","status":"PASS","release":0,"rollout":0}
+[Pipeline] }
+[Pipeline] // withEnv
+[Pipeline] }
+[Pipeline] // script
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] stage
+[Pipeline] { (Helm Lint)
+[Pipeline] script
+[Pipeline] {
+[Pipeline] load
+[Pipeline] { (vars/helmShadow.groovy)
+[Pipeline] }
+[Pipeline] // load
+[Pipeline] withEnv
+[Pipeline] {
+[Pipeline] sh
++ node infra/helm/pipeline.mjs lint
+{"phase":"lint","status":"PASS","release":0,"rollout":0}
+[Pipeline] }
+[Pipeline] // withEnv
+[Pipeline] }
+[Pipeline] // script
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] stage
+[Pipeline] { (Helm Render)
+[Pipeline] script
+[Pipeline] {
+[Pipeline] load
+[Pipeline] { (vars/helmShadow.groovy)
+[Pipeline] }
+[Pipeline] // load
+[Pipeline] withEnv
+[Pipeline] {
+[Pipeline] sh
++ node infra/helm/pipeline.mjs render
+{"phase":"render","status":"PASS","release":0,"rollout":0}
+[Pipeline] }
+[Pipeline] // withEnv
+[Pipeline] }
+[Pipeline] // script
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] stage
+[Pipeline] { (Rendered Manifest Validation)
+[Pipeline] script
+[Pipeline] {
+[Pipeline] load
+[Pipeline] { (vars/helmShadow.groovy)
+[Pipeline] }
+[Pipeline] // load
+[Pipeline] withEnv
+[Pipeline] {
+[Pipeline] sh
++ node infra/helm/pipeline.mjs validate
+{"phase":"validate","status":"PASS","release":0,"rollout":0}
+[Pipeline] }
+[Pipeline] // withEnv
+[Pipeline] }
+[Pipeline] // script
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] stage
+[Pipeline] { (Helm Policy Validation)
+[Pipeline] script
+[Pipeline] {
+[Pipeline] load
+[Pipeline] { (vars/helmShadow.groovy)
+[Pipeline] }
+[Pipeline] // load
+[Pipeline] withEnv
+[Pipeline] {
+[Pipeline] sh
++ node infra/helm/pipeline.mjs policy
+{"phase":"policy","status":"NOT_APPLICABLE","release":0,"rollout":0}
+[Pipeline] }
+[Pipeline] // withEnv
+[Pipeline] }
+[Pipeline] // script
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] stage
+[Pipeline] { (GitOps Candidate Validation)
+[Pipeline] script
+[Pipeline] {
+[Pipeline] load
+[Pipeline] { (vars/helmShadow.groovy)
+[Pipeline] }
+[Pipeline] // load
+[Pipeline] withEnv
+[Pipeline] {
+[Pipeline] sh
++ node infra/helm/pipeline.mjs candidate
+{"phase":"candidate","status":"PASS","release":0,"rollout":0}
+[Pipeline] }
+[Pipeline] // withEnv
+[Pipeline] }
+[Pipeline] // script
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] stage
+[Pipeline] { (Declarative: Post Actions)
+[Pipeline] script
+[Pipeline] {
+[Pipeline] archiveArtifacts
+Archiving artifacts
+[Pipeline] }
+[Pipeline] // script
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] }
+[Pipeline] // timeout
+[Pipeline] }
+[Pipeline] // node
+[Pipeline] End of Pipeline
+Finished: SUCCESS

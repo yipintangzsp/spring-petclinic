@@ -1,0 +1,107 @@
+{
+  "source": "regression",
+  "finalStatus": "VERIFIED",
+  "scope": "Frozen current Regression node:test command and original selected parent Manager compatibility with baseline-v1 / standard only; not a new global test framework",
+  "productionImplementationLocations": [
+    "resources/security-manager/petclinic-adapter.json regression",
+    "Jenkinsfile Test node --test command only",
+    "vars/securityManager.groovy selected Regression module",
+    "35 top-level infra/observability/*.test.mjs and infra/security/*.test.mjs"
+  ],
+  "exactContract": "node --test --test-concurrency=1 infra/observability/*.test.mjs infra/security/*.test.mjs; process exit zero means PASS, otherwise FAIL; selected production wrapper is enforce-only",
+  "consumedFacts": "Existing assertion results/Node process exit and outputs, source fixtures/config/reference files imported by original tests; no live scanner result aggregation",
+  "baselineCurrentModel": "Existing assertions compare synthetic inputs / checked-in reference config and code behavior. No historical-scan-vs-current-scan comparator, no Policy baseline-v1 baseline in the production stage.",
+  "identityBinding": "Only identities explicitly asserted inside original tests; no stage-wide build/revision/digest/evidence identity Gate; lock hashes are compatibility metadata, not new production requirements",
+  "aggregation": "Node serial test runner combines 35 top-level files into one exit result; parent preserves selected module nonzero failure and Jenkins DSL exceptions. TAP summary/count is not parsed by Gate.",
+  "adapterImplemented": true,
+  "historicalSamples": 1,
+  "controlledReplaySamples": 37,
+  "completeDifferentials": 38,
+  "stages": {
+    "command": 13,
+    "shell": 12,
+    "wrapper": 13
+  },
+  "actualUnchangedCommandSamples": 13,
+  "controlledActualSuiteRuns": 11,
+  "initialRestrictedSandboxRun": {
+    "exit": 1,
+    "reason": "Loopback fixture listen EPERM",
+    "preserved": true,
+    "notProductionIncident": true
+  },
+  "actualCurrentSuite": {
+    "exit": 0,
+    "tests": 147,
+    "pass": 147,
+    "fail": 0,
+    "nodeVersionNotProductionCertification": true
+  },
+  "syntheticUnitOnlyTests": 8,
+  "securityBehaviorDriftSamples": [
+    "enforcement-regression",
+    "exception-identity-mismatch",
+    "runtime-evidence-source-mismatch"
+  ],
+  "missingEvidenceSamples": [
+    "missing-frozen-reference",
+    "missing-current-manifest",
+    "missing-existing-runtime-module"
+  ],
+  "malformedSamples": [
+    "malformed-frozen-reference",
+    "malformed-existing-test-source"
+  ],
+  "executionInfrastructureIOSamples": "Initial sandbox EPERM, missing node/exits 2/127/137/143, redirect write failure, original wrapper stage/credentials/write/archive failures; exact raw observations and labels retained",
+  "noNaturalHistoricalFailedBuildSample": true,
+  "oldDecisions": {
+    "PASS": 9,
+    "FAIL": 29
+  },
+  "standardDecisions": {
+    "PASS": 9,
+    "FAIL": 29
+  },
+  "matched": 38,
+  "mismatched": 0,
+  "rawFactsPreserved": true,
+  "circularSelfValidationCheck": "PASS",
+  "persistedFixtures": {
+    "inputs": 38,
+    "inputHashesMatched": 38,
+    "decisionsMatched": 38,
+    "rawPreserved": 38,
+    "noSeverityInvented": true
+  },
+  "remainingCompatibilityBlockers": [],
+  "knownUnenforcedBoundaries": [
+    "No fixed test-file count or 147-test assertion; one test file absent may still PASS with 145 tests",
+    "No stage-wide build/baseline/image identity binding",
+    "No live-scan input consumption or required current-scan report",
+    "Parent explicit final exit preserves rc even when log cat fails; not a new readback gate"
+  ],
+  "remainingEvidenceGaps": [
+    "No new live Jenkins CPS acceptance, no natural historical failed Regression transcript",
+    "Historical #270 has complete command/TAP/exit observations, but not full host prerequisite transcript",
+    "Controlled failures occurred only in disposable checkout or inert stubs; not production incidents"
+  ],
+  "policyTests": {
+    "previousFullVerifiedBaseline": 1413,
+    "newTestsExecuted": 46,
+    "newTestsPassed": 46,
+    "newTestsFailed": 0,
+    "cumulativeVerifiedCases": 1459,
+    "all1459RerunThisIteration": false,
+    "why": "User prohibited unnecessary rerun of every VERIFIED adapter; original production command excludes policy directory"
+  },
+  "readyToLeaveCompatibilityPhase": true,
+  "productionGateModified": false,
+  "actualSummaryModified": false,
+  "releaseModified": false,
+  "rollout": false,
+  "nextSourceStarted": false,
+  "globalBlockers": {
+    "SOPS/age": "NOT_TESTED / ENVIRONMENT_BLOCKED",
+    "SonarQube real negative": "DEFERRED_REAL_NEGATIVE_EVIDENCE"
+  }
+}

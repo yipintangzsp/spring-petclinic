@@ -1,0 +1,22 @@
+{
+  "SOPS_COMPATIBILITY_EXECUTION": "NOT_READY",
+  "SOPS_COMPATIBILITY": "INCOMPLETE",
+  "blocker": "Existing Linux/aarch64 executor image has no Node executable: real guarded node --version exits 127; frozen .mjs Gate cannot start. Host Node cannot directly execute Linux SOPS; substituting stubs/wrappers or calling VM replay is not real unchanged execution. Need a verified Node-capable isolated runtime and real per-call observer integration before rerunning.",
+  "guardSanity": "5/5 PASS",
+  "baselineDrift": false,
+  "oldGateCases": 0,
+  "policyCases": 0,
+  "oldDecisionCounts": {},
+  "policyDecisionCounts": {},
+  "MATCH": 0,
+  "DRIFT": 0,
+  "firstDrift": null,
+  "cleanup": "23 exact objects absence verified, disposable keys and private test root removed; kind retained",
+  "productionApiAccess": 0,
+  "productionSecretCredentialReads": 0,
+  "productionAgeKeyReads": 0,
+  "productionFilesChanged": false,
+  "policyBaselineChanged": false,
+  "summaryChanged": false,
+  "minimalFix": "Prepare and pin a Linux/aarch64 Node runtime + same-guard kubectl transport + real Gate call observation (no Gate/Policy change); validate with sentinel, rebuild a new isolated baseline, then rerun 12 real cases. Missing runtime is not a Gate negative or Policy PASS."
+}

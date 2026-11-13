@@ -1,0 +1,212 @@
+{
+  "runId": "web-de4d4f38-0429-49ca-a671-78e547c97d86",
+  "pluginId": "provenance",
+  "projectId": "petclinic-platform",
+  "scenarioId": "verified",
+  "configurationSnapshot": {
+    "revision": 48,
+    "updatedAt": "2026-11-12T18:55:27.919Z",
+    "settings": {
+      "enabled": true,
+      "securityLevel": "standard",
+      "plugins": {
+        "gitleaks": {
+          "enabled": true
+        },
+        "semgrep": {
+          "enabled": true
+        },
+        "cosign": {
+          "enabled": true
+        },
+        "sbom": {
+          "enabled": true
+        },
+        "trivy": {
+          "enabled": true
+        },
+        "kyverno": {
+          "enabled": true
+        },
+        "sonarqube": {
+          "enabled": true
+        },
+        "kubescape": {
+          "enabled": true
+        },
+        "zap": {
+          "enabled": true
+        },
+        "provenance": {
+          "enabled": true
+        }
+      }
+    },
+    "source": {
+      "kind": "LOCAL_EXPLICIT_OVERRIDE",
+      "path": ".devsecops/security-view-controls-v1.json",
+      "settingsDigest": "359568c6a0c87a0897764a86004a0fb88da2bea0284d239963d6b803d2d8bd13"
+    },
+    "configurationOrigins": [
+      {
+        "layer": "global",
+        "securityLevel": "standard",
+        "policyVersion": "baseline-v1"
+      },
+      {
+        "layer": "registryDefaults",
+        "plugins": {
+          "build-provenance": {
+            "enabled": false
+          },
+          "cosign": {
+            "enabled": true
+          },
+          "falco": {
+            "enabled": false
+          },
+          "gitleaks": {
+            "enabled": true
+          },
+          "kubescape": {
+            "enabled": true
+          },
+          "kyverno": {
+            "enabled": true
+          },
+          "provenance": {
+            "enabled": true
+          },
+          "sbom": {
+            "enabled": true
+          },
+          "semgrep": {
+            "enabled": true
+          },
+          "sonarqube": {
+            "enabled": true
+          },
+          "sops": {
+            "enabled": false
+          },
+          "trivy": {
+            "enabled": true
+          },
+          "zap": {
+            "enabled": true
+          }
+        }
+      },
+      {
+        "layer": "globalExplicit",
+        "values": {
+          "enabled": true,
+          "securityLevel": "standard",
+          "plugins": {
+            "gitleaks": {
+              "enabled": true
+            },
+            "semgrep": {
+              "enabled": true
+            },
+            "cosign": {
+              "enabled": true
+            },
+            "sbom": {
+              "enabled": true
+            },
+            "trivy": {
+              "enabled": true
+            },
+            "kyverno": {
+              "enabled": true
+            },
+            "sonarqube": {
+              "enabled": true
+            },
+            "kubescape": {
+              "enabled": true
+            },
+            "zap": {
+              "enabled": true
+            },
+            "provenance": {
+              "enabled": true
+            }
+          },
+          "globalMode": "audit",
+          "profile": "java-web",
+          "policyVersion": "baseline-v1"
+        }
+      },
+      {
+        "layer": "profile",
+        "values": {}
+      },
+      {
+        "layer": "project",
+        "values": {}
+      }
+    ],
+    "effectiveConfigDigest": "3b4edf1552722716531e63630fb357720d4054567eb9e5638451ffeff43684c0"
+  },
+  "securityLevel": "standard",
+  "startedAt": "2026-11-12T18:55:59.209Z",
+  "kind": "LocalValidationRequest",
+  "executionLocation": "MAC_ONLY",
+  "state": "COMPLETED",
+  "evidenceClass": "REAL",
+  "scannerExecuted": true,
+  "policyDecision": "PASS",
+  "evaluationCount": 1,
+  "resultDigest": "cfefc91d30423b584a15214f0e2269adfd1be9e01475389dcdbee5831bafb63c",
+  "artifactDigest": "3b61d2744d68aa965ab3319b546ae756b33e2e37f1d3be573507f2f11e373e9e",
+  "source": ".devsecops/security-view-runs-v1/web-de4d4f38-0429-49ca-a671-78e547c97d86/artifact/provenance.result.json",
+  "reason": null,
+  "executionDiagnostic": null,
+  "caseId": "historical-candidate",
+  "subjectImage": "core.harbor.domain/petclinic/petclinic@sha256:2fbaea65ab030c56c60c62e3ee9fbe362deb8bbbb8216a891ef4c7bbbcea6d55",
+  "commit": "9a78cc89f22fa98fb1ffcc43e2ae279299471793",
+  "buildNumber": 270,
+  "envelopeSha256": "d8091efa2525eb74ae84e1968f261d51d24302a6dde36229993979f365a665a0",
+  "toolVersion": null,
+  "toolSha256": null,
+  "executionIdentity": "local-operator",
+  "executionHost": "local/offline",
+  "router": [
+    {
+      "consumerId": "dry-run",
+      "deliveryDecision": "DRY_RUN"
+    },
+    {
+      "consumerId": "local-evidence",
+      "deliveryDecision": "DELIVERED_LOCAL_ONLY"
+    }
+  ],
+  "cleanup": "VERIFIED",
+  "lokiDelivery": {
+    "consumerId": "loki-candidate",
+    "automatic": true,
+    "sourceClassification": "REAL_CONTROLLED_EXECUTION",
+    "runId": "web-de4d4f38-0429-49ca-a671-78e547c97d86",
+    "resultDigest": "cfefc91d30423b584a15214f0e2269adfd1be9e01475389dcdbee5831bafb63c",
+    "pushState": "ACKNOWLEDGED",
+    "pushHttpStatus": 204,
+    "receiptDigest": "5e3c70dd36cff918eaadc8cf42c216358452e8b8ab29ec8ce7fa091494a98e00",
+    "httpRequestCount": 1,
+    "queryState": "VERIFIED",
+    "state": "DELIVERED",
+    "reason": null,
+    "deliveryAt": "2026-11-12T18:55:59.567Z",
+    "grafanaUrl": "http://grafana.devops.local/d/security-manager-v2-candidate/devsecops-security-manager-v2-overview?var-DS_LOKI=loki&var-project=petclinic-platform&var-run=web-de4d4f38-0429-49ca-a671-78e547c97d86&var-resultDigest=cfefc91d30423b584a15214f0e2269adfd1be9e01475389dcdbee5831bafb63c&from=1794509699270&to=1794510059270",
+    "receiptSource": "loki-delivery/router-receipt.json",
+    "queryAt": "2026-11-12T18:55:59.615Z",
+    "queryHttpStatus": 200,
+    "matchedEvents": 1
+  },
+  "completedAt": "2026-11-12T18:55:59.623Z",
+  "durationMs": 407,
+  "releaseCount": 0,
+  "rolloutCount": 0,
+  "auditDigest": "553eae85ed7ff7bab342e92c8916dafa120b8eb2c2bfcae621a57a719ca4df65"
+}

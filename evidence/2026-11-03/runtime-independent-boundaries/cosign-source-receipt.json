@@ -1,0 +1,99 @@
+{
+  "sourceId": "cosign",
+  "policyDecision": "PASS",
+  "release": 0,
+  "trustPublicKeySha256": "c92bf03766ebfe16e52d27e50fe04334bc6126ba174f76ea07c1ecfc06a6fdec",
+  "binding": {
+    "candidate": "core.harbor.domain/petclinic/signature-fixtures@sha256:a786348b1bfb3125c150d94d58d6edc51beb36fb832ad258e000b03fbab7d899",
+    "build": 32,
+    "project": "petclinic",
+    "source": "741ea2866ea142b24c7838e1ef25c8327c79d279",
+    "runId": "security-runtime-facts-20261102#32",
+    "job": "security-runtime-facts-20261102",
+    "targetScope": "candidate"
+  },
+  "factDigest": "3c4ebafa611fb3f9e1e15ade68b255d60452b5673e25b77f73cbd33910e5dfb1",
+  "startedAt": "2026-11-03T05:39:53.497Z",
+  "error": null,
+  "GateInputDigest": "c7dbafbf7cf496456c872297eedcf800cebf110073793ad02ebfda70842de2b1",
+  "oldDecision": "PASS",
+  "credentialIdentity": "robot$petclinic+rf3-20261103-9730f2-sign",
+  "originalError": null,
+  "validationRunId": "rf3-20261103-9730f2",
+  "originalReportStatus": "success",
+  "credentialCleanup": "TEST_TRUST_AND_ROBOT_POST; KUBE_IDENTITY_MANAGER_REQUIRED",
+  "completedAt": "2026-11-03T05:40:13.601Z",
+  "cases": [
+    {
+      "cliVerified": true,
+      "image": "core.harbor.domain/petclinic/signature-fixtures@sha256:a786348b1bfb3125c150d94d58d6edc51beb36fb832ad258e000b03fbab7d899",
+      "allowed": true,
+      "diagnostic": "server dry-run accepted; no Pod created",
+      "case": "signed"
+    },
+    {
+      "cliVerified": false,
+      "image": "core.harbor.domain/petclinic/signature-fixtures@sha256:f17f3fdaee27ea057580ed001bf8ac61bad962b2e9c2dbd101dbefffb93eb64b",
+      "allowed": false,
+      "diagnostic": "Error from server: error when creating \"STDIN\": admission webhook \"mutate.rf3-20261103-9730f2.validation.local\" denied the request: \n\nresource Pod/rf3-20261103-9730f2-cosign/signature-unsigned was blocked due to the following policies \n\ndevsecops-signed-images:\n  verify-private-petclinic-image: 'failed to verify image core.harbor.domain/petclinic/signature-fixtures@sha256:f17f3fdaee27ea057580ed001bf8ac61bad962b2e9c2dbd101dbefffb93eb64b: .attestors[0].entries[0].keys: no signatures found'\n",
+      "case": "unsigned"
+    },
+    {
+      "cliVerified": false,
+      "image": "core.harbor.domain/petclinic/signature-fixtures@sha256:f798eb548f648cc099f5d44a424be6b7bbb13001c40eca2c6891fa6846d8591b",
+      "allowed": false,
+      "diagnostic": "Error from server: error when creating \"STDIN\": admission webhook \"mutate.rf3-20261103-9730f2.validation.local\" denied the request: \n\nresource Pod/rf3-20261103-9730f2-cosign/signature-wrong-key was blocked due to the following policies \n\ndevsecops-signed-images:\n  verify-private-petclinic-image: 'failed to verify image core.harbor.domain/petclinic/signature-fixtures@sha256:f798eb548f648cc099f5d44a424be6b7bbb13001c40eca2c6891fa6846d8591b: .attestors[0].entries[0].keys: no matching signatures: invalid signature when validating ASN.1 encoded signature'\n",
+      "case": "wrong-key"
+    }
+  ],
+  "oldExit": 0,
+  "productionPrivateKeyReads": 0,
+  "rollout": 0,
+  "temporaryWorkspaceRemoved": true,
+  "inputArtifact": {
+    "wrong-key": {
+      "image": "core.harbor.domain/petclinic/signature-fixtures@sha256:f798eb548f648cc099f5d44a424be6b7bbb13001c40eca2c6891fa6846d8591b",
+      "manifestDigest": "sha256:f798eb548f648cc099f5d44a424be6b7bbb13001c40eca2c6891fa6846d8591b",
+      "configDigest": "sha256:61ca346c99a4c3510a1e6c0659034dffa69a79f400147bf77426f7eb818961f3",
+      "tag": "ci-32-wrong-key"
+    },
+    "signed": {
+      "image": "core.harbor.domain/petclinic/signature-fixtures@sha256:a786348b1bfb3125c150d94d58d6edc51beb36fb832ad258e000b03fbab7d899",
+      "manifestDigest": "sha256:a786348b1bfb3125c150d94d58d6edc51beb36fb832ad258e000b03fbab7d899",
+      "configDigest": "sha256:6e905dd3060b3b5332688dd751a37c1ce419a79cab35f09321c8af73c89b4312",
+      "tag": "ci-32-signed"
+    },
+    "unsigned": {
+      "image": "core.harbor.domain/petclinic/signature-fixtures@sha256:f17f3fdaee27ea057580ed001bf8ac61bad962b2e9c2dbd101dbefffb93eb64b",
+      "manifestDigest": "sha256:f17f3fdaee27ea057580ed001bf8ac61bad962b2e9c2dbd101dbefffb93eb64b",
+      "configDigest": "sha256:31329fa501876dc3f2b7fbe05e3804da9c2dea5363b4662646be4b50bea4dccc",
+      "tag": "ci-32-unsigned"
+    }
+  },
+  "permissionScope": "project pull/push/artifact-read; pinned command and request guard restrict writes to this build signature-fixtures",
+  "externalSystem": "http://harbor-core.harbor.svc.cluster.local",
+  "resultDigest": "c7dbafbf7cf496456c872297eedcf800cebf110073793ad02ebfda70842de2b1",
+  "evaluationId": "security-runtime-facts-20261102#32:cosign",
+  "evaluationCount": 1,
+  "executionScope": "CONTROLLED_NON_RELEASE",
+  "factsComplete": true,
+  "rawReport": [
+    {
+      "path": ".devsecops/signing-admission.json",
+      "sha256": "899a0c890b8af08f00d0dcb63d2d5cd272a53d9f860e9f7d3d3bb38d4a5abfd4",
+      "bytes": 2301
+    }
+  ],
+  "runtimeAcceptance": "VERIFIED",
+  "factIdentityPreserved": true,
+  "rawPayloadPersisted": false,
+  "registryRetention": "VALIDATION_RETAINED",
+  "retentionReason": "Five immutable validation artifacts (three empty-layer fixture manifests and two signatures) retained for reproducible evidence; no production release tag/GitOps reference; signer and registry robot revoked.",
+  "cleanupVerified": true,
+  "evidenceRefs": [
+    "jenkins-build-31.json",
+    "jenkins-build-32.json",
+    "cosign-kube-cleanup.json",
+    "validation-registry-retention.json"
+  ]
+}

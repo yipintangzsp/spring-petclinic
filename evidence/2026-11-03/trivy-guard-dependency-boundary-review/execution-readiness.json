@@ -1,0 +1,54 @@
+{
+  "status": "NOT_READY",
+  "scope": "Concrete available evidence; NOT an executed preflight or experiment",
+  "isolatedResourceInventory": "isolated-resource-inventory.json",
+  "prerequisites": {
+    "isolatedEnvironmentIdentity": {
+      "status": "BLOCKED",
+      "evidence": "Only security-test running10GiB/2GiB RAM; default stopped100GiB. No attested dedicated arm64 lab matching sealed capacity; no new VM started."
+    },
+    "availableDisk": {
+      "status": "BLOCKED",
+      "evidence": "Local host available 22.80GiB, below independent300GiB planning floor; no independent external target observed/attested. Distinct APFS devices may share container capacity; never sum listed free bytes."
+    },
+    "filesystemEquivalence": {
+      "status": "NOT_TESTED",
+      "evidence": "No selected equivalent lab, no mount/ext4/overlay/COW identity proof. Existing10GiB lab not equivalent."
+    },
+    "networkPath": {
+      "status": "NOT_TESTED",
+      "evidence": "No selected lab. Mac/production transport successes do not prove isolated egress."
+    },
+    "proxyOrDirectAccess": {
+      "status": "NOT_TESTED",
+      "evidence": "Direct and independent proxy are supported choices; neither selected/validated in appropriate lab."
+    },
+    "dbSourceReachability": {
+      "status": "NOT_TESTED",
+      "evidence": "No DB source requests from isolated target; no manifest/blob token fetched this round. Not labelled unreachable."
+    },
+    "credentialAvailability": {
+      "status": "NOT_TESTED",
+      "evidence": "No production creds required; no selected lab identity/Lease and anonymous-token access attestation. No permission expansion."
+    },
+    "frozenImplementationHash": {
+      "status": "NOT_TESTED",
+      "evidence": "Local frozen files verified and transferable in principle; exact image/binary transfer into future lab not attested."
+    },
+    "samplerReadiness": {
+      "status": "NOT_TESTED",
+      "evidence": "Plan exists, no calibrated 10ms sampler+loss-free allocation telemetry installed/validated on target."
+    },
+    "evidenceDestination": {
+      "status": "NOT_TESTED",
+      "evidence": "No selected independent observer disk or actual free-space/writability proof."
+    },
+    "productionIsolation": {
+      "status": "NOT_TESTED",
+      "evidence": "Isolation specified and no prod required graph edge; actual target deny rules/mount/credential boundary unverified until lab exists."
+    }
+  },
+  "productionProxyRequired": false,
+  "proxyContinuityNotAnExecutionBlocker": true,
+  "actualGuardStats": "Production available~42.27GiB<49.78GiB protection; forbidden experiment target. Host insufficient, backup target unvalidated. No guard change allowed."
+}

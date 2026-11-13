@@ -1,0 +1,13 @@
+// Dedicated management bootstrap of disposable scan identity; not production V1.
+pipeline {
+ agent any
+ options { disableConcurrentBuilds(); timeout(time: 5, unit: 'MINUTES') }
+ stages {
+  stage('Verify exact source and previous thirteen') { steps { sh 'node infra/security/runtime-facts/verify-bundle.mjs; node infra/security/runtime-facts/thirteen-smoke.mjs' } }
+  stage('Create minimum project scan robot') { steps {
+   withCredentials([usernamePassword(credentialsId:'harbor-creds',usernameVariable:'HARBOR_USER',passwordVariable:'HARBOR_PASS')]) { sh 'node infra/security/runtime-facts/harbor-validation-identity.mjs scan create' }
+  } }
+  stage('Verify read/negative identity and immutable candidate boundary') { steps { sh 'node infra/security/runtime-facts/trivy-validation-probe.mjs' } }
+ }
+ post { always { archiveArtifacts artifacts: '.devsecops/runtime-controlled/build-' + env.BUILD_NUMBER + '/**,runtime-source-bundle.json', allowEmptyArchive: false } }
+}

@@ -1,0 +1,97 @@
+### V1 get nodes
+NAME            STATUS   ROLES           AGE    VERSION        INTERNAL-IP   EXTERNAL-IP   OS-IMAGE             KERNEL-VERSION               CONTAINER-RUNTIME
+aliyun-worker   Ready    <none>          177d   v1.36.1+k3s1   10.0.0.1      <none>        Ubuntu 22.04.5 LTS   5.15.0-170-generic (amd64)   containerd://2.2.3-k3s1
+devops          Ready    control-plane   209d   v1.36.1+k3s1   10.0.0.3      <none>        Ubuntu 24.04.4 LTS   7.0.0-42-generic (arm64)     containerd://2.2.3-k3s1
+ucloud-worker   Ready    <none>          177d   v1.36.1+k3s1   10.0.0.2      <none>        Ubuntu 22.04.4 LTS   5.15.0-113-generic (amd64)   containerd://2.2.3-k3s1
+
+### V2 deployments all ns (head)
+NAMESPACE          NAME                                  READY   UP-TO-DATE   AVAILABLE   AGE
+argocd             argocd-applicationset-controller      1/1     1            1           205d
+argocd             argocd-dex-server                     1/1     1            1           205d
+argocd             argocd-notifications-controller       1/1     1            1           205d
+argocd             argocd-redis                          1/1     1            1           205d
+argocd             argocd-repo-server                    1/1     1            1           205d
+argocd             argocd-server                         1/1     1            1           205d
+cert-manager       cert-manager                          1/1     1            1           25d
+cert-manager       cert-manager-cainjector               1/1     1            1           25d
+cert-manager       cert-manager-webhook                  1/1     1            1           25d
+cook               cook                                  1/1     1            1           34d
+cook               cook-blackbox                         1/1     1            1           34d
+data-infra         airflow-api-server                    0/0     0            0           205d
+data-infra         airflow-dag-processor                 0/0     0            0           205d
+data-infra         airflow-scheduler                     0/0     0            0           205d
+data-infra         airflow-statsd                        0/0     0            0           205d
+data-infra         minio                                 0/0     0            0           205d
+data-infra         superset                              0/0     0            0           205d
+data-infra         superset-worker                       0/0     0            0           205d
+data-infra         trino-coordinator                     0/0     0            0           205d
+data-infra         trino-worker                          0/0     0            0           118d
+default            elasticsearch                         1/1     1            1           209d
+default            kibana                                1/1     1            1           209d
+devops-lab         tls-lab                               1/1     1            1           25d
+devsecops-system   kyverno-admission-controller          1/1     1            1           17d
+harbor             harbor-core                           1/1     1            1           198d
+harbor             harbor-jobservice                     1/1     1            1           198d
+harbor             harbor-portal                         1/1     1            1           198d
+harbor             harbor-redis-arm64                    1/1     1            1           66d
+harbor             harbor-registry                       1/1     1            1           198d
+kube-system        coredns                               1/1     1            1           209d
+kube-system        local-path-provisioner                1/1     1            1           209d
+kube-system        metrics-server                        1/1     1            1           209d
+kube-system        traefik                               1/1     1            1           209d
+monitoring         jaeger                                1/1     1            1           205d
+monitoring         kube-stack-grafana                    1/1     1            1           209d
+monitoring         kube-stack-kube-prometheus-operator   1/1     1            1           209d
+monitoring         kube-stack-kube-state-metrics         1/1     1            1           209d
+monitoring         otel-collector                        1/1     1            1           171d
+ns-apps            hello-app                             1/1     1            1           182d
+
+### V2b pods petclinic
+NAME                                    READY   STATUS    RESTARTS        AGE
+clinic-message-worker-b887b9bbb-m6zld   1/1     Running   11 (118m ago)   15d
+petclinic-7b9fc47976-7gqqx              1/1     Running   14 (117m ago)   14d
+petclinic-7b9fc47976-v7pbv              1/1     Running   16 (118m ago)   14d
+petclinic-7b9fc47976-z9q2p              1/1     Running   16 (117m ago)   14d
+
+### V2c argocd applications
+NAMESPACE   NAME                    SYNC STATUS   HEALTH STATUS
+argocd      airflow                 Synced        Healthy
+argocd      cook                    Synced        Healthy
+argocd      devops-tls-lab          Synced        Healthy
+argocd      hello-app-dev           Synced        Healthy
+argocd      petclinic               Synced        Healthy
+argocd      petclinic-gitops-demo   Synced        Healthy
+argocd      platform-alertmanager   Synced        Healthy
+argocd      platform-cert-manager   Synced        Healthy
+argocd      platform-devsecops      Synced        Healthy
+argocd      platform-messaging      Synced        Healthy
+argocd      platform-rabbitmq       Synced        Healthy
+argocd      platform-rollouts       Synced        Healthy
+argocd      rollouts-lab            Synced        Healthy
+argocd      spark-operator          Synced        Healthy
+
+### V2d kyverno clusterpolicies
+Warning: kyverno.io/v1 ClusterPolicy is deprecated and will be removed in a future release; migrate to ValidatingPolicy, MutatingPolicy, GeneratingPolicy or ImageValidatingPolicy (policies.kyverno.io), see https://kyverno.io/docs/guides/migration-to-cel/
+NAME                            ADMISSION   BACKGROUND   READY   AGE   MESSAGE
+devsecops-production-baseline   true        false        True    14d   Ready
+devsecops-signed-images         true        false        True    15d   Ready
+devsecops-workload-contract     true        false        True    17d   Ready
+
+### NEG1 read secrets (must Forbidden)
+Error from server (Forbidden): secrets is forbidden: User "system:serviceaccount:platform-ops:platform-readonly" cannot list resource "secrets" in API group "" at the cluster scope
+
+### NEG2 write label node (must Forbidden)
+Error from server (Forbidden): nodes "devops" is forbidden: User "system:serviceaccount:platform-ops:platform-readonly" cannot patch resource "nodes" in API group "" at the cluster scope
+
+### NEG3 create configmap (must Forbidden)
+error: failed to create configmap: configmaps is forbidden: User "system:serviceaccount:platform-ops:platform-readonly" cannot create resource "configmaps" in API group "" in the namespace "default"
+
+### AUTH can-i matrix
+get nodes : yes
+list pods : yes
+get secrets : no
+create pods : no
+delete deployments : no
+get configmaps : yes
+list applications.argoproj.io : yes
+list clusterpolicies.kyverno.io : yes

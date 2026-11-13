@@ -1,0 +1,181 @@
+{
+  "producers": [
+    {
+      "path": "infra/security/security-summary.mjs",
+      "route": "PetClinic production security-audit",
+      "callSites": [
+        "Jenkinsfile.security-audit:48",
+        "Jenkinsfile.security-audit:75"
+      ],
+      "schema": "inline record literal, schema=1; .devsecops/security-summary.json output",
+      "sinks": [
+        "local artifact",
+        "Loki push"
+      ],
+      "sha256": "038320f04c67fb1fe5ff711c11d445c2de88cc50b2230eb4c971bf46142f5b34"
+    },
+    {
+      "path": "resources/security-manager/summary.mjs",
+      "route": "Shared Library generic manager libraryResource",
+      "callSites": [
+        "vars/securityManager.groovy"
+      ],
+      "schema": "inline s literal, schema=1",
+      "sinks": [
+        "local artifact",
+        "Loki push"
+      ],
+      "sha256": "565293eb53c84fba92f8acda4feccfbf0ded9649dfba3f9cd4b8e3d54b39f54b"
+    },
+    {
+      "path": "infra/security/manager/summary.mjs",
+      "route": "repository copy of generic summary",
+      "schema": "inline s literal, schema=1",
+      "sameBytesAsResource": true,
+      "sha256": "565293eb53c84fba92f8acda4feccfbf0ded9649dfba3f9cd4b8e3d54b39f54b"
+    }
+  ],
+  "schemaArtifact": ".devsecops/security-summary.json",
+  "dedicatedJsonSchemaFile": null,
+  "schemaDefinitionLocations": [
+    "infra/security/security-summary.mjs:5",
+    "resources/security-manager/summary.mjs:3",
+    "infra/security/manager/summary.mjs:3"
+  ],
+  "consumers": [
+    {
+      "path": "infra/security/promotion/evidence.mjs:3",
+      "behavior": "gateEvidence reads summary; sign-approve/promote consume gateEvidence"
+    },
+    {
+      "path": "infra/security/promotion/contract.mjs",
+      "behavior": "validateGate reads auditTargetImage,targetScope,source,build,trivy_critical,trivy_high"
+    },
+    {
+      "path": "infra/security/promotion/sign-approve.mjs",
+      "behavior": "validates summary/candidate identity before approval signing"
+    },
+    {
+      "path": "infra/security/promotion/promote.mjs",
+      "behavior": "promotion/dry-run reuses gate evidence"
+    },
+    {
+      "path": "Jenkinsfile.security-audit:76",
+      "behavior": "archives summary JSON"
+    },
+    {
+      "path": "infra/security/governance/grafana-panels.json",
+      "behavior": "Loki JSON query fields from job=devsecops-security; no query performed"
+    }
+  ],
+  "policyMetadata": {
+    "policyVersion": "available",
+    "securityLevel": "available; default standard",
+    "profile": "available",
+    "effectivePolicy": "available",
+    "overrideSource": {
+      "literalFieldExists": false,
+      "existingEquivalent": "appliedOverrides[].layer + component/profile + values, precedence in order; global default is policyVersion/securityLevel",
+      "integrationRequirement": "Expose append-only metadata from existing contract; do not claim a literal overrideSource field already exists"
+    },
+    "POLICY_ERROR": "throws explicit POLICY_ERROR; no low fallback"
+  },
+  "readOnlyContractValidation": [
+    {
+      "capability": "baseline-v1",
+      "status": "VERIFIED",
+      "evidence": "Existing version document resolved"
+    },
+    {
+      "capability": "default standard",
+      "status": "VERIFIED",
+      "evidence": "Absent level resolves to standard"
+    },
+    {
+      "capability": "explicit low",
+      "status": "VERIFIED",
+      "evidence": "Explicit low only; invalid level rejected"
+    },
+    {
+      "capability": "strict",
+      "status": "VERIFIED",
+      "evidence": "Same immutable finding WARN -> FAIL"
+    },
+    {
+      "capability": "component override",
+      "status": "VERIFIED",
+      "evidence": "Target only"
+    },
+    {
+      "capability": "project override",
+      "status": "VERIFIED",
+      "evidence": "Project overrides component; mismatched identity rejected"
+    },
+    {
+      "capability": "policy version metadata",
+      "status": "VERIFIED",
+      "evidence": "Engine return payload only; no actual Summary integration"
+    },
+    {
+      "capability": "effective policy",
+      "status": "VERIFIED",
+      "evidence": "Resolved component map present"
+    },
+    {
+      "capability": "override source",
+      "status": "VERIFIED",
+      "evidence": [
+        {
+          "layer": "component",
+          "component": "semgrep",
+          "values": {
+            "Medium": "FAIL"
+          }
+        },
+        {
+          "layer": "project",
+          "component": "semgrep",
+          "values": {
+            "Medium": "WARN"
+          }
+        }
+      ]
+    },
+    {
+      "capability": "POLICY_ERROR on broken config",
+      "status": "VERIFIED",
+      "evidence": [
+        "unreadable: POLICY_ERROR",
+        "malformed: POLICY_ERROR",
+        "wrong schema: POLICY_ERROR"
+      ]
+    }
+  ],
+  "coreTests": {
+    "core-tests.log": 0,
+    "core-readiness.json": 0
+  },
+  "sourceCompatibility": "18 accounted; Sonar real-negative explicitly deferred; compatibility scoped to frozen standard",
+  "actualSummaryIntegrated": false,
+  "summaryV2Resumed": false,
+  "policyMetadataRequiredFields": [
+    "policyVersion",
+    "securityLevel",
+    "profile",
+    "effectivePolicy",
+    "appliedOverrides",
+    "policyDecision"
+  ],
+  "localCurrentOutputExists": false,
+  "localOutputNote": "No substitute Summary is generated by this audit.",
+  "sourceLocksReferencingProducer": [
+    "infra/security/policy/versions/promotion-baseline-v1.json",
+    "infra/security/policy/versions/regression-baseline-v1.json"
+  ],
+  "futureChangeConstraint": "Separately authorized migration must reconcile frozen producer/consumer identities and preserve current Gate semantics; inactive old candidate cannot be activated unchanged.",
+  "policyDecisionContract": {
+    "currentEngineField": "decision",
+    "futureSummaryField": "policyDecision",
+    "actualSummaryFieldAdded": false
+  }
+}

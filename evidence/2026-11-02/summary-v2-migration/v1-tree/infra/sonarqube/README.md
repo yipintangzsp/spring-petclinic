@@ -1,0 +1,11 @@
+# Existing Sonar runtime cache
+
+This is the existing Helm-managed SonarQube 26.3.0.120487-community instance, not another installation or a version upgrade. The official OCI index is `sha256:dee9e6ba92725b2ecaa533b61133c46098cfbf8ea2e5a3424ab7b4b8f7a1a821`; its existing linux/arm64 child is `sha256:f5593e4a6fe6f3d93e8d4d398b7bb6ba6fb3fe93b0a6b760d5ddaa24b8533cf2`. The verified config digest remains `sha256:8f1a24086b0616c0bbe53f55e477672bf3eb783db4933402ea0e3628099a9150`.
+
+On 2026-10-18, kubelet recorded 20m23s of image pulling before the first init container during analytics cleanup. Increasing the readiness deadline alone did not solve that dependency. The same manifest, config and eight layers were copied from the already running node into the existing Registry; every content digest and size was verified. Private proof: `sonar-cache-http-20261018/verified-runtime.json`.
+
+The Jenkins infrastructure stage first owns the shared heavy Lease, verifies the local manifest/config and architecture, checks the original StatefulSet UID and absence of an analysis owner, and pins both init containers and the main container. Requests, limits, probes, volumes, database and Helm release identity are preserved. All containers keep IfNotPresent. Rollout must finish within ten minutes before tests or the quality gate proceed.
+
+The non-secret `.sonar-runtime-maintenance.json` artifact preserves previous image references, PVC names, UID and guarded reverse image operations outside Maven's clean directory. Reverting source does not by itself revert the live runtime template. If a rollback is required, first own the same maintenance Lease, ensure no analysis is active, verify the original UID and apply the recorded reverse operations; wait for Ready before releasing protection. Never restore a database/PVC as part of this image-source rollback.
+
+The original instance is managed by Helm, with no Sonar Argo Application. Keep the runtime image setting consistent with runtime.json in future intentional Helm upgrades. The next Jenkins infrastructure stage rejects unexpected versions or replacement UIDs rather than silently overriding an upgrade. This cache does not prove that upstream connectivity is fixed, or that the Sonar service image has no vulnerabilities.

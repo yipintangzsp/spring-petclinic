@@ -1,0 +1,168 @@
+{
+  "job": "security-runtime-facts-20261102",
+  "build": 33,
+  "building": false,
+  "result": "SUCCESS",
+  "duration": 13959,
+  "startedAtMs": 1793684715267,
+  "artifacts": {
+    ".devsecops/runtime-controlled/build-33/final-three-postcheck.json": {
+      "privateCredentialDirectoryRemoved": true,
+      "checks": [
+        {
+          "reference": "ci-26-signed",
+          "httpStatus": 404,
+          "absent": true,
+          "repository": "petclinic/signature-fixtures"
+        },
+        {
+          "reference": "sha256-393c43470be77284506de6ceac4be85d8dbab8cc173109939775af2a14caedfc.sig",
+          "httpStatus": 404,
+          "absent": true,
+          "repository": "petclinic/signature-fixtures"
+        },
+        {
+          "reference": "ci-26-unsigned",
+          "httpStatus": 404,
+          "absent": true,
+          "repository": "petclinic/signature-fixtures"
+        },
+        {
+          "reference": "sha256-cabc2d6d8b6154a537c70ce7297c2cb8f93f8ab55daf6f119070df20cb716796.sig",
+          "httpStatus": 404,
+          "absent": true,
+          "repository": "petclinic/signature-fixtures"
+        },
+        {
+          "reference": "ci-26-wrong-key",
+          "httpStatus": 404,
+          "absent": true,
+          "repository": "petclinic/signature-fixtures"
+        },
+        {
+          "reference": "sha256-fef2d952d868d524b4a50fc843d04e74ed912f6c6a246bddb8a6a1b024c1f221.sig",
+          "httpStatus": 404,
+          "absent": true,
+          "repository": "petclinic/signature-fixtures"
+        }
+      ],
+      "method": "GET_ONLY",
+      "rollout": 0,
+      "release": 0,
+      "validationRunId": "rf3-20261103-9730f2",
+      "protectedArtifactUnchanged": true,
+      "allValidationRegistryReferencesAbsent": true,
+      "protectedProductionArtifact": {
+        "references": [
+          {
+            "digest": "sha256:ab79439f86cef8a02bb7103d07736397c7c6589c938bcfebf91f18b615480508",
+            "platform": {
+              "os": "linux",
+              "OsFeatures": null,
+              "architecture": "amd64"
+            }
+          },
+          {
+            "digest": "sha256:956525e00136b8a553564a2a8ef2be4347b791c1e938499c25e3588eb5ad14f2",
+            "platform": {
+              "os": "linux",
+              "OsFeatures": null,
+              "architecture": "arm64"
+            }
+          },
+          {
+            "digest": "sha256:cdc44f8b6fb92f211642fd1296cbe95ef7bbb97d69b24bb2357334cd26350af1",
+            "platform": {
+              "os": "unknown",
+              "OsFeatures": null,
+              "architecture": "unknown"
+            }
+          },
+          {
+            "digest": "sha256:3b769d58875cfdd02b688f2670c11346b1d286f9613c5e912983cc76d6f58ef6",
+            "platform": {
+              "os": "unknown",
+              "OsFeatures": null,
+              "architecture": "unknown"
+            }
+          }
+        ],
+        "digest": "sha256:489cb821573ff1f98edd846d5949d74bf3391b24e2f1fe5bcfb71c6be0793137",
+        "mediaType": "application/vnd.oci.image.index.v1+json",
+        "tags": [
+          {
+            "immutable": false,
+            "name": "0.10.0-ci-256",
+            "id": 291
+          }
+        ]
+      }
+    }
+  },
+  "artifactHashes": {
+    ".devsecops/runtime-controlled/build-33/final-three-postcheck.json": "60d6964ec1902de4f5fdb7c60cdb8dcbefebe84490a21e9fd2b5d9480f7deee1"
+  },
+  "regression": [
+    {
+      "path": ".devsecops/runtime-controlled/build-33/regression.log",
+      "counts": {
+        "tests": 147,
+        "pass": 147,
+        "fail": 0,
+        "cancelled": 0,
+        "skipped": 0,
+        "todo": 0
+      },
+      "sha256": "9563eb65c5b989ba27a5d17dc981a023498c30281e87cc673d59d5dc10447fe2"
+    }
+  ],
+  "definitionSha256": "54a0ea99b13f06443e9a2b9a836ae50fc38e2cd9963d685834b03a7e3f11eaf9",
+  "consoleTail": [
+    "[...truncated 9 lines...]",
+    "[Pipeline] { (Verify runtime source bundle)",
+    "[Pipeline] sh",
+    "+ node infra/security/runtime-facts/verify-bundle.mjs",
+    "Exact uploaded source identities verified; non-release only",
+    "[Pipeline] }",
+    "[Pipeline] // stage",
+    "[Pipeline] stage",
+    "[Pipeline] { (Accepted thirteen original-binding smoke)",
+    "[Pipeline] sh",
+    "+ node infra/security/runtime-facts/thirteen-smoke.mjs",
+    "{\"acceptedCapabilities\":13,\"originalReceipts\":16,\"policyEvaluations\":0,\"historicalBindingPreserved\":true,\"noCrossRunArtifactMerge\":true}",
+    "[Pipeline] }",
+    "[Pipeline] // stage",
+    "[Pipeline] stage",
+    "[Pipeline] { (Unchanged real Regression 147)",
+    "[Pipeline] sh",
+    "+ mkdir -p .devsecops/runtime-controlled/build-33",
+    "+ node --test --test-concurrency=1 infra/observability/ensure-sonar-runtime.test.mjs infra/observability/gitops-wait.test.mjs infra/observability/maven-test.test.mjs infra/observability/promote-private.test.mjs infra/observability/release-preflight.test.mjs infra/observability/rollouts-spec.test.mjs infra/observability/scanner-db-refresh.test.mjs infra/observability/scanner-queue-reservation.test.mjs infra/observability/security-package-cache.test.mjs infra/observability/service-readiness.test.mjs infra/observability/sonar-resource-slot.test.mjs infra/observability/terraform-ci.test.mjs infra/observability/terraform-isolation-spec.test.mjs infra/observability/terraform-provider-build.test.mjs infra/observability/terraform-remote.test.mjs infra/observability/terraform-runtime.test.mjs infra/observability/verify-rollout.test.mjs infra/security/audit-target.test.mjs infra/security/cosign-verification.test.mjs infra/security/credential-scope.test.mjs infra/security/gate-contract.test.mjs infra/security/governance.test.mjs infra/security/hardening.test.mjs infra/security/production-baseline.test.mjs infra/security/promotion.test.mjs infra/security/rbac-contract.test.mjs infra/security/registry-dns.test.mjs infra/security/runtime-contract.test.mjs infra/security/runtime-event-policy.test.mjs infra/security/runtime-health.test.mjs infra/security/semgrep-policy.test.mjs infra/security/synthetic-credential.test.mjs infra/security/test-runtime-preflight.test.mjs infra/security/trivy-medium-policy.test.mjs infra/security/zap-policy.test.mjs",
+    "[Pipeline] }",
+    "[Pipeline] // stage",
+    "[Pipeline] stage",
+    "[Pipeline] { (Read-only cleanup and protected Harbor proof)",
+    "[Pipeline] withCredentials",
+    "Masking supported pattern matches of $HARBOR_PASS",
+    "[Pipeline] {",
+    "[Pipeline] sh",
+    "+ node infra/security/runtime-facts/final-three-postcheck.mjs",
+    "{\"validationReferencesAbsent\":6,\"productionArtifactUnchanged\":true,\"privateCredentialDirectoryRemoved\":true,\"externalWrites\":0}",
+    "[Pipeline] }",
+    "[Pipeline] // withCredentials",
+    "[Pipeline] }",
+    "[Pipeline] // stage",
+    "[Pipeline] stage",
+    "[Pipeline] { (Declarative: Post Actions)",
+    "[Pipeline] archiveArtifacts",
+    "Archiving artifacts",
+    "[Pipeline] }",
+    "[Pipeline] // stage",
+    "[Pipeline] }",
+    "[Pipeline] // timeout",
+    "[Pipeline] }",
+    "[Pipeline] // node",
+    "[Pipeline] End of Pipeline",
+    "Finished: SUCCESS"
+  ],
+  "productionJobModified": false
+}

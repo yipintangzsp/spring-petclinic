@@ -1,0 +1,65 @@
+{
+  "classification": "CONTROLLED_AUDIT_TESTS_NOT_REAL_TRIVY_EXECUTION",
+  "productionCompatibility": "VERIFIED",
+  "defaultMode": "production",
+  "validationModeMustBeExplicit": true,
+  "productionFormula": "capacity * 0.15 + 12 GiB",
+  "validationHardFloor": "ceil(capacity * 0.15 + 8 GiB)",
+  "guardSourceUnchanged": true,
+  "productionHelperUnchanged": true,
+  "numericLimitsChanged": false,
+  "newGuardProductionConnected": false,
+  "executionSafety": "NOT_READY",
+  "findings": [
+    {
+      "id": "DETACHED_DESCENDANT_ESCAPE",
+      "reproduced": true,
+      "severity": "EXECUTION_BLOCKER",
+      "evidence": "guard-review-tests.log: owned process group alone does not contain a detached descendant",
+      "observed": "receipt processGroupStopped=true while owned detached test descendant still alive",
+      "testCleanup": "exact owned escaped group SIGTERM, ESRCH verified, then owned directory removed"
+    },
+    {
+      "id": "CACHE_METADATA_SYMLINK_ESCAPE",
+      "reproduced": true,
+      "severity": "EXECUTION_BLOCKER",
+      "observed": "io.read follows inner metadata symlink to synthetic public sentinel outside cache subtree",
+      "deletionEvidence": "recursive rm does not follow that child symlink; no production path touched",
+      "remainingRisk": "path/marker lstat-read/removal TOCTOU needs separate no-follow ownership design"
+    },
+    {
+      "id": "STORAGE_DOMAIN_COVERAGE_CALLER_DEPENDENCY",
+      "reproduced": true,
+      "severity": "EXECUTION_BLOCKER",
+      "observed": "synthetic guest-only claimed budget accepted without discovering an omitted physical host",
+      "required": "trusted actual-domain inventory and independently reviewed peak/burst/cleanup/COW evidence"
+    },
+    {
+      "id": "SAMPLING_CANNOT_PROVE_WRITE_BOUND",
+      "severity": "EXECUTION_BLOCKER",
+      "observed": "bounded sampling stops on unknown metrics; does not prevent a burst between checks or bound external writers"
+    },
+    {
+      "id": "RELEASE_CONTEXT_NOT_SELF_AUTHENTICATED",
+      "severity": "ACTIVATION_PREREQUISITE",
+      "observed": "explicit validation-only mode required and production rejects validation config; caller must separately bind non-release context"
+    },
+    {
+      "id": "NUMERIC_FLOOR_NOT_TUNABLE",
+      "status": "VERIFIED",
+      "observed": "all accepted constants byte-identical; no threshold bypass added"
+    },
+    {
+      "id": "RETRY_REVIEW",
+      "status": "VERIFIED",
+      "observed": "new validation wrapper has no automatic refresh retry; unchanged production transport route/retry behavior retained"
+    }
+  ],
+  "reviewTestCount": 7,
+  "existingGuardTestCount": 73,
+  "actualTotalPassed": 80,
+  "platformThisRound": "Darwin",
+  "newLinuxExecutionClaimed": false,
+  "realScanCount": 0,
+  "dbRefreshCount": 0
+}

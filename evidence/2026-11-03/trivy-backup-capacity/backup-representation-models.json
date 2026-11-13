@@ -1,0 +1,120 @@
+{
+  "models": [
+    {
+      "id": "A",
+      "format": "FULL_COLD_UTM_BUNDLE_COPY",
+      "logicalBytes": 365811222552,
+      "allocatedBytesObserved": 220128845824,
+      "temporaryOverheadBytes": 1073741824,
+      "metadataReceiptAllowanceBytes": 1073741824,
+      "requiredDestinationFreeBytesConservative": 367958706200,
+      "conditionalSparseDestinationEstimateBytes": 222276329472,
+      "estimateStatus": "CONSERVATIVE_BOUND_USABLE_FOR_PLANNING; SPARSE_ESTIMATE_NOT_YET_VERIFIED",
+      "dependencies": [
+        "Existing UTM/QEMU, full config.plist and EFI vars",
+        "rsync -aS --extended-attributes with target attribute validation",
+        "offline hashes and qemu-img info/check"
+      ],
+      "selectedRepresentation": true,
+      "expectedBackupDuration": "NOT_MEASURED_NO_VERIFIED_DESTINATION_THROUGHPUT",
+      "durationModel": "For copy alone: transferredBytes / sustainedBytesPerSecond; add complete source+backup read/hash, offline check and shutdown/start time. No throughput or downtime promised."
+    },
+    {
+      "id": "B",
+      "format": "COLD_QCOW2_PLUS_REQUIRED_CONFIG_EFI",
+      "logicalBytes": 365811222552,
+      "diskLogicalBytes": 365810089984,
+      "allocatedBytesObserved": 220128845824,
+      "temporaryOverheadBytes": 1073741824,
+      "metadataReceiptAllowanceBytes": 1073741824,
+      "requiredDestinationFreeBytesConservative": 367958706200,
+      "conditionalSparseDestinationEstimateBytes": 222276329472,
+      "estimateStatus": "Must include config and EFI; disk alone is NOT recoverable platform state",
+      "dependencies": [
+        "Same as A plus exact original identity reattachment proof"
+      ],
+      "selectedRepresentation": false,
+      "expectedBackupDuration": "NOT_MEASURED_NO_VERIFIED_DESTINATION_THROUGHPUT",
+      "durationModel": "For copy alone: transferredBytes / sustainedBytesPerSecond; add complete source+backup read/hash, offline check and shutdown/start time. No throughput or downtime promised."
+    },
+    {
+      "id": "C",
+      "format": "SPARSE_AWARE_FULL_COLD_COPY",
+      "logicalBytes": 365811222552,
+      "allocatedBytesObserved": 220128845824,
+      "temporaryOverheadBytes": 1073741824,
+      "metadataReceiptAllowanceBytes": 1073741824,
+      "requiredDestinationFreeBytesConservative": 367958706200,
+      "conditionalSparseDestinationEstimateBytes": 222276329472,
+      "estimateStatus": "205GiB data extents observed on LIVE source; source changed, no stopped-source bound or target sparse roundtrip. 342GiB is not mathematically unavoidable; reduction requires evidence.",
+      "dependencies": [
+        "Cold source extent census",
+        "Destination same-size large sparse file/attribute/hash roundtrip",
+        "Usable offline restore and actual copied allocation receipt"
+      ],
+      "selectedRepresentation": false,
+      "expectedBackupDuration": "NOT_MEASURED_NO_VERIFIED_DESTINATION_THROUGHPUT",
+      "durationModel": "For copy alone: transferredBytes / sustainedBytesPerSecond; add complete source+backup read/hash, offline check and shutdown/start time. No throughput or downtime promised."
+    },
+    {
+      "id": "D",
+      "format": "LOSSLESS_COMPRESSED_ARCHIVE",
+      "logicalBytes": 365811222552,
+      "allocatedBytesObserved": 220128845824,
+      "temporaryOverheadBytes": "Streaming may avoid host intermediate; unverified. Restore extraction needs full target capacity.",
+      "metadataReceiptAllowanceBytes": 1073741824,
+      "requiredDestinationFreeBytesConservative": "UNMEASURED; cannot use an assumed compression ratio. Budget full input plus format overhead pending representative cold archive/restore proof.",
+      "estimateStatus": "NOT_VALIDATED_NOT_SELECTED",
+      "dependencies": [
+        "Present tar/gzip/zstd binaries; exact sparse/xattr archive format not yet validated",
+        "Offline decompression+extraction with no internet dependency",
+        "All identities, attrs and hashes preserved; large restore scratch budget"
+      ],
+      "selectedRepresentation": false,
+      "expectedBackupDuration": "NOT_MEASURED_NO_VERIFIED_DESTINATION_THROUGHPUT",
+      "durationModel": "For copy alone: transferredBytes / sustainedBytesPerSecond; add complete source+backup read/hash, offline check and shutdown/start time. No throughput or downtime promised."
+    },
+    {
+      "id": "E",
+      "format": "UTM_CLONE_OR_SNAPSHOT",
+      "logicalBytes": 365811222552,
+      "allocatedBytesObserved": 220128845824,
+      "temporaryOverheadBytes": "COW changed extents and restore copy budget UNKNOWN",
+      "metadataReceiptAllowanceBytes": "Version-specific UNKNOWN",
+      "requiredDestinationFreeBytesConservative": "NOT_PROVEN",
+      "estimateStatus": "Installed UTM4.7.5 feature/restore not validated; same-container clone/internal qcow snapshot not independent backup. No snapshot created.",
+      "dependencies": [
+        "Actual installed-version support and independently verified restore",
+        "Independent storage medium plus changed-extent capacity"
+      ],
+      "selectedRepresentation": false,
+      "expectedBackupDuration": "NOT_MEASURED_NO_VERIFIED_DESTINATION_THROUGHPUT",
+      "durationModel": "For copy alone: transferredBytes / sustainedBytesPerSecond; add complete source+backup read/hash, offline check and shutdown/start time. No throughput or downtime promised."
+    }
+  ],
+  "BACKUP_FORMAT_SELECTED": "FULL_COLD_UTM_BUNDLE_COPY_PENDING_DESTINATION",
+  "WHY": "Preserve all config, EFI, image identity with existing offline-readable tools; no unsupported conversions or external online dependency. Sparse copy optimization explicitly conditional.",
+  "RESTORE_DEPENDENCIES": [
+    "Existing UTM/QEMU, full config.plist and EFI vars",
+    "rsync -aS --extended-attributes with target attribute validation",
+    "offline hashes and qemu-img info/check"
+  ],
+  "backupDestination": null,
+  "backupCreated": false,
+  "bytesWrittenToBackup": 0,
+  "coldSourceExtentProof": false,
+  "sourceExtentEvidence": {
+    "scope": "READ_ONLY_HOST_EXTENT_METADATA_ON_ACTIVE_SOURCE_NOT_CONSISTENT_BACKUP",
+    "mutations": 0,
+    "supported": true,
+    "logicalBytes": 365810089984,
+    "allocatedBytes": 220130328576,
+    "dataExtentBytesObserved": 220130328576,
+    "extentCount": 133054,
+    "completed": true,
+    "sourceStatStableDuringCensus": false,
+    "notSafeUpperBoundForFutureColdCopy": true,
+    "reason": "APFS extent hints and st_blocks may differ; live writes continue. Re-measure stopped source and validate target sparse copy before reducing conservative budget."
+  },
+  "previousSmallCopyFixtureScope": "Same-APFS synthetic small copy only; not a target large-file or real VM backup proof"
+}

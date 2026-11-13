@@ -1,0 +1,504 @@
+{
+  "guard": {
+    "status": "ACCEPTED",
+    "profile": "MIN_RBAC_EXECUTOR",
+    "server": "https://security-test-sops-control-plane:6443",
+    "kubeSystemUID": "54f300a4-5f1b-4e1e-86a1-d173e5a402d8",
+    "wouldPermitChild": true,
+    "gateExecuted": false,
+    "environment": {
+      "preserved": [],
+      "explicitlySet": [
+        "BUSINESS_AGE_FILE",
+        "DEVSECOPS_READ_ONLY",
+        "HEAVY_HOLDER",
+        "HOME",
+        "ISOLATED_BOUNDARY_CONTEXT",
+        "KUBECONFIG",
+        "PATH",
+        "PYTHONDONTWRITEBYTECODE",
+        "TMPDIR",
+        "XDG_CACHE_HOME"
+      ],
+      "removedInheritedNames": [],
+      "sourceAndSnapshotBytesIdentical": true,
+      "defaultKubeconfigAbsent": true
+    },
+    "trustedChild": {
+      "exit": 0,
+      "outputSuppressed": true
+    },
+    "temporaryDirectory": "/fixture/boundary/isolated-sops-boundary-ayk07o9n",
+    "temporaryDirectoryRemoved": true,
+    "audit": {
+      "api_attempts": 3,
+      "kubectl_invocations": 0,
+      "child_executions": 1
+    }
+  },
+  "child": {
+    "schemaVersion": "sops-observation-v1",
+    "factType": "CHILD_EXIT_FACT",
+    "source": "real-local-subprocess",
+    "identity": "system:serviceaccount:devsecops-system:security-fixture-executor",
+    "expectedTarget": {
+      "executable": "/fixture/node/bin/node"
+    },
+    "observedTarget": {
+      "executable": "/fixture/node/bin/node"
+    },
+    "status": "EXECUTION_ERROR",
+    "errorClass": "NONZERO_EXIT",
+    "evidenceRef": "result.json",
+    "commandIdentity": {
+      "executable": "/fixture/node/bin/node",
+      "argvSha256": "27852a53d0e2459b8271fe3715e940389c10f300c4a33e6bf5c73f12591d05bc"
+    },
+    "exit": {
+      "code": 1,
+      "signal": null,
+      "timedOut": false,
+      "outputLimitExceeded": false
+    },
+    "stdout": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "contentStored": false
+    },
+    "stderr": {
+      "bytes": 336,
+      "sha256": "9cff4d8fb672f5a9e346f7dc21952d1b11347809bb21c3a3793d2f6b5eb546c2",
+      "contentStored": false
+    }
+  },
+  "result": {
+    "scenario": "WRONG_AGE_KEY",
+    "classification": "REAL_CONTROLLED_EXECUTION",
+    "rawEvidence": {
+      "facts": {
+        "prerequisites": {
+          "credentialPresent": true,
+          "manifest": true,
+          "lease": true,
+          "tools": true
+        },
+        "sourceReadSucceeded": true,
+        "readOnly": false,
+        "expectedTargetCount": 4,
+        "targets": [
+          {
+            "expected": {
+              "namespace": "petclinic",
+              "name": "petclinic-db"
+            },
+            "decrypt": {
+              "exitStatus": 128,
+              "stdout": {
+                "bytes": 0,
+                "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+              }
+            },
+            "actual": null,
+            "after": null,
+            "uidEqual": null,
+            "dataEqual": null
+          }
+        ],
+        "reportWriteSucceeded": true
+      },
+      "events": [
+        {
+          "kind": "PROCESS",
+          "command": "kubectl",
+          "argv": [
+            "--request-timeout=20s",
+            "-n",
+            "data-infra",
+            "get",
+            "lease",
+            "platform-heavy",
+            "-o",
+            "json"
+          ],
+          "exitCode": 0,
+          "signal": null,
+          "errorClass": null,
+          "timedOut": false,
+          "stdout": {
+            "bytes": 760,
+            "sha256": "547a1b119c314be01f5407daec9c57ce99676c99d69ae61e3612d32e3acf973c"
+          },
+          "stderr": {
+            "bytes": 0,
+            "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          }
+        },
+        {
+          "kind": "LEASE_READ",
+          "uid": "ff5e9671-9b22-4a88-892c-64eeac8307cb",
+          "holderIdentity": "sm-sops-20261102-02",
+          "holderMatched": true
+        },
+        {
+          "kind": "TOOL_SHA_READ",
+          "sha256": "53b0abacd38ef1b12a66d6c100956691b9cefce018d91f81e73ddf7438b94d77"
+        },
+        {
+          "kind": "PROCESS",
+          "command": "/var/jenkins_home/platform-security/20261027/sops",
+          "argv": [
+            "decrypt",
+            "infra/security/secrets/petclinic-db.enc.json"
+          ],
+          "exitCode": 128,
+          "signal": null,
+          "errorClass": null,
+          "timedOut": false,
+          "stdout": {
+            "bytes": 0,
+            "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          },
+          "stderr": {
+            "bytes": 807,
+            "sha256": "7b7d87f4e2eb181adf36614ed8836187092e5f46f34ddac4d55430aa06d96f54"
+          }
+        },
+        {
+          "kind": "REPORT_WRITE",
+          "succeeded": true
+        },
+        {
+          "kind": "UNCAUGHT_EXCEPTION",
+          "errorClass": "Error",
+          "messageSha256": "842899e7f31c008ee71c2493816755302b70b03b0b210e8cbce625c25b7035da"
+        }
+      ],
+      "rawInputSha256": "e30c1edf73d86ec29f5041b5d293dd745922381f20afdcc5e6317d95903bac44",
+      "rawPreserved": true,
+      "redaction": "Synthetic decrypted stdout/data stay in memory only; original fingerprints+equality retained, no raw values archived"
+    },
+    "oldGate": {
+      "exitCode": 1,
+      "signal": null,
+      "errorClass": "Error",
+      "oldDecision": "FAIL"
+    },
+    "adapterRawOutput": {
+      "component": "sops",
+      "status": "success",
+      "checks": [
+        {
+          "id": "manifest",
+          "passed": true
+        },
+        {
+          "id": "lease",
+          "passed": true
+        },
+        {
+          "id": "tools",
+          "passed": true
+        },
+        {
+          "id": "credential",
+          "passed": true
+        },
+        {
+          "id": "source-read",
+          "passed": true
+        },
+        {
+          "id": "decrypt-0",
+          "passed": false
+        }
+      ],
+      "failureKind": "execution error"
+    },
+    "policy": {
+      "policyVersion": "baseline-v1",
+      "securityLevel": "standard",
+      "profile": "java-web",
+      "effectivePolicy": {
+        "security-approval-promotion": {
+          "Critical": "FAIL",
+          "High": "FAIL",
+          "Medium": "WARN",
+          "Low": "WARN",
+          "Info": "WARN"
+        },
+        "regression": {
+          "Critical": "FAIL",
+          "High": "FAIL",
+          "Medium": "WARN",
+          "Low": "WARN",
+          "Info": "WARN"
+        },
+        "gitleaks": {
+          "Critical": "FAIL",
+          "High": "FAIL",
+          "Medium": "WARN",
+          "Low": "WARN",
+          "Info": "WARN"
+        },
+        "semgrep": {
+          "Critical": "FAIL",
+          "High": "FAIL",
+          "Medium": "WARN",
+          "Low": "WARN",
+          "Info": "WARN"
+        },
+        "sonarqube": {
+          "Critical": "FAIL",
+          "High": "FAIL",
+          "Medium": "WARN",
+          "Low": "WARN",
+          "Info": "WARN"
+        },
+        "sbom": {
+          "Critical": "FAIL",
+          "High": "FAIL",
+          "Medium": "WARN",
+          "Low": "WARN",
+          "Info": "WARN"
+        },
+        "trivy": {
+          "Critical": "FAIL",
+          "High": "FAIL",
+          "Medium": "WARN",
+          "Low": "WARN",
+          "Info": "WARN"
+        },
+        "cosign": {
+          "Critical": "FAIL",
+          "High": "FAIL",
+          "Medium": "WARN",
+          "Low": "WARN",
+          "Info": "WARN"
+        },
+        "kubescape": {
+          "Critical": "FAIL",
+          "High": "FAIL",
+          "Medium": "WARN",
+          "Low": "WARN",
+          "Info": "WARN"
+        },
+        "zap": {
+          "Critical": "FAIL",
+          "High": "FAIL",
+          "Medium": "WARN",
+          "Low": "WARN",
+          "Info": "WARN"
+        },
+        "defectdojo": {
+          "Critical": "FAIL",
+          "High": "FAIL",
+          "Medium": "WARN",
+          "Low": "WARN",
+          "Info": "WARN"
+        },
+        "provenance": {
+          "Critical": "FAIL",
+          "High": "FAIL",
+          "Medium": "WARN",
+          "Low": "WARN",
+          "Info": "WARN"
+        },
+        "build-provenance": {
+          "Critical": "FAIL",
+          "High": "FAIL",
+          "Medium": "WARN",
+          "Low": "WARN",
+          "Info": "WARN"
+        },
+        "sops": {
+          "Critical": "FAIL",
+          "High": "FAIL",
+          "Medium": "WARN",
+          "Low": "WARN",
+          "Info": "WARN"
+        },
+        "falco-baseline": {
+          "Critical": "FAIL",
+          "High": "FAIL",
+          "Medium": "WARN",
+          "Low": "WARN",
+          "Info": "WARN"
+        },
+        "falco-final": {
+          "Critical": "FAIL",
+          "High": "FAIL",
+          "Medium": "WARN",
+          "Low": "WARN",
+          "Info": "WARN"
+        },
+        "kyverno": {
+          "Critical": "FAIL",
+          "High": "FAIL",
+          "Medium": "WARN",
+          "Low": "WARN",
+          "Info": "WARN"
+        },
+        "kyverno-admission": {
+          "Critical": "FAIL",
+          "High": "FAIL",
+          "Medium": "WARN",
+          "Low": "WARN",
+          "Info": "WARN"
+        },
+        "kyverno-rbac": {
+          "Critical": "FAIL",
+          "High": "FAIL",
+          "Medium": "WARN",
+          "Low": "WARN",
+          "Info": "WARN"
+        },
+        "falco": {
+          "Critical": "FAIL",
+          "High": "FAIL",
+          "Medium": "WARN",
+          "Low": "WARN",
+          "Info": "WARN"
+        },
+        "semgrep-command-audit": {
+          "Critical": "FAIL",
+          "High": "FAIL",
+          "Medium": "WARN",
+          "Low": "WARN",
+          "Info": "WARN"
+        },
+        "cosign-cli": {
+          "Critical": "FAIL",
+          "High": "FAIL",
+          "Medium": "WARN",
+          "Low": "WARN",
+          "Info": "WARN"
+        },
+        "falco-prior-exit": {
+          "Critical": "FAIL",
+          "High": "FAIL",
+          "Medium": "WARN",
+          "Low": "WARN",
+          "Info": "WARN"
+        },
+        "falco-continuity": {
+          "Critical": "FAIL",
+          "High": "FAIL",
+          "Medium": "WARN",
+          "Low": "WARN",
+          "Info": "WARN"
+        },
+        "falco-persistence": {
+          "Critical": "FAIL",
+          "High": "FAIL",
+          "Medium": "WARN",
+          "Low": "WARN",
+          "Info": "WARN"
+        },
+        "provenance-signature": {
+          "Critical": "FAIL",
+          "High": "FAIL",
+          "Medium": "WARN",
+          "Low": "WARN",
+          "Info": "WARN"
+        },
+        "build-provenance-signature": {
+          "Critical": "FAIL",
+          "High": "FAIL",
+          "Medium": "WARN",
+          "Low": "WARN",
+          "Info": "WARN"
+        },
+        "approval-evidence": {
+          "Critical": "FAIL",
+          "High": "FAIL",
+          "Medium": "WARN",
+          "Low": "WARN",
+          "Info": "WARN"
+        },
+        "approval-signatures": {
+          "Critical": "FAIL",
+          "High": "FAIL",
+          "Medium": "WARN",
+          "Low": "WARN",
+          "Info": "WARN"
+        }
+      },
+      "appliedOverrides": [],
+      "status": "FAIL",
+      "decision": "FAIL",
+      "failureKind": "execution error",
+      "checks": [
+        {
+          "id": "manifest",
+          "passed": true
+        },
+        {
+          "id": "lease",
+          "passed": true
+        },
+        {
+          "id": "tools",
+          "passed": true
+        },
+        {
+          "id": "credential",
+          "passed": true
+        },
+        {
+          "id": "source-read",
+          "passed": true
+        },
+        {
+          "id": "decrypt-0",
+          "passed": false
+        }
+      ],
+      "severity": null,
+      "sopsFacts": {
+        "component": "sops",
+        "status": "success",
+        "checks": [
+          {
+            "id": "manifest",
+            "passed": true
+          },
+          {
+            "id": "lease",
+            "passed": true
+          },
+          {
+            "id": "tools",
+            "passed": true
+          },
+          {
+            "id": "credential",
+            "passed": true
+          },
+          {
+            "id": "source-read",
+            "passed": true
+          },
+          {
+            "id": "decrypt-0",
+            "passed": false
+          }
+        ],
+        "failureKind": "execution error"
+      }
+    },
+    "adapterError": null,
+    "comparison": "MATCH"
+  },
+  "executor": {
+    "exitCode": 0,
+    "elapsedSeconds": 0.834,
+    "stderrBytes": 0,
+    "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "nonRootUid": 65532,
+    "network": "kind",
+    "noAdminCredential": true,
+    "noHostMount": true,
+    "containerRemoved": true
+  },
+  "controlledDelta": {}
+}

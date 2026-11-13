@@ -1,0 +1,12 @@
+[Unit]
+Description=Petclinic CI proxy to existing registry ClusterIP
+Requires=petclinic-registry.socket
+After=network-online.target
+
+[Service]
+User=nobody
+ExecStart=/usr/lib/systemd/systemd-socket-proxyd 10.43.243.46:5000
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=true

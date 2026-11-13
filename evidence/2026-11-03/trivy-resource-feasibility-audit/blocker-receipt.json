@@ -1,0 +1,227 @@
+{
+  "receiptSchemaVersion": 1,
+  "kind": "ENVIRONMENT_RESOURCE_BLOCKER",
+  "classification": "READ_ONLY_RESOURCE_AUDIT_NOT_POLICY_RESULT",
+  "resourceAvailable": "NOT_AVAILABLE",
+  "selectedCandidate": null,
+  "executionReadiness": "RESOURCE_BLOCKED",
+  "auditClosed": true,
+  "closureScope": "Existing accessible candidates identified in this audit only; rescan only on material resource change",
+  "rejectedCandidates": [
+    {
+      "candidateId": "mac-host",
+      "classification": "PRODUCTION_CRITICAL",
+      "overall": "INELIGIBLE",
+      "reasons": [
+        "Actual available backing below sealed300GiB floor",
+        "macOS/APFS native environment is not frozen Linux arm64/ext4/overlay topology",
+        "Low-space/failure test threatens production VM backing"
+      ],
+      "capacityChecks": [
+        {
+          "scope": "independent physical backing available",
+          "requiredBytes": 322122547200,
+          "availableBytes": 24440545280,
+          "headroomBytes": -297682001920,
+          "totalBytes": 494384795648,
+          "usedBytes": 469944250368,
+          "status": "FAIL",
+          "evidence": "local-candidate-inventory.json"
+        }
+      ]
+    },
+    {
+      "candidateId": "node-aliyun-worker",
+      "classification": "PRODUCTION_SHARED",
+      "overall": "INELIGIBLE",
+      "reasons": [
+        "Production node and runtime share filesystem; interrupted/extraction/low-space tests can cause DiskPressure, eviction or runtime instability",
+        "Guest initial free headroom below sealed above-guard+8GiB full-matrix band",
+        "amd64 cannot match frozen Linux arm64 exact image/binary requirement",
+        "No equivalent guest filesystem capacity; provider attached-disk inventory UNKNOWN because existing trusted host read unavailable, no privilege escalation/bypass"
+      ],
+      "capacityChecks": [
+        {
+          "scope": "guest initial available >= frozen guard +8GiB band",
+          "requiredBytes": 62039375668,
+          "availableBytes": 10100510720,
+          "headroomBytes": -51938864948,
+          "totalBytes": 41882943488,
+          "usedBytes": 29846695936,
+          "status": "FAIL",
+          "evidence": "node-candidate-inventory.json"
+        }
+      ]
+    },
+    {
+      "candidateId": "utm-devops",
+      "classification": "PRODUCTION_CRITICAL",
+      "overall": "INELIGIBLE",
+      "reasons": [
+        "Production node and runtime share filesystem; interrupted/extraction/low-space tests can cause DiskPressure, eviction or runtime instability",
+        "Guest initial free headroom below sealed above-guard+8GiB full-matrix band",
+        "Existing sealed production VM exclusion: no safe backing/validated backup; no cleanup or expansion reopened"
+      ],
+      "capacityChecks": [
+        {
+          "scope": "guest initial available >= frozen guard +8GiB band",
+          "requiredBytes": 62039375668,
+          "availableBytes": 45347446784,
+          "headroomBytes": -16691928884,
+          "totalBytes": 270430261248,
+          "usedBytes": 211898433536,
+          "status": "FAIL",
+          "evidence": "node-candidate-inventory.json"
+        },
+        {
+          "scope": "independent physical backing available",
+          "requiredBytes": 322122547200,
+          "availableBytes": 24440545280,
+          "headroomBytes": -297682001920,
+          "totalBytes": 494384795648,
+          "usedBytes": 469944250368,
+          "status": "FAIL",
+          "evidence": "local-candidate-inventory.json"
+        }
+      ]
+    },
+    {
+      "candidateId": "node-ucloud-worker",
+      "classification": "PRODUCTION_SHARED",
+      "overall": "INELIGIBLE",
+      "reasons": [
+        "Production node and runtime share filesystem; interrupted/extraction/low-space tests can cause DiskPressure, eviction or runtime instability",
+        "Guest initial free headroom below sealed above-guard+8GiB full-matrix band",
+        "amd64 cannot match frozen Linux arm64 exact image/binary requirement",
+        "No equivalent guest filesystem capacity; provider attached-disk inventory UNKNOWN because existing trusted host read unavailable, no privilege escalation/bypass"
+      ],
+      "capacityChecks": [
+        {
+          "scope": "guest initial available >= frozen guard +8GiB band",
+          "requiredBytes": 62039375668,
+          "availableBytes": 56811704320,
+          "headroomBytes": -5227671348,
+          "totalBytes": 83053432832,
+          "usedBytes": 26224951296,
+          "status": "FAIL",
+          "evidence": "node-candidate-inventory.json"
+        }
+      ]
+    },
+    {
+      "candidateId": "colima-security-test",
+      "classification": "VALIDATION_SAFE",
+      "overall": "INELIGIBLE",
+      "reasons": [
+        "Data available~6.89GiB, primary270430261248B FS not present",
+        "OS /tmp lives on vda, Docker data on vdb: required same-backing topology not met",
+        "Production host APFS backing is shared and cannot tolerate low-space/COW failure tests"
+      ],
+      "capacityChecks": [
+        {
+          "scope": "guest data available",
+          "requiredBytes": 62039375668,
+          "availableBytes": 7400390656,
+          "headroomBytes": -54638985012,
+          "totalBytes": 10461925376,
+          "usedBytes": 2507993088,
+          "status": "FAIL",
+          "evidence": null
+        },
+        {
+          "scope": "independent physical backing available",
+          "requiredBytes": 322122547200,
+          "availableBytes": 24440545280,
+          "headroomBytes": -297682001920,
+          "totalBytes": 494384795648,
+          "usedBytes": 469944250368,
+          "status": "FAIL",
+          "evidence": "local-candidate-inventory.json"
+        }
+      ]
+    },
+    {
+      "candidateId": "kind-security-test-sops",
+      "classification": "VALIDATION_SAFE",
+      "overall": "INELIGIBLE",
+      "reasons": [
+        "kind /tmp is1GiB tmpfs, explicit MUST_MATCH storage mismatch",
+        "All allocations share small Colima data disk and production Mac backing",
+        "Cannot safely reproduce full disk-failure/low-space matrix; existing cluster not disposable by this authorization"
+      ],
+      "capacityChecks": [
+        {
+          "scope": "kind backing available",
+          "requiredBytes": 62039375668,
+          "availableBytes": 7400386560,
+          "headroomBytes": -54638989108,
+          "totalBytes": 10461925376,
+          "usedBytes": 2507997184,
+          "status": "FAIL",
+          "evidence": null
+        },
+        {
+          "scope": "independent physical backing available",
+          "requiredBytes": 322122547200,
+          "availableBytes": 24440545280,
+          "headroomBytes": -297682001920,
+          "totalBytes": 494384795648,
+          "usedBytes": 469944250368,
+          "status": "FAIL",
+          "evidence": "local-candidate-inventory.json"
+        }
+      ]
+    },
+    {
+      "candidateId": "colima-default",
+      "classification": "UNKNOWN",
+      "overall": "INELIGIBLE",
+      "reasons": [
+        "Stopped VM not started; no attested mount/topology/workload isolation",
+        "Configured virtual data disk100GiB is not measured usable/free capacity and not primary251.865GiB FS",
+        "Actual shared host backing fails300GiB requirement"
+      ],
+      "capacityChecks": [
+        {
+          "scope": "guest available not inspected because stopped",
+          "requiredBytes": 62039375668,
+          "availableBytes": null,
+          "headroomBytes": null,
+          "totalBytes": null,
+          "usedBytes": null,
+          "status": "UNKNOWN",
+          "evidence": null
+        },
+        {
+          "scope": "independent physical backing available",
+          "requiredBytes": 322122547200,
+          "availableBytes": 24440545280,
+          "headroomBytes": -297682001920,
+          "totalBytes": 494384795648,
+          "usedBytes": 469944250368,
+          "status": "FAIL",
+          "evidence": "local-candidate-inventory.json"
+        }
+      ]
+    }
+  ],
+  "runtimeResult": null,
+  "policyResult": null,
+  "policyEvaluations": 0,
+  "guardChanged": false,
+  "guardValidity": "GUARD_REQUIRES_REVALIDATION",
+  "materialChanges": [
+    "Independent attached/mounted storage with materially sufficient actual free bytes and safe backing/backup budget becomes available",
+    "Existing candidate actual free capacity increases enough AND all mandatory equivalence/isolation properties can be proved without production changes",
+    "New independently available non-production arm64 VM with primary filesystem/overlay/cache-temp equivalence appears",
+    "Equivalent validation host plus loss-free measurement/evidence storage becomes accessible"
+  ],
+  "notMaterialChanges": [
+    "Time elapsed or user asks continue with unchanged resource facts",
+    "Production proxy switch/restart/hash change (not dependency)",
+    "Sparse virtual capacity declaration, symlink/mount alias, theoretical APFS total",
+    "Run CASE A only, smaller experiment, lower guard, deletion/resize proposal without authorization"
+  ],
+  "noLoop": true,
+  "noRoadmapSkipping": true
+}

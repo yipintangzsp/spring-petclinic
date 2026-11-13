@@ -1,0 +1,141 @@
+{
+  "apiVersion": "apps/v1",
+  "kind": "Deployment",
+  "metadata": {
+    "name": "airflow-statsd",
+    "namespace": "data-infra",
+    "labels": {
+      "app.kubernetes.io/part-of": "petclinic-analysis"
+    }
+  },
+  "spec": {
+    "progressDeadlineSeconds": 600,
+    "replicas": 0,
+    "revisionHistoryLimit": 10,
+    "selector": {
+      "matchLabels": {
+        "component": "statsd",
+        "release": "airflow",
+        "tier": "airflow"
+      }
+    },
+    "strategy": {
+      "rollingUpdate": {
+        "maxSurge": "25%",
+        "maxUnavailable": "25%"
+      },
+      "type": "RollingUpdate"
+    },
+    "template": {
+      "metadata": {
+        "annotations": {
+          "kubectl.kubernetes.io/restartedAt": "2026-04-21T21:57:19+08:00"
+        },
+        "labels": {
+          "component": "statsd",
+          "release": "airflow",
+          "tier": "airflow"
+        }
+      },
+      "spec": {
+        "affinity": {},
+        "containers": [
+          {
+            "args": [
+              "--statsd.cache-size=1000",
+              "--statsd.cache-type=lru",
+              "--statsd.mapping-config=/etc/statsd-exporter/mappings.yml"
+            ],
+            "image": "127.0.0.1:30050/platform-upgrade/statsd-exporter:v0.30.0-arm64",
+            "imagePullPolicy": "IfNotPresent",
+            "livenessProbe": {
+              "failureThreshold": 3,
+              "httpGet": {
+                "path": "/metrics",
+                "port": 9102,
+                "scheme": "HTTP"
+              },
+              "initialDelaySeconds": 10,
+              "periodSeconds": 10,
+              "successThreshold": 1,
+              "timeoutSeconds": 5
+            },
+            "name": "statsd",
+            "ports": [
+              {
+                "containerPort": 9125,
+                "name": "statsd-ingest",
+                "protocol": "UDP"
+              },
+              {
+                "containerPort": 9102,
+                "name": "statsd-scrape",
+                "protocol": "TCP"
+              }
+            ],
+            "readinessProbe": {
+              "failureThreshold": 3,
+              "httpGet": {
+                "path": "/metrics",
+                "port": 9102,
+                "scheme": "HTTP"
+              },
+              "initialDelaySeconds": 10,
+              "periodSeconds": 10,
+              "successThreshold": 1,
+              "timeoutSeconds": 5
+            },
+            "resources": {
+              "requests": {
+                "cpu": "20m",
+                "memory": "32Mi"
+              },
+              "limits": {
+                "cpu": "250m",
+                "memory": "64Mi"
+              }
+            },
+            "securityContext": {
+              "allowPrivilegeEscalation": false,
+              "capabilities": {
+                "drop": [
+                  "ALL"
+                ]
+              }
+            },
+            "terminationMessagePath": "/dev/termination-log",
+            "terminationMessagePolicy": "File",
+            "volumeMounts": [
+              {
+                "mountPath": "/etc/statsd-exporter",
+                "name": "config",
+                "readOnly": true
+              }
+            ]
+          }
+        ],
+        "dnsPolicy": "ClusterFirst",
+        "restartPolicy": "Always",
+        "schedulerName": "default-scheduler",
+        "securityContext": {
+          "runAsUser": 65534
+        },
+        "serviceAccount": "airflow-statsd",
+        "serviceAccountName": "airflow-statsd",
+        "terminationGracePeriodSeconds": 30,
+        "volumes": [
+          {
+            "configMap": {
+              "defaultMode": 420,
+              "name": "airflow-statsd"
+            },
+            "name": "config"
+          }
+        ],
+        "nodeSelector": {
+          "kubernetes.io/hostname": "devops"
+        }
+      }
+    }
+  }
+}

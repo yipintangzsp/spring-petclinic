@@ -1,0 +1,62 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: platform-ops
+  labels:
+    app.kubernetes.io/managed-by: platform-readonly-entry
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: platform-readonly
+  namespace: platform-ops
+  labels:
+    app.kubernetes.io/managed-by: platform-readonly-entry
+automountServiceAccountToken: false
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: platform-readonly
+  labels:
+    app.kubernetes.io/managed-by: platform-readonly-entry
+rules:
+- apiGroups: [""]
+  resources: ["nodes", "pods", "services", "namespaces", "events", "configmaps"]
+  verbs: ["get", "list", "watch"]
+- apiGroups: ["apps"]
+  resources: ["deployments", "daemonsets", "statefulsets", "replicasets"]
+  verbs: ["get", "list", "watch"]
+- apiGroups: ["events.k8s.io"]
+  resources: ["events"]
+  verbs: ["get", "list", "watch"]
+- apiGroups: ["argoproj.io"]
+  resources: ["applications", "applicationsets", "appprojects", "rollouts"]
+  verbs: ["get", "list", "watch"]
+- apiGroups: ["kyverno.io"]
+  resources: ["clusterpolicies", "policies"]
+  verbs: ["get", "list", "watch"]
+- apiGroups: ["policies.kyverno.io"]
+  resources: ["validatingpolicies", "mutatingpolicies", "generatingpolicies", "imagevalidatingpolicies", "deletingpolicies"]
+  verbs: ["get", "list", "watch"]
+- apiGroups: ["wgpolicyk8s.io"]
+  resources: ["clusterpolicyreports", "policyreports"]
+  verbs: ["get", "list", "watch"]
+- apiGroups: ["reports.kyverno.io"]
+  resources: ["clusterephemeralreports", "ephemeralreports"]
+  verbs: ["get", "list", "watch"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: platform-readonly
+  labels:
+    app.kubernetes.io/managed-by: platform-readonly-entry
+subjects:
+- kind: ServiceAccount
+  name: platform-readonly
+  namespace: platform-ops
+roleRef:
+  kind: ClusterRole
+  name: platform-readonly
+  apiGroup: rbac.authorization.k8s.io

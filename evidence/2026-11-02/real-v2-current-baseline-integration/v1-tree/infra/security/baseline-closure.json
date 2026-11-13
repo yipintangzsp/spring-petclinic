@@ -1,0 +1,28 @@
+{
+  "schema": 1,
+  "baseline": 246,
+  "profile": "PetClinic production + security/monitoring/sonarqube scoped baseline; other namespaces inventory AUDIT",
+  "falco": {
+    "fail": [
+      "current unhealthy or driver fatal",
+      "verified persistent successful shadow reads / critical system writes in two disjoint windows"
+    ],
+    "warn": [
+      "historical exit/restarts",
+      "instantaneous or denied events",
+      "namespace tool execution without verified target namespace/escape",
+      "privilege rule without verified successful elevation",
+      "known non-destructive maintenance shell/package/network utilities"
+    ],
+    "evidence": "runtime/isolated-sensor-proof.json and runtime-event-policy.test.mjs",
+    "decision": "No additional namespace/privilege FAIL: isolated nsenter event proves execution only, not successful escape. No destructive escape test authorized or required."
+  },
+  "semgrep": {
+    "decision": "Freeze proven high-confidence rules. Complex environment/file/cross-function paths retain WARN; no scope expansion."
+  },
+  "zap": {
+    "decision": "Confirmed, reproducible High only FAIL. Existing confirmation list empty. Public demo app has no user/admin identity contract; authentication/authorization business scenarios remain unverified WARN. No active attacks."
+  },
+  "warningsDoNotMeanSafe": true,
+  "businessPublishAllowed": false
+}

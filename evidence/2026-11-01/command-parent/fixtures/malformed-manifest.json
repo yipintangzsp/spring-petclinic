@@ -1,0 +1,868 @@
+{
+  "input": {
+    "classification": "CONTROLLED_REPLAY",
+    "build": "270",
+    "mode": "enforce",
+    "source": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "python": {
+      "status": 0,
+      "stdout": "{\"status\": \"success\", \"scope\": \"tracked Python/Shell conservative local analysis; no arbitrary wrappers, shell parser, message/file provenance or interprocedural exploit proof\", \"items\": [{\"path\": \"fixture.py\", \"line\": 2, \"classification\": \"safe\", \"reason\": \"fixed command and literal arguments; scoped to this call only\", \"sink\": \"subprocess.run\"}], \"errors\": [], \"counts\": {\"safe\": 1, \"dangerous\": 0, \"unknown\": 0}, \"round3_review\": {\"baseline_build\": 238, \"total\": 0, \"items\": [], \"counts\": {\"fixed_trusted\": 0, \"dynamic_controlled\": 0, \"external_controllable\": 0, \"unknown\": 0}}, \"blockingFindings\": [], \"policyTests\": {\"external_shell_detected\": 4, \"safe_or_unproven_not_blocked\": 5, \"executed_commands\": 0}, \"policy\": \"FAIL only proven direct external shell path; reviewed script trust boundaries and uncertain cases WARN\", \"ssh_audit\": {\"status\": \"success\", \"wrapper_source_sha256\": {}, \"calls\": [], \"blockingFindings\": [], \"counts\": {\"fixed_trusted\": 0, \"dynamic_controlled\": 0, \"external_controllable\": 0, \"unknown\": 0}, \"tests\": {\"external_ssh_detected\": 4, \"safe_or_unproven_not_blocked\": 7, \"executed_commands\": 0}, \"scope\": \"two reviewed SSH wrappers and fixed-host direct SSH; local explicit source flows only; runtime import resolution, general SSH options, environment/file/message provenance and cross-function flow remain WARN\", \"manual_review\": {\"source_binding\": {}}, \"review_source_unchanged\": true}, \"interpreter_audit\": {\"status\": \"success\", \"calls\": [], \"blockingFindings\": [], \"tests\": {\"external_program_detected\": 7, \"safe_or_unproven_not_blocked\": 7, \"repeat_consistent\": true, \"executed_commands\": 0}, \"counts\": {\"fixed_trusted\": 0, \"dynamic_controlled\": 0, \"external_controllable\": 0, \"unknown\": 0}, \"scope\": \"Direct interpreter argv/stdin and syntactically proven controlled.remote nested code. General wrappers, environment/file origin, embedded scripts and JavaScript/Shell inventory stay WARN; no interprocedural or exploit-completeness claim.\"}}\n",
+      "stderr": "",
+      "error": null,
+      "classification": "CONTROLLED_REPLAY_STATIC_ANALYSIS_ONLY",
+      "payload": {
+        "code": "\"\"\"Conservative static inventory; never executes inspected scripts or shell commands.\"\"\"\nimport ast,json,pathlib,re,subprocess,hashlib\n\ndef classify(node):\n name=ast.unparse(node.func)\n if not (name.startswith('subprocess.') or name in ('os.system','os.popen','eval','exec')):return None\n shell=any(k.arg=='shell' and isinstance(k.value,ast.Constant) and k.value.value is True for k in node.keywords)\n arg=node.args[0] if node.args else None\n literal=lambda x:isinstance(x,ast.Constant) and isinstance(x.value,(str,int,float))\n external=any(isinstance(x,ast.Call) and (ast.unparse(x.func) in ('input','os.getenv','os.environ.get') or ast.unparse(x.func).endswith('.getParameter')) for x in ast.walk(arg)) if arg else False\n if external and (shell or name in ('os.system','os.popen','eval','exec')):return {'classification':'dangerous','reason':'direct external input reaches interpreter or shell','sink':name}\n fixed=arg is not None and (literal(arg) or isinstance(arg,(ast.List,ast.Tuple)) and all(literal(x) for x in arg.elts))\n if fixed and name not in ('eval','exec'):return {'classification':'safe','reason':'fixed command and literal arguments; scoped to this call only','sink':name}\n return {'classification':'unknown','reason':'dynamic arguments, environment, wrapper or remote-shell trust needs manual review; argument-list calls are not proof of injection','sink':name}\n\ndef analyze(files,policy=None,review=None):\n items=[];errors=[]\n for f,source in files.items():\n  suffix=pathlib.PurePosixPath(f).suffix\n  if suffix=='.py':\n   try: tree=ast.parse(source)\n   except (SyntaxError,UnicodeError) as e:errors.append({'path':f,'error':type(e).__name__});continue\n   for node in ast.walk(tree):\n    if isinstance(node,ast.Call):\n     value=classify(node)\n     if value:items.append({'path':f,'line':node.lineno,**value})\n  elif suffix=='.sh':\n   for i,line in enumerate(source.splitlines(),1):\n    if re.search(r'\\b(eval|exec|bash|sh|python3?)\\b|\\$\\(',line) and not line.lstrip().startswith('#'):items.append({'path':f,'line':i,'classification':'unknown','reason':'shell expansion inventory; no data-flow proof'})\n blocking=[];tests=None\n if policy:\n  tests=policy['self_test']()\n  for f,source in files.items():\n   if pathlib.PurePosixPath(f).suffix=='.py':\n    try:blocking.extend(policy['inspect_python'](source,f))\n    except SyntaxError:pass\n reviews=[]\n for entry in (review or {}).get('items',[]):\n  row=dict(entry);raw=files.get(row['path']);row['review_binding']=bool(raw is not None and hashlib.sha256(raw.encode()).hexdigest()==row.get('reviewed_source_sha256',row['source_file_sha256']))\n  if not row['review_binding']:row['classification']='unknown';row['action']='WARN';row['evidence']='Reviewed source changed or absent; prior classification is not a bypass'\n  reviews.append(row)\n return {'status':'failed' if errors or blocking else 'success','scope':'tracked Python/Shell conservative local analysis; no arbitrary wrappers, shell parser, message/file provenance or interprocedural exploit proof','items':items,'errors':errors,'counts':{k:sum(x['classification']==k for x in items) for k in ('safe','dangerous','unknown')},'round3_review':{'baseline_build':238,'total':len(reviews),'items':reviews,'counts':{k:sum(x['classification']==k for x in reviews) for k in ('fixed_trusted','dynamic_controlled','external_controllable','unknown')}},'blockingFindings':blocking,'policyTests':tests,'policy':'FAIL only proven direct external shell path; reviewed script trust boundaries and uncertain cases WARN'}\n\ndef main():\n names=subprocess.check_output(['git','ls-files','src/main','infra'],text=True).splitlines()\n result=analyze({f:pathlib.Path(f).read_text() for f in names if pathlib.Path(f).suffix in ('.py','.sh')})\n pathlib.Path('.devsecops').mkdir(exist_ok=True);pathlib.Path('.devsecops/command-audit.json').write_text(json.dumps(result,indent=2));print(json.dumps(result['counts']))\n if result['errors']:raise SystemExit(1)\nif __name__=='__main__':main()\n",
+        "policy": "\"\"\"Narrow intra-procedural shell policy; unknown wrappers/aliases stay unproven.\"\"\"\nimport ast\nSINKS={'subprocess.run','subprocess.call','subprocess.check_call','subprocess.check_output','subprocess.Popen','os.system','os.popen','eval','exec'}\ndef inspect_python(source,path='<fixture>'):\n tree=ast.parse(source);findings=[]\n shadowed={n.id for n in ast.walk(tree) if isinstance(n,ast.Name) and isinstance(n.ctx,ast.Store)}|{n.arg for n in ast.walk(tree) if isinstance(n,ast.arg)}|{n.name for n in ast.walk(tree) if isinstance(n,(ast.FunctionDef,ast.ClassDef))}\n imported_sys=any(isinstance(n,ast.Import) and any(a.name=='sys' and not a.asname for a in n.names) for n in tree.body)\n flask_request=any(isinstance(n,ast.ImportFrom) and n.module=='flask' and any(a.name=='request' and not a.asname for a in n.names) for n in tree.body)\n def value(n,env):\n  if n is None:return set()\n  if isinstance(n,ast.Name):return env.get(n.id,set())\n  if isinstance(n,ast.Subscript) and imported_sys and 'sys' not in shadowed and ast.unparse(n.value)=='sys.argv':return {'external'}\n  if isinstance(n,ast.Call):\n   name=ast.unparse(n.func)\n   if name=='input' and 'input' not in shadowed or flask_request and 'request' not in shadowed and name in ('request.args.get','request.form.get'):return {'external'}\n   if name in ('os.getenv','os.environ.get'):return {'unknown_environment'}\n   if name=='shlex.quote':return {'quoted'} if n.args and 'external' in value(n.args[0],env) else set()\n  return set().union(*(value(x,env) for x in ast.iter_child_nodes(n)))\n def block(statements,env):\n  for st in statements:\n   if isinstance(st,(ast.FunctionDef,ast.AsyncFunctionDef)):\n    block(st.body,{});continue\n   if isinstance(st,ast.ClassDef):block(st.body,{});continue\n   # Clear only a constant-string membership check which rejects all nonmembers.\n   if isinstance(st,ast.If) and isinstance(st.test,ast.Compare) and len(st.test.ops)==1 and isinstance(st.test.ops[0],ast.NotIn) and isinstance(st.test.left,ast.Name) and isinstance(st.test.comparators[0],(ast.Tuple,ast.List,ast.Set)) and st.test.comparators[0].elts and all(isinstance(x,ast.Constant) and isinstance(x.value,str) for x in st.test.comparators[0].elts) and len(st.body)==1 and isinstance(st.body[0],(ast.Raise,ast.Return)) and not st.orelse:\n    env[st.test.left.id]=set();continue\n   for n in ast.walk(st):\n    if not isinstance(n,ast.Call):continue\n    name=ast.unparse(n.func)\n    if name not in SINKS:continue\n    arg=n.args[0] if n.args else next((k.value for k in n.keywords if k.arg=='args'),None)\n    shell=any(k.arg=='shell' and isinstance(k.value,ast.Constant) and k.value.value is True for k in n.keywords)\n    if name.startswith('subprocess.') and not shell:continue\n    if isinstance(arg,(ast.List,ast.Tuple)):continue\n    flow=value(arg,env)\n    if 'external' in flow and not flow.intersection({'quoted','unknown_environment'}):findings.append({'path':path,'line':n.lineno,'rule':'python-unvalidated-external-shell','severity':'HIGH','source':'input/sys.argv or explicit Flask request parameter','sink':name,'reason':'external source reaches shell/interpreter string without recognized constant allowlist or quoting','action':'FAIL'})\n   if isinstance(st,ast.Assign):\n    flow=value(st.value,env)\n    for target in st.targets:\n     if isinstance(target,ast.Name):env[target.id]=flow\n   if isinstance(st,ast.AnnAssign) and isinstance(st.target,ast.Name):env[st.target.id]=value(st.value,env)\n   # Do not infer sanitization or definite flows across conditionals/loops/wrappers.\n   if isinstance(st,(ast.If,ast.For,ast.While,ast.Try,ast.With)):\n    for attr in ['body','orelse','finalbody']:\n     nested=getattr(st,attr,[])\n     if nested:block(nested,dict(env))\n block(tree.body,{})\n # Nested statement walks can repeat a call; reports retain one actual location.\n return list({(x['path'],x['line'],x['sink']):x for x in findings}.values())\n\ndef self_test():\n positive=['import os\\nos.system(input())','import subprocess\\nx=input()\\nsubprocess.run(\"echo \"+x,shell=True)','import sys,os\\nx=sys.argv[1]\\nos.system(x)','from flask import request\\nimport os\\nx=request.args.get(\"cmd\")\\nos.system(x)']\n negative=['import subprocess\\nsubprocess.run([\"echo\",input()])','import os\\nos.system(\"date\")','import os\\nx=input()\\nif x not in (\"date\",\"uptime\"):\\n raise ValueError()\\nos.system(x)','import subprocess,shlex\\nx=input()\\nsubprocess.run(\"echo \"+shlex.quote(x),shell=True)','import os\\nx=os.getenv(\"ADMIN_COMMAND\")\\nos.system(x)']\n for source in positive:assert inspect_python(source),source\n for source in negative:assert not inspect_python(source),source\n assert not inspect_python('import os\\ndef input(): return \\\"date\\\"\\nos.system(input())')\n return {'external_shell_detected':len(positive),'safe_or_unproven_not_blocked':len(negative),'executed_commands':0}\n",
+        "ssh_policy": "\"\"\"Narrow, local flow check for reviewed SSH wrapper call sites; never runs SSH.\"\"\"\nimport ast,hashlib\nWRAPPERS={'infra/analytics/controlled.py':'command','infra/observability/audit-production.py':'command'}\nINTERPRETERS={'sh','bash','dash','zsh','python','python3','node','ssh','eval'}\ndef inspect_ssh(source,path='<fixture>'):\n tree=ast.parse(source);findings=[];calls=[]\n imports={a.asname or a.name for n in tree.body if isinstance(n,ast.ImportFrom) and n.module in ('controlled','infra.analytics.controlled') for a in n.names if a.name=='remote'}\n # Dynamically loaded audit.remote aliases are inventoried but not automatically promoted.\n dynamic_aliases={n.targets[0].id for n in tree.body if isinstance(n,ast.Assign) and len(n.targets)==1 and isinstance(n.targets[0],ast.Name) and isinstance(n.value,ast.Call) and ast.unparse(n.value.func).endswith('module_from_spec')}\n has_sys=any(isinstance(n,ast.Import) and any(a.name=='sys' and not a.asname for a in n.names) for n in tree.body)\n has_request=any(isinstance(n,ast.ImportFrom) and n.module=='flask' and any(a.name=='request' and not a.asname for a in n.names) for n in tree.body)\n shadowed={n.id for n in ast.walk(tree) if isinstance(n,ast.Name) and isinstance(n.ctx,ast.Store)}|{n.arg for n in ast.walk(tree) if isinstance(n,ast.arg)}|{n.name for n in ast.walk(tree) if isinstance(n,(ast.FunctionDef,ast.ClassDef))}\n def flow(n,env):\n  if n is None or isinstance(n,ast.Constant):return set()\n  if isinstance(n,ast.Name):return env.get(n.id,{'unknown'})\n  if isinstance(n,ast.Subscript) and has_sys and 'sys' not in shadowed and ast.unparse(n.value)=='sys.argv':return {'external'}\n  if isinstance(n,ast.Call):\n   name=ast.unparse(n.func)\n   if name=='input' and 'input' not in shadowed or has_request and 'request' not in shadowed and name in ('request.args.get','request.form.get'):return {'external'}\n   if name in ('os.getenv','os.environ.get') or name.endswith(('.read','.read_text','.get_json')):return {'unknown'}\n   if name=='shlex.quote':return {'escaped'}\n   if name=='shlex.join' and n.args and isinstance(n.args[0],(ast.List,ast.Tuple)) and n.args[0].elts:\n    parts=n.args[0].elts;first=parts[0]\n    if isinstance(first,ast.Constant) and isinstance(first.value,str) and first.value in {'printf','echo','date','uptime','true','false'}:return {'escaped'}\n    # A nested interpreter or dynamic executable is not granted a quoting bypass.\n    return {'unknown'}\n  return set().union(*(flow(c,env) for c in ast.iter_child_nodes(n)))\n def visit(body,env):\n  for st in body:\n   if isinstance(st,(ast.FunctionDef,ast.AsyncFunctionDef,ast.ClassDef)):visit(st.body,{});continue\n   if isinstance(st,ast.If) and isinstance(st.test,ast.Compare) and len(st.test.ops)==1 and isinstance(st.test.ops[0],ast.NotIn) and isinstance(st.test.left,ast.Name) and isinstance(st.test.comparators[0],(ast.Tuple,ast.List,ast.Set)) and st.test.comparators[0].elts and all(isinstance(x,ast.Constant) and isinstance(x.value,str) for x in st.test.comparators[0].elts) and len(st.body)==1 and isinstance(st.body[0],(ast.Raise,ast.Return)) and not st.orelse:\n    env[st.test.left.id]=set();continue\n   for n in ast.walk(st):\n    if not isinstance(n,ast.Call):continue\n    name=ast.unparse(n.func);arg=None;proven=False;kind=None\n    if isinstance(n.func,ast.Name) and name in imports and name not in shadowed:\n     arg=n.args[0] if n.args else next((k.value for k in n.keywords if k.arg=='command'),None);proven=True;kind='controlled.remote'\n    elif isinstance(n.func,ast.Attribute) and isinstance(n.func.value,ast.Name) and n.func.value.id in dynamic_aliases and n.func.attr=='remote':\n     arg=n.args[0] if n.args else None;kind='dynamic-loaded remote alias'\n    elif name in ('subprocess.run','subprocess.check_output','subprocess.Popen') and n.args and isinstance(n.args[0],(ast.List,ast.Tuple)):\n     parts=n.args[0].elts\n     if len(parts)==3 and isinstance(parts[0],ast.Constant) and parts[0].value=='ssh' and isinstance(parts[1],ast.Constant) and isinstance(parts[1].value,str) and not parts[1].value.startswith('-'):\n      arg=parts[2];proven=True;kind='direct fixed-host ssh argv'\n    if kind is None:continue\n    taint=flow(arg,env);classification='external_controllable' if 'external' in taint else 'unknown' if 'unknown' in taint else 'dynamic_controlled' if taint else 'fixed_trusted'\n    high=proven and taint=={'external'}\n    row={'path':path,'line':n.lineno,'wrapper':kind,'classification':classification,'source_evidence':sorted(taint),'action':'FAIL' if high else 'WARN' if classification in ('unknown','external_controllable') else 'reviewed_nonblocking','rule':'ssh-unvalidated-external-command' if high else None}\n    calls.append(row)\n    if high:findings.append(row)\n   if isinstance(st,ast.Assign):\n    v=flow(st.value,env)\n    for t in st.targets:\n     if isinstance(t,ast.Name):env[t.id]=v\n   if isinstance(st,(ast.If,ast.For,ast.While,ast.Try,ast.With)):\n    for attr in ('body','orelse','finalbody'):\n     if getattr(st,attr,None):visit(getattr(st,attr),dict(env))\n visit(tree.body,{})\n unique=lambda xs:list({(x['path'],x['line'],x['wrapper']):x for x in xs}.values())\n return {'findings':unique(findings),'calls':unique(calls)}\ndef self_test():\n positive=['from controlled import remote\\nremote(\"echo \"+input())','import sys\\nfrom controlled import remote\\nx=sys.argv[1]\\nremote(x)','from flask import request\\nfrom controlled import remote\\nx=request.args.get(\"cmd\")\\nremote(x)','import subprocess\\nsubprocess.run([\"ssh\",\"fixed-host\",\"echo \"+input()])']\n negative=['from controlled import remote\\nremote(\"uptime\")','import shlex\\nfrom controlled import remote\\nremote(shlex.join([\"printf\",\"%s\",input()]))','import shlex\\nfrom controlled import remote\\nremote(\"printf %s \"+shlex.quote(input()))','from controlled import remote\\nx=input()\\nif x not in (\"date\",\"uptime\"):\\n raise ValueError()\\nremote(x)','import os\\nfrom controlled import remote\\nremote(os.getenv(\"ADMIN_COMMAND\"))','from pathlib import Path\\nfrom controlled import remote\\nremote(Path(\"operator-command\").read_text())','import subprocess\\nsubprocess.run([\"echo\",input()])']\n for s in positive:assert inspect_ssh(s)['findings'],s\n for s in negative:assert not inspect_ssh(s)['findings'],s\n return {'external_ssh_detected':len(positive),'safe_or_unproven_not_blocked':len(negative),'executed_commands':0}\ndef analyze(files):\n selftests=self_test();calls=[];blocking=[];bindings={}\n for path,source in files.items():\n  if path.endswith('.py'):\n   r=inspect_ssh(source,path);calls+=r['calls'];blocking+=r['findings']\n  if path in WRAPPERS:bindings[path]=hashlib.sha256(source.encode()).hexdigest()\n return {'status':'failed' if blocking else 'success','wrapper_source_sha256':bindings,'calls':calls,'blockingFindings':blocking,'counts':{k:sum(x['classification']==k for x in calls) for k in ('fixed_trusted','dynamic_controlled','external_controllable','unknown')},'tests':selftests,'scope':'two reviewed SSH wrappers and fixed-host direct SSH; local explicit source flows only; runtime import resolution, general SSH options, environment/file/message provenance and cross-function flow remain WARN'}\n",
+        "interpreter_policy": "\"\"\"Explicit local external-input flow into interpreter code; no execution or broad sanitizer claims.\"\"\"\nimport ast,re\nINTERPRETERS={'sh':{'-c','-lc'},'bash':{'-c','-lc'},'dash':{'-c'},'python':{'-c'},'python3':{'-c'},'node':{'-e','--eval'}}\nPROCESS={'subprocess.run','subprocess.call','subprocess.check_call','subprocess.check_output','subprocess.Popen'}\ndef inspect_source(source,path='<fixture>'):\n if not path.endswith('.py') and path!='<fixture>':\n  return {'findings':[],'calls':[{'path':path,'line':i,'kind':'non-Python interpreter inventory','classification':'unknown','action':'WARN'} for i,l in enumerate(source.splitlines(),1) if re.search(r\"['\\\"](?:sh|bash|python3?|node)['\\\"].*(?:['\\\"]-c['\\\"]|['\\\"]-lc['\\\"]|['\\\"]-e['\\\"])\",l) and not l.lstrip().startswith(('#','//'))]}\n tree=ast.parse(source);calls=[];findings=[]\n has_sys=any(isinstance(n,ast.Import) and any(a.name=='sys' and not a.asname for a in n.names) for n in tree.body)\n request=any(isinstance(n,ast.ImportFrom) and n.module=='flask' and any(a.name=='request' and not a.asname for a in n.names) for n in tree.body)\n remote={a.asname or a.name for n in tree.body if isinstance(n,ast.ImportFrom) and n.module=='controlled' for a in n.names if a.name=='remote'}\n shadowed={n.id for n in ast.walk(tree) if isinstance(n,ast.Name) and isinstance(n.ctx,ast.Store)}|{n.arg for n in ast.walk(tree) if isinstance(n,ast.arg)}|{n.name for n in ast.walk(tree) if isinstance(n,(ast.FunctionDef,ast.ClassDef))}\n def flow(n,env,code=False):\n  if n is None or isinstance(n,ast.Constant):return set()\n  if isinstance(n,ast.Name):return env.get(n.id,{'unknown'})\n  if isinstance(n,ast.Subscript) and has_sys and 'sys' not in shadowed and ast.unparse(n.value)=='sys.argv':return {'external'}\n  if isinstance(n,ast.Call):\n   name=ast.unparse(n.func)\n   if name=='input' and 'input' not in shadowed or request and 'request' not in shadowed and name in ('request.args.get','request.form.get'):return {'external'}\n   if name=='shlex.quote':return {'unknown'} if code else {'escaped'}\n   return {'unknown'}\n  return set().union(*(flow(x,env,code) for x in ast.iter_child_nodes(n)))\n def emit(n,arg,env,kind,proven):\n  f=flow(arg,env,True);high=proven and f=={'external'}\n  row={'path':path,'line':n.lineno,'kind':kind,'classification':'external_controllable' if 'external'in f else 'unknown'if'unknown'in f else'dynamic_controlled'if f else'fixed_trusted','source':sorted(f),'action':'FAIL'if high else'WARN'if f else'reviewed_nonblocking','rule':'external-input-interpreter-code'if high else None}\n  calls.append(row)\n  if high:findings.append(row)\n def code_arg(argv):\n  if not isinstance(argv,(ast.List,ast.Tuple)) or len(argv.elts)<3:return None\n  a=argv.elts\n  if not isinstance(a[0],ast.Constant) or not isinstance(a[0].value,str):return None\n  first=a[0].value.rsplit('/',1)[-1]\n  if first not in INTERPRETERS or not isinstance(a[1],ast.Constant) or a[1].value not in INTERPRETERS[first]:return None\n  return a[2]\n def walk(body,env):\n  for st in body:\n   if isinstance(st,(ast.FunctionDef,ast.AsyncFunctionDef,ast.ClassDef)):walk(st.body,{});continue\n   if isinstance(st,ast.If) and isinstance(st.test,ast.Compare) and len(st.test.ops)==1 and isinstance(st.test.ops[0],ast.NotIn) and isinstance(st.test.left,ast.Name) and isinstance(st.test.comparators[0],(ast.Tuple,ast.List,ast.Set)) and st.test.comparators[0].elts and all(isinstance(x,ast.Constant) and isinstance(x.value,str) for x in st.test.comparators[0].elts) and len(st.body)==1 and isinstance(st.body[0],(ast.Raise,ast.Return)) and not st.orelse:\n    env[st.test.left.id]=set();continue\n   for n in ast.walk(st):\n    if not isinstance(n,ast.Call):continue\n    name=ast.unparse(n.func)\n    if name in PROCESS and n.args:\n     arg=code_arg(n.args[0])\n     if arg is not None:emit(n,arg,env,'direct interpreter argv',True)\n     elif isinstance(n.args[0],(ast.List,ast.Tuple)) and len(n.args[0].elts)==2:\n      a=n.args[0].elts\n      if isinstance(a[0],ast.Constant) and isinstance(a[1],ast.Constant) and (a[0].value,a[1].value)in [('python','-'),('python3','-'),('sh','-s'),('bash','-s')]:\n       inp=next((k.value for k in n.keywords if k.arg=='input'),None)\n       if inp is not None:emit(n,inp,env,'interpreter stdin program',True)\n    if isinstance(n.func,ast.Name) and name in remote and name not in shadowed and n.args:\n     arg=n.args[0]\n     if isinstance(arg,ast.Call) and ast.unparse(arg.func)=='shlex.join' and arg.args:\n      payload=code_arg(arg.args[0])\n      if payload is not None:emit(n,payload,env,'SSH serialized nested interpreter code',True)\n     elif isinstance(arg,ast.BinOp) and isinstance(arg.op,ast.Add) and isinstance(arg.left,ast.Constant) and isinstance(arg.left.value,str) and re.fullmatch(r'(?:sudo -n )?(?:sh|bash|python3?|node) -(?:c|lc|e) ',arg.left.value) and isinstance(arg.right,ast.Call) and ast.unparse(arg.right.func)=='shlex.quote' and arg.right.args:\n      emit(n,arg.right.args[0],env,'SSH outer quote removed before interpreter code',True)\n   if isinstance(st,ast.Assign):\n    v=flow(st.value,env,True)\n    for t in st.targets:\n     if isinstance(t,ast.Name):env[t.id]=v\n   if isinstance(st,(ast.If,ast.For,ast.While,ast.Try,ast.With)):\n    for attr in ('body','orelse','finalbody'):\n     if getattr(st,attr,None):walk(getattr(st,attr),dict(env))\n walk(tree.body,{})\n unique=lambda xs:list({(x['path'],x['line'],x['kind']):x for x in xs}.values())\n return {'findings':unique(findings),'calls':unique(calls)}\ndef self_test():\n positive=['import subprocess\\nsubprocess.run([\"sh\",\"-c\",input()])','import subprocess,sys\\nx=sys.argv[1]\\nsubprocess.run([\"bash\",\"-c\",x])','import subprocess\\nsubprocess.run([\"python3\",\"-c\",input()])','import subprocess\\nsubprocess.run([\"node\",\"-e\",input()])','import shlex\\nfrom controlled import remote\\nremote(shlex.join([\"bash\",\"-c\",input()]))','import shlex\\nfrom controlled import remote\\nremote(\"python3 -c \"+shlex.quote(input()))','import subprocess\\nsubprocess.run([\"python3\",\"-\"],input=input())']\n negative=['import subprocess\\nsubprocess.run([\"sh\",\"-c\",\"date\"])','import subprocess\\nsubprocess.run([\"python3\",\"-c\",\"import sys;print(sys.argv[1])\",input()])','import subprocess\\nx=input()\\nif x not in (\"date\",\"uptime\"):\\n raise ValueError()\\nsubprocess.run([\"sh\",\"-c\",x])','import subprocess,shlex\\nx=input()\\nsubprocess.run([\"sh\",\"-c\",\"printf %s \"+shlex.quote(x)])','import subprocess,os\\nsubprocess.run([\"python3\",\"-c\",os.getenv(\"ADMIN_SCRIPT\")])','from pathlib import Path\\nimport subprocess\\nsubprocess.run([\"sh\",\"-c\",Path(\"operator-script\").read_text()])','import shlex\\nfrom controlled import remote\\ncode=\"print(1)\"\\nremote(\"python3 -c \"+shlex.quote(code))']\n for s in positive:assert inspect_source(s)['findings'],s\n for s in negative:assert not inspect_source(s)['findings'],s\n assert [inspect_source(s) for s in positive]==[inspect_source(s) for s in positive]\n return {'external_program_detected':len(positive),'safe_or_unproven_not_blocked':len(negative),'repeat_consistent':True,'executed_commands':0}\ndef analyze(files):\n tests=self_test();calls=[];blocking=[]\n for path,source in files.items():\n  if path.endswith(('.py','.sh','.mjs')):\n   r=inspect_source(source,path);calls+=r['calls'];blocking+=r['findings']\n return {'status':'failed'if blocking else'success','calls':calls,'blockingFindings':blocking,'tests':tests,'counts':{k:sum(x['classification']==k for x in calls)for k in ('fixed_trusted','dynamic_controlled','external_controllable','unknown')},'scope':'Direct interpreter argv/stdin and syntactically proven controlled.remote nested code. General wrappers, environment/file origin, embedded scripts and JavaScript/Shell inventory stay WARN; no interprocedural or exploit-completeness claim.'}\n",
+        "files": {
+          "fixture.py": "import subprocess\nsubprocess.run([\"date\"])"
+        },
+        "review": {
+          "items": []
+        },
+        "ssh_review": {
+          "source_binding": {}
+        }
+      }
+    },
+    "runtime": {
+      "manifest": "{",
+      "expectedManifestSha256": "4fdb335010b9bf57d61d5e28d1397285c813bfa9bbf2ac008efddb8f27e3b703",
+      "tools": {
+        "semgrep/__init__.py": {
+          "sha256": "16507ca81a83c9a71a3e0a5420249cd04d3bc89a8173b690afea86e7edd75362"
+        },
+        "semgrep/__pycache__/__init__.cpython-312.pyc": {
+          "sha256": "b0fb91d8fb68b8de5b0fe61f63867ca475b91e90289f5d65ab09bb8396ca0a6d"
+        },
+        "semgrep/libs/libbz2.so.1": {
+          "sha256": "1bd8fe2b796dd6cb7b6643824561cfb377bd58edf7dd69564644189e157a1b09"
+        },
+        "semgrep/libs/libcom_err.so.2": {
+          "sha256": "9910183ec69e51b194b56e5bd37cb736047b0022125e1bc5617e4abf514ad024"
+        },
+        "semgrep/libs/libcrypto.so.3": {
+          "sha256": "22ba24fe8b7d38ed1e9a1d88a430492530b42512db68876873a8f289b193f7fe"
+        },
+        "semgrep/libs/libcurl.so.4": {
+          "sha256": "6d1ff9e36d792f809ffecc5cfc5fec2f27824ce972410329a617bc18ec68a01c"
+        },
+        "semgrep/libs/libdw.so.1": {
+          "sha256": "c40c525cc8e55f5f890134937e78b7398dd588fbd929300d7deac545a11182f3"
+        },
+        "semgrep/libs/libelf.so.1": {
+          "sha256": "75ea3d5d91219ec1a0c52e2180d18091f45f8a8db414bd1e6ca27c2955268e16"
+        },
+        "semgrep/libs/libev.so.4": {
+          "sha256": "e7857c4c7d2946bdd447f6f7993e14fb7f3786a011380137c8ffc261cecb0f29"
+        },
+        "semgrep/libs/libgcc_s.so.1": {
+          "sha256": "b38a4ec2b2b36043bdcc7ba9c6b395a2e0e85b1733f5ed4f23c17e38e2a05f39"
+        },
+        "semgrep/libs/libgmp.so.10": {
+          "sha256": "e55eda0c9a684035dc381b59f6f8771dc9d6962cf5fa25c272b21ef28893afdf"
+        },
+        "semgrep/libs/libgssapi_krb5.so.2": {
+          "sha256": "ff7726889238897d0c42565ff080e67318619a9ba421df452ac24df01550544f"
+        },
+        "semgrep/libs/libk5crypto.so.3": {
+          "sha256": "ab334856756ae5935940c7d56df057c3d09335cc0b763fe58b1a005719e9d801"
+        },
+        "semgrep/libs/libkeyutils.so.1": {
+          "sha256": "c82adb48ef0d45a9c363e719c5c541583a472f46ec34f6e93eff188cc1149f8f"
+        },
+        "semgrep/libs/libkrb5.so.3": {
+          "sha256": "8fe298e1dbb78304573497f2d5908d6dab9605b908c29f0bbd548e3aa6984a54"
+        },
+        "semgrep/libs/libkrb5support.so.0": {
+          "sha256": "eaac7301b08186c2774effe11b2f7131b600f283048125c2d5ade5c0a2a5dfb9"
+        },
+        "semgrep/libs/liblzma.so.5": {
+          "sha256": "0bf6a4c931616dd2af40c316ef053a5fbbca1a257cb838eefcc9723529c66d20"
+        },
+        "semgrep/libs/libm.so.6": {
+          "sha256": "5835646fd075206df576412df8ecb044d5008cd371948116be88e6fc2b74280d"
+        },
+        "semgrep/libs/libnghttp2.so.14": {
+          "sha256": "34fad2dbd0b562e387e31f70ab98110d40c0d9ec23f9cdf3879bbcac3e9a66b8"
+        },
+        "semgrep/libs/libpcre2-8.so.0": {
+          "sha256": "e3b07b7f71ef7541650a6b12a39ab3376a7b0949a292e38c5dd4f3604f0eb619"
+        },
+        "semgrep/libs/libresolv.so.2": {
+          "sha256": "f0c5f3bc4c3190db156baa48385ec1690c6b630bc30eaec3299bdcd5a0093de3"
+        },
+        "semgrep/libs/libselinux.so.1": {
+          "sha256": "aac04a94fe1b394c9d0619abd1209e45acb50bbd1561e53b6151d43e2c041d06"
+        },
+        "semgrep/libs/libssl.so.3": {
+          "sha256": "c2894c5475b2f8301823dfac221712677036c0ee951cc09b23397c0a814b2967"
+        },
+        "semgrep/libs/libstdc++.so.6": {
+          "sha256": "fd0568b6f3166a7a8c78cae03ee2a816e0b57e99a035a48b1a9d9733fba9d1ac"
+        },
+        "semgrep/libs/libtree-sitter.so.0.26": {
+          "sha256": "3cf258ff04cad47f19ea8303d6b5a05b22a37e3828b642880a468a5d9c96b7b5"
+        },
+        "semgrep/libs/libunwind.so.8": {
+          "sha256": "7708b275c1a81c46b07dcf3ee4d567f68f6ecebbc165b0470b6a5b87d7c1e9d0"
+        },
+        "semgrep/libs/libz.so.1": {
+          "sha256": "310f2ad16d869d16641b8633659c3cd86c1503672ffadfc7a7448058c9554510"
+        },
+        "semgrep/libs/libzstd.so.1": {
+          "sha256": "d512d8f534eda94e499e71276f83df565a72000e00e1f0010cf61847d5c333a1"
+        },
+        "semgrep/semgrep-core": {
+          "sha256": "886b69c889897ea13e23aba5f541c59ee1356c55218ebc21e07b7ab45f1256d2"
+        }
+      },
+      "leaseOwned": true,
+      "podIP": "10.42.0.10",
+      "canaryWorks": true,
+      "canaryListen": true,
+      "isolationDenied": true
+    },
+    "audit": {
+      "sourceFiles": [
+        "fixture.py"
+      ],
+      "sourceText": "import subprocess\nsubprocess.run([\"date\"])",
+      "create": true,
+      "ready": true,
+      "uid": "audit-uid",
+      "currentUid": "audit-uid",
+      "delete": true,
+      "deleteWait": true
+    },
+    "semgrep": {
+      "create": true,
+      "ready": true,
+      "uid": "scanner-uid",
+      "currentUid": "scanner-uid",
+      "delete": true,
+      "cleanup": true,
+      "securityProbe": true,
+      "toolTransfer": true,
+      "sourceTransfer": true,
+      "sourceArchive": true,
+      "fixtureWrites": true,
+      "find": true,
+      "positive": {
+        "results": [
+          {
+            "check_id": "java-runtime-exec",
+            "path": "/work/positive/Unsafe.java",
+            "start": {
+              "line": 1,
+              "col": 86,
+              "offset": 85
+            },
+            "end": {
+              "line": 1,
+              "col": 118,
+              "offset": 117
+            },
+            "extra": {
+              "metavars": {},
+              "engine_kind": "OSS",
+              "is_ignored": false,
+              "message": "Unreviewed OS command execution",
+              "severity": "ERROR",
+              "validation_state": "NO_VALIDATOR"
+            }
+          },
+          {
+            "check_id": "java-weak-cipher",
+            "path": "/work/positive/Unsafe.java",
+            "start": {
+              "line": 1,
+              "col": 120,
+              "offset": 119
+            },
+            "end": {
+              "line": 1,
+              "col": 145,
+              "offset": 144
+            },
+            "extra": {
+              "metavars": {},
+              "engine_kind": "OSS",
+              "is_ignored": false,
+              "message": "Weak cipher or ECB mode",
+              "severity": "ERROR",
+              "validation_state": "NO_VALIDATOR"
+            }
+          }
+        ],
+        "errors": []
+      },
+      "negative": {
+        "results": [],
+        "errors": []
+      },
+      "repeat": {
+        "results": [
+          {
+            "check_id": "java-runtime-exec",
+            "path": "/work/positive/Unsafe.java",
+            "start": {
+              "line": 1,
+              "col": 86,
+              "offset": 85
+            },
+            "end": {
+              "line": 1,
+              "col": 118,
+              "offset": 117
+            },
+            "extra": {
+              "metavars": {},
+              "engine_kind": "OSS",
+              "is_ignored": false,
+              "message": "Unreviewed OS command execution",
+              "severity": "ERROR",
+              "validation_state": "NO_VALIDATOR"
+            }
+          },
+          {
+            "check_id": "java-weak-cipher",
+            "path": "/work/positive/Unsafe.java",
+            "start": {
+              "line": 1,
+              "col": 120,
+              "offset": 119
+            },
+            "end": {
+              "line": 1,
+              "col": 145,
+              "offset": 144
+            },
+            "extra": {
+              "metavars": {},
+              "engine_kind": "OSS",
+              "is_ignored": false,
+              "message": "Weak cipher or ECB mode",
+              "severity": "ERROR",
+              "validation_state": "NO_VALIDATOR"
+            }
+          }
+        ],
+        "errors": []
+      },
+      "commandPositive": {
+        "results": [
+          {
+            "check_id": "java-runtime-exec",
+            "path": "/work/command-positive/HttpCommands.java",
+            "start": {
+              "line": 1,
+              "col": 158,
+              "offset": 157
+            },
+            "end": {
+              "line": 1,
+              "col": 188,
+              "offset": 187
+            },
+            "extra": {
+              "metavars": {},
+              "engine_kind": "OSS",
+              "is_ignored": false,
+              "message": "Unreviewed OS command execution",
+              "severity": "ERROR",
+              "validation_state": "NO_VALIDATOR"
+            }
+          },
+          {
+            "check_id": "java-http-runtime-exec",
+            "path": "/work/command-positive/HttpCommands.java",
+            "start": {
+              "line": 1,
+              "col": 184,
+              "offset": 183
+            },
+            "end": {
+              "line": 1,
+              "col": 187,
+              "offset": 186
+            },
+            "extra": {
+              "metavars": {
+                "$REQ": {
+                  "start": {
+                    "line": 1,
+                    "col": 133,
+                    "offset": 132
+                  },
+                  "end": {
+                    "line": 1,
+                    "col": 136,
+                    "offset": 135
+                  },
+                  "abstract_content": "req"
+                },
+                "$CMD": {
+                  "start": {
+                    "line": 1,
+                    "col": 184,
+                    "offset": 183
+                  },
+                  "end": {
+                    "line": 1,
+                    "col": 187,
+                    "offset": 186
+                  },
+                  "abstract_content": "cmd",
+                  "propagated_value": {
+                    "svalue_start": {
+                      "line": 1,
+                      "col": 133,
+                      "offset": 132
+                    },
+                    "svalue_end": {
+                      "line": 1,
+                      "col": 156,
+                      "offset": 155
+                    },
+                    "svalue_abstract_content": "req.getParameter(\"cmd\")"
+                  }
+                }
+              },
+              "engine_kind": "OSS",
+              "is_ignored": false,
+              "message": "HTTP parameter reaches executable command without validation",
+              "severity": "ERROR",
+              "dataflow_trace": {
+                "taint_source": [
+                  "CliLoc",
+                  [
+                    {
+                      "path": "/work/command-positive/HttpCommands.java",
+                      "start": {
+                        "line": 1,
+                        "col": 133,
+                        "offset": 132
+                      },
+                      "end": {
+                        "line": 1,
+                        "col": 156,
+                        "offset": 155
+                      }
+                    },
+                    "req.getParameter(\"cmd\")"
+                  ]
+                ],
+                "intermediate_vars": [
+                  {
+                    "location": {
+                      "path": "/work/command-positive/HttpCommands.java",
+                      "start": {
+                        "line": 1,
+                        "col": 129,
+                        "offset": 128
+                      },
+                      "end": {
+                        "line": 1,
+                        "col": 132,
+                        "offset": 131
+                      }
+                    },
+                    "content": "cmd"
+                  }
+                ],
+                "taint_sink": [
+                  "CliLoc",
+                  [
+                    {
+                      "path": "/work/command-positive/HttpCommands.java",
+                      "start": {
+                        "line": 1,
+                        "col": 184,
+                        "offset": 183
+                      },
+                      "end": {
+                        "line": 1,
+                        "col": 187,
+                        "offset": 186
+                      }
+                    },
+                    "cmd"
+                  ]
+                ]
+              },
+              "validation_state": "NO_VALIDATOR"
+            }
+          },
+          {
+            "check_id": "java-process-builder",
+            "path": "/work/command-positive/HttpCommands.java",
+            "start": {
+              "line": 1,
+              "col": 190,
+              "offset": 189
+            },
+            "end": {
+              "line": 1,
+              "col": 213,
+              "offset": 212
+            },
+            "extra": {
+              "metavars": {},
+              "engine_kind": "OSS",
+              "is_ignored": false,
+              "message": "Unreviewed process construction",
+              "severity": "ERROR",
+              "validation_state": "NO_VALIDATOR"
+            }
+          },
+          {
+            "check_id": "java-http-process-builder",
+            "path": "/work/command-positive/HttpCommands.java",
+            "start": {
+              "line": 1,
+              "col": 209,
+              "offset": 208
+            },
+            "end": {
+              "line": 1,
+              "col": 212,
+              "offset": 211
+            },
+            "extra": {
+              "metavars": {
+                "$REQ": {
+                  "start": {
+                    "line": 1,
+                    "col": 133,
+                    "offset": 132
+                  },
+                  "end": {
+                    "line": 1,
+                    "col": 136,
+                    "offset": 135
+                  },
+                  "abstract_content": "req"
+                },
+                "$CMD": {
+                  "start": {
+                    "line": 1,
+                    "col": 209,
+                    "offset": 208
+                  },
+                  "end": {
+                    "line": 1,
+                    "col": 212,
+                    "offset": 211
+                  },
+                  "abstract_content": "cmd",
+                  "propagated_value": {
+                    "svalue_start": {
+                      "line": 1,
+                      "col": 133,
+                      "offset": 132
+                    },
+                    "svalue_end": {
+                      "line": 1,
+                      "col": 156,
+                      "offset": 155
+                    },
+                    "svalue_abstract_content": "req.getParameter(\"cmd\")"
+                  }
+                }
+              },
+              "engine_kind": "OSS",
+              "is_ignored": false,
+              "message": "HTTP parameter reaches executable command without validation",
+              "severity": "ERROR",
+              "dataflow_trace": {
+                "taint_source": [
+                  "CliLoc",
+                  [
+                    {
+                      "path": "/work/command-positive/HttpCommands.java",
+                      "start": {
+                        "line": 1,
+                        "col": 133,
+                        "offset": 132
+                      },
+                      "end": {
+                        "line": 1,
+                        "col": 156,
+                        "offset": 155
+                      }
+                    },
+                    "req.getParameter(\"cmd\")"
+                  ]
+                ],
+                "intermediate_vars": [
+                  {
+                    "location": {
+                      "path": "/work/command-positive/HttpCommands.java",
+                      "start": {
+                        "line": 1,
+                        "col": 129,
+                        "offset": 128
+                      },
+                      "end": {
+                        "line": 1,
+                        "col": 132,
+                        "offset": 131
+                      }
+                    },
+                    "content": "cmd"
+                  }
+                ],
+                "taint_sink": [
+                  "CliLoc",
+                  [
+                    {
+                      "path": "/work/command-positive/HttpCommands.java",
+                      "start": {
+                        "line": 1,
+                        "col": 209,
+                        "offset": 208
+                      },
+                      "end": {
+                        "line": 1,
+                        "col": 212,
+                        "offset": 211
+                      }
+                    },
+                    "cmd"
+                  ]
+                ]
+              },
+              "validation_state": "NO_VALIDATOR"
+            }
+          }
+        ],
+        "errors": []
+      },
+      "commandNegative": {
+        "results": [],
+        "errors": []
+      },
+      "commandRepeat": {
+        "results": [
+          {
+            "check_id": "java-runtime-exec",
+            "path": "/work/command-positive/HttpCommands.java",
+            "start": {
+              "line": 1,
+              "col": 158,
+              "offset": 157
+            },
+            "end": {
+              "line": 1,
+              "col": 188,
+              "offset": 187
+            },
+            "extra": {
+              "metavars": {},
+              "engine_kind": "OSS",
+              "is_ignored": false,
+              "message": "Unreviewed OS command execution",
+              "severity": "ERROR",
+              "validation_state": "NO_VALIDATOR"
+            }
+          },
+          {
+            "check_id": "java-http-runtime-exec",
+            "path": "/work/command-positive/HttpCommands.java",
+            "start": {
+              "line": 1,
+              "col": 184,
+              "offset": 183
+            },
+            "end": {
+              "line": 1,
+              "col": 187,
+              "offset": 186
+            },
+            "extra": {
+              "metavars": {
+                "$REQ": {
+                  "start": {
+                    "line": 1,
+                    "col": 133,
+                    "offset": 132
+                  },
+                  "end": {
+                    "line": 1,
+                    "col": 136,
+                    "offset": 135
+                  },
+                  "abstract_content": "req"
+                },
+                "$CMD": {
+                  "start": {
+                    "line": 1,
+                    "col": 184,
+                    "offset": 183
+                  },
+                  "end": {
+                    "line": 1,
+                    "col": 187,
+                    "offset": 186
+                  },
+                  "abstract_content": "cmd",
+                  "propagated_value": {
+                    "svalue_start": {
+                      "line": 1,
+                      "col": 133,
+                      "offset": 132
+                    },
+                    "svalue_end": {
+                      "line": 1,
+                      "col": 156,
+                      "offset": 155
+                    },
+                    "svalue_abstract_content": "req.getParameter(\"cmd\")"
+                  }
+                }
+              },
+              "engine_kind": "OSS",
+              "is_ignored": false,
+              "message": "HTTP parameter reaches executable command without validation",
+              "severity": "ERROR",
+              "dataflow_trace": {
+                "taint_source": [
+                  "CliLoc",
+                  [
+                    {
+                      "path": "/work/command-positive/HttpCommands.java",
+                      "start": {
+                        "line": 1,
+                        "col": 133,
+                        "offset": 132
+                      },
+                      "end": {
+                        "line": 1,
+                        "col": 156,
+                        "offset": 155
+                      }
+                    },
+                    "req.getParameter(\"cmd\")"
+                  ]
+                ],
+                "intermediate_vars": [
+                  {
+                    "location": {
+                      "path": "/work/command-positive/HttpCommands.java",
+                      "start": {
+                        "line": 1,
+                        "col": 129,
+                        "offset": 128
+                      },
+                      "end": {
+                        "line": 1,
+                        "col": 132,
+                        "offset": 131
+                      }
+                    },
+                    "content": "cmd"
+                  }
+                ],
+                "taint_sink": [
+                  "CliLoc",
+                  [
+                    {
+                      "path": "/work/command-positive/HttpCommands.java",
+                      "start": {
+                        "line": 1,
+                        "col": 184,
+                        "offset": 183
+                      },
+                      "end": {
+                        "line": 1,
+                        "col": 187,
+                        "offset": 186
+                      }
+                    },
+                    "cmd"
+                  ]
+                ]
+              },
+              "validation_state": "NO_VALIDATOR"
+            }
+          },
+          {
+            "check_id": "java-process-builder",
+            "path": "/work/command-positive/HttpCommands.java",
+            "start": {
+              "line": 1,
+              "col": 190,
+              "offset": 189
+            },
+            "end": {
+              "line": 1,
+              "col": 213,
+              "offset": 212
+            },
+            "extra": {
+              "metavars": {},
+              "engine_kind": "OSS",
+              "is_ignored": false,
+              "message": "Unreviewed process construction",
+              "severity": "ERROR",
+              "validation_state": "NO_VALIDATOR"
+            }
+          },
+          {
+            "check_id": "java-http-process-builder",
+            "path": "/work/command-positive/HttpCommands.java",
+            "start": {
+              "line": 1,
+              "col": 209,
+              "offset": 208
+            },
+            "end": {
+              "line": 1,
+              "col": 212,
+              "offset": 211
+            },
+            "extra": {
+              "metavars": {
+                "$REQ": {
+                  "start": {
+                    "line": 1,
+                    "col": 133,
+                    "offset": 132
+                  },
+                  "end": {
+                    "line": 1,
+                    "col": 136,
+                    "offset": 135
+                  },
+                  "abstract_content": "req"
+                },
+                "$CMD": {
+                  "start": {
+                    "line": 1,
+                    "col": 209,
+                    "offset": 208
+                  },
+                  "end": {
+                    "line": 1,
+                    "col": 212,
+                    "offset": 211
+                  },
+                  "abstract_content": "cmd",
+                  "propagated_value": {
+                    "svalue_start": {
+                      "line": 1,
+                      "col": 133,
+                      "offset": 132
+                    },
+                    "svalue_end": {
+                      "line": 1,
+                      "col": 156,
+                      "offset": 155
+                    },
+                    "svalue_abstract_content": "req.getParameter(\"cmd\")"
+                  }
+                }
+              },
+              "engine_kind": "OSS",
+              "is_ignored": false,
+              "message": "HTTP parameter reaches executable command without validation",
+              "severity": "ERROR",
+              "dataflow_trace": {
+                "taint_source": [
+                  "CliLoc",
+                  [
+                    {
+                      "path": "/work/command-positive/HttpCommands.java",
+                      "start": {
+                        "line": 1,
+                        "col": 133,
+                        "offset": 132
+                      },
+                      "end": {
+                        "line": 1,
+                        "col": 156,
+                        "offset": 155
+                      }
+                    },
+                    "req.getParameter(\"cmd\")"
+                  ]
+                ],
+                "intermediate_vars": [
+                  {
+                    "location": {
+                      "path": "/work/command-positive/HttpCommands.java",
+                      "start": {
+                        "line": 1,
+                        "col": 129,
+                        "offset": 128
+                      },
+                      "end": {
+                        "line": 1,
+                        "col": 132,
+                        "offset": 131
+                      }
+                    },
+                    "content": "cmd"
+                  }
+                ],
+                "taint_sink": [
+                  "CliLoc",
+                  [
+                    {
+                      "path": "/work/command-positive/HttpCommands.java",
+                      "start": {
+                        "line": 1,
+                        "col": 209,
+                        "offset": 208
+                      },
+                      "end": {
+                        "line": 1,
+                        "col": 212,
+                        "offset": 211
+                      }
+                    },
+                    "cmd"
+                  ]
+                ]
+              },
+              "validation_state": "NO_VALIDATOR"
+            }
+          }
+        ],
+        "errors": []
+      },
+      "sourceReport": {
+        "results": [],
+        "errors": []
+      },
+      "filesPerScan": 1
+    },
+    "io": {},
+    "fileErrors": {}
+  },
+  "raw": {
+    "schema": 1,
+    "stage": "parent",
+    "complete": true,
+    "classification": "CONTROLLED_REPLAY",
+    "command": "( node infra/security/command-audit.mjs && node --max-old-space-size=128 infra/security/semgrep-gate.mjs )",
+    "operations": [
+      {
+        "stage": "command-audit",
+        "execution": {
+          "exitStatus": 1,
+          "diagnostic": "Expected property name or '}' in JSON at position 1 (line 1 column 2)"
+        },
+        "reports": {},
+        "observations": [
+          {
+            "type": "file-read",
+            "path": "infra/security/scanner-tools.json"
+          }
+        ]
+      }
+    ]
+  }
+}

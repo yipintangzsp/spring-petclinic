@@ -1,0 +1,21 @@
+CONTROLLED SBOM GENERATION - devops, executed as security-trivy (uid 990 / gid 983) via sudo from operator shell
+Work dir: /var/lib/security-trivy/data/sbom-step1-20261112 (gen.sh preserved in this raw/ directory)
+Tool: /var/lib/security-trivy/bin/trivy sha256=7844c3851b28470b6d7f0975fa0b3262c5b2272c9a54a91f522801bb8926f51f (== pinned toolSha256 in infra/security/manager-v2/trivy/projects.json), version 0.76.2
+Registry auth: project robot pull-only credentials from /var/lib/security-trivy/credentials.json (values never printed or recorded)
+
+Attempt 1: FATAL - remote error: Get "https://core.harbor.domain/v2/": tls: failed to verify certificate: x509: certificate signed by unknown authority (internal self-signed Harbor; --insecure added, integrity anchored by digest assertions below)
+Attempt 2: FATAL - [javadb] The first run cannot skip downloading Java DB ('--skip-java-db-update' cannot be specified on the first run, empty private cache)
+Attempt 3: cache seeded with a copy of the platform db-cache (db + java-db + fanal; the same store refreshed 2026-11-12, see trivy-v2-closure/db-update.json) -> COMPLETED for both arches
+
+INDEX_ASSERT expected=sha256:2fbaea65ab030c56c60c62e3ee9fbe362deb8bbbb8216a891ef4c7bbbcea6d55 got=sha256:2fbaea65ab030c56c60c62e3ee9fbe362deb8bbbb8216a891ef4c7bbbcea6d55
+MANIFEST_ASSERT amd64 expected=sha256:2bd9c1c445afbf55e390bfc41910551c32e09913143f7a137038cc87941b7c94 got=sha256:2bd9c1c445afbf55e390bfc41910551c32e09913143f7a137038cc87941b7c94
+GEN amd64 rc=0 start=2026-11-12T13:49:58Z end=2026-11-12T13:50:17Z
+MANIFEST_ASSERT arm64 expected=sha256:06a515708b6783db7d545544bbefb02e9f94abfc0fdf13a7355ccbe2deb3ed42 got=sha256:06a515708b6783db7d545544bbefb02e9f94abfc0fdf13a7355ccbe2deb3ed42
+GEN arm64 rc=0 start=2026-11-12T13:50:18Z end=2026-11-12T13:50:18Z
+FACTS:
+toolVersion=0.76.2
+toolSha256=7844c3851b28470b6d7f0975fa0b3262c5b2272c9a54a91f522801bb8926f51f
+uid=990 gid=983
+amd64 manifestDigest=sha256:2bd9c1c445afbf55e390bfc41910551c32e09913143f7a137038cc87941b7c94 configDigest=sha256:a5390e38942a05bd0d476ded2eedda9f04aa722bd7244d8b46a6548e8117c18b layers=5 sbomSha256=828d1e590e2a4d02c114dee59e10249708e27985a56727cb411a67f3b3f7b212 sbomBytes=503158 components=271 serial=urn:uuid:bacce2af-ac99-4338-8c65-6f02faaf897d startedAt=2026-11-12T13:49:58Z completedAt=2026-11-12T13:50:17Z startedMs=1794491398365 completedMs=1794491417654
+arm64 manifestDigest=sha256:06a515708b6783db7d545544bbefb02e9f94abfc0fdf13a7355ccbe2deb3ed42 configDigest=sha256:7f574b1b278717eb5dc8d3a8c829a16906cf830bf4fe0682803eeac24b7fab69 layers=10 sbomSha256=434f9f115bf711d3a4403682acb7f4fa1f194c81eb2960524e790a03262f1cae sbomBytes=487154 components=271 serial=urn:uuid:0f9c9acf-68d9-4672-b139-376d7a541074 startedAt=2026-11-12T13:50:18Z completedAt=2026-11-12T13:50:18Z startedMs=1794491418029 completedMs=1794491418784
+Transfer cross-check on Mac after copy: sha256(sbom-amd64)=828d1e59... (503158 bytes), sha256(sbom-arm64)=434f9f11... (487154 bytes) - identical to generation facts.

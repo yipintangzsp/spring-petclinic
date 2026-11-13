@@ -1,0 +1,97 @@
+{
+  "classification": "REAL_CONTROLLED_FIXTURE_CRYPTO_ONLY_NOT_GATE_COMPATIBILITY",
+  "versions": {
+    "sops": "sops 3.13.3\n[warning] failed to retrieve latest version from upstream: GitHub API request failed: Get \"https://api.github.com/getsops/sops/releases/latest\": dial tcp: lookup api.github.com on 8.8.8.8:53: dial udp 8.8.8.8:53: connect: network is unreachable\n\n[warning] Note that in a future version, sops will no longer check whether the current version is the latest when asking for sops' version. If you want to explicitly check for the latest version, add the `--check-for-updates` option to `sops --version`. This will hide this deprecation warning and will always check, even if the default behavior changes in the future.",
+    "age": "v1.3.2",
+    "age-keygen": "v1.3.2"
+  },
+  "recipients": {
+    "baseline": {
+      "recipient": "age14satl22wktyandkwplpcma5lwhy2f3kvr5vnhghxcl5466lszddsz09pzd",
+      "fingerprint": "df7a8a3333c9b7ecec4c3fd69418a057b5c0a87e9a8ae69bdc450d90ec3e7e22"
+    },
+    "wrongKey": {
+      "recipient": "age1j2n684hz3svq9d86z4a6xyv425durtk78ptwfk8vg22c8kp6f5lsc2777z",
+      "fingerprint": "521bf9372cd69f11ffbae2c7a6404f79f5ce4a96a4cb521559efbc0cdda4afde"
+    }
+  },
+  "files": [
+    {
+      "path": "encrypted/infra/security/secrets/kyverno-registry-pull.enc.json",
+      "name": "kyverno-registry-pull",
+      "namespace": "devsecops-system",
+      "type": "kubernetes.io/dockerconfigjson",
+      "keyNames": [
+        ".dockerconfigjson"
+      ],
+      "plaintextSha256": "6feafe62caf86d8e71b9af25b61cd3159e8c8ee8586245da71263eeb19f2dbde",
+      "encryptedSha256": "2e115493a8571ac84000a3863dbbdce316f0cb1e9ca0186c172605f3ad06728e",
+      "dataSha256": "ded88bd78c1192b099b7f9bd0cc4e8b16054894955ee2b1fd88a5a2cc9a58bad",
+      "positiveDecryptExit": 0,
+      "exactStructureMatch": true,
+      "recipient": "age14satl22wktyandkwplpcma5lwhy2f3kvr5vnhghxcl5466lszddsz09pzd"
+    },
+    {
+      "path": "encrypted/infra/security/secrets/petclinic-db.enc.json",
+      "name": "petclinic-db",
+      "namespace": "petclinic",
+      "type": "Opaque",
+      "keyNames": [
+        "password",
+        "username"
+      ],
+      "plaintextSha256": "fc6de59b2e4f943561ba2db6b4adbc2a174aa0e92ce7238d921520e4998af825",
+      "encryptedSha256": "32853928de07046aaa81657a3394b537822b79a7101e79d34c2c810daf28f23a",
+      "dataSha256": "8e4ccc550e0b8321cd7508929fe754025eba9d9c6e967702587204b810324776",
+      "positiveDecryptExit": 0,
+      "exactStructureMatch": true,
+      "recipient": "age14satl22wktyandkwplpcma5lwhy2f3kvr5vnhghxcl5466lszddsz09pzd"
+    },
+    {
+      "path": "encrypted/infra/security/secrets/petclinic-harbor-pull.enc.json",
+      "name": "petclinic-harbor-pull",
+      "namespace": "petclinic",
+      "type": "kubernetes.io/dockerconfigjson",
+      "keyNames": [
+        ".dockerconfigjson"
+      ],
+      "plaintextSha256": "74ddd9f7c4ba34ebe08f8cd4af3b18fd53aec0355368a6c250e0e732b1b649d6",
+      "encryptedSha256": "ea76657ab22a849736aa2f50bb3cef4108a5aa08d124c198b7157e468010f980",
+      "dataSha256": "d8c5404269e76eba7c02983955c00b44578d520bed7fec52275c931d288d5535",
+      "positiveDecryptExit": 0,
+      "exactStructureMatch": true,
+      "recipient": "age14satl22wktyandkwplpcma5lwhy2f3kvr5vnhghxcl5466lszddsz09pzd"
+    },
+    {
+      "path": "encrypted/infra/security/secrets/rabbitmq-client.enc.json",
+      "name": "rabbitmq-client",
+      "namespace": "petclinic",
+      "type": "Opaque",
+      "keyNames": [
+        "password",
+        "username"
+      ],
+      "plaintextSha256": "cb8c18520587bf82f4394bd578dfe66effeca0870a14311dd98df6b09cda7271",
+      "encryptedSha256": "1f7d9b488bba9e0ea797f0d1bb94aa9e6feb8b584b58afdd096f0adee4ab183d",
+      "dataSha256": "138729346ccf2c574cb4c592d3ca286465200a5078985625d79531881279df54",
+      "positiveDecryptExit": 0,
+      "exactStructureMatch": true,
+      "recipient": "age14satl22wktyandkwplpcma5lwhy2f3kvr5vnhghxcl5466lszddsz09pzd"
+    }
+  ],
+  "wrongKey": {
+    "factType": "DECRYPT_EXECUTION_FACT",
+    "source": "real-isolated-sops-process",
+    "path": "encrypted/infra/security/secrets/kyverno-registry-pull.enc.json",
+    "exitCode": 128,
+    "stdoutBytes": 0,
+    "stderrBytes": 725,
+    "stderrSha256": "b52a29323a7c38853cc560e7e441f699b321268903378e207615f7b50916ebeb",
+    "encryptedRecipient": "age14satl22wktyandkwplpcma5lwhy2f3kvr5vnhghxcl5466lszddsz09pzd",
+    "attemptedKeyRecipient": "age1j2n684hz3svq9d86z4a6xyv425durtk78ptwfk8vg22c8kp6f5lsc2777z",
+    "homeIsEmpty": true,
+    "policyDecisionGenerated": false
+  },
+  "gateExecutions": 0,
+  "policyDifferentials": 0
+}

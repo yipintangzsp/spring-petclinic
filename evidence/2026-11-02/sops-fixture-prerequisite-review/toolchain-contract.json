@@ -1,0 +1,43 @@
+{
+  "classification": "FROZEN_METADATA_REVIEW_ONLY",
+  "versionsDeclaredByLockedManifest": {
+    "sops": "3.13.3",
+    "age": "1.3.2"
+  },
+  "versionsIndependentlyExecuted": false,
+  "root": "/var/jenkins_home/platform-security/20261027",
+  "manifestSha256": "4fdb335010b9bf57d61d5e28d1397285c813bfa9bbf2ac008efddb8f27e3b703",
+  "manifestMatchesLock": true,
+  "files": {
+    "age": {
+      "path": "age",
+      "sha256": "41b072352f4561018949623c674d16ef704019b9108a9bbdbd21292efebfc94f",
+      "bytes": 6540637
+    },
+    "age-keygen": {
+      "path": "age-keygen",
+      "sha256": "00b549cebf68302893fc489830f37e706712689ca877f84d85439d700d2997c7",
+      "bytes": 3854433
+    },
+    "sops": {
+      "path": "sops",
+      "sha256": "53b0abacd38ef1b12a66d6c100956691b9cefce018d91f81e73ddf7438b94d77",
+      "bytes": 48300194
+    }
+  },
+  "binarySource": "Exact upstream asset/download provenance not established from inspected locked metadata. Do not guess or download.",
+  "expectedChecksumSource": "Current frozen scanner-tools.json, protected by tools-lock.json supplyChain.scanner_manifest_sha256. Future source must reproduce exact locked file hashes; official source provenance to be reviewed after blocker.",
+  "architectureRequirement": "Future executor Linux/arm64, same as current test node. Manifest does not independently certify ELF architecture; future supplied binaries require proof.",
+  "productionInvocation": {
+    "sops": [
+      "/var/jenkins_home/platform-security/20261027/sops",
+      "decrypt",
+      "infra/security/secrets/<target-name>.enc.json"
+    ],
+    "env": "SOPS_AGE_KEY_FILE=BUSINESS_AGE_FILE",
+    "age": "Not invoked by this Gate. Future synthetic key generation would require locked age-keygen; not performed.",
+    "verifyTools": "Production verifies sops hash only, not age/age-keygen at this entry."
+  },
+  "downloads": 0,
+  "executions": 0
+}

@@ -1,0 +1,75 @@
+{
+  "apiVersion": "admissionregistration.k8s.io/v1",
+  "kind": "MutatingWebhookConfiguration",
+  "metadata": {
+    "annotations": {
+      "admissions.enforcer/disabled": "true"
+    },
+    "creationTimestamp": "2026-10-26T06:38:07Z",
+    "generation": 3,
+    "labels": {
+      "webhook.kyverno.io/managed-by": "kyverno"
+    },
+    "name": "kyverno-resource-mutating-webhook-cfg",
+    "resourceVersion": "15708998",
+    "uid": "d2e5a17a-c54f-40c3-85ae-7a82426ea573"
+  },
+  "webhooks": [
+    {
+      "admissionReviewVersions": [
+        "v1"
+      ],
+      "clientConfig": {
+        "caBundle": "LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSUM3VENDQWRXZ0F3SUJBZ0lCQURBTkJna3Foa2lHOXcwQkFRc0ZBREFZTVJZd0ZBWURWUVFEREEwcUxtdDUKZG1WeWJtOHVjM1pqTUI0WERUSTJNVEF5TmpBMU16Z3dOMW9YRFRJM01UQXlOakEyTXpnd04xb3dHREVXTUJRRwpBMVVFQXd3TktpNXJlWFpsY201dkxuTjJZekNDQVNJd0RRWUpLb1pJaHZjTkFRRUJCUUFEZ2dFUEFEQ0NBUW9DCmdnRUJBTUVLWDRiSVJocVF0WjVNZnFTelZBRFQ4Z2VhSE9XcnJqSTAyZ3kzZkZVa1BSRkVZRDBxWk9GbmtvTHMKNnNDYVlzM0xBTGFPSWVDMVRJcVkxV2pTbXFsdDk1bnRBQ3J4ZzB3eVVmYXErTGwzK2ZkK2JnUHZ1VzFKUHdENQpjenZpZ0VRUzZhSU1HcmQ1SUQ2VWhlNW9OL3hQNldOOUdKNTliWlZ6L1NMT0dPYUQwU1UxUFJKUERibjhqTVhiCkF0ZUt4Y2c1U1g2ZTM3VytpdFIyRGlweXUrekphSG5paTJRWCtLTUdzMjhESW1SeFkrK2VoL3BqTlVDbzZ6NWEKMmZoblVEMEZQeTJKd0pWNTRMSXMzNUd1Q2cyVU54amJhN1gyQ3VERlRYaG5CcjBTZHB6RzhzVEJLR092dWlGegovRWhHWDgxaTB4UWNzVm9qYnBPcm1NVGRMSU1DQXdFQUFhTkNNRUF3RGdZRFZSMFBBUUgvQkFRREFnS2tNQThHCkExVWRFd0VCL3dRRk1BTUJBZjh3SFFZRFZSME9CQllFRkpsZXhhdEtlVnZ4aHgyOFpOU1RGZEpGdkxkb01BMEcKQ1NxR1NJYjNEUUVCQ3dVQUE0SUJBUUMybmtHUUF6SXZJbnoyVWRGSFMrNjcyaEdYOEFsTDMvREFMWHdhclZ3bgprRHliRGc1OVJOZEV4bzlrdWh5V2RIZGUydmxOUHVaaXg2blUvbFh1UFBWTkdzMzJHb3ZXYjRuYm9rNFdFUnFQCk5VVXM1RFN2QlJwVW0zRVZpdFdkdmozQklXakdXenhpR3huakhJUG51dzdUSEtGYk0rbUN2OWYwTjdSWVFZWU0Kd09zWkJGQVdDNTZQREdlZjZKNmdoSStMQUNyZitWRWpJS3UyNHdFQUN5QXB0L0hzR1J2b25teGJhTXhldmpIZwpXZ2RLR1dwTDZRV2FGdTdkTTJkbG5LRVZPd2l1R3d0STJDeU1qN0owYVlXSU5ZZlozNFp1L21uS0xsamhHSTd1Cm8wZXQxNUtsQ0Q2OUp3S2pQR1BqM0VsVUE0NEF5NGpPZWEydzl2Y2dBLzFwCi0tLS0tRU5EIENFUlRJRklDQVRFLS0tLS0K",
+        "service": {
+          "name": "kyverno-svc",
+          "namespace": "devsecops-system",
+          "path": "/mutate/fail",
+          "port": 443
+        }
+      },
+      "failurePolicy": "Fail",
+      "matchPolicy": "Equivalent",
+      "name": "mutate.kyverno.svc-fail",
+      "namespaceSelector": {
+        "matchExpressions": [
+          {
+            "key": "kubernetes.io/metadata.name",
+            "operator": "In",
+            "values": [
+              "devsecops-execution",
+              "devsecops-supply-chain",
+              "petclinic",
+              "devsecops-system",
+              "monitoring",
+              "sonarqube"
+            ]
+          }
+        ]
+      },
+      "objectSelector": {},
+      "reinvocationPolicy": "IfNeeded",
+      "rules": [
+        {
+          "apiGroups": [
+            ""
+          ],
+          "apiVersions": [
+            "v1"
+          ],
+          "operations": [
+            "CREATE",
+            "UPDATE"
+          ],
+          "resources": [
+            "pods",
+            "pods/ephemeralcontainers"
+          ],
+          "scope": "Namespaced"
+        }
+      ],
+      "sideEffects": "NoneOnDryRun",
+      "timeoutSeconds": 20
+    }
+  ]
+}

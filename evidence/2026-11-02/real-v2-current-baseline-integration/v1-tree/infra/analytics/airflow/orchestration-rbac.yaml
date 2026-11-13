@@ -1,0 +1,200 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: petclinic-airflow-orchestrator
+  namespace: data-infra
+rules:
+  - apiGroups: ["coordination.k8s.io"]
+    resources: ["leases"]
+    verbs: ["get", "create", "update", "patch", "delete"]
+  - apiGroups: [""]
+    resources: ["pods", "pods/log", "configmaps"]
+    verbs: ["get", "list"]
+  - apiGroups: [""]
+    resources: ["pods/exec"]
+    verbs: ["get", "create"]
+  - apiGroups: ["apps"]
+    resources: ["deployments"]
+    verbs: ["get"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: petclinic-airflow-orchestrator
+  namespace: data-infra
+subjects:
+  - kind: ServiceAccount
+    name: airflow-worker
+    namespace: data-infra
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: petclinic-airflow-orchestrator
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: petclinic-airflow-spark
+  namespace: default
+rules:
+  - apiGroups: [""]
+    resources: ["configmaps", "pods", "pods/log", "services"]
+    verbs: ["get", "list", "watch", "create", "delete", "patch"]
+  - apiGroups: ["sparkoperator.k8s.io"]
+    resources: ["sparkapplications", "sparkapplications/status"]
+    verbs: ["get", "list", "watch", "create", "delete", "patch"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: petclinic-airflow-spark
+  namespace: default
+subjects:
+  - kind: ServiceAccount
+    name: airflow-worker
+    namespace: data-infra
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: petclinic-airflow-spark
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: petclinic-airflow-flink
+  namespace: ns-bigdata
+rules:
+  - apiGroups: [""]
+    resources: ["configmaps", "pods", "pods/log"]
+    verbs: ["get", "list", "watch", "create", "delete", "patch"]
+  - apiGroups: [""]
+    resources: ["pods/exec"]
+    verbs: ["get", "create"]
+  - apiGroups: ["apps"]
+    resources: ["deployments", "deployments/scale"]
+    verbs: ["get", "list", "watch", "update", "patch"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: petclinic-airflow-flink
+  namespace: ns-bigdata
+subjects:
+  - kind: ServiceAccount
+    name: airflow-worker
+    namespace: data-infra
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: petclinic-airflow-flink
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: petclinic-airflow-jenkins
+  namespace: ns-devops
+rules:
+  - apiGroups: ["apps"]
+    resources: ["deployments"]
+    verbs: ["get"]
+  - apiGroups: [""]
+    resources: ["pods"]
+    verbs: ["get", "list"]
+  - apiGroups: [""]
+    resources: ["pods/exec"]
+    verbs: ["get", "create"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: petclinic-airflow-jenkins
+  namespace: ns-devops
+subjects:
+  - kind: ServiceAccount
+    name: airflow-worker
+    namespace: data-infra
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: petclinic-airflow-jenkins
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: petclinic-airflow-baseline
+  namespace: ns-data
+rules:
+  - apiGroups: ["apps"]
+    resources: ["deployments"]
+    verbs: ["get"]
+  - apiGroups: [""]
+    resources: ["pods"]
+    verbs: ["get", "list"]
+  - apiGroups: [""]
+    resources: ["pods/exec"]
+    verbs: ["get", "create"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: petclinic-airflow-resource-read
+rules:
+  - apiGroups: [""]
+    resources: ["nodes"]
+    verbs: ["get"]
+  - apiGroups: ["metrics.k8s.io"]
+    resources: ["nodes"]
+    verbs: ["get"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: petclinic-airflow-resource-read
+subjects:
+  - kind: ServiceAccount
+    name: airflow-worker
+    namespace: data-infra
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: petclinic-airflow-resource-read
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: petclinic-airflow-baseline
+  namespace: ns-data
+subjects:
+  - kind: ServiceAccount
+    name: airflow-worker
+    namespace: data-infra
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: petclinic-airflow-baseline
+
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: petclinic-airflow-sonar-pause
+  namespace: sonarqube
+rules:
+  - apiGroups: ["apps"]
+    resources: ["statefulsets"]
+    resourceNames: ["sonarqube-sonarqube"]
+    verbs: ["get", "patch"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: petclinic-airflow-sonar-pause
+  namespace: sonarqube
+subjects:
+  - kind: ServiceAccount
+    name: airflow-worker
+    namespace: data-infra
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: petclinic-airflow-sonar-pause

@@ -1,0 +1,49 @@
+{
+  "filesAndHashes": {
+    "infra/security/governance/defectdojo.mjs": "f620f0a85650fc834aff56cbc7aeaf8f0d99de971136bfadcfff6a763d4148b7",
+    "infra/security/governance/dojo-client.mjs": "6024ce50d5e414980d7d3b445ce54d480e2982c8be7130e62dabba3918541de0",
+    "infra/security/policy/dojo-parent.mjs": "237f6dfce80c0b395c7c2a5b3d7f14b1c7b3714a132db57d6e27011258a3b0f6"
+  },
+  "entrypoint": "node infra/security/governance/defectdojo.mjs",
+  "prerequisiteOrder": [
+    "bound Dojo and Sonar credential presence",
+    "configured target Product GET",
+    "mandatory complete current Trivy audit native reports",
+    "four complete same-source Kubescape reports",
+    "complete bounded Sonar export",
+    "Gitleaks/Semgrep/ZAP native reports",
+    "import/reimport/query/dedupe lifecycle",
+    "source-gate exact false-positive proof",
+    "final Product findings count",
+    "report finally-write"
+  ],
+  "requiredReportPaths": [
+    ".devsecops/trivy-audit.json",
+    ".devsecops/kubescape-gate.json",
+    ".devsecops/gitleaks-native.json",
+    ".devsecops/semgrep-native.json",
+    ".devsecops/zap-business-report.xml",
+    ".devsecops/source-gate.json"
+  ],
+  "parserTypes": [
+    "Gitleaks Scan",
+    "Semgrep JSON Report",
+    "ZAP Scan",
+    "Harbor Vulnerability Scan",
+    "Kubescape JSON Importer",
+    "SonarQube Scan"
+  ],
+  "dedupe": "same report reimport must preserve exact sorted Finding IDs",
+  "pagination": "tests limit100/findings limit200, follow same-origin next, max100 pages; not first-page assumption",
+  "errorSemantics": "credentials/report/native/input/query/dedupe/API/write failures FAIL in existing Gate; finding severity count itself does not redefine scanner Gate",
+  "retrySemantics": "GET/PATCH bounded transport or 502/503/504 retries; import POST not retried",
+  "cleanupInFrozenParent": false,
+  "adapter": "infra/security/policy/dojo-parent.mjs; uses unchanged original client against frozen observations",
+  "runtimeObservationGap": "observe.mjs has no passive Dojo API observer; projection contract requires actual request/response observations and files, not native report status success",
+  "blockingPrerequisite": ".devsecops/trivy-audit.json absent in current validation context; Trivy ENVIRONMENT_BLOCKED; other current native reports also missing",
+  "safeAlternativeAssessment": {
+    "existingIsolatedProductIdentity": "possible only after reports ready; do not use existing identity authorized for production Products1/2",
+    "temporaryIsolatedDojo": "does not create absent current Trivy/native inputs; no temporary environment deployed",
+    "verifyOnlyOrSubsetImport": "cannot satisfy full frozen parent without changing Gate or decoupling, both outside scope"
+  }
+}

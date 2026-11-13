@@ -1,0 +1,210 @@
+{
+  "scope": "Read-only audit observations; not new cumulative Policy test cases",
+  "checks": [
+    {
+      "capability": "baseline-v1",
+      "status": "VERIFIED",
+      "evidence": "Existing version document resolved"
+    },
+    {
+      "capability": "default standard",
+      "status": "VERIFIED",
+      "evidence": "Absent level resolves to standard"
+    },
+    {
+      "capability": "explicit low",
+      "status": "VERIFIED",
+      "evidence": "Explicit low only; invalid level rejected"
+    },
+    {
+      "capability": "strict",
+      "status": "VERIFIED",
+      "evidence": "Same immutable finding WARN -> FAIL"
+    },
+    {
+      "capability": "component override",
+      "status": "VERIFIED",
+      "evidence": "Target only"
+    },
+    {
+      "capability": "project override",
+      "status": "VERIFIED",
+      "evidence": "Project overrides component; mismatched identity rejected"
+    },
+    {
+      "capability": "policy version metadata",
+      "status": "VERIFIED",
+      "evidence": "Engine return payload only; no actual Summary integration"
+    },
+    {
+      "capability": "effective policy",
+      "status": "VERIFIED",
+      "evidence": "Resolved component map present"
+    },
+    {
+      "capability": "override source",
+      "status": "VERIFIED",
+      "evidence": [
+        {
+          "layer": "component",
+          "component": "semgrep",
+          "values": {
+            "Medium": "FAIL"
+          }
+        },
+        {
+          "layer": "project",
+          "component": "semgrep",
+          "values": {
+            "Medium": "WARN"
+          }
+        }
+      ]
+    },
+    {
+      "capability": "POLICY_ERROR on broken config",
+      "status": "VERIFIED",
+      "evidence": [
+        "unreadable: POLICY_ERROR",
+        "malformed: POLICY_ERROR",
+        "wrong schema: POLICY_ERROR"
+      ]
+    }
+  ],
+  "ready": true,
+  "classifierRecheck": [
+    {
+      "component": "semgrep",
+      "oldDecision": "FAIL",
+      "standardDecision": "FAIL",
+      "rawPreserved": true
+    },
+    {
+      "component": "semgrep",
+      "oldDecision": "WARN",
+      "standardDecision": "WARN",
+      "rawPreserved": true
+    },
+    {
+      "component": "semgrep",
+      "oldDecision": "FAIL",
+      "standardDecision": "FAIL",
+      "rawPreserved": true
+    },
+    {
+      "component": "semgrep",
+      "oldDecision": "WARN",
+      "standardDecision": "WARN",
+      "rawPreserved": true
+    },
+    {
+      "component": "semgrep",
+      "oldDecision": "FAIL",
+      "standardDecision": "FAIL",
+      "rawPreserved": true
+    },
+    {
+      "component": "semgrep",
+      "oldDecision": "WARN",
+      "standardDecision": "WARN",
+      "rawPreserved": true
+    },
+    {
+      "component": "semgrep",
+      "oldDecision": "WARN",
+      "standardDecision": "WARN",
+      "rawPreserved": true
+    },
+    {
+      "component": "semgrep",
+      "oldDecision": "WARN",
+      "standardDecision": "WARN",
+      "rawPreserved": true
+    },
+    {
+      "component": "trivy",
+      "oldDecision": "FAIL",
+      "standardDecision": "FAIL",
+      "rawPreserved": true
+    },
+    {
+      "component": "trivy",
+      "oldDecision": "FAIL",
+      "standardDecision": "FAIL",
+      "rawPreserved": true
+    },
+    {
+      "component": "trivy",
+      "oldDecision": "FAIL",
+      "standardDecision": "FAIL",
+      "rawPreserved": true
+    },
+    {
+      "component": "trivy",
+      "oldDecision": "FAIL",
+      "standardDecision": "FAIL",
+      "rawPreserved": true
+    },
+    {
+      "component": "trivy",
+      "oldDecision": "WARN",
+      "standardDecision": "WARN",
+      "rawPreserved": true
+    },
+    {
+      "component": "trivy",
+      "oldDecision": "FAIL",
+      "standardDecision": "FAIL",
+      "rawPreserved": true
+    },
+    {
+      "component": "trivy",
+      "oldDecision": "WARN",
+      "standardDecision": "WARN",
+      "rawPreserved": true
+    },
+    {
+      "component": "trivy",
+      "oldDecision": "WARN",
+      "standardDecision": "WARN",
+      "rawPreserved": true
+    },
+    {
+      "component": "zap",
+      "oldDecision": "WARN",
+      "standardDecision": "WARN",
+      "rawPreserved": true
+    },
+    {
+      "component": "zap",
+      "oldDecision": "WARN",
+      "standardDecision": "WARN",
+      "rawPreserved": true
+    },
+    {
+      "component": "zap",
+      "oldDecision": "WARN",
+      "standardDecision": "WARN",
+      "rawPreserved": true
+    },
+    {
+      "component": "zap",
+      "oldDecision": "WARN",
+      "standardDecision": "WARN",
+      "rawPreserved": true
+    }
+  ],
+  "sonarLogic": {
+    "positive": {
+      "classification": "HISTORICAL_ARCHIVE",
+      "decision": "PASS",
+      "rawPreserved": true
+    },
+    "negative": {
+      "classification": "SYNTHETIC_UNIT_ONLY",
+      "decision": "FAIL",
+      "rawPreserved": true,
+      "realNegativeStatus": "DEFERRED_REAL_NEGATIVE_EVIDENCE"
+    }
+  }
+}

@@ -1,0 +1,72 @@
+{
+  "id": "9813796eee581bf765b2cd0fb93c26c632b4cb47a075b6c99a29e77597b19697",
+  "name": "/security-test-sops-control-plane",
+  "imageId": "sha256:452d707d4862f52530247495d180205e029056831160e22870e37e3f6c1ac31f",
+  "labels": {
+    "io.x-k8s.kind.cluster": "security-test-sops",
+    "io.x-k8s.kind.role": "control-plane"
+  },
+  "mounts": [
+    {
+      "Type": "bind",
+      "Source": "/lib/modules",
+      "Destination": "/lib/modules",
+      "Mode": "ro",
+      "RW": false,
+      "Propagation": "rprivate"
+    },
+    {
+      "Type": "volume",
+      "Name": "289d891f7426cde46bc46ae897f14fa4b2fbf84703f0513a999f56206d13cd13",
+      "Source": "/var/lib/docker/volumes/289d891f7426cde46bc46ae897f14fa4b2fbf84703f0513a999f56206d13cd13/_data",
+      "Destination": "/var",
+      "Driver": "local",
+      "Mode": "",
+      "RW": true,
+      "Propagation": ""
+    }
+  ],
+  "envNames": [
+    "KIND_EXPERIMENTAL_CONTAINERD_SNAPSHOTTER",
+    "KUBECONFIG",
+    "PATH",
+    "container",
+    "HTTP_PROXY",
+    "HTTPS_PROXY",
+    "NO_PROXY"
+  ],
+  "networkMode": "kind",
+  "standardKindPrivileged": true,
+  "noAdditionalPrivilegeOptionsRequested": true,
+  "portBindings": {
+    "6443/tcp": [
+      {
+        "HostIp": "127.0.0.1",
+        "HostPort": "59645"
+      }
+    ]
+  },
+  "networks": {
+    "kind": {
+      "IPAMConfig": null,
+      "Links": null,
+      "Aliases": null,
+      "DriverOpts": null,
+      "GwPriority": 0,
+      "NetworkID": "4a0ea7b2181bc3a1fd8896aa5158aec85c162ab8084a7760d6f753935b2a063a",
+      "EndpointID": "e7b8c2832d59baf786eeb734d0fb66c7c2258ccb8d71582dd0a3e9c51ec3366b",
+      "Gateway": "172.18.0.1",
+      "IPAddress": "172.18.0.2",
+      "MacAddress": "b2:80:9a:f9:de:74",
+      "IPPrefixLen": 16,
+      "IPv6Gateway": "fc00:f853:ccd:e793::1",
+      "GlobalIPv6Address": "fc00:f853:ccd:e793::2",
+      "GlobalIPv6PrefixLen": 64,
+      "DNSNames": [
+        "security-test-sops-control-plane",
+        "9813796eee58"
+      ]
+    }
+  },
+  "sourceScope": "Bind sources are inside the already-proven isolated VM; no host HOME/production mount."
+}

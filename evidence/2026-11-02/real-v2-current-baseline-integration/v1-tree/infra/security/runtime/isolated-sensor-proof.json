@@ -1,0 +1,123 @@
+{
+  "kind": "actual isolated sensor validation; not real production attacks or successful escapes",
+  "rulesetLabel": "59752c1132f0",
+  "testPodUid": "08215dcc-8457-4296-9bf0-197ae73adeed",
+  "cleanup": {
+    "pod": "runtime-20261028223232",
+    "uid": "08215dcc-8457-4296-9bf0-197ae73adeed",
+    "removed": true,
+    "privilegedTestPodsCreated": 0
+  },
+  "cases": [
+    {
+      "case": "shell",
+      "status": "PASS",
+      "event": {
+        "time": "2026-10-28T14:32:47.348280206Z",
+        "rule": "Platform Runtime Shell",
+        "output_fields": {
+          "container.id": "e6a1f3df6fa3",
+          "container.name": "test",
+          "evt.res": "SUCCESS",
+          "evt.type": "execve",
+          "k8s.ns.name": "devsecops-test",
+          "k8s.pod.name": "runtime-20261028223232",
+          "proc.name": "sh",
+          "user.uid": 10001
+        }
+      }
+    },
+    {
+      "case": "sensitive-read",
+      "status": "PASS",
+      "event": {
+        "time": "2026-10-28T14:32:49.874654345Z",
+        "rule": "Platform Runtime Sensitive Read",
+        "output_fields": {
+          "container.id": "e6a1f3df6fa3",
+          "container.name": "test",
+          "evt.arg.name": "/etc/passwd",
+          "evt.res": "SUCCESS",
+          "evt.type": "openat",
+          "k8s.ns.name": "devsecops-test",
+          "k8s.pod.name": "runtime-20261028223232",
+          "proc.name": "cat",
+          "user.uid": 10001
+        }
+      }
+    },
+    {
+      "case": "package-manager",
+      "status": "PASS",
+      "event": {
+        "time": "2026-10-28T14:32:52.334084774Z",
+        "rule": "Platform Runtime Package Manager",
+        "output_fields": {
+          "container.id": "e6a1f3df6fa3",
+          "container.name": "test",
+          "evt.res": "SUCCESS",
+          "evt.type": "execve",
+          "k8s.ns.name": "devsecops-test",
+          "k8s.pod.name": "runtime-20261028223232",
+          "proc.name": "apt-get",
+          "user.uid": 10001
+        }
+      }
+    },
+    {
+      "case": "network-tool",
+      "status": "PASS",
+      "event": {
+        "time": "2026-10-28T14:32:54.940036892Z",
+        "rule": "Platform Runtime HTTP Utility",
+        "output_fields": {
+          "container.id": "e6a1f3df6fa3",
+          "container.name": "test",
+          "evt.res": "SUCCESS",
+          "evt.type": "execve",
+          "k8s.ns.name": "devsecops-test",
+          "k8s.pod.name": "runtime-20261028223232",
+          "proc.name": "curl",
+          "user.uid": 10001
+        }
+      }
+    },
+    {
+      "case": "readonly-write",
+      "status": "PASS",
+      "event": {
+        "time": "2026-10-28T14:32:57.535197104Z",
+        "rule": "Platform Runtime Sensitive Write",
+        "output_fields": {
+          "container.id": "e6a1f3df6fa3",
+          "container.name": "test",
+          "evt.arg.name": "/etc/runtime-20261028223232",
+          "evt.res": "EROFS",
+          "evt.type": "openat",
+          "k8s.ns.name": "devsecops-test",
+          "k8s.pod.name": "runtime-20261028223232",
+          "proc.name": "touch",
+          "user.uid": 10001
+        }
+      }
+    },
+    {
+      "case": "namespace-tool",
+      "status": "PASS",
+      "event": {
+        "time": "2026-10-28T14:32:59.961745408Z",
+        "rule": "Platform Runtime Namespace Or Mount",
+        "output_fields": {
+          "container.id": "e6a1f3df6fa3",
+          "container.name": "test",
+          "evt.res": "SUCCESS",
+          "evt.type": "execve",
+          "k8s.ns.name": "devsecops-test",
+          "k8s.pod.name": "runtime-20261028223232",
+          "proc.name": "nsenter",
+          "user.uid": 10001
+        }
+      }
+    }
+  ]
+}

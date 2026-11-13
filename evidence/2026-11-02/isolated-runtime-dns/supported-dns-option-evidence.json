@@ -1,0 +1,36 @@
+[
+  {
+    "command": [
+      "/opt/homebrew/bin/colima",
+      "start",
+      "--help"
+    ],
+    "exit": 0,
+    "stdout": "  colima start --dns 1.1.1.1 --dns 8.8.8.8\n  colima start --kubernetes --k3s-arg='\"--disable=coredns,servicelb,traefik,local-storage,metrics-server\"'\n      --activate                    set as active Docker/Kubernetes/Incus context on startup (default true)\n  -n, --dns ipSlice                 DNS resolvers for the VM (default [])\n  -k, --kubernetes                  start with Kubernetes\n  -V, --mount strings               directories to mount, suffix ':w' for writable, disable with 'none'\n      --save-config                 persist and overwrite config file with (newly) specified flags (default true)\n      --ssh-config                  generate SSH config in ~/.ssh/config (default true)",
+    "stderr": ""
+  },
+  {
+    "command": [
+      "/opt/homebrew/bin/limactl",
+      "--version"
+    ],
+    "exit": 0,
+    "stdout": "limactl version 2.2.0\n",
+    "stderr": ""
+  },
+  {
+    "command": [
+      "/opt/homebrew/bin/colima",
+      "ssh",
+      "-p",
+      "security-test",
+      "--",
+      "sh",
+      "-c",
+      "find /mnt/lima-cidata -maxdepth 3 -type f | grep -E \"/boot/.*(dns|network|resolv)\""
+    ],
+    "exit": 1,
+    "stdout": "",
+    "stderr": "find: \u2018/mnt/lima-cidata\u2019: Permission denied\ntime=\"2026-11-02T09:31:06+08:00\" level=fatal msg=\"exit status 1\"\n"
+  }
+]

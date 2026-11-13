@@ -1,0 +1,54 @@
+本轮结论：SUMMARY_V2_MIGRATION = INCOMPLETE。
+
+已实现候选结果交接和序列化，保存完整 V1 回滚快照；生产尚未切换。此前 READY 是设计结论，仍不代表实现验收通过。已有 18-source frozen compatibility 结论和 Sonar 真实负例 deferred 结论不变。
+
+以下为本轮要求的 46 项逐项记录。标注“候选”或“受控测试”的结果不代表 Jenkins 真实接线通过。
+
+1. V1 identity：SummaryProducerV1-038320f04c67fb1fe5ff711c11d445c2de88cc50b2230eb4c971bf46142f5b34。evidence/2026-11-02/summary-v2-migration/V1_IDENTITY.json 保存 schema、HEAD、工作树字节身份、524 个文件的哈希和模式。v1-tree/ 保存可恢复字节；未覆盖旧 identity。
+2. V2 identity：SummaryProducerV2-candidate-dfde86d456b8cc1c8695042e54171fb07133f2adb3f20aefdc7a19cd94139757。候选契约和身份存于 candidate-integrity.json 及 V2_CANDIDATE_IDENTITY.json；未生效。候选锁的 r1 也另存，没有删除历史。
+3. changed production files：既有生产文件修改 0。新增 infra/security/summary-v2/ 候选模块、测试及 README；新增 infra/security/testing/{freeze-summary-v1.py,lock-summary-v2-candidate.py,audit-summary-v2.mjs,record-summary-regression.mjs}；新增本报告和 evidence。原先 5 个脏文档未改动。
+4. ResolvedPolicyResult：schema/kind、sourceId/component/pre-approval scope、job/build/project/source/candidate/targetScope/runId、rawFactDigest/configDigest、实际 Engine metadata/status/decision 或明确 POLICY_ERROR、evidenceComplete、resultDigest。事实只进入内存，持久输出不含原始 Secret 或完整 raw。
+5. canonical sources：sbom、regression、falco-baseline、kyverno、kubescape、gitleaks、sops、trivy、cosign、sonarqube、zap、falco-final、defectdojo、provenance、build-provenance、semgrep-command-audit。semgrep 是最后一项 alias；security-approval-promotion 是 post scope。与已批准 18-label 模型一致。
+6. per-source counts：候选单 owner fixture 每项 1，共 16；Gate、Summary、Promotion 前置读取后不变。其余 source 多为显式 SKIPPED unit fixture，不是 16 个真实扫描的执行证明。生产 pipeline 级唯一 owner/跨进程重试：NOT_TESTED。
+7. duplicate evaluation：同 owner 内并发第二次、完成后第二次均在第二次 Engine 调用前拒绝；不复用第二次求值结果去重。不同 owner/不同进程的生产唯一性尚未实现。
+8. artifact：候选输出目录约定 .devsecops/policy/，文件 pre-approval-<sha256>.json。writeImmutableArtifact 使用 wx/0400，可信 digest 在 owner context 外部保存；不是文件自声明 hash。未在实际 .devsecops 写入 artifact。
+9. completeness：固定 16 项全部 terminal、raw evidence complete、同 config snapshot、aggregate finalized 和两个外部 Gate 观察齐全后才 COMPLETE；COMPLETE 不表示 PASS。POLICY_ERROR 可进入失败 artifact；NOT_TESTED/成功输入缺原始观察拒绝。
+10. candidate binding：候选测试通过 pinned candidate、target scope 和完整 identity 比较；错 candidate 拒绝。
+11. stale result：job/build/source/project/runId 不匹配拒绝，受控测试通过。
+12. missing result：缺任一 expected source 拒绝；Sonar compatibility deferred 不会移除 runtime expected source。
+13. duplicate source：重复、alias、post-scope 或 unknown source 均拒绝，受控测试通过。
+14. aggregate：候选 finalizer 复用 resultDigest 与既有 Jenkins 观察，保留 audit exit10、enforce 非零失败、外部 SnapshotBefore/ReadOnlyReleaseVerification、继承 UNSTABLE 等代表行为。没有 worst-severity 重新解释。真实 Groovy/Manager aggregate 迁移：NOT_TESTED。
+15. metadata shape：保留原字段，追加 summaryProducer、policy、resolvedSources、aggregateSecurityGate。policy 来自真实 Engine 投影；无成功 metadata 时只输出 POLICY_ERROR 状态，不编造 standard。各 source 带自己的 status/decision/error、raw/config/result binding。
+16. schema：保持 document schema=1；producer.version=2 分开表达。受控差分只移除 4 个新增字段；没有归一化旧状态或修改旧字段。
+17. V1/V2 differential：实际冻结 V1 生产者在临时目录执行，再把其 pre-approval 字段交给候选 artifact/V2；6/6 旧字段 deepEqual。分类为 CONTROLLED_SERIALIZATION_AND_ENGINE_UNIT，未证明生产字段采集接线。初次测试夹具 project 与 V1 固定 project 不匹配，修正夹具 binding 后通过；没有放宽校验或修改 V1。
+18. PASS：受控序列化和实际 Engine fixture 通过，原字段完全相同。
+19. FAIL：同上，FAIL 未变 WARN/PASS。
+20. WARN：同上，WARN 未变 PASS。
+21. SKIPPED：同上，null decision 和 SKIPPED 均保留。
+22. NOT_CONFIGURED：同上，未转换为 PASS。真实 success 报告缺 adapter 原始观察会阻止 COMPLETE。
+23. POLICY_ERROR：同上；配置错误保留明确 error，不回退为 low/standard。
+24. default/low/strict：真实 Engine 缺省 standard、显式 low、strict metadata 均通过；相同测试 Medium fact 的 strict 更严格，raw digest 不变。
+25. overrides：真实 Engine component/project 顺序与 appliedOverrides 输出通过；target effectivePolicy 改变而其他组件和 raw digest 不变；错 project/override 拒绝。真实生产配置交接尚未接线。
+26. pre-approval scope：候选递归拒绝 approval/promotion/runtimeAfter 等未来字段，通过。现有生产 post Summary 未改；实际 pre-approval 采集仍缺失。
+27. anti-self-approval：候选前置检查拒绝 forged future approval 和独立 PromotionResult；候选图无反向依赖。ANTI_SELF_APPROVAL(candidate) = PASS。实际 Promotion 尚未迁移，不能宣称生产边界已经变更。
+28. Promotion authority：目标是不可变 artifact；候选 preApprovalPolicyInput 已实现 producer/version/integrity/binding/COMPLETE/aggregate/Policy eligibility 校验。实际 gateEvidence/sign-approve/promote 仍为 V1。
+29. PromotionResult separation：候选 artifact 不读取、不包含 PromotionResult；没有执行真实 Promotion 或生成伪造的生产 post-result。原生 promotion-result.json 行为未改。
+30. Promotion regression：原有 2 项 contract regression 在原始 Regression 命令中通过。额外测试证明旧 validateGate 会忽略未知 additive Policy 字段，所以未安装可信 V2 dispatch 前不能激活 V2。
+31. Regression migration：原范围保持 top-level Node exit-code Gate。实际原命令两次执行：沙箱 exit1 → standard FAIL；允许 loopback 后 exit0 → standard PASS，2/2 MATCH。新 V2 integrity consumer 只验证候选契约，真实 Regression guard 尚未迁移。
+32. mixed matrix：候选 verifier 覆盖 A/B/C/D/E/F/H：V1 原契约、V2 新契约、V2+旧 verifier 拒绝、V1 必须显式 rollback、unknown 拒绝、tamper 拒绝、恢复 V1 成功。G malformed metadata 由 handoff 测试覆盖。实际旧 Promotion 没有安装 verifier，因此 C 的生产 dispatch = NOT_TESTED，不能混为已完成。
+33. unknown/tamper：候选 producer tuple、文件 exact hashes、result hash、外部 artifact digest 检查通过。没有 wildcard、自动 fallback 或关闭源完整性检查。完整可信 context 的生产传递未实现。
+34. rollback：临时目录恢复 V1 快照字节并显式选 V1，全部原哈希再次接受；无放宽锁、无生产切换。生产回滚流程不能在未迁移状态下宣称已在线演练。
+35. Jenkins archive：现有 .devsecops/** glob 静态覆盖目标 artifact 路径；真实构建归档 NOT_TESTED；没有触发 Jenkins。
+36. Loki：仅受控 JSON 字段兼容检查，没有 live parser/transport 查询；live = NOT_TESTED。
+37. Grafana：现有 14 个实际 LogQL JSON selector 所读取字段在受控 V1/V2 中相同；未运行真实 Grafana/Loki 查询；live = NOT_TESTED。
+38. other consumers：sign-approve/promote 仍共享原 gateEvidence；原 contract unit checks 通过；实际 V2 消费 NOT_TESTED。generic manager Summary 亦未迁移。
+39. Policy core：5/5 PASS，engine.test.mjs 未改；未重跑会覆盖旧 evidence 的 parent-stage 全套。
+40. 新测试：handoff 23/23、compatibility 17/17，合计 40/40 PASS。原始完整 Regression 最终 147/147 PASS。第一次沙箱 140 PASS/7 EPERM FAIL，完整日志保留；未跳过测试、未修改 timeout 或 Gate。
+41. hash preservation：3703 个本轮保护文件零变化；V1 快照 524/524 一致；既有 authoritative 455 refs/229 distinct 全通过；当前直接 sourceHashes 321 refs/221 distinct 全通过。scanner/adapter/Engine/baseline 未变；原 2128 parent 样本未重复执行。
+42. accepted integrity state：原 accepted V1 锁全部保持；candidate-integrity.json 只用于候选测试，NOT_INSTALLED。不能把新增候选 hash 描述为生产已接受。
+43. release/rollout：0/0；没有签名、批准、发布、GitOps push、Kubernetes 或生产 API 调用。
+44. SUMMARY_V2_MIGRATION = INCOMPLETE。
+45. exact blockers：真实 source observation capture/owner/Gate/summary-field handoff 未实现，多个 frozen adapter 无法消费仅含 success 的原生报告；实际 Promotion/Regression dispatch 和 versioned accepted contract 未迁移；候选单实例 counts 不足以证明全真实 pipeline 的 once；真实 artifact archive/transport 尚未验证。没有确认源决策回归，不标 FAILED。runtime-observation-gaps.json 给出 7 个明确缺口示例，它们是 synthetic report-projection probes，不是生产失败或新的 source compatibility 结论。
+46. VERIFIED 后的后续动作不适用。本轮停在未激活候选状态。完成本阶段的最小后续工程是逐来源无副作用内存采集、复用原 Gate 真实退出及 IO/cleanup 事实、source hash proof、真实 Manager 唯一 owner 与 Gate 回执交接，再以独立 V1 source root 保留冻结 oracle，并在同一次已验证变更中迁移 Summary/Promotion/Regression 和可信版本选择。不能先修改 scanner、adapter 语义，不能凭 status=success 拼造事实；不启动插件契约、Result Router 或发布工作。
+
+证据目录：evidence/2026-11-02/summary-v2-migration/。source-preservation.json、activation-state.json、runtime-observation-gaps.json、actual-regression-differential.json、candidate-summary-differential.json、consumer-coverage.json 和全部测试日志可逐项复核。

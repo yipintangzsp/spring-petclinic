@@ -1,0 +1,32 @@
+import test from 'node:test';import assert from 'node:assert/strict';import fs from 'node:fs';
+import {evaluate} from './engine.mjs';import {dbFixture,replayTrivyDB} from './trivy-db-replay.mjs';import {base,sha} from './trivy-parent-fixtures.mjs';
+const cases=[],records=[];const stale=(r,k='db')=>r.metadata[k].NextUpdate='2026-10-31T23:59:00Z';
+const add=(name,branch,change=()=>{})=>cases.push({name,branch,change});
+add('fresh-no-maintenance','db-normal');
+add('fresh-no-owner-required-current-semantics','db-boundary',r=>r.env={});
+add('db-only-refresh','db-update',r=>stale(r));
+add('java-db-only-refresh','db-update',r=>stale(r,'java-db'));
+add('both-refresh-serially','db-update',r=>{stale(r);stale(r,'java-db');});
+add('proxy-fails-direct-succeeds','db-fallback',r=>{stale(r);r.faults['curl-token:proxy']='controlled proxy outage';r.faults['curl-manifest:proxy']='controlled proxy outage';});
+add('no-proxy-direct-only','db-fallback',r=>{stale(r);delete r.env.PACKAGE_HTTPS_PROXY;});
+for(const [name,edit]of [['missing',r=>delete r.metadata.db],['wrong-version',r=>r.metadata.db.Version=1],['bad-nextupdate',r=>r.metadata.db.NextUpdate='bad'],['bad-downloadedat',r=>r.metadata.db.DownloadedAt='0001-01-01T00:00:00Z'],['future-updatedat',r=>r.metadata.db.UpdatedAt='2027-01-01T00:00:00Z'],['future-downloadedat',r=>r.metadata.db.DownloadedAt='2027-01-01T00:00:00Z']])add('metadata-'+name,'db-metadata',edit);
+for(const [name,edit]of [['foreign-lease',r=>r.lease.spec.holderIdentity='foreign'],['missing-owner',r=>r.env={}],['disk-old',r=>r.disk.time='2026-10-31T23:00:00Z'],['disk-future',r=>r.disk.time='2026-11-01T00:01:00Z'],['disk-shortage',r=>r.disk.availableBytes=1024],['another-cli-active',r=>r.ps='sh\ntrivy\n']])add(name,'db-prerequisite',r=>{stale(r);edit(r);});
+for(const key of ['lease','disk','ps','curl-token','curl-manifest','download','metadata-read','cleanup-stop','cleanup-check','cleanup-pidfile'])add('failure-'+key,key.startsWith('cleanup')?'db-cleanup':'db-execution',r=>{stale(r);r.faults[key]='controlled '+key+' failure';});
+for(const key of ['mkdtemp','rm-manifest-temp','read-manifest-headers'])add('io-'+key,'db-io',r=>{stale(r);r.io[key]='controlled EACCES';});
+add('invalid-cache-dir','db-prerequisite',r=>r.cacheDir='/not-authorized');
+add('download-complete-but-stale','db-update-error',r=>{stale(r);r.after.db.NextUpdate='2026-10-31T23:59:00Z';});
+add('download-complete-but-invalid-version','db-update-error',r=>{stale(r);r.after.db.Version=0;});
+add('metadata-read-malformed','db-update-error',r=>{stale(r);r.after.db='{';});
+add('official-manifest-digest-mismatch','db-manifest',r=>{stale(r);r.claimedDigest='sha256:'+'f'.repeat(64);});
+add('official-manifest-malformed','db-manifest',r=>{stale(r);r.manifest='{';});
+add('official-manifest-wrong-layer','db-manifest',r=>{stale(r);r.manifest=JSON.stringify({schemaVersion:2,layers:[{mediaType:'wrong',digest:'sha256:'+'d'.repeat(64),size:128}]});});
+add('official-public-token-malformed','db-manifest',r=>{stale(r);r.tokenText='{';});
+add('official-public-token-invalid','db-manifest',r=>{stale(r);r.tokenText='{"token":"space not accepted"}';});
+for(const c of cases)test('Trivy separate existing DB prerequisite: '+c.name,async()=>{
+ const input=dbFixture();c.change(input);const initial=JSON.stringify(input),facts=await replayTrivyDB(input),before=JSON.stringify(facts),old=facts.execution.exitStatus===0?'PASS':'FAIL';
+ const result=evaluate({component:'trivy',status:'success',raw:facts},{policyVersion:'baseline-v1',securityLevel:'standard'});assert.equal(result.decision,old);assert.equal(JSON.stringify(input),initial);assert.equal(JSON.stringify(facts),before);assert.deepEqual(result.rawEvidence,facts);
+ if(c.name==='proxy-fails-direct-succeeds'){assert.equal(old,'PASS');assert.ok(facts.observations.some(x=>x.key==='curl-token'&&x.route==='direct'));}
+ if(c.name==='fresh-no-maintenance')assert.equal(facts.observations.length,0);
+ const file='db--'+c.name+'.json';fs.writeFileSync(base+'fixtures/'+file,JSON.stringify({input,facts},null,2));records.push({name:c.name,branch:c.branch,classification:'CONTROLLED_REPLAY',scope:'DB prerequisite dependency only, NOT a complete audit && parent sample',oldDecision:old,standardDecision:result.decision,rawPreserved:true,fixture:file,inputSha256:sha(initial),rawSha256:sha(before)});
+});
+test.after(()=>fs.writeFileSync(base+'db-differential.json',JSON.stringify({records},null,2)));

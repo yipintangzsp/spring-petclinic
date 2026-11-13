@@ -1,0 +1,69 @@
+{
+  "items": [
+    {
+      "priorBlocker": "Policy Engine missing",
+      "status": "CLOSED_FOR_SUMMARY_INTEGRATION",
+      "reason": "Versioned standalone engine exists; current core checks/tests and frozen standard compatibility audited"
+    },
+    {
+      "priorBlocker": "SOPS compatibility",
+      "status": "CLOSED_FOR_SUMMARY_INTEGRATION",
+      "reason": "New authoritative 12-case real controlled evidence replaces prior environment blocker"
+    },
+    {
+      "priorBlocker": "Unified plugin contract / master switch / independent lifecycle",
+      "status": "STILL_LATER_ARCHITECTURE_WORK",
+      "reason": "Existing plan places this after additive Summary metadata; not waived or implemented"
+    },
+    {
+      "priorBlocker": "DefectDojo scanner-file coupling",
+      "status": "STILL_LATER_ARCHITECTURE_WORK",
+      "reason": "After plugin contract; compatibility preservation does not fix coupling"
+    },
+    {
+      "priorBlocker": "Result Router / Loki-Grafana query closure",
+      "status": "STILL_LATER_ARCHITECTURE_WORK",
+      "reason": "Later result-routing/query-verification stage; this audit performs no network calls"
+    },
+    {
+      "priorBlocker": "Falco observed-window timing drift",
+      "status": "CLOSED_FOR_SUMMARY_INTEGRATION",
+      "reason": "New authoritative 89 baseline/91 final differential records, DRIFT=0; production Gate/baseline unchanged"
+    },
+    {
+      "priorBlocker": "Summary V2 migration and inactive candidate hash transition",
+      "status": "STILL_LATER_ARCHITECTURE_WORK",
+      "reason": "Implementation is stopped. Current source compatibility uses the repaired adapter; candidate activation requires separately reviewed identity reconciliation."
+    }
+  ],
+  "sonarDebt": {
+    "status": "DEFERRED",
+    "positive": "VERIFIED",
+    "realNegative": "NOT_TESTED / DEFERRED_REAL_NEGATIVE_EVIDENCE",
+    "nonBlocking": true,
+    "rationale": "Established explicit acceptance permits missing naturally occurring bound historical negative when actual positive and independent ERROR mapping tests pass; no redefinition of Sonar metrics or historical evidence",
+    "positiveBuildTaskBinding": "workspace/time correlation, direct archived per-build task NOT_TESTED"
+  },
+  "laterDebt": [
+    "Summary V2 migration implementation and inactive candidate version reconciliation",
+    "globalMode / per-plugin switches / capability checks",
+    "Provenance opt-in normalization",
+    "Global SECURITY_ENABLED and all-plugin lifecycle/capability isolation",
+    "Portability smoke",
+    "Historical full runtime/CLI proofs for controlled replay sources"
+  ],
+  "BLOCKING_SUMMARY_INTEGRATION": [],
+  "LATER_ARCHITECTURE_WORK": [
+    "Summary V2 migration implementation and candidate version reconciliation",
+    "unified plugin contract",
+    "SECURITY_ENABLED",
+    "globalMode",
+    "per-plugin switches",
+    "capability checks",
+    "DefectDojo decoupling",
+    "Result Router",
+    "Loki/Grafana query closure",
+    "portability smoke",
+    "Provenance opt-in normalization"
+  ]
+}

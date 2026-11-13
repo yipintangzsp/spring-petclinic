@@ -1,0 +1,546 @@
+{
+  "monitoring": {
+    "at": "2026-11-06T05:04:24.445379+00:00",
+    "credentialValuesRead": 0,
+    "grafanaWrites": 0,
+    "deploymentReferences": [
+      {
+        "namespace": "monitoring",
+        "name": "kube-stack-grafana",
+        "containers": [
+          {
+            "name": "grafana-sc-dashboard",
+            "env": [
+              {
+                "name": "METHOD"
+              },
+              {
+                "name": "LABEL"
+              },
+              {
+                "name": "LABEL_VALUE"
+              },
+              {
+                "name": "FOLDER"
+              },
+              {
+                "name": "RESOURCE"
+              },
+              {
+                "name": "NAMESPACE"
+              },
+              {
+                "name": "REQ_USERNAME",
+                "valueFrom": {
+                  "secretKeyRef": {
+                    "key": "admin-user",
+                    "name": "kube-stack-grafana"
+                  }
+                }
+              },
+              {
+                "name": "REQ_PASSWORD",
+                "valueFrom": {
+                  "secretKeyRef": {
+                    "key": "admin-password",
+                    "name": "kube-stack-grafana"
+                  }
+                }
+              },
+              {
+                "name": "REQ_URL"
+              },
+              {
+                "name": "REQ_METHOD"
+              },
+              {
+                "name": "HEALTH_PORT"
+              }
+            ],
+            "envFrom": [],
+            "volumeMounts": [
+              {
+                "mountPath": "/tmp/dashboards",
+                "name": "sc-dashboard-volume"
+              }
+            ]
+          },
+          {
+            "name": "grafana-sc-datasources",
+            "env": [
+              {
+                "name": "METHOD"
+              },
+              {
+                "name": "LABEL"
+              },
+              {
+                "name": "LABEL_VALUE"
+              },
+              {
+                "name": "FOLDER"
+              },
+              {
+                "name": "RESOURCE"
+              },
+              {
+                "name": "REQ_USERNAME",
+                "valueFrom": {
+                  "secretKeyRef": {
+                    "key": "admin-user",
+                    "name": "kube-stack-grafana"
+                  }
+                }
+              },
+              {
+                "name": "REQ_PASSWORD",
+                "valueFrom": {
+                  "secretKeyRef": {
+                    "key": "admin-password",
+                    "name": "kube-stack-grafana"
+                  }
+                }
+              },
+              {
+                "name": "REQ_URL"
+              },
+              {
+                "name": "REQ_METHOD"
+              },
+              {
+                "name": "HEALTH_PORT"
+              }
+            ],
+            "envFrom": [],
+            "volumeMounts": [
+              {
+                "mountPath": "/etc/grafana/provisioning/datasources",
+                "name": "sc-datasources-volume"
+              }
+            ]
+          },
+          {
+            "name": "grafana",
+            "env": [
+              {
+                "name": "POD_IP",
+                "valueFrom": {
+                  "fieldRef": {
+                    "apiVersion": "v1",
+                    "fieldPath": "status.podIP"
+                  }
+                }
+              },
+              {
+                "name": "GF_SECURITY_ADMIN_USER",
+                "valueFrom": {
+                  "secretKeyRef": {
+                    "key": "admin-user",
+                    "name": "kube-stack-grafana"
+                  }
+                }
+              },
+              {
+                "name": "GF_SECURITY_ADMIN_PASSWORD",
+                "valueFrom": {
+                  "secretKeyRef": {
+                    "key": "admin-password",
+                    "name": "kube-stack-grafana"
+                  }
+                }
+              },
+              {
+                "name": "GF_PATHS_DATA",
+                "literalValue": "NOT_EXPORTED"
+              },
+              {
+                "name": "GF_PATHS_LOGS",
+                "literalValue": "NOT_EXPORTED"
+              },
+              {
+                "name": "GF_PATHS_PLUGINS",
+                "literalValue": "NOT_EXPORTED"
+              },
+              {
+                "name": "GF_PATHS_PROVISIONING",
+                "literalValue": "NOT_EXPORTED"
+              },
+              {
+                "name": "GF_UNIFIED_STORAGE_INDEX_PATH"
+              },
+              {
+                "name": "GF_ANALYTICS_CHECK_FOR_UPDATES"
+              },
+              {
+                "name": "GF_ANALYTICS_CHECK_FOR_PLUGIN_UPDATES"
+              },
+              {
+                "name": "GF_ANALYTICS_REPORTING_ENABLED"
+              },
+              {
+                "name": "GF_PLUGINS_PREINSTALL_DISABLED"
+              },
+              {
+                "name": "GF_PLUGINS_PUBLIC_KEY_RETRIEVAL_DISABLED"
+              }
+            ],
+            "envFrom": [],
+            "volumeMounts": [
+              {
+                "mountPath": "/etc/grafana/grafana.ini",
+                "name": "config",
+                "subPath": "grafana.ini"
+              },
+              {
+                "mountPath": "/var/lib/grafana",
+                "name": "storage"
+              },
+              {
+                "mountPath": "/var/lib/grafana-search",
+                "name": "search"
+              },
+              {
+                "mountPath": "/tmp/dashboards",
+                "name": "sc-dashboard-volume"
+              },
+              {
+                "mountPath": "/etc/grafana/provisioning/dashboards/sc-dashboardproviders.yaml",
+                "name": "sc-dashboard-provider",
+                "subPath": "provider.yaml"
+              },
+              {
+                "mountPath": "/etc/grafana/provisioning/datasources",
+                "name": "sc-datasources-volume"
+              }
+            ]
+          }
+        ],
+        "volumes": [
+          {
+            "name": "config",
+            "configMap": {
+              "defaultMode": 420,
+              "name": "kube-stack-grafana"
+            }
+          },
+          {
+            "name": "storage"
+          },
+          {
+            "name": "search"
+          },
+          {
+            "name": "sc-dashboard-volume"
+          },
+          {
+            "name": "sc-dashboard-provider",
+            "configMap": {
+              "defaultMode": 420,
+              "name": "kube-stack-grafana-config-dashboards"
+            }
+          },
+          {
+            "name": "sc-datasources-volume"
+          }
+        ]
+      },
+      {
+        "namespace": "ns-devops",
+        "name": "jenkins",
+        "containers": [
+          {
+            "name": "jenkins",
+            "env": [
+              {
+                "name": "TESTCONTAINERS_HOST_OVERRIDE"
+              },
+              {
+                "name": "JAVA_OPTS"
+              },
+              {
+                "name": "TZ"
+              },
+              {
+                "name": "SPRING_DOCKER_COMPOSE_HOST"
+              }
+            ],
+            "envFrom": [],
+            "volumeMounts": [
+              {
+                "mountPath": "/usr/libexec/docker/cli-plugins/docker-compose",
+                "name": "docker-compose",
+                "readOnly": true
+              },
+              {
+                "mountPath": "/etc/localtime",
+                "name": "tz-config",
+                "readOnly": true
+              },
+              {
+                "mountPath": "/var/jenkins_home",
+                "name": "jenkins-data"
+              },
+              {
+                "mountPath": "/var/run/docker.sock",
+                "name": "docker-sock"
+              },
+              {
+                "mountPath": "/usr/bin/docker",
+                "name": "docker-bin"
+              },
+              {
+                "mountPath": "/usr/bin/kubectl",
+                "name": "kubectl-bin"
+              },
+              {
+                "mountPath": "/usr/local/bin/docker-safe",
+                "name": "docker-safe",
+                "readOnly": true
+              },
+              {
+                "mountPath": "/usr/bin/docker.original",
+                "name": "docker-original",
+                "readOnly": true
+              },
+              {
+                "mountPath": "/usr/libexec/docker/cli-plugins/docker-buildx",
+                "name": "docker-buildx",
+                "readOnly": true
+              }
+            ]
+          }
+        ],
+        "volumes": [
+          {
+            "name": "docker-compose"
+          },
+          {
+            "name": "tz-config"
+          },
+          {
+            "name": "jenkins-data"
+          },
+          {
+            "name": "docker-sock"
+          },
+          {
+            "name": "docker-bin"
+          },
+          {
+            "name": "kubectl-bin"
+          },
+          {
+            "name": "docker-safe"
+          },
+          {
+            "name": "docker-original"
+          },
+          {
+            "name": "docker-buildx"
+          }
+        ]
+      },
+      {
+        "namespace": "ns-devops",
+        "name": "github-webhook-relay",
+        "containers": [
+          {
+            "name": "relay",
+            "env": [
+              {
+                "name": "PORT"
+              },
+              {
+                "name": "JENKINS_URL"
+              },
+              {
+                "name": "JENKINS_JOB"
+              },
+              {
+                "name": "PIPELINE_VERSION"
+              },
+              {
+                "name": "ALLOWED_REPO"
+              }
+            ],
+            "envFrom": [
+              {
+                "secretRef": {
+                  "name": "github-webhook-relay-jenkins"
+                }
+              }
+            ],
+            "volumeMounts": [
+              {
+                "mountPath": "/app",
+                "name": "app"
+              }
+            ]
+          }
+        ],
+        "volumes": [
+          {
+            "name": "app",
+            "configMap": {
+              "defaultMode": 420,
+              "name": "github-webhook-relay-app"
+            }
+          }
+        ]
+      }
+    ],
+    "configReferences": [
+      {
+        "namespace": "monitoring",
+        "configMap": "grafana-jenkins-logs-dashboard",
+        "key": "jenkins-logs.json",
+        "iniSections": [],
+        "credentialFieldNamesOnly": []
+      },
+      {
+        "namespace": "monitoring",
+        "configMap": "grafana-jenkins-logs-datasource",
+        "key": "jenkins-logs-datasource.yaml",
+        "iniSections": [],
+        "credentialFieldNamesOnly": []
+      },
+      {
+        "namespace": "monitoring",
+        "configMap": "grafana-loki-datasource",
+        "key": "loki-datasource.yaml",
+        "iniSections": [],
+        "credentialFieldNamesOnly": []
+      },
+      {
+        "namespace": "monitoring",
+        "configMap": "kube-stack-grafana",
+        "key": "grafana.ini",
+        "iniSections": [
+          "analytics",
+          "log",
+          "paths",
+          "server",
+          "unified_storage"
+        ],
+        "credentialFieldNamesOnly": []
+      },
+      {
+        "namespace": "monitoring",
+        "configMap": "kube-stack-grafana-config-dashboards",
+        "key": "provider.yaml",
+        "iniSections": [],
+        "credentialFieldNamesOnly": []
+      },
+      {
+        "namespace": "monitoring",
+        "configMap": "kube-stack-kube-prometheus-grafana-datasource",
+        "key": "datasource.yaml",
+        "iniSections": [],
+        "credentialFieldNamesOnly": []
+      },
+      {
+        "namespace": "monitoring",
+        "configMap": "kube-stack-kube-prometheus-grafana-overview",
+        "key": "grafana-overview.json",
+        "iniSections": [],
+        "credentialFieldNamesOnly": []
+      }
+    ],
+    "hostCredentialPathMetadata": [],
+    "anonymousGrafana": {
+      "/api/health": 200,
+      "/api/user": 401,
+      "/api/access-control/user/permissions": 401
+    }
+  },
+  "jenkinsCredentialMetadata": {
+    "credentials": [
+      {
+        "id": "harbor-creds",
+        "type": "com.cloudbees.plugins.credentials.impl.UsernamePasswordCredentialsImpl",
+        "scope": "GLOBAL",
+        "domain": "GLOBAL",
+        "valuesRead": false
+      },
+      {
+        "id": "gitlab-creds",
+        "type": "com.cloudbees.plugins.credentials.impl.UsernamePasswordCredentialsImpl",
+        "scope": "GLOBAL",
+        "domain": "GLOBAL",
+        "valuesRead": false
+      },
+      {
+        "id": "sonar-token",
+        "type": "org.jenkinsci.plugins.plaincredentials.impl.StringCredentialsImpl",
+        "scope": "GLOBAL",
+        "domain": "GLOBAL",
+        "valuesRead": false
+      },
+      {
+        "id": "gitlab-root-auth",
+        "type": "com.cloudbees.plugins.credentials.impl.UsernamePasswordCredentialsImpl",
+        "scope": "GLOBAL",
+        "domain": "GLOBAL",
+        "valuesRead": false
+      },
+      {
+        "id": "b70d910e-ab4d-4903-8ad3-8d4ab431b6db",
+        "type": "com.cloudbees.plugins.credentials.impl.UsernamePasswordCredentialsImpl",
+        "scope": "GLOBAL",
+        "domain": "GLOBAL",
+        "valuesRead": false
+      },
+      {
+        "id": "github-petclinic-ssh",
+        "type": "com.cloudbees.jenkins.plugins.sshcredentials.impl.BasicSSHUserPrivateKey",
+        "scope": "GLOBAL",
+        "domain": "GLOBAL",
+        "valuesRead": false
+      },
+      {
+        "id": "cook-gitlab-webhook",
+        "type": "org.jenkinsci.plugins.plaincredentials.impl.StringCredentialsImpl",
+        "scope": "GLOBAL",
+        "domain": "GLOBAL",
+        "valuesRead": false
+      },
+      {
+        "id": "platform-business-age",
+        "type": "org.jenkinsci.plugins.plaincredentials.impl.FileCredentialsImpl",
+        "scope": "GLOBAL",
+        "domain": "GLOBAL",
+        "valuesRead": false
+      },
+      {
+        "id": "platform-signing-age",
+        "type": "org.jenkinsci.plugins.plaincredentials.impl.FileCredentialsImpl",
+        "scope": "GLOBAL",
+        "domain": "GLOBAL",
+        "valuesRead": false
+      },
+      {
+        "id": "defectdojo-api-token",
+        "type": "org.jenkinsci.plugins.plaincredentials.impl.StringCredentialsImpl",
+        "scope": "GLOBAL",
+        "domain": "GLOBAL",
+        "valuesRead": false
+      },
+      {
+        "id": "security-gitleaks-demo-ssh",
+        "type": "com.cloudbees.jenkins.plugins.sshcredentials.impl.BasicSSHUserPrivateKey",
+        "scope": "GLOBAL",
+        "domain": "GLOBAL",
+        "valuesRead": false
+      },
+      {
+        "id": "security-gitops-demo-ssh",
+        "type": "com.cloudbees.jenkins.plugins.sshcredentials.impl.BasicSSHUserPrivateKey",
+        "scope": "GLOBAL",
+        "domain": "GLOBAL",
+        "valuesRead": false
+      }
+    ],
+    "credentialValuesRead": 0,
+    "mutations": 0
+  }
+}

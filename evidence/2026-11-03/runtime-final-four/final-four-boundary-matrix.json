@@ -1,0 +1,332 @@
+{
+  "validationRunId": "rf4-20261103-004987",
+  "canonicalCount": 16,
+  "sources": [
+    {
+      "sourceId": "trivy",
+      "group": "C",
+      "productionStage": "Trivy",
+      "actualCommandOrFunction": "( node infra/security/ensure-audit-candidate.mjs && node infra/security/audit-trivy.mjs )",
+      "rawOutputPaths": [
+        ".devsecops/trivy-audit.json"
+      ],
+      "prerequisites": [
+        "Harbor identity",
+        "runtime/candidate digest",
+        "SBOM",
+        "DB/transport/review facts"
+      ],
+      "credentialsRequired": true,
+      "kubernetesAccess": true,
+      "externalHttpApiAccess": true,
+      "writeSideEffects": "ensure-candidate may PUT/copy; audit POST /scan",
+      "destructivePotential": "Registry/scan state mutation",
+      "frozenAdapter": "infra/security/policy/trivy-parent.mjs",
+      "requiredRawFacts": [
+        "original && operation sequence",
+        "native vulnerabilities/image/report binding",
+        "DB/prerequisite and proxy-direct facts in original scope",
+        "original classifier/parent exits"
+      ],
+      "currentBlocker": "GET boundary cannot produce POST scan or earlier transport/update outcomes",
+      "currentStatus": "NOT_OBSERVED",
+      "normalProductionWritePathAuthorized": false,
+      "classification": "OTHER_BLOCKED",
+      "productionImplementation": "infra/security/ensure-audit-candidate.mjs + infra/security/audit-trivy.mjs",
+      "inputSource": [
+        "Harbor identity",
+        "runtime/candidate digest",
+        "SBOM",
+        "DB/transport/review facts"
+      ],
+      "factFormationTrace": "Optional candidate copy/write; mandatory Harbor POST scan \u2192 poll \u2192 native report/classifier",
+      "earliestAllPolicyFactsExist": "After actual scan POST/poll and bound report retrieval",
+      "beforeAnyExternalMutation": false,
+      "currentCaptureGap": "PRE_WRITE_FACT_BOUNDARY_NOT_AVAILABLE",
+      "existingCanonicalStatus": "NOT_OBSERVED",
+      "sideEffectClassifications": [
+        "LOCAL_EPHEMERAL_WRITE",
+        "PRODUCTION_EXTERNAL_WRITE"
+      ],
+      "writeTarget": "Frozen target identity needs isolated validated replacement; normal endpoints are forbidden for writes",
+      "factsBeforeWrite": [
+        "source/tool configuration",
+        "input identity"
+      ],
+      "factsAfterWrite": [
+        "original && operation sequence",
+        "native vulnerabilities/image/report binding",
+        "DB/prerequisite and proxy-direct facts in original scope",
+        "original classifier/parent exits"
+      ],
+      "executionScope": "CONTROLLED_NON_RELEASE",
+      "sourceHashes": {},
+      "currentCredential": "harbor-creds: last real GET confirmed global admin; not a validation scan writer",
+      "earliestSafeFactBoundary": "After real ensure-candidate + actual Harbor scan/report/classifier lifecycle",
+      "requiredDisposableObject": "Nonrelease immutable digest plus validation-only scan identity; separate creator/cleanup identity if needed",
+      "minimumPermissions": "Read project/repository/artifact/scan; scan create only for test scope, no push/delete/admin",
+      "failureFallbackBehavior": "Reject if cannot scope namespace/digest or test candidate unavailable; never live digest fallback",
+      "productionBinding": "infra/security/ensure-audit-candidate.mjs + infra/security/audit-trivy.mjs",
+      "currentExternalDependency": [
+        "Harbor identity",
+        "runtime/candidate digest",
+        "SBOM",
+        "DB/transport/review facts"
+      ],
+      "currentWriteAction": "ensure-candidate may PUT/copy; audit POST /scan",
+      "requiredFrozenPolicyFacts": [
+        "original && operation sequence",
+        "native vulnerabilities/image/report binding",
+        "DB/prerequisite and proxy-direct facts in original scope",
+        "original classifier/parent exits"
+      ],
+      "requiredCleanup": "Must be proven before any write; not yet available",
+      "matrixCreatedBeforeExecution": true
+    },
+    {
+      "sourceId": "cosign",
+      "group": "C",
+      "productionStage": "Cosign Admission",
+      "actualCommandOrFunction": "node infra/security/signing.mjs admission",
+      "rawOutputPaths": [
+        ".devsecops/signing-admission.json"
+      ],
+      "prerequisites": [
+        "signing age bundle",
+        "Harbor push identity",
+        "trusted key",
+        "candidate digest",
+        "admission"
+      ],
+      "credentialsRequired": true,
+      "kubernetesAccess": true,
+      "externalHttpApiAccess": true,
+      "writeSideEffects": "Decrypts signing bundle, signs, POST/PUT registry fixtures, admission dry-run",
+      "destructivePotential": "Signing and registry writes forbidden",
+      "frozenAdapter": "infra/security/policy/cosign-parent.mjs",
+      "requiredRawFacts": [
+        "stage/config/runtime/tools",
+        "key/source/digest signature binding",
+        "registry/admission/cleanup observations"
+      ],
+      "currentBlocker": "Before signing lacks signature/registry outputs; generic verify cannot stand for admission/bootstrap/release",
+      "currentStatus": "NOT_OBSERVED",
+      "normalProductionWritePathAuthorized": false,
+      "classification": "OTHER_BLOCKED",
+      "productionImplementation": "infra/security/signing.mjs admission",
+      "inputSource": [
+        "signing age bundle",
+        "Harbor push identity",
+        "trusted key",
+        "candidate digest",
+        "admission"
+      ],
+      "factFormationTrace": "Decrypt signing bundle \u2192 registry POST/PUT \u2192 sign \u2192 verify \u2192 admission cases \u2192 cleanup",
+      "earliestAllPolicyFactsExist": "Full admission facts follow signing/registry writes; verify-only cannot replace admission parent",
+      "beforeAnyExternalMutation": false,
+      "currentCaptureGap": "PRE_WRITE_FACT_BOUNDARY_NOT_AVAILABLE",
+      "existingCanonicalStatus": "NOT_OBSERVED",
+      "sideEffectClassifications": [
+        "LOCAL_EPHEMERAL_WRITE",
+        "PRODUCTION_EXTERNAL_WRITE"
+      ],
+      "writeTarget": "Frozen target identity needs isolated validated replacement; normal endpoints are forbidden for writes",
+      "factsBeforeWrite": [
+        "source/tool configuration",
+        "input identity"
+      ],
+      "factsAfterWrite": [
+        "stage/config/runtime/tools",
+        "key/source/digest signature binding",
+        "registry/admission/cleanup observations"
+      ],
+      "executionScope": "CONTROLLED_NON_RELEASE",
+      "sourceHashes": {},
+      "currentCredential": "Production signing bundle/public key plus Harbor; forbidden for this execution",
+      "earliestSafeFactBoundary": "Full original verification/signature/admission lifecycle with test-only inputs and actual outcomes",
+      "requiredDisposableObject": "Test-only keypair, validation digest/signature, isolated trust/admission boundary",
+      "minimumPermissions": "Validation artifact pull/signature write only, read-only trust and scoped dry-run admission",
+      "failureFallbackBehavior": "No production private key or production signing fallback",
+      "productionBinding": "infra/security/signing.mjs admission",
+      "currentExternalDependency": [
+        "signing age bundle",
+        "Harbor push identity",
+        "trusted key",
+        "candidate digest",
+        "admission"
+      ],
+      "currentWriteAction": "Decrypts signing bundle, signs, POST/PUT registry fixtures, admission dry-run",
+      "requiredFrozenPolicyFacts": [
+        "stage/config/runtime/tools",
+        "key/source/digest signature binding",
+        "registry/admission/cleanup observations"
+      ],
+      "requiredCleanup": "Must be proven before any write; not yet available",
+      "matrixCreatedBeforeExecution": true
+    },
+    {
+      "sourceId": "zap",
+      "group": "C",
+      "productionStage": "ZAP Passive",
+      "actualCommandOrFunction": "node infra/security/zap-gate.mjs",
+      "rawOutputPaths": [
+        ".devsecops/zap-gate.json",
+        ".devsecops/zap-business-report.json",
+        ".devsecops/zap-auth-readonly.json"
+      ],
+      "prerequisites": [
+        "heavy Lease",
+        "pinned ZAP/Java",
+        "owned URLs",
+        "confirmation hashes",
+        "source/network/cleanup"
+      ],
+      "credentialsRequired": false,
+      "kubernetesAccess": true,
+      "externalHttpApiAccess": true,
+      "writeSideEffects": "Creates/deletes scanner Pod; local fixture; business GET only",
+      "destructivePotential": "Full parent requires workload mutation",
+      "frozenAdapter": "infra/security/policy/zap-parent.mjs",
+      "requiredRawFacts": [
+        "target/report/exploit-confirmation binding",
+        "native alerts/classifier input",
+        "unconfirmed/lower findings",
+        "execution/container/network/report/cleanup failures"
+      ],
+      "currentBlocker": "Business GET alone is not the full frozen scanner stage",
+      "currentStatus": "NOT_OBSERVED",
+      "normalProductionWritePathAuthorized": false,
+      "classification": "OTHER_BLOCKED",
+      "productionImplementation": "infra/security/zap-gate.mjs + infra/security/scanner-runtime.mjs",
+      "inputSource": [
+        "heavy Lease",
+        "pinned ZAP/Java",
+        "owned URLs",
+        "confirmation hashes",
+        "source/network/cleanup"
+      ],
+      "factFormationTrace": "withScanner Pod create before fixture/passive scanner/network/auth/cleanup facts; full parent includes production URL GETs",
+      "earliestAllPolicyFactsExist": "After actual tool/target/report/cleanup; loopback alone is not full parent",
+      "beforeAnyExternalMutation": false,
+      "currentCaptureGap": "PRE_WRITE_FACT_BOUNDARY_NOT_AVAILABLE",
+      "existingCanonicalStatus": "NOT_OBSERVED",
+      "sideEffectClassifications": [
+        "LOCAL_EPHEMERAL_WRITE",
+        "PRODUCTION_EXTERNAL_WRITE"
+      ],
+      "writeTarget": "Frozen target identity needs isolated validated replacement; normal endpoints are forbidden for writes",
+      "factsBeforeWrite": [
+        "source/tool configuration",
+        "input identity"
+      ],
+      "factsAfterWrite": [
+        "target/report/exploit-confirmation binding",
+        "native alerts/classifier input",
+        "unconfirmed/lower findings",
+        "execution/container/network/report/cleanup failures"
+      ],
+      "executionScope": "CONTROLLED_NON_RELEASE",
+      "sourceHashes": {},
+      "currentCredential": "New temporary minimum-RBAC validation executor; no production app/db credentials",
+      "earliestSafeFactBoundary": "Real frozen passive-GET scanner completes against actual validation app + report + cleanup",
+      "requiredDisposableObject": "Unique namespace, H2-memory PetClinic, Service, deny-default networking, temporary scanner Pod and execution SA",
+      "minimumPermissions": "Exact target deployment/service reads, own scanner Pod lifecycle/exec and named outer Lease read",
+      "failureFallbackBehavior": "Unknown alias/URL/namespace denied; network cannot reach production; no endpoint fallback",
+      "productionBinding": "infra/security/zap-gate.mjs + infra/security/scanner-runtime.mjs",
+      "currentExternalDependency": [
+        "heavy Lease",
+        "pinned ZAP/Java",
+        "owned URLs",
+        "confirmation hashes",
+        "source/network/cleanup"
+      ],
+      "currentWriteAction": "Creates/deletes scanner Pod; local fixture; business GET only",
+      "requiredFrozenPolicyFacts": [
+        "target/report/exploit-confirmation binding",
+        "native alerts/classifier input",
+        "unconfirmed/lower findings",
+        "execution/container/network/report/cleanup failures"
+      ],
+      "requiredCleanup": "Must be proven before any write; not yet available",
+      "matrixCreatedBeforeExecution": true
+    },
+    {
+      "sourceId": "defectdojo",
+      "group": "C",
+      "productionStage": "DefectDojo Governance",
+      "actualCommandOrFunction": "node --max-old-space-size=192 infra/security/governance/defectdojo.mjs",
+      "rawOutputPaths": [
+        ".devsecops/defectdojo-import.json",
+        "scanner private native reports"
+      ],
+      "prerequisites": [
+        "prior scanner files/order",
+        "Dojo/Sonar identity",
+        "product/engagement/Test"
+      ],
+      "credentialsRequired": true,
+      "kubernetesAccess": false,
+      "externalHttpApiAccess": true,
+      "writeSideEffects": "POST import/reimport and PATCH false positives; GET queryback",
+      "destructivePotential": "No production imports/PATCH merely for collector proof",
+      "frozenAdapter": "infra/security/policy/dojo-parent.mjs",
+      "requiredRawFacts": [
+        "import/reimport responses",
+        "Test identity/dedupe/queryback/pagination",
+        "native report identity",
+        "API/auth/report errors"
+      ],
+      "currentBlocker": "Pre-import GET lacks actual import/dedupe outputs; decoupling remains prohibited",
+      "currentStatus": "NOT_OBSERVED",
+      "normalProductionWritePathAuthorized": false,
+      "classification": "OTHER_BLOCKED",
+      "productionImplementation": "infra/security/governance/defectdojo.mjs",
+      "inputSource": [
+        ".devsecops/defectdojo-import.json",
+        "scanner private native reports"
+      ],
+      "factFormationTrace": "Native reports \u2192 POST import/reimport \u2192 Test/queryback/dedupe \u2192 PATCH false positives",
+      "earliestAllPolicyFactsExist": "After real import/queryback/dedupe; prior canned API fixtures are unit compatibility, not current runtime",
+      "beforeAnyExternalMutation": false,
+      "currentCaptureGap": "PRE_WRITE_FACT_BOUNDARY_NOT_AVAILABLE",
+      "existingCanonicalStatus": "NOT_OBSERVED",
+      "sideEffectClassifications": [
+        "LOCAL_EPHEMERAL_WRITE",
+        "PRODUCTION_EXTERNAL_WRITE"
+      ],
+      "writeTarget": "Frozen target identity needs isolated validated replacement; normal endpoints are forbidden for writes",
+      "factsBeforeWrite": [
+        "source/tool configuration",
+        "input identity"
+      ],
+      "factsAfterWrite": [
+        "import/reimport responses",
+        "Test identity/dedupe/queryback/pagination",
+        "native report identity",
+        "API/auth/report errors"
+      ],
+      "executionScope": "CONTROLLED_NON_RELEASE",
+      "sourceHashes": {},
+      "currentCredential": "Existing nonstaff CI token has Product 1/2 visibility; cannot be reused directly as validation write identity",
+      "earliestSafeFactBoundary": "Actual import/query-back/reimport/dedupe using complete current native validation report chain",
+      "requiredDisposableObject": "Dedicated validation user/token + Product/Engagement/Test IDs with exact-run identity",
+      "minimumPermissions": "Validation-only import/query/reimport/dedupe/delete-or-close; no normal Product mutation",
+      "failureFallbackBehavior": "No production Product/Engagement/Test fallback, no writes until cleanup authority and chain proven",
+      "productionBinding": "infra/security/governance/defectdojo.mjs",
+      "currentExternalDependency": [
+        "prior scanner files/order",
+        "Dojo/Sonar identity",
+        "product/engagement/Test"
+      ],
+      "currentWriteAction": "POST import/reimport and PATCH false positives; GET queryback",
+      "requiredFrozenPolicyFacts": [
+        "import/reimport responses",
+        "Test identity/dedupe/queryback/pagination",
+        "native report identity",
+        "API/auth/report errors"
+      ],
+      "requiredCleanup": "Must be proven before any write; not yet available",
+      "matrixCreatedBeforeExecution": true
+    }
+  ]
+}

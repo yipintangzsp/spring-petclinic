@@ -1,0 +1,77 @@
+{
+  "status": "DESIGN_ONLY_NOT_CREATED",
+  "exactRunningCandidate": "NONE",
+  "conditionalCandidate": "New disposable single-control-plane kind cluster on a proven local container runtime; separate Linux fixture executor on a fixture-only internal network",
+  "notAnExistingApprovedEnvironment": "Existing kind/orbstack contexts must not be reused",
+  "strictRequestedOneNamespaceOneSecret": {
+    "feasible": false,
+    "reason": "Original loop always visits four targets and requireLease uses data-infra; source/namespace overrides do not exist. Cannot replace this by one target without changing Gate or using a fake validator."
+  },
+  "minimumForUnchangedGate": {
+    "cluster": "1 disposable isolated cluster",
+    "namespaces": [
+      "petclinic",
+      "devsecops-system",
+      "data-infra"
+    ],
+    "namespaceMeaning": "Names mirror hardcoded names but all must be owned test namespaces in a newly proven isolated cluster, never resources in production",
+    "syntheticSecrets": [
+      [
+        "petclinic",
+        "petclinic-db"
+      ],
+      [
+        "petclinic",
+        "rabbitmq-client"
+      ],
+      [
+        "petclinic",
+        "petclinic-harbor-pull"
+      ],
+      [
+        "devsecops-system",
+        "kyverno-registry-pull"
+      ]
+    ],
+    "syntheticAgeKeypairs": 1,
+    "syntheticEncryptedFiles": 4,
+    "serviceAccounts": [
+      "devsecops-system/platform-secret-reconciler",
+      "devsecops-system/kyverno-admission-controller"
+    ],
+    "lease": "data-infra/platform-heavy with this fixture holder",
+    "additionalNegativeTargetSecrets": "NONE; negative auth can-i targets need no Secret values or objects",
+    "rbac": "Only original named Secret get (+ named patch if later testing original apply branch), verifier own credential get; list/create/foreign namespace access denied. Fixture execution identity needs only required Lease read and exact two-identity impersonation. New cluster bootstrap authorization is not to be borrowed from production. All actual RBAC behavior must be verified in that isolated cluster.",
+    "workingDirectory": "Disposable allowlisted workspace; original Gate/runtime/tool manifest/lock copied byte-identically, synthetic encrypted inputs at original relative paths; never copy production ciphertext/key/.kube/.aws/.ssh/home",
+    "toolchain": "Existing trusted Linux/arm64 Node/kubectl + exact locked SOPS bytes at original absolute root inside disposable executor. age/age-keygen for synthetic fixture construction only. No host path widening or local fake binaries. Tool images/cache availability unproven; no pulls or installs now.",
+    "keyPath": "BUSINESS_AGE_FILE points only to freshly generated disposable fixture identity; never production Jenkins file credential",
+    "kubeconfig": "Fresh single-cluster fixture-only file; fixed trusted CA/server mapped to owned local cluster; no users.exec/auth-provider, proxy entry, default kubeconfig merging, or skip TLS",
+    "environment": "Sanitized child env and empty HOME; no real cloud/SSH/Kubernetes/SOPS credentials inherited; age-only synthetic ciphertext, no external KMS",
+    "network": "Dedicated owned internal container network; no production credentials mounted, no host Docker socket or SSH agent in executor. No external production API connectivity; prove network/container ownership rather than changing host/global routing."
+  },
+  "identityProofBeforeGateExecution": [
+    "Prove local runtime endpoint identity and state; do not rely on CLI/context name",
+    "Use only a separately authorized new disposable cluster, with exact container/VM ID, owned network, no production mounts and local-only API mapping",
+    "Match fixture kubeconfig server/TLS CA to this exact cluster; reject credential plugins/proxy/default-config fallback",
+    "Only after preliminary runtime/network/TLS identity is proved, query its kube-system UID and fixture namespace UID/sentinel; record fresh IDs and ensure not equal known production UID",
+    "Refuse execution on any uncertainty; never test the existing orbstack/SSH endpoint"
+  ],
+  "futureProductionPathReuse": [
+    "Run original scanner-runtime import + manifest/Lease/tool SHA prerequisites in the real isolated executor",
+    "Run byte-identical secrets-gate.mjs using real SOPS decrypt and real isolated Kubernetes Secret/RBAC reads",
+    "Capture real execution exit, prerequisite outcomes and equality/UID/RBAC observations without substituting return values or secret-bearing logs",
+    "Feed those same synthetic-only execution facts in memory to existing SOPS adapter and baseline-v1/standard; compare old/standard decisions",
+    "If instrumentation is needed, separately review observational delegation only; no second validator, VM mock or manufactured positive result"
+  ],
+  "cleanupPlan": [
+    "Before creating anything in a future phase, record exact owned cluster/container/network/volume IDs and fixture root",
+    "Stop executor; remove only recorded disposable cluster/container/network/volumes after rechecking ownership labels/IDs",
+    "Delete synthetic age private key, kubeconfig and fixture plaintext/ciphertext; retain only scrubbed execution evidence and hashes",
+    "Never delete by broad name pattern, run kind delete against an unverified context, reset kubectl global context, or touch existing production resources"
+  ],
+  "codeChangesRequired": {
+    "forFullIsolatedMirror": "No production behavior/source change expected; exact tool paths and hardcoded fixture identities must be supplied inside isolated environment. This is not yet execution-proven.",
+    "forOneNamespaceOneSecret": "Would need forbidden target/namespace parameterization or skipped targets; not proposed or performed."
+  },
+  "creationCommandsProvidedOrRun": false
+}

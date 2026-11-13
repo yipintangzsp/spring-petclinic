@@ -1,0 +1,40 @@
+{
+  "timestamp": "2026-11-02T03:28:28.391725+00:00",
+  "ISOLATED_RUNTIME_DNS": "READY",
+  "rootCause": "COLIMA_VM_DNS",
+  "rootCauseBoundary": "Immediate missing VM resolver implementation/target proven; historical origin not established.",
+  "checks": {
+    "hostPublicDnsTcpSystemCurl": true,
+    "vmPublicDns": true,
+    "vmRegistryTlsVerifiedHttp401": true,
+    "directAnonymousDaemonPull": true,
+    "pulledImageSmokeExit0": true,
+    "pulledContainerDns": true,
+    "ownedContainersRemoved": true,
+    "noExtraVolumeNetwork": true,
+    "isolationUnchanged": true,
+    "protectedHostFilesUnchanged": true,
+    "protectedProjectFilesUnchanged": 3278,
+    "rollbackBackupAndGuardedScriptPrepared": true
+  },
+  "scope": {
+    "kind": 0,
+    "kubernetesApiCalls": 0,
+    "productionApiCalls": 0,
+    "productionCredentialSecretValueReads": 0,
+    "sopsAgeFixtureExecutions": 0,
+    "gateSummaryChanges": 0,
+    "rollouts": 0,
+    "vmOrServiceRestarts": 0
+  },
+  "runtime": "security-test remains running",
+  "modifiedConfiguration": [
+    "security-test guest /etc/resolv.conf only"
+  ],
+  "retainedRollback": "security-test guest /var/tmp/security-test-dns-20261102/resolv.conf.before",
+  "rollbackExecution": "NOT_EXECUTED; original symlink backup verified; guarded script syntax checked",
+  "rebootRecreationPersistence": "NOT_TESTED",
+  "blocker": null,
+  "nextEligibleAction": "Separately scoped disposable Kubernetes/tool environment design/prerequisite review only; no automatic cluster creation.",
+  "stop": true
+}

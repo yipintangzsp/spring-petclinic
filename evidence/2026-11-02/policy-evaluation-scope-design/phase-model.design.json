@@ -1,0 +1,71 @@
+{
+  "classification": "DESIGN_ONLY_NOT_INSTALLED",
+  "selectedModel": "B",
+  "nodes": [
+    "source-facts",
+    "per-source-engine",
+    "gate-finalization",
+    "pre-artifact",
+    "summary-view",
+    "candidate-sbom",
+    "promotion-checks",
+    "real-approval",
+    "real-promotion",
+    "promotion-result"
+  ],
+  "edges": [
+    [
+      "source-facts",
+      "per-source-engine"
+    ],
+    [
+      "per-source-engine",
+      "gate-finalization"
+    ],
+    [
+      "gate-finalization",
+      "pre-artifact"
+    ],
+    [
+      "pre-artifact",
+      "summary-view"
+    ],
+    [
+      "summary-view",
+      "candidate-sbom"
+    ],
+    [
+      "pre-artifact",
+      "promotion-checks"
+    ],
+    [
+      "candidate-sbom",
+      "promotion-checks"
+    ],
+    [
+      "promotion-checks",
+      "real-approval"
+    ],
+    [
+      "real-approval",
+      "real-promotion"
+    ],
+    [
+      "real-promotion",
+      "promotion-result"
+    ]
+  ],
+  "acyclic": true,
+  "preApprovalCut": "after Read Only Release Verification; before Summary and candidate image SBOM extraction",
+  "forbiddenPreEvidence": [
+    "current approved-release",
+    "current approval-signing",
+    "current promotion-result",
+    "future runtimeAfter",
+    "not-yet-extracted candidate image SBOM"
+  ],
+  "policyAuthority": "immutable pre-approval artifact",
+  "summaryAuthority": false,
+  "postResult": "existing native approval/signing/promotion artifacts; optional diagnostic references, never rewrite pre input",
+  "currentV1PostSummaryStillUnchanged": true
+}

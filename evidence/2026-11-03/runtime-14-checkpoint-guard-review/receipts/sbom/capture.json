@@ -1,0 +1,83 @@
+{
+  "schema": 1,
+  "sourceId": "sbom",
+  "execution": {
+    "errorClass": null,
+    "signal": null,
+    "command": "( nice -n 10 ./mvnw -B package -DskipTests && node infra/security/sbom-verify.mjs )",
+    "exitStatus": 0
+  },
+  "reports": [
+    {
+      "path": ".devsecops/sbom.json",
+      "sha256": "b0a9ab3d854212e8ff6ace34cfd683775ce32cac955b9d41e038dca78dc2b3f3",
+      "bytes": 360971
+    },
+    {
+      "path": ".devsecops/sbom-summary.json",
+      "sha256": "68f8cfb2cccce77f077871cec6d45201129a8154adb2c4cdb7dc69e5cbb99939",
+      "bytes": 453
+    }
+  ],
+  "evidence": [
+    {
+      "completedAtMs": 1793636159945,
+      "stage": "Maven package",
+      "kind": "ACTUAL_PARENT_OPERATION",
+      "errorClass": null,
+      "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "signal": null,
+      "stdoutSha256": "f16fa6f07369cf0e86e2e55a156d9508a98d866efed46eeba6e7c3e75826f54f",
+      "startedAtMs": 1793636141811,
+      "exitStatus": 0
+    },
+    {
+      "completedAtMs": 1793636160183,
+      "stage": "Original SBOM verifier",
+      "kind": "ACTUAL_PARENT_OPERATION",
+      "errorClass": null,
+      "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "signal": null,
+      "stdoutSha256": "7bb10e860b5e626a172239662ff677a6567ed8226a48bd2ee2a160cc55618a46",
+      "startedAtMs": 1793636159946,
+      "exitStatus": 0
+    },
+    {
+      "completedAtMs": 1793636160130,
+      "kind": "command",
+      "bin": "unzip",
+      "argv": [
+        "-p",
+        "target/spring-petclinic-4.0.0-SNAPSHOT.jar",
+        "META-INF/sbom/application.cdx.json"
+      ],
+      "stdoutSha256": "b0a9ab3d854212e8ff6ace34cfd683775ce32cac955b9d41e038dca78dc2b3f3",
+      "startedAtMs": 1793636160113,
+      "exitStatus": 0
+    },
+    {
+      "path": "target/spring-petclinic-4.0.0-SNAPSHOT.jar",
+      "sha256": "b5413d0ac6a84126d82a2e250c0d9977a259906630f7da61ec238a08d89f474c",
+      "imageDigestEnforcementAdded": false,
+      "kind": "LOCAL_GENERATED_JAR_IDENTITY",
+      "bytes": 78611892
+    }
+  ],
+  "rawPayloadPersisted": false,
+  "kind": "RuntimeSourceFacts",
+  "evidenceComplete": true,
+  "resultDigest": "a781c2c4ff51492141a80c468f662494dff920014a381ed443e9895cd8a6c2f7",
+  "evaluationCount": 1,
+  "buildBinding": {
+    "candidate": "core.harbor.domain/petclinic/petclinic@sha256:489cb821573ff1f98edd846d5949d74bf3391b24e2f1fe5bcfb71c6be0793137",
+    "build": 12,
+    "project": "petclinic",
+    "source": "741ea2866ea142b24c7838e1ef25c8327c79d279",
+    "runId": "security-runtime-facts-20261102#12",
+    "job": "security-runtime-facts-20261102",
+    "targetScope": "runtime"
+  },
+  "envelopeDigest": "55014d9f11da09f08bde2bb939ea64d11c35d7b1c02e724f3d546e8504089d7c",
+  "rawFactDigest": "bf711d05c0620be3dab89e99489fd21c1ffab59889b8d6978267fa6fdb1dce08",
+  "presence": "executed"
+}

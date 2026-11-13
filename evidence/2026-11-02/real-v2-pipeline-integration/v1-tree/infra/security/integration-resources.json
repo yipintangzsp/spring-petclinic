@@ -1,0 +1,333 @@
+{
+  "apiVersion": "v1",
+  "kind": "List",
+  "items": [
+    {
+      "apiVersion": "v1",
+      "kind": "Namespace",
+      "metadata": {
+        "name": "devsecops-supply-chain",
+        "labels": {
+          "petclinic.devops.local/owner": "platform-devsecops",
+          "app.kubernetes.io/instance": "platform-devsecops"
+        }
+      }
+    },
+    {
+      "apiVersion": "v1",
+      "kind": "ServiceAccount",
+      "metadata": {
+        "name": "platform-secret-reconciler",
+        "labels": {
+          "petclinic.devops.local/owner": "platform-devsecops",
+          "app.kubernetes.io/instance": "platform-devsecops"
+        },
+        "namespace": "devsecops-system"
+      },
+      "automountServiceAccountToken": false
+    },
+    {
+      "apiVersion": "rbac.authorization.k8s.io/v1",
+      "kind": "Role",
+      "metadata": {
+        "name": "platform-secret-reconciler",
+        "labels": {
+          "petclinic.devops.local/owner": "platform-devsecops",
+          "app.kubernetes.io/instance": "platform-devsecops"
+        },
+        "namespace": "petclinic"
+      },
+      "rules": [
+        {
+          "apiGroups": [
+            ""
+          ],
+          "resources": [
+            "secrets"
+          ],
+          "resourceNames": [
+            "petclinic-db",
+            "rabbitmq-client",
+            "petclinic-harbor-pull"
+          ],
+          "verbs": [
+            "get",
+            "patch",
+            "update"
+          ]
+        }
+      ]
+    },
+    {
+      "apiVersion": "rbac.authorization.k8s.io/v1",
+      "kind": "RoleBinding",
+      "metadata": {
+        "name": "platform-secret-reconciler",
+        "labels": {
+          "petclinic.devops.local/owner": "platform-devsecops",
+          "app.kubernetes.io/instance": "platform-devsecops"
+        },
+        "namespace": "petclinic"
+      },
+      "roleRef": {
+        "apiGroup": "rbac.authorization.k8s.io",
+        "kind": "Role",
+        "name": "platform-secret-reconciler"
+      },
+      "subjects": [
+        {
+          "kind": "ServiceAccount",
+          "name": "platform-secret-reconciler",
+          "namespace": "devsecops-system"
+        }
+      ]
+    },
+    {
+      "apiVersion": "rbac.authorization.k8s.io/v1",
+      "kind": "Role",
+      "metadata": {
+        "name": "platform-signature-pull",
+        "labels": {
+          "petclinic.devops.local/owner": "platform-devsecops",
+          "app.kubernetes.io/instance": "platform-devsecops"
+        },
+        "namespace": "petclinic"
+      },
+      "rules": [
+        {
+          "apiGroups": [
+            ""
+          ],
+          "resources": [
+            "secrets"
+          ],
+          "resourceNames": [
+            "petclinic-harbor-pull"
+          ],
+          "verbs": [
+            "get"
+          ]
+        }
+      ]
+    },
+    {
+      "apiVersion": "rbac.authorization.k8s.io/v1",
+      "kind": "RoleBinding",
+      "metadata": {
+        "name": "platform-signature-pull",
+        "labels": {
+          "petclinic.devops.local/owner": "platform-devsecops",
+          "app.kubernetes.io/instance": "platform-devsecops"
+        },
+        "namespace": "petclinic"
+      },
+      "roleRef": {
+        "apiGroup": "rbac.authorization.k8s.io",
+        "kind": "Role",
+        "name": "platform-signature-pull"
+      },
+      "subjects": []
+    },
+    {
+      "apiVersion": "networking.k8s.io/v1",
+      "kind": "NetworkPolicy",
+      "metadata": {
+        "name": "zap-business-get-target",
+        "labels": {
+          "petclinic.devops.local/owner": "platform-devsecops",
+          "app.kubernetes.io/instance": "platform-devsecops"
+        },
+        "namespace": "devsecops-execution"
+      },
+      "spec": {
+        "podSelector": {
+          "matchLabels": {
+            "petclinic.devops.local/scan-kind": "zap"
+          }
+        },
+        "policyTypes": [
+          "Egress"
+        ],
+        "egress": [
+          {
+            "to": [
+              {
+                "namespaceSelector": {
+                  "matchLabels": {
+                    "kubernetes.io/metadata.name": "petclinic"
+                  }
+                },
+                "podSelector": {
+                  "matchLabels": {
+                    "app": "petclinic"
+                  }
+                }
+              }
+            ],
+            "ports": [
+              {
+                "protocol": "TCP",
+                "port": 8080
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "apiVersion": "networking.k8s.io/v1",
+      "kind": "NetworkPolicy",
+      "metadata": {
+        "name": "signature-fixture-deny-network",
+        "labels": {
+          "petclinic.devops.local/owner": "platform-devsecops",
+          "app.kubernetes.io/instance": "platform-devsecops"
+        },
+        "namespace": "devsecops-supply-chain"
+      },
+      "spec": {
+        "podSelector": {},
+        "policyTypes": [
+          "Ingress",
+          "Egress"
+        ],
+        "ingress": [],
+        "egress": []
+      }
+    },
+    {
+      "apiVersion": "kyverno.io/v1",
+      "kind": "ClusterPolicy",
+      "metadata": {
+        "name": "devsecops-signed-images",
+        "labels": {
+          "petclinic.devops.local/owner": "platform-devsecops",
+          "app.kubernetes.io/instance": "platform-devsecops"
+        },
+        "annotations": {
+          "pod-policies.kyverno.io/autogen-controllers": "none"
+        }
+      },
+      "spec": {
+        "admission": true,
+        "background": false,
+        "emitWarning": false,
+        "rules": [
+          {
+            "match": {
+              "any": [
+                {
+                  "resources": {
+                    "kinds": [
+                      "Pod"
+                    ],
+                    "namespaces": [
+                      "petclinic",
+                      "devsecops-supply-chain"
+                    ]
+                  }
+                }
+              ]
+            },
+            "name": "verify-private-petclinic-image",
+            "skipBackgroundRequests": true,
+            "verifyImages": [
+              {
+                "attestors": [
+                  {
+                    "count": 1,
+                    "entries": [
+                      {
+                        "keys": {
+                          "publicKeys": "-----BEGIN PUBLIC KEY-----\nMFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAEDcDmCR1VAKgVHFo0oCkd6XeqXn14\nACzzOaks1UDTLAl7c2WBQSpQwiK6DpovLg9IFgHlwqR96xaECMITPawOaw==\n-----END PUBLIC KEY-----\n",
+                          "rekor": {
+                            "ignoreTlog": true
+                          },
+                          "signatureAlgorithm": "sha256"
+                        },
+                        "signatureAlgorithm": "sha256"
+                      }
+                    ]
+                  }
+                ],
+                "imageReferences": [
+                  "core.harbor.domain/petclinic/*"
+                ],
+                "imageRegistryCredentials": {
+                  "allowInsecureRegistry": true,
+                  "secrets": [
+                    "kyverno-registry-pull"
+                  ]
+                },
+                "mutateDigest": true,
+                "required": true,
+                "type": "Cosign",
+                "useCache": false,
+                "verifyDigest": true
+              }
+            ]
+          }
+        ],
+        "validationFailureAction": "Enforce",
+        "webhookConfiguration": {
+          "failurePolicy": "Fail",
+          "timeoutSeconds": 20
+        }
+      }
+    },
+    {
+      "apiVersion": "rbac.authorization.k8s.io/v1",
+      "kind": "Role",
+      "metadata": {
+        "name": "platform-registry-secret-reconciler",
+        "namespace": "devsecops-system",
+        "labels": {
+          "petclinic.devops.local/owner": "platform-devsecops",
+          "app.kubernetes.io/instance": "platform-devsecops"
+        }
+      },
+      "rules": [
+        {
+          "apiGroups": [
+            ""
+          ],
+          "resources": [
+            "secrets"
+          ],
+          "resourceNames": [
+            "kyverno-registry-pull"
+          ],
+          "verbs": [
+            "get",
+            "patch",
+            "update"
+          ]
+        }
+      ]
+    },
+    {
+      "apiVersion": "rbac.authorization.k8s.io/v1",
+      "kind": "RoleBinding",
+      "metadata": {
+        "name": "platform-registry-secret-reconciler",
+        "namespace": "devsecops-system",
+        "labels": {
+          "petclinic.devops.local/owner": "platform-devsecops",
+          "app.kubernetes.io/instance": "platform-devsecops"
+        }
+      },
+      "roleRef": {
+        "apiGroup": "rbac.authorization.k8s.io",
+        "kind": "Role",
+        "name": "platform-registry-secret-reconciler"
+      },
+      "subjects": [
+        {
+          "kind": "ServiceAccount",
+          "name": "platform-secret-reconciler",
+          "namespace": "devsecops-system"
+        }
+      ]
+    }
+  ]
+}

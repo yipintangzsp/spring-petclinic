@@ -1,0 +1,46 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: postgresql
+  namespace: ns-data
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+
+  selector:
+    matchLabels:
+      app: postgresql
+
+  template:
+    metadata:
+      labels:
+        app: postgresql
+
+    spec:
+      containers:
+        - name: harbor-db
+          image: 127.0.0.1:30050/platform-upgrade/postgres:18.4-alpine3.24-arm64
+          imagePullPolicy: IfNotPresent
+
+          env:
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: postgresql-admin
+                  key: POSTGRES_PASSWORD
+
+            - name: POSTGRES_DB
+              valueFrom:
+                configMapKeyRef:
+                  name: postgresql-config
+                  key: POSTGRES_DB
+
+          volumeMounts:
+            - name: postgresql-data
+              mountPath: /var/lib/postgresql
+
+      volumes:
+        - name: postgresql-data
+          persistentVolumeClaim:
+            claimName: postgresql-data

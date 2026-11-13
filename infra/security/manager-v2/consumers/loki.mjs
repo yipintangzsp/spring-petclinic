@@ -19,7 +19,7 @@ function counts(dir,seal,r){
  const empty={findingCount:null,findingCountKnown:false,highSeverityFindingCount:null,highSeverityCountKnown:false,nativeSeverityCounts:null,findingEvidenceStatus:'NOT_EXECUTED'};
  if(r.executionStatus!=='COMPLETED')return empty;
  if(['cosign','sbom','provenance','build-provenance'].includes(r.pluginId))return {...empty,findingEvidenceStatus:'NOT_A_VULNERABILITY_SCANNER'};
- if(!['gitleaks','semgrep'].includes(r.pluginId))return {...empty,findingEvidenceStatus:'COUNT_MAPPING_NOT_CONFIGURED'};
+ if(!['gitleaks','semgrep','trivy'].includes(r.pluginId))return {...empty,findingEvidenceStatus:'COUNT_MAPPING_NOT_CONFIGURED'};
  const name=r.pluginId+'.facts.json';if(!seal.files[name])return {...empty,findingEvidenceStatus:'FACT_NOT_AVAILABLE'};
  const p=path.join(dir,name),s=fs.lstatSync(p);must(s.isFile()&&!s.isSymbolicLink()&&s.size<=2*1024*1024,'FACT_READ_BOUNDARY');
  const fd=fs.openSync(p,fs.constants.O_RDONLY|fs.constants.O_NOFOLLOW);let fact;try{const stat=fs.fstatSync(fd);must(stat.isFile()&&stat.size<=2*1024*1024,'FACT_READ_BOUNDARY');fact=JSON.parse(fs.readFileSync(fd));}finally{fs.closeSync(fd);}must(digest(fact)===r.factDigest&&fact.component===r.pluginId,'FACT_RESULT_BINDING');
@@ -27,6 +27,16 @@ function counts(dir,seal,r){
  const findings=fact.raw.findings;must(findings.length<=10000,'FINDING_COUNT_LIMIT');
  if(r.pluginId==='gitleaks')return {...empty,findingCount:findings.length,findingCountKnown:true,findingEvidenceStatus:'VERIFIED_NATIVE_COUNT_NO_NATIVE_SEVERITY'};
  const severities={CRITICAL:0,HIGH:0,MEDIUM:0,LOW:0,INFO:0,ERROR:0,WARNING:0,UNKNOWN:0};
+ if(r.pluginId==='trivy'){
+  const name='trivy.raw.json';must(Boolean(seal.files[name]),'TRIVY_RAW_REQUIRED');
+  const fd=fs.openSync(path.join(dir,name),fs.constants.O_RDONLY|fs.constants.O_NOFOLLOW);let bytes;
+  try{const stat=fs.fstatSync(fd);must(stat.isFile()&&stat.size<=2*1024*1024,'TRIVY_RAW_READ_BOUNDARY');bytes=fs.readFileSync(fd);}finally{fs.closeSync(fd);}
+  must(bytes.length<=2*1024*1024&&sha(bytes)===r.rawReportDigest,'TRIVY_RAW_BINDING');
+  const native=JSON.parse(bytes);must(Array.isArray(native.Results),'TRIVY_RAW_SCHEMA');
+  let count=0;for(const target of native.Results){must(Array.isArray(target.Vulnerabilities),'TRIVY_RAW_SCHEMA');for(const v of target.Vulnerabilities){must(['CRITICAL','HIGH','MEDIUM','LOW','UNKNOWN'].includes(v.Severity),'TRIVY_NATIVE_SEVERITY');severities[v.Severity]++;count++;}}
+  must(count===findings.length,'TRIVY_FINDING_COUNT_BINDING');
+  return {...empty,findingCount:count,findingCountKnown:true,nativeSeverityCounts:severities,highSeverityFindingCount:severities.CRITICAL+severities.HIGH,highSeverityCountKnown:true,findingEvidenceStatus:'VERIFIED_NATIVE_COUNT'};
+ }
  for(const f of findings){const sev=typeof f.extra?.severity==='string'?f.extra.severity.toUpperCase():'UNKNOWN';severities[Object.hasOwn(severities,sev)?sev:'UNKNOWN']++;}
  // ERROR/WARNING are retained as native rule severities, never silently renamed HIGH/MEDIUM.
  const known=severities.ERROR+severities.WARNING+severities.UNKNOWN===0;
@@ -67,7 +77,7 @@ export function prepareLoki({run,artifactDirectory,expectedSealDigest,expectedPr
  const summary=run.summary,seal=JSON.parse(fs.readFileSync(path.join(dir,'candidate-seal.json')));must(same(summary,JSON.parse(fs.readFileSync(path.join(dir,'candidate-summary.json'))))&&summary.kind==='SecuritySummaryCandidate'&&summary.productionEvidence===false&&summary.promotion?.status==='BLOCKED','CANDIDATE_SUMMARY_BINDING');
  identity(summary.projectId);identity(summary.runId);identity(summary.profile);version(summary.managerVersion);must(summary.projectId===expectedProjectId,'LOKI_PROJECT_MISMATCH');must(Array.isArray(deliveryReceipts)&&deliveryReceipts.length<=12,'DELIVERY_RECEIPT_LIMIT');
  const ids=new Set();for(const r of summary.pluginResults){verifyResult(r);must(r.projectId===summary.projectId&&r.runId===summary.runId&&!ids.has(r.pluginId),'RESULT_SCOPE_BINDING');ids.add(r.pluginId);}
- must(singlePluginId===null||['gitleaks','semgrep','cosign','sbom','kyverno','sonarqube','kubescape','zap','sops','provenance','build-provenance'].includes(singlePluginId),'LOKI_PLUGIN_SELECTION_REJECTED');
+ must(singlePluginId===null||['gitleaks','semgrep','cosign','sbom','trivy','falco','kyverno','sonarqube','kubescape','zap','sops','provenance','build-provenance'].includes(singlePluginId),'LOKI_PLUGIN_SELECTION_REJECTED');
  must(freshRunId===null||freshRunId===summary.runId&&singlePluginId!==null,'LOKI_FRESH_RUN_BINDING');
  const chosen=summary.pluginResults.filter(r=>(singlePluginId===null||r.pluginId===singlePluginId)&&LOKI_SCHEMA.plugins.includes(r.pluginId)&&r.pluginId!=='manager');must(chosen.length>0,'NO_OBSERVABLE_PLUGIN');
  if(freshRunId!==null)must(chosen.every(r=>r.executionStatus==='COMPLETED'&&r.runtimeFacts?.classification==='REAL_CONTROLLED_EXECUTION'&&r.runtimeFacts.validationRunId===freshRunId&&Date.now()-Date.parse(r.completedAt)>=0&&Date.now()-Date.parse(r.completedAt)<300000),'LOKI_FRESH_EXECUTION_EVIDENCE_REQUIRED');

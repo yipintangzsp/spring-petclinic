@@ -1,0 +1,98 @@
+{
+  "scope": "Local-only read-only CLI/config observations from this iteration; no kubectl invocation",
+  "tools": {
+    "colima": {
+      "path": "/opt/homebrew/bin/colima",
+      "version": "0.10.3",
+      "commit": "00f6c297e92a82c04a4ab507db0a61435650d7e8"
+    },
+    "docker": {
+      "path": "/opt/homebrew/bin/docker"
+    },
+    "limactl": {
+      "path": "/opt/homebrew/bin/limactl"
+    },
+    "qemu-system-aarch64": {
+      "path": "/opt/homebrew/bin/qemu-system-aarch64"
+    }
+  },
+  "colimaStatus": {
+    "command": [
+      "colima",
+      "status"
+    ],
+    "timeoutSeconds": 10,
+    "result": "TIMEOUT, not evidence of stopped/running"
+  },
+  "processList": {
+    "command": [
+      "ps",
+      "-axo",
+      "pid=,comm="
+    ],
+    "result": "EPERM Operation not permitted",
+    "escalationAttempted": false,
+    "absenceOfProcessInferred": false
+  },
+  "environment": {
+    "DOCKER_HOST": null,
+    "DOCKER_CONTEXT": null,
+    "COLIMA_HOME": null,
+    "LIMA_HOME": null
+  },
+  "dockerContexts": [
+    {
+      "name": "default",
+      "current": true,
+      "endpoint": "unix:///var/run/docker.sock"
+    },
+    {
+      "name": "desktop-linux",
+      "current": false,
+      "endpoint": "unix:///Users/zhangsir/.docker/run/docker.sock"
+    }
+  ],
+  "contextEndpointsInspected": true,
+  "configuredRemoteTCPOrSSHEndpointsFound": false,
+  "socketMetadata": [
+    {
+      "path": "/var/run/docker.sock",
+      "lexists": true,
+      "exists": false,
+      "symlink": "/Users/zhangsir/.docker/run/docker.sock"
+    },
+    {
+      "path": "/Users/zhangsir/.docker/run/docker.sock",
+      "lexists": false,
+      "exists": false,
+      "symlink": null
+    },
+    {
+      "path": "/Users/zhangsir/.colima/default/docker.sock",
+      "lexists": false,
+      "exists": false,
+      "symlink": null
+    },
+    {
+      "path": "/Users/zhangsir/.colima/docker.sock",
+      "lexists": false,
+      "exists": false,
+      "symlink": null
+    }
+  ],
+  "dockerInfo": {
+    "command": [
+      "docker",
+      "--host",
+      "unix:///var/run/docker.sock",
+      "info",
+      "--format",
+      "{{json .}}"
+    ],
+    "exit": 1,
+    "error": "dial unix /var/run/docker.sock: connect: no such file or directory",
+    "serverIdentity": "NOT_OBTAINED",
+    "zeroOrEmptyJSONFields": "Failure placeholders only, not proof of zero containers/images or an empty server"
+  },
+  "otherLocalRuntime": "Existing Docker context definitions only; no alternate reachable server demonstrated. OrbStack was neither installed nor started."
+}

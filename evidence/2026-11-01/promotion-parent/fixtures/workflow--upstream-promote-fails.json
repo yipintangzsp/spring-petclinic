@@ -1,0 +1,26 @@
+{
+  "schema": 1,
+  "stage": "eligibility",
+  "complete": true,
+  "classification": "CONTROLLED_REPLAY",
+  "conditions": {
+    "selected": true,
+    "stages": [
+      "Candidate Approval Evidence",
+      "Candidate Sign and Approve",
+      "Approved Promotion"
+    ],
+    "action": "dry-run",
+    "initialResult": "SUCCESS"
+  },
+  "execution": {
+    "failed": true,
+    "reason": "original step nonzero: promote"
+  },
+  "observations": [
+    "node infra/security/security-summary.mjs; node infra/security/promotion/evidence.mjs sbom",
+    "node infra/security/promotion/sign-approve.mjs",
+    "node -p \"require('./.devsecops/approved-release.json').approvedDigest\"",
+    "node infra/security/promotion/promote.mjs \"$PROMOTION_ACTION\""
+  ]
+}

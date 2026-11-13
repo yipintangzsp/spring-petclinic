@@ -1,0 +1,46 @@
+// Dedicated non-release validation only. No Summary, approval or deployment.
+pipeline {
+  agent any
+  options { disableConcurrentBuilds(); timeout(time: 10, unit: 'MINUTES') }
+  environment {
+    DEVSECOPS_READ_ONLY = 'true'
+    MAVEN_OPTS = '-Xmx256m -XX:ActiveProcessorCount=1'
+  }
+  stages {
+    stage('Verify frozen input') {
+      steps { sh 'test -f .git-sha; test -f runtime-source-bundle.json; node infra/security/runtime-facts/verify-bundle.mjs' }
+    }
+    stage('Observe original Provenance default return') {
+      steps { script {
+        // No optional switch is added or changed. Invoke the actual frozen
+        // helper with its existing empty configuration, before any opt-in.
+        if (params.containsKey('ENABLE_PROVENANCE') || env.ENABLE_PROVENANCE != null) error('Nonrelease default-return capture rejects configured provenance opt-in')
+        library identifier: 'platform-security@9a78cc89f22fa98fb1ffcc43e2ae279299471793', retriever: modernSCM([$class:'GitSCMSource',remote:'http://gitlab-service.ns-devops.svc.cluster.local/root/petclinic-platform.git',credentialsId:'gitlab-creds'])
+        def hashes=sh(script:'find "${WORKSPACE}@libs" -path "*/vars/securityProvenance.groovy" -type f -exec sha256sum {} +',returnStdout:true).trim().readLines().findAll{it.trim()}
+        if(hashes.size()!=1 || hashes[0].tokenize()[0]!='db2025f5b6347cd7131835aafca08a9b503232494c6881d7ea94f6969e1d7a3d')error('Original Provenance helper source identity mismatch')
+        def original=securityProvenance([:])
+        if(original.tool!='provenance'||original.status!='skipped')error('Unexpected original default return; write paths are prohibited')
+        sh "mkdir -p .devsecops/runtime-facts/build-${env.BUILD_NUMBER}/helper-returns"
+        writeJSON file:".devsecops/runtime-facts/build-${env.BUILD_NUMBER}/helper-returns/provenance.json",json:[schema:1,sourceId:'provenance',job:env.JOB_NAME,build:env.BUILD_NUMBER.toInteger(),configuration:[:],parameters:[:],environment:[BUILD_NUMBER:env.BUILD_NUMBER],returned:original,producer:[path:'vars/securityProvenance.groovy',sha256:hashes[0].tokenize()[0],libraryRevision:'9a78cc89f22fa98fb1ffcc43e2ae279299471793']]
+      } }
+    }
+    stage('Observe original Build Provenance default return') {
+      steps { script {
+        def hashes=sh(script:'find "${WORKSPACE}@libs" -path "*/vars/securityBuildProvenance.groovy" -type f -exec sha256sum {} +',returnStdout:true).trim().readLines().findAll{it.trim()}
+        if(hashes.size()!=1 || hashes[0].tokenize()[0]!='fc30d9ea48352c15b9e79400a0e6818236d6cf6531b4992700ef86186b77213d')error('Original Build Provenance helper source identity mismatch')
+        def original=securityBuildProvenance([:])
+        if(original.tool!='build-provenance'||original.status!='skipped')error('Unexpected original default return; enabled branch is outside this observation')
+        writeJSON file:".devsecops/runtime-facts/build-${env.BUILD_NUMBER}/helper-returns/build-provenance.json",json:[schema:1,sourceId:'build-provenance',job:env.JOB_NAME,build:env.BUILD_NUMBER.toInteger(),configuration:[:],parameters:[:],environment:[BUILD_NUMBER:env.BUILD_NUMBER],returned:original,producer:[path:'vars/securityBuildProvenance.groovy',sha256:hashes[0].tokenize()[0],libraryRevision:'9a78cc89f22fa98fb1ffcc43e2ae279299471793']]
+      } }
+    }
+    stage('Read existing Sonar analysis only') {
+      steps { withCredentials([string(credentialsId:'sonar-token',variable:'RUNTIME_SONAR_TOKEN')]) {
+        sh 'node infra/security/runtime-facts/sonar-readonly-observation.mjs'
+      } }
+    }
+    stage('Original command → Runtime facts → Authoritative owner → Gate reuse') {
+      steps { withEnv(['HEAVY_HOLDER=runtime-facts-' + env.BUILD_NUMBER]) { sh 'node infra/security/runtime-facts/run-nonrelease.mjs' } }
+    }
+  }
+  post { always { archiveArtifacts artifacts: '.devsecops/runtime-facts/build-' + env.BUILD_NUMBER + '/**,runtime-source-bundle.json', allowEmptyArchive: false } }
+}

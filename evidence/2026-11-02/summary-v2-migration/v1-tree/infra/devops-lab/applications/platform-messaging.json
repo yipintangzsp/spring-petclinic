@@ -1,0 +1,33 @@
+{
+  "apiVersion": "argoproj.io/v1alpha1",
+  "kind": "Application",
+  "metadata": {
+    "name": "platform-messaging",
+    "labels": {
+      "petclinic.devops.local/owner": "platform-messaging"
+    },
+    "namespace": "argocd"
+  },
+  "spec": {
+    "project": "default",
+    "source": {
+      "repoURL": "http://gitlab-service.ns-devops.svc.cluster.local/root/petclinic-platform.git",
+      "targetRevision": "c17bedb835f644cbd856bd0ec64ef92862d772a2",
+      "path": "infra/messaging"
+    },
+    "destination": {
+      "server": "https://kubernetes.default.svc",
+      "namespace": "petclinic"
+    },
+    "syncPolicy": {
+      "automated": {
+        "prune": false,
+        "selfHeal": true
+      },
+      "syncOptions": [
+        "CreateNamespace=true",
+        "ServerSideApply=true"
+      ]
+    }
+  }
+}

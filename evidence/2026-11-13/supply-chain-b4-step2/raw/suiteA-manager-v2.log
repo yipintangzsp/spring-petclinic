@@ -1,0 +1,380 @@
+✔ default registry keeps build-provenance blocked (3.245875ms)
+✔ realBuildProvenanceRegistry shape (27.991292ms)
+✖ historical signed build attestation verifies with full build identity (0.902417ms)
+✖ wrong commit is rejected (0.17775ms)
+✖ wrong digest is rejected (0.147667ms)
+✖ tampered envelope payload is rejected (0.137292ms)
+✖ executeRealBuildProvenance returns PASS execution for historical case (0.96625ms)
+✔ cross-project and target mismatches are rejected (0.905417ms)
+✔ buildProvenanceUiCase maps scenarios and rejects others (0.145167ms)
+✔ A default standard and explicit low (8.857542ms)
+✔ A profile then component then project provenance (7.814917ms)
+✔ A malformed settings fail closed (1.067ms)
+✔ A policy pins baseline-v2 compatibility and strict-v1 (1.063917ms)
+✔ A invalid null/false layers and overridden invalid global values never fall back (0.289ms)
+✔ A component and project policy changes only affect their intended target (1.225417ms)
+✔ E master false suppresses even invalid unapproved runner inputs (194.507375ms)
+✔ E off and all disabled never fabricate PASS (503.708833ms)
+✔ E audit retains FAIL while ordinary candidate build may continue (227.781458ms)
+✔ E enforce FAIL stops candidate; no live promotion for PASS either (339.840959ms)
+✔ E disabled Trivy does not affect two independent workers (210.305166ms)
+✔ E missing/unavailable/unsupported capabilities never PASS (284.86125ms)
+✔ E missing archive is NOT_CONFIGURED; corrupt/unapproved input is POLICY_ERROR (185.82725ms)
+✔ F versioned Gitleaks preserves both frozen decisions with independent Cosign (377.298375ms)
+✔ F claim is atomic before await; Gate and Summary reuse identical result (133.464708ms)
+✔ F strict uses existing engine; original findings stay unchanged; frozen FAIL floor retained (120.589083ms)
+✔ G history is exclusive, raw bytes match digest, tampering detected (138.296209ms)
+✔ G reserved V1 path, overwrite and post-seal writes are rejected (10.651125ms)
+✔ G symlink output parent and directory replacement are refused (0.96925ms)
+✔ H plugin removal does not alter unrelated policy decisions (79.115416ms)
+✔ H enabled Trivy reports real blockers without execution/evaluation (119.51325ms)
+✔ H malformed and unknown configuration writes no artifact (0.853625ms)
+✔ E actual worker timeout is an operational ERROR, never PASS/WARN (82.86775ms)
+✔ F engine rejects invalid evidence once; no fabricated Policy result (0.602416ms)
+✔ G a recomputed digest cannot turn nonexecution into PASS (83.662333ms)
+✔ B registry default disabled prevents execution before per-project explicit selection (92.007125ms)
+✔ explicit third registry preserves existing two real plugin definitions (23.942709ms)
+✔ original frozen Cosign and projected parent identities match (1.073292ms)
+✔ unchanged legacy verify-blob command acceptance vs Policy 0 (14.393083ms)
+✔ unchanged legacy verify-blob command acceptance vs Policy 1 (11.555375ms)
+✔ unchanged legacy verify-blob command acceptance vs Policy 2 (15.946208ms)
+✔ unchanged legacy verify-blob command acceptance vs Policy 255 (9.947041ms)
+✔ malformed evidence rejected wrong tool (2.672334ms)
+✔ malformed evidence rejected wrong version (0.54775ms)
+✔ malformed evidence rejected wrong project trust (0.841417ms)
+✔ malformed evidence rejected production trust scope (0.580458ms)
+✔ malformed evidence rejected missing digest (0.5175ms)
+✔ malformed evidence rejected missing command (1.034208ms)
+✔ malformed evidence rejected command injection (1.300125ms)
+✔ malformed evidence rejected network ref (0.60875ms)
+✔ malformed evidence rejected noninteger exit (1.492333ms)
+✔ malformed evidence rejected signal exit (1.762708ms)
+✔ missing complete evidence never becomes PASS (4.26875ms)
+✔ missing signature is real nonzero verifier failure, no invented signature (3.497958ms)
+✔ capability missing COSIGN_BINARY cannot verify (0.882417ms)
+✔ capability missing COSIGN_VERSION cannot verify (0.777333ms)
+✔ capability missing OFFLINE_SIGNED_OBJECT cannot verify (1.403375ms)
+✔ capability missing TRUSTED_VERIFICATION_IDENTITY cannot verify (1.110291ms)
+✔ capability missing SIGNATURE_SOURCE cannot verify (0.396958ms)
+✔ capability missing POLICY_VERSION cannot verify (0.289791ms)
+✔ capability missing VALIDATION_OUTPUT_DIR cannot verify (0.27325ms)
+✔ native runner architecture context cannot be simulated on Darwin (0.291833ms)
+✔ master OFF does not invoke any native Cosign process or Policy (283.193167ms)
+✔ enabled plugin without capability is NOT_CONFIGURED (244.956917ms)
+✔ untrusted runner and private-key CLI rejected (0.950667ms)
+✔ parseFalcoEvents keeps only Platform Runtime events for the target pod (27.493541ms)
+✔ parseFalcoEvents returns empty for a benign window (0.821375ms)
+✔ falco project config is pinned to the live sensor facts (0.215292ms)
+✔ realFalcoRegistry exposes falco as a real runner and leaves defaults intact (1.4845ms)
+✔ falco collector config pins the dedicated restricted entry identity (G-F2) (0.246167ms)
+✔ falcoCollectorPacket accepts a well-formed entry packet and shapes results (0.339208ms)
+✔ falcoCollectorPacket rejects a packet from a non-dedicated identity (0.518ms)
+✔ falcoCollectorPacket rejects a packet for a different window or project (0.166917ms)
+✔ real registry is explicit, disabled by default and preserves every other plugin (9.115416ms)
+✔ real mode missing source/tool/trusted workspace never starts a process (224.475ms)
+✔ real mode Darwin is unsupported regardless of claimed capabilities (0.268208ms)
+✔ real master switch disables even malformed unapproved inputs without execution (251.106833ms)
+✔ real plugin switch disables without changing registry or starting processes (229.797084ms)
+✔ real CLI explicitly selects fixed runner, missing source remains unconfigured (0.671292ms)
+✔ real invalid Policy is rejected before output creation or process start (0.5335ms)
+✔ I independent dry-run and local consumer verify receipt digests without re-evaluation (486.49ms)
+✔ I duplicate consumers, injected handlers, mutated summary, bad seal rejected (296.0185ms)
+✔ I future DefectDojo cannot publish to network even if enabled (222.95925ms)
+✔ J same manager across projects/profiles with isolated overrides, schemas and capabilities (376.534583ms)
+✔ J actual CLI master switch, required parameters, plugin selection and env validation (316.952791ms)
+✔ fact maps a successful frozen audit execution to PASS (22.48825ms)
+✔ execution-integrity tampering maps to frozen FAIL (1.578375ms)
+✔ runtimeFacts carry summaries, counts and the Loki fresh-run contract fields (1.217667ms)
+✔ violating workload findings are surfaced per native resource and control (0.738584ms)
+✔ packet validation rejects identity, lock and cleanup drift (0.533333ms)
+✔ second project packet validates independently (0.129833ms)
+✔ kubescape project config is pinned to the frozen tool lock (0.112583ms)
+✔ realKubescapeRegistry exposes kubescape as a real runner and leaves defaults intact (25.209792ms)
+✔ fact maps admitted workload to frozen admission PASS (1.559084ms)
+✔ fact maps denied workload to frozen admission FAIL (0.770334ms)
+✔ runtimeFacts carry the Loki fresh-run contract field (0.534083ms)
+✔ packet validation rejects project, digest and identity drift (3.844333ms)
+✔ second project is independently defined (1.129834ms)
+✔ default registry keeps provenance blocked (1.789542ms)
+✔ realProvenanceRegistry shape (10.919833ms)
+✖ historical signed attestation verifies PASS with SBOM anchor cross-check (0.9075ms)
+✖ wrong commit is rejected FAIL (0.196ms)
+✖ wrong digest is rejected FAIL (0.165583ms)
+✖ tampered envelope payload is rejected FAIL (0.148208ms)
+✖ executeRealProvenance returns PASS execution for historical case (0.964375ms)
+✔ cross-project and target mismatches are rejected (0.910625ms)
+✔ provenanceUiCase maps scenarios and rejects others (0.149625ms)
+✔ B duplicate/unknown IDs rejected; removal does not rewrite others (4.009625ms)
+✔ B arbitrary runner code is not a registration contract (0.1905ms)
+✔ C capabilities are scoped; Trivy never executes even with asserted prerequisites (0.348833ms)
+✔ C missing/unavailable/platform/profile are distinct (0.173ms)
+✔ D independent immutable archive gitleaks-pass (58.822167ms)
+✔ D independent immutable archive gitleaks-fail (51.8095ms)
+✔ D independent immutable archive semgrep-pass (42.672042ms)
+✔ D independent immutable archive semgrep-fail (41.520625ms)
+✔ D independent immutable archive cosign-pass (34.517083ms)
+✔ D independent immutable archive cosign-fail (32.676959ms)
+✔ D unapproved/cross-plugin digest prevents worker start (0.745792ms)
+✔ D missing and corrupted raw reports cannot reach Policy (0.196208ms)
+✔ D timeout and pre-cancellation join a dedicated bounded worker (3.342709ms)
+✔ D in-flight cancellation leaves no active owned worker (1.404ms)
+✔ fixed opt-in registries keep replay and existing Gitleaks definition intact (16.670833ms)
+✔ Semgrep independent capability set includes all five concrete inputs (4.474584ms)
+✔ capability missing SOURCE_DIR never PASS (0.413375ms)
+✔ capability missing SEMGREP_BINARY never PASS (1.390125ms)
+✔ capability missing SEMGREP_RULESET never PASS (0.270833ms)
+✔ capability missing OUTPUT_DIR never PASS (0.273375ms)
+✔ capability missing POLICY_VERSION never PASS (0.231208ms)
+✔ capability missing TRUSTED_VALIDATION_WORKSPACE never PASS (0.211583ms)
+✔ Darwin cannot execute Linux-native runner regardless of declarations (0.243167ms)
+✔ raw finding data and severity preserved by normalizer (0.263708ms)
+✔ real empty native report is distinct from absent execution (0.255458ms)
+✔ normalizer rejects errors blocking (0.08675ms)
+✔ normalizer rejects missing results (0.060417ms)
+✔ normalizer rejects missing errors (0.048542ms)
+✔ normalizer rejects wrong path (0.051167ms)
+✔ normalizer rejects unknown rule (0.0465ms)
+✔ normalizer rejects missing severity (0.043416ms)
+✔ normalizer rejects invalid line (0.052958ms)
+✔ existing classifier and standard agree on controlled empty/high/warning findings (0.821708ms)
+✔ all production command/Semgrep source identities still match original frozen manifest (3.819167ms)
+✔ missing real capabilities cannot start either native process (264.723541ms)
+✔ master OFF ignores untrusted inputs and emits DISABLED without scan PASS (197.46675ms)
+✔ one plugin disable does not modify the other configuration (131.681667ms)
+✔ native runner does not accept arbitrary command registry entry (0.376375ms)
+✔ unknown Policy rejected before output or native launch (0.760375ms)
+✔ CLI opts into code-owned Semgrep runner without arbitrary arguments (0.4965ms)
+✔ fact maps server OK gate to frozen PASS (3.348875ms)
+✔ fact maps server ERROR gate to frozen FAIL (0.881166ms)
+✔ binding tampering is rejected by the frozen adapter (0.323334ms)
+✔ runtimeFacts carry the Loki fresh-run contract fields (0.52675ms)
+✔ packet validation rejects identity, component and binding drift (0.506125ms)
+✔ second project packet validates independently (0.135125ms)
+✔ violating packet validates against the run-derived fresh component key (0.120458ms)
+✔ sonar project config is pinned to the live server facts (0.114666ms)
+✔ realSonarRegistry exposes sonarqube as a real runner and leaves defaults intact (10.979458ms)
+✔ compliant fact evaluates to frozen PASS through the sops adapter (3.651708ms)
+✔ decrypt failure (tamper/wrong-key shape) evaluates to frozen FAIL (0.333625ms)
+✔ live data drift evaluates to frozen FAIL (validation failure) (0.282ms)
+✔ extra fixture permission evaluates to frozen FAIL (0.284459ms)
+✔ missing observations stay NOT_CONFIGURED with null decision, never PASS (0.155292ms)
+✔ runtimeFacts carry the Loki fresh-run contract fields and drop raw observations (0.671ms)
+✔ packet validation rejects identity, tool, cipher and scope drift (1.5395ms)
+✔ sops project config is pinned to the devops wrapper facts (0.353042ms)
+✔ realSopsRegistry exposes sops as a real runner and leaves defaults intact (10.58525ms)
+✔ configured verified host (1.304625ms)
+✔ explicit verified host (0.10775ms)
+✔ reject stale host and SSH injection (0.278959ms)
+✔ native severities normalize to canonical Policy values (0.085333ms)
+✔ unrecognized or missing severity fails closed before Policy (1.075833ms)
+✔ formal adapter fact passes the real Policy engine without invalid severity (2.968ms)
+✔ formal adapter fact with only low-rated findings warns at every level (3.851541ms)
+✔ formal result seals with a Policy decision when the runner has no legacy gate (3.370125ms)
+✔ runner runtime facts carry validationRunId for the Loki fresh gate (0.264458ms)
+✔ clean fact evaluates to frozen PASS at standard level (4.277583ms)
+✔ pii fact: native High stays WARN at standard and FAILs at strict (frozen level table) (9.31075ms)
+✔ runtimeFacts carry the Loki fresh-run contract fields and drop report bytes (0.292583ms)
+✔ packet validation rejects identity, target, tool and report drift (1.022917ms)
+✔ external target inside the native report is rejected (0.269458ms)
+✔ zap project config is pinned to the devops wrapper facts (0.323834ms)
+✔ realZapRegistry exposes zap as a real runner and leaves defaults intact (1.609459ms)
+ℹ tests 180
+ℹ suites 0
+ℹ pass 170
+ℹ fail 10
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 3505.470833
+
+✖ failing tests:
+
+test at infra/security/manager-v2/build-provenance-real.test.mjs:7:1
+✖ historical signed build attestation verifies with full build identity (0.902417ms)
+  Error: ENOENT: no such file or directory, open '/private/tmp/b4clone/evidence/2026-11-12/supply-chain-step1-sbom-binding/binding-anchor.json'
+      at Object.readFileSync (node:fs:436:20)
+      at readRepo (file:///private/tmp/b4clone/infra/security/manager-v2/build-provenance-real.mjs:23:22)
+      at verifyBuildEnvelope (file:///private/tmp/b4clone/infra/security/manager-v2/build-provenance-real.mjs:30:26)
+      at TestContext.<anonymous> (file:///private/tmp/b4clone/infra/security/manager-v2/build-provenance-real.test.mjs:7:93)
+      at Test.runInAsyncScope (node:async_hooks:226:14)
+      at Test.run (node:internal/test_runner/test:1201:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:831:18)
+      at Test.postRun (node:internal/test_runner/test:1330:19)
+      at Test.run (node:internal/test_runner/test:1258:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:831:7) {
+    errno: -2,
+    code: 'ENOENT',
+    syscall: 'open',
+    path: '/private/tmp/b4clone/evidence/2026-11-12/supply-chain-step1-sbom-binding/binding-anchor.json'
+  }
+
+test at infra/security/manager-v2/build-provenance-real.test.mjs:8:1
+✖ wrong commit is rejected (0.17775ms)
+  Error: ENOENT: no such file or directory, open '/private/tmp/b4clone/evidence/2026-11-12/supply-chain-step1-sbom-binding/binding-anchor.json'
+      at Object.readFileSync (node:fs:436:20)
+      at readRepo (file:///private/tmp/b4clone/infra/security/manager-v2/build-provenance-real.mjs:23:22)
+      at verifyBuildEnvelope (file:///private/tmp/b4clone/infra/security/manager-v2/build-provenance-real.mjs:30:26)
+      at TestContext.<anonymous> (file:///private/tmp/b4clone/infra/security/manager-v2/build-provenance-real.test.mjs:8:48)
+      at Test.runInAsyncScope (node:async_hooks:226:14)
+      at Test.run (node:internal/test_runner/test:1201:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:831:18)
+      at Test.postRun (node:internal/test_runner/test:1330:19)
+      at Test.run (node:internal/test_runner/test:1258:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:831:7) {
+    errno: -2,
+    code: 'ENOENT',
+    syscall: 'open',
+    path: '/private/tmp/b4clone/evidence/2026-11-12/supply-chain-step1-sbom-binding/binding-anchor.json'
+  }
+
+test at infra/security/manager-v2/build-provenance-real.test.mjs:9:1
+✖ wrong digest is rejected (0.147667ms)
+  Error: ENOENT: no such file or directory, open '/private/tmp/b4clone/evidence/2026-11-12/supply-chain-step1-sbom-binding/binding-anchor.json'
+      at Object.readFileSync (node:fs:436:20)
+      at readRepo (file:///private/tmp/b4clone/infra/security/manager-v2/build-provenance-real.mjs:23:22)
+      at verifyBuildEnvelope (file:///private/tmp/b4clone/infra/security/manager-v2/build-provenance-real.mjs:30:26)
+      at TestContext.<anonymous> (file:///private/tmp/b4clone/infra/security/manager-v2/build-provenance-real.test.mjs:9:48)
+      at Test.runInAsyncScope (node:async_hooks:226:14)
+      at Test.run (node:internal/test_runner/test:1201:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:831:18)
+      at Test.postRun (node:internal/test_runner/test:1330:19)
+      at Test.run (node:internal/test_runner/test:1258:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:831:7) {
+    errno: -2,
+    code: 'ENOENT',
+    syscall: 'open',
+    path: '/private/tmp/b4clone/evidence/2026-11-12/supply-chain-step1-sbom-binding/binding-anchor.json'
+  }
+
+test at infra/security/manager-v2/build-provenance-real.test.mjs:10:1
+✖ tampered envelope payload is rejected (0.137292ms)
+  Error: ENOENT: no such file or directory, open '/private/tmp/b4clone/evidence/2026-11-12/supply-chain-step1-sbom-binding/binding-anchor.json'
+      at Object.readFileSync (node:fs:436:20)
+      at readRepo (file:///private/tmp/b4clone/infra/security/manager-v2/build-provenance-real.mjs:23:22)
+      at verifyBuildEnvelope (file:///private/tmp/b4clone/infra/security/manager-v2/build-provenance-real.mjs:30:26)
+      at TestContext.<anonymous> (file:///private/tmp/b4clone/infra/security/manager-v2/build-provenance-real.test.mjs:10:61)
+      at Test.runInAsyncScope (node:async_hooks:226:14)
+      at Test.run (node:internal/test_runner/test:1201:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:831:18)
+      at Test.postRun (node:internal/test_runner/test:1330:19)
+      at Test.run (node:internal/test_runner/test:1258:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:831:7) {
+    errno: -2,
+    code: 'ENOENT',
+    syscall: 'open',
+    path: '/private/tmp/b4clone/evidence/2026-11-12/supply-chain-step1-sbom-binding/binding-anchor.json'
+  }
+
+test at infra/security/manager-v2/build-provenance-real.test.mjs:11:1
+✖ executeRealBuildProvenance returns PASS execution for historical case (0.96625ms)
+  Error: ENOENT: no such file or directory, open '/private/tmp/b4clone/evidence/2026-11-12/supply-chain-step1-sbom-binding/binding-anchor.json'
+      at Object.readFileSync (node:fs:436:20)
+      at readRepo (file:///private/tmp/b4clone/infra/security/manager-v2/build-provenance-real.mjs:23:22)
+      at verifyBuildEnvelope (file:///private/tmp/b4clone/infra/security/manager-v2/build-provenance-real.mjs:30:26)
+      at executeRealBuildProvenance (file:///private/tmp/b4clone/infra/security/manager-v2/build-provenance-real.mjs:68:15)
+      at TestContext.<anonymous> (file:///private/tmp/b4clone/infra/security/manager-v2/build-provenance-real.test.mjs:11:102)
+      at Test.runInAsyncScope (node:async_hooks:226:14)
+      at Test.run (node:internal/test_runner/test:1201:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:831:18)
+      at Test.postRun (node:internal/test_runner/test:1330:19)
+      at Test.run (node:internal/test_runner/test:1258:12) {
+    errno: -2,
+    code: 'ENOENT',
+    syscall: 'open',
+    path: '/private/tmp/b4clone/evidence/2026-11-12/supply-chain-step1-sbom-binding/binding-anchor.json'
+  }
+
+test at infra/security/manager-v2/provenance-real.test.mjs:7:1
+✖ historical signed attestation verifies PASS with SBOM anchor cross-check (0.9075ms)
+  Error: ENOENT: no such file or directory, open '/private/tmp/b4clone/evidence/2026-11-12/supply-chain-step1-sbom-binding/binding-anchor.json'
+      at Object.readFileSync (node:fs:436:20)
+      at readRepo (file:///private/tmp/b4clone/infra/security/manager-v2/provenance-real.mjs:21:22)
+      at loadProvenanceMaterials (file:///private/tmp/b4clone/infra/security/manager-v2/provenance-real.mjs:28:26)
+      at buildProvenanceObservations (file:///private/tmp/b4clone/infra/security/manager-v2/provenance-real.mjs:38:31)
+      at TestContext.<anonymous> (file:///private/tmp/b4clone/infra/security/manager-v2/provenance-real.test.mjs:7:96)
+      at Test.runInAsyncScope (node:async_hooks:226:14)
+      at Test.run (node:internal/test_runner/test:1201:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:831:18)
+      at Test.postRun (node:internal/test_runner/test:1330:19)
+      at Test.run (node:internal/test_runner/test:1258:12) {
+    errno: -2,
+    code: 'ENOENT',
+    syscall: 'open',
+    path: '/private/tmp/b4clone/evidence/2026-11-12/supply-chain-step1-sbom-binding/binding-anchor.json'
+  }
+
+test at infra/security/manager-v2/provenance-real.test.mjs:8:1
+✖ wrong commit is rejected FAIL (0.196ms)
+  Error: ENOENT: no such file or directory, open '/private/tmp/b4clone/evidence/2026-11-12/supply-chain-step1-sbom-binding/binding-anchor.json'
+      at Object.readFileSync (node:fs:436:20)
+      at readRepo (file:///private/tmp/b4clone/infra/security/manager-v2/provenance-real.mjs:21:22)
+      at loadProvenanceMaterials (file:///private/tmp/b4clone/infra/security/manager-v2/provenance-real.mjs:28:26)
+      at buildProvenanceObservations (file:///private/tmp/b4clone/infra/security/manager-v2/provenance-real.mjs:38:31)
+      at TestContext.<anonymous> (file:///private/tmp/b4clone/infra/security/manager-v2/provenance-real.test.mjs:8:53)
+      at Test.runInAsyncScope (node:async_hooks:226:14)
+      at Test.run (node:internal/test_runner/test:1201:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:831:18)
+      at Test.postRun (node:internal/test_runner/test:1330:19)
+      at Test.run (node:internal/test_runner/test:1258:12) {
+    errno: -2,
+    code: 'ENOENT',
+    syscall: 'open',
+    path: '/private/tmp/b4clone/evidence/2026-11-12/supply-chain-step1-sbom-binding/binding-anchor.json'
+  }
+
+test at infra/security/manager-v2/provenance-real.test.mjs:9:1
+✖ wrong digest is rejected FAIL (0.165583ms)
+  Error: ENOENT: no such file or directory, open '/private/tmp/b4clone/evidence/2026-11-12/supply-chain-step1-sbom-binding/binding-anchor.json'
+      at Object.readFileSync (node:fs:436:20)
+      at readRepo (file:///private/tmp/b4clone/infra/security/manager-v2/provenance-real.mjs:21:22)
+      at loadProvenanceMaterials (file:///private/tmp/b4clone/infra/security/manager-v2/provenance-real.mjs:28:26)
+      at buildProvenanceObservations (file:///private/tmp/b4clone/infra/security/manager-v2/provenance-real.mjs:38:31)
+      at TestContext.<anonymous> (file:///private/tmp/b4clone/infra/security/manager-v2/provenance-real.test.mjs:9:53)
+      at Test.runInAsyncScope (node:async_hooks:226:14)
+      at Test.run (node:internal/test_runner/test:1201:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:831:18)
+      at Test.postRun (node:internal/test_runner/test:1330:19)
+      at Test.run (node:internal/test_runner/test:1258:12) {
+    errno: -2,
+    code: 'ENOENT',
+    syscall: 'open',
+    path: '/private/tmp/b4clone/evidence/2026-11-12/supply-chain-step1-sbom-binding/binding-anchor.json'
+  }
+
+test at infra/security/manager-v2/provenance-real.test.mjs:10:1
+✖ tampered envelope payload is rejected FAIL (0.148208ms)
+  Error: ENOENT: no such file or directory, open '/private/tmp/b4clone/evidence/2026-11-12/supply-chain-step1-sbom-binding/binding-anchor.json'
+      at Object.readFileSync (node:fs:436:20)
+      at readRepo (file:///private/tmp/b4clone/infra/security/manager-v2/provenance-real.mjs:21:22)
+      at loadProvenanceMaterials (file:///private/tmp/b4clone/infra/security/manager-v2/provenance-real.mjs:28:26)
+      at buildProvenanceObservations (file:///private/tmp/b4clone/infra/security/manager-v2/provenance-real.mjs:38:31)
+      at TestContext.<anonymous> (file:///private/tmp/b4clone/infra/security/manager-v2/provenance-real.test.mjs:10:66)
+      at Test.runInAsyncScope (node:async_hooks:226:14)
+      at Test.run (node:internal/test_runner/test:1201:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:831:18)
+      at Test.postRun (node:internal/test_runner/test:1330:19)
+      at Test.run (node:internal/test_runner/test:1258:12) {
+    errno: -2,
+    code: 'ENOENT',
+    syscall: 'open',
+    path: '/private/tmp/b4clone/evidence/2026-11-12/supply-chain-step1-sbom-binding/binding-anchor.json'
+  }
+
+test at infra/security/manager-v2/provenance-real.test.mjs:11:1
+✖ executeRealProvenance returns PASS execution for historical case (0.964375ms)
+  Error: ENOENT: no such file or directory, open '/private/tmp/b4clone/evidence/2026-11-12/supply-chain-step1-sbom-binding/binding-anchor.json'
+      at Object.readFileSync (node:fs:436:20)
+      at readRepo (file:///private/tmp/b4clone/infra/security/manager-v2/provenance-real.mjs:21:22)
+      at loadProvenanceMaterials (file:///private/tmp/b4clone/infra/security/manager-v2/provenance-real.mjs:28:26)
+      at buildProvenanceObservations (file:///private/tmp/b4clone/infra/security/manager-v2/provenance-real.mjs:38:31)
+      at executeRealProvenance (file:///private/tmp/b4clone/infra/security/manager-v2/provenance-real.mjs:71:15)
+      at TestContext.<anonymous> (file:///private/tmp/b4clone/infra/security/manager-v2/provenance-real.test.mjs:11:97)
+      at Test.runInAsyncScope (node:async_hooks:226:14)
+      at Test.run (node:internal/test_runner/test:1201:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:831:18)
+      at Test.postRun (node:internal/test_runner/test:1330:19) {
+    errno: -2,
+    code: 'ENOENT',
+    syscall: 'open',
+    path: '/private/tmp/b4clone/evidence/2026-11-12/supply-chain-step1-sbom-binding/binding-anchor.json'
+  }

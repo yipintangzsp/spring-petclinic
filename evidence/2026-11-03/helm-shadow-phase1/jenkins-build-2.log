@@ -1,0 +1,154 @@
+Started by user admin
+[Pipeline] Start of Pipeline
+[Pipeline] node
+Running on Jenkins in /var/jenkins_home/workspace/petclinic-helm-shadow-20261103
+[Pipeline] {
+[Pipeline] timeout
+Timeout set to expire in 15 min
+[Pipeline] {
+[Pipeline] stage
+[Pipeline] { (Review Bundle Identity)
+[Pipeline] sh
++ node infra/helm/verify-review-bundle.mjs 426ac4a8d8e9c42e938434f62a56a94f8fe669048be73c4f4c3ce04531dbb2b5
+{"classification":"DEDICATED_REVIEW_BUNDLE_NOT_PRODUCTION_CHECKOUT","files":33,"manifestSha256":"426ac4a8d8e9c42e938434f62a56a94f8fe669048be73c4f4c3ce04531dbb2b5","release":0,"rollout":0}
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] stage
+[Pipeline] { (HELM_ENABLED=false Compatibility)
+[Pipeline] script
+[Pipeline] {
+[Pipeline] load
+[Pipeline] { (vars/helmShadow.groovy)
+[Pipeline] }
+[Pipeline] // load
+[Pipeline] sh
++ node --test infra/helm/pipeline-contract.test.mjs
+TAP version 13
+# Subtest: disabled integration preserves exact original production pipeline text
+ok 1 - disabled integration preserves exact original production pipeline text
+  ---
+  duration_ms: 3.435053
+  ...
+# Subtest: flag defaults false and helper disabled returns before any step
+ok 2 - flag defaults false and helper disabled returns before any step
+  ---
+  duration_ms: 3.73547
+  ...
+# Subtest: shadow mode denies promotion before frozen stage execution
+ok 3 - shadow mode denies promotion before frozen stage execution
+  ---
+  duration_ms: 0.678294
+  ...
+# Subtest: Helm validates after frozen manager and before approval; no gate stage reorder
+ok 4 - Helm validates after frozen manager and before approval; no gate stage reorder
+  ---
+  duration_ms: 0.527085
+  ...
+# Subtest: active and shadow CI entrypoints contain no direct deployment
+ok 5 - active and shadow CI entrypoints contain no direct deployment
+  ---
+  duration_ms: 1.999256
+  ...
+# Subtest: direct deploy denied: helm upgrade x
+ok 6 - direct deploy denied: helm upgrade x
+  ---
+  duration_ms: 0.915503
+  ...
+# Subtest: direct deploy denied: helm install x
+ok 7 - direct deploy denied: helm install x
+  ---
+  duration_ms: 0.616877
+  ...
+# Subtest: direct deploy denied: helm rollback x
+ok 8 - direct deploy denied: helm rollback x
+  ---
+  duration_ms: 0.289918
+  ...
+# Subtest: direct deploy denied: $HELM_BIN upgrade x
+ok 9 - direct deploy denied: $HELM_BIN upgrade x
+  ---
+  duration_ms: 0.92492
+  ...
+# Subtest: direct deploy denied: kubectl apply -f x
+ok 10 - direct deploy denied: kubectl apply -f x
+  ---
+  duration_ms: 1.005211
+  ...
+# Subtest: direct deploy denied: kubectl -n petclinic patch deploy petclinic
+ok 11 - direct deploy denied: kubectl -n petclinic patch deploy petclinic
+  ---
+  duration_ms: 0.221584
+  ...
+# Subtest: non-mutating deployment diagnostics allowed
+ok 12 - non-mutating deployment diagnostics allowed
+  ---
+  duration_ms: 0.595711
+  ...
+# Subtest: shadow metadata never writes actual security summary or invokes promotion
+ok 13 - shadow metadata never writes actual security summary or invokes promotion
+  ---
+  duration_ms: 1.10892
+  ...
+1..13
+# tests 13
+# suites 0
+# pass 13
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 300.698711
+[Pipeline] }
+[Pipeline] // script
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] stage
+[Pipeline] { (Helm Validation Preparation)
+Stage "Helm Validation Preparation" skipped due to when conditional
+[Pipeline] getContext
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] stage
+[Pipeline] { (Helm Lint)
+Stage "Helm Lint" skipped due to when conditional
+[Pipeline] getContext
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] stage
+[Pipeline] { (Helm Render)
+Stage "Helm Render" skipped due to when conditional
+[Pipeline] getContext
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] stage
+[Pipeline] { (Rendered Manifest Validation)
+Stage "Rendered Manifest Validation" skipped due to when conditional
+[Pipeline] getContext
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] stage
+[Pipeline] { (Helm Policy Validation)
+Stage "Helm Policy Validation" skipped due to when conditional
+[Pipeline] getContext
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] stage
+[Pipeline] { (GitOps Candidate Validation)
+Stage "GitOps Candidate Validation" skipped due to when conditional
+[Pipeline] getContext
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] stage
+[Pipeline] { (Declarative: Post Actions)
+[Pipeline] archiveArtifacts
+Archiving artifacts
+‘.helm-shadow/**’ doesn’t match anything, but ‘**’ does. Perhaps that’s what you mean?
+No artifacts found that match the file pattern ".helm-shadow/**". Configuration error?
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] }
+[Pipeline] // timeout
+[Pipeline] }
+[Pipeline] // node
+[Pipeline] End of Pipeline
+Finished: SUCCESS

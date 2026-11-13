@@ -1,0 +1,14 @@
+import fs from 'node:fs';
+import {createHash} from 'node:crypto';
+const repo='petclinic/petclinic',tag=process.env.IMAGE_TAG;
+if(!/^0\.10\.0-ci-\d+$/.test(tag))throw Error('Invalid release tag');
+const r=await fetch(`http://${process.env.REGISTRY_API}/v2/${repo}/manifests/${tag}`,{headers:{Accept:'application/vnd.oci.image.index.v1+json'},signal:AbortSignal.timeout(20000)});
+if(!r.ok)throw Error('Built OCI index unavailable');
+const data=Buffer.from(await r.arrayBuffer()),digest='sha256:'+createHash('sha256').update(data).digest('hex');
+if(r.headers.get('docker-content-digest')!==digest)throw Error('OCI index digest mismatch');
+const manifest=JSON.parse(data),architectures=manifest.manifests.filter(m=>m.platform?.os==='linux').map(m=>m.platform.architecture);
+if(!architectures.includes('arm64')||!architectures.includes('amd64'))throw Error('Incomplete architecture set');
+fs.mkdirSync('target/platform',{recursive:true});
+fs.writeFileSync('target/platform/image-digest.txt',digest);
+fs.writeFileSync('target/platform/image.json',JSON.stringify({tag,digest,architectures,source:fs.readFileSync('.git-sha','utf8').trim()},null,2));
+console.log('Built image identity verified: '+digest);

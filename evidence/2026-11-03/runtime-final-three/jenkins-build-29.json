@@ -1,0 +1,176 @@
+{
+  "job": "security-runtime-facts-20261102",
+  "build": 29,
+  "building": false,
+  "result": "SUCCESS",
+  "duration": 15446,
+  "startedAtMs": 1793669186789,
+  "artifacts": {
+    ".devsecops/runtime-controlled/build-29/cosign-registry-cleanup.json": {
+      "retained": [
+        {
+          "httpStatus": 404,
+          "errorCodes": [
+            "NOT_FOUND"
+          ],
+          "digest": "sha256:a92dcc979f4b7b61807701cfdc3e3d56875de83adb1c2de9eef9a1b981112314",
+          "state": "VALIDATION_RETAINED_DELETE_REFUSED",
+          "tags": [
+            "sha256-fef2d952d868d524b4a50fc843d04e74ed912f6c6a246bddb8a6a1b024c1f221.sig"
+          ]
+        }
+      ],
+      "deleted": [
+        {
+          "digest": "sha256:cabc2d6d8b6154a537c70ce7297c2cb8f93f8ab55daf6f119070df20cb716796",
+          "tags": [
+            "ci-26-unsigned"
+          ]
+        },
+        {
+          "digest": "sha256:fef2d952d868d524b4a50fc843d04e74ed912f6c6a246bddb8a6a1b024c1f221",
+          "tags": [
+            "ci-26-wrong-key"
+          ]
+        }
+      ],
+      "recordedBuild": 26,
+      "repository": "petclinic/signature-fixtures",
+      "productionReleaseArtifactChanges": 0,
+      "cleanupComplete": false
+    },
+    ".devsecops/runtime-controlled/build-29/dojo-isolated-identity.json": {
+      "productionProductDenied": [
+        {
+          "product": 1,
+          "status": 404
+        },
+        {
+          "product": 2,
+          "status": 404
+        }
+      ],
+      "productionGovernanceMutations": 0,
+      "permissionModel": "nonstaff/non-superuser/no-model-permission; explicit authorized_users on dedicated Product only",
+      "engagement": {
+        "product": 5,
+        "name": "runtime-rf3-20261103-7d6715",
+        "id": 3
+      },
+      "imports": 0,
+      "identity": {
+        "authorizedProducts": [
+          5
+        ],
+        "productId": 5,
+        "isStaff": false,
+        "modelPermissionCount": 0,
+        "validationRunId": "rf3-20261103-7d6715",
+        "normalProductBaseline": {
+          "sha256": "d13f08bb3654edb4f2fedd9d26f06bbc14d650aaa0c643f72e793086857aa167",
+          "count": 2
+        },
+        "isSuperuser": false,
+        "groups": [],
+        "userId": 5,
+        "productName": "security-manager-runtime-validation-rf3-20261103-7d6715",
+        "username": "rf3-20261103-7d6715-dojo"
+      },
+      "validationRunId": "rf3-20261103-7d6715",
+      "parentStatus": "BLOCKED_CURRENT_NATIVE_TRIVY_REPORT_UNAVAILABLE",
+      "requests": [
+        {
+          "path": "/api/v2/products/5/",
+          "responseBytes": 766,
+          "method": "GET",
+          "responseSha256": "2794b23526ae98fddaf0e86ec8ca94913c4cf022740dc4afcf2dcef4155317a4",
+          "status": 200
+        },
+        {
+          "path": "/api/v2/products/?limit=100",
+          "responseBytes": 818,
+          "method": "GET",
+          "responseSha256": "88be0c98bc44e04bc92ea2e9e9f91a83a144040ec8ef9dff8b4ed8f782ecdb49",
+          "status": 200
+        },
+        {
+          "path": "/api/v2/products/1/",
+          "responseBytes": 48,
+          "method": "GET",
+          "responseSha256": "ae460ddc57af2e348b52fa2746c37cf4823646aca969b70635712754d3881598",
+          "status": 404
+        },
+        {
+          "path": "/api/v2/products/2/",
+          "responseBytes": 48,
+          "method": "GET",
+          "responseSha256": "ae460ddc57af2e348b52fa2746c37cf4823646aca969b70635712754d3881598",
+          "status": 404
+        },
+        {
+          "path": "/api/v2/engagements/",
+          "responseBytes": 895,
+          "method": "POST",
+          "responseSha256": "08e6a91b09b195759179d6a3c8ead3f1da410ac0e0594b2bfa5685f0813ae489",
+          "status": 201
+        }
+      ],
+      "invalidTokenStatus": 403,
+      "notWired": true
+    }
+  },
+  "artifactHashes": {
+    ".devsecops/runtime-controlled/build-29/cosign-registry-cleanup.json": "19fac675f473e384adbce3f7361e920f73bb6b38f1597bb1d6d55c71158451ab",
+    ".devsecops/runtime-controlled/build-29/dojo-isolated-identity.json": "d2e738641b7abd4868b06a86cae408a53e79e1aae6f29be8fc556488c7dd351a"
+  },
+  "regression": [],
+  "definitionSha256": "db9892d61e4617fc64da05e25ad44947ae46920a8c281208388b3a3568fc15d4",
+  "consoleTail": [
+    "[...truncated 4 lines...]",
+    "[Pipeline] {",
+    "[Pipeline] timeout",
+    "Timeout set to expire in 5 min 0 sec",
+    "[Pipeline] {",
+    "[Pipeline] stage",
+    "[Pipeline] { (Bundle and accepted thirteen)",
+    "[Pipeline] sh",
+    "+ node infra/security/runtime-facts/verify-bundle.mjs",
+    "Exact uploaded source identities verified; non-release only",
+    "+ node infra/security/runtime-facts/thirteen-smoke.mjs",
+    "{\"acceptedCapabilities\":13,\"originalReceipts\":16,\"policyEvaluations\":0,\"historicalBindingPreserved\":true,\"noCrossRunArtifactMerge\":true}",
+    "[Pipeline] }",
+    "[Pipeline] // stage",
+    "[Pipeline] stage",
+    "[Pipeline] { (Clean exact build-26 Cosign validation artifacts)",
+    "[Pipeline] withCredentials",
+    "Masking supported pattern matches of $HARBOR_PASS",
+    "[Pipeline] {",
+    "[Pipeline] sh",
+    "+ node infra/security/runtime-facts/cosign-registry-cleanup.mjs 26",
+    "{\"validationArtifactsDeleted\":2,\"retained\":1,\"productionReleaseArtifactChanges\":0}",
+    "[Pipeline] }",
+    "[Pipeline] // withCredentials",
+    "[Pipeline] }",
+    "[Pipeline] // stage",
+    "[Pipeline] stage",
+    "[Pipeline] { (Real minimum Product-scope Dojo API proof)",
+    "[Pipeline] sh",
+    "+ node infra/security/runtime-facts/dojo-identity-probe.mjs",
+    "{\"isolatedIdentityVerified\":true,\"product\":5,\"engagement\":3,\"productionProductsDenied\":true,\"imports\":0,\"parentStatus\":\"BLOCKED_CURRENT_NATIVE_TRIVY_REPORT_UNAVAILABLE\"}",
+    "[Pipeline] }",
+    "[Pipeline] // stage",
+    "[Pipeline] stage",
+    "[Pipeline] { (Declarative: Post Actions)",
+    "[Pipeline] archiveArtifacts",
+    "Archiving artifacts",
+    "[Pipeline] }",
+    "[Pipeline] // stage",
+    "[Pipeline] }",
+    "[Pipeline] // timeout",
+    "[Pipeline] }",
+    "[Pipeline] // node",
+    "[Pipeline] End of Pipeline",
+    "Finished: SUCCESS"
+  ],
+  "productionJobModified": false
+}

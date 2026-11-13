@@ -1,0 +1,39 @@
+{
+  "schema": 1,
+  "sourceId": "semgrep-command-audit",
+  "execution": {
+    "errorClass": null,
+    "signal": null,
+    "command": "( node infra/security/command-audit.mjs && node --max-old-space-size=128 infra/security/semgrep-gate.mjs )",
+    "exitStatus": 0
+  },
+  "reports": [],
+  "evidence": [
+    {
+      "sampleWindows": [],
+      "observerPackets": 2,
+      "kind": "ACTUAL_PROCESS_EXECUTION",
+      "sourcePayloadClass": "PASSIVE_IN_MEMORY_ORIGINAL_GATE_OBSERVATIONS",
+      "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdoutSha256": "963edc2fd22077f5f6964f91469cb2861ba37147d600681803fe7ecc2d8f28dc",
+      "events": []
+    }
+  ],
+  "rawPayloadPersisted": false,
+  "kind": "RuntimeSourceFacts",
+  "evidenceComplete": true,
+  "resultDigest": "297880fecc8756a7087ff0b173123a4ef56674efa5886398f577faf488dd8448",
+  "evaluationCount": 1,
+  "buildBinding": {
+    "candidate": "core.harbor.domain/petclinic/petclinic@sha256:489cb821573ff1f98edd846d5949d74bf3391b24e2f1fe5bcfb71c6be0793137",
+    "build": 15,
+    "project": "petclinic",
+    "source": "741ea2866ea142b24c7838e1ef25c8327c79d279",
+    "runId": "security-runtime-facts-20261102#15",
+    "job": "security-runtime-facts-20261102",
+    "targetScope": "runtime"
+  },
+  "envelopeDigest": "315fedeea5f373c261433ecba9a8dc22ddcd603162affe486d1fba504ec6ecda",
+  "rawFactDigest": "286c4e518b69d354ccb912417c9af0a3a5bf806eab882b9e6355a5512a6d3425",
+  "presence": "executed"
+}

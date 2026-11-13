@@ -1,0 +1,38 @@
+{
+  "beforeFirstProductionKubernetesCall": [
+    "runtime import manifest lock check",
+    "requireLease",
+    "read -> kube -> run -> spawnSync kubectl; environment inherited"
+  ],
+  "guardedFutureFlow": [
+    "explicit argument+KUBECONFIG",
+    "offline file/YAML/context/server/CA/digest pin checks",
+    "private clean HOME+byte-identical dedicated snapshot",
+    "pinned local TLS GET kube-system UID",
+    "sanitized trusted child",
+    "unchanged runtime kubectl via guarded PATH shim",
+    "absolute kubectl with explicit --kubeconfig and --context"
+  ],
+  "productionSourceFiles": [
+    {
+      "path": "infra/security/scanner-runtime.mjs",
+      "sha256": "60b26e029479e5371872d87465ae29150b7ded2e091750d026df006bfb968b9b"
+    },
+    {
+      "path": "infra/security/secrets-gate.mjs",
+      "sha256": "cb3bc63884f238fe125d8adbe5c6cddd165db5f00d3c7c8eeab5e6883ec7869e"
+    },
+    {
+      "path": "resources/security-manager/petclinic-adapter.json",
+      "sha256": "b7ffcdcb7466e679ad8739d1d910343b8ccab7217ba24a3d2e3f1f363215fc57"
+    },
+    {
+      "path": "vars/securityManager.groovy",
+      "sha256": "ae297e7313cbf9bdde9e38acb32a3ee3310c571f2d70e289783c5c1c448811af"
+    }
+  ],
+  "productionFilesModified": false,
+  "actualGateExecuted": false,
+  "classification": "TEST_WRAPPER_SUFFICIENT",
+  "limit": "Trusted reviewed child call graph, not an adversarial OS/network sandbox."
+}

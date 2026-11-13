@@ -1,0 +1,43 @@
+{
+  "classification": "DESIGN_ONLY_NO_KEYS_GENERATED",
+  "baseline": {
+    "role": "BASELINE_AGE_KEYPAIR",
+    "privateFile": "keys/baseline.agekey",
+    "recipientFile": "keys/baseline.recipient",
+    "uses": [
+      "fixture-encryption",
+      "POSITIVE_FULL_PATH",
+      "other non-wrong-key cases"
+    ],
+    "privateMode": "0600",
+    "executorMountMode": "0400",
+    "productionPathAllowed": false,
+    "committed": false,
+    "reuseOutsideRun": false
+  },
+  "wrongKey": {
+    "role": "WRONG_KEY_NEGATIVE_KEYPAIR",
+    "privateFile": "keys/negative-wrong-key.agekey",
+    "recipientFile": "keys/negative-wrong-key.recipient",
+    "uses": [
+      "WRONG_AGE_KEY"
+    ],
+    "privateMode": "0600",
+    "executorMountMode": "0400",
+    "productionPathAllowed": false,
+    "committed": false,
+    "reuseOutsideRun": false
+  },
+  "totalFutureKeypairs": 2,
+  "generationThisRound": 0,
+  "temporaryScope": "/var/tmp/security-manager-sops/sm-sops-20261102-01/keys",
+  "publicEvidence": "Record each public recipient plus SHA256 of recipient string, purpose, run id and distinctness; never hash/export private contents for evidence",
+  "semantics": {
+    "encryptedRecipient": "BASELINE_AGE_KEYPAIR recipient",
+    "decryptIdentity": "WRONG_KEY_NEGATIVE_KEYPAIR private identity",
+    "rawObservation": "actual SOPS decrypt process status/stdout metadata; expected failure not a Policy input",
+    "frozenSource": "secrets-gate.mjs spawnSync(sops,decrypt) and r.status!==0 throw; not executed now"
+  },
+  "cleanup": "Stop all child processes; remove mounts; delete both exact private/public files; confirm absence and no open handles; no archives/backups/commits of key material",
+  "approval": "Second independent disposable negative-only pair explicitly approved by current attachment; no production contract change"
+}

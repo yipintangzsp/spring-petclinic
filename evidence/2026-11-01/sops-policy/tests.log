@@ -1,0 +1,86 @@
+✖ SOPS original Gate differential: success (11.465041ms)
+✖ SOPS original Gate differential: write-mode-success (0.766625ms)
+✔ SOPS original Gate differential: decrypt-nonzero (1.626166ms)
+✔ SOPS original Gate differential: malformed-json (1.421333ms)
+✔ SOPS original Gate differential: wrong-scope (0.645125ms)
+✔ SOPS original Gate differential: changed-data (0.675084ms)
+✔ SOPS original Gate differential: changed-type (0.609959ms)
+✔ SOPS original Gate differential: changed-uid (0.55175ms)
+✔ SOPS original Gate differential: read-error (0.626541ms)
+✔ SOPS original Gate differential: after-read-error (0.612292ms)
+✔ SOPS original Gate differential: apply-error (0.562458ms)
+✔ SOPS original Gate differential: missing-credential (0.822375ms)
+✔ SOPS original Gate differential: lease-error (0.592833ms)
+✔ SOPS original Gate differential: tool-check-error (0.596458ms)
+✔ SOPS original Gate differential: manifest-error (0.193375ms)
+✔ SOPS original Gate differential: source-error (0.574ms)
+✔ SOPS original Gate differential: unexpected-permission (0.632916ms)
+✔ SOPS original Gate differential: required-read-denied (0.534458ms)
+✔ SOPS original Gate differential: verifier-overreach (0.499959ms)
+✔ SOPS original Gate differential: report-write-error (0.817541ms)
+✖ missing evidence cannot PASS (0.402958ms)
+ℹ tests 21
+ℹ suites 0
+ℹ pass 18
+ℹ fail 3
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 184.338333
+
+✖ failing tests:
+
+test at infra/security/policy/sops-evidence.test.mjs:24:42
+✖ SOPS original Gate differential: success (11.465041ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  'FAIL' !== 'PASS'
+  
+      at TestContext.<anonymous> (file:///Users/zhangsir/code/petclinic-platform-20261011/infra/security/policy/sops-evidence.test.mjs:24:193)
+      at async Test.run (node:internal/test_runner/test:1208:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:385:3) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 'FAIL',
+    expected: 'PASS',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at infra/security/policy/sops-evidence.test.mjs:24:42
+✖ SOPS original Gate differential: write-mode-success (0.766625ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  'FAIL' !== 'PASS'
+  
+      at TestContext.<anonymous> (file:///Users/zhangsir/code/petclinic-platform-20261011/infra/security/policy/sops-evidence.test.mjs:24:193)
+      at async Test.run (node:internal/test_runner/test:1208:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:831:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 'FAIL',
+    expected: 'PASS',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at infra/security/policy/sops-evidence.test.mjs:25:1
+✖ missing evidence cannot PASS (0.402958ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  'FAIL' !== null
+  
+      at TestContext.<anonymous> (file:///Users/zhangsir/code/petclinic-platform-20261011/infra/security/policy/sops-evidence.test.mjs:25:170)
+      at Test.runInAsyncScope (node:async_hooks:226:14)
+      at Test.run (node:internal/test_runner/test:1201:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:831:18)
+      at Test.postRun (node:internal/test_runner/test:1330:19)
+      at Test.run (node:internal/test_runner/test:1258:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:831:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 'FAIL',
+    expected: null,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }

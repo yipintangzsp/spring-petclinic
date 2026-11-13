@@ -1,0 +1,115 @@
+{
+  "observedAt": "2026-11-05T15:12:19.015342+00:00",
+  "argo": {
+    "revision": "340ef4b8c74e3c2a5820da8d98b0f134283bb8d9",
+    "sync": "Synced",
+    "health": "Healthy",
+    "source": {
+      "path": "k8s/production",
+      "repoURL": "http://gitlab-service.ns-devops.svc.cluster.local/root/petclinic-platform.git",
+      "targetRevision": "main"
+    }
+  },
+  "deployment": {
+    "image": "core.harbor.domain/petclinic/petclinic@sha256:489cb821573ff1f98edd846d5949d74bf3391b24e2f1fe5bcfb71c6be0793137",
+    "imagePullPolicy": "IfNotPresent",
+    "ready": 3,
+    "desired": 3,
+    "generation": 175,
+    "observedGeneration": 175,
+    "strategy": {
+      "rollingUpdate": {
+        "maxSurge": 0,
+        "maxUnavailable": 1
+      },
+      "type": "RollingUpdate"
+    },
+    "resources": {
+      "limits": {
+        "cpu": "500m",
+        "memory": "768Mi"
+      },
+      "requests": {
+        "cpu": "100m",
+        "memory": "512Mi"
+      }
+    },
+    "startupProbe": {
+      "failureThreshold": 36,
+      "httpGet": {
+        "path": "/actuator/health/liveness",
+        "port": "http",
+        "scheme": "HTTP"
+      },
+      "periodSeconds": 5,
+      "successThreshold": 1,
+      "timeoutSeconds": 3
+    },
+    "readinessProbe": {
+      "failureThreshold": 6,
+      "httpGet": {
+        "path": "/actuator/health/readiness",
+        "port": "http",
+        "scheme": "HTTP"
+      },
+      "periodSeconds": 10,
+      "successThreshold": 1,
+      "timeoutSeconds": 3
+    },
+    "livenessProbe": {
+      "failureThreshold": 3,
+      "httpGet": {
+        "path": "/actuator/health/liveness",
+        "port": "http",
+        "scheme": "HTTP"
+      },
+      "periodSeconds": 15,
+      "successThreshold": 1,
+      "timeoutSeconds": 3
+    },
+    "nodeSelector": {
+      "kubernetes.io/hostname": "devops",
+      "kubernetes.io/os": "linux"
+    },
+    "imagePullSecretNames": [
+      "petclinic-harbor-pull"
+    ]
+  },
+  "nodes": {
+    "aliyun-worker": {
+      "arch": "amd64",
+      "conditions": {
+        "MemoryPressure": "False",
+        "DiskPressure": "False",
+        "PIDPressure": "False",
+        "Ready": "True"
+      }
+    },
+    "devops": {
+      "arch": "arm64",
+      "conditions": {
+        "MemoryPressure": "False",
+        "DiskPressure": "False",
+        "PIDPressure": "False",
+        "Ready": "True"
+      }
+    },
+    "ucloud-worker": {
+      "arch": "amd64",
+      "conditions": {
+        "MemoryPressure": "False",
+        "DiskPressure": "False",
+        "PIDPressure": "False",
+        "Ready": "True"
+      }
+    }
+  },
+  "readyEndpoints": 3,
+  "http": 200,
+  "devopsMirrorHead": {
+    "sha256:2fbaea65ab030c56c60c62e3ee9fbe362deb8bbbb8216a891ef4c7bbbcea6d55": 200,
+    "sha256:489cb821573ff1f98edd846d5949d74bf3391b24e2f1fe5bcfb71c6be0793137": 200
+  },
+  "devopsRootFreeBytes": 45877198848,
+  "noColdPullPerformed": true
+}

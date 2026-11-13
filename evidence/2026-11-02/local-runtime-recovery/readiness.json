@@ -1,0 +1,49 @@
+{
+  "LOCAL_RUNTIME_READINESS": "NOT_READY",
+  "scope": "LOCAL_RUNTIME_RECOVERY_AND_IDENTITY_ONLY",
+  "selectedRuntime": "Existing Colima default examined, startup refused under user safety precondition",
+  "criteria": {
+    "runtimeStartedSuccessfully": false,
+    "runtimeProvenLocalIncludingLiveServer": false,
+    "inspectedEndpointsHaveNoRemoteTCPSSH": true,
+    "productionKubernetesDependencyAbsent": false,
+    "disposableSmokePassed": false,
+    "productionCredentialsMountedOrReadByOurActions": false,
+    "destructiveRepairPerformed": false
+  },
+  "blockers": [
+    {
+      "id": "R1",
+      "evidence": "Generated Lima mounts ~ writable; includes production kubeconfig path",
+      "requiredBeforeStart": "Separately scoped removal/restriction of effective host home sharing, with generated config proof. Do not start unchanged."
+    },
+    {
+      "id": "R2",
+      "evidence": "Existing profile sshConfig=true and autoActivate=true",
+      "requiredBeforeStart": "Explicitly reviewed startup behavior that does not alter host SSH or global context; local help supports disabling flags but none applied."
+    },
+    {
+      "id": "R3",
+      "evidence": "colima status timed out; local Docker sockets missing; docker info failed; live VM/server ID/architecture unavailable",
+      "requiredBeforeReady": "Successful safe startup, local socket/VM/server identity and disposable smoke; not satisfied by static metadata"
+    }
+  ],
+  "processInspectionLimitation": "Sandbox blocked ps with EPERM; no escalation; do not claim processes absent",
+  "runtimeStartAttempts": 0,
+  "vmDeletedOrRebuilt": 0,
+  "hostNetworkChanges": 0,
+  "SSHConfigWrites": 0,
+  "DockerContextSwitches": 0,
+  "kindClustersCreated": 0,
+  "kubectlCommands": 0,
+  "productionAPIAccessCount": 0,
+  "productionCredentialSecretAgeKeyReads": 0,
+  "containersCreated": 0,
+  "imagesPulled": 0,
+  "SOPSDownloadsOrExecutions": 0,
+  "SOPSFixturesCreated": 0,
+  "productionGateSummaryReleaseChanges": 0,
+  "nextPermittedStepIfReady": "NOT_APPLICABLE: READY not reached. Do not create a test cluster.",
+  "minimalFutureUnblock": "A separately authorized, minimal safety adjustment to this existing local profile only: remove full-HOME sharing, avoid auto SSH/context writes, retain Kubernetes disabled and existing VM/data/network. Reinspect effective config, then consider start and no-network smoke. No broad rebuild or deletion.",
+  "stopAfterRuntimeReadiness": true
+}

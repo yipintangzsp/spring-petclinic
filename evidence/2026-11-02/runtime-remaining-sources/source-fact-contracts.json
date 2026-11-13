@@ -1,0 +1,558 @@
+{
+  "canonicalCount": 16,
+  "sameRunCaptured": 8,
+  "missing": [
+    "gitleaks",
+    "sops",
+    "trivy",
+    "cosign",
+    "sonarqube",
+    "zap",
+    "defectdojo",
+    "semgrep-command-audit"
+  ],
+  "sources": [
+    {
+      "sourceId": "sbom",
+      "evaluationCount": 1,
+      "contract": {
+        "sourceId": "sbom",
+        "adapterScope": "source-specific",
+        "required": [
+          "generator execution",
+          "original verifier extraction bytes",
+          "Maven SBOM bytes",
+          "source",
+          "mkdir/native/summary write observations"
+        ],
+        "nativeSuccessSufficient": false
+      },
+      "state": "CAPTURED",
+      "resultDigest": "69eb479fc92fd9858357b0ca441515e27760f646236e440e2d3657eb52699a9b",
+      "factProducer": "( nice -n 10 ./mvnw -B package -DskipTests && node infra/security/sbom-verify.mjs )",
+      "scope": "FULL_ORIGINAL_EXECUTED_BRANCH",
+      "collectorMapping": "sbom-execute.mjs + sbom-observer.mjs",
+      "adapterInput": "facts.raw; bytes and source-specific observations unchanged",
+      "gateConsumedFields": "ResolvedPolicyResult decision/status/resultDigest; no evaluator",
+      "policyResult": {
+        "sourceId": "sbom",
+        "decision": "PASS",
+        "observedStatus": "success",
+        "resultDigest": "69eb479fc92fd9858357b0ca441515e27760f646236e440e2d3657eb52699a9b",
+        "status": "PASS"
+      },
+      "factCompleteness": "COMPLETE_FOR_OBSERVED_BRANCH",
+      "riskGroup": "A",
+      "blocker": null,
+      "missingEvidence": null
+    },
+    {
+      "sourceId": "regression",
+      "evaluationCount": 1,
+      "contract": {
+        "sourceId": "regression",
+        "adapterScope": "frozen wrapper/command",
+        "required": [
+          "actual command status",
+          "original module status",
+          "execution observations"
+        ],
+        "nativeSuccessSufficient": false
+      },
+      "state": "CAPTURED",
+      "resultDigest": "60e80e326e10d484ab9d91f823414b4a9f09ab6b05d0c1b4dfd37cd7e28d1808",
+      "factProducer": "node --test --test-concurrency=1 infra/observability/*.test.mjs infra/security/*.test.mjs",
+      "scope": "FULL_ORIGINAL_EXECUTED_BRANCH",
+      "collectorMapping": "execute.mjs + source-specific observer",
+      "adapterInput": "facts.raw; bytes and source-specific observations unchanged",
+      "gateConsumedFields": "ResolvedPolicyResult decision/status/resultDigest; no evaluator",
+      "policyResult": {
+        "sourceId": "regression",
+        "decision": "PASS",
+        "observedStatus": "success",
+        "resultDigest": "60e80e326e10d484ab9d91f823414b4a9f09ab6b05d0c1b4dfd37cd7e28d1808",
+        "status": "PASS"
+      },
+      "factCompleteness": "COMPLETE_FOR_OBSERVED_BRANCH",
+      "riskGroup": "PREVIOUSLY_APPROVED_BASELINE",
+      "blocker": null,
+      "missingEvidence": null
+    },
+    {
+      "sourceId": "falco-baseline",
+      "evaluationCount": 1,
+      "contract": {
+        "sourceId": "falco-baseline",
+        "adapterScope": "source-specific",
+        "required": [
+          "files",
+          "ds",
+          "sensorPods",
+          "node",
+          "diagnosticLog",
+          "samples.windowEndMs",
+          "samples.log",
+          "samples.workloads",
+          "health",
+          "reportWriteSucceeded"
+        ],
+        "nativeSuccessSufficient": false
+      },
+      "state": "CAPTURED",
+      "resultDigest": "783e3d15055dc1302826705ffe4e6e96af082dc409958e5dde0464b409caf845",
+      "factProducer": "node infra/security/runtime/health.mjs baseline",
+      "scope": "FULL_ORIGINAL_EXECUTED_BRANCH",
+      "collectorMapping": "execute.mjs + source-specific observer",
+      "adapterInput": "facts.raw; bytes and source-specific observations unchanged",
+      "gateConsumedFields": "ResolvedPolicyResult decision/status/resultDigest; no evaluator",
+      "policyResult": {
+        "sourceId": "falco-baseline",
+        "decision": "PASS",
+        "observedStatus": "success",
+        "resultDigest": "783e3d15055dc1302826705ffe4e6e96af082dc409958e5dde0464b409caf845",
+        "status": "PASS"
+      },
+      "factCompleteness": "COMPLETE_FOR_OBSERVED_BRANCH",
+      "riskGroup": "PREVIOUSLY_APPROVED_BASELINE",
+      "blocker": null,
+      "missingEvidence": null
+    },
+    {
+      "sourceId": "kyverno",
+      "evaluationCount": 1,
+      "contract": {
+        "sourceId": "kyverno",
+        "adapterScope": "source-specific",
+        "required": [
+          "configuration",
+          "rbac command observations",
+          "probes",
+          "live policy",
+          "owners",
+          "workloads",
+          "report writes"
+        ],
+        "nativeSuccessSufficient": false
+      },
+      "state": "CAPTURED",
+      "resultDigest": "7445b6c1634d127eeae3294412f7b7523814a00ca4c65186fc1d2ce354a2602f",
+      "factProducer": "( node infra/security/rbac-contract.mjs && node infra/security/admission-gate.mjs )",
+      "scope": "FULL_ORIGINAL_EXECUTED_BRANCH",
+      "collectorMapping": "execute.mjs + source-specific observer",
+      "adapterInput": "facts.raw; bytes and source-specific observations unchanged",
+      "gateConsumedFields": "ResolvedPolicyResult decision/status/resultDigest; no evaluator",
+      "policyResult": {
+        "sourceId": "kyverno",
+        "decision": "PASS",
+        "observedStatus": "success",
+        "resultDigest": "7445b6c1634d127eeae3294412f7b7523814a00ca4c65186fc1d2ce354a2602f",
+        "status": "PASS"
+      },
+      "factCompleteness": "COMPLETE_FOR_OBSERVED_BRANCH",
+      "riskGroup": "PREVIOUSLY_APPROVED_BASELINE",
+      "blocker": null,
+      "missingEvidence": null
+    },
+    {
+      "sourceId": "kubescape",
+      "evaluationCount": 1,
+      "contract": {
+        "sourceId": "kubescape",
+        "adapterScope": "source-specific",
+        "required": [
+          "lock",
+          "binary/artifact hashes",
+          "lease",
+          "read-only credential setup",
+          "scans",
+          "cleanup",
+          "report write"
+        ],
+        "nativeSuccessSufficient": false
+      },
+      "state": "CAPTURED",
+      "resultDigest": "b43c785ba0c7ddfbefcd073e2ec49fd4086fa7e90eec708f47090599b5b0e563",
+      "factProducer": "node --max-old-space-size=128 infra/security/governance/kubescape.mjs",
+      "scope": "FULL_ORIGINAL_EXECUTED_BRANCH",
+      "collectorMapping": "execute.mjs + source-specific observer",
+      "adapterInput": "facts.raw; bytes and source-specific observations unchanged",
+      "gateConsumedFields": "ResolvedPolicyResult decision/status/resultDigest; no evaluator",
+      "policyResult": {
+        "sourceId": "kubescape",
+        "decision": "PASS",
+        "observedStatus": "success",
+        "resultDigest": "b43c785ba0c7ddfbefcd073e2ec49fd4086fa7e90eec708f47090599b5b0e563",
+        "status": "PASS"
+      },
+      "factCompleteness": "COMPLETE_FOR_OBSERVED_BRANCH",
+      "riskGroup": "PREVIOUSLY_APPROVED_BASELINE",
+      "blocker": null,
+      "missingEvidence": null
+    },
+    {
+      "sourceId": "gitleaks",
+      "evaluationCount": null,
+      "contract": {
+        "sourceId": "gitleaks",
+        "adapterScope": "source-specific",
+        "required": [
+          "scanner exit",
+          "native report presence/parse/findings",
+          "original classifier inputs",
+          "prerequisite/isolation/cleanup",
+          "parent aggregation/report writes"
+        ],
+        "nativeSuccessSufficient": false
+      },
+      "state": "NOT_OBSERVED",
+      "resultDigest": null,
+      "factProducer": "node infra/security/source-gate.mjs",
+      "scope": "NOT_OBSERVED",
+      "collectorMapping": null,
+      "adapterInput": null,
+      "gateConsumedFields": null,
+      "policyResult": null,
+      "factCompleteness": "FACT_CONTRACT_INCOMPLETE",
+      "riskGroup": "C",
+      "blocker": "Before create lacks scanner/cleanup outcomes; wrapper-only facts insufficient",
+      "missingEvidence": [
+        "scanner exits/parse/findings/reviews",
+        "prerequisite/isolation outcomes",
+        "parent/finally/report outcomes"
+      ]
+    },
+    {
+      "sourceId": "sops",
+      "evaluationCount": null,
+      "contract": {
+        "sourceId": "sops",
+        "adapterScope": "source-specific",
+        "required": [
+          "prerequisites",
+          "targets.decrypt",
+          "targets.actual",
+          "targets.after",
+          "rbac",
+          "verifierRbac",
+          "reportWriteSucceeded"
+        ],
+        "nativeSuccessSufficient": false
+      },
+      "state": "NOT_OBSERVED",
+      "resultDigest": null,
+      "factProducer": "node infra/security/secrets-gate.mjs",
+      "scope": "NOT_OBSERVED",
+      "collectorMapping": null,
+      "adapterInput": null,
+      "gateConsumedFields": null,
+      "policyResult": null,
+      "factCompleteness": "FACT_CONTRACT_INCOMPLETE",
+      "riskGroup": "C",
+      "blocker": "Prior private fixture was cleaned; redacted archive cannot replace fresh secret bytes",
+      "missingEvidence": [
+        "positive decrypt",
+        "decrypt/prerequisite errors",
+        "isolated UID/data continuity",
+        "RBAC/report outcomes"
+      ]
+    },
+    {
+      "sourceId": "trivy",
+      "evaluationCount": null,
+      "contract": {
+        "sourceId": "trivy",
+        "adapterScope": "source-specific",
+        "required": [
+          "original parent operation sequence",
+          "Harbor scan response and native report",
+          "DB/update and proxy-direct observations",
+          "reachability/fixability evidence",
+          "candidate/image/report binding"
+        ],
+        "nativeSuccessSufficient": false
+      },
+      "state": "NOT_OBSERVED",
+      "resultDigest": null,
+      "factProducer": "( node infra/security/ensure-audit-candidate.mjs && node infra/security/audit-trivy.mjs )",
+      "scope": "NOT_OBSERVED",
+      "collectorMapping": null,
+      "adapterInput": null,
+      "gateConsumedFields": null,
+      "policyResult": null,
+      "factCompleteness": "FACT_CONTRACT_INCOMPLETE",
+      "riskGroup": "C",
+      "blocker": "GET boundary cannot produce POST scan or earlier transport/update outcomes",
+      "missingEvidence": [
+        "original && operation sequence",
+        "native vulnerabilities/image/report binding",
+        "DB/prerequisite and proxy-direct facts in original scope",
+        "original classifier/parent exits"
+      ]
+    },
+    {
+      "sourceId": "cosign",
+      "evaluationCount": null,
+      "contract": {
+        "sourceId": "cosign",
+        "adapterScope": "source-specific",
+        "required": [
+          "configuration",
+          "runtime",
+          "files",
+          "commands",
+          "registry",
+          "admissions",
+          "io"
+        ],
+        "nativeSuccessSufficient": false
+      },
+      "state": "NOT_OBSERVED",
+      "resultDigest": null,
+      "factProducer": "node infra/security/signing.mjs admission",
+      "scope": "NOT_OBSERVED",
+      "collectorMapping": null,
+      "adapterInput": null,
+      "gateConsumedFields": null,
+      "policyResult": null,
+      "factCompleteness": "FACT_CONTRACT_INCOMPLETE",
+      "riskGroup": "C",
+      "blocker": "Before signing lacks signature/registry outputs; generic verify cannot stand for admission/bootstrap/release",
+      "missingEvidence": [
+        "stage/config/runtime/tools",
+        "key/source/digest signature binding",
+        "registry/admission/cleanup observations"
+      ]
+    },
+    {
+      "sourceId": "sonarqube",
+      "evaluationCount": null,
+      "contract": {
+        "sourceId": "sonarqube",
+        "adapterScope": "source-specific",
+        "required": [
+          "task",
+          "analysis id",
+          "authoritative projectStatus",
+          "conditions",
+          "binding"
+        ],
+        "nativeSuccessSufficient": false
+      },
+      "state": "NOT_OBSERVED",
+      "resultDigest": null,
+      "factProducer": "nice -n 10 ./mvnw -B org.sonarsource.scanner.maven:sonar-maven-plugin:5.8.0.7211:sonar -Dsonar.projectKey=petclinic -Dsonar.qualitygate.wait=true -Dsonar.qualitygate.timeout=300",
+      "scope": "NOT_OBSERVED",
+      "collectorMapping": null,
+      "adapterInput": null,
+      "gateConsumedFields": null,
+      "policyResult": null,
+      "factCompleteness": "FACT_CONTRACT_INCOMPLETE",
+      "riskGroup": "B",
+      "blocker": "Need safe exact analysis binding and existing read-only identity; negative remains DEFERRED",
+      "missingEvidence": [
+        "component/taskId/analysisId",
+        "authoritative status/conditions",
+        "origin-build and old Jenkins Gate evidence"
+      ]
+    },
+    {
+      "sourceId": "zap",
+      "evaluationCount": null,
+      "contract": {
+        "sourceId": "zap",
+        "adapterScope": "source-specific",
+        "required": [
+          "target/report identity",
+          "confirmed High reproduction evidence",
+          "unconfirmed/lower-risk observations",
+          "container/network/report/cleanup outcomes"
+        ],
+        "nativeSuccessSufficient": false
+      },
+      "state": "NOT_OBSERVED",
+      "resultDigest": null,
+      "factProducer": "node infra/security/zap-gate.mjs",
+      "scope": "NOT_OBSERVED",
+      "collectorMapping": null,
+      "adapterInput": null,
+      "gateConsumedFields": null,
+      "policyResult": null,
+      "factCompleteness": "FACT_CONTRACT_INCOMPLETE",
+      "riskGroup": "C",
+      "blocker": "Business GET alone is not the full frozen scanner stage",
+      "missingEvidence": [
+        "target/report/exploit-confirmation binding",
+        "native alerts/classifier input",
+        "unconfirmed/lower findings",
+        "execution/container/network/report/cleanup failures"
+      ]
+    },
+    {
+      "sourceId": "falco-final",
+      "evaluationCount": 1,
+      "contract": {
+        "sourceId": "falco-final",
+        "adapterScope": "source-specific",
+        "required": [
+          "files",
+          "baseline",
+          "continuity",
+          "ds",
+          "sensorPods",
+          "node",
+          "diagnosticLog",
+          "samples.windowEndMs",
+          "samples.log",
+          "samples.workloads",
+          "health",
+          "reportWriteSucceeded"
+        ],
+        "nativeSuccessSufficient": false
+      },
+      "state": "CAPTURED",
+      "resultDigest": "7adabded6597b035ed0831e5eecbf961b4aa145f76a43a6ce36396bf0d4570d3",
+      "factProducer": "node infra/security/runtime/health.mjs",
+      "scope": "FULL_ORIGINAL_EXECUTED_BRANCH",
+      "collectorMapping": "execute.mjs + source-specific observer",
+      "adapterInput": "facts.raw; bytes and source-specific observations unchanged",
+      "gateConsumedFields": "ResolvedPolicyResult decision/status/resultDigest; no evaluator",
+      "policyResult": {
+        "sourceId": "falco-final",
+        "decision": "PASS",
+        "observedStatus": "success",
+        "resultDigest": "7adabded6597b035ed0831e5eecbf961b4aa145f76a43a6ce36396bf0d4570d3",
+        "status": "PASS"
+      },
+      "factCompleteness": "COMPLETE_FOR_OBSERVED_BRANCH",
+      "riskGroup": "PREVIOUSLY_APPROVED_BASELINE",
+      "blocker": null,
+      "missingEvidence": null
+    },
+    {
+      "sourceId": "defectdojo",
+      "evaluationCount": null,
+      "contract": {
+        "sourceId": "defectdojo",
+        "adapterScope": "source-specific",
+        "required": [
+          "files",
+          "target",
+          "actual API request/response observations",
+          "credential presence"
+        ],
+        "nativeSuccessSufficient": false
+      },
+      "state": "NOT_OBSERVED",
+      "resultDigest": null,
+      "factProducer": "node --max-old-space-size=192 infra/security/governance/defectdojo.mjs",
+      "scope": "NOT_OBSERVED",
+      "collectorMapping": null,
+      "adapterInput": null,
+      "gateConsumedFields": null,
+      "policyResult": null,
+      "factCompleteness": "FACT_CONTRACT_INCOMPLETE",
+      "riskGroup": "C",
+      "blocker": "Pre-import GET lacks actual import/dedupe outputs; decoupling remains prohibited",
+      "missingEvidence": [
+        "import/reimport responses",
+        "Test identity/dedupe/queryback/pagination",
+        "native report identity",
+        "API/auth/report errors"
+      ]
+    },
+    {
+      "sourceId": "provenance",
+      "evaluationCount": 1,
+      "contract": {
+        "sourceId": "provenance",
+        "adapterScope": "source-specific",
+        "required": [
+          "actual workflow cfg/params/environment/return",
+          "enabled branch only: git/steps/operations/DSSE/subject/builder binding"
+        ],
+        "nativeSuccessSufficient": false
+      },
+      "state": "CAPTURED",
+      "resultDigest": "9832f479faccb9a824b4fcdd15835da22d3ae12688259da3cf499fd51f528fec",
+      "factProducer": "vars/securityProvenance.groovy:call",
+      "scope": "ACTUAL_DEFAULT_UNENABLED_RETURN_ONLY_NO_ENABLED_ATTESTATION_COVERAGE",
+      "collectorMapping": "helper-return.mjs",
+      "adapterInput": "facts.raw; bytes and source-specific observations unchanged",
+      "gateConsumedFields": "ResolvedPolicyResult decision/status/resultDigest; no evaluator",
+      "policyResult": {
+        "sourceId": "provenance",
+        "decision": null,
+        "observedStatus": "skipped",
+        "resultDigest": "9832f479faccb9a824b4fcdd15835da22d3ae12688259da3cf499fd51f528fec",
+        "status": "SKIPPED"
+      },
+      "factCompleteness": "COMPLETE_FOR_OBSERVED_BRANCH",
+      "riskGroup": "C",
+      "blocker": null,
+      "missingEvidence": null
+    },
+    {
+      "sourceId": "build-provenance",
+      "evaluationCount": 1,
+      "contract": {
+        "sourceId": "build-provenance",
+        "adapterScope": "source-specific",
+        "required": [
+          "actual workflow cfg/params/environment/return",
+          "enabled branch only: verification/inputIdentity/artifacts/architecture/candidate binding"
+        ],
+        "nativeSuccessSufficient": false
+      },
+      "state": "CAPTURED",
+      "resultDigest": "71cf7379a0638fdf824c89207643028bc33d835ed8b204e2f903f0268e94c371",
+      "factProducer": "vars/securityBuildProvenance.groovy:call",
+      "scope": "ACTUAL_DEFAULT_UNENABLED_RETURN_ONLY_NO_ENABLED_ATTESTATION_COVERAGE",
+      "collectorMapping": "helper-return.mjs",
+      "adapterInput": "facts.raw; bytes and source-specific observations unchanged",
+      "gateConsumedFields": "ResolvedPolicyResult decision/status/resultDigest; no evaluator",
+      "policyResult": {
+        "sourceId": "build-provenance",
+        "decision": null,
+        "observedStatus": "skipped",
+        "resultDigest": "71cf7379a0638fdf824c89207643028bc33d835ed8b204e2f903f0268e94c371",
+        "status": "SKIPPED"
+      },
+      "factCompleteness": "COMPLETE_FOR_OBSERVED_BRANCH",
+      "riskGroup": "B",
+      "blocker": null,
+      "missingEvidence": null
+    },
+    {
+      "sourceId": "semgrep-command-audit",
+      "evaluationCount": null,
+      "contract": {
+        "sourceId": "semgrep-command-audit",
+        "adapterScope": "source-specific",
+        "required": [
+          "command-flow findings",
+          "high-confidence frozen Semgrep rules/native report",
+          "scanner execution/report/cleanup",
+          "source binding"
+        ],
+        "nativeSuccessSufficient": false
+      },
+      "state": "NOT_OBSERVED",
+      "resultDigest": null,
+      "factProducer": "( node infra/security/command-audit.mjs && node --max-old-space-size=128 infra/security/semgrep-gate.mjs )",
+      "scope": "NOT_OBSERVED",
+      "collectorMapping": null,
+      "adapterInput": null,
+      "gateConsumedFields": null,
+      "policyResult": null,
+      "factCompleteness": "FACT_CONTRACT_INCOMPLETE",
+      "riskGroup": "C",
+      "blocker": "No complete read-only parent boundary before Pod creation",
+      "missingEvidence": [
+        "source command-flow findings",
+        "Semgrep rules/native report",
+        "original command/report/cleanup outcomes"
+      ]
+    }
+  ],
+  "note": "Actual default SKIPPED preserves helper semantics; it is not evidence of enabled DSSE/signing/registry verification. No frozen production coverage status is upgraded."
+}

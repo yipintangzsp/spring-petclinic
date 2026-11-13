@@ -1,0 +1,185 @@
+{
+  "result": "FAILED",
+  "scope": "No active security source silently marked NOT_APPLICABLE; inventory is static repository configuration, live remote freshness not verified",
+  "sources": [
+    {
+      "source": "sbom",
+      "entry": "( nice -n 10 ./mvnw -B package -DskipTests && node infra/security/sbom-verify.mjs )",
+      "scope": "current production security adapter",
+      "standardDifferential": "NOT_TESTED",
+      "coverageNote": "Frozen raw-evidence adapter and positive/negative parity not completed",
+      "sourceHashes": {
+        "infra/security/sbom-verify.mjs": "eaa2909490561beffb67a4fde0d345d1bb837f1b876b7c4288b70d1a0f8763ff"
+      }
+    },
+    {
+      "source": "regression",
+      "entry": "node --test --test-concurrency=1 infra/observability/*.test.mjs infra/security/*.test.mjs",
+      "scope": "current production security adapter",
+      "standardDifferential": "NOT_TESTED",
+      "coverageNote": "Frozen raw-evidence adapter and positive/negative parity not completed",
+      "sourceHashes": {}
+    },
+    {
+      "source": "falco-baseline",
+      "entry": "node infra/security/runtime/health.mjs baseline",
+      "scope": "current production security adapter",
+      "standardDifferential": "NOT_TESTED",
+      "coverageNote": "Frozen raw-evidence adapter and positive/negative parity not completed",
+      "sourceHashes": {
+        "infra/security/runtime/health.mjs": "65ab133a4248b9900265a47d943f9e6430b9ec9581ddd624b1d9257322b0d921"
+      }
+    },
+    {
+      "source": "kyverno",
+      "entry": "( node infra/security/rbac-contract.mjs && node infra/security/admission-gate.mjs )",
+      "scope": "current production security adapter",
+      "standardDifferential": "NOT_TESTED",
+      "coverageNote": "Frozen raw-evidence adapter and positive/negative parity not completed",
+      "sourceHashes": {
+        "infra/security/rbac-contract.mjs": "132a8be7bf8234d86d35ccfd82dcce16a4402982aa47dc97b87c54ee69a16259",
+        "infra/security/admission-gate.mjs": "c322cca450c1d4be33963ccaaea100c36894fe3f1690224dcd1e68ec90dbe409"
+      }
+    },
+    {
+      "source": "kubescape",
+      "entry": "node --max-old-space-size=128 infra/security/governance/kubescape.mjs",
+      "scope": "current production security adapter",
+      "standardDifferential": "NOT_TESTED",
+      "coverageNote": "Frozen raw-evidence adapter and positive/negative parity not completed",
+      "sourceHashes": {
+        "infra/security/governance/kubescape.mjs": "23a23a7db0a413e474cb72ae4725dd0756fb596e1a62a9b9c43caa62dfc66f42"
+      }
+    },
+    {
+      "source": "gitleaks",
+      "entry": "node infra/security/source-gate.mjs",
+      "scope": "current production security adapter",
+      "standardDifferential": "VERIFIED",
+      "coverageNote": "Only classification fixtures; execution prerequisites/cleanup not covered",
+      "sourceHashes": {
+        "infra/security/source-gate.mjs": "35de5317f6b14ffc4d986236410f2bdf488653e47f02eeb2dbe0bc372cc2cd00"
+      }
+    },
+    {
+      "source": "semgrep",
+      "entry": "( node infra/security/command-audit.mjs && node --max-old-space-size=128 infra/security/semgrep-gate.mjs )",
+      "scope": "current production security adapter",
+      "standardDifferential": "VERIFIED",
+      "coverageNote": "Only classification fixtures; execution prerequisites/cleanup not covered",
+      "sourceHashes": {
+        "infra/security/command-audit.mjs": "b721866fa5ad6200cd15648315378e8dcef5814ba35243063854b11f29af2245",
+        "infra/security/semgrep-gate.mjs": "d734f5f83274bad82c7871ffaaf3048dee42894d94c65ff5306c26468a7f8c9a"
+      }
+    },
+    {
+      "source": "sops",
+      "entry": "node infra/security/secrets-gate.mjs",
+      "scope": "current production security adapter",
+      "standardDifferential": "NOT_TESTED",
+      "coverageNote": "Frozen raw-evidence adapter and positive/negative parity not completed",
+      "sourceHashes": {
+        "infra/security/secrets-gate.mjs": "cb3bc63884f238fe125d8adbe5c6cddd165db5f00d3c7c8eeab5e6883ec7869e"
+      }
+    },
+    {
+      "source": "trivy",
+      "entry": "( node infra/security/ensure-audit-candidate.mjs && node infra/security/audit-trivy.mjs )",
+      "scope": "current production security adapter",
+      "standardDifferential": "VERIFIED",
+      "coverageNote": "Only classification fixtures; execution prerequisites/cleanup not covered",
+      "sourceHashes": {
+        "infra/security/ensure-audit-candidate.mjs": "2757bf7b3b1a8612481f17542ad045bc1dbf424766e7b3cdbc47b2e3a2d51027",
+        "infra/security/audit-trivy.mjs": "7c36099392e5b90ae5d0d20150e693f2250429c7939fcfd606cf9658c37c5741"
+      }
+    },
+    {
+      "source": "cosign",
+      "entry": "node infra/security/signing.mjs admission",
+      "scope": "current production security adapter",
+      "standardDifferential": "NOT_TESTED",
+      "coverageNote": "Frozen raw-evidence adapter and positive/negative parity not completed",
+      "sourceHashes": {
+        "infra/security/signing.mjs": "660da0a00d773df86fb6f503b73b7284f684cb01def073ddc2f31f6d9a358aba"
+      }
+    },
+    {
+      "source": "sonarqube",
+      "entry": "nice -n 10 ./mvnw -B org.sonarsource.scanner.maven:sonar-maven-plugin:5.8.0.7211:sonar -Dsonar.projectKey=petclinic -Dsonar.qualitygate.wait=true -Dsonar.qualitygate.timeout=300",
+      "scope": "current production security adapter",
+      "standardDifferential": "NOT_TESTED",
+      "coverageNote": "Frozen raw-evidence adapter and positive/negative parity not completed",
+      "sourceHashes": {}
+    },
+    {
+      "source": "zap",
+      "entry": "node infra/security/zap-gate.mjs",
+      "scope": "current production security adapter",
+      "standardDifferential": "VERIFIED",
+      "coverageNote": "Only classification fixtures; execution prerequisites/cleanup not covered",
+      "sourceHashes": {
+        "infra/security/zap-gate.mjs": "14282b5a65267ba2f4c386cfb840a8eb69641b47bbbc9adbfecd1edf99a54d98"
+      }
+    },
+    {
+      "source": "falco-final",
+      "entry": "node infra/security/runtime/health.mjs",
+      "scope": "current production security adapter",
+      "standardDifferential": "NOT_TESTED",
+      "coverageNote": "Frozen raw-evidence adapter and positive/negative parity not completed",
+      "sourceHashes": {
+        "infra/security/runtime/health.mjs": "65ab133a4248b9900265a47d943f9e6430b9ec9581ddd624b1d9257322b0d921"
+      }
+    },
+    {
+      "source": "defectdojo",
+      "entry": "node --max-old-space-size=192 infra/security/governance/defectdojo.mjs",
+      "scope": "current production security adapter",
+      "standardDifferential": "NOT_TESTED",
+      "coverageNote": "Frozen raw-evidence adapter and positive/negative parity not completed",
+      "sourceHashes": {
+        "infra/security/governance/defectdojo.mjs": "f620f0a85650fc834aff56cbc7aeaf8f0d99de971136bfadcfff6a763d4148b7"
+      }
+    },
+    {
+      "source": "provenance",
+      "entry": "vars/securityProvenance.groovy",
+      "scope": "conditional production manager plugin",
+      "standardDifferential": "NOT_TESTED",
+      "sourceHashes": {
+        "vars/securityProvenance.groovy": "db2025f5b6347cd7131835aafca08a9b503232494c6881d7ea94f6969e1d7a3d"
+      }
+    },
+    {
+      "source": "build-provenance",
+      "entry": "vars/securityBuildProvenance.groovy",
+      "scope": "conditional production manager plugin",
+      "standardDifferential": "NOT_TESTED",
+      "sourceHashes": {
+        "vars/securityBuildProvenance.groovy": "fc30d9ea48352c15b9e79400a0e6818236d6cf6531b4992700ef86186b77213d"
+      }
+    },
+    {
+      "source": "semgrep-command-audit",
+      "entry": "infra/security/command-audit.mjs + script/ssh/interpreter Python policies",
+      "scope": "included before semgrep gate",
+      "standardDifferential": "NOT_TESTED"
+    },
+    {
+      "source": "security-approval-promotion",
+      "entry": "infra/security/promotion + gate-contract.mjs + Jenkinsfile",
+      "scope": "downstream signed security approval checks; publish execution remains out of scope",
+      "standardDifferential": "NOT_TESTED"
+    }
+  ],
+  "blocker": {
+    "source": "sonarqube",
+    "evidence": "Production command waits for server-managed Quality Gate; repository has no complete bound server policy/input snapshot. SSH attempt failed Host key verification failed.",
+    "affected": [
+      "complete standard parity",
+      "remaining production adapters",
+      "summary integration gated on full parity"
+    ],
+    "minimalFix": "Restore independently verified management connection; obtain read-only analysis-bound Quality Gate response/config and remaining gate evidence; do not bypass host-key checking."
+  }
+}

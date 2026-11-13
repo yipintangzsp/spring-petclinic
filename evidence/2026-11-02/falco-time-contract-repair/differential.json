@@ -1,0 +1,1177 @@
+{
+  "records": [
+    {
+      "mode": "baseline",
+      "name": "healthy-empty",
+      "branch": "healthy",
+      "classification": "CONTROLLED_COMPLETE_STAGE_WITH_HISTORICAL_SENSOR_IDENTITY",
+      "oldDecision": "PASS",
+      "standardDecision": "PASS",
+      "rawPreserved": true,
+      "warningKinds": {}
+    },
+    {
+      "mode": "baseline",
+      "name": "historical-driver-error",
+      "branch": "historical",
+      "classification": "CONTROLLED_COMPLETE_STAGE_WITH_HISTORICAL_SENSOR_IDENTITY",
+      "oldDecision": "PASS",
+      "standardDecision": "PASS",
+      "rawPreserved": true,
+      "warningKinds": {}
+    },
+    {
+      "mode": "baseline",
+      "name": "current-fatal",
+      "branch": "health",
+      "classification": "CONTROLLED_COMPLETE_STAGE_WITH_HISTORICAL_SENSOR_IDENTITY",
+      "oldDecision": "FAIL",
+      "standardDecision": "FAIL",
+      "rawPreserved": true,
+      "legacyReason": "Current Falco driver fatal requires review",
+      "policyReason": "current driver fatal"
+    },
+    {
+      "mode": "baseline",
+      "name": "persistent-sensitive-write",
+      "branch": "persistent-events",
+      "classification": "CONTROLLED_COMPLETE_STAGE_WITH_HISTORICAL_SENSOR_IDENTITY",
+      "oldDecision": "FAIL",
+      "standardDecision": "FAIL",
+      "rawPreserved": true,
+      "legacyReason": "Persistent confirmed high-risk runtime behavior; see redacted event assessment",
+      "policyReason": "current fatal or persistent confirmed behavior"
+    },
+    {
+      "mode": "baseline",
+      "name": "persistent-shadow-read",
+      "branch": "persistent-events",
+      "classification": "CONTROLLED_COMPLETE_STAGE_WITH_HISTORICAL_SENSOR_IDENTITY",
+      "oldDecision": "FAIL",
+      "standardDecision": "FAIL",
+      "rawPreserved": true,
+      "legacyReason": "Persistent confirmed high-risk runtime behavior; see redacted event assessment",
+      "policyReason": "current fatal or persistent confirmed behavior"
+    },
+    {
+      "mode": "baseline",
+      "name": "transient-repeated",
+      "branch": "transient",
+      "classification": "CONTROLLED_COMPLETE_STAGE_WITH_HISTORICAL_SENSOR_IDENTITY",
+      "oldDecision": "PASS",
+      "standardDecision": "PASS",
+      "rawPreserved": true,
+      "warningKinds": {}
+    },
+    {
+      "mode": "baseline",
+      "name": "single-current-candidate",
+      "branch": "transient",
+      "classification": "CONTROLLED_COMPLETE_STAGE_WITH_HISTORICAL_SENSOR_IDENTITY",
+      "oldDecision": "PASS",
+      "standardDecision": "PASS",
+      "rawPreserved": true,
+      "warningKinds": {}
+    },
+    {
+      "mode": "baseline",
+      "name": "denied-write",
+      "branch": "prevented-events",
+      "classification": "CONTROLLED_COMPLETE_STAGE_WITH_HISTORICAL_SENSOR_IDENTITY",
+      "oldDecision": "PASS",
+      "standardDecision": "PASS",
+      "rawPreserved": true,
+      "warningKinds": {
+        "failed-or-prevented-attempt": 2
+      }
+    },
+    {
+      "mode": "baseline",
+      "name": "isolated-test",
+      "branch": "isolated-events",
+      "classification": "CONTROLLED_COMPLETE_STAGE_WITH_HISTORICAL_SENSOR_IDENTITY",
+      "oldDecision": "PASS",
+      "standardDecision": "PASS",
+      "rawPreserved": true,
+      "warningKinds": {
+        "isolated-test-event-retained": 2
+      }
+    },
+    {
+      "mode": "baseline",
+      "name": "stale-events",
+      "branch": "historical",
+      "classification": "CONTROLLED_COMPLETE_STAGE_WITH_HISTORICAL_SENSOR_IDENTITY",
+      "oldDecision": "PASS",
+      "standardDecision": "PASS",
+      "rawPreserved": true,
+      "warningKinds": {
+        "historical-or-outside-window": 1
+      }
+    },
+    {
+      "mode": "baseline",
+      "name": "priority-alone-not-blocking",
+      "branch": "event-evidence",
+      "classification": "CONTROLLED_COMPLETE_STAGE_WITH_HISTORICAL_SENSOR_IDENTITY",
+      "oldDecision": "PASS",
+      "standardDecision": "PASS",
+      "rawPreserved": true,
+      "warningKinds": {
+        "event-needs-review-not-proven-high-risk": 1
+      }
+    },
+    {
+      "mode": "baseline",
+      "name": "different-process-not-persistent",
+      "branch": "event-evidence",
+      "classification": "CONTROLLED_COMPLETE_STAGE_WITH_HISTORICAL_SENSOR_IDENTITY",
+      "oldDecision": "PASS",
+      "standardDecision": "PASS",
+      "rawPreserved": true,
+      "warningKinds": {}
+    },
+    {
+      "mode": "baseline",
+      "name": "duplicate-not-two-events",
+      "branch": "event-evidence",
+      "classification": "CONTROLLED_COMPLETE_STAGE_WITH_HISTORICAL_SENSOR_IDENTITY",
+      "oldDecision": "PASS",
+      "standardDecision": "PASS",
+      "rawPreserved": true,
+      "warningKinds": {
+        "duplicate-event": 1
+      }
+    },
+    {
+      "mode": "baseline",
+      "name": "malformed-json-counted-not-fatal",
+      "branch": "existing-parser-semantics",
+      "classification": "CONTROLLED_COMPLETE_STAGE_WITH_HISTORICAL_SENSOR_IDENTITY",
+      "oldDecision": "PASS",
+      "standardDecision": "PASS",
+      "rawPreserved": true,
+      "warningKinds": {}
+    },
+    {
+      "mode": "baseline",
+      "name": "second-window-fatal",
+      "branch": "health",
+      "classification": "CONTROLLED_COMPLETE_STAGE_WITH_HISTORICAL_SENSOR_IDENTITY",
+      "oldDecision": "FAIL",
+      "standardDecision": "FAIL",
+      "rawPreserved": true,
+      "legacyReason": "Current Falco driver fatal requires review",
+      "policyReason": "current fatal or persistent confirmed behavior"
+    },
+    {
+      "mode": "baseline",
+      "name": "lease-unowned",
+      "branch": "execution-health",
+      "classification": "CONTROLLED_COMPLETE_STAGE_WITH_HISTORICAL_SENSOR_IDENTITY",
+      "oldDecision": "FAIL",
+      "standardDecision": "FAIL",
+      "rawPreserved": true,
+      "legacyReason": "lease",
+      "policyReason": "outer Lease required"
+    },
+    {
+      "mode": "baseline",
+      "name": "proof-missing",
+      "branch": "execution-health",
+      "classification": "CONTROLLED_COMPLETE_STAGE_WITH_HISTORICAL_SENSOR_IDENTITY",
+      "oldDecision": "FAIL",
+      "standardDecision": "FAIL",
+      "rawPreserved": true,
+      "legacyReason": "file read",
+      "policyReason": "file read failed: proof"
+    },
+    {
+      "mode": "baseline",
+      "name": "proof-cleanup-failed",
+      "branch": "execution-health",
+      "classification": "CONTROLLED_COMPLETE_STAGE_WITH_HISTORICAL_SENSOR_IDENTITY",
+      "oldDecision": "FAIL",
+      "standardDecision": "FAIL",
+      "rawPreserved": true,
+      "legacyReason": "Matching isolated Falco proof and cleanup required",
+      "policyReason": "Matching isolated proof required"
+    },
+    {
+      "mode": "baseline",
+      "name": "manifest-mismatch",
+      "branch": "execution-health",
+      "classification": "CONTROLLED_COMPLETE_STAGE_WITH_HISTORICAL_SENSOR_IDENTITY",
+      "oldDecision": "FAIL",
+      "standardDecision": "FAIL",
+      "rawPreserved": true,
+      "legacyReason": "Runtime manifest integrity mismatch",
+      "policyReason": "manifest mismatch"
+    },
+    {
+      "mode": "baseline",
+      "name": "DS-down",
+      "branch": "execution-health",
+      "classification": "CONTROLLED_COMPLETE_STAGE_WITH_HISTORICAL_SENSOR_IDENTITY",
+      "oldDecision": "FAIL",
+      "standardDecision": "FAIL",
+      "rawPreserved": true,
+      "legacyReason": "Falco DaemonSet desired/ready mismatch",
+      "policyReason": "DaemonSet mismatch"
+    },
+    {
+      "mode": "baseline",
+      "name": "sensor-missing",
+      "branch": "execution-health",
+      "classification": "CONTROLLED_COMPLETE_STAGE_WITH_HISTORICAL_SENSOR_IDENTITY",
+      "oldDecision": "FAIL",
+      "standardDecision": "FAIL",
+      "rawPreserved": true,
+      "legacyReason": "Unexpected Falco coverage or image",
+      "policyReason": "coverage mismatch"
+    },
+    {
+      "mode": "baseline",
+      "name": "sensor-wrong-node",
+      "branch": "execution-health",
+      "classification": "CONTROLLED_COMPLETE_STAGE_WITH_HISTORICAL_SENSOR_IDENTITY",
+      "oldDecision": "FAIL",
+      "standardDecision": "FAIL",
+      "rawPreserved": true,
+      "legacyReason": "Unexpected Falco coverage or image",
+      "policyReason": "coverage mismatch"
+    },
+    {
+      "mode": "baseline",
+      "name": "sensor-wrong-image",
+      "branch": "execution-health",
+      "classification": "CONTROLLED_COMPLETE_STAGE_WITH_HISTORICAL_SENSOR_IDENTITY",
+      "oldDecision": "FAIL",
+      "standardDecision": "FAIL",
+      "rawPreserved": true,
+      "legacyReason": "Unexpected Falco coverage or image",
+      "policyReason": "coverage mismatch"
+    },
+    {
+      "mode": "baseline",
+      "name": "sensor-wrong-rules",
+      "branch": "execution-health",
+      "classification": "CONTROLLED_COMPLETE_STAGE_WITH_HISTORICAL_SENSOR_IDENTITY",
+      "oldDecision": "FAIL",
+      "standardDecision": "FAIL",
+      "rawPreserved": true,
+      "legacyReason": "Unexpected runtime rule version",
+      "policyReason": "ruleset mismatch"
+    },
+    {
+      "mode": "baseline",
+      "name": "sensor-not-ready",
+      "branch": "execution-health",
+      "classification": "CONTROLLED_COMPLETE_STAGE_WITH_HISTORICAL_SENSOR_IDENTITY",
+      "oldDecision": "FAIL",
+      "standardDecision": "FAIL",
+      "rawPreserved": true,
+      "legacyReason": "Falco must be Ready and running",
+      "policyReason": "Falco must be Ready and running"
+    },
+    {
+      "mode": "baseline",
+      "name": "log-query-failed",
+      "branch": "execution-health",
+      "classification": "CONTROLLED_COMPLETE_STAGE_WITH_HISTORICAL_SENSOR_IDENTITY",
+      "oldDecision": "FAIL",
+      "standardDecision": "FAIL",
+      "rawPreserved": true,
+      "legacyReason": "unavailable",
+      "policyReason": "command failed"
+    },
+    {
+      "mode": "baseline",
+      "name": "historical-query-failed",
+      "branch": "execution-health",
+      "classification": "CONTROLLED_COMPLETE_STAGE_WITH_HISTORICAL_SENSOR_IDENTITY",
+      "oldDecision": "FAIL",
+      "standardDecision": "FAIL",
+      "rawPreserved": true,
+      "legacyReason": "unavailable",
+      "policyReason": "command failed"
+    },
+    {
+      "mode": "baseline",
+      "name": "workload-query-failed",
+      "branch": "execution-health",
+      "classification": "CONTROLLED_COMPLETE_STAGE_WITH_HISTORICAL_SENSOR_IDENTITY",
+      "oldDecision": "FAIL",
+      "standardDecision": "FAIL",
+      "rawPreserved": true,
+      "legacyReason": "unavailable",
+      "policyReason": "command failed"
+    },
+    {
+      "mode": "baseline",
+      "name": "health-down",
+      "branch": "execution-health",
+      "classification": "CONTROLLED_COMPLETE_STAGE_WITH_HISTORICAL_SENSOR_IDENTITY",
+      "oldDecision": "FAIL",
+      "standardDecision": "FAIL",
+      "rawPreserved": true,
+      "legacyReason": "Falco actual health endpoint failed",
+      "policyReason": "actual health failed"
+    },
+    {
+      "mode": "baseline",
+      "name": "health-query-error",
+      "branch": "execution-health",
+      "classification": "CONTROLLED_COMPLETE_STAGE_WITH_HISTORICAL_SENSOR_IDENTITY",
+      "oldDecision": "FAIL",
+      "standardDecision": "FAIL",
+      "rawPreserved": true,
+      "legacyReason": "health query",
+      "policyReason": "actual health failed"
+    },
+    {
+      "mode": "baseline",
+      "name": "report-write-failed",
+      "branch": "execution-health",
+      "classification": "CONTROLLED_COMPLETE_STAGE_WITH_HISTORICAL_SENSOR_IDENTITY",
+      "oldDecision": "FAIL",
+      "standardDecision": "FAIL",
+      "rawPreserved": true,
+      "legacyReason": "write",
+      "policyReason": "report write failed"
+    },
+    {
+      "mode": "baseline",
+      "name": "output-dir-failed",
+      "branch": "execution-health",
+      "classification": "CONTROLLED_COMPLETE_STAGE_WITH_HISTORICAL_SENSOR_IDENTITY",
+      "oldDecision": "FAIL",
+      "standardDecision": "FAIL",
+      "rawPreserved": true,
+      "legacyReason": "mkdir",
+      "policyReason": "output directory failed"
+    },
+    {
+      "mode": "baseline",
+      "name": "sensor-response-malformed",
+      "branch": "execution-health",
+      "classification": "CONTROLLED_COMPLETE_STAGE_WITH_HISTORICAL_SENSOR_IDENTITY",
+      "oldDecision": "FAIL",
+      "standardDecision": "FAIL",
+      "rawPreserved": true,
+      "legacyReason": "Expected property name or '}' in JSON at position 1 (line 1 column 2)",
+      "policyReason": "Expected property name or '}' in JSON at position 1 (line 1 column 2)"
+    },
+    {
+      "mode": "baseline",
+      "name": "source-read-failed",
+      "branch": "execution-health",
+      "classification": "CONTROLLED_COMPLETE_STAGE_WITH_HISTORICAL_SENSOR_IDENTITY",
+      "oldDecision": "FAIL",
+      "standardDecision": "FAIL",
+      "rawPreserved": true,
+      "legacyReason": "file read",
+      "policyReason": "file read failed: source"
+    },
+    {
+      "mode": "check",
+      "name": "healthy-empty",
+      "branch": "healthy",
+      "classification": "CONTROLLED_COMPLETE_STAGE_WITH_HISTORICAL_SENSOR_IDENTITY",
+      "oldDecision": "PASS",
+      "standardDecision": "PASS",
+      "rawPreserved": true,
+      "warningKinds": {}
+    },
+    {
+      "mode": "check",
+      "name": "historical-driver-error",
+      "branch": "historical",
+      "classification": "CONTROLLED_COMPLETE_STAGE_WITH_HISTORICAL_SENSOR_IDENTITY",
+      "oldDecision": "PASS",
+      "standardDecision": "PASS",
+      "rawPreserved": true,
+      "warningKinds": {}
+    },
+    {
+      "mode": "check",
+      "name": "current-fatal",
+      "branch": "health",
+      "classification": "CONTROLLED_COMPLETE_STAGE_WITH_HISTORICAL_SENSOR_IDENTITY",
+      "oldDecision": "FAIL",
+      "standardDecision": "FAIL",
+      "rawPreserved": true,
+      "legacyReason": "Current Falco driver fatal requires review",
+      "policyReason": "current driver fatal"
+    },
+    {
+      "mode": "check",
+      "name": "persistent-sensitive-write",
+      "branch": "persistent-events",
+      "classification": "CONTROLLED_COMPLETE_STAGE_WITH_HISTORICAL_SENSOR_IDENTITY",
+      "oldDecision": "FAIL",
+      "standardDecision": "FAIL",
+      "rawPreserved": true,
+      "legacyReason": "Persistent confirmed high-risk runtime behavior; see redacted event assessment",
+      "policyReason": "current fatal or persistent confirmed behavior"
+    },
+    {
+      "mode": "check",
+      "name": "persistent-shadow-read",
+      "branch": "persistent-events",
+      "classification": "CONTROLLED_COMPLETE_STAGE_WITH_HISTORICAL_SENSOR_IDENTITY",
+      "oldDecision": "FAIL",
+      "standardDecision": "FAIL",
+      "rawPreserved": true,
+      "legacyReason": "Persistent confirmed high-risk runtime behavior; see redacted event assessment",
+      "policyReason": "current fatal or persistent confirmed behavior"
+    },
+    {
+      "mode": "check",
+      "name": "transient-repeated",
+      "branch": "transient",
+      "classification": "CONTROLLED_COMPLETE_STAGE_WITH_HISTORICAL_SENSOR_IDENTITY",
+      "oldDecision": "PASS",
+      "standardDecision": "PASS",
+      "rawPreserved": true,
+      "warningKinds": {}
+    },
+    {
+      "mode": "check",
+      "name": "single-current-candidate",
+      "branch": "transient",
+      "classification": "CONTROLLED_COMPLETE_STAGE_WITH_HISTORICAL_SENSOR_IDENTITY",
+      "oldDecision": "PASS",
+      "standardDecision": "PASS",
+      "rawPreserved": true,
+      "warningKinds": {}
+    },
+    {
+      "mode": "check",
+      "name": "denied-write",
+      "branch": "prevented-events",
+      "classification": "CONTROLLED_COMPLETE_STAGE_WITH_HISTORICAL_SENSOR_IDENTITY",
+      "oldDecision": "PASS",
+      "standardDecision": "PASS",
+      "rawPreserved": true,
+      "warningKinds": {
+        "failed-or-prevented-attempt": 2
+      }
+    },
+    {
+      "mode": "check",
+      "name": "isolated-test",
+      "branch": "isolated-events",
+      "classification": "CONTROLLED_COMPLETE_STAGE_WITH_HISTORICAL_SENSOR_IDENTITY",
+      "oldDecision": "PASS",
+      "standardDecision": "PASS",
+      "rawPreserved": true,
+      "warningKinds": {
+        "isolated-test-event-retained": 2
+      }
+    },
+    {
+      "mode": "check",
+      "name": "stale-events",
+      "branch": "historical",
+      "classification": "CONTROLLED_COMPLETE_STAGE_WITH_HISTORICAL_SENSOR_IDENTITY",
+      "oldDecision": "PASS",
+      "standardDecision": "PASS",
+      "rawPreserved": true,
+      "warningKinds": {
+        "historical-or-outside-window": 1
+      }
+    },
+    {
+      "mode": "check",
+      "name": "priority-alone-not-blocking",
+      "branch": "event-evidence",
+      "classification": "CONTROLLED_COMPLETE_STAGE_WITH_HISTORICAL_SENSOR_IDENTITY",
+      "oldDecision": "PASS",
+      "standardDecision": "PASS",
+      "rawPreserved": true,
+      "warningKinds": {
+        "event-needs-review-not-proven-high-risk": 1
+      }
+    },
+    {
+      "mode": "check",
+      "name": "different-process-not-persistent",
+      "branch": "event-evidence",
+      "classification": "CONTROLLED_COMPLETE_STAGE_WITH_HISTORICAL_SENSOR_IDENTITY",
+      "oldDecision": "PASS",
+      "standardDecision": "PASS",
+      "rawPreserved": true,
+      "warningKinds": {}
+    },
+    {
+      "mode": "check",
+      "name": "duplicate-not-two-events",
+      "branch": "event-evidence",
+      "classification": "CONTROLLED_COMPLETE_STAGE_WITH_HISTORICAL_SENSOR_IDENTITY",
+      "oldDecision": "PASS",
+      "standardDecision": "PASS",
+      "rawPreserved": true,
+      "warningKinds": {
+        "duplicate-event": 1
+      }
+    },
+    {
+      "mode": "check",
+      "name": "malformed-json-counted-not-fatal",
+      "branch": "existing-parser-semantics",
+      "classification": "CONTROLLED_COMPLETE_STAGE_WITH_HISTORICAL_SENSOR_IDENTITY",
+      "oldDecision": "PASS",
+      "standardDecision": "PASS",
+      "rawPreserved": true,
+      "warningKinds": {}
+    },
+    {
+      "mode": "check",
+      "name": "second-window-fatal",
+      "branch": "health",
+      "classification": "CONTROLLED_COMPLETE_STAGE_WITH_HISTORICAL_SENSOR_IDENTITY",
+      "oldDecision": "FAIL",
+      "standardDecision": "FAIL",
+      "rawPreserved": true,
+      "legacyReason": "Current Falco driver fatal requires review",
+      "policyReason": "current fatal or persistent confirmed behavior"
+    },
+    {
+      "mode": "check",
+      "name": "lease-unowned",
+      "branch": "execution-health",
+      "classification": "CONTROLLED_COMPLETE_STAGE_WITH_HISTORICAL_SENSOR_IDENTITY",
+      "oldDecision": "FAIL",
+      "standardDecision": "FAIL",
+      "rawPreserved": true,
+      "legacyReason": "lease",
+      "policyReason": "outer Lease required"
+    },
+    {
+      "mode": "check",
+      "name": "proof-missing",
+      "branch": "execution-health",
+      "classification": "CONTROLLED_COMPLETE_STAGE_WITH_HISTORICAL_SENSOR_IDENTITY",
+      "oldDecision": "FAIL",
+      "standardDecision": "FAIL",
+      "rawPreserved": true,
+      "legacyReason": "file read",
+      "policyReason": "file read failed: proof"
+    },
+    {
+      "mode": "check",
+      "name": "proof-cleanup-failed",
+      "branch": "execution-health",
+      "classification": "CONTROLLED_COMPLETE_STAGE_WITH_HISTORICAL_SENSOR_IDENTITY",
+      "oldDecision": "FAIL",
+      "standardDecision": "FAIL",
+      "rawPreserved": true,
+      "legacyReason": "Matching isolated Falco proof and cleanup required",
+      "policyReason": "Matching isolated proof required"
+    },
+    {
+      "mode": "check",
+      "name": "manifest-mismatch",
+      "branch": "execution-health",
+      "classification": "CONTROLLED_COMPLETE_STAGE_WITH_HISTORICAL_SENSOR_IDENTITY",
+      "oldDecision": "FAIL",
+      "standardDecision": "FAIL",
+      "rawPreserved": true,
+      "legacyReason": "Runtime manifest integrity mismatch",
+      "policyReason": "manifest mismatch"
+    },
+    {
+      "mode": "check",
+      "name": "DS-down",
+      "branch": "execution-health",
+      "classification": "CONTROLLED_COMPLETE_STAGE_WITH_HISTORICAL_SENSOR_IDENTITY",
+      "oldDecision": "FAIL",
+      "standardDecision": "FAIL",
+      "rawPreserved": true,
+      "legacyReason": "Falco DaemonSet desired/ready mismatch",
+      "policyReason": "DaemonSet mismatch"
+    },
+    {
+      "mode": "check",
+      "name": "sensor-missing",
+      "branch": "execution-health",
+      "classification": "CONTROLLED_COMPLETE_STAGE_WITH_HISTORICAL_SENSOR_IDENTITY",
+      "oldDecision": "FAIL",
+      "standardDecision": "FAIL",
+      "rawPreserved": true,
+      "legacyReason": "Unexpected Falco coverage or image",
+      "policyReason": "coverage mismatch"
+    },
+    {
+      "mode": "check",
+      "name": "sensor-wrong-node",
+      "branch": "execution-health",
+      "classification": "CONTROLLED_COMPLETE_STAGE_WITH_HISTORICAL_SENSOR_IDENTITY",
+      "oldDecision": "FAIL",
+      "standardDecision": "FAIL",
+      "rawPreserved": true,
+      "legacyReason": "Unexpected Falco coverage or image",
+      "policyReason": "coverage mismatch"
+    },
+    {
+      "mode": "check",
+      "name": "sensor-wrong-image",
+      "branch": "execution-health",
+      "classification": "CONTROLLED_COMPLETE_STAGE_WITH_HISTORICAL_SENSOR_IDENTITY",
+      "oldDecision": "FAIL",
+      "standardDecision": "FAIL",
+      "rawPreserved": true,
+      "legacyReason": "Unexpected Falco coverage or image",
+      "policyReason": "coverage mismatch"
+    },
+    {
+      "mode": "check",
+      "name": "sensor-wrong-rules",
+      "branch": "execution-health",
+      "classification": "CONTROLLED_COMPLETE_STAGE_WITH_HISTORICAL_SENSOR_IDENTITY",
+      "oldDecision": "FAIL",
+      "standardDecision": "FAIL",
+      "rawPreserved": true,
+      "legacyReason": "Unexpected runtime rule version",
+      "policyReason": "ruleset mismatch"
+    },
+    {
+      "mode": "check",
+      "name": "sensor-not-ready",
+      "branch": "execution-health",
+      "classification": "CONTROLLED_COMPLETE_STAGE_WITH_HISTORICAL_SENSOR_IDENTITY",
+      "oldDecision": "FAIL",
+      "standardDecision": "FAIL",
+      "rawPreserved": true,
+      "legacyReason": "Falco readiness lost during build",
+      "policyReason": "Falco readiness lost during build"
+    },
+    {
+      "mode": "check",
+      "name": "log-query-failed",
+      "branch": "execution-health",
+      "classification": "CONTROLLED_COMPLETE_STAGE_WITH_HISTORICAL_SENSOR_IDENTITY",
+      "oldDecision": "FAIL",
+      "standardDecision": "FAIL",
+      "rawPreserved": true,
+      "legacyReason": "unavailable",
+      "policyReason": "command failed"
+    },
+    {
+      "mode": "check",
+      "name": "historical-query-failed",
+      "branch": "execution-health",
+      "classification": "CONTROLLED_COMPLETE_STAGE_WITH_HISTORICAL_SENSOR_IDENTITY",
+      "oldDecision": "FAIL",
+      "standardDecision": "FAIL",
+      "rawPreserved": true,
+      "legacyReason": "unavailable",
+      "policyReason": "command failed"
+    },
+    {
+      "mode": "check",
+      "name": "workload-query-failed",
+      "branch": "execution-health",
+      "classification": "CONTROLLED_COMPLETE_STAGE_WITH_HISTORICAL_SENSOR_IDENTITY",
+      "oldDecision": "FAIL",
+      "standardDecision": "FAIL",
+      "rawPreserved": true,
+      "legacyReason": "unavailable",
+      "policyReason": "command failed"
+    },
+    {
+      "mode": "check",
+      "name": "health-down",
+      "branch": "execution-health",
+      "classification": "CONTROLLED_COMPLETE_STAGE_WITH_HISTORICAL_SENSOR_IDENTITY",
+      "oldDecision": "FAIL",
+      "standardDecision": "FAIL",
+      "rawPreserved": true,
+      "legacyReason": "Falco actual health endpoint failed",
+      "policyReason": "actual health failed"
+    },
+    {
+      "mode": "check",
+      "name": "health-query-error",
+      "branch": "execution-health",
+      "classification": "CONTROLLED_COMPLETE_STAGE_WITH_HISTORICAL_SENSOR_IDENTITY",
+      "oldDecision": "FAIL",
+      "standardDecision": "FAIL",
+      "rawPreserved": true,
+      "legacyReason": "health query",
+      "policyReason": "actual health failed"
+    },
+    {
+      "mode": "check",
+      "name": "report-write-failed",
+      "branch": "execution-health",
+      "classification": "CONTROLLED_COMPLETE_STAGE_WITH_HISTORICAL_SENSOR_IDENTITY",
+      "oldDecision": "FAIL",
+      "standardDecision": "FAIL",
+      "rawPreserved": true,
+      "legacyReason": "write",
+      "policyReason": "report write failed"
+    },
+    {
+      "mode": "check",
+      "name": "output-dir-failed",
+      "branch": "execution-health",
+      "classification": "CONTROLLED_COMPLETE_STAGE_WITH_HISTORICAL_SENSOR_IDENTITY",
+      "oldDecision": "FAIL",
+      "standardDecision": "FAIL",
+      "rawPreserved": true,
+      "legacyReason": "mkdir",
+      "policyReason": "output directory failed"
+    },
+    {
+      "mode": "check",
+      "name": "sensor-response-malformed",
+      "branch": "execution-health",
+      "classification": "CONTROLLED_COMPLETE_STAGE_WITH_HISTORICAL_SENSOR_IDENTITY",
+      "oldDecision": "FAIL",
+      "standardDecision": "FAIL",
+      "rawPreserved": true,
+      "legacyReason": "Expected property name or '}' in JSON at position 1 (line 1 column 2)",
+      "policyReason": "Expected property name or '}' in JSON at position 1 (line 1 column 2)"
+    },
+    {
+      "mode": "check",
+      "name": "source-read-failed",
+      "branch": "execution-health",
+      "classification": "CONTROLLED_COMPLETE_STAGE_WITH_HISTORICAL_SENSOR_IDENTITY",
+      "oldDecision": "FAIL",
+      "standardDecision": "FAIL",
+      "rawPreserved": true,
+      "legacyReason": "file read",
+      "policyReason": "file read failed: source"
+    },
+    {
+      "mode": "baseline",
+      "name": "recent-start",
+      "branch": "baseline-identity",
+      "classification": "CONTROLLED_COMPLETE_STAGE_WITH_HISTORICAL_SENSOR_IDENTITY",
+      "oldDecision": "FAIL",
+      "standardDecision": "FAIL",
+      "rawPreserved": true,
+      "legacyReason": "Stable running Falco identity required before baseline",
+      "policyReason": "stable identity required"
+    },
+    {
+      "mode": "baseline",
+      "name": "invalid-restart-count",
+      "branch": "baseline-identity",
+      "classification": "CONTROLLED_COMPLETE_STAGE_WITH_HISTORICAL_SENSOR_IDENTITY",
+      "oldDecision": "FAIL",
+      "standardDecision": "FAIL",
+      "rawPreserved": true,
+      "legacyReason": "Known Falco restart count required",
+      "policyReason": "Known Falco restart count required"
+    },
+    {
+      "mode": "baseline",
+      "name": "baseline-write-failed",
+      "branch": "baseline-write",
+      "classification": "CONTROLLED_COMPLETE_STAGE_WITH_HISTORICAL_SENSOR_IDENTITY",
+      "oldDecision": "FAIL",
+      "standardDecision": "FAIL",
+      "rawPreserved": true,
+      "legacyReason": "write",
+      "policyReason": "baseline write failed"
+    },
+    {
+      "mode": "baseline",
+      "name": "clean-prior-exit",
+      "branch": "baseline-history",
+      "classification": "CONTROLLED_COMPLETE_STAGE_WITH_HISTORICAL_SENSOR_IDENTITY",
+      "oldDecision": "PASS",
+      "standardDecision": "PASS",
+      "rawPreserved": true,
+      "warningKinds": {}
+    },
+    {
+      "mode": "check",
+      "name": "missing-baseline",
+      "branch": "final-continuity",
+      "classification": "CONTROLLED_COMPLETE_STAGE_WITH_HISTORICAL_SENSOR_IDENTITY",
+      "oldDecision": "FAIL",
+      "standardDecision": "FAIL",
+      "rawPreserved": true,
+      "legacyReason": "Current build runtime baseline missing",
+      "policyReason": "baseline missing"
+    },
+    {
+      "mode": "check",
+      "name": "foreign-build",
+      "branch": "final-continuity",
+      "classification": "CONTROLLED_COMPLETE_STAGE_WITH_HISTORICAL_SENSOR_IDENTITY",
+      "oldDecision": "FAIL",
+      "standardDecision": "FAIL",
+      "rawPreserved": true,
+      "legacyReason": "Foreign runtime baseline preserved",
+      "policyReason": "foreign baseline"
+    },
+    {
+      "mode": "check",
+      "name": "new-restart",
+      "branch": "final-continuity",
+      "classification": "CONTROLLED_COMPLETE_STAGE_WITH_HISTORICAL_SENSOR_IDENTITY",
+      "oldDecision": "FAIL",
+      "standardDecision": "FAIL",
+      "rawPreserved": true,
+      "legacyReason": "Falco changed during this build: restarts",
+      "policyReason": "Falco changed during this build: restarts"
+    },
+    {
+      "mode": "check",
+      "name": "new-container",
+      "branch": "final-continuity",
+      "classification": "CONTROLLED_COMPLETE_STAGE_WITH_HISTORICAL_SENSOR_IDENTITY",
+      "oldDecision": "FAIL",
+      "standardDecision": "FAIL",
+      "rawPreserved": true,
+      "legacyReason": "Falco changed during this build: containerId",
+      "policyReason": "Falco changed during this build: containerId"
+    },
+    {
+      "mode": "check",
+      "name": "new-node-boot",
+      "branch": "final-continuity",
+      "classification": "CONTROLLED_COMPLETE_STAGE_WITH_HISTORICAL_SENSOR_IDENTITY",
+      "oldDecision": "FAIL",
+      "standardDecision": "FAIL",
+      "rawPreserved": true,
+      "legacyReason": "Falco changed during this build: nodeBootId",
+      "policyReason": "Falco changed during this build: nodeBootId"
+    },
+    {
+      "mode": "baseline",
+      "name": "outside-business-scope",
+      "branch": "event-scope",
+      "classification": "CONTROLLED_COMPLETE_STAGE_WITH_HISTORICAL_SENSOR_IDENTITY",
+      "oldDecision": "PASS",
+      "standardDecision": "PASS",
+      "rawPreserved": true,
+      "warningKinds": {
+        "outside-reviewed-business-scope": 2
+      }
+    },
+    {
+      "mode": "baseline",
+      "name": "unconfirmed-container-identity",
+      "branch": "event-scope",
+      "classification": "CONTROLLED_COMPLETE_STAGE_WITH_HISTORICAL_SENSOR_IDENTITY",
+      "oldDecision": "PASS",
+      "standardDecision": "PASS",
+      "rawPreserved": true,
+      "warningKinds": {
+        "current-workload-identity-unconfirmed": 2
+      }
+    },
+    {
+      "mode": "baseline",
+      "name": "ordinary-file-read",
+      "branch": "event-scope",
+      "classification": "CONTROLLED_COMPLETE_STAGE_WITH_HISTORICAL_SENSOR_IDENTITY",
+      "oldDecision": "PASS",
+      "standardDecision": "PASS",
+      "rawPreserved": true,
+      "warningKinds": {
+        "event-needs-review-not-proven-high-risk": 2
+      }
+    },
+    {
+      "mode": "baseline",
+      "name": "normalized-path-not-critical",
+      "branch": "event-scope",
+      "classification": "CONTROLLED_COMPLETE_STAGE_WITH_HISTORICAL_SENSOR_IDENTITY",
+      "oldDecision": "PASS",
+      "standardDecision": "PASS",
+      "rawPreserved": true,
+      "warningKinds": {
+        "event-needs-review-not-proven-high-risk": 2
+      }
+    },
+    {
+      "mode": "baseline",
+      "name": "missing-event-timestamp",
+      "branch": "event-scope",
+      "classification": "CONTROLLED_COMPLETE_STAGE_WITH_HISTORICAL_SENSOR_IDENTITY",
+      "oldDecision": "PASS",
+      "standardDecision": "PASS",
+      "rawPreserved": true,
+      "warningKinds": {
+        "historical-or-outside-window": 1
+      }
+    },
+    {
+      "mode": "baseline",
+      "name": "missing-rule",
+      "branch": "existing-parser-semantics",
+      "classification": "CONTROLLED_COMPLETE_STAGE_WITH_HISTORICAL_SENSOR_IDENTITY",
+      "oldDecision": "PASS",
+      "standardDecision": "PASS",
+      "rawPreserved": true,
+      "warningKinds": {}
+    },
+    {
+      "mode": "baseline",
+      "name": "second-window-query-fails",
+      "branch": "execution-health",
+      "classification": "CONTROLLED_COMPLETE_STAGE_WITH_HISTORICAL_SENSOR_IDENTITY",
+      "oldDecision": "FAIL",
+      "standardDecision": "FAIL",
+      "rawPreserved": true,
+      "legacyReason": "failed",
+      "policyReason": "command failed"
+    },
+    {
+      "mode": "baseline",
+      "name": "workload-response-malformed",
+      "branch": "execution-health",
+      "classification": "CONTROLLED_COMPLETE_STAGE_WITH_HISTORICAL_SENSOR_IDENTITY",
+      "oldDecision": "FAIL",
+      "standardDecision": "FAIL",
+      "rawPreserved": true,
+      "legacyReason": "Expected property name or '}' in JSON at position 1 (line 1 column 2)",
+      "policyReason": "Expected property name or '}' in JSON at position 1 (line 1 column 2)"
+    },
+    {
+      "mode": "baseline",
+      "name": "lock-response-malformed",
+      "branch": "execution-health",
+      "classification": "CONTROLLED_COMPLETE_STAGE_WITH_HISTORICAL_SENSOR_IDENTITY",
+      "oldDecision": "FAIL",
+      "standardDecision": "FAIL",
+      "rawPreserved": true,
+      "legacyReason": "Expected property name or '}' in JSON at position 1 (line 1 column 2)",
+      "policyReason": "Expected property name or '}' in JSON at position 1 (line 1 column 2)"
+    },
+    {
+      "mode": "baseline",
+      "name": "node-response-malformed",
+      "branch": "execution-health",
+      "classification": "CONTROLLED_COMPLETE_STAGE_WITH_HISTORICAL_SENSOR_IDENTITY",
+      "oldDecision": "FAIL",
+      "standardDecision": "FAIL",
+      "rawPreserved": true,
+      "legacyReason": "Expected property name or '}' in JSON at position 1 (line 1 column 2)",
+      "policyReason": "Expected property name or '}' in JSON at position 1 (line 1 column 2)"
+    },
+    {
+      "mode": "baseline",
+      "name": "live-rule-output-text-is-not-driver-fatal",
+      "branch": "event-evidence",
+      "classification": "CONTROLLED_COMPLETE_STAGE_WITH_HISTORICAL_SENSOR_IDENTITY",
+      "oldDecision": "PASS",
+      "standardDecision": "PASS",
+      "rawPreserved": true,
+      "warningKinds": {
+        "event-needs-review-not-proven-high-risk": 1
+      }
+    },
+    {
+      "mode": "check",
+      "name": "outside-business-scope",
+      "branch": "event-scope",
+      "classification": "CONTROLLED_COMPLETE_STAGE_WITH_HISTORICAL_SENSOR_IDENTITY",
+      "oldDecision": "PASS",
+      "standardDecision": "PASS",
+      "rawPreserved": true,
+      "warningKinds": {
+        "outside-reviewed-business-scope": 2
+      }
+    },
+    {
+      "mode": "check",
+      "name": "unconfirmed-container-identity",
+      "branch": "event-scope",
+      "classification": "CONTROLLED_COMPLETE_STAGE_WITH_HISTORICAL_SENSOR_IDENTITY",
+      "oldDecision": "PASS",
+      "standardDecision": "PASS",
+      "rawPreserved": true,
+      "warningKinds": {
+        "current-workload-identity-unconfirmed": 2
+      }
+    },
+    {
+      "mode": "check",
+      "name": "ordinary-file-read",
+      "branch": "event-scope",
+      "classification": "CONTROLLED_COMPLETE_STAGE_WITH_HISTORICAL_SENSOR_IDENTITY",
+      "oldDecision": "PASS",
+      "standardDecision": "PASS",
+      "rawPreserved": true,
+      "warningKinds": {
+        "event-needs-review-not-proven-high-risk": 2
+      }
+    },
+    {
+      "mode": "check",
+      "name": "normalized-path-not-critical",
+      "branch": "event-scope",
+      "classification": "CONTROLLED_COMPLETE_STAGE_WITH_HISTORICAL_SENSOR_IDENTITY",
+      "oldDecision": "PASS",
+      "standardDecision": "PASS",
+      "rawPreserved": true,
+      "warningKinds": {
+        "event-needs-review-not-proven-high-risk": 2
+      }
+    },
+    {
+      "mode": "check",
+      "name": "missing-event-timestamp",
+      "branch": "event-scope",
+      "classification": "CONTROLLED_COMPLETE_STAGE_WITH_HISTORICAL_SENSOR_IDENTITY",
+      "oldDecision": "PASS",
+      "standardDecision": "PASS",
+      "rawPreserved": true,
+      "warningKinds": {
+        "historical-or-outside-window": 1
+      }
+    },
+    {
+      "mode": "check",
+      "name": "missing-rule",
+      "branch": "existing-parser-semantics",
+      "classification": "CONTROLLED_COMPLETE_STAGE_WITH_HISTORICAL_SENSOR_IDENTITY",
+      "oldDecision": "PASS",
+      "standardDecision": "PASS",
+      "rawPreserved": true,
+      "warningKinds": {}
+    },
+    {
+      "mode": "check",
+      "name": "second-window-query-fails",
+      "branch": "execution-health",
+      "classification": "CONTROLLED_COMPLETE_STAGE_WITH_HISTORICAL_SENSOR_IDENTITY",
+      "oldDecision": "FAIL",
+      "standardDecision": "FAIL",
+      "rawPreserved": true,
+      "legacyReason": "failed",
+      "policyReason": "command failed"
+    },
+    {
+      "mode": "check",
+      "name": "workload-response-malformed",
+      "branch": "execution-health",
+      "classification": "CONTROLLED_COMPLETE_STAGE_WITH_HISTORICAL_SENSOR_IDENTITY",
+      "oldDecision": "FAIL",
+      "standardDecision": "FAIL",
+      "rawPreserved": true,
+      "legacyReason": "Expected property name or '}' in JSON at position 1 (line 1 column 2)",
+      "policyReason": "Expected property name or '}' in JSON at position 1 (line 1 column 2)"
+    },
+    {
+      "mode": "check",
+      "name": "lock-response-malformed",
+      "branch": "execution-health",
+      "classification": "CONTROLLED_COMPLETE_STAGE_WITH_HISTORICAL_SENSOR_IDENTITY",
+      "oldDecision": "FAIL",
+      "standardDecision": "FAIL",
+      "rawPreserved": true,
+      "legacyReason": "Expected property name or '}' in JSON at position 1 (line 1 column 2)",
+      "policyReason": "Expected property name or '}' in JSON at position 1 (line 1 column 2)"
+    },
+    {
+      "mode": "check",
+      "name": "node-response-malformed",
+      "branch": "execution-health",
+      "classification": "CONTROLLED_COMPLETE_STAGE_WITH_HISTORICAL_SENSOR_IDENTITY",
+      "oldDecision": "FAIL",
+      "standardDecision": "FAIL",
+      "rawPreserved": true,
+      "legacyReason": "Expected property name or '}' in JSON at position 1 (line 1 column 2)",
+      "policyReason": "Expected property name or '}' in JSON at position 1 (line 1 column 2)"
+    },
+    {
+      "mode": "check",
+      "name": "live-rule-output-text-is-not-driver-fatal",
+      "branch": "event-evidence",
+      "classification": "CONTROLLED_COMPLETE_STAGE_WITH_HISTORICAL_SENSOR_IDENTITY",
+      "oldDecision": "PASS",
+      "standardDecision": "PASS",
+      "rawPreserved": true,
+      "warningKinds": {
+        "event-needs-review-not-proven-high-risk": 1
+      }
+    },
+    {
+      "mode": "check",
+      "name": "foreign-baseline-source",
+      "branch": "final-continuity",
+      "classification": "CONTROLLED_COMPLETE_STAGE_WITH_HISTORICAL_SENSOR_IDENTITY",
+      "oldDecision": "FAIL",
+      "standardDecision": "FAIL",
+      "rawPreserved": true,
+      "legacyReason": "Foreign runtime baseline preserved",
+      "policyReason": "foreign baseline"
+    },
+    {
+      "mode": "check",
+      "name": "baseline-JSON-malformed",
+      "branch": "final-continuity",
+      "classification": "CONTROLLED_COMPLETE_STAGE_WITH_HISTORICAL_SENSOR_IDENTITY",
+      "oldDecision": "FAIL",
+      "standardDecision": "FAIL",
+      "rawPreserved": true,
+      "legacyReason": "Expected property name or '}' in JSON at position 1 (line 1 column 2)",
+      "policyReason": "Expected property name or '}' in JSON at position 1 (line 1 column 2)"
+    },
+    {
+      "mode": "check",
+      "name": "running-start-changed",
+      "branch": "final-continuity",
+      "classification": "CONTROLLED_COMPLETE_STAGE_WITH_HISTORICAL_SENSOR_IDENTITY",
+      "oldDecision": "FAIL",
+      "standardDecision": "FAIL",
+      "rawPreserved": true,
+      "legacyReason": "Falco changed during this build: runningSince",
+      "policyReason": "Falco changed during this build: runningSince"
+    },
+    {
+      "mode": "baseline",
+      "name": "boot-identity-missing",
+      "branch": "baseline-identity",
+      "classification": "CONTROLLED_COMPLETE_STAGE_WITH_HISTORICAL_SENSOR_IDENTITY",
+      "oldDecision": "FAIL",
+      "standardDecision": "FAIL",
+      "rawPreserved": true,
+      "legacyReason": "Stable running Falco identity required before baseline",
+      "policyReason": "stable identity required"
+    },
+    {
+      "mode": "baseline",
+      "name": "current-start-unknown",
+      "branch": "baseline-identity",
+      "classification": "CONTROLLED_COMPLETE_STAGE_WITH_HISTORICAL_SENSOR_IDENTITY",
+      "oldDecision": "FAIL",
+      "standardDecision": "FAIL",
+      "rawPreserved": true,
+      "legacyReason": "Falco must be Ready and running",
+      "policyReason": "Falco must be Ready and running"
+    },
+    {
+      "mode": "baseline",
+      "name": "proof-cases-unavailable-at-report",
+      "branch": "report-serialization",
+      "classification": "CONTROLLED_COMPLETE_STAGE_WITH_HISTORICAL_SENSOR_IDENTITY",
+      "oldDecision": "FAIL",
+      "standardDecision": "FAIL",
+      "rawPreserved": true,
+      "legacyReason": "Cannot read properties of undefined (reading 'map')",
+      "policyReason": "Cannot read properties of undefined (reading 'map')"
+    },
+    {
+      "mode": "check",
+      "name": "proof-cases-unavailable-at-report",
+      "branch": "report-serialization",
+      "classification": "CONTROLLED_COMPLETE_STAGE_WITH_HISTORICAL_SENSOR_IDENTITY",
+      "oldDecision": "FAIL",
+      "standardDecision": "FAIL",
+      "rawPreserved": true,
+      "legacyReason": "Cannot read properties of undefined (reading 'map')",
+      "policyReason": "Cannot read properties of undefined (reading 'map')"
+    }
+  ]
+}

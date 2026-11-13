@@ -1,0 +1,526 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Future isolated Trivy experiment pre-flight (NO execution in this review)",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "classification",
+    "targetId",
+    "networkMode",
+    "checks"
+  ],
+  "properties": {
+    "schemaVersion": {
+      "const": 1
+    },
+    "classification": {
+      "const": "ISOLATED_PREFLIGHT_ONLY"
+    },
+    "targetId": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "networkMode": {
+      "enum": [
+        "DIRECT",
+        "VALIDATION_PROXY",
+        "NOT_SELECTED"
+      ]
+    },
+    "checks": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "isolatedEnvironmentIdentity",
+        "availableDisk",
+        "filesystemEquivalence",
+        "networkPath",
+        "proxyOrDirectAccess",
+        "dbSourceReachability",
+        "credentialAvailability",
+        "frozenImplementationHash",
+        "samplerReadiness",
+        "evidenceDestination",
+        "productionIsolation"
+      ],
+      "properties": {
+        "isolatedEnvironmentIdentity": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "status",
+            "evidenceRef"
+          ],
+          "properties": {
+            "status": {
+              "enum": [
+                "VERIFIED",
+                "BLOCKED",
+                "NOT_TESTED"
+              ]
+            },
+            "evidenceRef": {
+              "type": [
+                "string",
+                "null"
+              ]
+            }
+          },
+          "allOf": [
+            {
+              "if": {
+                "properties": {
+                  "status": {
+                    "const": "VERIFIED"
+                  }
+                }
+              },
+              "then": {
+                "properties": {
+                  "evidenceRef": {
+                    "type": "string",
+                    "minLength": 1,
+                    "pattern": "\\S"
+                  }
+                }
+              }
+            }
+          ]
+        },
+        "availableDisk": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "status",
+            "evidenceRef"
+          ],
+          "properties": {
+            "status": {
+              "enum": [
+                "VERIFIED",
+                "BLOCKED",
+                "NOT_TESTED"
+              ]
+            },
+            "evidenceRef": {
+              "type": [
+                "string",
+                "null"
+              ]
+            }
+          },
+          "allOf": [
+            {
+              "if": {
+                "properties": {
+                  "status": {
+                    "const": "VERIFIED"
+                  }
+                }
+              },
+              "then": {
+                "properties": {
+                  "evidenceRef": {
+                    "type": "string",
+                    "minLength": 1,
+                    "pattern": "\\S"
+                  }
+                }
+              }
+            }
+          ]
+        },
+        "filesystemEquivalence": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "status",
+            "evidenceRef"
+          ],
+          "properties": {
+            "status": {
+              "enum": [
+                "VERIFIED",
+                "BLOCKED",
+                "NOT_TESTED"
+              ]
+            },
+            "evidenceRef": {
+              "type": [
+                "string",
+                "null"
+              ]
+            }
+          },
+          "allOf": [
+            {
+              "if": {
+                "properties": {
+                  "status": {
+                    "const": "VERIFIED"
+                  }
+                }
+              },
+              "then": {
+                "properties": {
+                  "evidenceRef": {
+                    "type": "string",
+                    "minLength": 1,
+                    "pattern": "\\S"
+                  }
+                }
+              }
+            }
+          ]
+        },
+        "networkPath": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "status",
+            "evidenceRef"
+          ],
+          "properties": {
+            "status": {
+              "enum": [
+                "VERIFIED",
+                "BLOCKED",
+                "NOT_TESTED"
+              ]
+            },
+            "evidenceRef": {
+              "type": [
+                "string",
+                "null"
+              ]
+            }
+          },
+          "allOf": [
+            {
+              "if": {
+                "properties": {
+                  "status": {
+                    "const": "VERIFIED"
+                  }
+                }
+              },
+              "then": {
+                "properties": {
+                  "evidenceRef": {
+                    "type": "string",
+                    "minLength": 1,
+                    "pattern": "\\S"
+                  }
+                }
+              }
+            }
+          ]
+        },
+        "proxyOrDirectAccess": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "status",
+            "evidenceRef"
+          ],
+          "properties": {
+            "status": {
+              "enum": [
+                "VERIFIED",
+                "BLOCKED",
+                "NOT_TESTED"
+              ]
+            },
+            "evidenceRef": {
+              "type": [
+                "string",
+                "null"
+              ]
+            }
+          },
+          "allOf": [
+            {
+              "if": {
+                "properties": {
+                  "status": {
+                    "const": "VERIFIED"
+                  }
+                }
+              },
+              "then": {
+                "properties": {
+                  "evidenceRef": {
+                    "type": "string",
+                    "minLength": 1,
+                    "pattern": "\\S"
+                  }
+                }
+              }
+            }
+          ]
+        },
+        "dbSourceReachability": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "status",
+            "evidenceRef"
+          ],
+          "properties": {
+            "status": {
+              "enum": [
+                "VERIFIED",
+                "BLOCKED",
+                "NOT_TESTED"
+              ]
+            },
+            "evidenceRef": {
+              "type": [
+                "string",
+                "null"
+              ]
+            }
+          },
+          "allOf": [
+            {
+              "if": {
+                "properties": {
+                  "status": {
+                    "const": "VERIFIED"
+                  }
+                }
+              },
+              "then": {
+                "properties": {
+                  "evidenceRef": {
+                    "type": "string",
+                    "minLength": 1,
+                    "pattern": "\\S"
+                  }
+                }
+              }
+            }
+          ]
+        },
+        "credentialAvailability": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "status",
+            "evidenceRef"
+          ],
+          "properties": {
+            "status": {
+              "enum": [
+                "VERIFIED",
+                "BLOCKED",
+                "NOT_TESTED"
+              ]
+            },
+            "evidenceRef": {
+              "type": [
+                "string",
+                "null"
+              ]
+            }
+          },
+          "allOf": [
+            {
+              "if": {
+                "properties": {
+                  "status": {
+                    "const": "VERIFIED"
+                  }
+                }
+              },
+              "then": {
+                "properties": {
+                  "evidenceRef": {
+                    "type": "string",
+                    "minLength": 1,
+                    "pattern": "\\S"
+                  }
+                }
+              }
+            }
+          ]
+        },
+        "frozenImplementationHash": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "status",
+            "evidenceRef"
+          ],
+          "properties": {
+            "status": {
+              "enum": [
+                "VERIFIED",
+                "BLOCKED",
+                "NOT_TESTED"
+              ]
+            },
+            "evidenceRef": {
+              "type": [
+                "string",
+                "null"
+              ]
+            }
+          },
+          "allOf": [
+            {
+              "if": {
+                "properties": {
+                  "status": {
+                    "const": "VERIFIED"
+                  }
+                }
+              },
+              "then": {
+                "properties": {
+                  "evidenceRef": {
+                    "type": "string",
+                    "minLength": 1,
+                    "pattern": "\\S"
+                  }
+                }
+              }
+            }
+          ]
+        },
+        "samplerReadiness": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "status",
+            "evidenceRef"
+          ],
+          "properties": {
+            "status": {
+              "enum": [
+                "VERIFIED",
+                "BLOCKED",
+                "NOT_TESTED"
+              ]
+            },
+            "evidenceRef": {
+              "type": [
+                "string",
+                "null"
+              ]
+            }
+          },
+          "allOf": [
+            {
+              "if": {
+                "properties": {
+                  "status": {
+                    "const": "VERIFIED"
+                  }
+                }
+              },
+              "then": {
+                "properties": {
+                  "evidenceRef": {
+                    "type": "string",
+                    "minLength": 1,
+                    "pattern": "\\S"
+                  }
+                }
+              }
+            }
+          ]
+        },
+        "evidenceDestination": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "status",
+            "evidenceRef"
+          ],
+          "properties": {
+            "status": {
+              "enum": [
+                "VERIFIED",
+                "BLOCKED",
+                "NOT_TESTED"
+              ]
+            },
+            "evidenceRef": {
+              "type": [
+                "string",
+                "null"
+              ]
+            }
+          },
+          "allOf": [
+            {
+              "if": {
+                "properties": {
+                  "status": {
+                    "const": "VERIFIED"
+                  }
+                }
+              },
+              "then": {
+                "properties": {
+                  "evidenceRef": {
+                    "type": "string",
+                    "minLength": 1,
+                    "pattern": "\\S"
+                  }
+                }
+              }
+            }
+          ]
+        },
+        "productionIsolation": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "status",
+            "evidenceRef"
+          ],
+          "properties": {
+            "status": {
+              "enum": [
+                "VERIFIED",
+                "BLOCKED",
+                "NOT_TESTED"
+              ]
+            },
+            "evidenceRef": {
+              "type": [
+                "string",
+                "null"
+              ]
+            }
+          },
+          "allOf": [
+            {
+              "if": {
+                "properties": {
+                  "status": {
+                    "const": "VERIFIED"
+                  }
+                }
+              },
+              "then": {
+                "properties": {
+                  "evidenceRef": {
+                    "type": "string",
+                    "minLength": 1,
+                    "pattern": "\\S"
+                  }
+                }
+              }
+            }
+          ]
+        }
+      }
+    }
+  }
+}

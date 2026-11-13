@@ -1,0 +1,7 @@
+# Fail invalid cluster DNS search expansions locally, even when upstream DNS is offline.
+# Valid cluster.local names and genuine Tailnet names keep their existing handlers.
+template IN ANY ts.net {
+    match "(?i)^.+[.]cluster[.]local[.].+[.]ts[.]net[.]$"
+    rcode NXDOMAIN
+    fallthrough
+}

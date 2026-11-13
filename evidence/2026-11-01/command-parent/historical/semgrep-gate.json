@@ -1,0 +1,722 @@
+{
+  "status": "success",
+  "source": "9a78cc89f22fa98fb1ffcc43e2ae279299471793",
+  "pod": "semgrep-270-da51cf",
+  "namespace": "devsecops-execution",
+  "startedAt": "2026-10-30T03:20:52.422Z",
+  "cleanup": true,
+  "uid": "6bf6ecd2-f290-46d2-827f-975f243cbecf",
+  "isolation": {
+    "canaryDenied": true,
+    "canaryBaselineBeforeAndAfter": true,
+    "tokenAbsent": true,
+    "uid": 10001,
+    "readOnlyRoot": true,
+    "nodeFirewallClaim": false
+  },
+  "fixtureResults": {
+    "positive": [
+      {
+        "check_id": "java-runtime-exec",
+        "path": "/work/positive/Unsafe.java",
+        "start": {
+          "line": 1,
+          "col": 86,
+          "offset": 85
+        },
+        "end": {
+          "line": 1,
+          "col": 118,
+          "offset": 117
+        },
+        "extra": {
+          "metavars": {},
+          "engine_kind": "OSS",
+          "is_ignored": false,
+          "message": "Unreviewed OS command execution",
+          "severity": "ERROR",
+          "validation_state": "NO_VALIDATOR"
+        }
+      },
+      {
+        "check_id": "java-weak-cipher",
+        "path": "/work/positive/Unsafe.java",
+        "start": {
+          "line": 1,
+          "col": 120,
+          "offset": 119
+        },
+        "end": {
+          "line": 1,
+          "col": 145,
+          "offset": 144
+        },
+        "extra": {
+          "metavars": {},
+          "engine_kind": "OSS",
+          "is_ignored": false,
+          "message": "Weak cipher or ECB mode",
+          "severity": "ERROR",
+          "validation_state": "NO_VALIDATOR"
+        }
+      }
+    ],
+    "negative": [],
+    "repeat": [
+      {
+        "check_id": "java-runtime-exec",
+        "path": "/work/positive/Unsafe.java",
+        "start": {
+          "line": 1,
+          "col": 86,
+          "offset": 85
+        },
+        "end": {
+          "line": 1,
+          "col": 118,
+          "offset": 117
+        },
+        "extra": {
+          "metavars": {},
+          "engine_kind": "OSS",
+          "is_ignored": false,
+          "message": "Unreviewed OS command execution",
+          "severity": "ERROR",
+          "validation_state": "NO_VALIDATOR"
+        }
+      },
+      {
+        "check_id": "java-weak-cipher",
+        "path": "/work/positive/Unsafe.java",
+        "start": {
+          "line": 1,
+          "col": 120,
+          "offset": 119
+        },
+        "end": {
+          "line": 1,
+          "col": 145,
+          "offset": 144
+        },
+        "extra": {
+          "metavars": {},
+          "engine_kind": "OSS",
+          "is_ignored": false,
+          "message": "Weak cipher or ECB mode",
+          "severity": "ERROR",
+          "validation_state": "NO_VALIDATOR"
+        }
+      }
+    ]
+  },
+  "tests": {
+    "positive": 2,
+    "negative": 0,
+    "repeat": 2,
+    "highConfidenceRejected": 1,
+    "ordinaryWarn": 1
+  },
+  "commandTests": {
+    "positive": [
+      {
+        "check_id": "java-runtime-exec",
+        "path": "/work/command-positive/HttpCommands.java",
+        "start": {
+          "line": 1,
+          "col": 158,
+          "offset": 157
+        },
+        "end": {
+          "line": 1,
+          "col": 188,
+          "offset": 187
+        },
+        "extra": {
+          "metavars": {},
+          "engine_kind": "OSS",
+          "is_ignored": false,
+          "message": "Unreviewed OS command execution",
+          "severity": "ERROR",
+          "validation_state": "NO_VALIDATOR"
+        }
+      },
+      {
+        "check_id": "java-http-runtime-exec",
+        "path": "/work/command-positive/HttpCommands.java",
+        "start": {
+          "line": 1,
+          "col": 184,
+          "offset": 183
+        },
+        "end": {
+          "line": 1,
+          "col": 187,
+          "offset": 186
+        },
+        "extra": {
+          "metavars": {
+            "$REQ": {
+              "start": {
+                "line": 1,
+                "col": 133,
+                "offset": 132
+              },
+              "end": {
+                "line": 1,
+                "col": 136,
+                "offset": 135
+              },
+              "abstract_content": "req"
+            },
+            "$CMD": {
+              "start": {
+                "line": 1,
+                "col": 184,
+                "offset": 183
+              },
+              "end": {
+                "line": 1,
+                "col": 187,
+                "offset": 186
+              },
+              "abstract_content": "cmd",
+              "propagated_value": {
+                "svalue_start": {
+                  "line": 1,
+                  "col": 133,
+                  "offset": 132
+                },
+                "svalue_end": {
+                  "line": 1,
+                  "col": 156,
+                  "offset": 155
+                },
+                "svalue_abstract_content": "req.getParameter(\"cmd\")"
+              }
+            }
+          },
+          "engine_kind": "OSS",
+          "is_ignored": false,
+          "message": "HTTP parameter reaches executable command without validation",
+          "severity": "ERROR",
+          "dataflow_trace": {
+            "taint_source": [
+              "CliLoc",
+              [
+                {
+                  "path": "/work/command-positive/HttpCommands.java",
+                  "start": {
+                    "line": 1,
+                    "col": 133,
+                    "offset": 132
+                  },
+                  "end": {
+                    "line": 1,
+                    "col": 156,
+                    "offset": 155
+                  }
+                },
+                "req.getParameter(\"cmd\")"
+              ]
+            ],
+            "intermediate_vars": [
+              {
+                "location": {
+                  "path": "/work/command-positive/HttpCommands.java",
+                  "start": {
+                    "line": 1,
+                    "col": 129,
+                    "offset": 128
+                  },
+                  "end": {
+                    "line": 1,
+                    "col": 132,
+                    "offset": 131
+                  }
+                },
+                "content": "cmd"
+              }
+            ],
+            "taint_sink": [
+              "CliLoc",
+              [
+                {
+                  "path": "/work/command-positive/HttpCommands.java",
+                  "start": {
+                    "line": 1,
+                    "col": 184,
+                    "offset": 183
+                  },
+                  "end": {
+                    "line": 1,
+                    "col": 187,
+                    "offset": 186
+                  }
+                },
+                "cmd"
+              ]
+            ]
+          },
+          "validation_state": "NO_VALIDATOR"
+        }
+      },
+      {
+        "check_id": "java-process-builder",
+        "path": "/work/command-positive/HttpCommands.java",
+        "start": {
+          "line": 1,
+          "col": 190,
+          "offset": 189
+        },
+        "end": {
+          "line": 1,
+          "col": 213,
+          "offset": 212
+        },
+        "extra": {
+          "metavars": {},
+          "engine_kind": "OSS",
+          "is_ignored": false,
+          "message": "Unreviewed process construction",
+          "severity": "ERROR",
+          "validation_state": "NO_VALIDATOR"
+        }
+      },
+      {
+        "check_id": "java-http-process-builder",
+        "path": "/work/command-positive/HttpCommands.java",
+        "start": {
+          "line": 1,
+          "col": 209,
+          "offset": 208
+        },
+        "end": {
+          "line": 1,
+          "col": 212,
+          "offset": 211
+        },
+        "extra": {
+          "metavars": {
+            "$REQ": {
+              "start": {
+                "line": 1,
+                "col": 133,
+                "offset": 132
+              },
+              "end": {
+                "line": 1,
+                "col": 136,
+                "offset": 135
+              },
+              "abstract_content": "req"
+            },
+            "$CMD": {
+              "start": {
+                "line": 1,
+                "col": 209,
+                "offset": 208
+              },
+              "end": {
+                "line": 1,
+                "col": 212,
+                "offset": 211
+              },
+              "abstract_content": "cmd",
+              "propagated_value": {
+                "svalue_start": {
+                  "line": 1,
+                  "col": 133,
+                  "offset": 132
+                },
+                "svalue_end": {
+                  "line": 1,
+                  "col": 156,
+                  "offset": 155
+                },
+                "svalue_abstract_content": "req.getParameter(\"cmd\")"
+              }
+            }
+          },
+          "engine_kind": "OSS",
+          "is_ignored": false,
+          "message": "HTTP parameter reaches executable command without validation",
+          "severity": "ERROR",
+          "dataflow_trace": {
+            "taint_source": [
+              "CliLoc",
+              [
+                {
+                  "path": "/work/command-positive/HttpCommands.java",
+                  "start": {
+                    "line": 1,
+                    "col": 133,
+                    "offset": 132
+                  },
+                  "end": {
+                    "line": 1,
+                    "col": 156,
+                    "offset": 155
+                  }
+                },
+                "req.getParameter(\"cmd\")"
+              ]
+            ],
+            "intermediate_vars": [
+              {
+                "location": {
+                  "path": "/work/command-positive/HttpCommands.java",
+                  "start": {
+                    "line": 1,
+                    "col": 129,
+                    "offset": 128
+                  },
+                  "end": {
+                    "line": 1,
+                    "col": 132,
+                    "offset": 131
+                  }
+                },
+                "content": "cmd"
+              }
+            ],
+            "taint_sink": [
+              "CliLoc",
+              [
+                {
+                  "path": "/work/command-positive/HttpCommands.java",
+                  "start": {
+                    "line": 1,
+                    "col": 209,
+                    "offset": 208
+                  },
+                  "end": {
+                    "line": 1,
+                    "col": 212,
+                    "offset": 211
+                  }
+                },
+                "cmd"
+              ]
+            ]
+          },
+          "validation_state": "NO_VALIDATOR"
+        }
+      }
+    ],
+    "negative": [],
+    "repeat": [
+      {
+        "check_id": "java-runtime-exec",
+        "path": "/work/command-positive/HttpCommands.java",
+        "start": {
+          "line": 1,
+          "col": 158,
+          "offset": 157
+        },
+        "end": {
+          "line": 1,
+          "col": 188,
+          "offset": 187
+        },
+        "extra": {
+          "metavars": {},
+          "engine_kind": "OSS",
+          "is_ignored": false,
+          "message": "Unreviewed OS command execution",
+          "severity": "ERROR",
+          "validation_state": "NO_VALIDATOR"
+        }
+      },
+      {
+        "check_id": "java-http-runtime-exec",
+        "path": "/work/command-positive/HttpCommands.java",
+        "start": {
+          "line": 1,
+          "col": 184,
+          "offset": 183
+        },
+        "end": {
+          "line": 1,
+          "col": 187,
+          "offset": 186
+        },
+        "extra": {
+          "metavars": {
+            "$REQ": {
+              "start": {
+                "line": 1,
+                "col": 133,
+                "offset": 132
+              },
+              "end": {
+                "line": 1,
+                "col": 136,
+                "offset": 135
+              },
+              "abstract_content": "req"
+            },
+            "$CMD": {
+              "start": {
+                "line": 1,
+                "col": 184,
+                "offset": 183
+              },
+              "end": {
+                "line": 1,
+                "col": 187,
+                "offset": 186
+              },
+              "abstract_content": "cmd",
+              "propagated_value": {
+                "svalue_start": {
+                  "line": 1,
+                  "col": 133,
+                  "offset": 132
+                },
+                "svalue_end": {
+                  "line": 1,
+                  "col": 156,
+                  "offset": 155
+                },
+                "svalue_abstract_content": "req.getParameter(\"cmd\")"
+              }
+            }
+          },
+          "engine_kind": "OSS",
+          "is_ignored": false,
+          "message": "HTTP parameter reaches executable command without validation",
+          "severity": "ERROR",
+          "dataflow_trace": {
+            "taint_source": [
+              "CliLoc",
+              [
+                {
+                  "path": "/work/command-positive/HttpCommands.java",
+                  "start": {
+                    "line": 1,
+                    "col": 133,
+                    "offset": 132
+                  },
+                  "end": {
+                    "line": 1,
+                    "col": 156,
+                    "offset": 155
+                  }
+                },
+                "req.getParameter(\"cmd\")"
+              ]
+            ],
+            "intermediate_vars": [
+              {
+                "location": {
+                  "path": "/work/command-positive/HttpCommands.java",
+                  "start": {
+                    "line": 1,
+                    "col": 129,
+                    "offset": 128
+                  },
+                  "end": {
+                    "line": 1,
+                    "col": 132,
+                    "offset": 131
+                  }
+                },
+                "content": "cmd"
+              }
+            ],
+            "taint_sink": [
+              "CliLoc",
+              [
+                {
+                  "path": "/work/command-positive/HttpCommands.java",
+                  "start": {
+                    "line": 1,
+                    "col": 184,
+                    "offset": 183
+                  },
+                  "end": {
+                    "line": 1,
+                    "col": 187,
+                    "offset": 186
+                  }
+                },
+                "cmd"
+              ]
+            ]
+          },
+          "validation_state": "NO_VALIDATOR"
+        }
+      },
+      {
+        "check_id": "java-process-builder",
+        "path": "/work/command-positive/HttpCommands.java",
+        "start": {
+          "line": 1,
+          "col": 190,
+          "offset": 189
+        },
+        "end": {
+          "line": 1,
+          "col": 213,
+          "offset": 212
+        },
+        "extra": {
+          "metavars": {},
+          "engine_kind": "OSS",
+          "is_ignored": false,
+          "message": "Unreviewed process construction",
+          "severity": "ERROR",
+          "validation_state": "NO_VALIDATOR"
+        }
+      },
+      {
+        "check_id": "java-http-process-builder",
+        "path": "/work/command-positive/HttpCommands.java",
+        "start": {
+          "line": 1,
+          "col": 209,
+          "offset": 208
+        },
+        "end": {
+          "line": 1,
+          "col": 212,
+          "offset": 211
+        },
+        "extra": {
+          "metavars": {
+            "$REQ": {
+              "start": {
+                "line": 1,
+                "col": 133,
+                "offset": 132
+              },
+              "end": {
+                "line": 1,
+                "col": 136,
+                "offset": 135
+              },
+              "abstract_content": "req"
+            },
+            "$CMD": {
+              "start": {
+                "line": 1,
+                "col": 209,
+                "offset": 208
+              },
+              "end": {
+                "line": 1,
+                "col": 212,
+                "offset": 211
+              },
+              "abstract_content": "cmd",
+              "propagated_value": {
+                "svalue_start": {
+                  "line": 1,
+                  "col": 133,
+                  "offset": 132
+                },
+                "svalue_end": {
+                  "line": 1,
+                  "col": 156,
+                  "offset": 155
+                },
+                "svalue_abstract_content": "req.getParameter(\"cmd\")"
+              }
+            }
+          },
+          "engine_kind": "OSS",
+          "is_ignored": false,
+          "message": "HTTP parameter reaches executable command without validation",
+          "severity": "ERROR",
+          "dataflow_trace": {
+            "taint_source": [
+              "CliLoc",
+              [
+                {
+                  "path": "/work/command-positive/HttpCommands.java",
+                  "start": {
+                    "line": 1,
+                    "col": 133,
+                    "offset": 132
+                  },
+                  "end": {
+                    "line": 1,
+                    "col": 156,
+                    "offset": 155
+                  }
+                },
+                "req.getParameter(\"cmd\")"
+              ]
+            ],
+            "intermediate_vars": [
+              {
+                "location": {
+                  "path": "/work/command-positive/HttpCommands.java",
+                  "start": {
+                    "line": 1,
+                    "col": 129,
+                    "offset": 128
+                  },
+                  "end": {
+                    "line": 1,
+                    "col": 132,
+                    "offset": 131
+                  }
+                },
+                "content": "cmd"
+              }
+            ],
+            "taint_sink": [
+              "CliLoc",
+              [
+                {
+                  "path": "/work/command-positive/HttpCommands.java",
+                  "start": {
+                    "line": 1,
+                    "col": 209,
+                    "offset": 208
+                  },
+                  "end": {
+                    "line": 1,
+                    "col": 212,
+                    "offset": 211
+                  }
+                },
+                "cmd"
+              ]
+            ]
+          },
+          "validation_state": "NO_VALIDATOR"
+        }
+      }
+    ],
+    "scope": "HTTP getParameter intraprocedural flow to entire executable; environment, shell arguments and wrappers remain WARN"
+  },
+  "sourceScan": {
+    "findings": [],
+    "filesScanned": 44,
+    "errors": []
+  },
+  "findingMode": "warn",
+  "enforcedRules": [
+    "java-weak-cipher",
+    "java-http-runtime-exec",
+    "java-http-process-builder"
+  ],
+  "blockingFindings": [],
+  "warningFindings": [],
+  "warnings": [],
+  "rules": [
+    "java-runtime-exec",
+    "java-process-builder",
+    "java-sql-concatenation",
+    "java-weak-digest",
+    "java-weak-cipher",
+    "java-disabled-tls-hostname-check",
+    "java-http-runtime-exec",
+    "java-http-process-builder"
+  ],
+  "engine": "Semgrep CE 1.182.1 native core; project-specific Java rules, not a full SAST guarantee",
+  "memoryPeakBytes": "376991744",
+  "finishedAt": "2026-10-30T03:21:53.376Z"
+}

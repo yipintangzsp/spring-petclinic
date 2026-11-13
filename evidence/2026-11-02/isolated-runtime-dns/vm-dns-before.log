@@ -1,0 +1,32 @@
+__IDENTITY__
+security-test
+Linux 6.8.0-117-generic aarch64
+__RESOLV_PATH__
+ls: cannot access '/run/systemd/resolve': No such file or directory
+ls: cannot access '/run/systemd/resolve/resolv.conf': No such file or directory
+ls: cannot access '/run/systemd/resolve/stub-resolv.conf': No such file or directory
+lrwxrwxrwx 1 root root 39 May 21 19:26 /etc/resolv.conf -> ../run/systemd/resolve/stub-resolv.conf
+../run/systemd/resolve/stub-resolv.conf
+__RESOLV_CONTENT__
+cat: /etc/resolv.conf: No such file or directory
+__RESOLVER_SERVICE__
+inactive
+not-found
+LoadState=not-found
+ActiveState=inactive
+SubState=dead
+FragmentPath=
+__RESOLVECTL__
+sh: 17: resolvectl: not found
+__RESOLVED_CONFIG__
+__DNS_LISTENERS__
+State  Recv-Q Send-Q    Local Address:Port Peer Address:PortProcess
+__ROUTE__
+default via 192.168.5.2 dev eth0 proto dhcp src 192.168.5.1 metric 200 
+172.17.0.0/16 dev docker0 proto kernel scope link src 172.17.0.1 linkdown 
+192.168.5.0/24 dev eth0 proto kernel scope link src 192.168.5.1 metric 200 
+192.168.5.2 dev eth0 proto dhcp scope link src 192.168.5.1 metric 200 
+__VM_PUBLIC_LOOKUP__
+GETENT_EXIT=2
+__TOOLS__
+/usr/bin/curl

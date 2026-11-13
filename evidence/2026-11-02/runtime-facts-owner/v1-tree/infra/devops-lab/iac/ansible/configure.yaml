@@ -1,0 +1,20 @@
+- name: Prepare one isolated Terraform learning environment
+  hosts: devops_lab
+  gather_facts: false
+  vars:
+    iac_namespace_name: tf-devops-lab
+    iac_config_revision: v1
+  tasks:
+    - name: Restrict the configuration destination to this exercise
+      ansible.builtin.assert:
+        that:
+          - iac_workdir is defined
+          - iac_workdir is match('^/opt/petclinic-observability/labs/iac-[0-9A-Za-z-]+$')
+          - iac_namespace_name == 'tf-devops-lab'
+          - iac_config_revision in ['v1', 'v2']
+    - name: Render deterministic public environment settings after validation
+      ansible.builtin.template:
+        src: environment.json.j2
+        dest: "{{ iac_workdir }}/environment.auto.tfvars.json"
+        mode: '0600'
+        validate: "/usr/bin/python3 {{ playbook_dir }}/../validate_variables.py %s"

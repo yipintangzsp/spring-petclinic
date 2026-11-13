@@ -1,0 +1,1025 @@
+{
+  "classification": "AMENDED_DESIGN_ONLY_NOT_APPLIED",
+  "runId": "sm-sops-20261102-01",
+  "objects": [
+    {
+      "kind": "Namespace",
+      "namespace": null,
+      "name": "petclinic",
+      "type": "core/v1 namespace",
+      "metadata": {
+        "labels": {
+          "security-manager.test/run-id": "sm-sops-20261102-01",
+          "security-manager.test/purpose": "sops-controlled-compat"
+        },
+        "annotations": {
+          "security-manager.test/kube-system-uid": "54f300a4-5f1b-4e1e-86a1-d173e5a402d8"
+        }
+      },
+      "requiredFieldsDesign": {
+        "phaseExpected": "Active",
+        "precondition": "Must not pre-exist unless exact owned run UID ledger proves same fixture"
+      },
+      "consumedBy": "Fixed Gate target/identity/Lease scope",
+      "creationDependencies": [
+        "guarded cluster identity verified"
+      ],
+      "deletionDependencies": [
+        "All exact owned namespaced objects removed; foreign object check clear"
+      ],
+      "uidLedger": "Record real UID at creation; re-read and require expected UID before any destructive operation. No object created now."
+    },
+    {
+      "kind": "Namespace",
+      "namespace": null,
+      "name": "devsecops-system",
+      "type": "core/v1 namespace",
+      "metadata": {
+        "labels": {
+          "security-manager.test/run-id": "sm-sops-20261102-01",
+          "security-manager.test/purpose": "sops-controlled-compat"
+        },
+        "annotations": {
+          "security-manager.test/kube-system-uid": "54f300a4-5f1b-4e1e-86a1-d173e5a402d8"
+        }
+      },
+      "requiredFieldsDesign": {
+        "phaseExpected": "Active",
+        "precondition": "Must not pre-exist unless exact owned run UID ledger proves same fixture"
+      },
+      "consumedBy": "Fixed Gate target/identity/Lease scope",
+      "creationDependencies": [
+        "guarded cluster identity verified"
+      ],
+      "deletionDependencies": [
+        "All exact owned namespaced objects removed; foreign object check clear"
+      ],
+      "uidLedger": "Record real UID at creation; re-read and require expected UID before any destructive operation. No object created now."
+    },
+    {
+      "kind": "Namespace",
+      "namespace": null,
+      "name": "data-infra",
+      "type": "core/v1 namespace",
+      "metadata": {
+        "labels": {
+          "security-manager.test/run-id": "sm-sops-20261102-01",
+          "security-manager.test/purpose": "sops-controlled-compat"
+        },
+        "annotations": {
+          "security-manager.test/kube-system-uid": "54f300a4-5f1b-4e1e-86a1-d173e5a402d8"
+        }
+      },
+      "requiredFieldsDesign": {
+        "phaseExpected": "Active",
+        "precondition": "Must not pre-exist unless exact owned run UID ledger proves same fixture"
+      },
+      "consumedBy": "Fixed Gate target/identity/Lease scope",
+      "creationDependencies": [
+        "guarded cluster identity verified"
+      ],
+      "deletionDependencies": [
+        "All exact owned namespaced objects removed; foreign object check clear"
+      ],
+      "uidLedger": "Record real UID at creation; re-read and require expected UID before any destructive operation. No object created now."
+    },
+    {
+      "kind": "Secret",
+      "namespace": "petclinic",
+      "name": "petclinic-db",
+      "type": "Opaque",
+      "metadata": {
+        "labels": {
+          "security-manager.test/run-id": "sm-sops-20261102-01",
+          "security-manager.test/purpose": "sops-controlled-compat"
+        },
+        "annotations": {
+          "security-manager.test/kube-system-uid": "54f300a4-5f1b-4e1e-86a1-d173e5a402d8"
+        }
+      },
+      "requiredFieldsDesign": {
+        "dataKeysAndUnencodedValueDesign": {
+          "username": "FIXTURE_ONLY_DB_USER_20261102",
+          "password": "FIXTURE_ONLY_DB_PASSWORD_A_20261102"
+        },
+        "dataEncoding": "Canonical base64 only in a future authorized preparation; NOT encoded now",
+        "stringData": "MUST BE OMITTED, including empty object",
+        "apiVersionExpected": "v1",
+        "metadataUIDInDesired": "OMIT; server generates real UID",
+        "encryptionMapping": "infra/security/secrets/petclinic-db.enc.json"
+      },
+      "consumedBy": "Gate target read/type/data -> optional SSA -> real after-read UID/data",
+      "creationDependencies": [
+        "namespace owned",
+        "baseline canonical data prepared in memory"
+      ],
+      "deletionDependencies": [
+        "case mutations restored/owned replacement generation recorded",
+        "SA/RBAC removal does not remove manager cleanup credentials"
+      ],
+      "uidLedger": "Record real UID at creation; re-read and require expected UID before any destructive operation. No object created now."
+    },
+    {
+      "kind": "Secret",
+      "namespace": "petclinic",
+      "name": "rabbitmq-client",
+      "type": "Opaque",
+      "metadata": {
+        "labels": {
+          "security-manager.test/run-id": "sm-sops-20261102-01",
+          "security-manager.test/purpose": "sops-controlled-compat"
+        },
+        "annotations": {
+          "security-manager.test/kube-system-uid": "54f300a4-5f1b-4e1e-86a1-d173e5a402d8"
+        }
+      },
+      "requiredFieldsDesign": {
+        "dataKeysAndUnencodedValueDesign": {
+          "username": "FIXTURE_ONLY_RMQ_USER_20261102",
+          "password": "FIXTURE_ONLY_RMQ_PASSWORD_A_20261102"
+        },
+        "dataEncoding": "Canonical base64 only in a future authorized preparation; NOT encoded now",
+        "stringData": "MUST BE OMITTED, including empty object",
+        "apiVersionExpected": "v1",
+        "metadataUIDInDesired": "OMIT; server generates real UID",
+        "encryptionMapping": "infra/security/secrets/rabbitmq-client.enc.json"
+      },
+      "consumedBy": "Gate target read/type/data -> optional SSA -> real after-read UID/data",
+      "creationDependencies": [
+        "namespace owned",
+        "baseline canonical data prepared in memory"
+      ],
+      "deletionDependencies": [
+        "case mutations restored/owned replacement generation recorded",
+        "SA/RBAC removal does not remove manager cleanup credentials"
+      ],
+      "uidLedger": "Record real UID at creation; re-read and require expected UID before any destructive operation. No object created now."
+    },
+    {
+      "kind": "Secret",
+      "namespace": "petclinic",
+      "name": "petclinic-harbor-pull",
+      "type": "kubernetes.io/dockerconfigjson",
+      "metadata": {
+        "labels": {
+          "security-manager.test/run-id": "sm-sops-20261102-01",
+          "security-manager.test/purpose": "sops-controlled-compat"
+        },
+        "annotations": {
+          "security-manager.test/kube-system-uid": "54f300a4-5f1b-4e1e-86a1-d173e5a402d8"
+        }
+      },
+      "requiredFieldsDesign": {
+        "dataKeysAndUnencodedValueDesign": {
+          ".dockerconfigjson": "JSON auths[registry.fixture.invalid] with username FIXTURE_ONLY_PULL_USER and password FIXTURE_ONLY_PULL_PASSWORD_A; no auth token, no network login"
+        },
+        "dataEncoding": "Canonical base64 only in a future authorized preparation; NOT encoded now",
+        "stringData": "MUST BE OMITTED, including empty object",
+        "apiVersionExpected": "v1",
+        "metadataUIDInDesired": "OMIT; server generates real UID",
+        "encryptionMapping": "infra/security/secrets/petclinic-harbor-pull.enc.json"
+      },
+      "consumedBy": "Gate target read/type/data -> optional SSA -> real after-read UID/data",
+      "creationDependencies": [
+        "namespace owned",
+        "baseline canonical data prepared in memory"
+      ],
+      "deletionDependencies": [
+        "case mutations restored/owned replacement generation recorded",
+        "SA/RBAC removal does not remove manager cleanup credentials"
+      ],
+      "uidLedger": "Record real UID at creation; re-read and require expected UID before any destructive operation. No object created now."
+    },
+    {
+      "kind": "Secret",
+      "namespace": "devsecops-system",
+      "name": "kyverno-registry-pull",
+      "type": "kubernetes.io/dockerconfigjson",
+      "metadata": {
+        "labels": {
+          "security-manager.test/run-id": "sm-sops-20261102-01",
+          "security-manager.test/purpose": "sops-controlled-compat"
+        },
+        "annotations": {
+          "security-manager.test/kube-system-uid": "54f300a4-5f1b-4e1e-86a1-d173e5a402d8"
+        }
+      },
+      "requiredFieldsDesign": {
+        "dataKeysAndUnencodedValueDesign": {
+          ".dockerconfigjson": "JSON auths[registry.fixture.invalid] with username FIXTURE_ONLY_VERIFY_USER and password FIXTURE_ONLY_VERIFY_PASSWORD_A; no auth token, no registry request"
+        },
+        "dataEncoding": "Canonical base64 only in a future authorized preparation; NOT encoded now",
+        "stringData": "MUST BE OMITTED, including empty object",
+        "apiVersionExpected": "v1",
+        "metadataUIDInDesired": "OMIT; server generates real UID",
+        "encryptionMapping": "infra/security/secrets/kyverno-registry-pull.enc.json"
+      },
+      "consumedBy": "Gate target read/type/data -> optional SSA -> real after-read UID/data",
+      "creationDependencies": [
+        "namespace owned",
+        "baseline canonical data prepared in memory"
+      ],
+      "deletionDependencies": [
+        "case mutations restored/owned replacement generation recorded",
+        "SA/RBAC removal does not remove manager cleanup credentials"
+      ],
+      "uidLedger": "Record real UID at creation; re-read and require expected UID before any destructive operation. No object created now."
+    },
+    {
+      "kind": "Lease",
+      "namespace": "data-infra",
+      "name": "platform-heavy",
+      "type": "coordination.k8s.io/v1 Lease",
+      "metadata": {
+        "labels": {
+          "security-manager.test/run-id": "sm-sops-20261102-01",
+          "security-manager.test/purpose": "sops-controlled-compat"
+        },
+        "annotations": {
+          "security-manager.test/kube-system-uid": "54f300a4-5f1b-4e1e-86a1-d173e5a402d8"
+        }
+      },
+      "requiredFieldsDesign": {
+        "spec.holderIdentity": "sm-sops-20261102-01",
+        "spec.leaseDurationSeconds": 3600,
+        "spec.acquireTime/renewTime": "future creation timestamp; original Gate checks holder only; no lease acquisition helper added"
+      },
+      "consumedBy": "requireLease",
+      "creationDependencies": [
+        "data-infra owned"
+      ],
+      "deletionDependencies": [
+        "all Gate/observer children stopped"
+      ],
+      "uidLedger": "Record real UID at creation; re-read and require expected UID before any destructive operation. No object created now."
+    },
+    {
+      "kind": "ServiceAccount",
+      "namespace": "devsecops-system",
+      "name": "platform-secret-reconciler",
+      "type": "core/v1 ServiceAccount",
+      "metadata": {
+        "labels": {
+          "security-manager.test/run-id": "sm-sops-20261102-01",
+          "security-manager.test/purpose": "sops-controlled-compat"
+        },
+        "annotations": {
+          "security-manager.test/kube-system-uid": "54f300a4-5f1b-4e1e-86a1-d173e5a402d8"
+        }
+      },
+      "requiredFieldsDesign": {
+        "automountServiceAccountToken": false,
+        "tokenSecret": "none manually created; these are impersonation targets, no Pod or long-lived token needed"
+      },
+      "consumedBy": "Fixed --as identities",
+      "creationDependencies": [
+        "devsecops-system owned"
+      ],
+      "deletionDependencies": [
+        "all referring RoleBindings removed"
+      ],
+      "uidLedger": "Record real UID at creation; re-read and require expected UID before any destructive operation. No object created now."
+    },
+    {
+      "kind": "ServiceAccount",
+      "namespace": "devsecops-system",
+      "name": "kyverno-admission-controller",
+      "type": "core/v1 ServiceAccount",
+      "metadata": {
+        "labels": {
+          "security-manager.test/run-id": "sm-sops-20261102-01",
+          "security-manager.test/purpose": "sops-controlled-compat"
+        },
+        "annotations": {
+          "security-manager.test/kube-system-uid": "54f300a4-5f1b-4e1e-86a1-d173e5a402d8"
+        }
+      },
+      "requiredFieldsDesign": {
+        "automountServiceAccountToken": false,
+        "tokenSecret": "none manually created; these are impersonation targets, no Pod or long-lived token needed"
+      },
+      "consumedBy": "Fixed --as identities",
+      "creationDependencies": [
+        "devsecops-system owned"
+      ],
+      "deletionDependencies": [
+        "all referring RoleBindings removed"
+      ],
+      "uidLedger": "Record real UID at creation; re-read and require expected UID before any destructive operation. No object created now."
+    },
+    {
+      "kind": "Role",
+      "namespace": "petclinic",
+      "name": "sops-fixture-reconciler-business",
+      "type": "rbac.authorization.k8s.io/v1 Role",
+      "metadata": {
+        "labels": {
+          "security-manager.test/run-id": "sm-sops-20261102-01",
+          "security-manager.test/purpose": "sops-controlled-compat"
+        },
+        "annotations": {
+          "security-manager.test/kube-system-uid": "54f300a4-5f1b-4e1e-86a1-d173e5a402d8"
+        }
+      },
+      "requiredFieldsDesign": {
+        "rules": [
+          {
+            "apiGroups": [
+              ""
+            ],
+            "resources": [
+              "secrets"
+            ],
+            "verbs": [
+              "get",
+              "patch"
+            ],
+            "resourceNames": [
+              "petclinic-db",
+              "rabbitmq-client",
+              "petclinic-harbor-pull"
+            ]
+          }
+        ]
+      },
+      "consumedBy": "Exact actor operations; no wildcard verbs/resources",
+      "creationDependencies": [
+        "petclinic namespace owned"
+      ],
+      "deletionDependencies": [
+        "corresponding RoleBinding removed"
+      ],
+      "uidLedger": "Record real UID at creation; re-read and require expected UID before any destructive operation. No object created now."
+    },
+    {
+      "kind": "RoleBinding",
+      "namespace": "petclinic",
+      "name": "sops-fixture-reconciler-business-binding",
+      "type": "rbac.authorization.k8s.io/v1 RoleBinding",
+      "metadata": {
+        "labels": {
+          "security-manager.test/run-id": "sm-sops-20261102-01",
+          "security-manager.test/purpose": "sops-controlled-compat"
+        },
+        "annotations": {
+          "security-manager.test/kube-system-uid": "54f300a4-5f1b-4e1e-86a1-d173e5a402d8"
+        }
+      },
+      "requiredFieldsDesign": {
+        "roleRef": {
+          "kind": "Role",
+          "name": "sops-fixture-reconciler-business",
+          "apiGroup": "rbac.authorization.k8s.io"
+        },
+        "subjects": [
+          {
+            "kind": "ServiceAccount",
+            "name": "platform-secret-reconciler",
+            "namespace": "devsecops-system"
+          }
+        ]
+      },
+      "consumedBy": "Bind only named fixture actor",
+      "creationDependencies": [
+        "corresponding Role exists",
+        "SA exists if subject is SA"
+      ],
+      "deletionDependencies": [
+        "actors stopped; before Role removal"
+      ],
+      "uidLedger": "Record real UID at creation; re-read and require expected UID before any destructive operation. No object created now."
+    },
+    {
+      "kind": "Role",
+      "namespace": "devsecops-system",
+      "name": "sops-fixture-reconciler-registry",
+      "type": "rbac.authorization.k8s.io/v1 Role",
+      "metadata": {
+        "labels": {
+          "security-manager.test/run-id": "sm-sops-20261102-01",
+          "security-manager.test/purpose": "sops-controlled-compat"
+        },
+        "annotations": {
+          "security-manager.test/kube-system-uid": "54f300a4-5f1b-4e1e-86a1-d173e5a402d8"
+        }
+      },
+      "requiredFieldsDesign": {
+        "rules": [
+          {
+            "apiGroups": [
+              ""
+            ],
+            "resources": [
+              "secrets"
+            ],
+            "verbs": [
+              "get",
+              "patch"
+            ],
+            "resourceNames": [
+              "kyverno-registry-pull"
+            ]
+          }
+        ]
+      },
+      "consumedBy": "Exact actor operations; no wildcard verbs/resources",
+      "creationDependencies": [
+        "devsecops-system namespace owned"
+      ],
+      "deletionDependencies": [
+        "corresponding RoleBinding removed"
+      ],
+      "uidLedger": "Record real UID at creation; re-read and require expected UID before any destructive operation. No object created now."
+    },
+    {
+      "kind": "RoleBinding",
+      "namespace": "devsecops-system",
+      "name": "sops-fixture-reconciler-registry-binding",
+      "type": "rbac.authorization.k8s.io/v1 RoleBinding",
+      "metadata": {
+        "labels": {
+          "security-manager.test/run-id": "sm-sops-20261102-01",
+          "security-manager.test/purpose": "sops-controlled-compat"
+        },
+        "annotations": {
+          "security-manager.test/kube-system-uid": "54f300a4-5f1b-4e1e-86a1-d173e5a402d8"
+        }
+      },
+      "requiredFieldsDesign": {
+        "roleRef": {
+          "kind": "Role",
+          "name": "sops-fixture-reconciler-registry",
+          "apiGroup": "rbac.authorization.k8s.io"
+        },
+        "subjects": [
+          {
+            "kind": "ServiceAccount",
+            "name": "platform-secret-reconciler",
+            "namespace": "devsecops-system"
+          }
+        ]
+      },
+      "consumedBy": "Bind only named fixture actor",
+      "creationDependencies": [
+        "corresponding Role exists",
+        "SA exists if subject is SA"
+      ],
+      "deletionDependencies": [
+        "actors stopped; before Role removal"
+      ],
+      "uidLedger": "Record real UID at creation; re-read and require expected UID before any destructive operation. No object created now."
+    },
+    {
+      "kind": "Role",
+      "namespace": "devsecops-system",
+      "name": "sops-fixture-verifier-registry",
+      "type": "rbac.authorization.k8s.io/v1 Role",
+      "metadata": {
+        "labels": {
+          "security-manager.test/run-id": "sm-sops-20261102-01",
+          "security-manager.test/purpose": "sops-controlled-compat"
+        },
+        "annotations": {
+          "security-manager.test/kube-system-uid": "54f300a4-5f1b-4e1e-86a1-d173e5a402d8"
+        }
+      },
+      "requiredFieldsDesign": {
+        "rules": [
+          {
+            "apiGroups": [
+              ""
+            ],
+            "resources": [
+              "secrets"
+            ],
+            "verbs": [
+              "get"
+            ],
+            "resourceNames": [
+              "kyverno-registry-pull"
+            ]
+          }
+        ]
+      },
+      "consumedBy": "Exact actor operations; no wildcard verbs/resources",
+      "creationDependencies": [
+        "devsecops-system namespace owned"
+      ],
+      "deletionDependencies": [
+        "corresponding RoleBinding removed"
+      ],
+      "uidLedger": "Record real UID at creation; re-read and require expected UID before any destructive operation. No object created now."
+    },
+    {
+      "kind": "RoleBinding",
+      "namespace": "devsecops-system",
+      "name": "sops-fixture-verifier-registry-binding",
+      "type": "rbac.authorization.k8s.io/v1 RoleBinding",
+      "metadata": {
+        "labels": {
+          "security-manager.test/run-id": "sm-sops-20261102-01",
+          "security-manager.test/purpose": "sops-controlled-compat"
+        },
+        "annotations": {
+          "security-manager.test/kube-system-uid": "54f300a4-5f1b-4e1e-86a1-d173e5a402d8"
+        }
+      },
+      "requiredFieldsDesign": {
+        "roleRef": {
+          "kind": "Role",
+          "name": "sops-fixture-verifier-registry",
+          "apiGroup": "rbac.authorization.k8s.io"
+        },
+        "subjects": [
+          {
+            "kind": "ServiceAccount",
+            "name": "kyverno-admission-controller",
+            "namespace": "devsecops-system"
+          }
+        ]
+      },
+      "consumedBy": "Bind only named fixture actor",
+      "creationDependencies": [
+        "corresponding Role exists",
+        "SA exists if subject is SA"
+      ],
+      "deletionDependencies": [
+        "actors stopped; before Role removal"
+      ],
+      "uidLedger": "Record real UID at creation; re-read and require expected UID before any destructive operation. No object created now."
+    },
+    {
+      "kind": "Role",
+      "namespace": "data-infra",
+      "name": "sops-fixture-executor-lease",
+      "type": "rbac.authorization.k8s.io/v1 Role",
+      "metadata": {
+        "labels": {
+          "security-manager.test/run-id": "sm-sops-20261102-01",
+          "security-manager.test/purpose": "sops-controlled-compat"
+        },
+        "annotations": {
+          "security-manager.test/kube-system-uid": "54f300a4-5f1b-4e1e-86a1-d173e5a402d8"
+        }
+      },
+      "requiredFieldsDesign": {
+        "rules": [
+          {
+            "apiGroups": [
+              "coordination.k8s.io"
+            ],
+            "resources": [
+              "leases"
+            ],
+            "verbs": [
+              "get"
+            ],
+            "resourceNames": [
+              "platform-heavy"
+            ]
+          }
+        ],
+        "subject": {
+          "kind": "ServiceAccount",
+          "name": "security-fixture-executor",
+          "namespace": "devsecops-system"
+        }
+      },
+      "consumedBy": "Exact actor operations; no wildcard verbs/resources",
+      "creationDependencies": [
+        "data-infra namespace owned"
+      ],
+      "deletionDependencies": [
+        "corresponding RoleBinding removed"
+      ],
+      "uidLedger": "Record real UID at creation; re-read and require expected UID before any destructive operation. No object created now."
+    },
+    {
+      "kind": "RoleBinding",
+      "namespace": "data-infra",
+      "name": "sops-fixture-executor-lease-binding",
+      "type": "rbac.authorization.k8s.io/v1 RoleBinding",
+      "metadata": {
+        "labels": {
+          "security-manager.test/run-id": "sm-sops-20261102-01",
+          "security-manager.test/purpose": "sops-controlled-compat"
+        },
+        "annotations": {
+          "security-manager.test/kube-system-uid": "54f300a4-5f1b-4e1e-86a1-d173e5a402d8"
+        }
+      },
+      "requiredFieldsDesign": {
+        "roleRef": {
+          "kind": "Role",
+          "name": "sops-fixture-executor-lease",
+          "apiGroup": "rbac.authorization.k8s.io"
+        },
+        "subjects": [
+          {
+            "kind": "ServiceAccount",
+            "name": "security-fixture-executor",
+            "namespace": "devsecops-system"
+          }
+        ]
+      },
+      "consumedBy": "Bind only named fixture actor",
+      "creationDependencies": [
+        "corresponding Role exists",
+        "SA exists if subject is SA"
+      ],
+      "deletionDependencies": [
+        "actors stopped; before Role removal"
+      ],
+      "uidLedger": "Record real UID at creation; re-read and require expected UID before any destructive operation. No object created now."
+    },
+    {
+      "kind": "Role",
+      "namespace": "devsecops-system",
+      "name": "sops-fixture-executor-impersonation",
+      "type": "rbac.authorization.k8s.io/v1 Role",
+      "metadata": {
+        "labels": {
+          "security-manager.test/run-id": "sm-sops-20261102-01",
+          "security-manager.test/purpose": "sops-controlled-compat"
+        },
+        "annotations": {
+          "security-manager.test/kube-system-uid": "54f300a4-5f1b-4e1e-86a1-d173e5a402d8"
+        }
+      },
+      "requiredFieldsDesign": {
+        "rules": [
+          {
+            "apiGroups": [
+              ""
+            ],
+            "resources": [
+              "serviceaccounts"
+            ],
+            "verbs": [
+              "impersonate"
+            ],
+            "resourceNames": [
+              "platform-secret-reconciler",
+              "kyverno-admission-controller"
+            ]
+          }
+        ],
+        "subject": {
+          "kind": "ServiceAccount",
+          "name": "security-fixture-executor",
+          "namespace": "devsecops-system"
+        }
+      },
+      "consumedBy": "Exact actor operations; no wildcard verbs/resources",
+      "creationDependencies": [
+        "devsecops-system namespace owned"
+      ],
+      "deletionDependencies": [
+        "corresponding RoleBinding removed"
+      ],
+      "uidLedger": "Record real UID at creation; re-read and require expected UID before any destructive operation. No object created now."
+    },
+    {
+      "kind": "RoleBinding",
+      "namespace": "devsecops-system",
+      "name": "sops-fixture-executor-impersonation-binding",
+      "type": "rbac.authorization.k8s.io/v1 RoleBinding",
+      "metadata": {
+        "labels": {
+          "security-manager.test/run-id": "sm-sops-20261102-01",
+          "security-manager.test/purpose": "sops-controlled-compat"
+        },
+        "annotations": {
+          "security-manager.test/kube-system-uid": "54f300a4-5f1b-4e1e-86a1-d173e5a402d8"
+        }
+      },
+      "requiredFieldsDesign": {
+        "roleRef": {
+          "kind": "Role",
+          "name": "sops-fixture-executor-impersonation",
+          "apiGroup": "rbac.authorization.k8s.io"
+        },
+        "subjects": [
+          {
+            "kind": "ServiceAccount",
+            "name": "security-fixture-executor",
+            "namespace": "devsecops-system"
+          }
+        ]
+      },
+      "consumedBy": "Bind only named fixture actor",
+      "creationDependencies": [
+        "corresponding Role exists",
+        "SA exists if subject is SA"
+      ],
+      "deletionDependencies": [
+        "actors stopped; before Role removal"
+      ],
+      "uidLedger": "Record real UID at creation; re-read and require expected UID before any destructive operation. No object created now."
+    },
+    {
+      "kind": "ClusterRole",
+      "namespace": null,
+      "name": "sops-fixture-executor-identity",
+      "type": "rbac.authorization.k8s.io/v1 ClusterRole",
+      "metadata": {
+        "labels": {
+          "security-manager.test/run-id": "sm-sops-20261102-01",
+          "security-manager.test/purpose": "sops-controlled-compat"
+        },
+        "annotations": {
+          "security-manager.test/kube-system-uid": "54f300a4-5f1b-4e1e-86a1-d173e5a402d8"
+        }
+      },
+      "requiredFieldsDesign": {
+        "rules": [
+          {
+            "apiGroups": [
+              ""
+            ],
+            "resources": [
+              "namespaces"
+            ],
+            "verbs": [
+              "get"
+            ],
+            "resourceNames": [
+              "kube-system",
+              "devsecops-system"
+            ]
+          },
+          {
+            "apiGroups": [
+              "authentication.k8s.io"
+            ],
+            "resources": [
+              "selfsubjectreviews"
+            ],
+            "verbs": [
+              "create"
+            ]
+          }
+        ]
+      },
+      "consumedBy": "Guard authenticated SelfSubjectReview and kube-system/executor namespace UID checks",
+      "creationDependencies": [
+        "isolated UID proved"
+      ],
+      "deletionDependencies": [
+        "ClusterRoleBinding removed"
+      ],
+      "uidLedger": "Record real UID at creation; re-read and require expected UID before any destructive operation. No object created now."
+    },
+    {
+      "kind": "ClusterRoleBinding",
+      "namespace": null,
+      "name": "sops-fixture-executor-identity-binding",
+      "type": "rbac.authorization.k8s.io/v1 ClusterRoleBinding",
+      "metadata": {
+        "labels": {
+          "security-manager.test/run-id": "sm-sops-20261102-01",
+          "security-manager.test/purpose": "sops-controlled-compat"
+        },
+        "annotations": {
+          "security-manager.test/kube-system-uid": "54f300a4-5f1b-4e1e-86a1-d173e5a402d8"
+        }
+      },
+      "requiredFieldsDesign": {
+        "roleRef": {
+          "apiGroup": "rbac.authorization.k8s.io",
+          "kind": "ClusterRole",
+          "name": "sops-fixture-executor-identity"
+        },
+        "subjects": [
+          {
+            "kind": "ServiceAccount",
+            "name": "security-fixture-executor",
+            "namespace": "devsecops-system"
+          }
+        ]
+      },
+      "consumedBy": "Allow both restricted actors to pass same guard",
+      "creationDependencies": [
+        "ClusterRole exists"
+      ],
+      "deletionDependencies": [
+        "before ClusterRole removal"
+      ],
+      "uidLedger": "Record real UID at creation; re-read and require expected UID before any destructive operation. No object created now."
+    },
+    {
+      "kind": "ServiceAccount",
+      "namespace": "devsecops-system",
+      "name": "security-fixture-executor",
+      "type": "core/v1 ServiceAccount",
+      "metadata": {
+        "labels": {
+          "security-manager.test/run-id": "sm-sops-20261102-01",
+          "security-manager.test/purpose": "sops-controlled-compat"
+        },
+        "annotations": {
+          "security-manager.test/kube-system-uid": "54f300a4-5f1b-4e1e-86a1-d173e5a402d8"
+        }
+      },
+      "requiredFieldsDesign": {
+        "automountServiceAccountToken": false,
+        "credential": "Future TokenRequest only; exact SA UID/audience/issuer/expiry pinned; no persistent token Secret"
+      },
+      "consumedBy": "MIN_RBAC_EXECUTOR base authenticated identity, prior to impersonating either Gate SA",
+      "creationDependencies": [
+        "owned devsecops-system namespace",
+        "future guarded isolated fixture manager"
+      ],
+      "deletionDependencies": [
+        "all executor processes stopped",
+        "short-lived token snapshot removed",
+        "own rolebindings removed"
+      ],
+      "uidLedger": "Record real UID at creation; re-read and require expected UID before any destructive operation. No object created now."
+    }
+  ],
+  "explicitCounts": {
+    "Namespace": 3,
+    "Secret": 4,
+    "Lease": 1,
+    "ServiceAccount": 3,
+    "Role": 5,
+    "RoleBinding": 5,
+    "ClusterRole": 1,
+    "ClusterRoleBinding": 1
+  },
+  "automaticObjects": "Default SA/root-CA ConfigMap may be auto-created per namespace; not hidden as manually created objects; record separately in future cleanup inventory.",
+  "baselineAgePairs": 1,
+  "supplementalValidWrongKeyPairs": 1,
+  "totalAgeKeypairsAcrossFullMatrix": 2,
+  "countNote": "Second negative-only disposable pair explicitly approved. Two Gate SAs plus one executor SA; prior two CSR/User identities and separate mutation grants removed. Existing isolated fixture manager performs setup/mutations/cleanup outside executor; never mounted to Gate.",
+  "encryptedFiles": [
+    {
+      "kind": "EncryptedFixtureDesignOnly",
+      "namespace": "petclinic",
+      "name": "petclinic-db.enc.json",
+      "path": "infra/security/secrets/petclinic-db.enc.json",
+      "type": "SOPS JSON; data encrypted, object scope/type retained",
+      "requiredFields": [
+        "apiVersion=v1",
+        "kind=Secret",
+        "metadata.name=petclinic-db",
+        "metadata.namespace=petclinic",
+        "type (exact synthetic live type)",
+        "data (synthetic only)"
+      ],
+      "omittedFields": [
+        "stringData",
+        "metadata.uid",
+        "metadata.resourceVersion",
+        "production-derived annotations/values"
+      ],
+      "recipient": "public recipient of baseline synthetic age pair; no actual recipient yet",
+      "expectedDecryption": "Canonical synthetic Secret JSON; stdout stays in observer memory, never archived",
+      "consumedBy": "Unchanged secrets-gate.mjs spawnSync(toolchain.root+/sops, [decrypt, relative path])",
+      "creationDependencies": [
+        "future authorization",
+        "baseline test key generated",
+        "canonical synthetic data model",
+        "verified SOPS binary"
+      ],
+      "deletionDependencies": [
+        "redacted evidence finalized",
+        "all Gate/decrypt subprocesses stopped"
+      ],
+      "uidRelation": "Desired UID is intentionally absent. Actual UID is captured before and after each Gate apply/read; no fabricated UID.",
+      "immutability": "Encrypt canonical once; baseline file hash taken after encryption. Negative cases use per-case copies. Baseline encrypted bytes must stay unchanged."
+    },
+    {
+      "kind": "EncryptedFixtureDesignOnly",
+      "namespace": "petclinic",
+      "name": "rabbitmq-client.enc.json",
+      "path": "infra/security/secrets/rabbitmq-client.enc.json",
+      "type": "SOPS JSON; data encrypted, object scope/type retained",
+      "requiredFields": [
+        "apiVersion=v1",
+        "kind=Secret",
+        "metadata.name=rabbitmq-client",
+        "metadata.namespace=petclinic",
+        "type (exact synthetic live type)",
+        "data (synthetic only)"
+      ],
+      "omittedFields": [
+        "stringData",
+        "metadata.uid",
+        "metadata.resourceVersion",
+        "production-derived annotations/values"
+      ],
+      "recipient": "public recipient of baseline synthetic age pair; no actual recipient yet",
+      "expectedDecryption": "Canonical synthetic Secret JSON; stdout stays in observer memory, never archived",
+      "consumedBy": "Unchanged secrets-gate.mjs spawnSync(toolchain.root+/sops, [decrypt, relative path])",
+      "creationDependencies": [
+        "future authorization",
+        "baseline test key generated",
+        "canonical synthetic data model",
+        "verified SOPS binary"
+      ],
+      "deletionDependencies": [
+        "redacted evidence finalized",
+        "all Gate/decrypt subprocesses stopped"
+      ],
+      "uidRelation": "Desired UID is intentionally absent. Actual UID is captured before and after each Gate apply/read; no fabricated UID.",
+      "immutability": "Encrypt canonical once; baseline file hash taken after encryption. Negative cases use per-case copies. Baseline encrypted bytes must stay unchanged."
+    },
+    {
+      "kind": "EncryptedFixtureDesignOnly",
+      "namespace": "petclinic",
+      "name": "petclinic-harbor-pull.enc.json",
+      "path": "infra/security/secrets/petclinic-harbor-pull.enc.json",
+      "type": "SOPS JSON; data encrypted, object scope/type retained",
+      "requiredFields": [
+        "apiVersion=v1",
+        "kind=Secret",
+        "metadata.name=petclinic-harbor-pull",
+        "metadata.namespace=petclinic",
+        "type (exact synthetic live type)",
+        "data (synthetic only)"
+      ],
+      "omittedFields": [
+        "stringData",
+        "metadata.uid",
+        "metadata.resourceVersion",
+        "production-derived annotations/values"
+      ],
+      "recipient": "public recipient of baseline synthetic age pair; no actual recipient yet",
+      "expectedDecryption": "Canonical synthetic Secret JSON; stdout stays in observer memory, never archived",
+      "consumedBy": "Unchanged secrets-gate.mjs spawnSync(toolchain.root+/sops, [decrypt, relative path])",
+      "creationDependencies": [
+        "future authorization",
+        "baseline test key generated",
+        "canonical synthetic data model",
+        "verified SOPS binary"
+      ],
+      "deletionDependencies": [
+        "redacted evidence finalized",
+        "all Gate/decrypt subprocesses stopped"
+      ],
+      "uidRelation": "Desired UID is intentionally absent. Actual UID is captured before and after each Gate apply/read; no fabricated UID.",
+      "immutability": "Encrypt canonical once; baseline file hash taken after encryption. Negative cases use per-case copies. Baseline encrypted bytes must stay unchanged."
+    },
+    {
+      "kind": "EncryptedFixtureDesignOnly",
+      "namespace": "devsecops-system",
+      "name": "kyverno-registry-pull.enc.json",
+      "path": "infra/security/secrets/kyverno-registry-pull.enc.json",
+      "type": "SOPS JSON; data encrypted, object scope/type retained",
+      "requiredFields": [
+        "apiVersion=v1",
+        "kind=Secret",
+        "metadata.name=kyverno-registry-pull",
+        "metadata.namespace=devsecops-system",
+        "type (exact synthetic live type)",
+        "data (synthetic only)"
+      ],
+      "omittedFields": [
+        "stringData",
+        "metadata.uid",
+        "metadata.resourceVersion",
+        "production-derived annotations/values"
+      ],
+      "recipient": "public recipient of baseline synthetic age pair; no actual recipient yet",
+      "expectedDecryption": "Canonical synthetic Secret JSON; stdout stays in observer memory, never archived",
+      "consumedBy": "Unchanged secrets-gate.mjs spawnSync(toolchain.root+/sops, [decrypt, relative path])",
+      "creationDependencies": [
+        "future authorization",
+        "baseline test key generated",
+        "canonical synthetic data model",
+        "verified SOPS binary"
+      ],
+      "deletionDependencies": [
+        "redacted evidence finalized",
+        "all Gate/decrypt subprocesses stopped"
+      ],
+      "uidRelation": "Desired UID is intentionally absent. Actual UID is captured before and after each Gate apply/read; no fabricated UID.",
+      "immutability": "Encrypt canonical once; baseline file hash taken after encryption. Negative cases use per-case copies. Baseline encrypted bytes must stay unchanged."
+    }
+  ],
+  "ageKeyDesign": {
+    "kind": "SyntheticAgeKeyPairDesignOnly",
+    "namespace": null,
+    "name": "baseline-fixture-age",
+    "type": "age X25519 test identity",
+    "privatePath": "/var/tmp/security-manager-sops/sm-sops-20261102-01/keys/baseline.agekey",
+    "publicPath": "/var/tmp/security-manager-sops/sm-sops-20261102-01/keys/baseline.recipient",
+    "modeDirectory": "0700",
+    "modePrivate": "0600, executor read-only mount 0400",
+    "requiredFields": "One future generated test identity and its derived public recipient; no key generated now",
+    "consumedBy": "SOPS encryption provisioning and BUSINESS_AGE_FILE in guarded Gate execution",
+    "creationDependencies": [
+      "future approval of fixture phase",
+      "private disposable volume"
+    ],
+    "deletionDependencies": [
+      "redacted evidence stored",
+      "all processes exited; handles/mounts removed"
+    ],
+    "supplementalWrongKeyPath": "/var/tmp/security-manager-sops/sm-sops-20261102-01/keys/negative-wrong-key.agekey",
+    "extraPairApproval": "Explicitly approved by current attachment; neither key generated"
+  },
+  "supersedes": "../sops-fixture-final-design/fixture-inventory-design.json"
+}

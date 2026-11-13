@@ -1,0 +1,71 @@
+{
+  "classification": "PLAN_ONLY_NOT_EXECUTED",
+  "runId": "sm-sops-20261102-02",
+  "scope": "new disposable baseline, not resurrecting old UIDs",
+  "privateRoot": "future mkdtemp(prefix=sm-sops-20261102-02-, dir=/private/tmp) mode0700; not created",
+  "tools": [
+    "Reuse verified Node22.23.3 runtime only after checking source archive, binary and runtime tree hash",
+    "Fetch official pinned SOPS3.13.3 and age1.3.2 assets (old scope cleaned); match approved official archive and frozen individual hashes, verify versions+ELF Linux arm64 in no-network sentinel"
+  ],
+  "keypairs": [
+    "BASELINE_AGE_KEYPAIR",
+    "WRONG_KEY_NEGATIVE_KEYPAIR"
+  ],
+  "namespaces": [
+    "petclinic",
+    "devsecops-system",
+    "data-infra"
+  ],
+  "serviceAccounts": [
+    {
+      "namespace": "devsecops-system",
+      "name": "platform-secret-reconciler",
+      "automountServiceAccountToken": false
+    },
+    {
+      "namespace": "devsecops-system",
+      "name": "kyverno-admission-controller",
+      "automountServiceAccountToken": false
+    },
+    {
+      "namespace": "devsecops-system",
+      "name": "security-fixture-executor",
+      "automountServiceAccountToken": false
+    }
+  ],
+  "rbac": "same approved five Roles+five RoleBindings+one limited identity ClusterRole/Binding, no wildcards or cluster-admin grant; verify27auth checks",
+  "lease": {
+    "namespace": "data-infra",
+    "name": "platform-heavy",
+    "holderIdentity": "sm-sops-20261102-02"
+  },
+  "secrets": [
+    {
+      "namespace": "petclinic",
+      "name": "petclinic-db"
+    },
+    {
+      "namespace": "petclinic",
+      "name": "rabbitmq-client"
+    },
+    {
+      "namespace": "petclinic",
+      "name": "petclinic-harbor-pull"
+    },
+    {
+      "namespace": "devsecops-system",
+      "name": "kyverno-registry-pull"
+    }
+  ],
+  "encryptedPaths": [
+    "infra/security/secrets/petclinic-db.enc.json",
+    "infra/security/secrets/rabbitmq-client.enc.json",
+    "infra/security/secrets/petclinic-harbor-pull.enc.json",
+    "infra/security/secrets/kyverno-registry-pull.enc.json"
+  ],
+  "token": "Future isolated TokenRequest for exact executor SA UID, one API audience, <=3600s; private0600 kubeconfig, pinned issuer/expiry/profile; actual SelfSubjectReview+namespaceUID must pass, no admin fallback",
+  "baselineSnapshot": "New namespace/SA/RBAC/Lease/Secret UIDs, type/keysets/synthetic value fingerprints, recipients/ciphertext/tool/source hashes. Four positive decrypt + one wrong-key failure. No production data. Remove transient plaintext.",
+  "realExecutionIntegrationBeforeMatrix": "Current container is network none and unit synthetic guard identity. Future real Node execution must use same guard with actual isolated credentials and a verified reachable API endpoint/CA/clusterUID; cannot use current loopback endpoint inside container or fake live verifier for compatibility. Add real per-call observation fidelity and barriers only in explicitly authorized test harness scope, do not modify frozen Gate/Policy.",
+  "stopAtFixtureReadiness": true,
+  "automaticRebuildAllowed": false
+}

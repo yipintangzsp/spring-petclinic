@@ -8,7 +8,7 @@ import {randomBytes,timingSafeEqual} from 'node:crypto';
 import {overview} from './data.mjs';
 import {capabilities,submit,getRun,recentRuns,updateControls} from './actions.mjs';
 import {currentControls,projectControls,writeProjectControls} from './controls.mjs';
-import {projectAccess} from './project-access.mjs';
+import {projectAccess,canReadRun} from './project-access.mjs';
 import {localHost,localOrigin} from './origins.mjs';
 const ciIntake=startCIIntake();
 const csrf=randomBytes(32).toString('hex');
@@ -51,7 +51,7 @@ const server = http.createServer(async(req,res) => {
     if(url.pathname==='/api/plugins')return json(200,{...capabilities(access.project(req)),csrfToken:csrf});
     if(url.pathname==='/api/sbom/projects')return json(200,{projects:Object.entries(sbomProjects()).map(([projectId,p])=>({projectId,displayName:p.displayName}))});
     if(url.pathname==='/api/sbom/session'){const projects=access.sessions(req);return projects?json(200,{projects}):json(403,{error:'LOCAL_OPERATOR_OR_PROJECT_IDENTITY_REQUIRED'});}
-    if(url.pathname==='/api/runs')return json(200,{runs:recentRuns().filter(r=>r.ciContext?access.operator(req):r.pluginId==='sbom'?authorized(req,r.projectId)&&(!access.project(req)||access.project(req)===r.projectId):!access.project(req)||access.operator(req)).slice(0,20)});
+    if(url.pathname==='/api/runs')return json(200,{runs:recentRuns().filter(r=>canReadRun(req,r,access)).slice(0,20)});
     const configMatch=url.pathname.match(/^\/api\/projects\/([A-Za-z0-9_.-]+)\/config$/);
     if(configMatch){if(!authorized(req,configMatch[1]))return json(403,{error:'PROJECT_NOT_AUTHORIZED'});return json(200,projectControls(configMatch[1]));}
     if(url.pathname.startsWith('/api/projects/')){
@@ -61,7 +61,7 @@ const server = http.createServer(async(req,res) => {
       if(r.state!=='COMPLETED')return json(409,{error:'SBOM_NOT_AVAILABLE'});
       return send(200,'application/json',fs.readFileSync(path.join(root,'.devsecops/security-view-runs-v1',r.runId,'artifact/sbom.raw.json')));
     }
-    if(url.pathname.startsWith('/api/runs/')){const r=getRun(url.pathname.slice('/api/runs/'.length));if(r.ciContext&&!access.operator(req)||r.pluginId==='sbom'&&!authorized(req,r.projectId)||r.pluginId!=='sbom'&&access.project(req)&&!access.operator(req))return json(403,{error:'PROJECT_NOT_AUTHORIZED'});return json(200,r);}
+    if(url.pathname.startsWith('/api/runs/')){const r=getRun(url.pathname.slice('/api/runs/'.length));if(!canReadRun(req,r,access))return json(403,{error:'PROJECT_NOT_AUTHORIZED'});return json(200,r);}
     if (url.pathname==='/api/health') return send(200,'application/json',JSON.stringify({service:'security-manager-v2-readonly',instance,pid:process.pid}));
     if (url.pathname==='/api/overview') return send(200,'application/json',JSON.stringify(overview()));
     const asset = assets.get(url.pathname);

@@ -1,0 +1,185 @@
+{
+  "runId": "web-18cab42f-5dc7-4ace-93db-da5ea23b9744",
+  "pluginId": "kubescape",
+  "projectId": "kubescape-petclinic",
+  "scenarioId": "controlled-finding",
+  "configurationSnapshot": {
+    "revision": 44,
+    "updatedAt": "2026-11-12T18:48:37.814Z",
+    "settings": {
+      "enabled": true,
+      "securityLevel": "standard",
+      "plugins": {
+        "gitleaks": {
+          "enabled": true
+        },
+        "semgrep": {
+          "enabled": true
+        },
+        "cosign": {
+          "enabled": true
+        },
+        "sbom": {
+          "enabled": true
+        },
+        "trivy": {
+          "enabled": true
+        },
+        "kyverno": {
+          "enabled": true
+        },
+        "sonarqube": {
+          "enabled": true
+        },
+        "kubescape": {
+          "enabled": true
+        }
+      }
+    },
+    "source": {
+      "kind": "LOCAL_EXPLICIT_OVERRIDE",
+      "path": ".devsecops/security-view-controls-v1.json",
+      "settingsDigest": "c99ee7d888179a7ba123d6b1e1315f3b50b2fcc76f8319a3bf6205fcd306b4f7"
+    },
+    "configurationOrigins": [
+      {
+        "layer": "global",
+        "securityLevel": "standard",
+        "policyVersion": "baseline-v1"
+      },
+      {
+        "layer": "registryDefaults",
+        "plugins": {
+          "build-provenance": {
+            "enabled": false
+          },
+          "cosign": {
+            "enabled": true
+          },
+          "falco": {
+            "enabled": false
+          },
+          "gitleaks": {
+            "enabled": true
+          },
+          "kubescape": {
+            "enabled": true
+          },
+          "kyverno": {
+            "enabled": true
+          },
+          "provenance": {
+            "enabled": false
+          },
+          "sbom": {
+            "enabled": true
+          },
+          "semgrep": {
+            "enabled": true
+          },
+          "sonarqube": {
+            "enabled": true
+          },
+          "sops": {
+            "enabled": false
+          },
+          "trivy": {
+            "enabled": true
+          },
+          "zap": {
+            "enabled": false
+          }
+        }
+      },
+      {
+        "layer": "globalExplicit",
+        "values": {
+          "enabled": true,
+          "securityLevel": "standard",
+          "plugins": {
+            "gitleaks": {
+              "enabled": true
+            },
+            "semgrep": {
+              "enabled": true
+            },
+            "cosign": {
+              "enabled": true
+            },
+            "sbom": {
+              "enabled": true
+            },
+            "trivy": {
+              "enabled": true
+            },
+            "kyverno": {
+              "enabled": true
+            },
+            "sonarqube": {
+              "enabled": true
+            },
+            "kubescape": {
+              "enabled": true
+            }
+          },
+          "globalMode": "audit",
+          "profile": "java-web",
+          "policyVersion": "baseline-v1"
+        }
+      },
+      {
+        "layer": "profile",
+        "values": {}
+      },
+      {
+        "layer": "project",
+        "values": {}
+      }
+    ],
+    "effectiveConfigDigest": "56b1439aaeb890efb6838e2d8e0ad1ff3e15782eeb3bd9fa76ebcdfc15777fd3"
+  },
+  "securityLevel": "standard",
+  "startedAt": "2026-11-12T18:50:04.360Z",
+  "kind": "LocalValidationRequest",
+  "executionLocation": "LINUX_RESTRICTED",
+  "state": "ERROR",
+  "evidenceClass": "NOT_TESTED",
+  "scannerExecuted": false,
+  "policyDecision": null,
+  "evaluationCount": 0,
+  "resultDigest": "32b1404e98076baa98aa7f22f6be40b8613f0f6f15e3e9266573a5d6d40cddc7",
+  "artifactDigest": "a662294c66b507db2a2949a0a7f3740cdf8fe2ddc918a727daa219a3181f5f9f",
+  "source": ".devsecops/security-view-runs-v1/web-18cab42f-5dc7-4ace-93db-da5ea23b9744/artifact/kubescape.result.json",
+  "reason": "RUNNER_SCANNER_ERROR",
+  "executionDiagnostic": {
+    "error": "VIOLATING_CREATE_FAILED",
+    "scannerStarted": false,
+    "stage": "RESTRICTED_SSH_RUNNER"
+  },
+  "caseId": "violating-workload",
+  "findings": null,
+  "failedControls": null,
+  "highRiskFindings": null,
+  "auditDisposition": null,
+  "violating": null,
+  "toolVersion": "4.0.17",
+  "toolSha256": null,
+  "executionIdentity": "security-kubescape",
+  "executionHost": "devops/192.168.1.58",
+  "router": [
+    {
+      "consumerId": "dry-run",
+      "deliveryDecision": "DRY_RUN"
+    },
+    {
+      "consumerId": "local-evidence",
+      "deliveryDecision": "DELIVERED_LOCAL_ONLY"
+    }
+  ],
+  "cleanup": "JOINED_OR_NOT_STARTED",
+  "completedAt": "2026-11-12T18:50:06.604Z",
+  "durationMs": 2239,
+  "releaseCount": 0,
+  "rolloutCount": 0,
+  "auditDigest": "d6321c6b374abc56ea5dee08392dad62a40ffd649312a9825d4946cbe06c589c"
+}

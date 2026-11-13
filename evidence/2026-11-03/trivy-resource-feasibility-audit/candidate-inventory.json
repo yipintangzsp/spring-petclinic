@@ -1,0 +1,2092 @@
+{
+  "scope": "ONE_AUDIT_ACCESSIBLE_EXISTING_PROJECT_RESOURCES",
+  "candidates": [
+    {
+      "candidateId": "mac-host",
+      "host": "MACdeMacBook-Pro.local",
+      "role": "Mac hosts current production UTM + proxy; macOS/APFS shared system",
+      "architecture": "arm64",
+      "OS": "macOS-27.2-arm64-arm-64bit-Mach-O",
+      "filesystem": "APFS",
+      "mountPath": "/Users/zhangsir/code",
+      "totalCapacityBytes": 494384795648,
+      "usedCapacityBytes": 469944250368,
+      "availableCapacityBytes": 24440545280,
+      "containerRuntime": "native macOS; existing Colima inspected separately",
+      "networkPath": "NOT_TESTED; no suitable isolated candidate, production proxy not consumed",
+      "productionRole": "PRODUCTION_CRITICAL",
+      "isolationCapability": "logical guest isolation does not prove independent physical backing or safe error/low-space test boundary",
+      "destructiveChangeRequired": "Existing state cannot satisfy design without resource/topology change; no change performed or authorized",
+      "currentWorkloadImportance": "Mac hosts current production UTM + proxy; macOS/APFS shared system",
+      "sourceEvidence": "local-candidate-inventory.json",
+      "aliasOf": null,
+      "capacityChecks": [
+        {
+          "scope": "independent physical backing available",
+          "requiredBytes": 322122547200,
+          "availableBytes": 24440545280,
+          "headroomBytes": -297682001920,
+          "totalBytes": 494384795648,
+          "usedBytes": 469944250368,
+          "status": "FAIL",
+          "evidence": "local-candidate-inventory.json"
+        }
+      ],
+      "mustMatchFilesystem": [
+        {
+          "property": "architecture/tool",
+          "classification": "MUST_MATCH_PRODUCTION",
+          "requirement": "Linux arm64; exact c7586c image and d860 binary; UID/GID10000; same Node runtime version for frozen JS, record version before execution",
+          "result": "FAIL",
+          "evidence": "local-candidate-inventory.json"
+        },
+        {
+          "property": "filesystem type / features",
+          "classification": "MUST_MATCH_PRODUCTION",
+          "requirement": "ext4 on lab Linux block device; record kernel, feature flags, journal/reserved-block ratio/delalloc and mount options; production cache mount is ext4 /dev/vda2",
+          "result": "FAIL",
+          "evidence": "local-candidate-inventory.json"
+        },
+        {
+          "property": "block and inode accounting",
+          "classification": "MUST_MATCH_PRODUCTION",
+          "requirement": "4096-byte fundamental block observed; compare statvfs f_bavail/f_bfree, inode counts, ext4 reserved blocks. PVC nominal5Gi is NOT an enforced quota here",
+          "result": "UNKNOWN",
+          "evidence": "local-candidate-inventory.json"
+        },
+        {
+          "property": "cache/temp placement",
+          "classification": "MUST_MATCH_PRODUCTION",
+          "requirement": "PVC-style bind at /home/scanner/.cache; /tmp on container overlay; same underlying ext4 device as cache; controller os.tmpdir manifests on controller filesystem tracked separately",
+          "result": "UNKNOWN",
+          "evidence": "local-candidate-inventory.json"
+        },
+        {
+          "property": "rename / copy boundary",
+          "classification": "MUST_MATCH_PRODUCTION",
+          "requirement": "Preserve production device relationships; never move temp to tmpfs or different disk. Do not implement a replacement rename or wrapper backup",
+          "result": "UNKNOWN",
+          "evidence": "local-candidate-inventory.json"
+        },
+        {
+          "property": "overlay container layer",
+          "classification": "MUST_MATCH_PRODUCTION",
+          "requirement": "Same containerd snapshotter overlayfs and image lower layers; fresh writable upperdir per case, same backing ext4. Collect upperdir, workdir and deleted-open-file accounting",
+          "result": "UNKNOWN",
+          "evidence": "local-candidate-inventory.json"
+        },
+        {
+          "property": "guest filesystem capacity",
+          "classification": "MUST_MATCH_PRODUCTION",
+          "requirement": "For guard classification compare same measured capacityBytes270430261248 and reserve ratio; differing capacity only supplementary sensitivity run",
+          "result": "FAIL",
+          "evidence": "local-candidate-inventory.json"
+        },
+        {
+          "property": "sparse / host COW",
+          "classification": "MUST_MATCH_PRODUCTION",
+          "requirement": "For end-to-end backing-space safety use dedicated qcow2 on APFS with adequate physical space and matched COW policy. ext4-only lab proves guest peak only; cannot validate production host/backup safety",
+          "result": "UNKNOWN",
+          "evidence": "local-candidate-inventory.json"
+        }
+      ],
+      "SHOULD_MATCH": [
+        {
+          "property": "hypervisor/host version",
+          "classification": "SHOULD_MATCH",
+          "requirement": "Match existing UTM/QEMU/APFS where possible; record differences; no claim of backing-store equivalence if not matched"
+        },
+        {
+          "property": "DNS / proxy / throughput",
+          "classification": "SHOULD_MATCH",
+          "requirement": "Independent egress, same official source and digest; record latency/retries; production mutable proxy excluded"
+        }
+      ],
+      "NOT_RELEVANT": [
+        {
+          "property": "business namespace labels / production registry tags",
+          "classification": "NOT_RELEVANT",
+          "requirement": "No PetClinic or production registry needed; isolated kube API can use same harbor/data-infra/devops names solely because frozen IO hardcodes them"
+        }
+      ],
+      "Production Safety": "FAIL",
+      "Disk": "FAIL",
+      "Filesystem": "FAIL",
+      "Storage Topology": "FAIL",
+      "Measurement": "UNKNOWN",
+      "Network": "UNKNOWN",
+      "Credentials": "UNKNOWN",
+      "Isolation": "FAIL",
+      "Failure Safety": "FAIL",
+      "Repeatability": "FAIL",
+      "Overall": "INELIGIBLE",
+      "rejectionReasons": [
+        "Actual available backing below sealed300GiB floor",
+        "macOS/APFS native environment is not frozen Linux arm64/ext4/overlay topology",
+        "Low-space/failure test threatens production VM backing"
+      ],
+      "noConditionalWaiver": true
+    },
+    {
+      "candidateId": "node-aliyun-worker",
+      "host": "aliyun-worker",
+      "role": "production k3s worker; 4 observed pods",
+      "architecture": "amd64",
+      "OS": "Ubuntu 22.04.5 LTS",
+      "filesystem": "UNKNOWN",
+      "mountPath": "/",
+      "totalCapacityBytes": 41882943488,
+      "usedCapacityBytes": 29846695936,
+      "availableCapacityBytes": 10100510720,
+      "containerRuntime": "containerd://2.2.3-k3s1",
+      "networkPath": "NOT_TESTED; no suitable isolated candidate, production proxy not consumed",
+      "productionRole": "PRODUCTION_SHARED",
+      "isolationCapability": "logical guest isolation does not prove independent physical backing or safe error/low-space test boundary",
+      "destructiveChangeRequired": "Existing state cannot satisfy design without resource/topology change; no change performed or authorized",
+      "currentWorkloadImportance": "production k3s worker; 4 observed pods",
+      "sourceEvidence": "node-candidate-inventory.json",
+      "aliasOf": null,
+      "capacityChecks": [
+        {
+          "scope": "guest initial available >= frozen guard +8GiB band",
+          "requiredBytes": 62039375668,
+          "availableBytes": 10100510720,
+          "headroomBytes": -51938864948,
+          "totalBytes": 41882943488,
+          "usedBytes": 29846695936,
+          "status": "FAIL",
+          "evidence": "node-candidate-inventory.json"
+        }
+      ],
+      "mustMatchFilesystem": [
+        {
+          "property": "architecture/tool",
+          "classification": "MUST_MATCH_PRODUCTION",
+          "requirement": "Linux arm64; exact c7586c image and d860 binary; UID/GID10000; same Node runtime version for frozen JS, record version before execution",
+          "result": "FAIL",
+          "evidence": "node-candidate-inventory.json"
+        },
+        {
+          "property": "filesystem type / features",
+          "classification": "MUST_MATCH_PRODUCTION",
+          "requirement": "ext4 on lab Linux block device; record kernel, feature flags, journal/reserved-block ratio/delalloc and mount options; production cache mount is ext4 /dev/vda2",
+          "result": "UNKNOWN",
+          "evidence": "node-candidate-inventory.json"
+        },
+        {
+          "property": "block and inode accounting",
+          "classification": "MUST_MATCH_PRODUCTION",
+          "requirement": "4096-byte fundamental block observed; compare statvfs f_bavail/f_bfree, inode counts, ext4 reserved blocks. PVC nominal5Gi is NOT an enforced quota here",
+          "result": "UNKNOWN",
+          "evidence": "node-candidate-inventory.json"
+        },
+        {
+          "property": "cache/temp placement",
+          "classification": "MUST_MATCH_PRODUCTION",
+          "requirement": "PVC-style bind at /home/scanner/.cache; /tmp on container overlay; same underlying ext4 device as cache; controller os.tmpdir manifests on controller filesystem tracked separately",
+          "result": "UNKNOWN",
+          "evidence": "node-candidate-inventory.json"
+        },
+        {
+          "property": "rename / copy boundary",
+          "classification": "MUST_MATCH_PRODUCTION",
+          "requirement": "Preserve production device relationships; never move temp to tmpfs or different disk. Do not implement a replacement rename or wrapper backup",
+          "result": "UNKNOWN",
+          "evidence": "node-candidate-inventory.json"
+        },
+        {
+          "property": "overlay container layer",
+          "classification": "MUST_MATCH_PRODUCTION",
+          "requirement": "Same containerd snapshotter overlayfs and image lower layers; fresh writable upperdir per case, same backing ext4. Collect upperdir, workdir and deleted-open-file accounting",
+          "result": "UNKNOWN",
+          "evidence": "node-candidate-inventory.json"
+        },
+        {
+          "property": "guest filesystem capacity",
+          "classification": "MUST_MATCH_PRODUCTION",
+          "requirement": "For guard classification compare same measured capacityBytes270430261248 and reserve ratio; differing capacity only supplementary sensitivity run",
+          "result": "FAIL",
+          "evidence": "node-candidate-inventory.json"
+        },
+        {
+          "property": "sparse / host COW",
+          "classification": "MUST_MATCH_PRODUCTION",
+          "requirement": "For end-to-end backing-space safety use dedicated qcow2 on APFS with adequate physical space and matched COW policy. ext4-only lab proves guest peak only; cannot validate production host/backup safety",
+          "result": "UNKNOWN",
+          "evidence": "node-candidate-inventory.json"
+        }
+      ],
+      "SHOULD_MATCH": [
+        {
+          "property": "hypervisor/host version",
+          "classification": "SHOULD_MATCH",
+          "requirement": "Match existing UTM/QEMU/APFS where possible; record differences; no claim of backing-store equivalence if not matched"
+        },
+        {
+          "property": "DNS / proxy / throughput",
+          "classification": "SHOULD_MATCH",
+          "requirement": "Independent egress, same official source and digest; record latency/retries; production mutable proxy excluded"
+        }
+      ],
+      "NOT_RELEVANT": [
+        {
+          "property": "business namespace labels / production registry tags",
+          "classification": "NOT_RELEVANT",
+          "requirement": "No PetClinic or production registry needed; isolated kube API can use same harbor/data-infra/devops names solely because frozen IO hardcodes them"
+        }
+      ],
+      "Production Safety": "FAIL",
+      "Disk": "FAIL",
+      "Filesystem": "FAIL",
+      "Storage Topology": "UNKNOWN",
+      "Measurement": "UNKNOWN",
+      "Network": "UNKNOWN",
+      "Credentials": "UNKNOWN",
+      "Isolation": "FAIL",
+      "Failure Safety": "FAIL",
+      "Repeatability": "FAIL",
+      "Overall": "INELIGIBLE",
+      "rejectionReasons": [
+        "Production node and runtime share filesystem; interrupted/extraction/low-space tests can cause DiskPressure, eviction or runtime instability",
+        "Guest initial free headroom below sealed above-guard+8GiB full-matrix band",
+        "amd64 cannot match frozen Linux arm64 exact image/binary requirement",
+        "No equivalent guest filesystem capacity; provider attached-disk inventory UNKNOWN because existing trusted host read unavailable, no privilege escalation/bypass"
+      ],
+      "noConditionalWaiver": true,
+      "ephemeralStoragePressure": {
+        "currentDiskPressure": "False",
+        "risk": "Deliberate error/low-space matrix shares nodefs/imagefs; pressure-free now does not make this safe",
+        "workloads": [
+          {
+            "namespace": "default",
+            "name": "filebeat-txkf5",
+            "phase": "Running",
+            "ownerKinds": [
+              "DaemonSet"
+            ],
+            "resourceRequests": [
+              {}
+            ],
+            "deletionTimestamp": null
+          },
+          {
+            "namespace": "monitoring",
+            "name": "alloy-lhjvd",
+            "phase": "Running",
+            "ownerKinds": [
+              "DaemonSet"
+            ],
+            "resourceRequests": [
+              {},
+              {
+                "cpu": "10m",
+                "memory": "50Mi"
+              }
+            ],
+            "deletionTimestamp": null
+          },
+          {
+            "namespace": "monitoring",
+            "name": "kube-stack-prometheus-node-exporter-729qr",
+            "phase": "Running",
+            "ownerKinds": [
+              "DaemonSet"
+            ],
+            "resourceRequests": [
+              {}
+            ],
+            "deletionTimestamp": null
+          },
+          {
+            "namespace": "ns-bigdata",
+            "name": "filebeat-kafka-shwrc",
+            "phase": "Running",
+            "ownerKinds": [
+              "DaemonSet"
+            ],
+            "resourceRequests": [
+              {}
+            ],
+            "deletionTimestamp": null
+          }
+        ]
+      },
+      "providerProvisionedDiskSize": "UNKNOWN_NO_PROVIDER_MANAGEMENT_ACCESS_USED",
+      "additionalDiskInventory": "UNKNOWN_UNLESS_HOST_READ_SUCCEEDS",
+      "hostRead": {
+        "status": "UNAVAILABLE",
+        "exit": 255,
+        "reason": "AUTH_OR_ROUTE_UNAVAILABLE",
+        "noBypass": true
+      }
+    },
+    {
+      "candidateId": "utm-devops",
+      "host": "devops",
+      "role": "control-plane and shared platform; 68 observed pods",
+      "architecture": "arm64",
+      "OS": "Ubuntu 24.04.4 LTS",
+      "filesystem": "ext4 (sealed+current mount)",
+      "mountPath": "/",
+      "totalCapacityBytes": 270430261248,
+      "usedCapacityBytes": 211898433536,
+      "availableCapacityBytes": 45347446784,
+      "containerRuntime": "containerd://2.2.3-k3s1",
+      "networkPath": "NOT_TESTED; no suitable isolated candidate, production proxy not consumed",
+      "productionRole": "PRODUCTION_CRITICAL",
+      "isolationCapability": "logical guest isolation does not prove independent physical backing or safe error/low-space test boundary",
+      "destructiveChangeRequired": "Existing state cannot satisfy design without resource/topology change; no change performed or authorized",
+      "currentWorkloadImportance": "control-plane and shared platform; 68 observed pods",
+      "sourceEvidence": "node-candidate-inventory.json",
+      "aliasOf": null,
+      "capacityChecks": [
+        {
+          "scope": "guest initial available >= frozen guard +8GiB band",
+          "requiredBytes": 62039375668,
+          "availableBytes": 45347446784,
+          "headroomBytes": -16691928884,
+          "totalBytes": 270430261248,
+          "usedBytes": 211898433536,
+          "status": "FAIL",
+          "evidence": "node-candidate-inventory.json"
+        },
+        {
+          "scope": "independent physical backing available",
+          "requiredBytes": 322122547200,
+          "availableBytes": 24440545280,
+          "headroomBytes": -297682001920,
+          "totalBytes": 494384795648,
+          "usedBytes": 469944250368,
+          "status": "FAIL",
+          "evidence": "local-candidate-inventory.json"
+        }
+      ],
+      "mustMatchFilesystem": [
+        {
+          "property": "architecture/tool",
+          "classification": "MUST_MATCH_PRODUCTION",
+          "requirement": "Linux arm64; exact c7586c image and d860 binary; UID/GID10000; same Node runtime version for frozen JS, record version before execution",
+          "result": "UNKNOWN",
+          "evidence": "node-candidate-inventory.json"
+        },
+        {
+          "property": "filesystem type / features",
+          "classification": "MUST_MATCH_PRODUCTION",
+          "requirement": "ext4 on lab Linux block device; record kernel, feature flags, journal/reserved-block ratio/delalloc and mount options; production cache mount is ext4 /dev/vda2",
+          "result": "UNKNOWN",
+          "evidence": "node-candidate-inventory.json"
+        },
+        {
+          "property": "block and inode accounting",
+          "classification": "MUST_MATCH_PRODUCTION",
+          "requirement": "4096-byte fundamental block observed; compare statvfs f_bavail/f_bfree, inode counts, ext4 reserved blocks. PVC nominal5Gi is NOT an enforced quota here",
+          "result": "UNKNOWN",
+          "evidence": "node-candidate-inventory.json"
+        },
+        {
+          "property": "cache/temp placement",
+          "classification": "MUST_MATCH_PRODUCTION",
+          "requirement": "PVC-style bind at /home/scanner/.cache; /tmp on container overlay; same underlying ext4 device as cache; controller os.tmpdir manifests on controller filesystem tracked separately",
+          "result": "PASS",
+          "evidence": "node-candidate-inventory.json"
+        },
+        {
+          "property": "rename / copy boundary",
+          "classification": "MUST_MATCH_PRODUCTION",
+          "requirement": "Preserve production device relationships; never move temp to tmpfs or different disk. Do not implement a replacement rename or wrapper backup",
+          "result": "PASS",
+          "evidence": "node-candidate-inventory.json"
+        },
+        {
+          "property": "overlay container layer",
+          "classification": "MUST_MATCH_PRODUCTION",
+          "requirement": "Same containerd snapshotter overlayfs and image lower layers; fresh writable upperdir per case, same backing ext4. Collect upperdir, workdir and deleted-open-file accounting",
+          "result": "PASS",
+          "evidence": "node-candidate-inventory.json"
+        },
+        {
+          "property": "guest filesystem capacity",
+          "classification": "MUST_MATCH_PRODUCTION",
+          "requirement": "For guard classification compare same measured capacityBytes270430261248 and reserve ratio; differing capacity only supplementary sensitivity run",
+          "result": "PASS",
+          "evidence": "node-candidate-inventory.json"
+        },
+        {
+          "property": "sparse / host COW",
+          "classification": "MUST_MATCH_PRODUCTION",
+          "requirement": "For end-to-end backing-space safety use dedicated qcow2 on APFS with adequate physical space and matched COW policy. ext4-only lab proves guest peak only; cannot validate production host/backup safety",
+          "result": "FAIL",
+          "evidence": "node-candidate-inventory.json"
+        }
+      ],
+      "SHOULD_MATCH": [
+        {
+          "property": "hypervisor/host version",
+          "classification": "SHOULD_MATCH",
+          "requirement": "Match existing UTM/QEMU/APFS where possible; record differences; no claim of backing-store equivalence if not matched"
+        },
+        {
+          "property": "DNS / proxy / throughput",
+          "classification": "SHOULD_MATCH",
+          "requirement": "Independent egress, same official source and digest; record latency/retries; production mutable proxy excluded"
+        }
+      ],
+      "NOT_RELEVANT": [
+        {
+          "property": "business namespace labels / production registry tags",
+          "classification": "NOT_RELEVANT",
+          "requirement": "No PetClinic or production registry needed; isolated kube API can use same harbor/data-infra/devops names solely because frozen IO hardcodes them"
+        }
+      ],
+      "Production Safety": "FAIL",
+      "Disk": "FAIL",
+      "Filesystem": "FAIL",
+      "Storage Topology": "PASS",
+      "Measurement": "UNKNOWN",
+      "Network": "UNKNOWN",
+      "Credentials": "UNKNOWN",
+      "Isolation": "FAIL",
+      "Failure Safety": "FAIL",
+      "Repeatability": "FAIL",
+      "Overall": "INELIGIBLE",
+      "rejectionReasons": [
+        "Production node and runtime share filesystem; interrupted/extraction/low-space tests can cause DiskPressure, eviction or runtime instability",
+        "Guest initial free headroom below sealed above-guard+8GiB full-matrix band",
+        "Existing sealed production VM exclusion: no safe backing/validated backup; no cleanup or expansion reopened"
+      ],
+      "noConditionalWaiver": true,
+      "ephemeralStoragePressure": {
+        "currentDiskPressure": "False",
+        "risk": "Deliberate error/low-space matrix shares nodefs/imagefs; pressure-free now does not make this safe",
+        "workloads": [
+          {
+            "namespace": "argocd",
+            "name": "argocd-application-controller-0",
+            "phase": "Running",
+            "ownerKinds": [
+              "StatefulSet"
+            ],
+            "resourceRequests": [
+              {
+                "cpu": "50m",
+                "memory": "384Mi"
+              }
+            ],
+            "deletionTimestamp": null
+          },
+          {
+            "namespace": "argocd",
+            "name": "argocd-applicationset-controller-79958f54f7-mskbf",
+            "phase": "Running",
+            "ownerKinds": [
+              "ReplicaSet"
+            ],
+            "resourceRequests": [
+              {}
+            ],
+            "deletionTimestamp": null
+          },
+          {
+            "namespace": "argocd",
+            "name": "argocd-dex-server-766b8f97dc-s7t95",
+            "phase": "Running",
+            "ownerKinds": [
+              "ReplicaSet"
+            ],
+            "resourceRequests": [
+              {}
+            ],
+            "deletionTimestamp": null
+          },
+          {
+            "namespace": "argocd",
+            "name": "argocd-notifications-controller-679f4c8dd5-ggszf",
+            "phase": "Running",
+            "ownerKinds": [
+              "ReplicaSet"
+            ],
+            "resourceRequests": [
+              {}
+            ],
+            "deletionTimestamp": null
+          },
+          {
+            "namespace": "argocd",
+            "name": "argocd-redis-5c656fcdcb-g6w6z",
+            "phase": "Running",
+            "ownerKinds": [
+              "ReplicaSet"
+            ],
+            "resourceRequests": [
+              {}
+            ],
+            "deletionTimestamp": null
+          },
+          {
+            "namespace": "argocd",
+            "name": "argocd-repo-server-75dc648fcc-hsbc5",
+            "phase": "Running",
+            "ownerKinds": [
+              "ReplicaSet"
+            ],
+            "resourceRequests": [
+              {}
+            ],
+            "deletionTimestamp": null
+          },
+          {
+            "namespace": "argocd",
+            "name": "argocd-server-f67c4458c-b75h2",
+            "phase": "Running",
+            "ownerKinds": [
+              "ReplicaSet"
+            ],
+            "resourceRequests": [
+              {}
+            ],
+            "deletionTimestamp": null
+          },
+          {
+            "namespace": "cert-manager",
+            "name": "cert-manager-699c74778d-ggp9m",
+            "phase": "Running",
+            "ownerKinds": [
+              "ReplicaSet"
+            ],
+            "resourceRequests": [
+              {
+                "cpu": "100m",
+                "ephemeral-storage": "16Mi",
+                "memory": "128Mi"
+              }
+            ],
+            "deletionTimestamp": null
+          },
+          {
+            "namespace": "cert-manager",
+            "name": "cert-manager-cainjector-7879fccd84-qz7cr",
+            "phase": "Running",
+            "ownerKinds": [
+              "ReplicaSet"
+            ],
+            "resourceRequests": [
+              {
+                "cpu": "50m",
+                "ephemeral-storage": "16Mi",
+                "memory": "128Mi"
+              }
+            ],
+            "deletionTimestamp": null
+          },
+          {
+            "namespace": "cert-manager",
+            "name": "cert-manager-webhook-67cdc4d5ff-qwb9b",
+            "phase": "Running",
+            "ownerKinds": [
+              "ReplicaSet"
+            ],
+            "resourceRequests": [
+              {
+                "cpu": "50m",
+                "ephemeral-storage": "16Mi",
+                "memory": "64Mi"
+              }
+            ],
+            "deletionTimestamp": null
+          },
+          {
+            "namespace": "cook",
+            "name": "cook-58b5b57884-qr7tp",
+            "phase": "Running",
+            "ownerKinds": [
+              "ReplicaSet"
+            ],
+            "resourceRequests": [
+              {
+                "cpu": "25m",
+                "memory": "24Mi"
+              }
+            ],
+            "deletionTimestamp": null
+          },
+          {
+            "namespace": "cook",
+            "name": "cook-blackbox-847b6b89f-r2zzg",
+            "phase": "Running",
+            "ownerKinds": [
+              "ReplicaSet"
+            ],
+            "resourceRequests": [
+              {
+                "cpu": "10m",
+                "memory": "24Mi"
+              }
+            ],
+            "deletionTimestamp": null
+          },
+          {
+            "namespace": "data-infra",
+            "name": "rabbitmq-0",
+            "phase": "Running",
+            "ownerKinds": [
+              "StatefulSet"
+            ],
+            "resourceRequests": [
+              {
+                "cpu": "100m",
+                "memory": "256Mi"
+              }
+            ],
+            "deletionTimestamp": null
+          },
+          {
+            "namespace": "data-infra",
+            "name": "superset-redis-master-0",
+            "phase": "Running",
+            "ownerKinds": [
+              "StatefulSet"
+            ],
+            "resourceRequests": [
+              {
+                "memory": "64Mi"
+              }
+            ],
+            "deletionTimestamp": null
+          },
+          {
+            "namespace": "default",
+            "name": "elasticsearch-6dddd94847-wtb9z",
+            "phase": "Running",
+            "ownerKinds": [
+              "ReplicaSet"
+            ],
+            "resourceRequests": [
+              {
+                "memory": "1Gi"
+              }
+            ],
+            "deletionTimestamp": null
+          },
+          {
+            "namespace": "default",
+            "name": "filebeat-gcwjg",
+            "phase": "Running",
+            "ownerKinds": [
+              "DaemonSet"
+            ],
+            "resourceRequests": [
+              {}
+            ],
+            "deletionTimestamp": null
+          },
+          {
+            "namespace": "default",
+            "name": "kibana-687c479669-vrx77",
+            "phase": "Running",
+            "ownerKinds": [
+              "ReplicaSet"
+            ],
+            "resourceRequests": [
+              {
+                "cpu": "50m",
+                "memory": "512Mi"
+              }
+            ],
+            "deletionTimestamp": null
+          },
+          {
+            "namespace": "devops-lab",
+            "name": "tls-lab-9c5dc65fb-stvwc",
+            "phase": "Running",
+            "ownerKinds": [
+              "ReplicaSet"
+            ],
+            "resourceRequests": [
+              {
+                "cpu": "25m",
+                "ephemeral-storage": "16Mi",
+                "memory": "24Mi"
+              }
+            ],
+            "deletionTimestamp": null
+          },
+          {
+            "namespace": "devsecops-system",
+            "name": "kyverno-admission-controller-848fb9647d-8s5zj",
+            "phase": "Running",
+            "ownerKinds": [
+              "ReplicaSet"
+            ],
+            "resourceRequests": [
+              {
+                "cpu": "100m",
+                "memory": "192Mi"
+              }
+            ],
+            "deletionTimestamp": null
+          },
+          {
+            "namespace": "devsecops-system",
+            "name": "platform-falco-fwwfd",
+            "phase": "Running",
+            "ownerKinds": [
+              "DaemonSet"
+            ],
+            "resourceRequests": [
+              {
+                "cpu": "100m",
+                "memory": "256Mi"
+              }
+            ],
+            "deletionTimestamp": null
+          },
+          {
+            "namespace": "harbor",
+            "name": "harbor-core-79fb89df74-x65sk",
+            "phase": "Running",
+            "ownerKinds": [
+              "ReplicaSet"
+            ],
+            "resourceRequests": [
+              {}
+            ],
+            "deletionTimestamp": null
+          },
+          {
+            "namespace": "harbor",
+            "name": "harbor-database-0",
+            "phase": "Running",
+            "ownerKinds": [
+              "StatefulSet"
+            ],
+            "resourceRequests": [
+              {}
+            ],
+            "deletionTimestamp": null
+          },
+          {
+            "namespace": "harbor",
+            "name": "harbor-jobservice-7c8cf97947-wrdt4",
+            "phase": "Running",
+            "ownerKinds": [
+              "ReplicaSet"
+            ],
+            "resourceRequests": [
+              {}
+            ],
+            "deletionTimestamp": null
+          },
+          {
+            "namespace": "harbor",
+            "name": "harbor-portal-546b6c47b4-zst8w",
+            "phase": "Running",
+            "ownerKinds": [
+              "ReplicaSet"
+            ],
+            "resourceRequests": [
+              {}
+            ],
+            "deletionTimestamp": null
+          },
+          {
+            "namespace": "harbor",
+            "name": "harbor-redis-arm64-6478fb4c64-l8d7x",
+            "phase": "Running",
+            "ownerKinds": [
+              "ReplicaSet"
+            ],
+            "resourceRequests": [
+              {}
+            ],
+            "deletionTimestamp": null
+          },
+          {
+            "namespace": "harbor",
+            "name": "harbor-registry-5d4c9f9f96-z5vw5",
+            "phase": "Running",
+            "ownerKinds": [
+              "ReplicaSet"
+            ],
+            "resourceRequests": [
+              {
+                "cpu": "50m",
+                "memory": "128Mi"
+              },
+              {
+                "cpu": "50m",
+                "memory": "128Mi"
+              }
+            ],
+            "deletionTimestamp": null
+          },
+          {
+            "namespace": "harbor",
+            "name": "harbor-trivy-0",
+            "phase": "Running",
+            "ownerKinds": [
+              "StatefulSet"
+            ],
+            "resourceRequests": [
+              {
+                "cpu": "200m",
+                "memory": "512Mi"
+              }
+            ],
+            "deletionTimestamp": null
+          },
+          {
+            "namespace": "kube-system",
+            "name": "coredns-68859b4dd-hq2tv",
+            "phase": "Running",
+            "ownerKinds": [
+              "ReplicaSet"
+            ],
+            "resourceRequests": [
+              {
+                "cpu": "100m",
+                "memory": "70Mi"
+              }
+            ],
+            "deletionTimestamp": null
+          },
+          {
+            "namespace": "kube-system",
+            "name": "local-path-provisioner-5d5cfd7fd7-s5pxz",
+            "phase": "Running",
+            "ownerKinds": [
+              "ReplicaSet"
+            ],
+            "resourceRequests": [
+              {}
+            ],
+            "deletionTimestamp": null
+          },
+          {
+            "namespace": "kube-system",
+            "name": "metrics-server-74559cc84c-4gjnf",
+            "phase": "Running",
+            "ownerKinds": [
+              "ReplicaSet"
+            ],
+            "resourceRequests": [
+              {
+                "cpu": "100m",
+                "memory": "70Mi"
+              }
+            ],
+            "deletionTimestamp": null
+          },
+          {
+            "namespace": "kube-system",
+            "name": "svclb-traefik-3eaada12-4ltjp",
+            "phase": "Running",
+            "ownerKinds": [
+              "DaemonSet"
+            ],
+            "resourceRequests": [
+              {},
+              {}
+            ],
+            "deletionTimestamp": null
+          },
+          {
+            "namespace": "kube-system",
+            "name": "traefik-5568f87f6b-lr2tn",
+            "phase": "Running",
+            "ownerKinds": [
+              "ReplicaSet"
+            ],
+            "resourceRequests": [
+              {
+                "cpu": "100m",
+                "memory": "128Mi"
+              }
+            ],
+            "deletionTimestamp": null
+          },
+          {
+            "namespace": "monitoring",
+            "name": "alertmanager-platform-0",
+            "phase": "Running",
+            "ownerKinds": [
+              "StatefulSet"
+            ],
+            "resourceRequests": [
+              {
+                "cpu": "10m",
+                "memory": "64Mi"
+              },
+              {}
+            ],
+            "deletionTimestamp": null
+          },
+          {
+            "namespace": "monitoring",
+            "name": "alloy-zcs2p",
+            "phase": "Running",
+            "ownerKinds": [
+              "DaemonSet"
+            ],
+            "resourceRequests": [
+              {},
+              {
+                "cpu": "10m",
+                "memory": "50Mi"
+              }
+            ],
+            "deletionTimestamp": null
+          },
+          {
+            "namespace": "monitoring",
+            "name": "jaeger-f97bb8cc4-gpjhm",
+            "phase": "Running",
+            "ownerKinds": [
+              "ReplicaSet"
+            ],
+            "resourceRequests": [
+              {}
+            ],
+            "deletionTimestamp": null
+          },
+          {
+            "namespace": "monitoring",
+            "name": "kube-stack-grafana-7ff6b767dd-tk6pq",
+            "phase": "Running",
+            "ownerKinds": [
+              "ReplicaSet"
+            ],
+            "resourceRequests": [
+              {},
+              {},
+              {
+                "cpu": "50m",
+                "memory": "256Mi"
+              }
+            ],
+            "deletionTimestamp": null
+          },
+          {
+            "namespace": "monitoring",
+            "name": "kube-stack-kube-prometheus-operator-5d6477dcd5-6np8n",
+            "phase": "Running",
+            "ownerKinds": [
+              "ReplicaSet"
+            ],
+            "resourceRequests": [
+              {}
+            ],
+            "deletionTimestamp": null
+          },
+          {
+            "namespace": "monitoring",
+            "name": "kube-stack-kube-state-metrics-8449d6d76b-4cdrh",
+            "phase": "Running",
+            "ownerKinds": [
+              "ReplicaSet"
+            ],
+            "resourceRequests": [
+              {}
+            ],
+            "deletionTimestamp": null
+          },
+          {
+            "namespace": "monitoring",
+            "name": "kube-stack-prometheus-node-exporter-rq7tc",
+            "phase": "Running",
+            "ownerKinds": [
+              "DaemonSet"
+            ],
+            "resourceRequests": [
+              {}
+            ],
+            "deletionTimestamp": null
+          },
+          {
+            "namespace": "monitoring",
+            "name": "loki-0",
+            "phase": "Running",
+            "ownerKinds": [
+              "StatefulSet"
+            ],
+            "resourceRequests": [
+              {
+                "cpu": "50m",
+                "memory": "128Mi"
+              },
+              {}
+            ],
+            "deletionTimestamp": null
+          },
+          {
+            "namespace": "monitoring",
+            "name": "otel-collector-84f8575866-l6vrx",
+            "phase": "Running",
+            "ownerKinds": [
+              "ReplicaSet"
+            ],
+            "resourceRequests": [
+              {
+                "cpu": "25m",
+                "memory": "64Mi"
+              }
+            ],
+            "deletionTimestamp": null
+          },
+          {
+            "namespace": "monitoring",
+            "name": "prometheus-kube-stack-kube-prometheus-prometheus-0",
+            "phase": "Running",
+            "ownerKinds": [
+              "StatefulSet"
+            ],
+            "resourceRequests": [
+              {
+                "memory": "400Mi"
+              },
+              {}
+            ],
+            "deletionTimestamp": null
+          },
+          {
+            "namespace": "ns-apps",
+            "name": "hello-app-6796587b9f-pvqsv",
+            "phase": "Running",
+            "ownerKinds": [
+              "ReplicaSet"
+            ],
+            "resourceRequests": [
+              {
+                "cpu": "50m",
+                "memory": "64Mi"
+              }
+            ],
+            "deletionTimestamp": null
+          },
+          {
+            "namespace": "ns-apps",
+            "name": "jkvideo-web-688b5965b4-5xhw8",
+            "phase": "Running",
+            "ownerKinds": [
+              "ReplicaSet"
+            ],
+            "resourceRequests": [
+              {}
+            ],
+            "deletionTimestamp": null
+          },
+          {
+            "namespace": "ns-bigdata",
+            "name": "filebeat-kafka-9pzz7",
+            "phase": "Running",
+            "ownerKinds": [
+              "DaemonSet"
+            ],
+            "resourceRequests": [
+              {}
+            ],
+            "deletionTimestamp": null
+          },
+          {
+            "namespace": "ns-bigdata",
+            "name": "kafka-5dc9ddf5fc-dqd4d",
+            "phase": "Running",
+            "ownerKinds": [
+              "ReplicaSet"
+            ],
+            "resourceRequests": [
+              {
+                "cpu": "250m",
+                "memory": "1Gi"
+              }
+            ],
+            "deletionTimestamp": null
+          },
+          {
+            "namespace": "ns-bigdata",
+            "name": "spark-operator-controller-69dc785995-5jzdc",
+            "phase": "Running",
+            "ownerKinds": [
+              "ReplicaSet"
+            ],
+            "resourceRequests": [
+              {
+                "cpu": "100m",
+                "memory": "1Gi"
+              }
+            ],
+            "deletionTimestamp": null
+          },
+          {
+            "namespace": "ns-bigdata",
+            "name": "spark-operator-webhook-7f97c86cc7-z7lz2",
+            "phase": "Running",
+            "ownerKinds": [
+              "ReplicaSet"
+            ],
+            "resourceRequests": [
+              {
+                "cpu": "100m",
+                "memory": "256Mi"
+              }
+            ],
+            "deletionTimestamp": null
+          },
+          {
+            "namespace": "ns-data",
+            "name": "mysql-774889fb45-2bxr4",
+            "phase": "Running",
+            "ownerKinds": [
+              "ReplicaSet"
+            ],
+            "resourceRequests": [
+              {}
+            ],
+            "deletionTimestamp": null
+          },
+          {
+            "namespace": "ns-data",
+            "name": "mysql-replica-65bfcddfc9-pd4fq",
+            "phase": "Running",
+            "ownerKinds": [
+              "ReplicaSet"
+            ],
+            "resourceRequests": [
+              {
+                "cpu": "100m",
+                "memory": "256Mi"
+              }
+            ],
+            "deletionTimestamp": null
+          },
+          {
+            "namespace": "ns-data",
+            "name": "postgresql-6fd49d6467-rdjk9",
+            "phase": "Running",
+            "ownerKinds": [
+              "ReplicaSet"
+            ],
+            "resourceRequests": [
+              {}
+            ],
+            "deletionTimestamp": null
+          },
+          {
+            "namespace": "ns-devops",
+            "name": "flaresolverr-df88978dd-cpmfg",
+            "phase": "Running",
+            "ownerKinds": [
+              "ReplicaSet"
+            ],
+            "resourceRequests": [
+              {
+                "cpu": "80m",
+                "memory": "192Mi"
+              }
+            ],
+            "deletionTimestamp": null
+          },
+          {
+            "namespace": "ns-devops",
+            "name": "github-webhook-relay-b66d64478-r2mbz",
+            "phase": "Running",
+            "ownerKinds": [
+              "ReplicaSet"
+            ],
+            "resourceRequests": [
+              {
+                "cpu": "5m",
+                "memory": "64Mi"
+              }
+            ],
+            "deletionTimestamp": null
+          },
+          {
+            "namespace": "ns-devops",
+            "name": "gitlab-578fd9dcbb-rhbx8",
+            "phase": "Running",
+            "ownerKinds": [
+              "ReplicaSet"
+            ],
+            "resourceRequests": [
+              {
+                "cpu": "250m",
+                "memory": "2560Mi"
+              }
+            ],
+            "deletionTimestamp": null
+          },
+          {
+            "namespace": "ns-devops",
+            "name": "gitlab-runner-54d84c66f-h7djt",
+            "phase": "Running",
+            "ownerKinds": [
+              "ReplicaSet"
+            ],
+            "resourceRequests": [
+              {
+                "cpu": "100m",
+                "memory": "128Mi"
+              }
+            ],
+            "deletionTimestamp": null
+          },
+          {
+            "namespace": "ns-devops",
+            "name": "jenkins-6955bc6b65-nq8mh",
+            "phase": "Running",
+            "ownerKinds": [
+              "ReplicaSet"
+            ],
+            "resourceRequests": [
+              {
+                "cpu": "500m",
+                "memory": "1Gi"
+              }
+            ],
+            "deletionTimestamp": null
+          },
+          {
+            "namespace": "ns-devops",
+            "name": "jenkins-build-log-filebeat-es-65699f8fd9-ks2h4",
+            "phase": "Running",
+            "ownerKinds": [
+              "ReplicaSet"
+            ],
+            "resourceRequests": [
+              {
+                "cpu": "20m",
+                "memory": "96Mi"
+              }
+            ],
+            "deletionTimestamp": null
+          },
+          {
+            "namespace": "ns-devops",
+            "name": "jenkins-build-log-filebeat-kafka-7868f4dbf7-hrgzg",
+            "phase": "Running",
+            "ownerKinds": [
+              "ReplicaSet"
+            ],
+            "resourceRequests": [
+              {
+                "cpu": "20m",
+                "memory": "96Mi"
+              }
+            ],
+            "deletionTimestamp": null
+          },
+          {
+            "namespace": "ns-devops",
+            "name": "local-registry-d46c4d76d-rgrng",
+            "phase": "Running",
+            "ownerKinds": [
+              "ReplicaSet"
+            ],
+            "resourceRequests": [
+              {
+                "cpu": "50m",
+                "memory": "128Mi"
+              }
+            ],
+            "deletionTimestamp": null
+          },
+          {
+            "namespace": "ns-devops",
+            "name": "portainer-687ffb46f7-zr77p",
+            "phase": "Running",
+            "ownerKinds": [
+              "ReplicaSet"
+            ],
+            "resourceRequests": [
+              {
+                "cpu": "20m",
+                "memory": "64Mi"
+              }
+            ],
+            "deletionTimestamp": null
+          },
+          {
+            "namespace": "petclinic",
+            "name": "clinic-message-worker-b887b9bbb-m6zld",
+            "phase": "Running",
+            "ownerKinds": [
+              "ReplicaSet"
+            ],
+            "resourceRequests": [
+              {
+                "cpu": "50m",
+                "memory": "128Mi"
+              }
+            ],
+            "deletionTimestamp": null
+          },
+          {
+            "namespace": "petclinic",
+            "name": "petclinic-7b9fc47976-7gqqx",
+            "phase": "Running",
+            "ownerKinds": [
+              "ReplicaSet"
+            ],
+            "resourceRequests": [
+              {
+                "cpu": "100m",
+                "memory": "512Mi"
+              }
+            ],
+            "deletionTimestamp": null
+          },
+          {
+            "namespace": "petclinic",
+            "name": "petclinic-7b9fc47976-v7pbv",
+            "phase": "Running",
+            "ownerKinds": [
+              "ReplicaSet"
+            ],
+            "resourceRequests": [
+              {
+                "cpu": "100m",
+                "memory": "512Mi"
+              }
+            ],
+            "deletionTimestamp": null
+          },
+          {
+            "namespace": "petclinic",
+            "name": "petclinic-7b9fc47976-z9q2p",
+            "phase": "Running",
+            "ownerKinds": [
+              "ReplicaSet"
+            ],
+            "resourceRequests": [
+              {
+                "cpu": "100m",
+                "memory": "512Mi"
+              }
+            ],
+            "deletionTimestamp": null
+          },
+          {
+            "namespace": "platform-apps",
+            "name": "peach-c7496cc7d-jsxc9",
+            "phase": "Running",
+            "ownerKinds": [
+              "ReplicaSet"
+            ],
+            "resourceRequests": [
+              {
+                "cpu": "50m",
+                "ephemeral-storage": "128Mi",
+                "memory": "128Mi"
+              }
+            ],
+            "deletionTimestamp": null
+          },
+          {
+            "namespace": "rollouts-lab",
+            "name": "argo-rollouts-7c97f7549c-vf6nq",
+            "phase": "Running",
+            "ownerKinds": [
+              "ReplicaSet"
+            ],
+            "resourceRequests": [
+              {
+                "cpu": "100m",
+                "ephemeral-storage": "256Mi",
+                "memory": "128Mi"
+              }
+            ],
+            "deletionTimestamp": null
+          },
+          {
+            "namespace": "sonarqube",
+            "name": "sonarqube-sonarqube-0",
+            "phase": "Running",
+            "ownerKinds": [
+              "StatefulSet"
+            ],
+            "resourceRequests": [
+              {
+                "cpu": "500m",
+                "ephemeral-storage": "1536M",
+                "memory": "1Gi"
+              }
+            ],
+            "deletionTimestamp": null
+          },
+          {
+            "namespace": "system-upgrade",
+            "name": "system-upgrade-controller-fb6bcd8b4-g22kt",
+            "phase": "Running",
+            "ownerKinds": [
+              "ReplicaSet"
+            ],
+            "resourceRequests": [
+              {}
+            ],
+            "deletionTimestamp": null
+          }
+        ]
+      },
+      "providerProvisionedDiskSize": "UNKNOWN_NO_PROVIDER_MANAGEMENT_ACCESS_USED",
+      "additionalDiskInventory": "UNKNOWN_UNLESS_HOST_READ_SUCCEEDS",
+      "hostRead": null
+    },
+    {
+      "candidateId": "node-ucloud-worker",
+      "host": "ucloud-worker",
+      "role": "production k3s worker; 4 observed pods",
+      "architecture": "amd64",
+      "OS": "Ubuntu 22.04.4 LTS",
+      "filesystem": "UNKNOWN",
+      "mountPath": "/",
+      "totalCapacityBytes": 83053432832,
+      "usedCapacityBytes": 26224951296,
+      "availableCapacityBytes": 56811704320,
+      "containerRuntime": "containerd://2.2.3-k3s1",
+      "networkPath": "NOT_TESTED; no suitable isolated candidate, production proxy not consumed",
+      "productionRole": "PRODUCTION_SHARED",
+      "isolationCapability": "logical guest isolation does not prove independent physical backing or safe error/low-space test boundary",
+      "destructiveChangeRequired": "Existing state cannot satisfy design without resource/topology change; no change performed or authorized",
+      "currentWorkloadImportance": "production k3s worker; 4 observed pods",
+      "sourceEvidence": "node-candidate-inventory.json",
+      "aliasOf": null,
+      "capacityChecks": [
+        {
+          "scope": "guest initial available >= frozen guard +8GiB band",
+          "requiredBytes": 62039375668,
+          "availableBytes": 56811704320,
+          "headroomBytes": -5227671348,
+          "totalBytes": 83053432832,
+          "usedBytes": 26224951296,
+          "status": "FAIL",
+          "evidence": "node-candidate-inventory.json"
+        }
+      ],
+      "mustMatchFilesystem": [
+        {
+          "property": "architecture/tool",
+          "classification": "MUST_MATCH_PRODUCTION",
+          "requirement": "Linux arm64; exact c7586c image and d860 binary; UID/GID10000; same Node runtime version for frozen JS, record version before execution",
+          "result": "FAIL",
+          "evidence": "node-candidate-inventory.json"
+        },
+        {
+          "property": "filesystem type / features",
+          "classification": "MUST_MATCH_PRODUCTION",
+          "requirement": "ext4 on lab Linux block device; record kernel, feature flags, journal/reserved-block ratio/delalloc and mount options; production cache mount is ext4 /dev/vda2",
+          "result": "UNKNOWN",
+          "evidence": "node-candidate-inventory.json"
+        },
+        {
+          "property": "block and inode accounting",
+          "classification": "MUST_MATCH_PRODUCTION",
+          "requirement": "4096-byte fundamental block observed; compare statvfs f_bavail/f_bfree, inode counts, ext4 reserved blocks. PVC nominal5Gi is NOT an enforced quota here",
+          "result": "UNKNOWN",
+          "evidence": "node-candidate-inventory.json"
+        },
+        {
+          "property": "cache/temp placement",
+          "classification": "MUST_MATCH_PRODUCTION",
+          "requirement": "PVC-style bind at /home/scanner/.cache; /tmp on container overlay; same underlying ext4 device as cache; controller os.tmpdir manifests on controller filesystem tracked separately",
+          "result": "UNKNOWN",
+          "evidence": "node-candidate-inventory.json"
+        },
+        {
+          "property": "rename / copy boundary",
+          "classification": "MUST_MATCH_PRODUCTION",
+          "requirement": "Preserve production device relationships; never move temp to tmpfs or different disk. Do not implement a replacement rename or wrapper backup",
+          "result": "UNKNOWN",
+          "evidence": "node-candidate-inventory.json"
+        },
+        {
+          "property": "overlay container layer",
+          "classification": "MUST_MATCH_PRODUCTION",
+          "requirement": "Same containerd snapshotter overlayfs and image lower layers; fresh writable upperdir per case, same backing ext4. Collect upperdir, workdir and deleted-open-file accounting",
+          "result": "UNKNOWN",
+          "evidence": "node-candidate-inventory.json"
+        },
+        {
+          "property": "guest filesystem capacity",
+          "classification": "MUST_MATCH_PRODUCTION",
+          "requirement": "For guard classification compare same measured capacityBytes270430261248 and reserve ratio; differing capacity only supplementary sensitivity run",
+          "result": "FAIL",
+          "evidence": "node-candidate-inventory.json"
+        },
+        {
+          "property": "sparse / host COW",
+          "classification": "MUST_MATCH_PRODUCTION",
+          "requirement": "For end-to-end backing-space safety use dedicated qcow2 on APFS with adequate physical space and matched COW policy. ext4-only lab proves guest peak only; cannot validate production host/backup safety",
+          "result": "UNKNOWN",
+          "evidence": "node-candidate-inventory.json"
+        }
+      ],
+      "SHOULD_MATCH": [
+        {
+          "property": "hypervisor/host version",
+          "classification": "SHOULD_MATCH",
+          "requirement": "Match existing UTM/QEMU/APFS where possible; record differences; no claim of backing-store equivalence if not matched"
+        },
+        {
+          "property": "DNS / proxy / throughput",
+          "classification": "SHOULD_MATCH",
+          "requirement": "Independent egress, same official source and digest; record latency/retries; production mutable proxy excluded"
+        }
+      ],
+      "NOT_RELEVANT": [
+        {
+          "property": "business namespace labels / production registry tags",
+          "classification": "NOT_RELEVANT",
+          "requirement": "No PetClinic or production registry needed; isolated kube API can use same harbor/data-infra/devops names solely because frozen IO hardcodes them"
+        }
+      ],
+      "Production Safety": "FAIL",
+      "Disk": "FAIL",
+      "Filesystem": "FAIL",
+      "Storage Topology": "UNKNOWN",
+      "Measurement": "UNKNOWN",
+      "Network": "UNKNOWN",
+      "Credentials": "UNKNOWN",
+      "Isolation": "FAIL",
+      "Failure Safety": "FAIL",
+      "Repeatability": "FAIL",
+      "Overall": "INELIGIBLE",
+      "rejectionReasons": [
+        "Production node and runtime share filesystem; interrupted/extraction/low-space tests can cause DiskPressure, eviction or runtime instability",
+        "Guest initial free headroom below sealed above-guard+8GiB full-matrix band",
+        "amd64 cannot match frozen Linux arm64 exact image/binary requirement",
+        "No equivalent guest filesystem capacity; provider attached-disk inventory UNKNOWN because existing trusted host read unavailable, no privilege escalation/bypass"
+      ],
+      "noConditionalWaiver": true,
+      "ephemeralStoragePressure": {
+        "currentDiskPressure": "False",
+        "risk": "Deliberate error/low-space matrix shares nodefs/imagefs; pressure-free now does not make this safe",
+        "workloads": [
+          {
+            "namespace": "default",
+            "name": "filebeat-gzjtm",
+            "phase": "Running",
+            "ownerKinds": [
+              "DaemonSet"
+            ],
+            "resourceRequests": [
+              {}
+            ],
+            "deletionTimestamp": null
+          },
+          {
+            "namespace": "monitoring",
+            "name": "alloy-2s9d4",
+            "phase": "Running",
+            "ownerKinds": [
+              "DaemonSet"
+            ],
+            "resourceRequests": [
+              {},
+              {
+                "cpu": "10m",
+                "memory": "50Mi"
+              }
+            ],
+            "deletionTimestamp": null
+          },
+          {
+            "namespace": "monitoring",
+            "name": "kube-stack-prometheus-node-exporter-dhw2h",
+            "phase": "Running",
+            "ownerKinds": [
+              "DaemonSet"
+            ],
+            "resourceRequests": [
+              {}
+            ],
+            "deletionTimestamp": null
+          },
+          {
+            "namespace": "ns-bigdata",
+            "name": "filebeat-kafka-mlj4m",
+            "phase": "Running",
+            "ownerKinds": [
+              "DaemonSet"
+            ],
+            "resourceRequests": [
+              {}
+            ],
+            "deletionTimestamp": null
+          }
+        ]
+      },
+      "providerProvisionedDiskSize": "UNKNOWN_NO_PROVIDER_MANAGEMENT_ACCESS_USED",
+      "additionalDiskInventory": "UNKNOWN_UNLESS_HOST_READ_SUCCEEDS",
+      "hostRead": {
+        "status": "UNAVAILABLE",
+        "exit": 255,
+        "reason": "AUTH_OR_ROUTE_UNAVAILABLE",
+        "noBypass": true
+      }
+    },
+    {
+      "candidateId": "colima-security-test",
+      "host": "Mac / security-test",
+      "role": "Existing validation VM; contains active SOPS kind cluster",
+      "architecture": "arm64",
+      "OS": "Linux-6.8.0-117-generic-aarch64-with-glibc2.39",
+      "filesystem": "ext4 (vdb1 data; vda1 OS)",
+      "mountPath": "/mnt/lima-colima-security-test",
+      "totalCapacityBytes": 10461925376,
+      "usedCapacityBytes": 2507993088,
+      "availableCapacityBytes": 7400390656,
+      "containerRuntime": "Docker29.5.2 overlayfs",
+      "networkPath": "NOT_TESTED; no suitable isolated candidate, production proxy not consumed",
+      "productionRole": "VALIDATION_SAFE",
+      "isolationCapability": "logical guest isolation does not prove independent physical backing or safe error/low-space test boundary",
+      "destructiveChangeRequired": "Existing state cannot satisfy design without resource/topology change; no change performed or authorized",
+      "currentWorkloadImportance": "Existing validation VM; contains active SOPS kind cluster",
+      "sourceEvidence": "local-candidate-inventory.json + validation-existing-detail.json",
+      "aliasOf": null,
+      "capacityChecks": [
+        {
+          "scope": "guest data available",
+          "requiredBytes": 62039375668,
+          "availableBytes": 7400390656,
+          "headroomBytes": -54638985012,
+          "totalBytes": 10461925376,
+          "usedBytes": 2507993088,
+          "status": "FAIL",
+          "evidence": null
+        },
+        {
+          "scope": "independent physical backing available",
+          "requiredBytes": 322122547200,
+          "availableBytes": 24440545280,
+          "headroomBytes": -297682001920,
+          "totalBytes": 494384795648,
+          "usedBytes": 469944250368,
+          "status": "FAIL",
+          "evidence": "local-candidate-inventory.json"
+        }
+      ],
+      "mustMatchFilesystem": [
+        {
+          "property": "architecture/tool",
+          "classification": "MUST_MATCH_PRODUCTION",
+          "requirement": "Linux arm64; exact c7586c image and d860 binary; UID/GID10000; same Node runtime version for frozen JS, record version before execution",
+          "result": "UNKNOWN",
+          "evidence": "local-candidate-inventory.json + validation-existing-detail.json"
+        },
+        {
+          "property": "filesystem type / features",
+          "classification": "MUST_MATCH_PRODUCTION",
+          "requirement": "ext4 on lab Linux block device; record kernel, feature flags, journal/reserved-block ratio/delalloc and mount options; production cache mount is ext4 /dev/vda2",
+          "result": "UNKNOWN",
+          "evidence": "local-candidate-inventory.json + validation-existing-detail.json"
+        },
+        {
+          "property": "block and inode accounting",
+          "classification": "MUST_MATCH_PRODUCTION",
+          "requirement": "4096-byte fundamental block observed; compare statvfs f_bavail/f_bfree, inode counts, ext4 reserved blocks. PVC nominal5Gi is NOT an enforced quota here",
+          "result": "UNKNOWN",
+          "evidence": "local-candidate-inventory.json + validation-existing-detail.json"
+        },
+        {
+          "property": "cache/temp placement",
+          "classification": "MUST_MATCH_PRODUCTION",
+          "requirement": "PVC-style bind at /home/scanner/.cache; /tmp on container overlay; same underlying ext4 device as cache; controller os.tmpdir manifests on controller filesystem tracked separately",
+          "result": "FAIL",
+          "evidence": "local-candidate-inventory.json + validation-existing-detail.json"
+        },
+        {
+          "property": "rename / copy boundary",
+          "classification": "MUST_MATCH_PRODUCTION",
+          "requirement": "Preserve production device relationships; never move temp to tmpfs or different disk. Do not implement a replacement rename or wrapper backup",
+          "result": "FAIL",
+          "evidence": "local-candidate-inventory.json + validation-existing-detail.json"
+        },
+        {
+          "property": "overlay container layer",
+          "classification": "MUST_MATCH_PRODUCTION",
+          "requirement": "Same containerd snapshotter overlayfs and image lower layers; fresh writable upperdir per case, same backing ext4. Collect upperdir, workdir and deleted-open-file accounting",
+          "result": "UNKNOWN",
+          "evidence": "local-candidate-inventory.json + validation-existing-detail.json"
+        },
+        {
+          "property": "guest filesystem capacity",
+          "classification": "MUST_MATCH_PRODUCTION",
+          "requirement": "For guard classification compare same measured capacityBytes270430261248 and reserve ratio; differing capacity only supplementary sensitivity run",
+          "result": "FAIL",
+          "evidence": "local-candidate-inventory.json + validation-existing-detail.json"
+        },
+        {
+          "property": "sparse / host COW",
+          "classification": "MUST_MATCH_PRODUCTION",
+          "requirement": "For end-to-end backing-space safety use dedicated qcow2 on APFS with adequate physical space and matched COW policy. ext4-only lab proves guest peak only; cannot validate production host/backup safety",
+          "result": "FAIL",
+          "evidence": "local-candidate-inventory.json + validation-existing-detail.json"
+        }
+      ],
+      "SHOULD_MATCH": [
+        {
+          "property": "hypervisor/host version",
+          "classification": "SHOULD_MATCH",
+          "requirement": "Match existing UTM/QEMU/APFS where possible; record differences; no claim of backing-store equivalence if not matched"
+        },
+        {
+          "property": "DNS / proxy / throughput",
+          "classification": "SHOULD_MATCH",
+          "requirement": "Independent egress, same official source and digest; record latency/retries; production mutable proxy excluded"
+        }
+      ],
+      "NOT_RELEVANT": [
+        {
+          "property": "business namespace labels / production registry tags",
+          "classification": "NOT_RELEVANT",
+          "requirement": "No PetClinic or production registry needed; isolated kube API can use same harbor/data-infra/devops names solely because frozen IO hardcodes them"
+        }
+      ],
+      "Production Safety": "PASS",
+      "Disk": "FAIL",
+      "Filesystem": "FAIL",
+      "Storage Topology": "FAIL",
+      "Measurement": "UNKNOWN",
+      "Network": "UNKNOWN",
+      "Credentials": "UNKNOWN",
+      "Isolation": "FAIL",
+      "Failure Safety": "FAIL",
+      "Repeatability": "FAIL",
+      "Overall": "INELIGIBLE",
+      "rejectionReasons": [
+        "Data available~6.89GiB, primary270430261248B FS not present",
+        "OS /tmp lives on vda, Docker data on vdb: required same-backing topology not met",
+        "Production host APFS backing is shared and cannot tolerate low-space/COW failure tests"
+      ],
+      "noConditionalWaiver": true,
+      "guestRoot": {
+        "totalCapacityBytes": 19682557952,
+        "availableBytes": 18424692736
+      },
+      "samplerOnlyCalibration": {
+        "exit": 0,
+        "result": {
+          "classification": "READ_ONLY_SAMPLER_CALIBRATION_ONLY",
+          "samples": 100,
+          "clockResolutionSeconds": 1e-09,
+          "wallMs": 1105.575083,
+          "cpuMs": 13.351786,
+          "cpuFraction": 0.012076779049478632,
+          "minGapMs": 10.111227,
+          "maxGapMs": 15.779097,
+          "meanGapMs": 11.036545868686868,
+          "statvfsPath": "/mnt/lima-colima-security-test",
+          "minAvailableBytes": 7400386560,
+          "allocationTraceAvailableTools": {
+            "bpftrace": false,
+            "trace-cmd": false,
+            "perf": false
+          },
+          "zeroDBRefreshes": true,
+          "fullPeakMeasurementProven": false
+        }
+      },
+      "architectureNote": "arm64 CPU matches; exact Trivy image/binary not transferred so full architecture/tool property UNKNOWN"
+    },
+    {
+      "candidateId": "kind-security-test-sops",
+      "host": "colima-security-test",
+      "role": "Existing running kindest/node:v1.35.0 container; validation fixture ownership retained",
+      "architecture": "arm64",
+      "OS": "Linux (existing kind node)",
+      "filesystem": "overlay root; /tmp tmpfs; /var/containerd ext4 underlying",
+      "mountPath": "/ (overlay); /tmp tmpfs",
+      "totalCapacityBytes": 10461925376,
+      "usedCapacityBytes": 2507997184,
+      "availableCapacityBytes": 7400386560,
+      "containerRuntime": "kind/containerd on Docker; exact snapshotter unverified",
+      "networkPath": "NOT_TESTED; no suitable isolated candidate, production proxy not consumed",
+      "productionRole": "VALIDATION_SAFE",
+      "isolationCapability": "logical guest isolation does not prove independent physical backing or safe error/low-space test boundary",
+      "destructiveChangeRequired": "Existing state cannot satisfy design without resource/topology change; no change performed or authorized",
+      "currentWorkloadImportance": "Existing running kindest/node:v1.35.0 container; validation fixture ownership retained",
+      "sourceEvidence": "validation-existing-detail.json",
+      "aliasOf": null,
+      "capacityChecks": [
+        {
+          "scope": "kind backing available",
+          "requiredBytes": 62039375668,
+          "availableBytes": 7400386560,
+          "headroomBytes": -54638989108,
+          "totalBytes": 10461925376,
+          "usedBytes": 2507997184,
+          "status": "FAIL",
+          "evidence": null
+        },
+        {
+          "scope": "independent physical backing available",
+          "requiredBytes": 322122547200,
+          "availableBytes": 24440545280,
+          "headroomBytes": -297682001920,
+          "totalBytes": 494384795648,
+          "usedBytes": 469944250368,
+          "status": "FAIL",
+          "evidence": "local-candidate-inventory.json"
+        }
+      ],
+      "mustMatchFilesystem": [
+        {
+          "property": "architecture/tool",
+          "classification": "MUST_MATCH_PRODUCTION",
+          "requirement": "Linux arm64; exact c7586c image and d860 binary; UID/GID10000; same Node runtime version for frozen JS, record version before execution",
+          "result": "UNKNOWN",
+          "evidence": "validation-existing-detail.json"
+        },
+        {
+          "property": "filesystem type / features",
+          "classification": "MUST_MATCH_PRODUCTION",
+          "requirement": "ext4 on lab Linux block device; record kernel, feature flags, journal/reserved-block ratio/delalloc and mount options; production cache mount is ext4 /dev/vda2",
+          "result": "FAIL",
+          "evidence": "validation-existing-detail.json"
+        },
+        {
+          "property": "block and inode accounting",
+          "classification": "MUST_MATCH_PRODUCTION",
+          "requirement": "4096-byte fundamental block observed; compare statvfs f_bavail/f_bfree, inode counts, ext4 reserved blocks. PVC nominal5Gi is NOT an enforced quota here",
+          "result": "UNKNOWN",
+          "evidence": "validation-existing-detail.json"
+        },
+        {
+          "property": "cache/temp placement",
+          "classification": "MUST_MATCH_PRODUCTION",
+          "requirement": "PVC-style bind at /home/scanner/.cache; /tmp on container overlay; same underlying ext4 device as cache; controller os.tmpdir manifests on controller filesystem tracked separately",
+          "result": "FAIL",
+          "evidence": "validation-existing-detail.json"
+        },
+        {
+          "property": "rename / copy boundary",
+          "classification": "MUST_MATCH_PRODUCTION",
+          "requirement": "Preserve production device relationships; never move temp to tmpfs or different disk. Do not implement a replacement rename or wrapper backup",
+          "result": "FAIL",
+          "evidence": "validation-existing-detail.json"
+        },
+        {
+          "property": "overlay container layer",
+          "classification": "MUST_MATCH_PRODUCTION",
+          "requirement": "Same containerd snapshotter overlayfs and image lower layers; fresh writable upperdir per case, same backing ext4. Collect upperdir, workdir and deleted-open-file accounting",
+          "result": "UNKNOWN",
+          "evidence": "validation-existing-detail.json"
+        },
+        {
+          "property": "guest filesystem capacity",
+          "classification": "MUST_MATCH_PRODUCTION",
+          "requirement": "For guard classification compare same measured capacityBytes270430261248 and reserve ratio; differing capacity only supplementary sensitivity run",
+          "result": "FAIL",
+          "evidence": "validation-existing-detail.json"
+        },
+        {
+          "property": "sparse / host COW",
+          "classification": "MUST_MATCH_PRODUCTION",
+          "requirement": "For end-to-end backing-space safety use dedicated qcow2 on APFS with adequate physical space and matched COW policy. ext4-only lab proves guest peak only; cannot validate production host/backup safety",
+          "result": "FAIL",
+          "evidence": "validation-existing-detail.json"
+        }
+      ],
+      "SHOULD_MATCH": [
+        {
+          "property": "hypervisor/host version",
+          "classification": "SHOULD_MATCH",
+          "requirement": "Match existing UTM/QEMU/APFS where possible; record differences; no claim of backing-store equivalence if not matched"
+        },
+        {
+          "property": "DNS / proxy / throughput",
+          "classification": "SHOULD_MATCH",
+          "requirement": "Independent egress, same official source and digest; record latency/retries; production mutable proxy excluded"
+        }
+      ],
+      "NOT_RELEVANT": [
+        {
+          "property": "business namespace labels / production registry tags",
+          "classification": "NOT_RELEVANT",
+          "requirement": "No PetClinic or production registry needed; isolated kube API can use same harbor/data-infra/devops names solely because frozen IO hardcodes them"
+        }
+      ],
+      "Production Safety": "PASS",
+      "Disk": "FAIL",
+      "Filesystem": "FAIL",
+      "Storage Topology": "FAIL",
+      "Measurement": "UNKNOWN",
+      "Network": "UNKNOWN",
+      "Credentials": "UNKNOWN",
+      "Isolation": "FAIL",
+      "Failure Safety": "FAIL",
+      "Repeatability": "FAIL",
+      "Overall": "INELIGIBLE",
+      "rejectionReasons": [
+        "kind /tmp is1GiB tmpfs, explicit MUST_MATCH storage mismatch",
+        "All allocations share small Colima data disk and production Mac backing",
+        "Cannot safely reproduce full disk-failure/low-space matrix; existing cluster not disposable by this authorization"
+      ],
+      "noConditionalWaiver": true
+    },
+    {
+      "candidateId": "colima-default",
+      "host": "Mac / default",
+      "role": "Existing stopped profile; workload ownership unknown; not started",
+      "architecture": "arm64",
+      "OS": "UNKNOWN stopped guest",
+      "filesystem": "UNKNOWN",
+      "mountPath": "UNKNOWN",
+      "totalCapacityBytes": null,
+      "usedCapacityBytes": null,
+      "availableCapacityBytes": null,
+      "containerRuntime": "docker",
+      "networkPath": "NOT_TESTED; no suitable isolated candidate, production proxy not consumed",
+      "productionRole": "UNKNOWN",
+      "isolationCapability": "logical guest isolation does not prove independent physical backing or safe error/low-space test boundary",
+      "destructiveChangeRequired": "Existing state cannot satisfy design without resource/topology change; no change performed or authorized",
+      "currentWorkloadImportance": "Existing stopped profile; workload ownership unknown; not started",
+      "sourceEvidence": "local-candidate-inventory.json",
+      "aliasOf": null,
+      "capacityChecks": [
+        {
+          "scope": "guest available not inspected because stopped",
+          "requiredBytes": 62039375668,
+          "availableBytes": null,
+          "headroomBytes": null,
+          "totalBytes": null,
+          "usedBytes": null,
+          "status": "UNKNOWN",
+          "evidence": null
+        },
+        {
+          "scope": "independent physical backing available",
+          "requiredBytes": 322122547200,
+          "availableBytes": 24440545280,
+          "headroomBytes": -297682001920,
+          "totalBytes": 494384795648,
+          "usedBytes": 469944250368,
+          "status": "FAIL",
+          "evidence": "local-candidate-inventory.json"
+        }
+      ],
+      "mustMatchFilesystem": [
+        {
+          "property": "architecture/tool",
+          "classification": "MUST_MATCH_PRODUCTION",
+          "requirement": "Linux arm64; exact c7586c image and d860 binary; UID/GID10000; same Node runtime version for frozen JS, record version before execution",
+          "result": "UNKNOWN",
+          "evidence": "local-candidate-inventory.json"
+        },
+        {
+          "property": "filesystem type / features",
+          "classification": "MUST_MATCH_PRODUCTION",
+          "requirement": "ext4 on lab Linux block device; record kernel, feature flags, journal/reserved-block ratio/delalloc and mount options; production cache mount is ext4 /dev/vda2",
+          "result": "UNKNOWN",
+          "evidence": "local-candidate-inventory.json"
+        },
+        {
+          "property": "block and inode accounting",
+          "classification": "MUST_MATCH_PRODUCTION",
+          "requirement": "4096-byte fundamental block observed; compare statvfs f_bavail/f_bfree, inode counts, ext4 reserved blocks. PVC nominal5Gi is NOT an enforced quota here",
+          "result": "UNKNOWN",
+          "evidence": "local-candidate-inventory.json"
+        },
+        {
+          "property": "cache/temp placement",
+          "classification": "MUST_MATCH_PRODUCTION",
+          "requirement": "PVC-style bind at /home/scanner/.cache; /tmp on container overlay; same underlying ext4 device as cache; controller os.tmpdir manifests on controller filesystem tracked separately",
+          "result": "UNKNOWN",
+          "evidence": "local-candidate-inventory.json"
+        },
+        {
+          "property": "rename / copy boundary",
+          "classification": "MUST_MATCH_PRODUCTION",
+          "requirement": "Preserve production device relationships; never move temp to tmpfs or different disk. Do not implement a replacement rename or wrapper backup",
+          "result": "UNKNOWN",
+          "evidence": "local-candidate-inventory.json"
+        },
+        {
+          "property": "overlay container layer",
+          "classification": "MUST_MATCH_PRODUCTION",
+          "requirement": "Same containerd snapshotter overlayfs and image lower layers; fresh writable upperdir per case, same backing ext4. Collect upperdir, workdir and deleted-open-file accounting",
+          "result": "UNKNOWN",
+          "evidence": "local-candidate-inventory.json"
+        },
+        {
+          "property": "guest filesystem capacity",
+          "classification": "MUST_MATCH_PRODUCTION",
+          "requirement": "For guard classification compare same measured capacityBytes270430261248 and reserve ratio; differing capacity only supplementary sensitivity run",
+          "result": "UNKNOWN",
+          "evidence": "local-candidate-inventory.json"
+        },
+        {
+          "property": "sparse / host COW",
+          "classification": "MUST_MATCH_PRODUCTION",
+          "requirement": "For end-to-end backing-space safety use dedicated qcow2 on APFS with adequate physical space and matched COW policy. ext4-only lab proves guest peak only; cannot validate production host/backup safety",
+          "result": "FAIL",
+          "evidence": "local-candidate-inventory.json"
+        }
+      ],
+      "SHOULD_MATCH": [
+        {
+          "property": "hypervisor/host version",
+          "classification": "SHOULD_MATCH",
+          "requirement": "Match existing UTM/QEMU/APFS where possible; record differences; no claim of backing-store equivalence if not matched"
+        },
+        {
+          "property": "DNS / proxy / throughput",
+          "classification": "SHOULD_MATCH",
+          "requirement": "Independent egress, same official source and digest; record latency/retries; production mutable proxy excluded"
+        }
+      ],
+      "NOT_RELEVANT": [
+        {
+          "property": "business namespace labels / production registry tags",
+          "classification": "NOT_RELEVANT",
+          "requirement": "No PetClinic or production registry needed; isolated kube API can use same harbor/data-infra/devops names solely because frozen IO hardcodes them"
+        }
+      ],
+      "Production Safety": "FAIL",
+      "Disk": "FAIL",
+      "Filesystem": "FAIL",
+      "Storage Topology": "UNKNOWN",
+      "Measurement": "UNKNOWN",
+      "Network": "UNKNOWN",
+      "Credentials": "UNKNOWN",
+      "Isolation": "FAIL",
+      "Failure Safety": "FAIL",
+      "Repeatability": "FAIL",
+      "Overall": "INELIGIBLE",
+      "rejectionReasons": [
+        "Stopped VM not started; no attested mount/topology/workload isolation",
+        "Configured virtual data disk100GiB is not measured usable/free capacity and not primary251.865GiB FS",
+        "Actual shared host backing fails300GiB requirement"
+      ],
+      "noConditionalWaiver": true
+    }
+  ],
+  "aliasesNotIndependentCandidates": [
+    {
+      "alias": "devops Ubuntu host / current UTM devops.utm",
+      "candidateId": "utm-devops",
+      "reason": "Same node/PVC/physical backing, not two independent hosts"
+    },
+    {
+      "alias": "/Volumes/Macintosh HD and /Volumes/Recovery",
+      "candidateId": "mac-host",
+      "reason": "Same internal APFS physical container; df rows not additive; no external device discovered"
+    },
+    {
+      "alias": "Docker default and desktop-linux contexts",
+      "candidateId": null,
+      "reason": "Socket paths absent; configuration entries are not accessible running engines"
+    },
+    {
+      "alias": "security-test Docker engine",
+      "candidateId": "colima-security-test",
+      "reason": "Same10GiB data disk; no duplicate capacity"
+    }
+  ],
+  "physicalDeviceInventory": "local-candidate-inventory.json diskutil",
+  "limitations": [
+    "No provider-management API identity used; provisioning size/unused attached disks on cloud hosts UNKNOWN. Existing SSH read unavailable. Production role+amd64+root space already decisively reject these hosts.",
+    "No claim about every resource in all cloud accounts. No undiscovered or inaccessible hypothetical candidate is treated as available.",
+    "No restart, mount, attach, clone, resize, delete, workload move or Trivy download performed."
+  ]
+}

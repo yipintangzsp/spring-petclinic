@@ -1,0 +1,73 @@
+{
+  "validationRunId": "rf3-20261103-9730f2",
+  "scope": "EXACT_VALIDATION_NAMESPACE_ONLY",
+  "existingHooksModified": false,
+  "hooks": [
+    {
+      "kind": "MutatingWebhookConfiguration",
+      "name": "rf3-20261103-9730f2-mutate",
+      "namespaceSelector": {
+        "matchExpressions": [
+          {
+            "key": "kubernetes.io/metadata.name",
+            "operator": "In",
+            "values": [
+              "rf3-20261103-9730f2-cosign"
+            ]
+          }
+        ]
+      },
+      "resources": [
+        {
+          "apiGroups": [
+            ""
+          ],
+          "apiVersions": [
+            "v1"
+          ],
+          "operations": [
+            "CREATE",
+            "UPDATE"
+          ],
+          "resources": [
+            "pods"
+          ],
+          "scope": "Namespaced"
+        }
+      ]
+    },
+    {
+      "kind": "ValidatingWebhookConfiguration",
+      "name": "rf3-20261103-9730f2-validate",
+      "namespaceSelector": {
+        "matchExpressions": [
+          {
+            "key": "kubernetes.io/metadata.name",
+            "operator": "In",
+            "values": [
+              "rf3-20261103-9730f2-cosign"
+            ]
+          }
+        ]
+      },
+      "resources": [
+        {
+          "apiGroups": [
+            ""
+          ],
+          "apiVersions": [
+            "v1"
+          ],
+          "operations": [
+            "CREATE",
+            "UPDATE"
+          ],
+          "resources": [
+            "pods"
+          ],
+          "scope": "Namespaced"
+        }
+      ]
+    }
+  ]
+}

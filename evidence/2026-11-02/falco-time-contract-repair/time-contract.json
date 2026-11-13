@@ -1,0 +1,28 @@
+{
+  "contractId": "frozen-falco-observed-window-ms-v1",
+  "authority": [
+    "infra/security/runtime/health.mjs:43-56",
+    "infra/security/runtime/event-policy.mjs:10"
+  ],
+  "productionSourceSha256": "65ab133a4248b9900265a47d943f9e6430b9ec9581ddd624b1d9257322b0d921",
+  "sampleClock": "Date.now() at entry to EACH liveSample(), before log and workload IO",
+  "factField": "observations.samples[i].windowEndMs",
+  "factType": "explicit observed safe integer wall-clock milliseconds; never inferred from raw.now or a wait constant",
+  "windowStart": "windowEndMs - 15000",
+  "inclusion": "start <= Date.parse(event.time) < end",
+  "precision": "Date.now integer milliseconds; ISO serialization by Date.toISOString(); event parsing exactly existing Date.parse(), no new rounding",
+  "logQuery": "kubectl logs --since-time=<start ISO> --tail=1000; then existing runtimeWindow performs both bounds locally",
+  "historicalQuery": "baseline --since=10m; final --since-time=baseline.capturedAt; --tail=500; diagnostics only, no Loki Gate query",
+  "wait": "setTimeout(16000) only if first window has candidate count>=2; a requested wait, not an authoritative timestamp or maximum interval",
+  "interval": "t2 = Date.now at second sample. Under an unadjusted clock, t2-t1 includes first log IO, parse work, workload IO, timer wait and timer scheduling latency",
+  "secondQueryLatency": "occurs after t2 capture; does not advance that query's end bound",
+  "firstQueryLatency": "occurs after t1 capture; contributes to t2 but does not move the first end bound",
+  "preSamplingLatency": "diagnostic and earlier IO can move first sample time away from raw.now; sample0 also requires an observed timestamp",
+  "retry": "none in frozen run() or health fetch; failed command terminates Gate path",
+  "commandTimeout": "kubectl --request-timeout=15s; spawnSync timeout=20000; nonzero/null status fails with no retry",
+  "healthTimeout": "AbortSignal.timeout(5000); fetch error/non-ok fails",
+  "wallClockAdjustment": "not assumed monotonic; consume actual clock values and retain original persistentRuntime disjoint-window rejection",
+  "modeScope": "baseline and check use the identical liveSample/wait code; baseline establishment and final continuity validation differ and remain unchanged",
+  "missingTiming": "incomplete evidence, NOT_CONFIGURED/null decision if the successful sample's observed clock is absent or malformed; never synthesize fixed offset or PASS",
+  "rawFactPreservation": "input evidence, event timestamps and query outcomes unchanged; only adapter consumes the previously missing explicit per-sample clock"
+}

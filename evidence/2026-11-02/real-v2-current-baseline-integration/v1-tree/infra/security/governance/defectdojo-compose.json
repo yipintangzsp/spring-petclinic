@@ -1,0 +1,364 @@
+{
+  "name": "platform-defectdojo",
+  "services": {
+    "postgres": {
+      "image": "postgres@sha256:89f747171c4b0af0eacf5984550060be79786dbe286eb60cfa691d79d1e8b23f",
+      "platform": "linux/arm64",
+      "restart": "unless-stopped",
+      "environment": {
+        "POSTGRES_DB": "defectdojo",
+        "POSTGRES_USER": "defectdojo",
+        "POSTGRES_PASSWORD": "${DD_DATABASE_PASSWORD}",
+        "PGDATA": "/var/lib/postgresql/data"
+      },
+      "command": [
+        "postgres",
+        "-c",
+        "shared_buffers=64MB",
+        "-c",
+        "max_connections=30",
+        "-c",
+        "work_mem=2MB",
+        "-c",
+        "max_wal_size=64MB",
+        "-c",
+        "min_wal_size=32MB"
+      ],
+      "volumes": [
+        "dojo_postgres:/var/lib/postgresql/data"
+      ],
+      "mem_limit": "256m",
+      "cpus": 0.3,
+      "pids_limit": 128,
+      "healthcheck": {
+        "test": [
+          "CMD-SHELL",
+          "pg_isready -U defectdojo -d defectdojo"
+        ],
+        "interval": "10s",
+        "timeout": "5s",
+        "retries": 12
+      },
+      "logging": {
+        "driver": "json-file",
+        "options": {
+          "max-size": "5m",
+          "max-file": "2"
+        }
+      },
+      "pull_policy": "never"
+    },
+    "valkey": {
+      "image": "valkey/valkey@sha256:eb5a657e070199befde516f47a1015338b752f083e09c7736cb8c07d9ec99bdd",
+      "platform": "linux/arm64",
+      "restart": "unless-stopped",
+      "command": [
+        "valkey-server",
+        "--requirepass",
+        "${DD_CACHE_PASSWORD}",
+        "--maxmemory",
+        "48mb",
+        "--maxmemory-policy",
+        "noeviction",
+        "--appendonly",
+        "yes"
+      ],
+      "volumes": [
+        "dojo_valkey:/data"
+      ],
+      "mem_limit": "96m",
+      "cpus": 0.1,
+      "healthcheck": {
+        "test": [
+          "CMD-SHELL",
+          "valkey-cli -a \"$${DD_CACHE_PASSWORD}\" ping 2>/dev/null | grep PONG"
+        ],
+        "interval": "10s",
+        "timeout": "5s",
+        "retries": 12
+      },
+      "environment": {
+        "DD_CACHE_PASSWORD": "${DD_CACHE_PASSWORD}"
+      },
+      "logging": {
+        "driver": "json-file",
+        "options": {
+          "max-size": "5m",
+          "max-file": "2"
+        }
+      },
+      "pull_policy": "never"
+    },
+    "initializer": {
+      "image": "registry.defectdojo.com/defectdojo/defectdojo-django@sha256:ccee9de64bae2156abafac946a83a3bfda43e13a314ac703e849cf9831bedba9",
+      "platform": "linux/arm64",
+      "restart": "no",
+      "security_opt": [
+        "no-new-privileges:true"
+      ],
+      "cap_drop": [
+        "NET_RAW"
+      ],
+      "pids_limit": 128,
+      "logging": {
+        "driver": "json-file",
+        "options": {
+          "max-size": "5m",
+          "max-file": "2"
+        }
+      },
+      "entrypoint": [
+        "/wait-for-it.sh",
+        "postgres:5432",
+        "-t",
+        "60",
+        "--",
+        "/entrypoint-initializer.sh"
+      ],
+      "environment": {
+        "DD_DEBUG": "False",
+        "DD_ALLOWED_HOSTS": "192.168.64.11,192.168.1.58,10.0.0.3,defectdojo.devops.local,localhost,127.0.0.1",
+        "DD_CSRF_TRUSTED_ORIGINS": "http://192.168.64.11:18095,http://192.168.1.58:18095,http://defectdojo.devops.local",
+        "DD_DATABASE_URL": "${DD_DATABASE_URL}",
+        "DD_CELERY_BROKER_URL": "${DD_CELERY_BROKER_URL}",
+        "DD_CACHE_URL": "${DD_CACHE_URL}",
+        "DD_SECRET_KEY": "${DD_SECRET_KEY}",
+        "DD_CREDENTIAL_AES_256_KEY": "${DD_CREDENTIAL_AES_256_KEY}",
+        "DD_DATABASE_READINESS_TIMEOUT": "60",
+        "DD_EMAIL_URL": "dummymail://",
+        "DD_TRACK_MIGRATIONS": "True",
+        "DD_INITIALIZE": "true",
+        "DD_ADMIN_USER": "platform-admin",
+        "DD_ADMIN_MAIL": "admin@defectdojo.local",
+        "DD_ADMIN_PASSWORD": "${DD_ADMIN_PASSWORD}",
+        "DD_TIME_ZONE": "Asia/Shanghai",
+        "DD_JIRA_WEBHOOK_SECRET": "${DD_JIRA_WEBHOOK_SECRET}"
+      },
+      "mem_limit": "1024m",
+      "cpus": 1,
+      "depends_on": {
+        "postgres": {
+          "condition": "service_healthy"
+        }
+      },
+      "volumes": [
+        "dojo_media:/app/media"
+      ],
+      "pull_policy": "never"
+    },
+    "uwsgi": {
+      "image": "registry.defectdojo.com/defectdojo/defectdojo-django@sha256:ccee9de64bae2156abafac946a83a3bfda43e13a314ac703e849cf9831bedba9",
+      "platform": "linux/arm64",
+      "restart": "unless-stopped",
+      "security_opt": [
+        "no-new-privileges:true"
+      ],
+      "cap_drop": [
+        "NET_RAW"
+      ],
+      "pids_limit": 128,
+      "logging": {
+        "driver": "json-file",
+        "options": {
+          "max-size": "5m",
+          "max-file": "2"
+        }
+      },
+      "entrypoint": [
+        "/wait-for-it.sh",
+        "postgres:5432",
+        "-t",
+        "60",
+        "--",
+        "/entrypoint-uwsgi.sh"
+      ],
+      "environment": {
+        "DD_DEBUG": "False",
+        "DD_ALLOWED_HOSTS": "192.168.64.11,192.168.1.58,10.0.0.3,defectdojo.devops.local,localhost,127.0.0.1",
+        "DD_CSRF_TRUSTED_ORIGINS": "http://192.168.64.11:18095,http://192.168.1.58:18095,http://defectdojo.devops.local",
+        "DD_DATABASE_URL": "${DD_DATABASE_URL}",
+        "DD_CELERY_BROKER_URL": "${DD_CELERY_BROKER_URL}",
+        "DD_CACHE_URL": "${DD_CACHE_URL}",
+        "DD_SECRET_KEY": "${DD_SECRET_KEY}",
+        "DD_CREDENTIAL_AES_256_KEY": "${DD_CREDENTIAL_AES_256_KEY}",
+        "DD_DATABASE_READINESS_TIMEOUT": "60",
+        "DD_EMAIL_URL": "dummymail://",
+        "DD_TRACK_MIGRATIONS": "True",
+        "DD_UWSGI_NUM_OF_PROCESSES": "1",
+        "DD_UWSGI_NUM_OF_THREADS": "2",
+        "DD_UWSGI_EXTRA_ARGS": "--master --harakiri 180 --max-requests 200",
+        "DD_TIME_ZONE": "Asia/Shanghai"
+      },
+      "volumes": [
+        "dojo_media:/app/media"
+      ],
+      "mem_limit": "512m",
+      "cpus": 0.5,
+      "depends_on": {
+        "initializer": {
+          "condition": "service_completed_successfully"
+        },
+        "postgres": {
+          "condition": "service_healthy"
+        },
+        "valkey": {
+          "condition": "service_healthy"
+        }
+      },
+      "pull_policy": "never"
+    },
+    "celeryworker": {
+      "image": "registry.defectdojo.com/defectdojo/defectdojo-django@sha256:ccee9de64bae2156abafac946a83a3bfda43e13a314ac703e849cf9831bedba9",
+      "platform": "linux/arm64",
+      "restart": "unless-stopped",
+      "security_opt": [
+        "no-new-privileges:true"
+      ],
+      "cap_drop": [
+        "NET_RAW"
+      ],
+      "pids_limit": 128,
+      "logging": {
+        "driver": "json-file",
+        "options": {
+          "max-size": "5m",
+          "max-file": "2"
+        }
+      },
+      "entrypoint": [
+        "/wait-for-it.sh",
+        "postgres:5432",
+        "-t",
+        "60",
+        "--",
+        "/entrypoint-celery-worker.sh"
+      ],
+      "environment": {
+        "DD_DEBUG": "False",
+        "DD_ALLOWED_HOSTS": "192.168.64.11,192.168.1.58,10.0.0.3,defectdojo.devops.local,localhost,127.0.0.1",
+        "DD_CSRF_TRUSTED_ORIGINS": "http://192.168.64.11:18095,http://192.168.1.58:18095,http://defectdojo.devops.local",
+        "DD_DATABASE_URL": "${DD_DATABASE_URL}",
+        "DD_CELERY_BROKER_URL": "${DD_CELERY_BROKER_URL}",
+        "DD_CACHE_URL": "${DD_CACHE_URL}",
+        "DD_SECRET_KEY": "${DD_SECRET_KEY}",
+        "DD_CREDENTIAL_AES_256_KEY": "${DD_CREDENTIAL_AES_256_KEY}",
+        "DD_DATABASE_READINESS_TIMEOUT": "60",
+        "DD_EMAIL_URL": "dummymail://",
+        "DD_TRACK_MIGRATIONS": "True",
+        "DD_CELERY_WORKER_CONCURRENCY": "1",
+        "DD_CELERY_WORKER_POOL_TYPE": "solo",
+        "DD_TIME_ZONE": "Asia/Shanghai"
+      },
+      "volumes": [
+        "dojo_media:/app/media"
+      ],
+      "mem_limit": "768m",
+      "cpus": 0.75,
+      "depends_on": {
+        "initializer": {
+          "condition": "service_completed_successfully"
+        },
+        "postgres": {
+          "condition": "service_healthy"
+        },
+        "valkey": {
+          "condition": "service_healthy"
+        }
+      },
+      "pull_policy": "never"
+    },
+    "celerybeat": {
+      "image": "registry.defectdojo.com/defectdojo/defectdojo-django@sha256:ccee9de64bae2156abafac946a83a3bfda43e13a314ac703e849cf9831bedba9",
+      "platform": "linux/arm64",
+      "restart": "unless-stopped",
+      "security_opt": [
+        "no-new-privileges:true"
+      ],
+      "cap_drop": [
+        "NET_RAW"
+      ],
+      "pids_limit": 128,
+      "logging": {
+        "driver": "json-file",
+        "options": {
+          "max-size": "5m",
+          "max-file": "2"
+        }
+      },
+      "entrypoint": [
+        "/wait-for-it.sh",
+        "postgres:5432",
+        "-t",
+        "60",
+        "--",
+        "/entrypoint-celery-beat.sh"
+      ],
+      "environment": {
+        "DD_DEBUG": "False",
+        "DD_ALLOWED_HOSTS": "192.168.64.11,192.168.1.58,10.0.0.3,defectdojo.devops.local,localhost,127.0.0.1",
+        "DD_CSRF_TRUSTED_ORIGINS": "http://192.168.64.11:18095,http://192.168.1.58:18095,http://defectdojo.devops.local",
+        "DD_DATABASE_URL": "${DD_DATABASE_URL}",
+        "DD_CELERY_BROKER_URL": "${DD_CELERY_BROKER_URL}",
+        "DD_CACHE_URL": "${DD_CACHE_URL}",
+        "DD_SECRET_KEY": "${DD_SECRET_KEY}",
+        "DD_CREDENTIAL_AES_256_KEY": "${DD_CREDENTIAL_AES_256_KEY}",
+        "DD_DATABASE_READINESS_TIMEOUT": "60",
+        "DD_EMAIL_URL": "dummymail://",
+        "DD_TRACK_MIGRATIONS": "True",
+        "DD_TIME_ZONE": "Asia/Shanghai"
+      },
+      "volumes": [
+        "dojo_media:/app/media"
+      ],
+      "mem_limit": "256m",
+      "cpus": 0.1,
+      "depends_on": {
+        "initializer": {
+          "condition": "service_completed_successfully"
+        },
+        "postgres": {
+          "condition": "service_healthy"
+        },
+        "valkey": {
+          "condition": "service_healthy"
+        }
+      },
+      "pull_policy": "never"
+    },
+    "nginx": {
+      "image": "registry.defectdojo.com/defectdojo/defectdojo-nginx@sha256:da1e530addacb2ba8e209d93642d4e442f93705cedbca49466d18150f59f9117",
+      "platform": "linux/arm64",
+      "restart": "unless-stopped",
+      "environment": {
+        "DD_UWSGI_HOST": "uwsgi",
+        "DD_UWSGI_PORT": "3031",
+        "NGINX_METRICS_ENABLED": "false"
+      },
+      "ports": [
+        "18095:8080"
+      ],
+      "volumes": [
+        "dojo_media:/usr/share/nginx/html/media:ro"
+      ],
+      "depends_on": [
+        "uwsgi"
+      ],
+      "mem_limit": "96m",
+      "cpus": 0.1,
+      "pids_limit": 64,
+      "logging": {
+        "driver": "json-file",
+        "options": {
+          "max-size": "5m",
+          "max-file": "2"
+        }
+      },
+      "pull_policy": "never"
+    }
+  },
+  "volumes": {
+    "dojo_media": {},
+    "dojo_postgres": {},
+    "dojo_valkey": {}
+  }
+}

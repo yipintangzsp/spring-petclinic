@@ -1,0 +1,27 @@
+{
+  "runId": "sm-sops-20261102-02",
+  "userAuthorizedOrder": [
+    "Node revalidation",
+    "SOPS-age toolchain",
+    "two temporary age keys",
+    "three namespaces",
+    "real SA and minimum RBAC",
+    "short-lived SA token",
+    "MIN_RBAC kubeconfig",
+    "27 real auth can-i",
+    "Lease and four synthetic Secrets",
+    "four encrypted fixtures with positive/wrong-key verification",
+    "new authoritative baseline",
+    "STOP"
+  ],
+  "serviceAccounts": [
+    "platform-secret-reconciler",
+    "kyverno-admission-controller",
+    "security-fixture-executor"
+  ],
+  "gateExecutionAllowed": false,
+  "policyDifferentialAllowed": false,
+  "summaryIntegrationAllowed": false,
+  "preserveNewBaselineAtStop": true,
+  "credentialBoundary": "Fixture key preparation runs no-network/nonroot with no Kubernetes configuration, before any SA exists. All Kubernetes management through original guard; all later fixture crypto runs initiated by real MIN_RBAC guard. No admin Gate fallback."
+}

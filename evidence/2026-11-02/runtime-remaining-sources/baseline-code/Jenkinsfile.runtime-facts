@@ -1,0 +1,18 @@
+// Dedicated non-release validation only. No Summary, approval or deployment.
+pipeline {
+  agent any
+  options { disableConcurrentBuilds(); timeout(time: 10, unit: 'MINUTES') }
+  environment {
+    DEVSECOPS_READ_ONLY = 'true'
+    MAVEN_OPTS = '-Xmx256m -XX:ActiveProcessorCount=1'
+  }
+  stages {
+    stage('Verify frozen input') {
+      steps { sh 'test -f .git-sha; test -f runtime-source-bundle.json; node infra/security/runtime-facts/verify-bundle.mjs' }
+    }
+    stage('Original command → Runtime facts → Authoritative owner → Gate reuse') {
+      steps { withEnv(['HEAVY_HOLDER=runtime-facts-' + env.BUILD_NUMBER]) { sh 'node infra/security/runtime-facts/run-nonrelease.mjs' } }
+    }
+  }
+  post { always { archiveArtifacts artifacts: '.devsecops/runtime-facts/build-' + env.BUILD_NUMBER + '/**,runtime-source-bundle.json', allowEmptyArchive: false } }
+}

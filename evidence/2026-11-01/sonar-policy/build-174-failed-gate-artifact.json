@@ -1,0 +1,49 @@
+{
+  "job": "petclinic-ci",
+  "build": 174,
+  "result": "FAILURE",
+  "artifactPath": "target/platform/sonar-quality.json",
+  "gate": {
+    "caycStatus": "compliant",
+    "conditions": [
+      {
+        "actualValue": "92.0",
+        "comparator": "LT",
+        "errorThreshold": "80",
+        "metricKey": "new_coverage",
+        "status": "OK"
+      },
+      {
+        "actualValue": "0.0",
+        "comparator": "GT",
+        "errorThreshold": "3",
+        "metricKey": "new_duplicated_lines_density",
+        "status": "OK"
+      },
+      {
+        "actualValue": "6",
+        "comparator": "GT",
+        "errorThreshold": "0",
+        "metricKey": "new_violations",
+        "status": "ERROR"
+      }
+    ],
+    "ignoredConditions": false,
+    "period": {
+      "date": "2026-10-02T08:19:18+0000",
+      "mode": "PREVIOUS_VERSION"
+    },
+    "status": "ERROR"
+  },
+  "sonarActionClasses": [],
+  "artifactPaths": [
+    ".infra-preflight-before-build.json",
+    ".sonar-runtime-maintenance.json",
+    "target/platform/messaging-python-tests.json",
+    "target/platform/sonar-quality.json"
+  ],
+  "gateFailureLog": [
+    "[ERROR] QUALITY GATE STATUS: FAILED - View details on http://sonarqube-sonarqube.sonarqube.svc.cluster.local:9000/dashboard?id=petclinic"
+  ],
+  "analysisTaskBinding": "Not present in this archived report; project-level quality query only"
+}

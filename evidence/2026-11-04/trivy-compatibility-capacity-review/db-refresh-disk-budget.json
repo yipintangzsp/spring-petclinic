@@ -1,0 +1,97 @@
+{
+  "classification": "READ_ONLY_BUDGET_ASSESSMENT_NO_EXECUTION",
+  "sampledAt": "2026-11-04T01:51:53.523605+00:00",
+  "availableBytes": 45624180736,
+  "capacityBytes": 270430261248,
+  "availableGiB": 42.49082946777344,
+  "validationHardFloorBytes": 49154473780,
+  "validationHardFloorGiB": 45.77867107465863,
+  "belowValidationFloorBytes": 3530293044,
+  "productionRefreshRequirementBytes": 53449441075.2,
+  "productionRefreshRequirementGiB": 49.77867107391357,
+  "numericGuardChange": false,
+  "hostBackingAvailableBytes": 23655387136,
+  "hostBackingAvailableGiB": 22.03079605102539,
+  "hostCOWPeakUpperBound": "UNKNOWN",
+  "guestAndHostBytesAdded": false,
+  "storageDomains": [
+    {
+      "id": "devops-vda2",
+      "observedMount": "/dev/vda2 ext4",
+      "writers": [
+        "local-path Trivy PVC/cache",
+        "container overlay upper/tmp",
+        "containerd/node image store",
+        "other platform writers"
+      ],
+      "independentFreeCapacity": false,
+      "mountEvidence": "trivy-filesystem-after.stdout"
+    },
+    {
+      "id": "mac-backing",
+      "independentStorageLayer": true,
+      "cowAdditionalAllocation": "UNKNOWN",
+      "capacityCanBeAddedToGuestFreeBytes": false,
+      "budgetProof": "NOT_PROVEN"
+    }
+  ],
+  "otherWriterBound": "UNKNOWN",
+  "instantaneousWriteAndStopLatencyBound": "UNKNOWN",
+  "failureCleanupAdditionalSpace": "UNKNOWN",
+  "cleanupContainment": "NOT_PROVEN",
+  "pvcDeclared5GiIsEnforcedQuota": false,
+  "measuredPeakIsUpperBound": false,
+  "status": "NOT_PROVEN",
+  "allowedToExecute": false,
+  "operation": "DB_REFRESH_DISK_BUDGET",
+  "currentDBLogicalBytes": 1666846720,
+  "currentJavaDBLogicalBytes": 1564942336,
+  "currentDBsAreExistingBaselineNotAdditionalBudget": true,
+  "downloadPaths": [
+    "/tmp/oci-download-* (current container default temp)",
+    "/home/scanner/.cache/trivy/db",
+    "/home/scanner/.cache/trivy/java-db"
+  ],
+  "candidateIsolatedPaths": "owned validation cache and TMPDIR; not created on production this round",
+  "components": [
+    {
+      "component": "compressed layer",
+      "upperBoundBytesAcceptedPerArtifact": 1610612736,
+      "basis": "unchanged verifyManifest maximum; not actual newly fetched manifest"
+    },
+    {
+      "component": "expanded archive plus replacement/old-new overlap",
+      "upperBound": "UNKNOWN"
+    },
+    {
+      "component": "temporary download/extraction and failed interrupted files",
+      "upperBound": "UNKNOWN"
+    },
+    {
+      "component": "retained other DB kind during serial refresh",
+      "basis": "existing baseline; do not sum independent serial peaks"
+    },
+    {
+      "component": "rollback DB copy",
+      "additionalCopyCreated": false,
+      "assumedBytes": 0
+    }
+  ],
+  "compressedLimitDoesNotBoundExtraction": true,
+  "peakAdditionalBytes": "UNKNOWN",
+  "implementationEvidence": [
+    "infra/observability/scanner-db-refresh.mjs",
+    "evidence/2026-11-03/trivy-guard-experiment-design/upstream-source/pkg/oci/artifact.go",
+    "evidence/2026-11-03/trivy-guard-experiment-design/upstream-source/pkg/db/db.go",
+    "evidence/2026-11-03/trivy-guard-experiment-design/upstream-source/pkg/javadb/client.go"
+  ],
+  "blockers": [
+    "BELOW_UNCHANGED_VALIDATION_HARD_FLOOR",
+    "EXPANDED_REFRESH_PEAK_UNKNOWN",
+    "STOP_LATENCY_WRITE_BOUND_UNKNOWN",
+    "FAILURE_CLEANUP_BOUND_UNKNOWN",
+    "HOST_COW_BOUND_UNKNOWN",
+    "GUARD_CONTAINMENT_GAPS"
+  ],
+  "refreshCount": 0
+}

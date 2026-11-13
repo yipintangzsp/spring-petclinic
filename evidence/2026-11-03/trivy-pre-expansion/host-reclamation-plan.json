@@ -1,0 +1,131 @@
+{
+  "candidates": [
+    {
+      "candidate": "active UTM bundle",
+      "path": "/Users/zhangsir/Library/Containers/com.utmapp.UTM/Data/Documents/devops.utm",
+      "allocatedBytes": 220097060864,
+      "classification": "RETAIN",
+      "safeDelete": false,
+      "expectedSafeReclaimBytes": 0,
+      "referenceProof": "Current production VM; QEMULauncher holds qcow2 read/write",
+      "recoveryImpact": "Deleting any drive is prohibited",
+      "cleanupCommand": null
+    },
+    {
+      "candidate": "source repositories",
+      "path": "/Users/zhangsir/code",
+      "allocatedBytes": 28459732992,
+      "classification": "RETAIN",
+      "safeDelete": false,
+      "expectedSafeReclaimBytes": 0,
+      "referenceProof": "Shared source repos and authoritative audit tree",
+      "recoveryImpact": "Must retain",
+      "cleanupCommand": null
+    },
+    {
+      "candidate": "authoritative evidence/runtime",
+      "path": "/Users/zhangsir/.codex",
+      "allocatedBytes": 1962147840,
+      "classification": "RETAIN",
+      "safeDelete": false,
+      "expectedSafeReclaimBytes": 0,
+      "referenceProof": "Current tool runtime/chat artifacts/authoritative evidence",
+      "recoveryImpact": "Not disposable cache",
+      "cleanupCommand": null
+    },
+    {
+      "candidate": "Colima data",
+      "path": "/Users/zhangsir/.colima",
+      "allocatedBytes": 7540498432,
+      "classification": "RETAIN",
+      "safeDelete": false,
+      "expectedSafeReclaimBytes": 0,
+      "referenceProof": "security-test Running; default Stopped does not prove recovery assets disposable",
+      "recoveryImpact": "Keep active/runtime/offline dependencies",
+      "cleanupCommand": null
+    },
+    {
+      "candidate": "Homebrew cache",
+      "path": "/Users/zhangsir/Library/Caches/Homebrew",
+      "allocatedBytes": null,
+      "classification": "REVIEW_REQUIRED",
+      "safeDelete": false,
+      "expectedSafeReclaimBytes": 0,
+      "referenceProof": "Cache path identified; no proven removable package set",
+      "recoveryImpact": "Do not infer ownership from cache name",
+      "cleanupCommand": null
+    },
+    {
+      "candidate": "browser cache",
+      "path": "/Users/zhangsir/Library/Caches/Google",
+      "allocatedBytes": 3185635328,
+      "classification": "REVIEW_REQUIRED",
+      "safeDelete": false,
+      "expectedSafeReclaimBytes": 0,
+      "referenceProof": "Not a profile/cookie deletion target; current processes/per-entry restore/re-download not proven",
+      "recoveryImpact": "May need browser coordination; do not kill apps",
+      "cleanupCommand": null
+    },
+    {
+      "candidate": "CloudKit cache",
+      "path": "/Users/zhangsir/Library/Caches/CloudKit",
+      "allocatedBytes": 1218228224,
+      "classification": "REVIEW_REQUIRED",
+      "safeDelete": false,
+      "expectedSafeReclaimBytes": 0,
+      "referenceProof": "Active sync ownership and safe recovery not proven",
+      "recoveryImpact": "No broad cache wipe",
+      "cleanupCommand": null
+    },
+    {
+      "candidate": "Downloads/installers/archives",
+      "path": "/Users/zhangsir/Downloads",
+      "allocatedBytes": 120078336,
+      "classification": "REVIEW_REQUIRED",
+      "safeDelete": false,
+      "expectedSafeReclaimBytes": 0,
+      "referenceProof": "Small mixed source/archive set; file metadata stored, no deletion authorization inferred from age",
+      "recoveryImpact": "Retain source/unknown downloads",
+      "cleanupCommand": null
+    },
+    {
+      "candidate": "Trash",
+      "path": "/Users/zhangsir/.Trash",
+      "allocatedBytes": 1562161152,
+      "classification": "REVIEW_REQUIRED",
+      "safeDelete": false,
+      "expectedSafeReclaimBytes": 0,
+      "referenceProof": "Contains apps/other items; current restore intent and complete contents not proven",
+      "recoveryImpact": "Do not assume all Trash is safe to erase",
+      "cleanupCommand": null
+    },
+    {
+      "candidate": "logs",
+      "path": "/Users/zhangsir/Library/Logs",
+      "allocatedBytes": 1317584896,
+      "classification": "REVIEW_REQUIRED",
+      "safeDelete": false,
+      "expectedSafeReclaimBytes": 0,
+      "referenceProof": "No archived/expired exact log set proven",
+      "recoveryImpact": "Keep incident evidence",
+      "cleanupCommand": null
+    },
+    {
+      "candidate": "test copies",
+      "path": "Owned /private/tmp/vm-copy-fixture-*",
+      "allocatedBytes": 65536,
+      "classification": "SAFE_EPHEMERAL",
+      "safeDelete": false,
+      "expectedSafeReclaimBytes": 0,
+      "referenceProof": "Synthetic files created in this iteration only; removed in finally; copy-tool-fixture.json proves cleanup",
+      "recoveryImpact": "No production data; cleanup not counted as preexisting-host reclamation",
+      "cleanupCommand": null
+    }
+  ],
+  "safeExistingHostReclaimBytes": 0,
+  "commandsToExecute": [],
+  "reclaimedFromExistingUserFiles": 0,
+  "nestedDirectorySizesNotAdditive": true,
+  "inventoryCoverage": "Top user du exit1 includes access denied paths; not a full absence proof",
+  "sparseCopyFixtureOnlyCleanup": true
+}

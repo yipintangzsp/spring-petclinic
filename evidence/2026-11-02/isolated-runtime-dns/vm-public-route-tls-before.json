@@ -1,0 +1,20 @@
+{
+  "command": [
+    "/opt/homebrew/bin/colima",
+    "ssh",
+    "-p",
+    "security-test",
+    "--",
+    "sh",
+    "-c",
+    "curl --noproxy \"*\" --silent --show-error --head --connect-timeout 8 --max-time 18 --resolve registry-1.docker.io:443:100.31.14.190 --write-out \"\\nHTTP_CODE=%{http_code}\\n\" https://registry-1.docker.io/v2/"
+  ],
+  "publicIP": "100.31.14.190",
+  "exit": 0,
+  "stdout": "HTTP/2 401 \ndate: Mon, 02 Nov 2026 01:29:53 GMT\ncontent-type: application/json\ncontent-length: 87\ndocker-distribution-api-version: registry/2.0\nwww-authenticate: Bearer realm=\"https://auth.docker.io/token\",service=\"registry.docker.io\"\nstrict-transport-security: max-age=31536000\n\n\nHTTP_CODE=401\n",
+  "stderr": "",
+  "DNSBypassedForDiagnosisOnly": true,
+  "TLSVerificationDisabled": false,
+  "configurationModified": false,
+  "productionEndpointProbes": 0
+}

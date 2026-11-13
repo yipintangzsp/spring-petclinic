@@ -1,0 +1,179 @@
+{
+  "apiVersion": "kyverno.io/v1",
+  "kind": "ClusterPolicy",
+  "metadata": {
+    "name": "devsecops-workload-contract",
+    "labels": {
+      "petclinic.devops.local/owner": "platform-devsecops"
+    },
+    "annotations": {
+      "policies.kyverno.io/title": "DevSecOps isolated scanner contract",
+      "pod-policies.kyverno.io/autogen-controllers": "none"
+    }
+  },
+  "spec": {
+    "validationFailureAction": "Enforce",
+    "background": false,
+    "rules": [
+      {
+        "name": "no-host-access",
+        "match": {
+          "any": [
+            {
+              "resources": {
+                "kinds": [
+                  "Pod"
+                ],
+                "namespaces": [
+                  "devsecops-execution"
+                ]
+              }
+            }
+          ]
+        },
+        "validate": {
+          "message": "DevSecOps: host namespaces and hostPath are forbidden",
+          "pattern": {
+            "spec": {
+              "=(hostNetwork)": false,
+              "=(hostPID)": false,
+              "=(hostIPC)": false,
+              "=(volumes)": [
+                {
+                  "X(hostPath)": "null"
+                }
+              ]
+            }
+          },
+          "allowExistingViolations": false
+        },
+        "skipBackgroundRequests": true
+      },
+      {
+        "name": "immutable-image",
+        "match": {
+          "any": [
+            {
+              "resources": {
+                "kinds": [
+                  "Pod"
+                ],
+                "namespaces": [
+                  "devsecops-execution"
+                ]
+              }
+            }
+          ]
+        },
+        "validate": {
+          "message": "DevSecOps: image digest pin required",
+          "pattern": {
+            "spec": {
+              "containers": [
+                {
+                  "image": "*@sha256:*"
+                }
+              ],
+              "=(initContainers)": [
+                {
+                  "image": "*@sha256:*"
+                }
+              ]
+            }
+          },
+          "allowExistingViolations": false
+        },
+        "skipBackgroundRequests": true
+      },
+      {
+        "name": "resource-contract",
+        "match": {
+          "any": [
+            {
+              "resources": {
+                "kinds": [
+                  "Pod"
+                ],
+                "namespaces": [
+                  "devsecops-execution"
+                ]
+              }
+            }
+          ]
+        },
+        "validate": {
+          "message": "DevSecOps: CPU and memory requests and limits required",
+          "pattern": {
+            "spec": {
+              "containers": [
+                {
+                  "resources": {
+                    "requests": {
+                      "cpu": "?*",
+                      "memory": "?*"
+                    },
+                    "limits": {
+                      "cpu": "?*",
+                      "memory": "?*"
+                    }
+                  }
+                }
+              ]
+            }
+          },
+          "allowExistingViolations": false
+        },
+        "skipBackgroundRequests": true
+      },
+      {
+        "name": "non-root",
+        "match": {
+          "any": [
+            {
+              "resources": {
+                "kinds": [
+                  "Pod"
+                ],
+                "namespaces": [
+                  "devsecops-execution"
+                ]
+              }
+            }
+          ]
+        },
+        "validate": {
+          "message": "DevSecOps: no token mount; non-root, seccomp, no escalation and capabilities required",
+          "pattern": {
+            "spec": {
+              "automountServiceAccountToken": false,
+              "securityContext": {
+                "runAsNonRoot": true,
+                "seccompProfile": {
+                  "type": "RuntimeDefault"
+                }
+              },
+              "containers": [
+                {
+                  "securityContext": {
+                    "=(privileged)": false,
+                    "allowPrivilegeEscalation": false,
+                    "readOnlyRootFilesystem": true,
+                    "capabilities": {
+                      "drop": [
+                        "ALL"
+                      ]
+                    }
+                  }
+                }
+              ]
+            }
+          },
+          "allowExistingViolations": false
+        },
+        "skipBackgroundRequests": true
+      }
+    ],
+    "admission": true,
+    "emitWarning": false
+  }
+}

@@ -1,0 +1,16 @@
+// Dedicated ephemeral validation target; production V1 never imports this file.
+pipeline {
+ agent any
+ options { disableConcurrentBuilds(); timeout(time: 10, unit: 'MINUTES') }
+ environment { HEAVY_HOLDER = 'runtime-four-rf4-20261103-004987' }
+ stages {
+  stage('Verify source and accepted twelve') { steps { sh 'node infra/security/runtime-facts/verify-bundle.mjs; node infra/security/runtime-facts/baseline-smoke.mjs; node infra/security/runtime-facts/twelve-smoke.mjs' } }
+  stage('Acquire original heavy Lease') { steps { sh 'node infra/observability/heavy-lease.mjs acquire' } }
+  stage('Real frozen ZAP against validation-only PetClinic') { steps { sh 'node infra/security/runtime-facts/run-zap-validation.mjs' } }
+  stage('Recheck previously wired twelve') { steps { sh 'node infra/security/runtime-facts/twelve-smoke.mjs' } }
+ }
+ post { always {
+  sh 'node infra/observability/heavy-lease.mjs release'
+  archiveArtifacts artifacts: '.devsecops/runtime-controlled/build-' + env.BUILD_NUMBER + '/**,runtime-source-bundle.json', allowEmptyArchive: false
+ } }
+}

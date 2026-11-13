@@ -1,0 +1,10 @@
+LOKI DIRECT (devops -> 10.43.7.197:3100/loki/api/v1/query_range)
+new run web-c7dd2b89-cba4-433d-87c0-eafd2c99e1f4: status=success result=[] totalEntriesReturned=0
+control web-4d4b4773-6750-4927-8e6a-8deef839a6f4: streams 1 values 1 sourceClassification=SEALED_ARTIFACT_REPLAY_NOT_NEW_SCAN policyDecision=FAIL findingCount=64
+
+GRAFANA (devops -> 10.43.55.143 /api/datasources/proxy/uid/loki/loki/api/v1/query_range, admin creds in-session only, read-only)
+new run: success, 0 streams
+control: success, streams 1, values 1
+GET /api/dashboards/uid/security-manager-v2-candidate: 200
+
+MANAGER (view API /api/runs/web-c7dd2b89-...): state=COMPLETED policyDecision=FAIL lokiDelivery.state=FAILED reason=LOKI_FRESH_EXECUTION_EVIDENCE_REQUIRED automatic=true httpRequestCount=0 (see raw/run-*/result.json and api-run.json)

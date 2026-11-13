@@ -1,0 +1,58 @@
+{
+  "status": "GUARD_PHASE1_IMPLEMENTATION_VERIFIED",
+  "scope": "Dual-mode guard only; not Trivy runtime/Policy integration acceptance",
+  "tests": {
+    "guard-tests": {
+      "tests": 73,
+      "pass": 73,
+      "fail": 0
+    },
+    "linux-guard-tests": {
+      "tests": 73,
+      "pass": 73,
+      "fail": 0
+    },
+    "regression-tests": {
+      "tests": 147,
+      "pass": 147,
+      "fail": 0
+    },
+    "runtime-tests": {
+      "tests": 143,
+      "pass": 143,
+      "fail": 0
+    },
+    "policy-core-tests": {
+      "tests": 5,
+      "pass": 5,
+      "fail": 0
+    },
+    "contract-checks": {
+      "checks": 10,
+      "pass": 10
+    },
+    "trivy-frozen-differential-current-tree": {
+      "tests": 190,
+      "pass": 2,
+      "fail": 188,
+      "status": "BLOCKED_FROZEN_SOURCE_IDENTITY",
+      "evidence": "frozen-source-diagnosis.json",
+      "historicalManifestRewritten": false
+    }
+  },
+  "productionSourceBytesUnchanged": true,
+  "productionDefaultBehaviorChanged": false,
+  "productionGuardFormula": "capacityBytes * 0.15 + 12 * 1024 ** 3",
+  "validationHardFloor": "capacityBytes * 0.15 + 8 * 1024 ** 3 (existing release-preflight stop line; not adjustable)",
+  "controlledNodeProcessCasesPerPlatform": 13,
+  "controlledTrivyExecutions": 0,
+  "productionActivation": false,
+  "runtimeWiringActivation": false,
+  "realPeakEvidenceAvailable": false,
+  "phase2AuthorizedToStartRealRefresh": false,
+  "policyRuntimeBlocker": "Pre-existing accepted Helm raw Jenkinsfile delta conflicts with old frozen Trivy source lock; not bypassed",
+  "cleanupVerified": true,
+  "release": 0,
+  "rollout": 0,
+  "nextAction": "Read-only budget precheck only; no refresh unless all proof conditions satisfied"
+}

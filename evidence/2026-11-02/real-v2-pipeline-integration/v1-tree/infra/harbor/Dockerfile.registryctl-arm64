@@ -1,0 +1,10 @@
+# The controller is statically built from the unmodified Harbor v2.14.2 source.
+# Build context must contain harbor_registryctl and ca-certificates.crt.
+# Existing Kubernetes HTTP probes perform health checks; no shell is required.
+FROM scratch
+COPY --chown=10000:10000 harbor_registryctl /home/harbor/harbor_registryctl
+COPY ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
+COPY --chown=10000:10000 tmp/ /tmp/
+ENV SSL_CERT_FILE=/etc/ssl/certs/ca-certificates.crt
+USER 10000:10000
+ENTRYPOINT ["/home/harbor/harbor_registryctl", "-c", "/etc/registryctl/config.yml"]

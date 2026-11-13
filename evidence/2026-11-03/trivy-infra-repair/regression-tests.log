@@ -1,0 +1,271 @@
+✔ runtime patch pins both init containers and main without changing PVC or resources (4.53125ms)
+✔ already pinned runtime requires no mutation (0.148167ms)
+✔ another heavy task cannot change Sonar (0.244792ms)
+✔ replacement StatefulSet cannot be changed (0.081792ms)
+✔ analysis owner cannot be overridden (0.092791ms)
+✔ paused service cannot be taken over (0.079208ms)
+✔ different image or container set is preserved (0.305208ms)
+✔ cache content must match its immutable digest (2.339542ms)
+✔ Argo Synced arriving before the live image waits and succeeds (3321.946125ms)
+✔ live image alone cannot pass when Argo has another source revision (718.604958ms)
+✔ a temporary API outage does not prematurely fail or pass deployment (1097.04775ms)
+✔ a persistently wrong image fails when the bounded attempts end (849.480041ms)
+✔ reclaims a new stopped PostgreSQL test owned by this workspace (0.840667ms)
+✔ preserves pre-existing containers and data, live containers and foreign ownership (0.115ms)
+✔ promotion pins a digest and retains database, resources and zero surge (1.435459ms)
+✔ reject mutable tags and mismatched build identity (0.200917ms)
+✔ reject missing or duplicate release fields (0.212583ms)
+RELEASE_PREFLIGHT {"ok":true,"blockers":[],"buildGrowthMiB":0,"nodes":[{"name":"devops","storage":{"fs":{"time":"2026-11-03T02:56:18.876Z","capacityBytes":268435456000,"availableBytes":75161927680},"runtime":{"imageFs":{"time":"2026-11-03T02:56:18.876Z","capacityBytes":268435456000,"availableBytes":75161927680}}},"leaseAgeSeconds":0,"renewTime":"2026-11-03T02:56:18.876Z","conditions":[{"type":"Ready","status":"True"},{"type":"MemoryPressure","status":"False"},{"type":"DiskPressure","status":"False"},{"type":"PIDPressure","status":"False"}],"taints":[]},{"name":"aliyun-worker","storage":{"fs":{"time":"2026-11-03T02:56:18.876Z","capacityBytes":268435456000,"availableBytes":75161927680},"runtime":{"imageFs":{"time":"2026-11-03T02:56:18.876Z","capacityBytes":268435456000,"availableBytes":75161927680}}},"leaseAgeSeconds":0,"renewTime":"2026-11-03T02:56:18.876Z","conditions":[{"type":"Ready","status":"True"},{"type":"MemoryPressure","status":"False"},{"type":"DiskPressure","status":"False"},{"type":"PIDPressure","status":"False"}],"taints":[]},{"name":"ucloud-worker","storage":{"fs":{"time":"2026-11-03T02:56:18.876Z","capacityBytes":268435456000,"availableBytes":75161927680},"runtime":{"imageFs":{"time":"2026-11-03T02:56:18.876Z","capacityBytes":268435456000,"availableBytes":75161927680}}},"leaseAgeSeconds":0,"renewTime":"2026-11-03T02:56:18.876Z","conditions":[{"type":"Ready","status":"True"},{"type":"MemoryPressure","status":"False"},{"type":"DiskPressure","status":"False"},{"type":"PIDPressure","status":"False"}],"taints":[]}],"hostSample":{"at":1793674578.876,"mac":{"diskFreeMiB":30720,"freePercent":40,"efiAllocatedMiB":1.1}},"targetNodes":["devops","aliyun-worker","ucloud-worker"],"excludedNodes":[],"desired":3,"available":3,"pods":[{"name":"pod-0","uid":"uid-0","node":"devops","ready":true},{"name":"pod-1","uid":"uid-1","node":"aliyun-worker","ready":true},{"name":"pod-2","uid":"uid-2","node":"ucloud-worker","ready":true}],"readyEndpointPods":3}
+✔ three healthy nodes with live endpoints pass (2.5375ms)
+✔ all Pods Ready on devops cannot conceal disconnected workers (0.262875ms)
+✔ stale, absent and future Leases fail even with cached Ready (0.284625ms)
+✔ terminating or mismatched endpoint UID is not counted as available business capacity (0.103833ms)
+✔ maintenance and pressure block publishing (0.101167ms)
+✔ a retained unreachable taint blocks release but the existing cloud taint does not (0.183208ms)
+RELEASE_PREFLIGHT {"ok":true,"blockers":[],"buildGrowthMiB":0,"nodes":[{"name":"devops","storage":{"fs":{"time":"2026-11-03T02:56:18.882Z","capacityBytes":268435456000,"availableBytes":75161927680},"runtime":{"imageFs":{"time":"2026-11-03T02:56:18.882Z","capacityBytes":268435456000,"availableBytes":75161927680}}},"leaseAgeSeconds":0,"renewTime":"2026-11-03T02:56:18.882Z","conditions":[{"type":"Ready","status":"True"},{"type":"MemoryPressure","status":"False"},{"type":"DiskPressure","status":"False"},{"type":"PIDPressure","status":"False"}],"taints":[]},{"name":"aliyun-worker","storage":{"fs":{"time":"2026-11-03T02:56:18.882Z","capacityBytes":268435456000,"availableBytes":75161927680},"runtime":{"imageFs":{"time":"2026-11-03T02:56:18.882Z","capacityBytes":268435456000,"availableBytes":75161927680}}},"leaseAgeSeconds":0,"renewTime":"2026-11-03T02:56:18.882Z","conditions":[{"type":"Ready","status":"True"},{"type":"MemoryPressure","status":"False"},{"type":"DiskPressure","status":"False"},{"type":"PIDPressure","status":"False"}],"taints":[]},{"name":"ucloud-worker","storage":{"fs":{"time":"2026-11-03T02:56:18.882Z","capacityBytes":268435456000,"availableBytes":75161927680},"runtime":{"imageFs":{"time":"2026-11-03T02:56:18.882Z","capacityBytes":268435456000,"availableBytes":75161927680}}},"leaseAgeSeconds":0,"renewTime":"2026-11-03T02:56:18.882Z","conditions":[{"type":"Ready","status":"True"},{"type":"MemoryPressure","status":"False"},{"type":"DiskPressure","status":"False"},{"type":"PIDPressure","status":"False"}],"taints":[]}],"hostSample":{"at":1793674578.882,"mac":{"diskFreeMiB":30720,"freePercent":40,"efiAllocatedMiB":1.1}},"targetNodes":["devops","aliyun-worker","ucloud-worker"],"excludedNodes":[],"desired":3,"available":3,"pods":[{"name":"pod-0","uid":"uid-0","node":"devops","ready":true},{"name":"pod-1","uid":"uid-1","node":"aliyun-worker","ready":true},{"name":"pod-2","uid":"uid-2","node":"ucloud-worker","ready":true}],"readyEndpointPods":3}
+RELEASE_PREFLIGHT {"ok":true,"blockers":[],"buildGrowthMiB":0,"nodes":[{"name":"devops","storage":{"fs":{"time":"2026-11-03T02:56:18.888Z","capacityBytes":268435456000,"availableBytes":75161927680},"runtime":{"imageFs":{"time":"2026-11-03T02:56:18.888Z","capacityBytes":268435456000,"availableBytes":75161927680}}},"leaseAgeSeconds":0,"renewTime":"2026-11-03T02:56:18.888Z","conditions":[{"type":"Ready","status":"True"},{"type":"MemoryPressure","status":"False"},{"type":"DiskPressure","status":"False"},{"type":"PIDPressure","status":"False"}],"taints":[]},{"name":"aliyun-worker","storage":{"fs":{"time":"2026-11-03T02:56:18.888Z","capacityBytes":268435456000,"availableBytes":75161927680},"runtime":{"imageFs":{"time":"2026-11-03T02:56:18.888Z","capacityBytes":268435456000,"availableBytes":75161927680}}},"leaseAgeSeconds":0,"renewTime":"2026-11-03T02:56:18.888Z","conditions":[{"type":"Ready","status":"True"},{"type":"MemoryPressure","status":"False"},{"type":"DiskPressure","status":"False"},{"type":"PIDPressure","status":"False"}],"taints":[]},{"name":"ucloud-worker","storage":{"fs":{"time":"2026-11-03T02:56:18.888Z","capacityBytes":268435456000,"availableBytes":75161927680},"runtime":{"imageFs":{"time":"2026-11-03T02:56:18.888Z","capacityBytes":268435456000,"availableBytes":75161927680}}},"leaseAgeSeconds":0,"renewTime":"2026-11-03T02:56:18.888Z","conditions":[{"type":"Ready","status":"True"},{"type":"MemoryPressure","status":"False"},{"type":"DiskPressure","status":"False"},{"type":"PIDPressure","status":"False"}],"taints":[]}],"hostSample":{"at":1793674578.888,"mac":{"diskFreeMiB":30720,"freePercent":40,"efiAllocatedMiB":1.1}},"targetNodes":["devops","aliyun-worker","ucloud-worker"],"excludedNodes":[],"desired":3,"available":3,"pods":[{"name":"pod-0","uid":"uid-0","node":"devops","ready":true},{"name":"pod-1","uid":"uid-1","node":"aliyun-worker","ready":true},{"name":"pod-2","uid":"uid-2","node":"ucloud-worker","ready":true}],"readyEndpointPods":3}
+RELEASE_PREFLIGHT {"ok":true,"blockers":[],"buildGrowthMiB":0,"nodes":[{"name":"devops","storage":{"fs":{"time":"2026-11-03T02:56:18.894Z","capacityBytes":268435456000,"availableBytes":75161927680},"runtime":{"imageFs":{"time":"2026-11-03T02:56:18.894Z","capacityBytes":268435456000,"availableBytes":75161927680}}},"leaseAgeSeconds":0,"renewTime":"2026-11-03T02:56:18.894Z","conditions":[{"type":"Ready","status":"True"},{"type":"MemoryPressure","status":"False"},{"type":"DiskPressure","status":"False"},{"type":"PIDPressure","status":"False"}],"taints":[]},{"name":"aliyun-worker","storage":{"fs":{"time":"2026-11-03T02:56:18.894Z","capacityBytes":268435456000,"availableBytes":75161927680},"runtime":{"imageFs":{"time":"2026-11-03T02:56:18.894Z","capacityBytes":268435456000,"availableBytes":75161927680}}},"leaseAgeSeconds":0,"renewTime":"2026-11-03T02:56:18.894Z","conditions":[{"type":"Ready","status":"True"},{"type":"MemoryPressure","status":"False"},{"type":"DiskPressure","status":"False"},{"type":"PIDPressure","status":"False"}],"taints":[]},{"name":"ucloud-worker","storage":{"fs":{"time":"2026-11-03T02:56:18.894Z","capacityBytes":268435456000,"availableBytes":75161927680},"runtime":{"imageFs":{"time":"2026-11-03T02:56:18.894Z","capacityBytes":268435456000,"availableBytes":75161927680}}},"leaseAgeSeconds":0,"renewTime":"2026-11-03T02:56:18.894Z","conditions":[{"type":"Ready","status":"True"},{"type":"MemoryPressure","status":"False"},{"type":"DiskPressure","status":"False"},{"type":"PIDPressure","status":"False"}],"taints":[]}],"hostSample":{"at":1793674578.894,"mac":{"diskFreeMiB":30720,"freePercent":40,"efiAllocatedMiB":1.1}},"targetNodes":["devops","aliyun-worker","ucloud-worker"],"excludedNodes":[],"desired":3,"available":3,"pods":[{"name":"pod-0","uid":"uid-0","node":"devops","ready":true},{"name":"pod-1","uid":"uid-1","node":"aliyun-worker","ready":true},{"name":"pod-2","uid":"uid-2","node":"ucloud-worker","ready":true}],"readyEndpointPods":3}
+RELEASE_PREFLIGHT {"ok":true,"blockers":[],"buildGrowthMiB":0,"nodes":[{"name":"devops","storage":{"fs":{"time":"2026-11-03T02:56:18.896Z","capacityBytes":268435456000,"availableBytes":75161927680},"runtime":{"imageFs":{"time":"2026-11-03T02:56:18.896Z","capacityBytes":268435456000,"availableBytes":75161927680}}},"leaseAgeSeconds":0,"renewTime":"2026-11-03T02:56:18.896Z","conditions":[{"type":"Ready","status":"True"},{"type":"MemoryPressure","status":"False"},{"type":"DiskPressure","status":"False"},{"type":"PIDPressure","status":"False"}],"taints":[]},{"name":"aliyun-worker","storage":{"fs":{"time":"2026-11-03T02:56:18.896Z","capacityBytes":268435456000,"availableBytes":75161927680},"runtime":{"imageFs":{"time":"2026-11-03T02:56:18.896Z","capacityBytes":268435456000,"availableBytes":75161927680}}},"leaseAgeSeconds":0,"renewTime":"2026-11-03T02:56:18.896Z","conditions":[{"type":"Ready","status":"True"},{"type":"MemoryPressure","status":"False"},{"type":"DiskPressure","status":"False"},{"type":"PIDPressure","status":"False"}],"taints":[]},{"name":"ucloud-worker","storage":{"fs":{"time":"2026-11-03T02:56:18.896Z","capacityBytes":268435456000,"availableBytes":75161927680},"runtime":{"imageFs":{"time":"2026-11-03T02:56:18.896Z","capacityBytes":268435456000,"availableBytes":75161927680}}},"leaseAgeSeconds":0,"renewTime":"2026-11-03T02:56:18.896Z","conditions":[{"type":"Ready","status":"True"},{"type":"MemoryPressure","status":"False"},{"type":"DiskPressure","status":"False"},{"type":"PIDPressure","status":"False"}],"taints":[]}],"hostSample":{"at":1793674578.896,"mac":{"diskFreeMiB":30720,"freePercent":40,"efiAllocatedMiB":1.1}},"targetNodes":["devops","aliyun-worker","ucloud-worker"],"excludedNodes":[],"desired":3,"available":3,"pods":[{"name":"pod-0","uid":"uid-0","node":"devops","ready":true},{"name":"pod-1","uid":"uid-1","node":"aliyun-worker","ready":true},{"name":"pod-2","uid":"uid-2","node":"ucloud-worker","ready":true}],"readyEndpointPods":3}
+RELEASE_PREFLIGHT {"ok":true,"blockers":[],"buildGrowthMiB":0,"nodes":[{"name":"devops","storage":{"fs":{"time":"2026-11-03T02:56:18.898Z","capacityBytes":268435456000,"availableBytes":75161927680},"runtime":{"imageFs":{"time":"2026-11-03T02:56:18.898Z","capacityBytes":268435456000,"availableBytes":75161927680}}},"leaseAgeSeconds":0,"renewTime":"2026-11-03T02:56:18.898Z","conditions":[{"type":"Ready","status":"True"},{"type":"MemoryPressure","status":"False"},{"type":"DiskPressure","status":"False"},{"type":"PIDPressure","status":"False"}],"taints":[]},{"name":"aliyun-worker","storage":{"fs":{"time":"2026-11-03T02:56:18.898Z","capacityBytes":268435456000,"availableBytes":75161927680},"runtime":{"imageFs":{"time":"2026-11-03T02:56:18.898Z","capacityBytes":268435456000,"availableBytes":75161927680}}},"leaseAgeSeconds":0,"renewTime":"2026-11-03T02:56:18.898Z","conditions":[{"type":"Ready","status":"True"},{"type":"MemoryPressure","status":"False"},{"type":"DiskPressure","status":"False"},{"type":"PIDPressure","status":"False"}],"taints":[]},{"name":"ucloud-worker","storage":{"fs":{"time":"2026-11-03T02:56:18.898Z","capacityBytes":268435456000,"availableBytes":75161927680},"runtime":{"imageFs":{"time":"2026-11-03T02:56:18.898Z","capacityBytes":268435456000,"availableBytes":75161927680}}},"leaseAgeSeconds":0,"renewTime":"2026-11-03T02:56:18.898Z","conditions":[{"type":"Ready","status":"True"},{"type":"MemoryPressure","status":"False"},{"type":"DiskPressure","status":"False"},{"type":"PIDPressure","status":"False"}],"taints":[]}],"hostSample":{"at":1793674578.898,"mac":{"diskFreeMiB":30720,"freePercent":40,"efiAllocatedMiB":1.1}},"targetNodes":["devops","aliyun-worker","ucloud-worker"],"excludedNodes":[],"desired":3,"available":3,"pods":[{"name":"pod-0","uid":"uid-0","node":"devops","ready":true},{"name":"pod-1","uid":"uid-1","node":"aliyun-worker","ready":true},{"name":"pod-2","uid":"uid-2","node":"ucloud-worker","ready":true}],"readyEndpointPods":3}
+✔ healthy snapshots with advancing Leases pass the observation window (22.623ms)
+RELEASE_PREFLIGHT {"ok":true,"blockers":[],"buildGrowthMiB":0,"nodes":[{"name":"devops","storage":{"fs":{"time":"2026-11-03T02:56:18.898Z","capacityBytes":268435456000,"availableBytes":75161927680},"runtime":{"imageFs":{"time":"2026-11-03T02:56:18.898Z","capacityBytes":268435456000,"availableBytes":75161927680}}},"leaseAgeSeconds":0.006,"renewTime":"2026-11-03T02:56:18.898Z","conditions":[{"type":"Ready","status":"True"},{"type":"MemoryPressure","status":"False"},{"type":"DiskPressure","status":"False"},{"type":"PIDPressure","status":"False"}],"taints":[]},{"name":"aliyun-worker","storage":{"fs":{"time":"2026-11-03T02:56:18.898Z","capacityBytes":268435456000,"availableBytes":75161927680},"runtime":{"imageFs":{"time":"2026-11-03T02:56:18.898Z","capacityBytes":268435456000,"availableBytes":75161927680}}},"leaseAgeSeconds":0.006,"renewTime":"2026-11-03T02:56:18.898Z","conditions":[{"type":"Ready","status":"True"},{"type":"MemoryPressure","status":"False"},{"type":"DiskPressure","status":"False"},{"type":"PIDPressure","status":"False"}],"taints":[]},{"name":"ucloud-worker","storage":{"fs":{"time":"2026-11-03T02:56:18.898Z","capacityBytes":268435456000,"availableBytes":75161927680},"runtime":{"imageFs":{"time":"2026-11-03T02:56:18.898Z","capacityBytes":268435456000,"availableBytes":75161927680}}},"leaseAgeSeconds":0.006,"renewTime":"2026-11-03T02:56:18.898Z","conditions":[{"type":"Ready","status":"True"},{"type":"MemoryPressure","status":"False"},{"type":"DiskPressure","status":"False"},{"type":"PIDPressure","status":"False"}],"taints":[]}],"hostSample":{"at":1793674578.898,"mac":{"diskFreeMiB":30720,"freePercent":40,"efiAllocatedMiB":1.1}},"targetNodes":["devops","aliyun-worker","ucloud-worker"],"excludedNodes":[],"desired":3,"available":3,"pods":[{"name":"pod-0","uid":"uid-0","node":"devops","ready":true},{"name":"pod-1","uid":"uid-1","node":"aliyun-worker","ready":true},{"name":"pod-2","uid":"uid-2","node":"ucloud-worker","ready":true}],"readyEndpointPods":3}
+RELEASE_PREFLIGHT {"ok":true,"blockers":[],"buildGrowthMiB":0,"nodes":[{"name":"devops","storage":{"fs":{"time":"2026-11-03T02:56:18.898Z","capacityBytes":268435456000,"availableBytes":75161927680},"runtime":{"imageFs":{"time":"2026-11-03T02:56:18.898Z","capacityBytes":268435456000,"availableBytes":75161927680}}},"leaseAgeSeconds":0.009,"renewTime":"2026-11-03T02:56:18.898Z","conditions":[{"type":"Ready","status":"True"},{"type":"MemoryPressure","status":"False"},{"type":"DiskPressure","status":"False"},{"type":"PIDPressure","status":"False"}],"taints":[]},{"name":"aliyun-worker","storage":{"fs":{"time":"2026-11-03T02:56:18.898Z","capacityBytes":268435456000,"availableBytes":75161927680},"runtime":{"imageFs":{"time":"2026-11-03T02:56:18.898Z","capacityBytes":268435456000,"availableBytes":75161927680}}},"leaseAgeSeconds":0.009,"renewTime":"2026-11-03T02:56:18.898Z","conditions":[{"type":"Ready","status":"True"},{"type":"MemoryPressure","status":"False"},{"type":"DiskPressure","status":"False"},{"type":"PIDPressure","status":"False"}],"taints":[]},{"name":"ucloud-worker","storage":{"fs":{"time":"2026-11-03T02:56:18.898Z","capacityBytes":268435456000,"availableBytes":75161927680},"runtime":{"imageFs":{"time":"2026-11-03T02:56:18.898Z","capacityBytes":268435456000,"availableBytes":75161927680}}},"leaseAgeSeconds":0.009,"renewTime":"2026-11-03T02:56:18.898Z","conditions":[{"type":"Ready","status":"True"},{"type":"MemoryPressure","status":"False"},{"type":"DiskPressure","status":"False"},{"type":"PIDPressure","status":"False"}],"taints":[]}],"hostSample":{"at":1793674578.898,"mac":{"diskFreeMiB":30720,"freePercent":40,"efiAllocatedMiB":1.1}},"targetNodes":["devops","aliyun-worker","ucloud-worker"],"excludedNodes":[],"desired":3,"available":3,"pods":[{"name":"pod-0","uid":"uid-0","node":"devops","ready":true},{"name":"pod-1","uid":"uid-1","node":"aliyun-worker","ready":true},{"name":"pod-2","uid":"uid-2","node":"ucloud-worker","ready":true}],"readyEndpointPods":3}
+RELEASE_PREFLIGHT {"ok":true,"blockers":[],"buildGrowthMiB":0,"nodes":[{"name":"devops","storage":{"fs":{"time":"2026-11-03T02:56:18.898Z","capacityBytes":268435456000,"availableBytes":75161927680},"runtime":{"imageFs":{"time":"2026-11-03T02:56:18.898Z","capacityBytes":268435456000,"availableBytes":75161927680}}},"leaseAgeSeconds":0.01,"renewTime":"2026-11-03T02:56:18.898Z","conditions":[{"type":"Ready","status":"True"},{"type":"MemoryPressure","status":"False"},{"type":"DiskPressure","status":"False"},{"type":"PIDPressure","status":"False"}],"taints":[]},{"name":"aliyun-worker","storage":{"fs":{"time":"2026-11-03T02:56:18.898Z","capacityBytes":268435456000,"availableBytes":75161927680},"runtime":{"imageFs":{"time":"2026-11-03T02:56:18.898Z","capacityBytes":268435456000,"availableBytes":75161927680}}},"leaseAgeSeconds":0.01,"renewTime":"2026-11-03T02:56:18.898Z","conditions":[{"type":"Ready","status":"True"},{"type":"MemoryPressure","status":"False"},{"type":"DiskPressure","status":"False"},{"type":"PIDPressure","status":"False"}],"taints":[]},{"name":"ucloud-worker","storage":{"fs":{"time":"2026-11-03T02:56:18.898Z","capacityBytes":268435456000,"availableBytes":75161927680},"runtime":{"imageFs":{"time":"2026-11-03T02:56:18.898Z","capacityBytes":268435456000,"availableBytes":75161927680}}},"leaseAgeSeconds":0.01,"renewTime":"2026-11-03T02:56:18.898Z","conditions":[{"type":"Ready","status":"True"},{"type":"MemoryPressure","status":"False"},{"type":"DiskPressure","status":"False"},{"type":"PIDPressure","status":"False"}],"taints":[]}],"hostSample":{"at":1793674578.898,"mac":{"diskFreeMiB":30720,"freePercent":40,"efiAllocatedMiB":1.1}},"targetNodes":["devops","aliyun-worker","ucloud-worker"],"excludedNodes":[],"desired":3,"available":3,"pods":[{"name":"pod-0","uid":"uid-0","node":"devops","ready":true},{"name":"pod-1","uid":"uid-1","node":"aliyun-worker","ready":true},{"name":"pod-2","uid":"uid-2","node":"ucloud-worker","ready":true}],"readyEndpointPods":3}
+✔ a frozen fresh Lease must advance across the observation window (11.596875ms)
+✔ API failures fail closed and still retain evidence (1.47525ms)
+✔ explicit local targets exclude an unhealthy cloud worker and report it (0.238791ms)
+✔ a selector matching no target nodes blocks publishing (0.090208ms)
+✔ disk pressure False cannot conceal insufficient future build headroom (0.173958ms)
+✔ missing or stale image filesystem samples fail closed (0.096625ms)
+✔ saved EFI memory state blocks new builds even before host disk fills (0.060917ms)
+✔ missing and stale host evidence and low host disk block release (0.092792ms)
+✔ Harbor requires both ready registry and controller ports before expensive build work (0.230958ms)
+✔ Both scanner databases must be fresh before costly build work (0.30775ms)
+✔ initial release rejects space that passes the stop line but cannot cover measured build growth (0.143209ms)
+✔ two GiB build reserve is additional on local build node; ordinary promotion gate stays unchanged (0.092083ms)
+✔ security compiler reserve is four GiB above the unchanged stop line (0.106542ms)
+✔ committed lab strategies are valid for their traffic mode (0.875916ms)
+✔ delay without traffic routing is rejected; blue-green delay remains valid (0.44825ms)
+✔ CRD pod ports declare the API default to avoid perpetual GitOps drift (0.1145ms)
+✔ fresh scanner caches do not start maintenance or acquire another lock (3.767833ms)
+✔ only the expired database is refreshed and actual updater metadata is required (0.302583ms)
+✔ two expired databases refresh serially under the existing owner (0.160208ms)
+✔ foreign heavy Lease prevents even fetching metadata (0.385625ms)
+✔ updater failures and stale output cannot turn the freshness gate green (0.341334ms)
+✔ official manifest hash and exact layer type are mandatory before using a mirror (0.552792ms)
+✔ corrupt metadata does not trigger an uncontrolled cache replacement (0.140375ms)
+✔ official manifest falls back from unavailable proxy to direct TLS without bypassing failures (0.197375ms)
+✔ queue reservation accepts only explicit scoped owner and build (1.9585ms)
+✔ security package reused after build clean (11.095542ms)
+✔ security package corrupted cache (7.714834ms)
+✔ security package untrusted download (3.193042ms)
+✖ waits for authenticated Rails API recovery without an IP allowlist change (8.204458ms)
+✖ a listening nginx with unhealthy Rails cannot pass (2.655459ms)
+✖ access errors fail without repeatedly polling (0.283416ms)
+✖ hung responses terminate within the readiness budget (0.240042ms)
+✔ idle scanner slot borrows the current CI lease without nested acquisition (0.906334ms)
+✔ foreign lease, replaced UID, foreign resource owner and unready scanner are preserved (0.187791ms)
+✔ restoration requires exact UID and owner; only proven restored original replica is idempotent (0.11975ms)
+✔ current CI never waits for itself; other active builds prevent pause (0.102ms)
+✔ allows only three new isolated lab resources (2.551083ms)
+✔ rejects deletion, replacement and updates to existing resources (2.164625ms)
+✔ rejects outside resources and duplicate addresses (0.176792ms)
+✔ rejects business namespaces and changed owner (0.109625ms)
+✔ rejects quotas permitting Pods, persistent storage, secrets or services (0.134167ms)
+✔ rejects config in a foreign namespace or changed business input (0.079791ms)
+✔ isolated Job has no host storage, no default token, non-root readonly kernel confinement (1.95025ms)
+✔ mutable images, arbitrary endpoints and wrong node address rejected (0.272708ms)
+✔ admission denies both Pod and Job escape and fences former runtime identity (0.348084ms)
+✔ executor metadata forbids persistent storage, service secrets and extra compute (0.395ms)
+✖ canary peer resets cannot crash the deployment controller (15.131791ms)
+✖ DELETE transmits UID precondition and foreground policy to API server (7.311792ms)
+✔ deadline can use previously observed owned Pod after controller removal (0.167625ms)
+✔ missing Pod without an observed UID cannot prove deadline completion (0.087417ms)
+✔ ordinary success and failure cannot silently reuse a disappeared Pod (0.078417ms)
+✔ foreign owner or replacement Pod cannot pass the cached UID guard (0.126458ms)
+✔ empty startup logs and transient responses preserve evidence without granting success (0.470583ms)
+✔ admission readiness waits for serving policy after generation compilation (1.374041ms)
+✔ verified custom source recipe preserves fixed offline build bounds (3.051041ms)
+✔ resource escalation or unexpected build input cannot enter native build (0.737667ms)
+✔ unverified vendor, mutable image and online build flags are rejected (0.361ms)
+✔ provider package checksum changes on content tampering and refuses extra files or links (3.2815ms)
+✔ old package path detection crosses streaming block boundaries and keeps maintained fork separate (2.346416ms)
+✔ permits only isolated ConfigMap and fresh virtual lock probe (1.137959ms)
+✔ cleanup permits only virtual probe deletion and preserves real ConfigMap (0.195625ms)
+✔ rejects replacing or deleting real infrastructure (0.092625ms)
+✔ rejects foreign resource, missing ConfigMap and duplicate state address (0.099125ms)
+✔ rejects foreign namespace, ownership and additional payload (0.131583ms)
+✔ bootstrap grants only namespaced metadata permissions without compute or PVC (0.396875ms)
+✔ rejects cluster-wide bindings, wildcard rights and foreign subjects (0.854541ms)
+✔ rejects privilege expansion through quotas or added bootstrap objects (0.203333ms)
+✔ complete report with every severity zero is accepted (0.954ms)
+✔ any severity including low and unknown prevents zero claim (0.192625ms)
+✔ missing incomplete or inconsistent scan evidence fails closed (0.15575ms)
+✔ runtime rendering only changes the pinned provider and preserves backend/configuration (0.234083ms)
+✔ custom provider lock requires a full h1 and explicit prerelease version (0.205917ms)
+✔ documented package-not-present finding preserves raw count and binds exact binary (1.854959ms)
+✔ new findings or missing detailed report cannot be treated as reviewed false positive (0.529166ms)
+✔ executor revalidates original report digest and assessment instead of trusting a pass label (0.467375ms)
+✖ Harbor detailed report uses documented X-Accept-Vulnerabilities and JSON response negotiation (7.207042ms)
+✔ report formats without embedded artifact still require the exact authenticated request receipt (1.034792ms)
+ROLLOUT_API_ERROR: kubectl -n petclinic get deployment,pods,events: spawnSync kubectl ETIMEDOUT
+✔ three Ready Pods require the exact immutable image and Argo source revision (2.294667ms)
+✔ a concurrent rollback cannot be reported as successful deployment (0.63375ms)
+✔ available old replicas cannot conceal an unready new Pod (0.304208ms)
+✔ FailedMount correlated to its Pod UID, stale Lease and non-Ready node is diagnosed (0.5825ms)
+✔ a transient network image pull failure is not classified as a permanent image error (1.326083ms)
+ROLLOUT_TIMEOUT: release did not converge within the existing 600-second budget
+DIAGNOSTIC kubectl get nodes -o wide
+API unreachable
+
+DIAGNOSTIC kubectl -n petclinic get pods -o wide
+API unreachable
+
+DIAGNOSTIC kubectl -n petclinic describe deployment petclinic
+API unreachable
+
+DIAGNOSTIC kubectl -n petclinic get events --sort-by=.lastTimestamp
+API unreachable
+
+✔ bounded API failure cannot pass a release and creates a diagnostic artifact (1506.010708ms)
+✔ cached Ready Pods on an unreachable node cannot pass a release (0.208208ms)
+✔ audit target separates live from digest-only Harbor candidates (1.770667ms)
+✔ transport retries at most twice and never retries authentication rejection (34.405917ms)
+✔ negative fixtures accept actual signature failures independent of exit code (0.922708ms)
+✔ registry and unexpected successes fail closed (0.159709ms)
+✔ private verifier uses own namespace credential without anonymous or signature bypass (1.796208ms)
+✔ obsolete cross-namespace binding grants nobody and new reconciliation permission is exact (0.150917ms)
+✔ DAST fails closed on absent report or unknown severity (1.031667ms)
+✔ DAST blocks High while retaining lower findings (0.095792ms)
+✔ promotion rejects unsigned, wrong-image or wrong-source evidence (0.199ms)
+✔ native Kubescape audit counts actual failed controls and deduplicates shared framework observations (1.693625ms)
+✔ governance open severity excludes duplicate, accepted, closed and reviewed false positives (0.707125ms)
+✔ a completed Trivy policy failure reports actual severity while engine failure stays unknown (0.253541ms)
+✔ only idempotent governance reads and assignments retry transient gateway failures (27.801792ms)
+✔ runtime hardening is idempotent and retains existing database, capacity and mounts (1.175542ms)
+✔ unknown deployment layout fails closed before promotion (0.145084ms)
+✔ production configuration checks cover CREATE/UPDATE, never DeleteOptions; precise exceptions remain per rule (2.104125ms)
+✔ failed or mismatched security evidence cannot approve or reach Git mutation (1.220708ms)
+✔ approval binds candidate, actual SBOM and all verified Cosign digests; promotion changes one image only (1.363208ms)
+✔ Argo tracking instance label still selects Kyverno official core RBAC (0.956542ms)
+✔ Argo tracking labels preserve controller ServiceMonitor selection (0.11775ms)
+✔ Harbor zone targets only a valid existing service IPv4 without accepting configuration injection (5.287792ms)
+✔ shared CoreDNS zones are retained and compared independently of the owned Harbor key (0.9795ms)
+✔ runtime deployed rules, version label, manifest and locked source stay consistent (1.14225ms)
+✔ bootstrap exception requires fixed host runtime executable and scoped workload; all eight rules remain (0.751166ms)
+✔ grouped instant vectors show all rows; internal health reports are separate and historical logs remain (0.726084ms)
+✔ synthetic policy positive: persistent successful critical writes and shadow reads block (1.312ms)
+✔ transient, denied, normal info, namespace-tool execution, priority alone and mixed identities warn (0.440792ms)
+✔ duplicates, stale logs and overlapping windows cannot establish persistence (0.363375ms)
+✔ actual isolated six sensor cases remain WARN and never masquerade as production attacks (0.721166ms)
+✔ historical exits remain visible as warnings; readiness and restart count remain required (0.972125ms)
+✔ any new restart, zero-count replacement, new boot or container change fails current build continuity (0.1345ms)
+✔ operational fatal/driver errors block; ordinary security events and proc race warnings stay visible (1.128916ms)
+✔ only reviewed high severity fixed weak cipher findings block (1.580917ms)
+✔ only reviewed HTTP command flow rules block, generic commands stay warning (0.079333ms)
+✔ synthetic scanner fixture always matches pinned rule length and entropy (24.433125ms)
+✔ test runtime refuses changed bytes or foreign architecture (0.825ms)
+✔ confirmed reachable fixable Medium fails; uncertain does not masquerade as safe (0.82725ms)
+✔ High alone warns; policy only blocks exact-target reviewed proof (synthetic policy inputs) (0.990375ms)
+✔ ordinary information and lower severities warn; malformed scans cannot pass (0.183ms)
+ℹ tests 147
+ℹ suites 0
+ℹ pass 140
+ℹ fail 7
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 11771.42225
+
+✖ failing tests:
+
+test at infra/observability/service-readiness.test.mjs:13:1
+✖ waits for authenticated Rails API recovery without an IP allowlist change (8.204458ms)
+  Error: listen EPERM: operation not permitted 127.0.0.1
+      at Server.setupListenHandle [as _listen2] (node:net:1986:21)
+      at listenInCluster (node:net:2065:12)
+      at node:net:2274:7
+      at process.processTicksAndRejections (node:internal/process/task_queues:90:21) {
+    code: 'EPERM',
+    errno: -1,
+    syscall: 'listen',
+    address: '127.0.0.1'
+  }
+
+test at infra/observability/service-readiness.test.mjs:20:1
+✖ a listening nginx with unhealthy Rails cannot pass (2.655459ms)
+  Error: listen EPERM: operation not permitted 127.0.0.1
+      at Server.setupListenHandle [as _listen2] (node:net:1986:21)
+      at listenInCluster (node:net:2065:12)
+      at node:net:2274:7
+      at process.processTicksAndRejections (node:internal/process/task_queues:90:21) {
+    code: 'EPERM',
+    errno: -1,
+    syscall: 'listen',
+    address: '127.0.0.1'
+  }
+
+test at infra/observability/service-readiness.test.mjs:25:1
+✖ access errors fail without repeatedly polling (0.283416ms)
+  Error: listen EPERM: operation not permitted 127.0.0.1
+      at Server.setupListenHandle [as _listen2] (node:net:1986:21)
+      at listenInCluster (node:net:2065:12)
+      at node:net:2274:7
+      at process.processTicksAndRejections (node:internal/process/task_queues:90:21) {
+    code: 'EPERM',
+    errno: -1,
+    syscall: 'listen',
+    address: '127.0.0.1'
+  }
+
+test at infra/observability/service-readiness.test.mjs:31:1
+✖ hung responses terminate within the readiness budget (0.240042ms)
+  Error: listen EPERM: operation not permitted 127.0.0.1
+      at Server.setupListenHandle [as _listen2] (node:net:1986:21)
+      at listenInCluster (node:net:2065:12)
+      at node:net:2274:7
+      at process.processTicksAndRejections (node:internal/process/task_queues:90:21) {
+    code: 'EPERM',
+    errno: -1,
+    syscall: 'listen',
+    address: '127.0.0.1'
+  }
+
+test at infra/observability/terraform-isolation-spec.test.mjs:13:1
+✖ canary peer resets cannot crash the deployment controller (15.131791ms)
+  Error: listen EPERM: operation not permitted 127.0.0.1
+      at Server.setupListenHandle [as _listen2] (node:net:1986:21)
+      at listenInCluster (node:net:2065:12)
+      at node:net:2274:7
+      at process.processTicksAndRejections (node:internal/process/task_queues:90:21) {
+    code: 'EPERM',
+    errno: -1,
+    syscall: 'listen',
+    address: '127.0.0.1'
+  }
+
+test at infra/observability/terraform-isolation-spec.test.mjs:19:1
+✖ DELETE transmits UID precondition and foreground policy to API server (7.311792ms)
+  Error: listen EPERM: operation not permitted 127.0.0.1
+      at Server.setupListenHandle [as _listen2] (node:net:1986:21)
+      at listenInCluster (node:net:2065:12)
+      at node:net:2274:7
+      at process.processTicksAndRejections (node:internal/process/task_queues:90:21) {
+    code: 'EPERM',
+    errno: -1,
+    syscall: 'listen',
+    address: '127.0.0.1'
+  }
+
+test at infra/observability/terraform-runtime.test.mjs:22:1
+✖ Harbor detailed report uses documented X-Accept-Vulnerabilities and JSON response negotiation (7.207042ms)
+  Error: listen EPERM: operation not permitted 127.0.0.1
+      at Server.setupListenHandle [as _listen2] (node:net:1986:21)
+      at listenInCluster (node:net:2065:12)
+      at node:net:2274:7
+      at process.processTicksAndRejections (node:internal/process/task_queues:90:21) {
+    code: 'EPERM',
+    errno: -1,
+    syscall: 'listen',
+    address: '127.0.0.1'
+  }

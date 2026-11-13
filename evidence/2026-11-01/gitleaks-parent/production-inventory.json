@@ -1,0 +1,194 @@
+{
+  "source": "gitleaks",
+  "scope": "Current production parent only; separate generic manager/tool.mjs gitleaks path inventoried as distinct and NOT_APPLICABLE to this frozen production command, not claimed verified",
+  "layers": [
+    "prerequisite",
+    "scanner execution",
+    "raw report + existing classifier facts",
+    "existing parent process/Manager aggregation"
+  ],
+  "items": [
+    {
+      "item": "entry",
+      "model": "Jenkinsfile DevSecOps Source & Admission直接sh；Jenkinsfile.security-audit调用原Manager生产adapter Secret Source；本轮父命令仅node infra/security/source-gate.mjs，不扩大为联合业务阶段",
+      "source": {
+        "files": [
+          "Jenkinsfile",
+          "Jenkinsfile.security-audit",
+          "vars/securityManager.groovy",
+          "resources/security-manager/petclinic-adapter.json"
+        ]
+      }
+    },
+    {
+      "item": "called modules",
+      "model": "node:fs/crypto/net/os/child_process + synthetic-credential.mjs；独立inline runtime；不调用共享scanner-runtime.mjs",
+      "source": {
+        "file": "infra/security/source-gate.mjs",
+        "line": 1
+      }
+    },
+    {
+      "item": "prerequisite",
+      "model": "创建.devsecops，读取tools-lock.gitleaks，读取外层Lease并核对HEAVY_HOLDER或jenkins-petclinic-${BUILD_NUMBER}，git rev-parse HEAD；此处错误在try前失败",
+      "source": {
+        "file": "infra/security/source-gate.mjs",
+        "line": 17
+      }
+    },
+    {
+      "item": "source input",
+      "model": "当前checkout/CWD的git archive --format=tar HEAD，128MiB archive上限，kubectl exec tar输入/work/source；不扫描本地主机或读取真实凭据",
+      "source": {
+        "file": "infra/security/source-gate.mjs",
+        "line": 53
+      }
+    },
+    {
+      "item": "tool availability",
+      "model": "无独立version/manifest/verifyTools前置；使用tools-lock固定image并检查实际imageID包含其digest；通过真正Gitleaks命令结果观察工具不可用",
+      "source": {
+        "file": "infra/security/source-gate.mjs",
+        "line": 50
+      }
+    },
+    {
+      "item": "invocation",
+      "model": "gitleaks dir <path> --redact=100 --no-banner --log-level error --report-format json --report-path <file>；positive/clean/source三次扫描",
+      "source": {
+        "file": "infra/security/source-gate.mjs",
+        "line": 58
+      }
+    },
+    {
+      "item": "rules/config",
+      "model": "没有显式--config；现有Gitleaks默认工具规则与reviewed-false-positives.json.entries路径/rule/精确源行SHA审查",
+      "source": {
+        "file": "infra/security/source-gate.mjs",
+        "line": 67
+      }
+    },
+    {
+      "item": "report paths",
+      "model": "Pod内/work/positive.json、/work/clean.json、/work/source.json；workspace .devsecops/gitleaks-native.json与source-gate.json",
+      "source": {
+        "file": "infra/security/source-gate.mjs",
+        "line": 60
+      }
+    },
+    {
+      "item": "exit handling",
+      "model": "scan允许0/1；1不自动阻断父Gate；positive必须exit1且github-pat，clean必须exit0且0 findings；source按现有review loop决定；其他exit/error/timeout抛错",
+      "source": {
+        "file": "infra/security/source-gate.mjs",
+        "line": 39
+      }
+    },
+    {
+      "item": "parsing",
+      "model": "JSON.parse(String(cat.stdout)||[])再.map；source空bytes会变空数组；空白/损坏JSON/null/object通常导致现有失败；缺报告cat失败",
+      "source": {
+        "file": "infra/security/source-gate.mjs",
+        "line": 60
+      }
+    },
+    {
+      "item": "classification",
+      "model": "原path去/work/source/前缀与..拒绝、精确源行SHA、rule/path匹配；新adapter复用未改的gitleaksEvidence，不实现第二分类器",
+      "source": {
+        "file": "infra/security/source-gate.mjs",
+        "line": 68
+      }
+    },
+    {
+      "item": "decisions",
+      "model": "独立source父Gate正常退出PASS，throw/非零FAIL；无WARN分支；生产Manager只enforce，exit10同样FAIL",
+      "source": {
+        "file": "infra/security/source-gate.mjs",
+        "line": 80
+      }
+    },
+    {
+      "item": "missing report",
+      "model": "kubectl cat非0即run抛错，不能视为空report；缺成功native receipt的Policy输入明确NOT_TESTED/null",
+      "source": {
+        "file": "infra/security/source-gate.mjs",
+        "line": 60
+      }
+    },
+    {
+      "item": "malformed report",
+      "model": "实际JSON.parse/.map/审查循环错误由原catch/finally传播；不追加schema或severity规则",
+      "source": {
+        "file": "infra/security/source-gate.mjs",
+        "line": 60
+      }
+    },
+    {
+      "item": "tool missing",
+      "model": "exec127或spawn error原run拒绝；无NOT_CONFIGURED fallback",
+      "source": {
+        "file": "infra/security/source-gate.mjs",
+        "line": 12
+      }
+    },
+    {
+      "item": "timeouts",
+      "model": "普通run默认30s；Ready190s；exec90s；delete55s；helper遇r.error或意外status失败；Jenkins联合stage另有10min外层timeout",
+      "source": {
+        "file": "infra/security/source-gate.mjs",
+        "line": 10
+      }
+    },
+    {
+      "item": "filesystem",
+      "model": "mkdir/read/write权限错误按当前位置在try前失败或catch/finally传播；不降级为PASS",
+      "source": {
+        "file": "infra/security/source-gate.mjs",
+        "line": 8
+      }
+    },
+    {
+      "item": "report writes",
+      "model": "create后初次source-gate写入、source native写入、finally最终source-gate写入；任一失败可令父进程失败，即使scanner已成功",
+      "source": {
+        "file": "infra/security/source-gate.mjs",
+        "line": 91
+      }
+    },
+    {
+      "item": "cleanup",
+      "model": "finally关闭canary；有uid时read Pod并核对uid、正常delete等待、get ignore-not-found确认；替换/删除/读回/最终write失败会FAIL；无uid原实现跳过，不增加新规则",
+      "source": {
+        "file": "infra/security/source-gate.mjs",
+        "line": 84
+      }
+    },
+    {
+      "item": "parent aggregation",
+      "model": "原节点进程exit传播到Jenkins sh；原Manager单选gitleaks计划重放，保留credentials/stage/sh/write/archive异常与非零失败，未执行Summary脚本或Jenkins CPS",
+      "source": {
+        "files": [
+          "Jenkinsfile",
+          "Jenkinsfile.security-audit",
+          "vars/securityManager.groovy",
+          "resources/security-manager/petclinic-adapter.json"
+        ]
+      }
+    }
+  ],
+  "sharedScannerRuntimePath": {
+    "status": "NOT_APPLICABLE",
+    "reason": "Production source-gate does not import scanner-runtime; its real inline equivalent is covered. No new manifest/hash/prerequisite rule introduced."
+  },
+  "currentGenericPath": "infra/security/manager/tool.mjs separate generic path not represented by original inventory production command; no full generic-Gitleaks claim",
+  "legacyLimits": [
+    "Node API TCP reachable is recorded, not blocking",
+    "memory.peak nonnumeric -> null; exit1 allowed",
+    "Source scanner exit1 + empty array can PASS; exit0 + unreviewed finding FAIL",
+    "Zero findings do not access malformed/null review entries",
+    "Missing created UID skips cleanup in original; not strengthened",
+    "Cleanup checks UID then deletes by name; no new atomic UID-precondition behavior invented",
+    "ImageID uses existing substring digest check, no stricter image validation introduced"
+  ]
+}

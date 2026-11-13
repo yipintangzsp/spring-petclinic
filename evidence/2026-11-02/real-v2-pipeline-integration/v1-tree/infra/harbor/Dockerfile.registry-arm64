@@ -1,0 +1,6 @@
+FROM scratch
+COPY --chown=10000:10000 registry /usr/bin/registry_DO_NOT_USE_GC
+COPY ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
+USER 10000:10000
+ENTRYPOINT ["/usr/bin/registry_DO_NOT_USE_GC"]
+CMD ["serve", "/etc/registry/config.yml"]

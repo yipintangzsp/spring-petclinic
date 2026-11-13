@@ -1,0 +1,70 @@
+{
+  "schema": 1,
+  "sourceId": "cosign",
+  "execution": {
+    "errorClass": null,
+    "signal": null,
+    "command": "node infra/security/signing.mjs admission",
+    "exitStatus": 0
+  },
+  "reports": [
+    {
+      "path": ".devsecops/signing-admission.json",
+      "sha256": "899a0c890b8af08f00d0dcb63d2d5cd272a53d9f860e9f7d3d3bb38d4a5abfd4",
+      "bytes": 2301
+    }
+  ],
+  "evidence": [
+    {
+      "sampleWindows": [],
+      "observerPackets": 1,
+      "kind": "ACTUAL_PROCESS_EXECUTION",
+      "sourcePayloadClass": "PASSIVE_IN_MEMORY_ORIGINAL_GATE_OBSERVATIONS",
+      "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdoutSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "events": []
+    },
+    {
+      "trust": "DISPOSABLE_TEST_KEY",
+      "completedAt": "2026-11-03T05:40:13.540Z",
+      "productionPrivateKeyReads": 0,
+      "before": [
+        {
+          "httpStatus": 404,
+          "tag": "ci-32-signed"
+        },
+        {
+          "httpStatus": 404,
+          "tag": "ci-32-unsigned"
+        },
+        {
+          "httpStatus": 404,
+          "tag": "ci-32-wrong-key"
+        }
+      ],
+      "executionScope": "CONTROLLED_NON_RELEASE",
+      "validationRunId": "rf3-20261103-9730f2",
+      "namespace": "rf3-20261103-9730f2-cosign",
+      "startedAt": "2026-11-03T05:39:53.497Z",
+      "publicKeySha256": "c92bf03766ebfe16e52d27e50fe04334bc6126ba174f76ea07c1ecfc06a6fdec",
+      "registryScope": "petclinic/signature-fixtures/current-validation-build-only"
+    }
+  ],
+  "rawPayloadPersisted": false,
+  "kind": "RuntimeSourceFacts",
+  "evidenceComplete": true,
+  "resultDigest": "c7dbafbf7cf496456c872297eedcf800cebf110073793ad02ebfda70842de2b1",
+  "evaluationCount": 1,
+  "buildBinding": {
+    "candidate": "core.harbor.domain/petclinic/signature-fixtures@sha256:a786348b1bfb3125c150d94d58d6edc51beb36fb832ad258e000b03fbab7d899",
+    "build": 32,
+    "project": "petclinic",
+    "source": "741ea2866ea142b24c7838e1ef25c8327c79d279",
+    "runId": "security-runtime-facts-20261102#32",
+    "job": "security-runtime-facts-20261102",
+    "targetScope": "candidate"
+  },
+  "envelopeDigest": "f12164092d7de3bb9550f27d81e17c0eae45c420b3adcc1ba013ca0d517bad2e",
+  "rawFactDigest": "3c4ebafa611fb3f9e1e15ade68b255d60452b5673e25b77f73cbd33910e5dfb1",
+  "presence": "executed"
+}

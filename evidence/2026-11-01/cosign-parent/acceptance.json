@@ -1,0 +1,100 @@
+{
+  "source": "cosign",
+  "finalStatus": "VERIFIED",
+  "scope": "Complete frozen current Cosign source baseline-v1 / standard compatibility; synthetic no-I/O whole-stage replay, not live cryptographic execution or release certification",
+  "adapterImplemented": true,
+  "productionImplementationLocations": [
+    "infra/security/signing.mjs",
+    "infra/security/cosign-verification.mjs",
+    "infra/security/scanner-runtime.mjs",
+    "infra/security/manager/tool.mjs",
+    "resources/security-manager/petclinic-adapter.json",
+    "vars/securityManager.groovy",
+    "Jenkinsfile",
+    "infra/security/integration-resources.json"
+  ],
+  "verificationInputs": [
+    "digest-pinned image refs, generated OCI config/manifest bytes, CLI exit/stdout/stderr, trusted public key reference, registry status/headers, admission dry-run facts, tool/lease prerequisites, report/cleanup observations"
+  ],
+  "digestBinding": "Registry docker-content-digest equals locally computed fixture manifest digest; post-sign claims ALL match the exact @digest; release source/index/dual-arch receipt and artifact/source checks remain unchanged; generic trusts Cosign verify exit and nonempty JSON rather than duplicating crypto or adding a claim check",
+  "identity": "Key-based trusted infra/security/cosign.pub; decrypted key public-key output must equal it; admission consumes existing Enforce policy responses. No certificate/OIDC identity invented; existing ignore-tlog/http options preserved",
+  "historicalReceipts": 1,
+  "historicalChildObservations": 3,
+  "historicalWholeStageDifferentials": 0,
+  "realControlledExecutions": 0,
+  "newProductionSignatures": 0,
+  "syntheticFrozenDifferentials": 260,
+  "differentialsByStage": {
+    "admission": 104,
+    "bootstrap": 54,
+    "release": 71,
+    "generic": 30,
+    "invalid": 1
+  },
+  "branches": {
+    "positive": 4,
+    "prerequisite": 60,
+    "infrastructure": 61,
+    "signature": 24,
+    "digest-binding": 18,
+    "identity": 6,
+    "io-cleanup": 33,
+    "existing-nonblocking-cleanup-field": 3,
+    "signature-classification": 3,
+    "admission": 4,
+    "expected-signature-rejection": 2,
+    "registry": 13,
+    "reference": 6,
+    "release-binding": 9,
+    "artifact-binding": 2,
+    "artifact-signature": 2,
+    "audit-semantics": 2,
+    "aggregation": 5,
+    "existing-token-semantics": 2,
+    "tamper": 1
+  },
+  "missingSignatureSamples": 4,
+  "wrongKeyRejectionSamples": 4,
+  "publicKeyMismatchSamples": 3,
+  "digestBindingSamples": 18,
+  "artifactTamperSamples": 1,
+  "infrastructureSamples": 61,
+  "registryBranchSamples": 13,
+  "IOCleanupSamples": 33,
+  "oldDecisions": {
+    "PASS": 18,
+    "FAIL": 242
+  },
+  "standardDecisions": {
+    "PASS": 18,
+    "FAIL": 242
+  },
+  "totalDifferentials": 260,
+  "matched": 260,
+  "mismatched": 0,
+  "rawFactsPreserved": true,
+  "externalCommandArgumentsAndObservationOrderIdentical": true,
+  "missingObservationTests": 6,
+  "newPolicyTests": 268,
+  "policyTests": 676,
+  "policyTestsPassed": 676,
+  "policyTestsFailed": 0,
+  "originalCosignClassifierTestsPassed": 2,
+  "originalSourcesUnchanged": 108,
+  "remainingStructuralCompatibilityGaps": [],
+  "remainingEvidenceGaps": [
+    "Historical archive lacks full raw CLI/prerequisite transcript; no historical complete-stage differential claimed",
+    "No live crypto/registry/admission/service health certification in this iteration"
+  ],
+  "historicalNaturalNegative": "Historical controlled unsigned/wrong-key child rejection exists; a natural failed parent-stage production incident is DEFERRED_REAL_NEGATIVE_EVIDENCE",
+  "readyToLeaveCosignCompatibilityPhase": true,
+  "nextSourceStarted": false,
+  "summaryIntegrated": false,
+  "secretMaterialReadOrExported": false,
+  "fixturesContain": "Only disposable synthetic placeholders, real public key, and public historical image references; no private key or real authentication material",
+  "productionMutation": false,
+  "globalBlockers": {
+    "SOPS/age": "NOT_TESTED / ENVIRONMENT_BLOCKED",
+    "Sonar negative": "DEFERRED_REAL_NEGATIVE_EVIDENCE"
+  }
+}

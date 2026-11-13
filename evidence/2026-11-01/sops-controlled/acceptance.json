@@ -1,0 +1,39 @@
+{
+  "classification": "EXECUTION_ENVIRONMENT_INSPECTION_ONLY",
+  "realControlledExecutions": 0,
+  "positiveCount": 0,
+  "negativeCount": 0,
+  "prerequisiteErrorExecutionCount": 0,
+  "oldGateDecisions": [],
+  "standardDecisions": [],
+  "differentialResult": "NOT_TESTED",
+  "secretLeakageCheck": {
+    "productionSecretReads": 0,
+    "productionSecretValuesExported": 0,
+    "keysGenerated": 0,
+    "fixturesCreated": 0
+  },
+  "cleanupResult": "NOT_APPLICABLE: no fixture/key/cluster resource created",
+  "finalStatus": "NOT_TESTED",
+  "historicalNegativeEvidence": "DEFERRED_REAL_NEGATIVE_EVIDENCE",
+  "priorPolicyTests": {
+    "passed": 86,
+    "failed": 0,
+    "rerunThisIteration": false
+  },
+  "blockers": [
+    "Current unchanged Gate hardcodes four production names and performs Secret reads even with readOnly=true",
+    "Existing kind context API endpoint 127.0.0.1:63731 refused connection",
+    "Neither default nor desktop-linux Docker socket is available",
+    "Context named orbstack points to the production cluster, not an isolated test environment"
+  ],
+  "contextIdentityProof": {
+    "localContext": "orbstack",
+    "localKubeSystemUid": "639e5426-bc1f-4d37-a844-6a31b7685744",
+    "trustedDevopsKubeSystemUid": "639e5426-bc1f-4d37-a844-6a31b7685744",
+    "sameCluster": true,
+    "lookup": "namespace metadata only"
+  },
+  "productionGateSha256": "cb3bc63884f238fe125d8adbe5c6cddd165db5f00d3c7c8eeab5e6883ec7869e",
+  "minimalNextStep": "Provide an already isolated disposable Kubernetes endpoint/runtime with pre-existing permissions sufficient for the frozen identity/targets; re-evaluate safety before generating keys. Do not use current orbstack context or substitute production Secret reads with mocked unit evidence."
+}

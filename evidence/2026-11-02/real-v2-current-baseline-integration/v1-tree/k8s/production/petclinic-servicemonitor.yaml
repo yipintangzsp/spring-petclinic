@@ -1,0 +1,19 @@
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+
+metadata:
+  name: petclinic
+  namespace: petclinic
+  labels:
+    release: kube-stack
+
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/instance: petclinic
+
+  endpoints:
+    - port: http
+      path: /actuator/prometheus
+      interval: 30s
+      scrapeTimeout: 10s

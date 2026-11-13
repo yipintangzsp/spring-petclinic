@@ -1,0 +1,367 @@
+{
+  "derivedFrom": [
+    "infra/security/summary-v2/inventory.mjs",
+    "resources/security-manager/petclinic-adapter.json",
+    "vars/securityManager.groovy",
+    "vars/securityProvenance.groovy",
+    "vars/securityBuildProvenance.groovy",
+    "prior #4 observed coverage"
+  ],
+  "canonical": 16,
+  "previouslyWired": 5,
+  "remaining": 11,
+  "groups": {
+    "A": [
+      "sbom"
+    ],
+    "B": [
+      "sonarqube",
+      "build-provenance"
+    ],
+    "C": [
+      "gitleaks",
+      "sops",
+      "trivy",
+      "cosign",
+      "zap",
+      "defectdojo",
+      "provenance",
+      "semgrep-command-audit"
+    ]
+  },
+  "sources": [
+    {
+      "sourceId": "sbom",
+      "group": "A",
+      "productionStage": "Package SBOM",
+      "actualCommandOrFunction": "( nice -n 10 ./mvnw -B package -DskipTests && node infra/security/sbom-verify.mjs )",
+      "rawOutputPaths": [
+        "target/spring-petclinic-4.0.0-SNAPSHOT.jar",
+        "target/classes/META-INF/sbom/application.cdx.json",
+        ".devsecops/sbom.json",
+        ".devsecops/sbom-summary.json"
+      ],
+      "prerequisites": [
+        "Maven wrapper/JDK/source/pom",
+        "cached dependencies or read-only Maven downloads"
+      ],
+      "credentialsRequired": false,
+      "kubernetesAccess": false,
+      "externalHttpApiAccess": "conditional read-only Maven resolution",
+      "writeSideEffects": "Local target/reports only",
+      "destructivePotential": "None: package does not push/deploy",
+      "frozenAdapter": "infra/security/policy/sbom-parent.mjs",
+      "requiredRawFacts": [
+        "Maven exit",
+        "JAR extraction status/bytes",
+        "Maven SBOM bytes",
+        "mkdir/report writes",
+        "source/clock/native CycloneDX inventory"
+      ],
+      "currentBlocker": "Passive production-parent observer missing",
+      "currentStatus": "NOT_OBSERVED",
+      "normalProductionWritePathAuthorized": null
+    },
+    {
+      "sourceId": "gitleaks",
+      "group": "C",
+      "productionStage": "Secret Source",
+      "actualCommandOrFunction": "node infra/security/source-gate.mjs",
+      "rawOutputPaths": [
+        ".devsecops/source-gate.json",
+        ".devsecops/gitleaks-native.json"
+      ],
+      "prerequisites": [
+        "heavy Lease",
+        "pinned scanner",
+        "exact git archive",
+        "network canary/reviewed source lines"
+      ],
+      "credentialsRequired": false,
+      "kubernetesAccess": true,
+      "externalHttpApiAccess": false,
+      "writeSideEffects": "Creates/deletes scanner Pod; exec/source transfer",
+      "destructivePotential": "Temporary workload mutation; no direct write-path run",
+      "frozenAdapter": "infra/security/policy/gitleaks-parent.mjs",
+      "requiredRawFacts": [
+        "scanner exits/parse/findings/reviews",
+        "prerequisite/isolation outcomes",
+        "parent/finally/report outcomes"
+      ],
+      "currentBlocker": "Before create lacks scanner/cleanup outcomes; wrapper-only facts insufficient",
+      "currentStatus": "NOT_OBSERVED",
+      "normalProductionWritePathAuthorized": false
+    },
+    {
+      "sourceId": "sops",
+      "group": "C",
+      "productionStage": "Encrypted Credentials",
+      "actualCommandOrFunction": "node infra/security/secrets-gate.mjs",
+      "rawOutputPaths": [
+        ".devsecops/secrets-gate.json"
+      ],
+      "prerequisites": [
+        "approved isolated MIN_RBAC boundary",
+        "disposable age keys/ciphertexts",
+        "four isolated Secrets/RBAC",
+        "tools/lease"
+      ],
+      "credentialsRequired": true,
+      "kubernetesAccess": true,
+      "externalHttpApiAccess": false,
+      "writeSideEffects": "Production path can apply Secrets; only isolated approved path allowed",
+      "destructivePotential": "Production Secret and age key access forbidden",
+      "frozenAdapter": "infra/security/policy/sops-evidence.mjs",
+      "requiredRawFacts": [
+        "positive decrypt",
+        "decrypt/prerequisite errors",
+        "isolated UID/data continuity",
+        "RBAC/report outcomes"
+      ],
+      "currentBlocker": "Prior private fixture was cleaned; redacted archive cannot replace fresh secret bytes",
+      "currentStatus": "NOT_OBSERVED",
+      "normalProductionWritePathAuthorized": false
+    },
+    {
+      "sourceId": "trivy",
+      "group": "C",
+      "productionStage": "Trivy",
+      "actualCommandOrFunction": "( node infra/security/ensure-audit-candidate.mjs && node infra/security/audit-trivy.mjs )",
+      "rawOutputPaths": [
+        ".devsecops/trivy-audit.json"
+      ],
+      "prerequisites": [
+        "Harbor identity",
+        "runtime/candidate digest",
+        "SBOM",
+        "DB/transport/review facts"
+      ],
+      "credentialsRequired": true,
+      "kubernetesAccess": true,
+      "externalHttpApiAccess": true,
+      "writeSideEffects": "ensure-candidate may PUT/copy; audit POST /scan",
+      "destructivePotential": "Registry/scan state mutation",
+      "frozenAdapter": "infra/security/policy/trivy-parent.mjs",
+      "requiredRawFacts": [
+        "original && operation sequence",
+        "native vulnerabilities/image/report binding",
+        "DB/prerequisite and proxy-direct facts in original scope",
+        "original classifier/parent exits"
+      ],
+      "currentBlocker": "GET boundary cannot produce POST scan or earlier transport/update outcomes",
+      "currentStatus": "NOT_OBSERVED",
+      "normalProductionWritePathAuthorized": false
+    },
+    {
+      "sourceId": "cosign",
+      "group": "C",
+      "productionStage": "Cosign Admission",
+      "actualCommandOrFunction": "node infra/security/signing.mjs admission",
+      "rawOutputPaths": [
+        ".devsecops/signing-admission.json"
+      ],
+      "prerequisites": [
+        "signing age bundle",
+        "Harbor push identity",
+        "trusted key",
+        "candidate digest",
+        "admission"
+      ],
+      "credentialsRequired": true,
+      "kubernetesAccess": true,
+      "externalHttpApiAccess": true,
+      "writeSideEffects": "Decrypts signing bundle, signs, POST/PUT registry fixtures, admission dry-run",
+      "destructivePotential": "Signing and registry writes forbidden",
+      "frozenAdapter": "infra/security/policy/cosign-parent.mjs",
+      "requiredRawFacts": [
+        "stage/config/runtime/tools",
+        "key/source/digest signature binding",
+        "registry/admission/cleanup observations"
+      ],
+      "currentBlocker": "Before signing lacks signature/registry outputs; generic verify cannot stand for admission/bootstrap/release",
+      "currentStatus": "NOT_OBSERVED",
+      "normalProductionWritePathAuthorized": false
+    },
+    {
+      "sourceId": "sonarqube",
+      "group": "B",
+      "productionStage": "SonarQube",
+      "actualCommandOrFunction": "nice -n 10 ./mvnw -B org.sonarsource.scanner.maven:sonar-maven-plugin:5.8.0.7211:sonar -Dsonar.projectKey=petclinic -Dsonar.qualitygate.wait=true -Dsonar.qualitygate.timeout=300",
+      "rawOutputPaths": [
+        "target/sonar/report-task.txt",
+        "CE task API",
+        "analysis-bound project_status API",
+        "Jenkins Gate evidence"
+      ],
+      "prerequisites": [
+        "existing task/analysis origin binding",
+        "read-only API identity"
+      ],
+      "credentialsRequired": true,
+      "kubernetesAccess": false,
+      "externalHttpApiAccess": true,
+      "writeSideEffects": "Normal Maven analysis uploads; this round only existing analysis GET allowed",
+      "destructivePotential": "No new analysis/Gate change",
+      "frozenAdapter": "infra/security/policy/sonar-evidence.mjs",
+      "requiredRawFacts": [
+        "component/taskId/analysisId",
+        "authoritative status/conditions",
+        "origin-build and old Jenkins Gate evidence"
+      ],
+      "currentBlocker": "Need safe exact analysis binding and existing read-only identity; negative remains DEFERRED",
+      "currentStatus": "NOT_OBSERVED",
+      "normalProductionWritePathAuthorized": null
+    },
+    {
+      "sourceId": "zap",
+      "group": "C",
+      "productionStage": "ZAP Passive",
+      "actualCommandOrFunction": "node infra/security/zap-gate.mjs",
+      "rawOutputPaths": [
+        ".devsecops/zap-gate.json",
+        ".devsecops/zap-business-report.json",
+        ".devsecops/zap-auth-readonly.json"
+      ],
+      "prerequisites": [
+        "heavy Lease",
+        "pinned ZAP/Java",
+        "owned URLs",
+        "confirmation hashes",
+        "source/network/cleanup"
+      ],
+      "credentialsRequired": false,
+      "kubernetesAccess": true,
+      "externalHttpApiAccess": true,
+      "writeSideEffects": "Creates/deletes scanner Pod; local fixture; business GET only",
+      "destructivePotential": "Full parent requires workload mutation",
+      "frozenAdapter": "infra/security/policy/zap-parent.mjs",
+      "requiredRawFacts": [
+        "target/report/exploit-confirmation binding",
+        "native alerts/classifier input",
+        "unconfirmed/lower findings",
+        "execution/container/network/report/cleanup failures"
+      ],
+      "currentBlocker": "Business GET alone is not the full frozen scanner stage",
+      "currentStatus": "NOT_OBSERVED",
+      "normalProductionWritePathAuthorized": false
+    },
+    {
+      "sourceId": "defectdojo",
+      "group": "C",
+      "productionStage": "DefectDojo Governance",
+      "actualCommandOrFunction": "node --max-old-space-size=192 infra/security/governance/defectdojo.mjs",
+      "rawOutputPaths": [
+        ".devsecops/defectdojo-import.json",
+        "scanner private native reports"
+      ],
+      "prerequisites": [
+        "prior scanner files/order",
+        "Dojo/Sonar identity",
+        "product/engagement/Test"
+      ],
+      "credentialsRequired": true,
+      "kubernetesAccess": false,
+      "externalHttpApiAccess": true,
+      "writeSideEffects": "POST import/reimport and PATCH false positives; GET queryback",
+      "destructivePotential": "No production imports/PATCH merely for collector proof",
+      "frozenAdapter": "infra/security/policy/dojo-parent.mjs",
+      "requiredRawFacts": [
+        "import/reimport responses",
+        "Test identity/dedupe/queryback/pagination",
+        "native report identity",
+        "API/auth/report errors"
+      ],
+      "currentBlocker": "Pre-import GET lacks actual import/dedupe outputs; decoupling remains prohibited",
+      "currentStatus": "NOT_OBSERVED",
+      "normalProductionWritePathAuthorized": false
+    },
+    {
+      "sourceId": "provenance",
+      "group": "C",
+      "productionStage": "vars/securityProvenance.groovy:call",
+      "actualCommandOrFunction": "vars/securityProvenance.groovy:call",
+      "rawOutputPaths": [
+        ".devsecops/provenance-status.json",
+        ".devsecops/provenance.json",
+        ".devsecops/attestation-envelope.json"
+      ],
+      "prerequisites": [
+        "actual helper cfg/params/env",
+        "enabled branch: source/build/signing/Harbor"
+      ],
+      "credentialsRequired": true,
+      "kubernetesAccess": false,
+      "externalHttpApiAccess": true,
+      "writeSideEffects": "Enabled workflow signs/attests/pushes; default helper returns before these",
+      "destructivePotential": "Only observe actual unchanged default helper return; never enable signing",
+      "frozenAdapter": "infra/security/policy/provenance-workflow.mjs",
+      "requiredRawFacts": [
+        "actual cfg/params/env/return",
+        "if enabled git/steps/generate-create-verify DSSE and builder binding"
+      ],
+      "currentBlocker": "Actual helper return not yet captured; no invented SKIPPED",
+      "currentStatus": "NOT_OBSERVED",
+      "normalProductionWritePathAuthorized": false
+    },
+    {
+      "sourceId": "build-provenance",
+      "group": "B",
+      "productionStage": "vars/securityBuildProvenance.groovy:call",
+      "actualCommandOrFunction": "vars/securityBuildProvenance.groovy:call",
+      "rawOutputPaths": [
+        ".devsecops/build-provenance-status.json",
+        ".devsecops/build-attestation-envelope.json",
+        ".devsecops/build-attestation-verification.json"
+      ],
+      "prerequisites": [
+        "actual helper cfg",
+        "if enabled explicit build identity",
+        "existing read-only Harbor identity"
+      ],
+      "credentialsRequired": true,
+      "kubernetesAccess": false,
+      "externalHttpApiAccess": true,
+      "writeSideEffects": "Actual helper verify branch writes only private local auth/reports; create branch is not used",
+      "destructivePotential": "Never run create/sign; verify needs proper identity",
+      "frozenAdapter": "infra/security/policy/build-provenance-workflow.mjs",
+      "requiredRawFacts": [
+        "helper cfg/env/steps/return",
+        "if enabled verifier/artifacts/DSSE/source/checksum/architecture/candidate identity"
+      ],
+      "currentBlocker": "Actual helper return or read-only verification inputs required",
+      "currentStatus": "NOT_OBSERVED",
+      "normalProductionWritePathAuthorized": null
+    },
+    {
+      "sourceId": "semgrep-command-audit",
+      "group": "C",
+      "productionStage": "Semgrep",
+      "actualCommandOrFunction": "( node infra/security/command-audit.mjs && node --max-old-space-size=128 infra/security/semgrep-gate.mjs )",
+      "rawOutputPaths": [
+        ".devsecops/command-audit.json",
+        ".devsecops/semgrep-gate.json",
+        ".devsecops/semgrep-native.json"
+      ],
+      "prerequisites": [
+        "heavy Lease",
+        "tracked source",
+        "scanner tools",
+        "script/SSH/interpreter reviews"
+      ],
+      "credentialsRequired": false,
+      "kubernetesAccess": true,
+      "externalHttpApiAccess": false,
+      "writeSideEffects": "Creates/deletes audit and scanner Pods; exec/transfer",
+      "destructivePotential": "Temporary workload mutation",
+      "frozenAdapter": "infra/security/policy/command-parent.mjs",
+      "requiredRawFacts": [
+        "source command-flow findings",
+        "Semgrep rules/native report",
+        "original command/report/cleanup outcomes"
+      ],
+      "currentBlocker": "No complete read-only parent boundary before Pod creation",
+      "currentStatus": "NOT_OBSERVED",
+      "normalProductionWritePathAuthorized": false
+    }
+  ]
+}

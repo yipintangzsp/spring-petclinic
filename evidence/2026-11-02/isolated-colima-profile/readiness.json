@@ -1,0 +1,59 @@
+{
+  "ISOLATED_PROFILE_READINESS": "READY",
+  "scope": "STATIC_ISOLATED_PROFILE_PREPARATION_ONLY",
+  "colimaVersion": "0.10.3",
+  "profileName": "security-test",
+  "profileConfigPath": "/Users/zhangsir/.colima/security-test/colima.yaml",
+  "multiProfileSupportProved": true,
+  "mountConfiguration": "Explicit null (nil) = NONE in installed version; not []",
+  "KubernetesEnabled": false,
+  "SSHConfigWrite": false,
+  "autoActivate": false,
+  "forwardAgent": false,
+  "productionCredentialMounts": "NONE",
+  "remoteDockerEndpoint": "NONE",
+  "resources": {
+    "cpus": 2,
+    "memoryGiB": 2,
+    "dataDiskGiB": 10,
+    "rootDiskGiB": 20
+  },
+  "defaultProfileUnchanged": true,
+  "SSHConfigUnchanged": true,
+  "existingDockerContextsUnchanged": true,
+  "currentDockerContext": "default",
+  "existingKubeconfigUnchanged": true,
+  "onlyNewHostFiles": [
+    "/Users/zhangsir/.colima/security-test",
+    "/Users/zhangsir/.colima/security-test/colima.yaml"
+  ],
+  "existingFilesModified": [],
+  "productionAPIAccessCount": 0,
+  "secretPrivateKeyAccessCount": 0,
+  "VMStarts": 0,
+  "containersCreated": 0,
+  "KubernetesClustersCreated": 0,
+  "SOPSExecutions": 0,
+  "runtimeReadinessNotClaimed": true,
+  "nextPermittedStage": "Separately scoped start of security-test only after rechecking config/default hashes, name collision, disk/VM ownership and cached image/download policy; retain no mounts/Kubernetes/SSH-config/auto-activate, prove local socket+VM+Docker server identity, then no-network disposable smoke. Do not start in this iteration, create kind or run SOPS.",
+  "futureStartDefenseArguments": [
+    "--profile",
+    "security-test",
+    "start",
+    "--mount",
+    "none",
+    "--kubernetes=false",
+    "--ssh-config=false",
+    "--activate=false"
+  ],
+  "startArgumentsExecuted": false,
+  "unresolvedStaticBlockers": [],
+  "futureExecutionChecks": [
+    "Live rendered Lima must still have no host HOME/credential mounts",
+    "VM/server/socket identity and local-only endpoint must be proved",
+    "New Docker context registration, if Colima creates one, must not change existing contexts or activate it",
+    "Disk free/headroom and image availability must be rechecked; nominal virtual disk sizes are not current disk allocation",
+    "No assumption that 2GiB is a validated budget for future Kubernetes or all security tools"
+  ],
+  "stopAfterPreparation": true
+}

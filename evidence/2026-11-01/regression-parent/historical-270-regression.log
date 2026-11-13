@@ -1,0 +1,784 @@
+[Pipeline] { (Security / Regression)
+[Pipeline] withCredentials
+[Pipeline] {
+[Pipeline] withEnv
+[Pipeline] {
+[Pipeline] sh
++ set +e
++ node --test --test-concurrency=1 infra/observability/ensure-sonar-runtime.test.mjs infra/observability/gitops-wait.test.mjs infra/observability/maven-test.test.mjs infra/observability/promote-private.test.mjs infra/observability/release-preflight.test.mjs infra/observability/rollouts-spec.test.mjs infra/observability/scanner-db-refresh.test.mjs infra/observability/scanner-queue-reservation.test.mjs infra/observability/security-package-cache.test.mjs infra/observability/service-readiness.test.mjs infra/observability/sonar-resource-slot.test.mjs infra/observability/terraform-ci.test.mjs infra/observability/terraform-isolation-spec.test.mjs infra/observability/terraform-provider-build.test.mjs infra/observability/terraform-remote.test.mjs infra/observability/terraform-runtime.test.mjs infra/observability/verify-rollout.test.mjs infra/security/audit-target.test.mjs infra/security/cosign-verification.test.mjs infra/security/credential-scope.test.mjs infra/security/gate-contract.test.mjs infra/security/governance.test.mjs infra/security/hardening.test.mjs infra/security/production-baseline.test.mjs infra/security/promotion.test.mjs infra/security/rbac-contract.test.mjs infra/security/registry-dns.test.mjs infra/security/runtime-contract.test.mjs infra/security/runtime-event-policy.test.mjs infra/security/runtime-health.test.mjs infra/security/semgrep-policy.test.mjs infra/security/synthetic-credential.test.mjs infra/security/test-runtime-preflight.test.mjs infra/security/trivy-medium-policy.test.mjs infra/security/zap-policy.test.mjs
++ rc=0
++ cat .devsecops/gates/regression.log
+TAP version 13
+# Subtest: runtime patch pins both init containers and main without changing PVC or resources
+ok 1 - runtime patch pins both init containers and main without changing PVC or resources
+  ---
+  duration_ms: 2.745334
+  ...
+# Subtest: already pinned runtime requires no mutation
+ok 2 - already pinned runtime requires no mutation
+  ---
+  duration_ms: 0.412255
+  ...
+# Subtest: another heavy task cannot change Sonar
+ok 3 - another heavy task cannot change Sonar
+  ---
+  duration_ms: 0.780429
+  ...
+# Subtest: replacement StatefulSet cannot be changed
+ok 4 - replacement StatefulSet cannot be changed
+  ---
+  duration_ms: 0.127322
+  ...
+# Subtest: analysis owner cannot be overridden
+ok 5 - analysis owner cannot be overridden
+  ---
+  duration_ms: 0.120072
+  ...
+# Subtest: paused service cannot be taken over
+ok 6 - paused service cannot be taken over
+  ---
+  duration_ms: 0.0932
+  ...
+# Subtest: different image or container set is preserved
+ok 7 - different image or container set is preserved
+  ---
+  duration_ms: 0.162277
+  ...
+# Subtest: cache content must match its immutable digest
+ok 8 - cache content must match its immutable digest
+  ---
+  duration_ms: 0.845423
+  ...
+# Subtest: Argo Synced arriving before the live image waits and succeeds
+ok 9 - Argo Synced arriving before the live image waits and succeeds
+  ---
+  duration_ms: 88.37415
+  ...
+# Subtest: live image alone cannot pass when Argo has another source revision
+ok 10 - live image alone cannot pass when Argo has another source revision
+  ---
+  duration_ms: 93.162549
+  ...
+# Subtest: a temporary API outage does not prematurely fail or pass deployment
+ok 11 - a temporary API outage does not prematurely fail or pass deployment
+  ---
+  duration_ms: 64.370244
+  ...
+# Subtest: a persistently wrong image fails when the bounded attempts end
+ok 12 - a persistently wrong image fails when the bounded attempts end
+  ---
+  duration_ms: 98.91086
+  ...
+# Subtest: reclaims a new stopped PostgreSQL test owned by this workspace
+ok 13 - reclaims a new stopped PostgreSQL test owned by this workspace
+  ---
+  duration_ms: 3.005769
+  ...
+# Subtest: preserves pre-existing containers and data, live containers and foreign ownership
+ok 14 - preserves pre-existing containers and data, live containers and foreign ownership
+  ---
+  duration_ms: 0.571198
+  ...
+# Subtest: promotion pins a digest and retains database, resources and zero surge
+ok 15 - promotion pins a digest and retains database, resources and zero surge
+  ---
+  duration_ms: 2.945566
+  ...
+# Subtest: reject mutable tags and mismatched build identity
+ok 16 - reject mutable tags and mismatched build identity
+  ---
+  duration_ms: 0.454667
+  ...
+# Subtest: reject missing or duplicate release fields
+ok 17 - reject missing or duplicate release fields
+  ---
+  duration_ms: 0.700103
+  ...
+# RELEASE_PREFLIGHT {"ok":true,"blockers":[],"buildGrowthMiB":0,"nodes":[{"name":"devops","storage":{"fs":{"time":"2026-10-30T03:17:46.063Z","capacityBytes":268435456000,"availableBytes":75161927680},"runtime":{"imageFs":{"time":"2026-10-30T03:17:46.063Z","capacityBytes":268435456000,"availableBytes":75161927680}}},"leaseAgeSeconds":0,"renewTime":"2026-10-30T03:17:46.063Z","conditions":[{"type":"Ready","status":"True"},{"type":"MemoryPressure","status":"False"},{"type":"DiskPressure","status":"False"},{"type":"PIDPressure","status":"False"}],"taints":[]},{"name":"aliyun-worker","storage":{"fs":{"time":"2026-10-30T03:17:46.063Z","capacityBytes":268435456000,"availableBytes":75161927680},"runtime":{"imageFs":{"time":"2026-10-30T03:17:46.063Z","capacityBytes":268435456000,"availableBytes":75161927680}}},"leaseAgeSeconds":0,"renewTime":"2026-10-30T03:17:46.063Z","conditions":[{"type":"Ready","status":"True"},{"type":"MemoryPressure","status":"False"},{"type":"DiskPressure","status":"False"},{"type":"PIDPressure","status":"False"}],"taints":[]},{"name":"ucloud-worker","storage":{"fs":{"time":"2026-10-30T03:17:46.063Z","capacityBytes":268435456000,"availableBytes":75161927680},"runtime":{"imageFs":{"time":"2026-10-30T03:17:46.063Z","capacityBytes":268435456000,"availableBytes":75161927680}}},"leaseAgeSeconds":0,"renewTime":"2026-10-30T03:17:46.063Z","conditions":[{"type":"Ready","status":"True"},{"type":"MemoryPressure","status":"False"},{"type":"DiskPressure","status":"False"},{"type":"PIDPressure","status":"False"}],"taints":[]}],"hostSample":{"at":1793330266.063,"mac":{"diskFreeMiB":30720,"freePercent":40,"efiAllocatedMiB":1.1}},"targetNodes":["devops","aliyun-worker","ucloud-worker"],"excludedNodes":[],"desired":3,"available":3,"pods":[{"name":"pod-0","uid":"uid-0","node":"devops","ready":true},{"name":"pod-1","uid":"uid-1","node":"aliyun-worker","ready":true},{"name":"pod-2","uid":"uid-2","node":"ucloud-worker","ready":true}],"readyEndpointPods":3}
+# Subtest: three healthy nodes with live endpoints pass
+ok 18 - three healthy nodes with live endpoints pass
+  ---
+  duration_ms: 3.242415
+  ...
+# Subtest: all Pods Ready on devops cannot conceal disconnected workers
+ok 19 - all Pods Ready on devops cannot conceal disconnected workers
+  ---
+  duration_ms: 0.432919
+  ...
+# Subtest: stale, absent and future Leases fail even with cached Ready
+ok 20 - stale, absent and future Leases fail even with cached Ready
+  ---
+  duration_ms: 1.688514
+  ...
+# Subtest: terminating or mismatched endpoint UID is not counted as available business capacity
+ok 21 - terminating or mismatched endpoint UID is not counted as available business capacity
+  ---
+  duration_ms: 0.314805
+  ...
+# Subtest: maintenance and pressure block publishing
+ok 22 - maintenance and pressure block publishing
+  ---
+  duration_ms: 0.455958
+  ...
+# Subtest: a retained unreachable taint blocks release but the existing cloud taint does not
+ok 23 - a retained unreachable taint blocks release but the existing cloud taint does not
+  ---
+  duration_ms: 1.643142
+  ...
+# RELEASE_PREFLIGHT {"ok":true,"blockers":[],"buildGrowthMiB":0,"nodes":[{"name":"devops","storage":{"fs":{"time":"2026-10-30T03:17:46.072Z","capacityBytes":268435456000,"availableBytes":75161927680},"runtime":{"imageFs":{"time":"2026-10-30T03:17:46.072Z","capacityBytes":268435456000,"availableBytes":75161927680}}},"leaseAgeSeconds":0,"renewTime":"2026-10-30T03:17:46.072Z","conditions":[{"type":"Ready","status":"True"},{"type":"MemoryPressure","status":"False"},{"type":"DiskPressure","status":"False"},{"type":"PIDPressure","status":"False"}],"taints":[]},{"name":"aliyun-worker","storage":{"fs":{"time":"2026-10-30T03:17:46.072Z","capacityBytes":268435456000,"availableBytes":75161927680},"runtime":{"imageFs":{"time":"2026-10-30T03:17:46.072Z","capacityBytes":268435456000,"availableBytes":75161927680}}},"leaseAgeSeconds":0,"renewTime":"2026-10-30T03:17:46.072Z","conditions":[{"type":"Ready","status":"True"},{"type":"MemoryPressure","status":"False"},{"type":"DiskPressure","status":"False"},{"type":"PIDPressure","status":"False"}],"taints":[]},{"name":"ucloud-worker","storage":{"fs":{"time":"2026-10-30T03:17:46.072Z","capacityBytes":268435456000,"availableBytes":75161927680},"runtime":{"imageFs":{"time":"2026-10-30T03:17:46.072Z","capacityBytes":268435456000,"availableBytes":75161927680}}},"leaseAgeSeconds":0,"renewTime":"2026-10-30T03:17:46.072Z","conditions":[{"type":"Ready","status":"True"},{"type":"MemoryPressure","status":"False"},{"type":"DiskPressure","status":"False"},{"type":"PIDPressure","status":"False"}],"taints":[]}],"hostSample":{"at":1793330266.072,"mac":{"diskFreeMiB":30720,"freePercent":40,"efiAllocatedMiB":1.1}},"targetNodes":["devops","aliyun-worker","ucloud-worker"],"excludedNodes":[],"desired":3,"available":3,"pods":[{"name":"pod-0","uid":"uid-0","node":"devops","ready":true},{"name":"pod-1","uid":"uid-1","node":"aliyun-worker","ready":true},{"name":"pod-2","uid":"uid-2","node":"ucloud-worker","ready":true}],"readyEndpointPods":3}
+# RELEASE_PREFLIGHT {"ok":true,"blockers":[],"buildGrowthMiB":0,"nodes":[{"name":"devops","storage":{"fs":{"time":"2026-10-30T03:17:46.077Z","capacityBytes":268435456000,"availableBytes":75161927680},"runtime":{"imageFs":{"time":"2026-10-30T03:17:46.077Z","capacityBytes":268435456000,"availableBytes":75161927680}}},"leaseAgeSeconds":0.001,"renewTime":"2026-10-30T03:17:46.077Z","conditions":[{"type":"Ready","status":"True"},{"type":"MemoryPressure","status":"False"},{"type":"DiskPressure","status":"False"},{"type":"PIDPressure","status":"False"}],"taints":[]},{"name":"aliyun-worker","storage":{"fs":{"time":"2026-10-30T03:17:46.077Z","capacityBytes":268435456000,"availableBytes":75161927680},"runtime":{"imageFs":{"time":"2026-10-30T03:17:46.077Z","capacityBytes":268435456000,"availableBytes":75161927680}}},"leaseAgeSeconds":0.001,"renewTime":"2026-10-30T03:17:46.077Z","conditions":[{"type":"Ready","status":"True"},{"type":"MemoryPressure","status":"False"},{"type":"DiskPressure","status":"False"},{"type":"PIDPressure","status":"False"}],"taints":[]},{"name":"ucloud-worker","storage":{"fs":{"time":"2026-10-30T03:17:46.077Z","capacityBytes":268435456000,"availableBytes":75161927680},"runtime":{"imageFs":{"time":"2026-10-30T03:17:46.077Z","capacityBytes":268435456000,"availableBytes":75161927680}}},"leaseAgeSeconds":0.001,"renewTime":"2026-10-30T03:17:46.077Z","conditions":[{"type":"Ready","status":"True"},{"type":"MemoryPressure","status":"False"},{"type":"DiskPressure","status":"False"},{"type":"PIDPressure","status":"False"}],"taints":[]}],"hostSample":{"at":1793330266.077,"mac":{"diskFreeMiB":30720,"freePercent":40,"efiAllocatedMiB":1.1}},"targetNodes":["devops","aliyun-worker","ucloud-worker"],"excludedNodes":[],"desired":3,"available":3,"pods":[{"name":"pod-0","uid":"uid-0","node":"devops","ready":true},{"name":"pod-1","uid":"uid-1","node":"aliyun-worker","ready":true},{"name":"pod-2","uid":"uid-2","node":"ucloud-worker","ready":true}],"readyEndpointPods":3}
+# RELEASE_PREFLIGHT {"ok":true,"blockers":[],"buildGrowthMiB":0,"nodes":[{"name":"devops","storage":{"fs":{"time":"2026-10-30T03:17:46.084Z","capacityBytes":268435456000,"availableBytes":75161927680},"runtime":{"imageFs":{"time":"2026-10-30T03:17:46.084Z","capacityBytes":268435456000,"availableBytes":75161927680}}},"leaseAgeSeconds":0,"renewTime":"2026-10-30T03:17:46.084Z","conditions":[{"type":"Ready","status":"True"},{"type":"MemoryPressure","status":"False"},{"type":"DiskPressure","status":"False"},{"type":"PIDPressure","status":"False"}],"taints":[]},{"name":"aliyun-worker","storage":{"fs":{"time":"2026-10-30T03:17:46.084Z","capacityBytes":268435456000,"availableBytes":75161927680},"runtime":{"imageFs":{"time":"2026-10-30T03:17:46.084Z","capacityBytes":268435456000,"availableBytes":75161927680}}},"leaseAgeSeconds":0,"renewTime":"2026-10-30T03:17:46.084Z","conditions":[{"type":"Ready","status":"True"},{"type":"MemoryPressure","status":"False"},{"type":"DiskPressure","status":"False"},{"type":"PIDPressure","status":"False"}],"taints":[]},{"name":"ucloud-worker","storage":{"fs":{"time":"2026-10-30T03:17:46.084Z","capacityBytes":268435456000,"availableBytes":75161927680},"runtime":{"imageFs":{"time":"2026-10-30T03:17:46.084Z","capacityBytes":268435456000,"availableBytes":75161927680}}},"leaseAgeSeconds":0,"renewTime":"2026-10-30T03:17:46.084Z","conditions":[{"type":"Ready","status":"True"},{"type":"MemoryPressure","status":"False"},{"type":"DiskPressure","status":"False"},{"type":"PIDPressure","status":"False"}],"taints":[]}],"hostSample":{"at":1793330266.084,"mac":{"diskFreeMiB":30720,"freePercent":40,"efiAllocatedMiB":1.1}},"targetNodes":["devops","aliyun-worker","ucloud-worker"],"excludedNodes":[],"desired":3,"available":3,"pods":[{"name":"pod-0","uid":"uid-0","node":"devops","ready":true},{"name":"pod-1","uid":"uid-1","node":"aliyun-worker","ready":true},{"name":"pod-2","uid":"uid-2","node":"ucloud-worker","ready":true}],"readyEndpointPods":3}
+# RELEASE_PREFLIGHT {"ok":true,"blockers":[],"buildGrowthMiB":0,"nodes":[{"name":"devops","storage":{"fs":{"time":"2026-10-30T03:17:46.089Z","capacityBytes":268435456000,"availableBytes":75161927680},"runtime":{"imageFs":{"time":"2026-10-30T03:17:46.089Z","capacityBytes":268435456000,"availableBytes":75161927680}}},"leaseAgeSeconds":0,"renewTime":"2026-10-30T03:17:46.089Z","conditions":[{"type":"Ready","status":"True"},{"type":"MemoryPressure","status":"False"},{"type":"DiskPressure","status":"False"},{"type":"PIDPressure","status":"False"}],"taints":[]},{"name":"aliyun-worker","storage":{"fs":{"time":"2026-10-30T03:17:46.089Z","capacityBytes":268435456000,"availableBytes":75161927680},"runtime":{"imageFs":{"time":"2026-10-30T03:17:46.089Z","capacityBytes":268435456000,"availableBytes":75161927680}}},"leaseAgeSeconds":0,"renewTime":"2026-10-30T03:17:46.089Z","conditions":[{"type":"Ready","status":"True"},{"type":"MemoryPressure","status":"False"},{"type":"DiskPressure","status":"False"},{"type":"PIDPressure","status":"False"}],"taints":[]},{"name":"ucloud-worker","storage":{"fs":{"time":"2026-10-30T03:17:46.089Z","capacityBytes":268435456000,"availableBytes":75161927680},"runtime":{"imageFs":{"time":"2026-10-30T03:17:46.089Z","capacityBytes":268435456000,"availableBytes":75161927680}}},"leaseAgeSeconds":0,"renewTime":"2026-10-30T03:17:46.089Z","conditions":[{"type":"Ready","status":"True"},{"type":"MemoryPressure","status":"False"},{"type":"DiskPressure","status":"False"},{"type":"PIDPressure","status":"False"}],"taints":[]}],"hostSample":{"at":1793330266.089,"mac":{"diskFreeMiB":30720,"freePercent":40,"efiAllocatedMiB":1.1}},"targetNodes":["devops","aliyun-worker","ucloud-worker"],"excludedNodes":[],"desired":3,"available":3,"pods":[{"name":"pod-0","uid":"uid-0","node":"devops","ready":true},{"name":"pod-1","uid":"uid-1","node":"aliyun-worker","ready":true},{"name":"pod-2","uid":"uid-2","node":"ucloud-worker","ready":true}],"readyEndpointPods":3}
+# Subtest: healthy snapshots with advancing Leases pass the observation window
+ok 24 - healthy snapshots with advancing Leases pass the observation window
+  ---
+  duration_ms: 26.489977
+  ...
+# RELEASE_PREFLIGHT {"ok":true,"blockers":[],"buildGrowthMiB":0,"nodes":[{"name":"devops","storage":{"fs":{"time":"2026-10-30T03:17:46.089Z","capacityBytes":268435456000,"availableBytes":75161927680},"runtime":{"imageFs":{"time":"2026-10-30T03:17:46.089Z","capacityBytes":268435456000,"availableBytes":75161927680}}},"leaseAgeSeconds":0.006,"renewTime":"2026-10-30T03:17:46.089Z","conditions":[{"type":"Ready","status":"True"},{"type":"MemoryPressure","status":"False"},{"type":"DiskPressure","status":"False"},{"type":"PIDPressure","status":"False"}],"taints":[]},{"name":"aliyun-worker","storage":{"fs":{"time":"2026-10-30T03:17:46.089Z","capacityBytes":268435456000,"availableBytes":75161927680},"runtime":{"imageFs":{"time":"2026-10-30T03:17:46.089Z","capacityBytes":268435456000,"availableBytes":75161927680}}},"leaseAgeSeconds":0.006,"renewTime":"2026-10-30T03:17:46.089Z","conditions":[{"type":"Ready","status":"True"},{"type":"MemoryPressure","status":"False"},{"type":"DiskPressure","status":"False"},{"type":"PIDPressure","status":"False"}],"taints":[]},{"name":"ucloud-worker","storage":{"fs":{"time":"2026-10-30T03:17:46.089Z","capacityBytes":268435456000,"availableBytes":75161927680},"runtime":{"imageFs":{"time":"2026-10-30T03:17:46.089Z","capacityBytes":268435456000,"availableBytes":75161927680}}},"leaseAgeSeconds":0.006,"renewTime":"2026-10-30T03:17:46.089Z","conditions":[{"type":"Ready","status":"True"},{"type":"MemoryPressure","status":"False"},{"type":"DiskPressure","status":"False"},{"type":"PIDPressure","status":"False"}],"taints":[]}],"hostSample":{"at":1793330266.089,"mac":{"diskFreeMiB":30720,"freePercent":40,"efiAllocatedMiB":1.1}},"targetNodes":["devops","aliyun-worker","ucloud-worker"],"excludedNodes":[],"desired":3,"available":3,"pods":[{"name":"pod-0","uid":"uid-0","node":"devops","ready":true},{"name":"pod-1","uid":"uid-1","node":"aliyun-worker","ready":true},{"name":"pod-2","uid":"uid-2","node":"ucloud-worker","ready":true}],"readyEndpointPods":3}
+# RELEASE_PREFLIGHT {"ok":true,"blockers":[],"buildGrowthMiB":0,"nodes":[{"name":"devops","storage":{"fs":{"time":"2026-10-30T03:17:46.089Z","capacityBytes":268435456000,"availableBytes":75161927680},"runtime":{"imageFs":{"time":"2026-10-30T03:17:46.089Z","capacityBytes":268435456000,"availableBytes":75161927680}}},"leaseAgeSeconds":0.012,"renewTime":"2026-10-30T03:17:46.089Z","conditions":[{"type":"Ready","status":"True"},{"type":"MemoryPressure","status":"False"},{"type":"DiskPressure","status":"False"},{"type":"PIDPressure","status":"False"}],"taints":[]},{"name":"aliyun-worker","storage":{"fs":{"time":"2026-10-30T03:17:46.089Z","capacityBytes":268435456000,"availableBytes":75161927680},"runtime":{"imageFs":{"time":"2026-10-30T03:17:46.089Z","capacityBytes":268435456000,"availableBytes":75161927680}}},"leaseAgeSeconds":0.012,"renewTime":"2026-10-30T03:17:46.089Z","conditions":[{"type":"Ready","status":"True"},{"type":"MemoryPressure","status":"False"},{"type":"DiskPressure","status":"False"},{"type":"PIDPressure","status":"False"}],"taints":[]},{"name":"ucloud-worker","storage":{"fs":{"time":"2026-10-30T03:17:46.089Z","capacityBytes":268435456000,"availableBytes":75161927680},"runtime":{"imageFs":{"time":"2026-10-30T03:17:46.089Z","capacityBytes":268435456000,"availableBytes":75161927680}}},"leaseAgeSeconds":0.012,"renewTime":"2026-10-30T03:17:46.089Z","conditions":[{"type":"Ready","status":"True"},{"type":"MemoryPressure","status":"False"},{"type":"DiskPressure","status":"False"},{"type":"PIDPressure","status":"False"}],"taints":[]}],"hostSample":{"at":1793330266.089,"mac":{"diskFreeMiB":30720,"freePercent":40,"efiAllocatedMiB":1.1}},"targetNodes":["devops","aliyun-worker","ucloud-worker"],"excludedNodes":[],"desired":3,"available":3,"pods":[{"name":"pod-0","uid":"uid-0","node":"devops","ready":true},{"name":"pod-1","uid":"uid-1","node":"aliyun-worker","ready":true},{"name":"pod-2","uid":"uid-2","node":"ucloud-worker","ready":true}],"readyEndpointPods":3}
+# Subtest: a frozen fresh Lease must advance across the observation window
+ok 25 - a frozen fresh Lease must advance across the observation window
+  ---
+  duration_ms: 26.455771
+  ...
+# Subtest: API failures fail closed and still retain evidence
+ok 26 - API failures fail closed and still retain evidence
+  ---
+  duration_ms: 10.93401
+  ...
+# Subtest: explicit local targets exclude an unhealthy cloud worker and report it
+ok 27 - explicit local targets exclude an unhealthy cloud worker and report it
+  ---
+  duration_ms: 2.075687
+  ...
+# Subtest: a selector matching no target nodes blocks publishing
+ok 28 - a selector matching no target nodes blocks publishing
+  ---
+  duration_ms: 0.432794
+  ...
+# Subtest: disk pressure False cannot conceal insufficient future build headroom
+ok 29 - disk pressure False cannot conceal insufficient future build headroom
+  ---
+  duration_ms: 0.56974
+  ...
+# Subtest: missing or stale image filesystem samples fail closed
+ok 30 - missing or stale image filesystem samples fail closed
+  ---
+  duration_ms: 0.344302
+  ...
+# Subtest: saved EFI memory state blocks new builds even before host disk fills
+ok 31 - saved EFI memory state blocks new builds even before host disk fills
+  ---
+  duration_ms: 1.488365
+  ...
+# Subtest: missing and stale host evidence and low host disk block release
+ok 32 - missing and stale host evidence and low host disk block release
+  ---
+  duration_ms: 0.58803
+  ...
+# Subtest: Harbor requires both ready registry and controller ports before expensive build work
+ok 33 - Harbor requires both ready registry and controller ports before expensive build work
+  ---
+  duration_ms: 2.198051
+  ...
+# Subtest: Both scanner databases must be fresh before costly build work
+ok 34 - Both scanner databases must be fresh before costly build work
+  ---
+  duration_ms: 1.086152
+  ...
+# Subtest: initial release rejects space that passes the stop line but cannot cover measured build growth
+ok 35 - initial release rejects space that passes the stop line but cannot cover measured build growth
+  ---
+  duration_ms: 0.812094
+  ...
+# Subtest: two GiB build reserve is additional on local build node; ordinary promotion gate stays unchanged
+ok 36 - two GiB build reserve is additional on local build node; ordinary promotion gate stays unchanged
+  ---
+  duration_ms: 0.287724
+  ...
+# Subtest: security compiler reserve is four GiB above the unchanged stop line
+ok 37 - security compiler reserve is four GiB above the unchanged stop line
+  ---
+  duration_ms: 0.844548
+  ...
+# Subtest: committed lab strategies are valid for their traffic mode
+ok 38 - committed lab strategies are valid for their traffic mode
+  ---
+  duration_ms: 4.90918
+  ...
+# Subtest: delay without traffic routing is rejected; blue-green delay remains valid
+ok 39 - delay without traffic routing is rejected; blue-green delay remains valid
+  ---
+  duration_ms: 1.005034
+  ...
+# Subtest: CRD pod ports declare the API default to avoid perpetual GitOps drift
+ok 40 - CRD pod ports declare the API default to avoid perpetual GitOps drift
+  ---
+  duration_ms: 0.29689
+  ...
+# Subtest: fresh scanner caches do not start maintenance or acquire another lock
+ok 41 - fresh scanner caches do not start maintenance or acquire another lock
+  ---
+  duration_ms: 2.924277
+  ...
+# Subtest: only the expired database is refreshed and actual updater metadata is required
+ok 42 - only the expired database is refreshed and actual updater metadata is required
+  ---
+  duration_ms: 0.423087
+  ...
+# Subtest: two expired databases refresh serially under the existing owner
+ok 43 - two expired databases refresh serially under the existing owner
+  ---
+  duration_ms: 0.29164
+  ...
+# Subtest: foreign heavy Lease prevents even fetching metadata
+ok 44 - foreign heavy Lease prevents even fetching metadata
+  ---
+  duration_ms: 0.775971
+  ...
+# Subtest: updater failures and stale output cannot turn the freshness gate green
+ok 45 - updater failures and stale output cannot turn the freshness gate green
+  ---
+  duration_ms: 0.767555
+  ...
+# Subtest: official manifest hash and exact layer type are mandatory before using a mirror
+ok 46 - official manifest hash and exact layer type are mandatory before using a mirror
+  ---
+  duration_ms: 1.091276
+  ...
+# Subtest: corrupt metadata does not trigger an uncontrolled cache replacement
+ok 47 - corrupt metadata does not trigger an uncontrolled cache replacement
+  ---
+  duration_ms: 0.373341
+  ...
+# Subtest: official manifest falls back from unavailable proxy to direct TLS without bypassing failures
+ok 48 - official manifest falls back from unavailable proxy to direct TLS without bypassing failures
+  ---
+  duration_ms: 0.802553
+  ...
+# Subtest: queue reservation accepts only explicit scoped owner and build
+ok 49 - queue reservation accepts only explicit scoped owner and build
+  ---
+  duration_ms: 2.703297
+  ...
+# Subtest: security package reused after build clean
+ok 50 - security package reused after build clean
+  ---
+  duration_ms: 45.808736
+  ...
+# Subtest: security package corrupted cache
+ok 51 - security package corrupted cache
+  ---
+  duration_ms: 40.843602
+  ...
+# Subtest: security package untrusted download
+ok 52 - security package untrusted download
+  ---
+  duration_ms: 13.348752
+  ...
+# GitLab Rails not ready; waiting before source mirror
+# GitLab Rails not ready; waiting before source mirror
+# Subtest: waits for authenticated Rails API recovery without an IP allowlist change
+ok 53 - waits for authenticated Rails API recovery without an IP allowlist change
+  ---
+  duration_ms: 153.869599
+  ...
+# GitLab Rails not ready; waiting before source mirror
+# GitLab Rails not ready; waiting before source mirror
+# GitLab Rails not ready; waiting before source mirror
+# GitLab Rails not ready; waiting before source mirror
+# GitLab Rails not ready; waiting before source mirror
+# Subtest: a listening nginx with unhealthy Rails cannot pass
+ok 54 - a listening nginx with unhealthy Rails cannot pass
+  ---
+  duration_ms: 74.025021
+  ...
+# Subtest: access errors fail without repeatedly polling
+ok 55 - access errors fail without repeatedly polling
+  ---
+  duration_ms: 8.760292
+  ...
+# Subtest: hung responses terminate within the readiness budget
+ok 56 - hung responses terminate within the readiness budget
+  ---
+  duration_ms: 72.84746
+  ...
+# Subtest: idle scanner slot borrows the current CI lease without nested acquisition
+ok 57 - idle scanner slot borrows the current CI lease without nested acquisition
+  ---
+  duration_ms: 5.182073
+  ...
+# Subtest: foreign lease, replaced UID, foreign resource owner and unready scanner are preserved
+ok 58 - foreign lease, replaced UID, foreign resource owner and unready scanner are preserved
+  ---
+  duration_ms: 2.360411
+  ...
+# Subtest: restoration requires exact UID and owner; only proven restored original replica is idempotent
+ok 59 - restoration requires exact UID and owner; only proven restored original replica is idempotent
+  ---
+  duration_ms: 2.006527
+  ...
+# Subtest: current CI never waits for itself; other active builds prevent pause
+ok 60 - current CI never waits for itself; other active builds prevent pause
+  ---
+  duration_ms: 0.719893
+  ...
+# Subtest: allows only three new isolated lab resources
+ok 61 - allows only three new isolated lab resources
+  ---
+  duration_ms: 1.466617
+  ...
+# Subtest: rejects deletion, replacement and updates to existing resources
+ok 62 - rejects deletion, replacement and updates to existing resources
+  ---
+  duration_ms: 0.308805
+  ...
+# Subtest: rejects outside resources and duplicate addresses
+ok 63 - rejects outside resources and duplicate addresses
+  ---
+  duration_ms: 0.211939
+  ...
+# Subtest: rejects business namespaces and changed owner
+ok 64 - rejects business namespaces and changed owner
+  ---
+  duration_ms: 0.238978
+  ...
+# Subtest: rejects quotas permitting Pods, persistent storage, secrets or services
+ok 65 - rejects quotas permitting Pods, persistent storage, secrets or services
+  ---
+  duration_ms: 0.329304
+  ...
+# Subtest: rejects config in a foreign namespace or changed business input
+ok 66 - rejects config in a foreign namespace or changed business input
+  ---
+  duration_ms: 0.315055
+  ...
+# Subtest: isolated Job has no host storage, no default token, non-root readonly kernel confinement
+ok 67 - isolated Job has no host storage, no default token, non-root readonly kernel confinement
+  ---
+  duration_ms: 3.163131
+  ...
+# Subtest: mutable images, arbitrary endpoints and wrong node address rejected
+ok 68 - mutable images, arbitrary endpoints and wrong node address rejected
+  ---
+  duration_ms: 1.082069
+  ...
+# Subtest: admission denies both Pod and Job escape and fences former runtime identity
+ok 69 - admission denies both Pod and Job escape and fences former runtime identity
+  ---
+  duration_ms: 1.163062
+  ...
+# Subtest: executor metadata forbids persistent storage, service secrets and extra compute
+ok 70 - executor metadata forbids persistent storage, service secrets and extra compute
+  ---
+  duration_ms: 2.901821
+  ...
+# Subtest: canary peer resets cannot crash the deployment controller
+ok 71 - canary peer resets cannot crash the deployment controller
+  ---
+  duration_ms: 22.123922
+  ...
+# Subtest: DELETE transmits UID precondition and foreground policy to API server
+ok 72 - DELETE transmits UID precondition and foreground policy to API server
+  ---
+  duration_ms: 19.24664
+  ...
+# Subtest: deadline can use previously observed owned Pod after controller removal
+ok 73 - deadline can use previously observed owned Pod after controller removal
+  ---
+  duration_ms: 0.988327
+  ...
+# Subtest: missing Pod without an observed UID cannot prove deadline completion
+ok 74 - missing Pod without an observed UID cannot prove deadline completion
+  ---
+  duration_ms: 0.274392
+  ...
+# Subtest: ordinary success and failure cannot silently reuse a disappeared Pod
+ok 75 - ordinary success and failure cannot silently reuse a disappeared Pod
+  ---
+  duration_ms: 0.510788
+  ...
+# Subtest: foreign owner or replacement Pod cannot pass the cached UID guard
+ok 76 - foreign owner or replacement Pod cannot pass the cached UID guard
+  ---
+  duration_ms: 0.391756
+  ...
+# Subtest: empty startup logs and transient responses preserve evidence without granting success
+ok 77 - empty startup logs and transient responses preserve evidence without granting success
+  ---
+  duration_ms: 0.618611
+  ...
+# Subtest: admission readiness waits for serving policy after generation compilation
+ok 78 - admission readiness waits for serving policy after generation compilation
+  ---
+  duration_ms: 1.465701
+  ...
+# Subtest: verified custom source recipe preserves fixed offline build bounds
+ok 79 - verified custom source recipe preserves fixed offline build bounds
+  ---
+  duration_ms: 4.048302
+  ...
+# Subtest: resource escalation or unexpected build input cannot enter native build
+ok 80 - resource escalation or unexpected build input cannot enter native build
+  ---
+  duration_ms: 1.014534
+  ...
+# Subtest: unverified vendor, mutable image and online build flags are rejected
+ok 81 - unverified vendor, mutable image and online build flags are rejected
+  ---
+  duration_ms: 0.964413
+  ...
+# Subtest: provider package checksum changes on content tampering and refuses extra files or links
+ok 82 - provider package checksum changes on content tampering and refuses extra files or links
+  ---
+  duration_ms: 7.711679
+  ...
+# Subtest: old package path detection crosses streaming block boundaries and keeps maintained fork separate
+ok 83 - old package path detection crosses streaming block boundaries and keeps maintained fork separate
+  ---
+  duration_ms: 6.140696
+  ...
+# Subtest: permits only isolated ConfigMap and fresh virtual lock probe
+ok 84 - permits only isolated ConfigMap and fresh virtual lock probe
+  ---
+  duration_ms: 1.859708
+  ...
+# Subtest: cleanup permits only virtual probe deletion and preserves real ConfigMap
+ok 85 - cleanup permits only virtual probe deletion and preserves real ConfigMap
+  ---
+  duration_ms: 0.606154
+  ...
+# Subtest: rejects replacing or deleting real infrastructure
+ok 86 - rejects replacing or deleting real infrastructure
+  ---
+  duration_ms: 0.189899
+  ...
+# Subtest: rejects foreign resource, missing ConfigMap and duplicate state address
+ok 87 - rejects foreign resource, missing ConfigMap and duplicate state address
+  ---
+  duration_ms: 0.542409
+  ...
+# Subtest: rejects foreign namespace, ownership and additional payload
+ok 88 - rejects foreign namespace, ownership and additional payload
+  ---
+  duration_ms: 0.268059
+  ...
+# Subtest: bootstrap grants only namespaced metadata permissions without compute or PVC
+ok 89 - bootstrap grants only namespaced metadata permissions without compute or PVC
+  ---
+  duration_ms: 1.805629
+  ...
+# Subtest: rejects cluster-wide bindings, wildcard rights and foreign subjects
+ok 90 - rejects cluster-wide bindings, wildcard rights and foreign subjects
+  ---
+  duration_ms: 0.90346
+  ...
+# Subtest: rejects privilege expansion through quotas or added bootstrap objects
+ok 91 - rejects privilege expansion through quotas or added bootstrap objects
+  ---
+  duration_ms: 0.424004
+  ...
+# Subtest: complete report with every severity zero is accepted
+ok 92 - complete report with every severity zero is accepted
+  ---
+  duration_ms: 1.50424
+  ...
+# Subtest: any severity including low and unknown prevents zero claim
+ok 93 - any severity including low and unknown prevents zero claim
+  ---
+  duration_ms: 0.332845
+  ...
+# Subtest: missing incomplete or inconsistent scan evidence fails closed
+ok 94 - missing incomplete or inconsistent scan evidence fails closed
+  ---
+  duration_ms: 0.245311
+  ...
+# Subtest: runtime rendering only changes the pinned provider and preserves backend/configuration
+ok 95 - runtime rendering only changes the pinned provider and preserves backend/configuration
+  ---
+  duration_ms: 0.808428
+  ...
+# Subtest: custom provider lock requires a full h1 and explicit prerelease version
+ok 96 - custom provider lock requires a full h1 and explicit prerelease version
+  ---
+  duration_ms: 0.692729
+  ...
+# Subtest: documented package-not-present finding preserves raw count and binds exact binary
+ok 97 - documented package-not-present finding preserves raw count and binds exact binary
+  ---
+  duration_ms: 4.260908
+  ...
+# Subtest: new findings or missing detailed report cannot be treated as reviewed false positive
+ok 98 - new findings or missing detailed report cannot be treated as reviewed false positive
+  ---
+  duration_ms: 0.722893
+  ...
+# Subtest: executor revalidates original report digest and assessment instead of trusting a pass label
+ok 99 - executor revalidates original report digest and assessment instead of trusting a pass label
+  ---
+  duration_ms: 1.599356
+  ...
+# Subtest: Harbor detailed report uses documented X-Accept-Vulnerabilities and JSON response negotiation
+ok 100 - Harbor detailed report uses documented X-Accept-Vulnerabilities and JSON response negotiation
+  ---
+  duration_ms: 84.835701
+  ...
+# Subtest: report formats without embedded artifact still require the exact authenticated request receipt
+ok 101 - report formats without embedded artifact still require the exact authenticated request receipt
+  ---
+  duration_ms: 2.842119
+  ...
+# ROLLOUT_API_ERROR: kubectl -n petclinic get deployment,pods,events: API unreachable
+# Subtest: three Ready Pods require the exact immutable image and Argo source revision
+ok 102 - three Ready Pods require the exact immutable image and Argo source revision
+  ---
+  duration_ms: 2.149599
+  ...
+# Subtest: a concurrent rollback cannot be reported as successful deployment
+ok 103 - a concurrent rollback cannot be reported as successful deployment
+  ---
+  duration_ms: 0.225647
+  ...
+# Subtest: available old replicas cannot conceal an unready new Pod
+ok 104 - available old replicas cannot conceal an unready new Pod
+  ---
+  duration_ms: 0.811511
+  ...
+# Subtest: FailedMount correlated to its Pod UID, stale Lease and non-Ready node is diagnosed
+ok 105 - FailedMount correlated to its Pod UID, stale Lease and non-Ready node is diagnosed
+  ---
+  duration_ms: 0.741767
+  ...
+# Subtest: a transient network image pull failure is not classified as a permanent image error
+ok 106 - a transient network image pull failure is not classified as a permanent image error
+  ---
+  duration_ms: 0.519287
+  ...
+# ROLLOUT_API_ERROR: kubectl -n petclinic get deployment,pods,events: API unreachable
+# ROLLOUT_API_ERROR: kubectl -n petclinic get deployment,pods,events: API unreachable
+# ROLLOUT_API_ERROR: kubectl -n petclinic get deployment,pods,events: spawnSync kubectl ETIMEDOUT
+# ROLLOUT_TIMEOUT: release did not converge within the existing 600-second budget
+# DIAGNOSTIC kubectl get nodes -o wide
+# API unreachable
+# DIAGNOSTIC kubectl -n petclinic get pods -o wide
+# API unreachable
+# DIAGNOSTIC kubectl -n petclinic describe deployment petclinic
+# API unreachable
+# DIAGNOSTIC kubectl -n petclinic get events --sort-by=.lastTimestamp
+# API unreachable
+# Subtest: bounded API failure cannot pass a release and creates a diagnostic artifact
+ok 107 - bounded API failure cannot pass a release and creates a diagnostic artifact
+  ---
+  duration_ms: 59.87278
+  ...
+# Subtest: cached Ready Pods on an unreachable node cannot pass a release
+ok 108 - cached Ready Pods on an unreachable node cannot pass a release
+  ---
+  duration_ms: 0.382632
+  ...
+# Subtest: audit target separates live from digest-only Harbor candidates
+ok 109 - audit target separates live from digest-only Harbor candidates
+  ---
+  duration_ms: 2.769668
+  ...
+# Subtest: transport retries at most twice and never retries authentication rejection
+ok 110 - transport retries at most twice and never retries authentication rejection
+  ---
+  duration_ms: 52.723256
+  ...
+# Subtest: negative fixtures accept actual signature failures independent of exit code
+ok 111 - negative fixtures accept actual signature failures independent of exit code
+  ---
+  duration_ms: 2.191054
+  ...
+# Subtest: registry and unexpected successes fail closed
+ok 112 - registry and unexpected successes fail closed
+  ---
+  duration_ms: 0.298639
+  ...
+# Subtest: private verifier uses own namespace credential without anonymous or signature bypass
+ok 113 - private verifier uses own namespace credential without anonymous or signature bypass
+  ---
+  duration_ms: 2.418491
+  ...
+# Subtest: obsolete cross-namespace binding grants nobody and new reconciliation permission is exact
+ok 114 - obsolete cross-namespace binding grants nobody and new reconciliation permission is exact
+  ---
+  duration_ms: 0.290349
+  ...
+# Subtest: DAST fails closed on absent report or unknown severity
+ok 115 - DAST fails closed on absent report or unknown severity
+  ---
+  duration_ms: 1.28151
+  ...
+# Subtest: DAST blocks High while retaining lower findings
+ok 116 - DAST blocks High while retaining lower findings
+  ---
+  duration_ms: 0.382466
+  ...
+# Subtest: promotion rejects unsigned, wrong-image or wrong-source evidence
+ok 117 - promotion rejects unsigned, wrong-image or wrong-source evidence
+  ---
+  duration_ms: 0.419254
+  ...
+# Subtest: native Kubescape audit counts actual failed controls and deduplicates shared framework observations
+ok 118 - native Kubescape audit counts actual failed controls and deduplicates shared framework observations
+  ---
+  duration_ms: 3.732624
+  ...
+# Subtest: governance open severity excludes duplicate, accepted, closed and reviewed false positives
+ok 119 - governance open severity excludes duplicate, accepted, closed and reviewed false positives
+  ---
+  duration_ms: 0.437919
+  ...
+# Subtest: a completed Trivy policy failure reports actual severity while engine failure stays unknown
+ok 120 - a completed Trivy policy failure reports actual severity while engine failure stays unknown
+  ---
+  duration_ms: 0.294682
+  ...
+# Subtest: only idempotent governance reads and assignments retry transient gateway failures
+ok 121 - only idempotent governance reads and assignments retry transient gateway failures
+  ---
+  duration_ms: 51.465922
+  ...
+# Subtest: runtime hardening is idempotent and retains existing database, capacity and mounts
+ok 122 - runtime hardening is idempotent and retains existing database, capacity and mounts
+  ---
+  duration_ms: 1.815254
+  ...
+# Subtest: unknown deployment layout fails closed before promotion
+ok 123 - unknown deployment layout fails closed before promotion
+  ---
+  duration_ms: 0.187608
+  ...
+# Subtest: production configuration checks cover CREATE/UPDATE, never DeleteOptions; precise exceptions remain per rule
+ok 124 - production configuration checks cover CREATE/UPDATE, never DeleteOptions; precise exceptions remain per rule
+  ---
+  duration_ms: 9.52752
+  ...
+# Subtest: failed or mismatched security evidence cannot approve or reach Git mutation
+ok 125 - failed or mismatched security evidence cannot approve or reach Git mutation
+  ---
+  duration_ms: 2.66147
+  ...
+# Subtest: approval binds candidate, actual SBOM and all verified Cosign digests; promotion changes one image only
+ok 126 - approval binds candidate, actual SBOM and all verified Cosign digests; promotion changes one image only
+  ---
+  duration_ms: 1.400583
+  ...
+# Subtest: Argo tracking instance label still selects Kyverno official core RBAC
+ok 127 - Argo tracking instance label still selects Kyverno official core RBAC
+  ---
+  duration_ms: 2.205219
+  ...
+# Subtest: Argo tracking labels preserve controller ServiceMonitor selection
+ok 128 - Argo tracking labels preserve controller ServiceMonitor selection
+  ---
+  duration_ms: 0.220522
+  ...
+# Subtest: Harbor zone targets only a valid existing service IPv4 without accepting configuration injection
+ok 129 - Harbor zone targets only a valid existing service IPv4 without accepting configuration injection
+  ---
+  duration_ms: 8.981321
+  ...
+# Subtest: shared CoreDNS zones are retained and compared independently of the owned Harbor key
+ok 130 - shared CoreDNS zones are retained and compared independently of the owned Harbor key
+  ---
+  duration_ms: 1.19606
+  ...
+# Subtest: runtime deployed rules, version label, manifest and locked source stay consistent
+ok 131 - runtime deployed rules, version label, manifest and locked source stay consistent
+  ---
+  duration_ms: 2.2338
+  ...
+# Subtest: bootstrap exception requires fixed host runtime executable and scoped workload; all eight rules remain
+ok 132 - bootstrap exception requires fixed host runtime executable and scoped workload; all eight rules remain
+  ---
+  duration_ms: 0.371509
+  ...
+# Subtest: grouped instant vectors show all rows; internal health reports are separate and historical logs remain
+ok 133 - grouped instant vectors show all rows; internal health reports are separate and historical logs remain
+  ---
+  duration_ms: 2.769752
+  ...
+# Subtest: synthetic policy positive: persistent successful critical writes and shadow reads block
+ok 134 - synthetic policy positive: persistent successful critical writes and shadow reads block
+  ---
+  duration_ms: 2.786126
+  ...
+# Subtest: transient, denied, normal info, namespace-tool execution, priority alone and mixed identities warn
+ok 135 - transient, denied, normal info, namespace-tool execution, priority alone and mixed identities warn
+  ---
+  duration_ms: 1.266136
+  ...
+# Subtest: duplicates, stale logs and overlapping windows cannot establish persistence
+ok 136 - duplicates, stale logs and overlapping windows cannot establish persistence
+  ---
+  duration_ms: 0.42992
+  ...
+# Subtest: actual isolated six sensor cases remain WARN and never masquerade as production attacks
+ok 137 - actual isolated six sensor cases remain WARN and never masquerade as production attacks
+  ---
+  duration_ms: 2.093895
+  ...
+# Subtest: historical exits remain visible as warnings; readiness and restart count remain required
+ok 138 - historical exits remain visible as warnings; readiness and restart count remain required
+  ---
+  duration_ms: 1.551028
+  ...
+# Subtest: any new restart, zero-count replacement, new boot or container change fails current build continuity
+ok 139 - any new restart, zero-count replacement, new boot or container change fails current build continuity
+  ---
+  duration_ms: 0.309139
+  ...
+# Subtest: operational fatal/driver errors block; ordinary security events and proc race warnings stay visible
+ok 140 - operational fatal/driver errors block; ordinary security events and proc race warnings stay visible
+  ---
+  duration_ms: 2.076856
+  ...
+# Subtest: only reviewed high severity fixed weak cipher findings block
+ok 141 - only reviewed high severity fixed weak cipher findings block
+  ---
+  duration_ms: 2.359289
+  ...
+# Subtest: only reviewed HTTP command flow rules block, generic commands stay warning
+ok 142 - only reviewed HTTP command flow rules block, generic commands stay warning
+  ---
+  duration_ms: 0.150236
+  ...
+# Subtest: synthetic scanner fixture always matches pinned rule length and entropy
+ok 143 - synthetic scanner fixture always matches pinned rule length and entropy
+  ---
+  duration_ms: 24.223668
+  ...
+# Subtest: test runtime refuses changed bytes or foreign architecture
+ok 144 - test runtime refuses changed bytes or foreign architecture
+  ---
+  duration_ms: 1.664226
+  ...
+# Subtest: confirmed reachable fixable Medium fails; uncertain does not masquerade as safe
+ok 145 - confirmed reachable fixable Medium fails; uncertain does not masquerade as safe
+  ---
+  duration_ms: 3.975061
+  ...
+# Subtest: High alone warns; policy only blocks exact-target reviewed proof (synthetic policy inputs)
+ok 146 - High alone warns; policy only blocks exact-target reviewed proof (synthetic policy inputs)
+  ---
+  duration_ms: 2.693593
+  ...
+# Subtest: ordinary information and lower severities warn; malformed scans cannot pass
+ok 147 - ordinary information and lower severities warn; malformed scans cannot pass
+  ---
+  duration_ms: 0.916168
+  ...
+1..147
+# tests 147
+# suites 0
+# pass 147
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 8218.885312
++ exit 0
+[Pipeline] }

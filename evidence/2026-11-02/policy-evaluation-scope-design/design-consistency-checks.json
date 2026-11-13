@@ -1,0 +1,91 @@
+{
+  "classification": "READ_ONLY_OR_DESIGN_CONSISTENCY_NOT_RUNTIME_ACCEPTANCE",
+  "checks": [
+    {
+      "check": "inventory partition covers all 18 labels once",
+      "result": "PASS",
+      "classification": "READ_ONLY_OR_DESIGN_CONSISTENCY",
+      "evidence": "authoritative-source-matrix.json"
+    },
+    {
+      "check": "Semgrep is an existing combination-stage alias",
+      "result": "PASS",
+      "classification": "READ_ONLY_OR_DESIGN_CONSISTENCY",
+      "evidence": "aggregateAliasOf; command-parent.mjs consumes original combined command"
+    },
+    {
+      "check": "all aliases point to pre-approval canonical units",
+      "result": "PASS",
+      "classification": "READ_ONLY_OR_DESIGN_CONSISTENCY",
+      "evidence": "fixed trusted alias map"
+    },
+    {
+      "check": "Engine is per component and has no batch/global evaluate entry",
+      "result": "PASS",
+      "classification": "READ_ONLY_OR_DESIGN_CONSISTENCY",
+      "evidence": "engine.mjs:71-75,140-144; prior actual API probe retained"
+    },
+    {
+      "check": "original wrapper keeps generic audit exit10 distinction",
+      "result": "PASS",
+      "classification": "READ_ONLY_OR_DESIGN_CONSISTENCY",
+      "evidence": "securityManager.groovy:58-62"
+    },
+    {
+      "check": "generic not_configured enforce rule preserved",
+      "result": "PASS",
+      "classification": "READ_ONLY_OR_DESIGN_CONSISTENCY",
+      "evidence": "securityManager.groovy:71"
+    },
+    {
+      "check": "read-only verification precedes pre-approval Summary",
+      "result": "PASS",
+      "classification": "READ_ONLY_OR_DESIGN_CONSISTENCY",
+      "evidence": "Jenkinsfile.security-audit:34-48"
+    },
+    {
+      "check": "pre-approval Summary precedes candidate SBOM and signing",
+      "result": "PASS",
+      "classification": "READ_ONLY_OR_DESIGN_CONSISTENCY",
+      "evidence": "Jenkinsfile.security-audit:48,56"
+    },
+    {
+      "check": "real promotion happens after signing",
+      "result": "PASS",
+      "classification": "READ_ONLY_OR_DESIGN_CONSISTENCY",
+      "evidence": "Jenkinsfile.security-audit:56,65"
+    },
+    {
+      "check": "both promotion stage gates still require current build SUCCESS",
+      "result": "PASS",
+      "classification": "READ_ONLY_OR_DESIGN_CONSISTENCY",
+      "evidence": "Jenkinsfile.security-audit:45,53,62"
+    },
+    {
+      "check": "future design dependency graph is acyclic",
+      "result": "PASS",
+      "classification": "READ_ONLY_OR_DESIGN_CONSISTENCY",
+      "evidence": "phase-model.design.json; structural design proof only"
+    },
+    {
+      "check": "no post-promotion result is an input to pre artifact or approval",
+      "result": "PASS",
+      "classification": "READ_ONLY_OR_DESIGN_CONSISTENCY",
+      "evidence": "explicit pre input whitelist and no post->pre edge"
+    },
+    {
+      "check": "all requested future test cases are designed without runtime PASS claims",
+      "result": "PASS",
+      "classification": "READ_ONLY_OR_DESIGN_CONSISTENCY",
+      "evidence": "test-matrix.design.json"
+    },
+    {
+      "check": "all 34 final-report items exist",
+      "result": "PASS",
+      "classification": "READ_ONLY_OR_DESIGN_CONSISTENCY",
+      "evidence": "docs/POLICY-EVALUATION-SCOPE-20261102.md"
+    }
+  ],
+  "count": 14,
+  "failures": []
+}

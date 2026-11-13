@@ -1,0 +1,367 @@
+{
+  "runId": "web-96fdc4f0-b3d3-4f42-9a36-d4b85df68056",
+  "pluginId": "semgrep",
+  "scenarioId": "controlled-finding",
+  "configurationSnapshot": {
+    "revision": 5,
+    "updatedAt": "2026-11-06T04:34:03.411Z",
+    "settings": {
+      "enabled": true,
+      "securityLevel": "low",
+      "plugins": {
+        "gitleaks": {
+          "enabled": true
+        },
+        "semgrep": {
+          "enabled": true
+        },
+        "cosign": {
+          "enabled": true
+        }
+      }
+    },
+    "source": {
+      "kind": "LOCAL_EXPLICIT_OVERRIDE",
+      "path": ".devsecops/security-view-controls-v1.json",
+      "settingsDigest": "ead1e8bc6965bec2aca437ae33a4f9f1cc62846a4a252d5943cce34202f1f818"
+    },
+    "configurationOrigins": [
+      {
+        "layer": "global",
+        "securityLevel": "standard",
+        "policyVersion": "baseline-v1"
+      },
+      {
+        "layer": "registryDefaults",
+        "plugins": {
+          "build-provenance": {
+            "enabled": false
+          },
+          "cosign": {
+            "enabled": true
+          },
+          "falco": {
+            "enabled": false
+          },
+          "gitleaks": {
+            "enabled": true
+          },
+          "kubescape": {
+            "enabled": false
+          },
+          "kyverno": {
+            "enabled": false
+          },
+          "provenance": {
+            "enabled": false
+          },
+          "sbom": {
+            "enabled": false
+          },
+          "semgrep": {
+            "enabled": true
+          },
+          "sonarqube": {
+            "enabled": false
+          },
+          "sops": {
+            "enabled": false
+          },
+          "trivy": {
+            "enabled": false
+          },
+          "zap": {
+            "enabled": false
+          }
+        }
+      },
+      {
+        "layer": "globalExplicit",
+        "values": {
+          "enabled": true,
+          "securityLevel": "low",
+          "plugins": {
+            "gitleaks": {
+              "enabled": true
+            },
+            "semgrep": {
+              "enabled": true
+            },
+            "cosign": {
+              "enabled": true
+            }
+          },
+          "globalMode": "audit",
+          "profile": "java-web",
+          "policyVersion": "baseline-v1"
+        }
+      },
+      {
+        "layer": "profile",
+        "values": {}
+      },
+      {
+        "layer": "project",
+        "values": {}
+      }
+    ],
+    "effectiveConfigDigest": "abb25cd999f145dfb91b4d8f4f325abe143228cde5b37b32dcb0d75cf4fe206f"
+  },
+  "securityLevel": "low",
+  "startedAt": "2026-11-06T04:34:03.438Z",
+  "kind": "LocalValidationRequest",
+  "executionLocation": "LINUX_RESTRICTED",
+  "state": "COMPLETED",
+  "evidenceClass": "REAL",
+  "managerExecutionStatus": "COMPLETED",
+  "reason": null,
+  "scannerExecuted": true,
+  "scannerExitCode": 0,
+  "toolVersion": "semgrep-core version: 1.182.1 (6f7d77ede0)",
+  "toolSha256": "886b69c889897ea13e23aba5f541c59ee1356c55218ebc21e07b7ab45f1256d2",
+  "executionHost": "devops/192.168.64.11",
+  "executionIdentity": "security-semgrep (UID 995 / GID 986)",
+  "findingsCount": 2,
+  "findingRules": [
+    "java-runtime-exec",
+    "java-weak-cipher"
+  ],
+  "effectivePolicy": {
+    "security-approval-promotion": {
+      "Critical": "FAIL",
+      "High": "WARN",
+      "Medium": "WARN",
+      "Low": "WARN",
+      "Info": "WARN"
+    },
+    "regression": {
+      "Critical": "FAIL",
+      "High": "WARN",
+      "Medium": "WARN",
+      "Low": "WARN",
+      "Info": "WARN"
+    },
+    "gitleaks": {
+      "Critical": "FAIL",
+      "High": "WARN",
+      "Medium": "WARN",
+      "Low": "WARN",
+      "Info": "WARN"
+    },
+    "semgrep": {
+      "Critical": "FAIL",
+      "High": "WARN",
+      "Medium": "WARN",
+      "Low": "WARN",
+      "Info": "WARN"
+    },
+    "sonarqube": {
+      "Critical": "FAIL",
+      "High": "WARN",
+      "Medium": "WARN",
+      "Low": "WARN",
+      "Info": "WARN"
+    },
+    "sbom": {
+      "Critical": "FAIL",
+      "High": "WARN",
+      "Medium": "WARN",
+      "Low": "WARN",
+      "Info": "WARN"
+    },
+    "trivy": {
+      "Critical": "FAIL",
+      "High": "WARN",
+      "Medium": "WARN",
+      "Low": "WARN",
+      "Info": "WARN"
+    },
+    "cosign": {
+      "Critical": "FAIL",
+      "High": "WARN",
+      "Medium": "WARN",
+      "Low": "WARN",
+      "Info": "WARN"
+    },
+    "kubescape": {
+      "Critical": "FAIL",
+      "High": "WARN",
+      "Medium": "WARN",
+      "Low": "WARN",
+      "Info": "WARN"
+    },
+    "zap": {
+      "Critical": "FAIL",
+      "High": "WARN",
+      "Medium": "WARN",
+      "Low": "WARN",
+      "Info": "WARN"
+    },
+    "defectdojo": {
+      "Critical": "FAIL",
+      "High": "WARN",
+      "Medium": "WARN",
+      "Low": "WARN",
+      "Info": "WARN"
+    },
+    "provenance": {
+      "Critical": "FAIL",
+      "High": "WARN",
+      "Medium": "WARN",
+      "Low": "WARN",
+      "Info": "WARN"
+    },
+    "build-provenance": {
+      "Critical": "FAIL",
+      "High": "WARN",
+      "Medium": "WARN",
+      "Low": "WARN",
+      "Info": "WARN"
+    },
+    "sops": {
+      "Critical": "FAIL",
+      "High": "WARN",
+      "Medium": "WARN",
+      "Low": "WARN",
+      "Info": "WARN"
+    },
+    "falco-baseline": {
+      "Critical": "FAIL",
+      "High": "WARN",
+      "Medium": "WARN",
+      "Low": "WARN",
+      "Info": "WARN"
+    },
+    "falco-final": {
+      "Critical": "FAIL",
+      "High": "WARN",
+      "Medium": "WARN",
+      "Low": "WARN",
+      "Info": "WARN"
+    },
+    "kyverno": {
+      "Critical": "FAIL",
+      "High": "WARN",
+      "Medium": "WARN",
+      "Low": "WARN",
+      "Info": "WARN"
+    },
+    "kyverno-admission": {
+      "Critical": "FAIL",
+      "High": "WARN",
+      "Medium": "WARN",
+      "Low": "WARN",
+      "Info": "WARN"
+    },
+    "kyverno-rbac": {
+      "Critical": "FAIL",
+      "High": "WARN",
+      "Medium": "WARN",
+      "Low": "WARN",
+      "Info": "WARN"
+    },
+    "falco": {
+      "Critical": "FAIL",
+      "High": "WARN",
+      "Medium": "WARN",
+      "Low": "WARN",
+      "Info": "WARN"
+    },
+    "semgrep-command-audit": {
+      "Critical": "FAIL",
+      "High": "WARN",
+      "Medium": "WARN",
+      "Low": "WARN",
+      "Info": "WARN"
+    },
+    "cosign-cli": {
+      "Critical": "FAIL",
+      "High": "WARN",
+      "Medium": "WARN",
+      "Low": "WARN",
+      "Info": "WARN"
+    },
+    "falco-prior-exit": {
+      "Critical": "FAIL",
+      "High": "WARN",
+      "Medium": "WARN",
+      "Low": "WARN",
+      "Info": "WARN"
+    },
+    "falco-continuity": {
+      "Critical": "FAIL",
+      "High": "WARN",
+      "Medium": "WARN",
+      "Low": "WARN",
+      "Info": "WARN"
+    },
+    "falco-persistence": {
+      "Critical": "FAIL",
+      "High": "WARN",
+      "Medium": "WARN",
+      "Low": "WARN",
+      "Info": "WARN"
+    },
+    "provenance-signature": {
+      "Critical": "FAIL",
+      "High": "WARN",
+      "Medium": "WARN",
+      "Low": "WARN",
+      "Info": "WARN"
+    },
+    "build-provenance-signature": {
+      "Critical": "FAIL",
+      "High": "WARN",
+      "Medium": "WARN",
+      "Low": "WARN",
+      "Info": "WARN"
+    },
+    "approval-evidence": {
+      "Critical": "FAIL",
+      "High": "WARN",
+      "Medium": "WARN",
+      "Low": "WARN",
+      "Info": "WARN"
+    },
+    "approval-signatures": {
+      "Critical": "FAIL",
+      "High": "WARN",
+      "Medium": "WARN",
+      "Low": "WARN",
+      "Info": "WARN"
+    }
+  },
+  "appliedOverrides": [],
+  "policyDecision": "FAIL",
+  "evaluationCount": 1,
+  "resultDigest": "6157b44c7cdbe593b51bb3447ded97435cf3c91f34128432f7576a958f041e69",
+  "artifactDigest": "acac27db3483fb7dc6404a630daa1bb33768f54e5c14689e4d1d8b8c33bcc2c8",
+  "rawReportDigest": "2d3edddd78f500ceb39fb28f3a5997be17bbfe4c6cdaa69f4f9b2641db4ab515",
+  "factDigest": "b969bf482c25a392ab56a75642760415724885150c02d13448c353d626e53d8a",
+  "router": [
+    {
+      "consumerId": "dry-run",
+      "deliveryDecision": "DRY_RUN",
+      "resultDigest": "6157b44c7cdbe593b51bb3447ded97435cf3c91f34128432f7576a958f041e69"
+    },
+    {
+      "consumerId": "local-evidence",
+      "deliveryDecision": "DELIVERED_LOCAL_ONLY",
+      "resultDigest": "6157b44c7cdbe593b51bb3447ded97435cf3c91f34128432f7576a958f041e69"
+    },
+    {
+      "consumerId": "defectdojo-future",
+      "deliveryDecision": "DISABLED",
+      "resultDigest": "6157b44c7cdbe593b51bb3447ded97435cf3c91f34128432f7576a958f041e69"
+    }
+  ],
+  "scannerStartedAt": "2026-11-06T04:34:05.703Z",
+  "scannerCompletedAt": "2026-11-06T04:34:07.233Z",
+  "cleanup": "VERIFIED",
+  "source": ".devsecops/security-view-runs-v1/web-96fdc4f0-b3d3-4f42-9a36-d4b85df68056/artifact/semgrep.result.json",
+  "completedAt": "2026-11-06T04:34:07.495Z",
+  "durationMs": 4051,
+  "releaseCount": 0,
+  "rolloutCount": 0,
+  "auditDigest": "da6843277df30ca7c8d1077ed46747e9c66e3a79ca8269486bd649113dc49c75"
+}

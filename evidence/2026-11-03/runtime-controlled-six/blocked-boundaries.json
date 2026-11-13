@@ -1,0 +1,69 @@
+{
+  "validationRunId": "rfv-20261103-29dad1",
+  "sources": [
+    {
+      "sourceId": "trivy",
+      "status": "BLOCKED",
+      "code": "TRIVY_RUNTIME_BOUNDARY_BLOCKED",
+      "executionScope": "CONTROLLED_NON_RELEASE",
+      "executionStatus": "NOT_EXECUTED",
+      "evidence": [
+        "audit-trivy.mjs mandatory POST scan",
+        "resolveAuditTarget only petclinic/petclinic pinned digest",
+        "readonly-boundary-discovery.json: existing harbor-creds is admin/sysadmin_flag=true",
+        "No validation-specific candidate build/source/cleanup authorization established"
+      ],
+      "blocker": "Existing authorized Harbor identity is global admin, not minimum-scope validation writer. Current bound digest is active production; no approved non-release candidate with exact cleanup identity was established. Do not trigger a production scan or manufacture candidate success.",
+      "minimalNextStep": "Provision/reuse a pre-scoped validation registry identity and a digest/source-bound disposable candidate with verified tag/artifact cleanup; then guard exact allowed scan and cleanup routes. No Gate change/local CLI substitute.",
+      "externalWriteCount": 0
+    },
+    {
+      "sourceId": "cosign",
+      "status": "BLOCKED",
+      "code": "COSIGN_RUNTIME_BOUNDARY_BLOCKED",
+      "executionScope": "CONTROLLED_NON_RELEASE",
+      "executionStatus": "NOT_EXECUTED",
+      "evidence": [
+        "signing.mjs admission unconditionally decrypts signing-bundle.enc.json, checks against frozen infra/security/cosign.pub",
+        "admission lifecycle signs/pushes fixtures then expects trusted-key admission",
+        "cosign-parent-baseline-v1 pins key, signing source, admission resources"
+      ],
+      "blocker": "Frozen full parent requires the existing production signing identity and trusted admission key. A test-only key cannot satisfy this parent/admission binding; standalone VERIFY is narrower than the full canonical contract. No production key was read/decrypted and no signature was created.",
+      "minimalNextStep": "Review a dedicated test-key trust boundary that preserves existing parent semantics, or obtain a complete approved VERIFY-only canonical contract without changing frozen Gate; neither is implemented here.",
+      "externalWriteCount": 0
+    },
+    {
+      "sourceId": "zap",
+      "status": "BLOCKED",
+      "code": "ZAP_RUNTIME_BOUNDARY_BLOCKED",
+      "executionScope": "CONTROLLED_NON_RELEASE",
+      "executionStatus": "NOT_EXECUTED",
+      "evidence": [
+        "zap-gate.mjs reads fixed petclinic Deployment/Service for auth and business scans",
+        "live-target-boundaries.json: only current production PetClinic Deployment and Service found",
+        "scanner-runtime requires actual Jenkins eth0 10.42.0.* canary and existing namespace/network policy; existing ZAP policy permits business target"
+      ],
+      "blocker": "No non-production target satisfying frozen Deployment/Service and scanner/controller network identity is established. A test Pod in another namespace would not redirect frozen business/auth reads and could silently scan production. No such fallback or fake read response was used.",
+      "minimalNextStep": "Prepare an independently isolated controller/scanner/PetClinic target with explicit kube-context/network identity and cleanup; verify fixed frozen lookups resolve only that target before actual ZAP execution.",
+      "externalWriteCount": 0
+    },
+    {
+      "sourceId": "defectdojo",
+      "status": "BLOCKED",
+      "code": "DEFECTDOJO_RUNTIME_BOUNDARY_BLOCKED",
+      "executionScope": "CONTROLLED_NON_RELEASE",
+      "executionStatus": "NOT_EXECUTED",
+      "evidence": [
+        "readonly-boundary-discovery.json: visible Product 2 Security Manager Contract Samples and Engagement 2 Shared Library Mode Contracts exist",
+        "Frozen dojo-target currently points Product 1 / Engagement 1",
+        "Current run lacks a unique cleanup-verified governance test identity and complete validation-native Trivy/ZAP/Kubescape inputs",
+        "Historical VM harness uses canned API outcomes, not a real isolated Dojo service"
+      ],
+      "blocker": "Existing validation Product 2 is a possible boundary, not this run\u2019s disposable identity. Import/query-back/dedupe cleanup authority has not been established, and parent dependencies include currently unavailable native validation reports. No reuse of normal Tests, imports or PATCH was performed.",
+      "minimalNextStep": "Establish exact-run Engagement/Test creation and deletion rights within Product 2 plus complete explicitly-origin-bound validation native reports; verify production Product 1 unchanged before and after. Keep file-coupling refactor deferred.",
+      "externalWriteCount": 0
+    }
+  ],
+  "noBlockedToSkippedMapping": true,
+  "realMockedApiRuntimeClaim": false
+}

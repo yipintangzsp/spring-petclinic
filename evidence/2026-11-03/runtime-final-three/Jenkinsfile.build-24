@@ -1,0 +1,11 @@
+// Dedicated validation bootstrap. Test credentials never enter archives.
+pipeline {
+ agent any
+ options { disableConcurrentBuilds(); timeout(time:5,unit:'MINUTES') }
+ stages {
+ stage('Source verification') { steps { sh 'node infra/security/runtime-facts/verify-bundle.mjs; node infra/security/runtime-facts/thirteen-smoke.mjs' } }
+ stage('Create isolated sign robot') { steps { withCredentials([usernamePassword(credentialsId:'harbor-creds',usernameVariable:'HARBOR_USER',passwordVariable:'HARBOR_PASS')]) { sh 'node infra/security/runtime-facts/harbor-validation-identity.mjs sign create; node infra/security/runtime-facts/harbor-validation-identity.mjs sign verify' } } }
+ stage('Disposable test trust') { steps { sh 'node infra/security/runtime-facts/cosign-test-material.mjs create' } }
+ }
+ post { always { archiveArtifacts artifacts: '.devsecops/runtime-controlled/build-' + env.BUILD_NUMBER + '/**,runtime-source-bundle.json',allowEmptyArchive:false } }
+}

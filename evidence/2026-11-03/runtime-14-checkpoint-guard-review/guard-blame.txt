@@ -1,0 +1,11 @@
+8028e55fd (heil16070-hue 2026-10-23 15:19:17 +0800 63)   assertOwner() {
+8028e55fd (heil16070-hue 2026-10-23 15:19:17 +0800 64)    const holder = process.env.HEAVY_HOLDER || `jenkins-petclinic-${process.env.BUILD_NUMBER}`;
+8028e55fd (heil16070-hue 2026-10-23 15:19:17 +0800 65)    if (holder.endsWith('undefined')) throw Error('Scanner refresh requires an explicit owned heavy Lease');
+8028e55fd (heil16070-hue 2026-10-23 15:19:17 +0800 66)    const lease = JSON.parse(kube(['-n','data-infra','get','lease','platform-heavy','-o','json']));
+8028e55fd (heil16070-hue 2026-10-23 15:19:17 +0800 67)    if (lease.spec.holderIdentity !== holder) throw Error('Scanner refresh does not own the heavy Lease');
+8028e55fd (heil16070-hue 2026-10-23 15:19:17 +0800 68)    const {node} = JSON.parse(kube(['get','--raw','/api/v1/nodes/devops/proxy/stats/summary']));
+8028e55fd (heil16070-hue 2026-10-23 15:19:17 +0800 69)    for (const stats of [node.fs,node.runtime.imageFs]) {
+8028e55fd (heil16070-hue 2026-10-23 15:19:17 +0800 70)     const age = Date.now() - Date.parse(stats.time);
+8028e55fd (heil16070-hue 2026-10-23 15:19:17 +0800 71)     if (age < -5000 || age > 90000 || stats.availableBytes < stats.capacityBytes * 0.15 + 12 * 1024 ** 3)
+8028e55fd (heil16070-hue 2026-10-23 15:19:17 +0800 72)      throw Error('Scanner refresh requires fresh disk headroom plus 4 GiB temporary allowance');
+8028e55fd (heil16070-hue 2026-10-23 15:19:17 +0800 73)    }

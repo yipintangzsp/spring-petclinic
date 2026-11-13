@@ -1,0 +1,49 @@
+{
+  "sevenCandidateAuditRepeated": false,
+  "options": [
+    {
+      "option": "A",
+      "name": "existing compliant DB scan",
+      "status": "NOT_READY",
+      "reasons": [
+        "both NextUpdate expired",
+        "full DB integrity unknown",
+        "separate scan peak/cleanup/COW budget unproven"
+      ]
+    },
+    {
+      "option": "B",
+      "name": "bounded DB refresh",
+      "status": "NOT_READY",
+      "reasons": [
+        "free space below unchanged hard floor",
+        "expanded peak and burst bounds unknown",
+        "cleanup/host-COW bounds unknown",
+        "guard containment gaps"
+      ]
+    },
+    {
+      "option": "C",
+      "name": "isolated cache/temp work directory on existing storage",
+      "status": "NOT_READY",
+      "reasons": [
+        "isolation adds no capacity",
+        "DB copy/cache may add writes",
+        "frozen path/topology compatibility not separately proven",
+        "all budget and guard blockers remain"
+      ]
+    },
+    {
+      "option": "D",
+      "name": "remain blocked",
+      "status": "SELECTED",
+      "onlyRecommendedNextAction": "separate validation-guard containment and no-follow path hardening under unchanged numeric limits; no refresh/scan activation",
+      "doesNotResolveIndependently": [
+        "freshness",
+        "whole DB integrity",
+        "peak/cleanup/burst/host-COW storage proof"
+      ]
+    }
+  ],
+  "selected": "D"
+}

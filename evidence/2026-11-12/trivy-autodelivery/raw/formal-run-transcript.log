@@ -1,0 +1,44 @@
+CAPABILITY_ARMED {"pluginId":"trivy","state":"READY","reason":null,"runner":"trivy-real","toolVersion":"0.76.2","toolVersionObservation":"PINNED","executionHost":"devops/192.168.1.58","executionIdentity":"security-trivy","scenarios":["clean"],"projects":["trivy-candidate"]}
+SUBMITTED web-c7dd2b89-cba4-433d-87c0-eafd2c99e1f4
+STATE RUNNING 
+STATE COMPLETED 
+RUN_RESULT {
+ "runId": "web-c7dd2b89-cba4-433d-87c0-eafd2c99e1f4",
+ "state": "COMPLETED",
+ "reason": null,
+ "evidenceClass": "REAL",
+ "scannerExecuted": true,
+ "findingCount": 64,
+ "policyDecision": "FAIL",
+ "evaluationCount": 1,
+ "router": [
+  {
+   "consumerId": "dry-run",
+   "deliveryDecision": "DRY_RUN"
+  },
+  {
+   "consumerId": "local-evidence",
+   "deliveryDecision": "DELIVERED_LOCAL_ONLY"
+  }
+ ],
+ "artifactDigest": "c1594e90685721aa27734c70b61cc7715bdf835e37b1b2aa4630579c3f49aad0",
+ "resultDigest": "46f4d75d6e04b4f7048ce1c18a60ac82566edf25af596c3efdaf38fbbc8ed2ff",
+ "cleanup": "VERIFIED",
+ "lokiDelivery": {
+  "consumerId": "loki-candidate",
+  "automatic": true,
+  "sourceClassification": "REAL_CONTROLLED_EXECUTION",
+  "runId": "web-c7dd2b89-cba4-433d-87c0-eafd2c99e1f4",
+  "resultDigest": "46f4d75d6e04b4f7048ce1c18a60ac82566edf25af596c3efdaf38fbbc8ed2ff",
+  "pushState": "ERROR",
+  "pushHttpStatus": null,
+  "receiptDigest": "74451a5e042ad378fe95ee91ffa16baf78b014f9ce24a7284bad3c33d030e05c",
+  "httpRequestCount": 0,
+  "queryState": "NOT_VERIFIED",
+  "state": "FAILED",
+  "reason": "LOKI_FRESH_EXECUTION_EVIDENCE_REQUIRED",
+  "deliveryAt": "2026-11-12T14:27:04.600Z",
+  "grafanaUrl": "http://grafana.devops.local/d/security-manager-v2-candidate/devsecops-security-manager-v2-overview?var-DS_LOKI=loki&var-project=trivy-candidate&var-run=web-c7dd2b89-cba4-433d-87c0-eafd2c99e1f4&var-resultDigest=46f4d75d6e04b4f7048ce1c18a60ac82566edf25af596c3efdaf38fbbc8ed2ff&from=1794493564319&to=1794493924319",
+  "receiptSource": "loki-delivery/router-receipt.json"
+ }
+}

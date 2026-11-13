@@ -1,0 +1,192 @@
+{
+  "classification": "DESIGN_ONLY_NO_SERVICE_ACCOUNT_OR_TOKEN_CREATED",
+  "namespace": "devsecops-system",
+  "serviceAccount": "security-fixture-executor",
+  "username": "system:serviceaccount:devsecops-system:security-fixture-executor",
+  "automountServiceAccountToken": false,
+  "credential": {
+    "kind": "TokenRequest short-lived ServiceAccount credential; no persistent token Secret",
+    "issuer": "Must capture actual isolated cluster issuer at authorized issuance, not infer or accept arbitrary token issuer",
+    "audience": "One explicit audience accepted by isolated API server; capture at issuance",
+    "expirationSeconds": 3600,
+    "actualExpiryRequired": true,
+    "boundTo": "Exact SA namespace/name/UID; no Pod is required for Docker executor and no invented Pod-binding claim",
+    "provisioner": "Existing isolated test manager only, after same approved guard ADMIN_VALIDATION identity check; no production credential, no grant to executor to mint/refresh tokens",
+    "injection": "Owned 0600 single-context dedicated kubeconfig with embedded CA+token, private file only; no shell arg/env token/tokenFile/exec auth plugin. Guard snapshot 0400 in clean scope, no admin config mount",
+    "tokenInEvidence": false,
+    "renewal": "No automatic refresh/fallback. On expiry fail closed, stop and require separately recorded test credential issuance"
+  },
+  "directRules": [
+    {
+      "kind": "Role",
+      "namespace": "data-infra",
+      "name": "sops-fixture-executor-lease",
+      "apiGroups": [
+        "coordination.k8s.io"
+      ],
+      "resources": [
+        "leases"
+      ],
+      "verbs": [
+        "get"
+      ],
+      "resourceNames": [
+        "platform-heavy"
+      ]
+    },
+    {
+      "kind": "Role",
+      "namespace": "devsecops-system",
+      "name": "sops-fixture-executor-impersonation",
+      "apiGroups": [
+        ""
+      ],
+      "resources": [
+        "serviceaccounts"
+      ],
+      "verbs": [
+        "impersonate"
+      ],
+      "resourceNames": [
+        "platform-secret-reconciler",
+        "kyverno-admission-controller"
+      ]
+    }
+  ],
+  "clusterRules": [
+    {
+      "apiGroups": [
+        ""
+      ],
+      "resources": [
+        "namespaces"
+      ],
+      "verbs": [
+        "get"
+      ],
+      "resourceNames": [
+        "kube-system",
+        "devsecops-system"
+      ]
+    },
+    {
+      "apiGroups": [
+        "authentication.k8s.io"
+      ],
+      "resources": [
+        "selfsubjectreviews"
+      ],
+      "verbs": [
+        "create"
+      ]
+    }
+  ],
+  "clusterRole": "sops-fixture-executor-identity",
+  "clusterRoleBinding": "sops-fixture-executor-identity-binding",
+  "clusterRoleReason": "Pinned cluster namespace UID + executor namespace UID + authenticated identity proof are cluster-scoped; no business Secret access in this role",
+  "gateServiceAccounts": {
+    "reconciler": {
+      "namespace": "devsecops-system",
+      "name": "platform-secret-reconciler",
+      "rules": [
+        {
+          "namespace": "petclinic",
+          "apiGroups": [
+            ""
+          ],
+          "resources": [
+            "secrets"
+          ],
+          "verbs": [
+            "get",
+            "patch"
+          ],
+          "resourceNames": [
+            "petclinic-db",
+            "rabbitmq-client",
+            "petclinic-harbor-pull"
+          ]
+        },
+        {
+          "namespace": "devsecops-system",
+          "apiGroups": [
+            ""
+          ],
+          "resources": [
+            "secrets"
+          ],
+          "verbs": [
+            "get",
+            "patch"
+          ],
+          "resourceNames": [
+            "kyverno-registry-pull"
+          ]
+        }
+      ]
+    },
+    "verifier": {
+      "namespace": "devsecops-system",
+      "name": "kyverno-admission-controller",
+      "rules": [
+        {
+          "namespace": "devsecops-system",
+          "apiGroups": [
+            ""
+          ],
+          "resources": [
+            "secrets"
+          ],
+          "verbs": [
+            "get"
+          ],
+          "resourceNames": [
+            "kyverno-registry-pull"
+          ]
+        }
+      ]
+    }
+  },
+  "selfAccessReview": {
+    "role": null,
+    "clusterRule": {
+      "apiGroups": [
+        "authorization.k8s.io"
+      ],
+      "resources": [
+        "selfsubjectaccessreviews"
+      ],
+      "verbs": [
+        "create"
+      ]
+    },
+    "subjects": [
+      "system:serviceaccount:devsecops-system:platform-secret-reconciler",
+      "system:serviceaccount:devsecops-system:kyverno-admission-controller"
+    ],
+    "reason": "kubectl auth can-i requires selfsubjectaccessreviews. Rely on existing verified isolated system:basic-user during future preflight; if unavailable stop. Do not silently create another role or alter bootstrap bindings.",
+    "mode": "REQUIRE_EXISTING_ISOLATED_BOOTSTRAP_BINDING; no additional fixture ClusterRole proposed"
+  },
+  "discovery": "Existing isolated system:discovery binding must be verified during future preflight; no new wildcard Role and no changed kubectl validation flags",
+  "guardProof": [
+    "explicit profile no default",
+    "config path+SHA pinned trusted issuance snapshot",
+    "only static JWT token auth allowed in min profile",
+    "offline sub/issuer/audience/expiry/SA UID checks (not signature claim)",
+    "real API SelfSubjectReview proves signature-authenticated username, UID and exact groups",
+    "real API kube-system and executor namespace UID match",
+    "TLS CA/server pins and no connection override",
+    "certificate/admin config rejected by min profile before API",
+    "admin profile cannot execute protected child"
+  ],
+  "adminExcluded": "No token mint/read of admin key in final executor, no cluster-admin grant, no fallback. Provisioning management and Gate execution are different roles, both require the same guard boundary. Future fixture manager must integrate with it; not a second Kubernetes entry.",
+  "inventoryAmendment": {
+    "priorGateSAs": 2,
+    "newExecutorSA": 1,
+    "newTotalServiceAccounts": 3,
+    "mutator": "Use separately scoped test manager for fixture mutations, never lend management credentials to Gate child",
+    "priorClientCSRsRemoved": 2,
+    "newCSRs": 0,
+    "explanation": "Supersedes previous executor/mutator certificate-user proposal. Mutation roles bind to existing isolated fixture manager only as needed; gate executor is short-lived SA-bound. No such resources are created now."
+  }
+}

@@ -1,0 +1,55 @@
+{
+  "scope": "Design requirements retained by this audit and user request; not an implementation/certification claim",
+  "pipeline": [
+    "SECURITY_ENABLED",
+    "Security Manager",
+    "globalMode",
+    "securityLevel (default standard)",
+    "per-plugin enable/disable",
+    "capability check",
+    "independent plugin execution",
+    "raw report",
+    "normalize",
+    "Policy Engine",
+    "Unified Summary",
+    "Result Router",
+    "DefectDojo / Loki / Grafana / future consumers"
+  ],
+  "requirements": [
+    {
+      "requirement": "SECURITY_ENABLED=true/false Global Master Switch",
+      "current": "No literal SECURITY_ENABLED entry; mode off is partial historical behavior, not completed master contract",
+      "finalDebt": true
+    },
+    {
+      "requirement": "Security Manager > globalMode > securityLevel(default standard) > per-plugin switch > capability > independent execution",
+      "current": "Existing Manager mode and module switches; standalone Policy levels; unified lifecycle still incomplete",
+      "finalDebt": true
+    },
+    {
+      "requirement": "disabled = DISABLED; never PASS",
+      "current": "Engine returns DISABLED/decision=null; Manager per-plugin still internal skipped/display SKIPPED with reason DISABLED; normalize contract debt",
+      "finalDebt": true
+    },
+    {
+      "requirement": "missing capability cannot affect unrelated plugins",
+      "current": "Some not_configured evidence; uniform capability/isolation contract incomplete",
+      "finalDebt": true
+    },
+    {
+      "requirement": "scanner facts > normalize > Policy decisions > Unified Summary",
+      "current": "Standalone Policy available; current production still original Gates. Actual metadata Summary integration not done",
+      "finalDebt": true
+    },
+    {
+      "requirement": "Unified Summary > Result Router > DefectDojo/Loki/Grafana/future consumers; no private scanner coupling",
+      "current": "Dojo file coupling and uniform Router/publish/query closure remain unresolved",
+      "finalDebt": true
+    }
+  ],
+  "otherFinalDebt": [
+    "Provenance opt-in unification",
+    "All-plugin portability smoke",
+    "Unresolved evidence debt repayment; no final portability success"
+  ]
+}

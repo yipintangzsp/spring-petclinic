@@ -1,0 +1,78 @@
+{
+  "classification": "CONTROLLED_REPLAY",
+  "artifactOrigin": "REAL_HISTORICAL_270",
+  "action": "generate",
+  "now": 1793330849745,
+  "environment": {
+    "BUILD_NUMBER": "270",
+    "PROVENANCE_CANDIDATE": "core.harbor.domain/petclinic/petclinic@sha256:2fbaea65ab030c56c60c62e3ee9fbe362deb8bbbb8216a891ef4c7bbbcea6d55",
+    "PROVENANCE_REPOSITORY": "http://gitlab-service.ns-devops.svc.cluster.local/root/petclinic-platform.git",
+    "PROVENANCE_COMMIT": "9a78cc89f22fa98fb1ffcc43e2ae279299471793",
+    "JENKINS_URL": "http://jenkins.devops.local/",
+    "JOB_NAME": "petclinic-ci",
+    "SIGNING_AGE_FILE": "/fixture/NO_REAL_AGE_KEY",
+    "HARBOR_USER": "synthetic-user",
+    "HARBOR_PASS": "synthetic-password"
+  },
+  "runtime": {
+    "manifest": "{",
+    "expectedManifestSha256": "4fdb335010b9bf57d61d5e28d1397285c813bfa9bbf2ac008efddb8f27e3b703",
+    "lease": {
+      "stdout": "{\"spec\":{\"holderIdentity\":\"jenkins-petclinic-270\"}}",
+      "status": 0
+    },
+    "tools": {
+      "cosign": {
+        "sha256": "ade83b7aac62e131cacfe96d958948b2150cc9efec46a570a2649b8e27dedad2"
+      },
+      "sops": {
+        "sha256": "53b0abacd38ef1b12a66d6c100956691b9cefce018d91f81e73ddf7438b94d77"
+      }
+    }
+  },
+  "files": {
+    ".git-sha": {
+      "value": "9a78cc89f22fa98fb1ffcc43e2ae279299471793"
+    },
+    "infra/security/cosign.pub": {
+      "value": "-----BEGIN PUBLIC KEY-----\nMFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAEDcDmCR1VAKgVHFo0oCkd6XeqXn14\nACzzOaks1UDTLAl7c2WBQSpQwiK6DpovLg9IFgHlwqR96xaECMITPawOaw==\n-----END PUBLIC KEY-----\n"
+    }
+  },
+  "io": {
+    "output-mkdir": {},
+    "provenance-write": {},
+    "key-temp-create": {},
+    "key-temp-chmod": {},
+    "key-write": {},
+    "docker-mkdir": {},
+    "docker-write": {},
+    "create-report-write": {},
+    "key-temp-remove": {},
+    "auth-temp-create": {},
+    "auth-temp-chmod": {},
+    "auth-write": {},
+    "envelope-write": {},
+    "auth-temp-remove": {},
+    "verification-report-write": {}
+  },
+  "commands": {
+    "cosign:verify-attestation": [
+      {
+        "stdout": "{\"payload\":\"eyJfdHlwZSI6Imh0dHBzOi8vaW4tdG90by5pby9TdGF0ZW1lbnQvdjAuMSIsICJzdWJqZWN0IjpbeyJuYW1lIjoiY29yZS5oYXJib3IuZG9tYWluL3BldGNsaW5pYy9wZXRjbGluaWMiLCAiZGlnZXN0Ijp7InNoYTI1NiI6IjJmYmFlYTY1YWIwMzBjNTZjNjBjNjJlM2VlOWZiZTM2MmRlYjhiYmJiODIxNmE4OTFlZjRjN2JiYmNlYTZkNTUifX1dLCAicHJlZGljYXRlVHlwZSI6Imh0dHBzOi8vZGV2b3BzLmxvY2FsL2F0dGVzdGF0aW9uL3NlY3VyaXR5LXZhbGlkYXRpb24vdjEiLCAicHJlZGljYXRlIjp7ImJ1aWxkTnVtYmVyIjoyNzAsICJidWlsZFRpbWVzdGFtcCI6IjIwMjYtMTAtMzBUMDM6Mjc6MjkuNzQ1WiIsICJidWlsZFR5cGUiOiJjYW5kaWRhdGUtc2VjdXJpdHktdmFsaWRhdGlvbiIsICJidWlsZGVySWRlbnRpdHkiOiJodHRwOi8vamVua2lucy5kZXZvcHMubG9jYWwvam9iL3BldGNsaW5pYy1jaSIsICJjYW5kaWRhdGVJbWFnZSI6ImNvcmUuaGFyYm9yLmRvbWFpbi9wZXRjbGluaWMvcGV0Y2xpbmljQHNoYTI1NjoyZmJhZWE2NWFiMDMwYzU2YzYwYzYyZTNlZTlmYmUzNjJkZWI4YmJiYjgyMTZhODkxZWY0YzdiYmJjZWE2ZDU1IiwgImNvbW1pdCI6IjlhNzhjYzg5ZjIyZmE5OGZiMWZmY2M0M2UyYWUyNzkyOTk0NzE3OTMiLCAibGltaXRhdGlvbiI6IlRoaXMgYXR0ZXN0cyB0aGUgY3VycmVudCBzZWN1cml0eS12YWxpZGF0aW9uIGJ1aWxkLCBub3QgdGhlIGhpc3RvcmljYWwgaW1hZ2UgY29tcGlsYXRpb24uIiwgInBpcGVsaW5lSWRlbnRpdHkiOiJwZXRjbGluaWMtY2kiLCAicmVwb3NpdG9yeSI6Imh0dHA6Ly9naXRsYWItc2VydmljZS5ucy1kZXZvcHMuc3ZjLmNsdXN0ZXIubG9jYWwvcm9vdC9wZXRjbGluaWMtcGxhdGZvcm0uZ2l0In19\",\"payloadType\":\"application/vnd.in-toto+json\",\"signatures\":[{\"sig\":\"MEUCIHX4UjujJ07wINeW3JYd473obINJgkTcpUQG6laXxJaRAiEAqWioVmRhKMNxL9sbmXjBttCnzIA7Cyb5lS4cMHOVwJg=\"}]}",
+        "status": 0
+      }
+    ],
+    "sops:decrypt": [
+      {
+        "stdout": "{\"data\":{\"privateKey\":\"SYNTHETIC_NOT_A_REAL_KEY\",\"password\":\"SYNTHETIC_PASSWORD\"}}",
+        "status": 0
+      }
+    ],
+    "cosign:attest": [
+      {
+        "stdout": "controlled fixture response",
+        "status": 0
+      }
+    ]
+  }
+}

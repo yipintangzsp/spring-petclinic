@@ -1,0 +1,14 @@
+// Dedicated read-only boundary discovery. No release/Gate/scanner mutation.
+pipeline {
+ agent any
+ options { disableConcurrentBuilds(); timeout(time: 5, unit: 'MINUTES') }
+ stages {
+  stage('Verify source and accepted runtime baseline') { steps { sh 'node infra/security/runtime-facts/verify-bundle.mjs; node infra/security/runtime-facts/baseline-smoke.mjs' } }
+  stage('Read existing Harbor and Dojo authorization boundary') { steps {
+   withCredentials([usernamePassword(credentialsId:'harbor-creds',usernameVariable:'HARBOR_USER',passwordVariable:'HARBOR_PASS'),string(credentialsId:'defectdojo-api-token',variable:'DEFECTDOJO_TOKEN')]) {
+    sh 'node infra/security/runtime-facts/boundary-readonly.mjs'
+   }
+  } }
+ }
+ post { always { archiveArtifacts artifacts: '.devsecops/runtime-controlled/build-' + env.BUILD_NUMBER + '/**,runtime-source-bundle.json', allowEmptyArchive: false } }
+}

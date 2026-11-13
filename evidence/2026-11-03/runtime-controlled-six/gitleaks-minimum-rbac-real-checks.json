@@ -1,0 +1,101 @@
+{
+  "checks": [
+    {
+      "verb": "create",
+      "resource": "pods",
+      "namespace": "devsecops-execution",
+      "expected": true,
+      "observed": "yes",
+      "exitStatus": 0
+    },
+    {
+      "verb": "get",
+      "resource": "pods",
+      "namespace": "devsecops-execution",
+      "expected": true,
+      "observed": "yes",
+      "exitStatus": 0
+    },
+    {
+      "verb": "create",
+      "resource": "pods/exec",
+      "namespace": "devsecops-execution",
+      "expected": true,
+      "observed": "yes",
+      "exitStatus": 0
+    },
+    {
+      "verb": "delete",
+      "resource": "pods",
+      "namespace": "devsecops-execution",
+      "expected": true,
+      "observed": "yes",
+      "exitStatus": 0
+    },
+    {
+      "verb": "get",
+      "resource": "lease/platform-heavy",
+      "namespace": "data-infra",
+      "expected": true,
+      "observed": "yes",
+      "exitStatus": 0
+    },
+    {
+      "verb": "get",
+      "resource": "secrets",
+      "namespace": "petclinic",
+      "expected": false,
+      "observed": "no",
+      "exitStatus": 1
+    },
+    {
+      "verb": "list",
+      "resource": "secrets",
+      "namespace": "devsecops-execution",
+      "expected": false,
+      "observed": "no",
+      "exitStatus": 1
+    },
+    {
+      "verb": "create",
+      "resource": "pods",
+      "namespace": "petclinic",
+      "expected": false,
+      "observed": "no",
+      "exitStatus": 1
+    },
+    {
+      "verb": "patch",
+      "resource": "deployments",
+      "namespace": "petclinic",
+      "expected": false,
+      "observed": "no",
+      "exitStatus": 1
+    },
+    {
+      "verb": "create",
+      "resource": "roles",
+      "namespace": "devsecops-execution",
+      "expected": false,
+      "observed": "no",
+      "exitStatus": 1
+    },
+    {
+      "verb": "delete",
+      "resource": "namespaces",
+      "namespace": "default",
+      "expected": false,
+      "observed": "no",
+      "exitStatus": 1
+    },
+    {
+      "verb": "impersonate",
+      "resource": "users",
+      "namespace": "default",
+      "expected": false,
+      "observed": "no",
+      "exitStatus": 1
+    }
+  ],
+  "allMatched": true
+}

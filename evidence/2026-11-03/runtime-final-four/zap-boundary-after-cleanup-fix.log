@@ -1,0 +1,30 @@
+✔ actual frozen target queries map only to explicit validation namespace (1.28175ms)
+✔ scanner Pod namespace override retains all source fields and records physical run identity (0.234916ms)
+✔ ZAP boundary rejects production fallback/action: -n petclinic get secret db -o json (0.418417ms)
+✔ ZAP boundary rejects production fallback/action: -n petclinic get service other -o json (0.100291ms)
+✔ ZAP boundary rejects production fallback/action: -n other get service petclinic -o json (0.095833ms)
+✔ ZAP boundary rejects production fallback/action: apply -f production.yaml (0.069542ms)
+✔ ZAP boundary rejects production fallback/action: rollout restart deployment/petclinic (0.053ms)
+✔ ZAP boundary rejects production fallback/action: get secrets -A (0.049833ms)
+✔ unknown/foreign scanner Pod cannot be exec target (0.12625ms)
+✔ UID delete keeps precondition and maps physical namespace (0.254083ms)
+✔ ZAP scanner security contract rejects privileged host (0.181917ms)
+✔ ZAP scanner security contract rejects mounted host data (0.113958ms)
+✔ ZAP scanner security contract rejects unexpected image (0.174542ms)
+✔ ZAP scanner security contract rejects service token (0.1185ms)
+✔ ZAP scanner security contract rejects production namespace (0.071ms)
+✔ incomplete/unsafe target contract fails closed {"sourceId":"zap","validationRunId":"rf4-20261103-abcdef","namespace":"rf4-20261103-abcdef","build":18,"kubeconfig":"/tmp/runtime-four-credentials-rf4-20261103-abcdef/executor.kubeconfig","server":"https://kubernetes.default.svc","allowedImage":"registry.invalid/scanner@sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa","targetImage":"registry.invalid/app@sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb","targetServiceIP":"10.43.1.2","productionServiceIP":"10.43.3.4","productionDatabaseAllowed":false,"productionTargetAllowed":true} (0.065917ms)
+✔ incomplete/unsafe target contract fails closed {"sourceId":"zap","validationRunId":"rf4-20261103-abcdef","namespace":"rf4-20261103-abcdef","build":18,"kubeconfig":"/tmp/runtime-four-credentials-rf4-20261103-abcdef/executor.kubeconfig","server":"https://kubernetes.default.svc","allowedImage":"registry.invalid/scanner@sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa","targetImage":"registry.invalid/app@sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb","targetServiceIP":"10.43.1.2","productionServiceIP":"10.43.3.4","productionDatabaseAllowed":true,"productionTargetAllowed":false} (0.03725ms)
+✔ incomplete/unsafe target contract fails closed {"sourceId":"zap","validationRunId":"rf4-20261103-abcdef","namespace":"rf4-20261103-abcdef","build":18,"kubeconfig":"/tmp/runtime-four-credentials-rf4-20261103-abcdef/executor.kubeconfig","server":"https://kubernetes.default.svc","allowedImage":"registry.invalid/scanner@sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa","targetImage":"registry.invalid/app@sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb","targetServiceIP":"10.43.3.4","productionServiceIP":"10.43.3.4","productionDatabaseAllowed":false,"productionTargetAllowed":false} (0.043584ms)
+✔ incomplete/unsafe target contract fails closed {"sourceId":"zap","validationRunId":"rf4-20261103-abcdef","namespace":"petclinic","build":18,"kubeconfig":"/tmp/runtime-four-credentials-rf4-20261103-abcdef/executor.kubeconfig","server":"https://kubernetes.default.svc","allowedImage":"registry.invalid/scanner@sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa","targetImage":"registry.invalid/app@sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb","targetServiceIP":"10.43.1.2","productionServiceIP":"10.43.3.4","productionDatabaseAllowed":false,"productionTargetAllowed":false} (0.039333ms)
+✔ incomplete/unsafe target contract fails closed {"sourceId":"zap","validationRunId":"rf4-20261103-abcdef","namespace":"rf4-20261103-abcdef","build":18,"kubeconfig":"/root/.kube/config","server":"https://kubernetes.default.svc","allowedImage":"registry.invalid/scanner@sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa","targetImage":"registry.invalid/app@sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb","targetServiceIP":"10.43.1.2","productionServiceIP":"10.43.3.4","productionDatabaseAllowed":false,"productionTargetAllowed":false} (0.038833ms)
+✔ actual guarded kubectl cleanup accepts already-deleted owned Pod (2161.913ms)
+✔ actual guarded kubectl cleanup rejects replacement UID (789.657917ms)
+ℹ tests 22
+ℹ suites 0
+ℹ pass 22
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 3097.232292

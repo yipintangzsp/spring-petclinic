@@ -1,0 +1,19 @@
+// Controlled non-release Harbor scan; runtime never receives management identity.
+pipeline {
+ agent any
+ options { disableConcurrentBuilds(); timeout(time: 10, unit: 'MINUTES') }
+ environment { HEAVY_HOLDER = 'runtime-three-rf3-20261103-7d6715'
+ MAVEN_OPTS = '-Xmx256m -XX:ActiveProcessorCount=1' }
+ stages {
+  stage('Verify source and accepted thirteen') { steps { sh 'node infra/security/runtime-facts/verify-bundle.mjs; node infra/security/runtime-facts/thirteen-smoke.mjs' } }
+  stage('Verify live robot permission grant') { steps { withCredentials([usernamePassword(credentialsId:'harbor-creds',usernameVariable:'HARBOR_USER',passwordVariable:'HARBOR_PASS')]) { sh 'node infra/security/runtime-facts/harbor-validation-identity.mjs scan verify' } } }
+  stage('Acquire original heavy Lease') { steps { sh 'node infra/observability/heavy-lease.mjs acquire' } }
+  stage('Real frozen Harbor Trivy parent → owner → Gate') { steps { sh 'node infra/security/runtime-facts/run-trivy-validation.mjs' } }
+ }
+ post { always {
+  sh 'node infra/observability/heavy-lease.mjs release'
+  withCredentials([usernamePassword(credentialsId:'harbor-creds',usernameVariable:'HARBOR_USER',passwordVariable:'HARBOR_PASS')]) { sh 'node infra/security/runtime-facts/harbor-validation-identity.mjs scan delete' }
+  sh 'node infra/security/runtime-facts/thirteen-smoke.mjs'
+  archiveArtifacts artifacts: '.devsecops/runtime-controlled/build-' + env.BUILD_NUMBER + '/**,runtime-source-bundle.json', allowEmptyArchive: false
+ } }
+}

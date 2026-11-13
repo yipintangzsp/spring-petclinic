@@ -1,0 +1,49 @@
+✔ fact envelope binds same payload/command, never adds a decision (4.143542ms)
+✔ missing execution status and unknown/alias/post sources reject (0.336667ms)
+✔ stale binding rejects before owner invocation (0.159875ms)
+✔ tampered facts reject even if envelope digest alone is recalculated (0.19ms)
+✔ real owner claims once and Gate reuses result identity without evaluation (62.390583ms)
+✔ concurrent duplicate rejected before second Engine invocation (19.399625ms)
+✔ second owner/process claim and incomplete owner restart fail closed (0.993084ms)
+✔ success native report without source-specific facts cannot become Gate PASS (2.399083ms)
+✔ missing canonical sources cannot produce immutable complete artifact (18.665125ms)
+✔ observed presence preserved: skipped (4.595917ms)
+✔ observed presence preserved: not_configured (1.7345ms)
+✔ observed presence preserved: error (1.412083ms)
+✔ POLICY_ERROR preserved and Gate refuses using it as legacy success (1.702167ms)
+✔ raw source payload is never written in owner capture/receipt files (20.761542ms)
+✔ collector graph has no Policy evaluator or decision classification (0.255459ms)
+✔ Regression result identity is deterministic for equivalent facts and binding in isolated replays (34.721833ms)
+✔ Kyverno two-command collection preserves original observations without a decision (0.427792ms)
+✔ Kyverno failed first command cannot be followed by invented admission observations (0.081291ms)
+✔ passive Kyverno observer reads original tools-lock, preserving process exit and bytes (100.138334ms)
+✔ Falco first baseline prerequisite clock is never replaced by later query clocks (97.328708ms)
+✔ SBOM original parent capture / positive-native (4828.378292ms)
+✔ SBOM original parent capture / generator-failure (1111.982333ms)
+✔ SBOM original parent capture / jar-maven-byte-mismatch (782.861458ms)
+✖ SBOM success stdout without original native observations is FACT_CONTRACT_INCOMPLETE (935.99175ms)
+ℹ tests 24
+ℹ suites 0
+ℹ pass 23
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 7802.485667
+
+✖ failing tests:
+
+test at infra/security/runtime-facts/sbom-capture.test.mjs:26:1
+✖ SBOM success stdout without original native observations is FACT_CONTRACT_INCOMPLETE (935.99175ms)
+  AssertionError [ERR_ASSERTION]: Missing expected rejection.
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async TestContext.<anonymous> (file:///Users/zhangsir/code/petclinic-platform-20261011/infra/security/runtime-facts/sbom-capture.test.mjs:27:122)
+      at async Test.run (node:internal/test_runner/test:1208:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:831:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: /FACT_CONTRACT_INCOMPLETE/,
+    operator: 'rejects',
+    diff: 'simple'
+  }

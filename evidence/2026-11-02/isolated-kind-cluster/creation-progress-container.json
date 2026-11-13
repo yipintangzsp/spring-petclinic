@@ -1,0 +1,18 @@
+{
+  "command": [
+    "/opt/homebrew/bin/docker",
+    "--host",
+    "unix:///Users/zhangsir/.colima/security-test/docker.sock",
+    "ps",
+    "-a",
+    "--no-trunc",
+    "--filter",
+    "label=io.x-k8s.kind.cluster=security-test-sops",
+    "--format",
+    "{{json .}}"
+  ],
+  "exit": 0,
+  "stdout": "{\"Command\":\"\\\"/usr/local/bin/entrypoint /sbin/init\\\"\",\"CreatedAt\":\"2026-11-02 11:35:25 +0800 CST\",\"HealthStatus\":\"none\",\"ID\":\"9813796eee581bf765b2cd0fb93c26c632b4cb47a075b6c99a29e77597b19697\",\"Image\":\"docker.io/kindest/node:v1.35.0@sha256:452d707d4862f52530247495d180205e029056831160e22870e37e3f6c1ac31f\",\"Labels\":\"io.x-k8s.kind.cluster=security-test-sops,io.x-k8s.kind.role=control-plane\",\"LocalVolumes\":\"1\",\"Mounts\":\"/lib/modules,289d891f7426cde46bc46ae897f14fa4b2fbf84703f0513a999f56206d13cd13\",\"Names\":\"security-test-sops-control-plane\",\"Networks\":\"kind\",\"Platform\":{\"architecture\":\"arm64\",\"os\":\"linux\"},\"Ports\":\"127.0.0.1:59645-\\u003e6443/tcp\",\"RunningFor\":\"40 seconds ago\",\"Size\":\"3.62MB (virtual 954MB)\",\"State\":\"running\",\"Status\":\"Up 39 seconds\"}\n",
+  "stderr": "",
+  "seconds": 0.157
+}

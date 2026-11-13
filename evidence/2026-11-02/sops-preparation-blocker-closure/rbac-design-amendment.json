@@ -1,0 +1,205 @@
+{
+  "classification": "AMENDED_DESIGN_ONLY_NOT_CREATED",
+  "roles": [
+    {
+      "kind": "Role",
+      "namespace": "petclinic",
+      "name": "sops-fixture-reconciler-business",
+      "rules": [
+        {
+          "apiGroups": [
+            ""
+          ],
+          "resources": [
+            "secrets"
+          ],
+          "verbs": [
+            "get",
+            "patch"
+          ],
+          "resourceNames": [
+            "petclinic-db",
+            "rabbitmq-client",
+            "petclinic-harbor-pull"
+          ]
+        }
+      ],
+      "subject": {
+        "kind": "ServiceAccount",
+        "name": "platform-secret-reconciler",
+        "namespace": "devsecops-system"
+      }
+    },
+    {
+      "kind": "Role",
+      "namespace": "devsecops-system",
+      "name": "sops-fixture-reconciler-registry",
+      "rules": [
+        {
+          "apiGroups": [
+            ""
+          ],
+          "resources": [
+            "secrets"
+          ],
+          "verbs": [
+            "get",
+            "patch"
+          ],
+          "resourceNames": [
+            "kyverno-registry-pull"
+          ]
+        }
+      ],
+      "subject": {
+        "kind": "ServiceAccount",
+        "name": "platform-secret-reconciler",
+        "namespace": "devsecops-system"
+      }
+    },
+    {
+      "kind": "Role",
+      "namespace": "devsecops-system",
+      "name": "sops-fixture-verifier-registry",
+      "rules": [
+        {
+          "apiGroups": [
+            ""
+          ],
+          "resources": [
+            "secrets"
+          ],
+          "verbs": [
+            "get"
+          ],
+          "resourceNames": [
+            "kyverno-registry-pull"
+          ]
+        }
+      ],
+      "subject": {
+        "kind": "ServiceAccount",
+        "name": "kyverno-admission-controller",
+        "namespace": "devsecops-system"
+      }
+    },
+    {
+      "kind": "Role",
+      "namespace": "data-infra",
+      "name": "sops-fixture-executor-lease",
+      "rules": [
+        {
+          "apiGroups": [
+            "coordination.k8s.io"
+          ],
+          "resources": [
+            "leases"
+          ],
+          "verbs": [
+            "get"
+          ],
+          "resourceNames": [
+            "platform-heavy"
+          ]
+        }
+      ],
+      "subject": {
+        "kind": "ServiceAccount",
+        "name": "security-fixture-executor",
+        "namespace": "devsecops-system"
+      }
+    },
+    {
+      "kind": "Role",
+      "namespace": "devsecops-system",
+      "name": "sops-fixture-executor-impersonation",
+      "rules": [
+        {
+          "apiGroups": [
+            ""
+          ],
+          "resources": [
+            "serviceaccounts"
+          ],
+          "verbs": [
+            "impersonate"
+          ],
+          "resourceNames": [
+            "platform-secret-reconciler",
+            "kyverno-admission-controller"
+          ]
+        }
+      ],
+      "subject": {
+        "kind": "ServiceAccount",
+        "name": "security-fixture-executor",
+        "namespace": "devsecops-system"
+      }
+    }
+  ],
+  "clusterIdentityRole": {
+    "name": "sops-fixture-executor-identity",
+    "rules": [
+      {
+        "apiGroups": [
+          ""
+        ],
+        "resources": [
+          "namespaces"
+        ],
+        "verbs": [
+          "get"
+        ],
+        "resourceNames": [
+          "kube-system",
+          "devsecops-system"
+        ]
+      },
+      {
+        "apiGroups": [
+          "authentication.k8s.io"
+        ],
+        "resources": [
+          "selfsubjectreviews"
+        ],
+        "verbs": [
+          "create"
+        ]
+      }
+    ],
+    "subjects": [
+      {
+        "kind": "ServiceAccount",
+        "name": "security-fixture-executor",
+        "namespace": "devsecops-system"
+      }
+    ]
+  },
+  "clusterAdminGrants": 0,
+  "wildcardVerbsResources": 0,
+  "saImpersonationReason": "v1.35 impersonation source uses namespace+name for ServiceAccount authorization; namespaced Role is sufficient. No users/groups/UID impersonation or alpha ConstrainedImpersonation.",
+  "standardBootstrapDependencies": [
+    "system:basic-user permits authenticated users (including impersonated SAs) create selfsubjectaccessreviews/selfsubjectrulesreviews",
+    "system:discovery permits normal kubectl schema discovery/SSA validation; do not change production kubectl flags to bypass it"
+  ],
+  "sources": [
+    "https://raw.githubusercontent.com/kubernetes/apiserver/v0.35.0/pkg/endpoints/filters/impersonation/impersonation.go",
+    "https://raw.githubusercontent.com/kubernetes/kubernetes/v1.35.0/plugin/pkg/auth/authorizer/rbac/bootstrappolicy/policy.go"
+  ],
+  "negativeScope": {
+    "reconcilerDenied": [
+      "get devsecops-system/unrelated-secret",
+      "list/create devsecops-system/secrets",
+      "get petclinic/unrelated-secret",
+      "list/create petclinic/secrets",
+      "get data-infra/rabbitmq-auth"
+    ],
+    "verifierDenied": [
+      "get petclinic/petclinic-harbor-pull",
+      "get petclinic/petclinic-db",
+      "list petclinic/secrets"
+    ]
+  },
+  "managementIdentity": "Existing isolated fixture manager performs future creation/mutations/TokenRequest/cleanup through same approved guard; no management credential in MIN_RBAC_EXECUTOR. No mutation privileges assigned to executor.",
+  "bootstrapDependencyFailure": "Stop if existing self access review/discovery unavailable; no fallback, no auto permission expansion."
+}

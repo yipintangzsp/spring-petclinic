@@ -1,0 +1,203 @@
+{
+  "classification": "HISTORICAL_NATIVE_REPORT_SCHEMA_ONLY_NOT_NEW_RUNTIME_FACTS",
+  "job": "petclinic-ci",
+  "build": 270,
+  "result": "SUCCESS",
+  "rows": [
+    {
+      "source": "sops",
+      "path": ".devsecops/secrets-gate.json",
+      "exists": true,
+      "status": "success",
+      "sha256": "c9df45c0132296382578f3bac606d2acf4560c6e11ca12b8d8c54e548d026ea0",
+      "topLevelFields": [
+        "finishedAt",
+        "rbac",
+        "readOnly",
+        "secrets",
+        "source",
+        "startedAt",
+        "status",
+        "verifierRbac"
+      ],
+      "requiredObservationFields": [
+        "prerequisites",
+        "targets",
+        "rbac",
+        "reportWriteSucceeded"
+      ],
+      "requiredFieldsPresent": {
+        "prerequisites": false,
+        "targets": false,
+        "rbac": true,
+        "reportWriteSucceeded": false
+      }
+    },
+    {
+      "source": "kyverno",
+      "path": ".devsecops/admission-gate.json",
+      "exists": true,
+      "status": "success",
+      "sha256": "44f6fbbfc2d3de1bf488f6e7fd30365a801f6ddde7629290d05bc3d4fa243fc0",
+      "topLevelFields": [
+        "cases",
+        "exceptions",
+        "scope",
+        "source",
+        "startedAt",
+        "status",
+        "warningProbes",
+        "workloadAudit"
+      ],
+      "requiredObservationFields": [
+        "configuration",
+        "observations"
+      ],
+      "requiredFieldsPresent": {
+        "configuration": false,
+        "observations": false
+      }
+    },
+    {
+      "source": "kubescape",
+      "path": ".devsecops/kubescape-gate.json",
+      "exists": true,
+      "status": "success",
+      "sha256": "176a5dd8c3284e3dd1f4896fd39708e331771e73da28691460b935d6344506a2",
+      "topLevelFields": [
+        "excludedKinds",
+        "failedControls",
+        "findings",
+        "finishedAt",
+        "frameworks",
+        "highRiskFindings",
+        "hostScan",
+        "limitations",
+        "mode",
+        "operatorInstalled",
+        "rbac",
+        "scans",
+        "source",
+        "startedAt",
+        "status",
+        "version"
+      ],
+      "requiredObservationFields": [
+        "lock",
+        "observations"
+      ],
+      "requiredFieldsPresent": {
+        "lock": false,
+        "observations": false
+      }
+    },
+    {
+      "source": "cosign",
+      "path": ".devsecops/signing-admission.json",
+      "exists": true,
+      "status": "success",
+      "sha256": "b26619dec46c993855a1c8b1146d115bf98c265dd050ef6bf44600d91d3ad858",
+      "topLevelFields": [
+        "cases",
+        "finishedAt",
+        "images",
+        "mode",
+        "source",
+        "startedAt",
+        "status",
+        "temporaryPrivateFilesRemoved"
+      ],
+      "requiredObservationFields": [
+        "stage",
+        "configuration",
+        "runtime",
+        "commands",
+        "io"
+      ],
+      "requiredFieldsPresent": {
+        "stage": false,
+        "configuration": false,
+        "runtime": false,
+        "commands": false,
+        "io": false
+      }
+    },
+    {
+      "source": "defectdojo",
+      "path": ".devsecops/defectdojo-import.json",
+      "exists": true,
+      "status": "success",
+      "sha256": "a7f3a1a47fa73087c9a741f7af973a623297e8ab78b38d99febc8f82f14f12c4",
+      "topLevelFields": [
+        "auditTargetImage",
+        "baseUrl",
+        "build",
+        "counts",
+        "engagement",
+        "finishedAt",
+        "gateAuthority",
+        "imports",
+        "product",
+        "reviewedFalsePositives",
+        "runtimeImage",
+        "sonarNativeTotal",
+        "source",
+        "startedAt",
+        "status",
+        "targetScope"
+      ],
+      "requiredObservationFields": [
+        "files",
+        "target",
+        "api",
+        "credentials"
+      ],
+      "requiredFieldsPresent": {
+        "files": false,
+        "target": false,
+        "api": false,
+        "credentials": false
+      }
+    },
+    {
+      "source": "falco",
+      "path": ".devsecops/runtime-health.json",
+      "exists": true,
+      "status": "success",
+      "sha256": "87f3ac4ee04b92fb96c99becde363293636e8f6c39ba0822683fa3dded3a381c",
+      "topLevelFields": [
+        "baselineRestarts",
+        "diagnosticWindow",
+        "diagnostics",
+        "historicalWarning",
+        "http",
+        "image",
+        "liveChecks",
+        "mode",
+        "newRestarts",
+        "node",
+        "nodeBootId",
+        "pod",
+        "podUid",
+        "ready",
+        "restarts",
+        "ruleset",
+        "runtimeAssessment",
+        "scope",
+        "source",
+        "status",
+        "validationEvidence"
+      ],
+      "requiredObservationFields": [
+        "configuration",
+        "observations"
+      ],
+      "requiredFieldsPresent": {
+        "configuration": false,
+        "observations": false
+      }
+    }
+  ],
+  "credentialsOrRawReportValuesExported": false,
+  "productionModified": false
+}

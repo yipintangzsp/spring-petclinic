@@ -1,0 +1,165 @@
+{
+  "runId": "web-96d1320a-a6ae-4710-87cd-b3b03f7b3d72",
+  "pluginId": "trivy",
+  "projectId": "trivy-candidate",
+  "scenarioId": "clean",
+  "configurationSnapshot": {
+    "revision": 38,
+    "updatedAt": "2026-11-12T10:17:20.202Z",
+    "settings": {
+      "enabled": true,
+      "securityLevel": "standard",
+      "plugins": {
+        "gitleaks": {
+          "enabled": true
+        },
+        "semgrep": {
+          "enabled": true
+        },
+        "cosign": {
+          "enabled": true
+        },
+        "sbom": {
+          "enabled": true
+        },
+        "trivy": {
+          "enabled": true
+        }
+      }
+    },
+    "source": {
+      "kind": "LOCAL_EXPLICIT_OVERRIDE",
+      "path": ".devsecops/security-view-controls-v1.json",
+      "settingsDigest": "347dafd18186853e5fa4ad88c349630ef52b59af6e8d4c3568ceb40493d6637a"
+    },
+    "configurationOrigins": [
+      {
+        "layer": "global",
+        "securityLevel": "standard",
+        "policyVersion": "baseline-v1"
+      },
+      {
+        "layer": "registryDefaults",
+        "plugins": {
+          "build-provenance": {
+            "enabled": false
+          },
+          "cosign": {
+            "enabled": true
+          },
+          "falco": {
+            "enabled": false
+          },
+          "gitleaks": {
+            "enabled": true
+          },
+          "kubescape": {
+            "enabled": false
+          },
+          "kyverno": {
+            "enabled": false
+          },
+          "provenance": {
+            "enabled": false
+          },
+          "sbom": {
+            "enabled": true
+          },
+          "semgrep": {
+            "enabled": true
+          },
+          "sonarqube": {
+            "enabled": false
+          },
+          "sops": {
+            "enabled": false
+          },
+          "trivy": {
+            "enabled": true
+          },
+          "zap": {
+            "enabled": false
+          }
+        }
+      },
+      {
+        "layer": "globalExplicit",
+        "values": {
+          "enabled": true,
+          "securityLevel": "standard",
+          "plugins": {
+            "gitleaks": {
+              "enabled": true
+            },
+            "semgrep": {
+              "enabled": true
+            },
+            "cosign": {
+              "enabled": true
+            },
+            "sbom": {
+              "enabled": true
+            },
+            "trivy": {
+              "enabled": true
+            }
+          },
+          "globalMode": "audit",
+          "profile": "java-web",
+          "policyVersion": "baseline-v1"
+        }
+      },
+      {
+        "layer": "profile",
+        "values": {}
+      },
+      {
+        "layer": "project",
+        "values": {}
+      }
+    ],
+    "effectiveConfigDigest": "b06631eb8f52f9f6ddc6b162bcaa773635e75d731ba8b40bdbddac18e7279064"
+  },
+  "securityLevel": "standard",
+  "startedAt": "2026-11-12T14:24:51.281Z",
+  "kind": "LocalValidationRequest",
+  "executionLocation": "LINUX_RESTRICTED",
+  "state": "BLOCKED",
+  "evidenceClass": "NOT_TESTED",
+  "scannerExecuted": false,
+  "policyDecision": null,
+  "evaluationCount": 0,
+  "resultDigest": "4179cc725ce15f39948a200bd22a7aa9554d62d7cfdcda00587680a7d6954cc7",
+  "artifactDigest": "28362d37d787e8c172aac150f331c387e8f2cb17ffc9e986dc256f83609a3ac5",
+  "source": ".devsecops/security-view-runs-v1/web-96d1320a-a6ae-4710-87cd-b3b03f7b3d72/artifact/trivy.result.json",
+  "reason": "RESOURCE_BUDGET_BLOCKED",
+  "executionDiagnostic": {
+    "error": "RESOURCE_BUDGET_BLOCKED",
+    "scannerStarted": false,
+    "stage": "RESTRICTED_SSH_RUNNER"
+  },
+  "db": null,
+  "findingCount": null,
+  "toolVersion": null,
+  "toolSha256": null,
+  "indexDigest": "sha256:2fbaea65ab030c56c60c62e3ee9fbe362deb8bbbb8216a891ef4c7bbbcea6d55",
+  "platformDigest": "sha256:06a515708b6783db7d545544bbefb02e9f94abfc0fdf13a7355ccbe2deb3ed42",
+  "executionIdentity": "security-trivy",
+  "executionHost": "devops/192.168.1.58",
+  "router": [
+    {
+      "consumerId": "dry-run",
+      "deliveryDecision": "DRY_RUN"
+    },
+    {
+      "consumerId": "local-evidence",
+      "deliveryDecision": "DELIVERED_LOCAL_ONLY"
+    }
+  ],
+  "cleanup": "JOINED_OR_NOT_STARTED",
+  "completedAt": "2026-11-12T14:24:53.980Z",
+  "durationMs": 2684,
+  "releaseCount": 0,
+  "rolloutCount": 0,
+  "auditDigest": "1715dceef754048993259f99e3675f20dcdfb41e61bbf506cbeaf2af4cf507e1"
+}

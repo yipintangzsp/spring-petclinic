@@ -1,0 +1,1919 @@
+{
+  "status": "success",
+  "scope": "tracked Python/Shell conservative local analysis; no arbitrary wrappers, shell parser, message/file provenance or interprocedural exploit proof",
+  "items": [
+    {
+      "path": "infra/analytics/controlled.py",
+      "line": 26,
+      "classification": "unknown",
+      "reason": "dynamic arguments, environment, wrapper or remote-shell trust needs manual review; argument-list calls are not proof of injection",
+      "sink": "subprocess.run"
+    },
+    {
+      "path": "infra/analytics/controlled.py",
+      "line": 98,
+      "classification": "safe",
+      "reason": "fixed command and literal arguments; scoped to this call only",
+      "sink": "subprocess.check_output"
+    },
+    {
+      "path": "infra/analytics/controlled.py",
+      "line": 99,
+      "classification": "safe",
+      "reason": "fixed command and literal arguments; scoped to this call only",
+      "sink": "subprocess.check_output"
+    },
+    {
+      "path": "infra/analytics/controlled.py",
+      "line": 100,
+      "classification": "safe",
+      "reason": "fixed command and literal arguments; scoped to this call only",
+      "sink": "subprocess.check_output"
+    },
+    {
+      "path": "infra/analytics/install_host_resources.py",
+      "line": 26,
+      "classification": "unknown",
+      "reason": "dynamic arguments, environment, wrapper or remote-shell trust needs manual review; argument-list calls are not proof of injection",
+      "sink": "subprocess.run"
+    },
+    {
+      "path": "infra/analytics/install_host_resources.py",
+      "line": 29,
+      "classification": "unknown",
+      "reason": "dynamic arguments, environment, wrapper or remote-shell trust needs manual review; argument-list calls are not proof of injection",
+      "sink": "subprocess.run"
+    },
+    {
+      "path": "infra/analytics/install_host_resources.py",
+      "line": 30,
+      "classification": "unknown",
+      "reason": "dynamic arguments, environment, wrapper or remote-shell trust needs manual review; argument-list calls are not proof of injection",
+      "sink": "subprocess.run"
+    },
+    {
+      "path": "infra/analytics/run_airflow.py",
+      "line": 83,
+      "classification": "unknown",
+      "reason": "dynamic arguments, environment, wrapper or remote-shell trust needs manual review; argument-list calls are not proof of injection",
+      "sink": "subprocess.run"
+    },
+    {
+      "path": "infra/analytics/test_clinic_task.py",
+      "line": 64,
+      "classification": "unknown",
+      "reason": "dynamic arguments, environment, wrapper or remote-shell trust needs manual review; argument-list calls are not proof of injection",
+      "sink": "subprocess.run"
+    },
+    {
+      "path": "infra/analytics/verify_superset.py",
+      "line": 39,
+      "classification": "unknown",
+      "reason": "dynamic arguments, environment, wrapper or remote-shell trust needs manual review; argument-list calls are not proof of injection",
+      "sink": "subprocess.run"
+    },
+    {
+      "path": "infra/data/audit-postgres.py",
+      "line": 6,
+      "classification": "unknown",
+      "reason": "dynamic arguments, environment, wrapper or remote-shell trust needs manual review; argument-list calls are not proof of injection",
+      "sink": "subprocess.check_output(['ssh', '-o', 'BatchMode=yes', '192.168.1.58', f'sudo -n k3s kubectl exec -i -n ns-data deploy/postgresql -- psql -X -v ON_ERROR_STOP=1 -U postgres -d {db} -At'], input=q, text=True, timeout=60).strip"
+    },
+    {
+      "path": "infra/data/audit-postgres.py",
+      "line": 6,
+      "classification": "unknown",
+      "reason": "dynamic arguments, environment, wrapper or remote-shell trust needs manual review; argument-list calls are not proof of injection",
+      "sink": "subprocess.check_output"
+    },
+    {
+      "path": "infra/devops-lab/iac/isolated/test_build_inputs.py",
+      "line": 31,
+      "classification": "unknown",
+      "reason": "dynamic arguments, environment, wrapper or remote-shell trust needs manual review; argument-list calls are not proof of injection",
+      "sink": "subprocess.run"
+    },
+    {
+      "path": "infra/devops-lab/iac/isolated/worker.py",
+      "line": 213,
+      "classification": "unknown",
+      "reason": "dynamic arguments, environment, wrapper or remote-shell trust needs manual review; argument-list calls are not proof of injection",
+      "sink": "subprocess.Popen"
+    },
+    {
+      "path": "infra/devops-lab/iac/isolated/worker.py",
+      "line": 316,
+      "classification": "unknown",
+      "reason": "dynamic arguments, environment, wrapper or remote-shell trust needs manual review; argument-list calls are not proof of injection",
+      "sink": "subprocess.Popen"
+    },
+    {
+      "path": "infra/devops-lab/iac/run.py",
+      "line": 82,
+      "classification": "unknown",
+      "reason": "dynamic arguments, environment, wrapper or remote-shell trust needs manual review; argument-list calls are not proof of injection",
+      "sink": "subprocess.check_output"
+    },
+    {
+      "path": "infra/devops-lab/iac/run.py",
+      "line": 93,
+      "classification": "unknown",
+      "reason": "dynamic arguments, environment, wrapper or remote-shell trust needs manual review; argument-list calls are not proof of injection",
+      "sink": "subprocess.check_output(['git', 'ls-tree', '-r', '--name-only', args.revision, '--', prefix], cwd=ROOT, text=True).splitlines"
+    },
+    {
+      "path": "infra/devops-lab/iac/run.py",
+      "line": 94,
+      "classification": "unknown",
+      "reason": "dynamic arguments, environment, wrapper or remote-shell trust needs manual review; argument-list calls are not proof of injection",
+      "sink": "subprocess.check_output"
+    },
+    {
+      "path": "infra/devops-lab/iac/run.py",
+      "line": 93,
+      "classification": "unknown",
+      "reason": "dynamic arguments, environment, wrapper or remote-shell trust needs manual review; argument-list calls are not proof of injection",
+      "sink": "subprocess.check_output"
+    },
+    {
+      "path": "infra/devops-lab/rollouts/run.py",
+      "line": 42,
+      "classification": "unknown",
+      "reason": "dynamic arguments, environment, wrapper or remote-shell trust needs manual review; argument-list calls are not proof of injection",
+      "sink": "subprocess.run"
+    },
+    {
+      "path": "infra/devops-lab/rollouts/run.py",
+      "line": 37,
+      "classification": "unknown",
+      "reason": "dynamic arguments, environment, wrapper or remote-shell trust needs manual review; argument-list calls are not proof of injection",
+      "sink": "subprocess.check_output"
+    },
+    {
+      "path": "infra/harbor/warm_trivy_db.py",
+      "line": 66,
+      "classification": "unknown",
+      "reason": "dynamic arguments, environment, wrapper or remote-shell trust needs manual review; argument-list calls are not proof of injection",
+      "sink": "subprocess.run"
+    },
+    {
+      "path": "infra/harbor/warm_trivy_db.py",
+      "line": 99,
+      "classification": "unknown",
+      "reason": "dynamic arguments, environment, wrapper or remote-shell trust needs manual review; argument-list calls are not proof of injection",
+      "sink": "subprocess.Popen"
+    },
+    {
+      "path": "infra/observability/audit-production.py",
+      "line": 11,
+      "classification": "unknown",
+      "reason": "dynamic arguments, environment, wrapper or remote-shell trust needs manual review; argument-list calls are not proof of injection",
+      "sink": "subprocess.check_output"
+    },
+    {
+      "path": "infra/observability/configure-collectors.py",
+      "line": 6,
+      "classification": "safe",
+      "reason": "fixed command and literal arguments; scoped to this call only",
+      "sink": "subprocess.run"
+    },
+    {
+      "path": "infra/observability/configure-collectors.py",
+      "line": 5,
+      "classification": "unknown",
+      "reason": "dynamic arguments, environment, wrapper or remote-shell trust needs manual review; argument-list calls are not proof of injection",
+      "sink": "subprocess.check_output"
+    },
+    {
+      "path": "infra/observability/configure-control-relay.py",
+      "line": 4,
+      "classification": "unknown",
+      "reason": "dynamic arguments, environment, wrapper or remote-shell trust needs manual review; argument-list calls are not proof of injection",
+      "sink": "subprocess.check_output"
+    },
+    {
+      "path": "infra/observability/configure-filebeat-retention.py",
+      "line": 20,
+      "classification": "unknown",
+      "reason": "dynamic arguments, environment, wrapper or remote-shell trust needs manual review; argument-list calls are not proof of injection",
+      "sink": "subprocess.check_output"
+    },
+    {
+      "path": "infra/observability/configure-jenkins-resources.py",
+      "line": 11,
+      "classification": "unknown",
+      "reason": "dynamic arguments, environment, wrapper or remote-shell trust needs manual review; argument-list calls are not proof of injection",
+      "sink": "subprocess.run"
+    },
+    {
+      "path": "infra/observability/configure-jenkins-resources.py",
+      "line": 7,
+      "classification": "safe",
+      "reason": "fixed command and literal arguments; scoped to this call only",
+      "sink": "subprocess.check_output"
+    },
+    {
+      "path": "infra/observability/configure-upgrade-kibana.py",
+      "line": 4,
+      "classification": "unknown",
+      "reason": "dynamic arguments, environment, wrapper or remote-shell trust needs manual review; argument-list calls are not proof of injection",
+      "sink": "subprocess.check_output"
+    },
+    {
+      "path": "infra/observability/platform-snapshot.py",
+      "line": 65,
+      "classification": "unknown",
+      "reason": "dynamic arguments, environment, wrapper or remote-shell trust needs manual review; argument-list calls are not proof of injection",
+      "sink": "subprocess.run"
+    },
+    {
+      "path": "infra/observability/platform-snapshot.py",
+      "line": 7,
+      "classification": "unknown",
+      "reason": "dynamic arguments, environment, wrapper or remote-shell trust needs manual review; argument-list calls are not proof of injection",
+      "sink": "subprocess.check_output"
+    },
+    {
+      "path": "infra/observability/run-capacity-load.py",
+      "line": 11,
+      "classification": "safe",
+      "reason": "fixed command and literal arguments; scoped to this call only",
+      "sink": "subprocess.check_output"
+    },
+    {
+      "path": "infra/observability/run-capacity-load.py",
+      "line": 25,
+      "classification": "safe",
+      "reason": "fixed command and literal arguments; scoped to this call only",
+      "sink": "subprocess.check_output"
+    },
+    {
+      "path": "infra/observability/run-capacity-load.py",
+      "line": 26,
+      "classification": "safe",
+      "reason": "fixed command and literal arguments; scoped to this call only",
+      "sink": "subprocess.check_output"
+    },
+    {
+      "path": "infra/observability/run-ha-maintenance.py",
+      "line": 30,
+      "classification": "unknown",
+      "reason": "dynamic arguments, environment, wrapper or remote-shell trust needs manual review; argument-list calls are not proof of injection",
+      "sink": "subprocess.check_output"
+    },
+    {
+      "path": "infra/observability/run-ha-maintenance.py",
+      "line": 87,
+      "classification": "unknown",
+      "reason": "dynamic arguments, environment, wrapper or remote-shell trust needs manual review; argument-list calls are not proof of injection",
+      "sink": "subprocess.Popen"
+    },
+    {
+      "path": "infra/observability/run-isolated-drills.py",
+      "line": 24,
+      "classification": "unknown",
+      "reason": "dynamic arguments, environment, wrapper or remote-shell trust needs manual review; argument-list calls are not proof of injection",
+      "sink": "subprocess.check_output"
+    },
+    {
+      "path": "infra/observability/validate-ha-workers.py",
+      "line": 22,
+      "classification": "unknown",
+      "reason": "dynamic arguments, environment, wrapper or remote-shell trust needs manual review; argument-list calls are not proof of injection",
+      "sink": "subprocess.check_output"
+    },
+    {
+      "path": "infra/observability/verify-compressed-metrics.py",
+      "line": 23,
+      "classification": "safe",
+      "reason": "fixed command and literal arguments; scoped to this call only",
+      "sink": "subprocess.check_output"
+    },
+    {
+      "path": "infra/observability/verify-upgrade-trace.py",
+      "line": 8,
+      "classification": "unknown",
+      "reason": "dynamic arguments, environment, wrapper or remote-shell trust needs manual review; argument-list calls are not proof of injection",
+      "sink": "subprocess.check_output"
+    },
+    {
+      "path": "infra/observability/wait-gitops.sh",
+      "line": 5,
+      "classification": "unknown",
+      "reason": "shell expansion inventory; no data-flow proof"
+    },
+    {
+      "path": "infra/observability/wait-gitops.sh",
+      "line": 8,
+      "classification": "unknown",
+      "reason": "shell expansion inventory; no data-flow proof"
+    },
+    {
+      "path": "infra/observability/wait-gitops.sh",
+      "line": 11,
+      "classification": "unknown",
+      "reason": "shell expansion inventory; no data-flow proof"
+    },
+    {
+      "path": "infra/observability/wait-gitops.sh",
+      "line": 13,
+      "classification": "unknown",
+      "reason": "shell expansion inventory; no data-flow proof"
+    },
+    {
+      "path": "infra/observability/wait-gitops.sh",
+      "line": 14,
+      "classification": "unknown",
+      "reason": "shell expansion inventory; no data-flow proof"
+    },
+    {
+      "path": "infra/observability/wait-gitops.sh",
+      "line": 15,
+      "classification": "unknown",
+      "reason": "shell expansion inventory; no data-flow proof"
+    },
+    {
+      "path": "infra/observability/wait-gitops.sh",
+      "line": 16,
+      "classification": "unknown",
+      "reason": "shell expansion inventory; no data-flow proof"
+    },
+    {
+      "path": "infra/observability/wait-gitops.sh",
+      "line": 23,
+      "classification": "unknown",
+      "reason": "shell expansion inventory; no data-flow proof"
+    },
+    {
+      "path": "infra/runtime/repair-amd64-emulator-20261023.py",
+      "line": 21,
+      "classification": "safe",
+      "reason": "fixed command and literal arguments; scoped to this call only",
+      "sink": "subprocess.check_output"
+    },
+    {
+      "path": "infra/security/command-audit.py",
+      "line": 45,
+      "classification": "unknown",
+      "reason": "dynamic arguments, environment, wrapper or remote-shell trust needs manual review; argument-list calls are not proof of injection",
+      "sink": "subprocess.check_output(['git', 'ls-files', 'src/main', 'infra'], text=True).splitlines"
+    },
+    {
+      "path": "infra/security/command-audit.py",
+      "line": 45,
+      "classification": "safe",
+      "reason": "fixed command and literal arguments; scoped to this call only",
+      "sink": "subprocess.check_output"
+    },
+    {
+      "path": "infra/security/runtime/render.py",
+      "line": 8,
+      "classification": "unknown",
+      "reason": "dynamic arguments, environment, wrapper or remote-shell trust needs manual review; argument-list calls are not proof of injection",
+      "sink": "subprocess.check_output"
+    }
+  ],
+  "errors": [],
+  "counts": {
+    "safe": 11,
+    "dangerous": 0,
+    "unknown": 43
+  },
+  "round3_review": {
+    "baseline_build": 238,
+    "total": 43,
+    "items": [
+      {
+        "id": 1,
+        "path": "infra/analytics/controlled.py",
+        "baseline_line": 26,
+        "baseline_sink": "subprocess.run",
+        "classification": "unknown",
+        "evidence": "Generic SSH remote-command wrapper; destination override comes from operator environment. Full caller/file/message trust graph not proven; WARN.",
+        "source_file_sha256": "79af08148cbe73e03e14d0c69a4222f1d3ef1b0d0d279ec8264f3e8f4b030998",
+        "action": "WARN",
+        "scope": "current reviewed call sites, not blanket function allowlist",
+        "reviewed_source_sha256": "79af08148cbe73e03e14d0c69a4222f1d3ef1b0d0d279ec8264f3e8f4b030998",
+        "review_binding": true
+      },
+      {
+        "id": 2,
+        "path": "infra/analytics/install_host_resources.py",
+        "baseline_line": 26,
+        "baseline_sink": "subprocess.run",
+        "classification": "dynamic_controlled",
+        "evidence": "launchctl executable and label fixed; UID from OS, plist local owner-controlled; argv, no shell.",
+        "source_file_sha256": "7076247ae5953cc36dc8e9a3f214a8564f6e63e2a56a9ed557b8f9d514c52301",
+        "action": "reviewed_nonblocking",
+        "scope": "current reviewed call sites, not blanket function allowlist",
+        "reviewed_source_sha256": "7076247ae5953cc36dc8e9a3f214a8564f6e63e2a56a9ed557b8f9d514c52301",
+        "review_binding": true
+      },
+      {
+        "id": 3,
+        "path": "infra/analytics/install_host_resources.py",
+        "baseline_line": 29,
+        "baseline_sink": "subprocess.run",
+        "classification": "dynamic_controlled",
+        "evidence": "launchctl bootstrap gets resolved local generated plist as a separate argument; administrator-owned operation.",
+        "source_file_sha256": "7076247ae5953cc36dc8e9a3f214a8564f6e63e2a56a9ed557b8f9d514c52301",
+        "action": "reviewed_nonblocking",
+        "scope": "current reviewed call sites, not blanket function allowlist",
+        "reviewed_source_sha256": "7076247ae5953cc36dc8e9a3f214a8564f6e63e2a56a9ed557b8f9d514c52301",
+        "review_binding": true
+      },
+      {
+        "id": 4,
+        "path": "infra/analytics/install_host_resources.py",
+        "baseline_line": 30,
+        "baseline_sink": "subprocess.run",
+        "classification": "dynamic_controlled",
+        "evidence": "launchctl kickstart label and current UID are fixed/OS-derived argv.",
+        "source_file_sha256": "7076247ae5953cc36dc8e9a3f214a8564f6e63e2a56a9ed557b8f9d514c52301",
+        "action": "reviewed_nonblocking",
+        "scope": "current reviewed call sites, not blanket function allowlist",
+        "reviewed_source_sha256": "7076247ae5953cc36dc8e9a3f214a8564f6e63e2a56a9ed557b8f9d514c52301",
+        "review_binding": true
+      },
+      {
+        "id": 5,
+        "path": "infra/analytics/run_airflow.py",
+        "baseline_line": 83,
+        "baseline_sink": "subprocess.run",
+        "classification": "fixed_trusted",
+        "evidence": "Fixed curl operation and fixed HOST; output treated as data.",
+        "source_file_sha256": "3f002acef880d93777a47b8e38853e00fc6c4004026a0e72f25d64230071424a",
+        "action": "reviewed_nonblocking",
+        "scope": "current reviewed call sites, not blanket function allowlist",
+        "reviewed_source_sha256": "3f002acef880d93777a47b8e38853e00fc6c4004026a0e72f25d64230071424a",
+        "review_binding": true
+      },
+      {
+        "id": 6,
+        "path": "infra/analytics/test_clinic_task.py",
+        "baseline_line": 64,
+        "baseline_sink": "subprocess.run",
+        "classification": "dynamic_controlled",
+        "evidence": "Unit test calls finite_input with fixed cat command and synthetic data; body encoding/quoting tested.",
+        "source_file_sha256": "d438923fdc630b37e74d0a467409ed23f304370a10a241225d6bb3b47c641afb",
+        "action": "reviewed_nonblocking",
+        "scope": "current reviewed call sites, not blanket function allowlist",
+        "reviewed_source_sha256": "d438923fdc630b37e74d0a467409ed23f304370a10a241225d6bb3b47c641afb",
+        "review_binding": true
+      },
+      {
+        "id": 7,
+        "path": "infra/analytics/verify_superset.py",
+        "baseline_line": 39,
+        "baseline_sink": "subprocess.run",
+        "classification": "external_controllable",
+        "evidence": "Administrator CLI selects browser interpreter/script paths; executable is externally configurable intentionally. No HTTP/Jenkins/message exposure proven; WARN, not a proven injection.",
+        "source_file_sha256": "29cff07e35c8c278e41d5e93683aa8443facc6e416694986fbbc7791de1ea7f1",
+        "action": "WARN",
+        "scope": "current reviewed call sites, not blanket function allowlist",
+        "reviewed_source_sha256": "29cff07e35c8c278e41d5e93683aa8443facc6e416694986fbbc7791de1ea7f1",
+        "review_binding": true
+      },
+      {
+        "id": 8,
+        "path": "infra/data/audit-postgres.py",
+        "baseline_line": 6,
+        "baseline_sink": "subprocess.check_output(['ssh', '-o', 'BatchMode=yes', '192.168.1.58', f'sudo -n k3s kubectl exec -i -n ns-data deploy/postgresql -- psql -X -v ON_ERROR_STOP=1 -U postgres -d {db} -At'], input=q, text=True, timeout=60).strip",
+        "classification": "dynamic_controlled",
+        "evidence": "SSH command interpolates db, but all current callers use fixed petclinic/registry; SQL itself goes over stdin.",
+        "source_file_sha256": "2c142d6ccb93d2afd616a79fad6fdacb2fa80adc3035d3d42f77a3374b277e3d",
+        "action": "reviewed_nonblocking",
+        "scope": "current reviewed call sites, not blanket function allowlist",
+        "reviewed_source_sha256": "2c142d6ccb93d2afd616a79fad6fdacb2fa80adc3035d3d42f77a3374b277e3d",
+        "review_binding": true
+      },
+      {
+        "id": 9,
+        "path": "infra/data/audit-postgres.py",
+        "baseline_line": 6,
+        "baseline_sink": "subprocess.check_output",
+        "classification": "dynamic_controlled",
+        "evidence": "Duplicate result .strip node at same source call as item 8, not an extra process.",
+        "source_file_sha256": "2c142d6ccb93d2afd616a79fad6fdacb2fa80adc3035d3d42f77a3374b277e3d",
+        "action": "reviewed_nonblocking",
+        "scope": "current reviewed call sites, not blanket function allowlist",
+        "reviewed_source_sha256": "2c142d6ccb93d2afd616a79fad6fdacb2fa80adc3035d3d42f77a3374b277e3d",
+        "review_binding": true
+      },
+      {
+        "id": 10,
+        "path": "infra/devops-lab/iac/isolated/test_build_inputs.py",
+        "baseline_line": 31,
+        "baseline_sink": "subprocess.run",
+        "classification": "dynamic_controlled",
+        "evidence": "Test interpreter from sys.executable; generated temp paths/digest passed as separate arguments.",
+        "source_file_sha256": "9f1cc53c961f72e8a656059822bdd8390f290db7862f152cf6fc2daed33b82a6",
+        "action": "reviewed_nonblocking",
+        "scope": "current reviewed call sites, not blanket function allowlist",
+        "reviewed_source_sha256": "9f1cc53c961f72e8a656059822bdd8390f290db7862f152cf6fc2daed33b82a6",
+        "review_binding": true
+      },
+      {
+        "id": 11,
+        "path": "infra/devops-lab/iac/isolated/worker.py",
+        "baseline_line": 213,
+        "baseline_sink": "subprocess.Popen",
+        "classification": "dynamic_controlled",
+        "evidence": "Fixed Terraform executable; internal call sites supply arrays; environment rebuilt with fixed PATH, plans inspected. No shell.",
+        "source_file_sha256": "7f6680c119c4ee488a56421ffcbb15c9790d0df32085324e5f871b8e78157c59",
+        "action": "reviewed_nonblocking",
+        "scope": "current reviewed call sites, not blanket function allowlist",
+        "reviewed_source_sha256": "7f6680c119c4ee488a56421ffcbb15c9790d0df32085324e5f871b8e78157c59",
+        "review_binding": true
+      },
+      {
+        "id": 12,
+        "path": "infra/devops-lab/iac/isolated/worker.py",
+        "baseline_line": 316,
+        "baseline_sink": "subprocess.Popen",
+        "classification": "dynamic_controlled",
+        "evidence": "Fixed Terraform argv including verified run.tfplan; environment credentials are data, not shell text.",
+        "source_file_sha256": "7f6680c119c4ee488a56421ffcbb15c9790d0df32085324e5f871b8e78157c59",
+        "action": "reviewed_nonblocking",
+        "scope": "current reviewed call sites, not blanket function allowlist",
+        "reviewed_source_sha256": "7f6680c119c4ee488a56421ffcbb15c9790d0df32085324e5f871b8e78157c59",
+        "review_binding": true
+      },
+      {
+        "id": 13,
+        "path": "infra/devops-lab/iac/run.py",
+        "baseline_line": 82,
+        "baseline_sink": "subprocess.check_output",
+        "classification": "dynamic_controlled",
+        "evidence": "Revision validated as 40 hex characters before git show argv.",
+        "source_file_sha256": "471e951d4db9288167d8e9b3cb3ff08c22a6b9a7b31188bbc0109c2778c4d638",
+        "action": "reviewed_nonblocking",
+        "scope": "current reviewed call sites, not blanket function allowlist",
+        "reviewed_source_sha256": "471e951d4db9288167d8e9b3cb3ff08c22a6b9a7b31188bbc0109c2778c4d638",
+        "review_binding": true
+      },
+      {
+        "id": 14,
+        "path": "infra/devops-lab/iac/run.py",
+        "baseline_line": 93,
+        "baseline_sink": "subprocess.check_output(['git', 'ls-tree', '-r', '--name-only', args.revision, '--', prefix], cwd=ROOT, text=True).splitlines",
+        "classification": "dynamic_controlled",
+        "evidence": "Revision validated as 40 hex; git ls-tree argv and constant source prefix.",
+        "source_file_sha256": "471e951d4db9288167d8e9b3cb3ff08c22a6b9a7b31188bbc0109c2778c4d638",
+        "action": "reviewed_nonblocking",
+        "scope": "current reviewed call sites, not blanket function allowlist",
+        "reviewed_source_sha256": "471e951d4db9288167d8e9b3cb3ff08c22a6b9a7b31188bbc0109c2778c4d638",
+        "review_binding": true
+      },
+      {
+        "id": 15,
+        "path": "infra/devops-lab/iac/run.py",
+        "baseline_line": 94,
+        "baseline_sink": "subprocess.check_output",
+        "classification": "dynamic_controlled",
+        "evidence": "Tracked paths from pinned git tree plus validated revision; git show argv, not shell.",
+        "source_file_sha256": "471e951d4db9288167d8e9b3cb3ff08c22a6b9a7b31188bbc0109c2778c4d638",
+        "action": "reviewed_nonblocking",
+        "scope": "current reviewed call sites, not blanket function allowlist",
+        "reviewed_source_sha256": "471e951d4db9288167d8e9b3cb3ff08c22a6b9a7b31188bbc0109c2778c4d638",
+        "review_binding": true
+      },
+      {
+        "id": 16,
+        "path": "infra/devops-lab/iac/run.py",
+        "baseline_line": 93,
+        "baseline_sink": "subprocess.check_output",
+        "classification": "dynamic_controlled",
+        "evidence": "Duplicate .splitlines result node of item 14; no additional execution.",
+        "source_file_sha256": "471e951d4db9288167d8e9b3cb3ff08c22a6b9a7b31188bbc0109c2778c4d638",
+        "action": "reviewed_nonblocking",
+        "scope": "current reviewed call sites, not blanket function allowlist",
+        "reviewed_source_sha256": "471e951d4db9288167d8e9b3cb3ff08c22a6b9a7b31188bbc0109c2778c4d638",
+        "review_binding": true
+      },
+      {
+        "id": 17,
+        "path": "infra/devops-lab/rollouts/run.py",
+        "baseline_line": 42,
+        "baseline_sink": "subprocess.run",
+        "classification": "dynamic_controlled",
+        "evidence": "40-hex approved revision and fixed paths passed to git diff as argv.",
+        "source_file_sha256": "c31450f63d851ffeaa1bf9621a0ee7cc978d8f4846589160df06b4f161161295",
+        "action": "reviewed_nonblocking",
+        "scope": "current reviewed call sites, not blanket function allowlist",
+        "reviewed_source_sha256": "c31450f63d851ffeaa1bf9621a0ee7cc978d8f4846589160df06b4f161161295",
+        "review_binding": true
+      },
+      {
+        "id": 18,
+        "path": "infra/devops-lab/rollouts/run.py",
+        "baseline_line": 37,
+        "baseline_sink": "subprocess.check_output",
+        "classification": "dynamic_controlled",
+        "evidence": "Approved 40-hex revision plus constant source prefix; git show argv.",
+        "source_file_sha256": "c31450f63d851ffeaa1bf9621a0ee7cc978d8f4846589160df06b4f161161295",
+        "action": "reviewed_nonblocking",
+        "scope": "current reviewed call sites, not blanket function allowlist",
+        "reviewed_source_sha256": "c31450f63d851ffeaa1bf9621a0ee7cc978d8f4846589160df06b4f161161295",
+        "review_binding": true
+      },
+      {
+        "id": 19,
+        "path": "infra/harbor/warm_trivy_db.py",
+        "baseline_line": 66,
+        "baseline_sink": "subprocess.run",
+        "classification": "dynamic_controlled",
+        "evidence": "Fixed curl binary; artifact path and parsed destination URL passed as argv. Possible URL trust questions are not command injection.",
+        "source_file_sha256": "11ef8add1f3548db66089bf8abd39325158dc1496573eb4c28097fb38e05119c",
+        "action": "reviewed_nonblocking",
+        "scope": "current reviewed call sites, not blanket function allowlist",
+        "reviewed_source_sha256": "11ef8add1f3548db66089bf8abd39325158dc1496573eb4c28097fb38e05119c",
+        "review_binding": true
+      },
+      {
+        "id": 20,
+        "path": "infra/harbor/warm_trivy_db.py",
+        "baseline_line": 99,
+        "baseline_sink": "subprocess.Popen",
+        "classification": "dynamic_controlled",
+        "evidence": "Pinned manifest and DB-kind enum; pidfile quoted and CLI serialized with shlex.join before remote shell.",
+        "source_file_sha256": "11ef8add1f3548db66089bf8abd39325158dc1496573eb4c28097fb38e05119c",
+        "action": "reviewed_nonblocking",
+        "scope": "current reviewed call sites, not blanket function allowlist",
+        "reviewed_source_sha256": "11ef8add1f3548db66089bf8abd39325158dc1496573eb4c28097fb38e05119c",
+        "review_binding": true
+      },
+      {
+        "id": 21,
+        "path": "infra/observability/audit-production.py",
+        "baseline_line": 11,
+        "baseline_sink": "subprocess.check_output",
+        "classification": "unknown",
+        "evidence": "Generic remote(command) SSH wrapper; local trusted callers dominate, but arbitrary future command input cannot be proven controlled. WARN.",
+        "source_file_sha256": "89f61cad1358bd0d556e7cf801ae3b9ade94fbaa5244d36343581dc3cbdc16fe",
+        "action": "WARN",
+        "scope": "current reviewed call sites, not blanket function allowlist",
+        "reviewed_source_sha256": "89f61cad1358bd0d556e7cf801ae3b9ade94fbaa5244d36343581dc3cbdc16fe",
+        "review_binding": true
+      },
+      {
+        "id": 22,
+        "path": "infra/observability/configure-collectors.py",
+        "baseline_line": 5,
+        "baseline_sink": "subprocess.check_output",
+        "classification": "dynamic_controlled",
+        "evidence": "kubectl fixed binary; current local callers provide argv, no shell/eval.",
+        "source_file_sha256": "4a42ca780868487413be2e8cd7adecfe6e1b2ab33427941071387a3980bebece",
+        "action": "reviewed_nonblocking",
+        "scope": "current reviewed call sites, not blanket function allowlist",
+        "reviewed_source_sha256": "4a42ca780868487413be2e8cd7adecfe6e1b2ab33427941071387a3980bebece",
+        "review_binding": true
+      },
+      {
+        "id": 23,
+        "path": "infra/observability/configure-control-relay.py",
+        "baseline_line": 4,
+        "baseline_sink": "subprocess.check_output",
+        "classification": "dynamic_controlled",
+        "evidence": "kubectl fixed binary; internal positional args and UID checks, no shell.",
+        "source_file_sha256": "e4f63b21146ea05604f464631826c880f38a3a02a9288a3814c618b22761dc33",
+        "action": "reviewed_nonblocking",
+        "scope": "current reviewed call sites, not blanket function allowlist",
+        "reviewed_source_sha256": "e4f63b21146ea05604f464631826c880f38a3a02a9288a3814c618b22761dc33",
+        "review_binding": true
+      },
+      {
+        "id": 24,
+        "path": "infra/observability/configure-filebeat-retention.py",
+        "baseline_line": 20,
+        "baseline_sink": "subprocess.check_output",
+        "classification": "dynamic_controlled",
+        "evidence": "Constructed curl argv; API paths from internal constants, JSON body over stdin.",
+        "source_file_sha256": "e30b77935812029273924166eb73e15541fe38892611ac7eb4f7ba0a72e6e9a0",
+        "action": "reviewed_nonblocking",
+        "scope": "current reviewed call sites, not blanket function allowlist",
+        "reviewed_source_sha256": "e30b77935812029273924166eb73e15541fe38892611ac7eb4f7ba0a72e6e9a0",
+        "review_binding": true
+      },
+      {
+        "id": 25,
+        "path": "infra/observability/configure-jenkins-resources.py",
+        "baseline_line": 11,
+        "baseline_sink": "subprocess.run",
+        "classification": "fixed_trusted",
+        "evidence": "Fixed kubectl patch operation; JSON patch built from constants, passed as one argv value.",
+        "source_file_sha256": "5264776e7b861781e440160fa3187edba53db621e74005ad4e6072a3bf775d8a",
+        "action": "reviewed_nonblocking",
+        "scope": "current reviewed call sites, not blanket function allowlist",
+        "reviewed_source_sha256": "5264776e7b861781e440160fa3187edba53db621e74005ad4e6072a3bf775d8a",
+        "review_binding": true
+      },
+      {
+        "id": 26,
+        "path": "infra/observability/configure-upgrade-kibana.py",
+        "baseline_line": 4,
+        "baseline_sink": "subprocess.check_output",
+        "classification": "dynamic_controlled",
+        "evidence": "Fixed kubectl executable; current service namespace/name arguments originate in local fixed calls.",
+        "source_file_sha256": "653cea497d9ac6e064b5564d798763a902a1fce78d974ef93faa6926790cc0f5",
+        "action": "reviewed_nonblocking",
+        "scope": "current reviewed call sites, not blanket function allowlist",
+        "reviewed_source_sha256": "653cea497d9ac6e064b5564d798763a902a1fce78d974ef93faa6926790cc0f5",
+        "review_binding": true
+      },
+      {
+        "id": 27,
+        "path": "infra/observability/platform-snapshot.py",
+        "baseline_line": 65,
+        "baseline_sink": "subprocess.run",
+        "classification": "dynamic_controlled",
+        "evidence": "Fixed kubectl apply argv; collected API values serialized as JSON stdin, not command.",
+        "source_file_sha256": "3669a908efe167fb541467782b5413ff6d6a96e2aab3e9bbdad1344b3453660a",
+        "action": "reviewed_nonblocking",
+        "scope": "current reviewed call sites, not blanket function allowlist",
+        "reviewed_source_sha256": "3669a908efe167fb541467782b5413ff6d6a96e2aab3e9bbdad1344b3453660a",
+        "review_binding": true
+      },
+      {
+        "id": 28,
+        "path": "infra/observability/platform-snapshot.py",
+        "baseline_line": 7,
+        "baseline_sink": "subprocess.check_output",
+        "classification": "dynamic_controlled",
+        "evidence": "KUBE is one of two fixed local executables; internal args kept as argv.",
+        "source_file_sha256": "3669a908efe167fb541467782b5413ff6d6a96e2aab3e9bbdad1344b3453660a",
+        "action": "reviewed_nonblocking",
+        "scope": "current reviewed call sites, not blanket function allowlist",
+        "reviewed_source_sha256": "3669a908efe167fb541467782b5413ff6d6a96e2aab3e9bbdad1344b3453660a",
+        "review_binding": true
+      },
+      {
+        "id": 29,
+        "path": "infra/observability/run-ha-maintenance.py",
+        "baseline_line": 30,
+        "baseline_sink": "subprocess.check_output",
+        "classification": "dynamic_controlled",
+        "evidence": "Fixed k3s kubectl executable; local maintenance argv, no shell.",
+        "source_file_sha256": "88610d7e7c00d4428f1d88c34ec0259a3d7ef210b6490680ccc099eb18e11527",
+        "action": "reviewed_nonblocking",
+        "scope": "current reviewed call sites, not blanket function allowlist",
+        "reviewed_source_sha256": "88610d7e7c00d4428f1d88c34ec0259a3d7ef210b6490680ccc099eb18e11527",
+        "review_binding": true
+      },
+      {
+        "id": 30,
+        "path": "infra/observability/run-ha-maintenance.py",
+        "baseline_line": 87,
+        "baseline_sink": "subprocess.Popen",
+        "classification": "dynamic_controlled",
+        "evidence": "Scoped drain node from reviewed local maintenance logic, separate argv; no command-string evaluation.",
+        "source_file_sha256": "88610d7e7c00d4428f1d88c34ec0259a3d7ef210b6490680ccc099eb18e11527",
+        "action": "reviewed_nonblocking",
+        "scope": "current reviewed call sites, not blanket function allowlist",
+        "reviewed_source_sha256": "88610d7e7c00d4428f1d88c34ec0259a3d7ef210b6490680ccc099eb18e11527",
+        "review_binding": true
+      },
+      {
+        "id": 31,
+        "path": "infra/observability/run-isolated-drills.py",
+        "baseline_line": 24,
+        "baseline_sink": "subprocess.check_output",
+        "classification": "dynamic_controlled",
+        "evidence": "Remote kubectl command serialized with shlex.join; request body via stdin, fixed SSH host.",
+        "source_file_sha256": "9abc5f446f76945258938be0f8abe9633175b57f325c891f6bc320a82edf2fc3",
+        "action": "reviewed_nonblocking",
+        "scope": "current reviewed call sites, not blanket function allowlist",
+        "reviewed_source_sha256": "9abc5f446f76945258938be0f8abe9633175b57f325c891f6bc320a82edf2fc3",
+        "review_binding": true
+      },
+      {
+        "id": 32,
+        "path": "infra/observability/validate-ha-workers.py",
+        "baseline_line": 22,
+        "baseline_sink": "subprocess.check_output",
+        "classification": "dynamic_controlled",
+        "evidence": "Remote argv serialized with shlex.join and fixed host; no unquoted shell concatenation.",
+        "source_file_sha256": "e54de8033d9ebe78e93ae8676eea4dc3b8320b40715a5a74c1c3a2b14e76a90f",
+        "action": "reviewed_nonblocking",
+        "scope": "current reviewed call sites, not blanket function allowlist",
+        "reviewed_source_sha256": "e54de8033d9ebe78e93ae8676eea4dc3b8320b40715a5a74c1c3a2b14e76a90f",
+        "review_binding": true
+      },
+      {
+        "id": 33,
+        "path": "infra/observability/verify-upgrade-trace.py",
+        "baseline_line": 8,
+        "baseline_sink": "subprocess.check_output",
+        "classification": "dynamic_controlled",
+        "evidence": "Fixed kubectl argv plus local service metadata, no shell.",
+        "source_file_sha256": "56225122e645a1fedd1b13e8838139f06fdd9e09d4be3af6325dfae712828f70",
+        "action": "reviewed_nonblocking",
+        "scope": "current reviewed call sites, not blanket function allowlist",
+        "reviewed_source_sha256": "56225122e645a1fedd1b13e8838139f06fdd9e09d4be3af6325dfae712828f70",
+        "review_binding": true
+      },
+      {
+        "id": 34,
+        "path": "infra/observability/wait-gitops.sh",
+        "baseline_line": 5,
+        "baseline_sink": null,
+        "classification": "dynamic_controlled",
+        "evidence": "Operator timeout environment used for arithmetic, not eval; malformed values can fail timing, no proven command injection.",
+        "source_file_sha256": "8e28da7141696814f87c1461a54f824cab28ba99eaee56fe3ba108ae86666a48",
+        "action": "reviewed_nonblocking",
+        "scope": "current reviewed call sites, not blanket function allowlist",
+        "reviewed_source_sha256": "8e28da7141696814f87c1461a54f824cab28ba99eaee56fe3ba108ae86666a48",
+        "review_binding": true
+      },
+      {
+        "id": 35,
+        "path": "infra/observability/wait-gitops.sh",
+        "baseline_line": 8,
+        "baseline_sink": null,
+        "classification": "dynamic_controlled",
+        "evidence": "Operator attempt count quoted as seq argument; no eval or unquoted shell expansion.",
+        "source_file_sha256": "8e28da7141696814f87c1461a54f824cab28ba99eaee56fe3ba108ae86666a48",
+        "action": "reviewed_nonblocking",
+        "scope": "current reviewed call sites, not blanket function allowlist",
+        "reviewed_source_sha256": "8e28da7141696814f87c1461a54f824cab28ba99eaee56fe3ba108ae86666a48",
+        "review_binding": true
+      },
+      {
+        "id": 36,
+        "path": "infra/observability/wait-gitops.sh",
+        "baseline_line": 11,
+        "baseline_sink": null,
+        "classification": "fixed_trusted",
+        "evidence": "Fixed kubectl read-only command substitution; API result stored as data.",
+        "source_file_sha256": "8e28da7141696814f87c1461a54f824cab28ba99eaee56fe3ba108ae86666a48",
+        "action": "reviewed_nonblocking",
+        "scope": "current reviewed call sites, not blanket function allowlist",
+        "reviewed_source_sha256": "8e28da7141696814f87c1461a54f824cab28ba99eaee56fe3ba108ae86666a48",
+        "review_binding": true
+      },
+      {
+        "id": 37,
+        "path": "infra/observability/wait-gitops.sh",
+        "baseline_line": 13,
+        "baseline_sink": null,
+        "classification": "dynamic_controlled",
+        "evidence": "API state quoted into fixed printf/cut; shell does not reevaluate result as code.",
+        "source_file_sha256": "8e28da7141696814f87c1461a54f824cab28ba99eaee56fe3ba108ae86666a48",
+        "action": "reviewed_nonblocking",
+        "scope": "current reviewed call sites, not blanket function allowlist",
+        "reviewed_source_sha256": "8e28da7141696814f87c1461a54f824cab28ba99eaee56fe3ba108ae86666a48",
+        "review_binding": true
+      },
+      {
+        "id": 38,
+        "path": "infra/observability/wait-gitops.sh",
+        "baseline_line": 14,
+        "baseline_sink": null,
+        "classification": "dynamic_controlled",
+        "evidence": "Same quoted data-only printf/cut boundary.",
+        "source_file_sha256": "8e28da7141696814f87c1461a54f824cab28ba99eaee56fe3ba108ae86666a48",
+        "action": "reviewed_nonblocking",
+        "scope": "current reviewed call sites, not blanket function allowlist",
+        "reviewed_source_sha256": "8e28da7141696814f87c1461a54f824cab28ba99eaee56fe3ba108ae86666a48",
+        "review_binding": true
+      },
+      {
+        "id": 39,
+        "path": "infra/observability/wait-gitops.sh",
+        "baseline_line": 15,
+        "baseline_sink": null,
+        "classification": "dynamic_controlled",
+        "evidence": "Same quoted data-only printf/cut boundary.",
+        "source_file_sha256": "8e28da7141696814f87c1461a54f824cab28ba99eaee56fe3ba108ae86666a48",
+        "action": "reviewed_nonblocking",
+        "scope": "current reviewed call sites, not blanket function allowlist",
+        "reviewed_source_sha256": "8e28da7141696814f87c1461a54f824cab28ba99eaee56fe3ba108ae86666a48",
+        "review_binding": true
+      },
+      {
+        "id": 40,
+        "path": "infra/observability/wait-gitops.sh",
+        "baseline_line": 16,
+        "baseline_sink": null,
+        "classification": "fixed_trusted",
+        "evidence": "Fixed kubectl read-only image query; data compared using quoted test.",
+        "source_file_sha256": "8e28da7141696814f87c1461a54f824cab28ba99eaee56fe3ba108ae86666a48",
+        "action": "reviewed_nonblocking",
+        "scope": "current reviewed call sites, not blanket function allowlist",
+        "reviewed_source_sha256": "8e28da7141696814f87c1461a54f824cab28ba99eaee56fe3ba108ae86666a48",
+        "review_binding": true
+      },
+      {
+        "id": 41,
+        "path": "infra/observability/wait-gitops.sh",
+        "baseline_line": 23,
+        "baseline_sink": null,
+        "classification": "fixed_trusted",
+        "evidence": "Fixed date command substitution; quoted numeric comparison.",
+        "source_file_sha256": "8e28da7141696814f87c1461a54f824cab28ba99eaee56fe3ba108ae86666a48",
+        "action": "reviewed_nonblocking",
+        "scope": "current reviewed call sites, not blanket function allowlist",
+        "reviewed_source_sha256": "8e28da7141696814f87c1461a54f824cab28ba99eaee56fe3ba108ae86666a48",
+        "review_binding": true
+      },
+      {
+        "id": 42,
+        "path": "infra/security/command-audit.py",
+        "baseline_line": 33,
+        "baseline_sink": "subprocess.check_output(['git', 'ls-files', 'src/main', 'infra'], text=True).splitlines",
+        "classification": "fixed_trusted",
+        "evidence": "Result .splitlines node over literal git argv: old inventory false positive, no dynamic executable.",
+        "source_file_sha256": "53d81b31ee68819db6ccc704fe5eb7e28d66d5778d8ff7d6caaf83a630c2d6a3",
+        "action": "reviewed_nonblocking",
+        "scope": "current reviewed call sites, not blanket function allowlist",
+        "reviewed_source_sha256": "a15d278bc2ab5b7b6266765bee52399b3788ea5d8205fd7d3078237172d1cd02",
+        "review_binding": true
+      },
+      {
+        "id": 43,
+        "path": "infra/security/runtime/render.py",
+        "baseline_line": 8,
+        "baseline_sink": "subprocess.check_output",
+        "classification": "dynamic_controlled",
+        "evidence": "Fixed absolute Helm path; chart content SHA checked against pinned lock; local paths as separate arguments.",
+        "source_file_sha256": "d612a8da41bf7d0f3b85575c2f4e72b9508f414fcd7eb1b9024c1ac7c090d74b",
+        "action": "reviewed_nonblocking",
+        "scope": "current reviewed call sites, not blanket function allowlist",
+        "reviewed_source_sha256": "d612a8da41bf7d0f3b85575c2f4e72b9508f414fcd7eb1b9024c1ac7c090d74b",
+        "review_binding": true
+      }
+    ],
+    "counts": {
+      "fixed_trusted": 6,
+      "dynamic_controlled": 34,
+      "external_controllable": 1,
+      "unknown": 2
+    }
+  },
+  "blockingFindings": [],
+  "policyTests": {
+    "external_shell_detected": 4,
+    "safe_or_unproven_not_blocked": 5,
+    "executed_commands": 0
+  },
+  "policy": "FAIL only proven direct external shell path; reviewed script trust boundaries and uncertain cases WARN",
+  "ssh_audit": {
+    "status": "success",
+    "wrapper_source_sha256": {
+      "infra/analytics/controlled.py": "79af08148cbe73e03e14d0c69a4222f1d3ef1b0d0d279ec8264f3e8f4b030998",
+      "infra/observability/audit-production.py": "89f61cad1358bd0d556e7cf801ae3b9ade94fbaa5244d36343581dc3cbdc16fe"
+    },
+    "calls": [
+      {
+        "path": "infra/analytics/grant_app_readonly.py",
+        "line": 17,
+        "wrapper": "controlled.remote",
+        "classification": "dynamic_controlled",
+        "source_evidence": [
+          "escaped"
+        ],
+        "action": "reviewed_nonblocking",
+        "rule": null
+      },
+      {
+        "path": "infra/analytics/migrate_schema.py",
+        "line": 32,
+        "wrapper": "controlled.remote",
+        "classification": "fixed_trusted",
+        "source_evidence": [],
+        "action": "reviewed_nonblocking",
+        "rule": null
+      },
+      {
+        "path": "infra/analytics/migrate_schema.py",
+        "line": 35,
+        "wrapper": "controlled.remote",
+        "classification": "dynamic_controlled",
+        "source_evidence": [
+          "escaped"
+        ],
+        "action": "reviewed_nonblocking",
+        "rule": null
+      },
+      {
+        "path": "infra/analytics/persist_kafka.py",
+        "line": 42,
+        "wrapper": "controlled.remote",
+        "classification": "unknown",
+        "source_evidence": [
+          "unknown"
+        ],
+        "action": "WARN",
+        "rule": null
+      },
+      {
+        "path": "infra/analytics/persist_kafka.py",
+        "line": 53,
+        "wrapper": "controlled.remote",
+        "classification": "dynamic_controlled",
+        "source_evidence": [
+          "escaped"
+        ],
+        "action": "reviewed_nonblocking",
+        "rule": null
+      },
+      {
+        "path": "infra/analytics/prepare_spark_runtime.py",
+        "line": 33,
+        "wrapper": "controlled.remote",
+        "classification": "dynamic_controlled",
+        "source_evidence": [
+          "escaped"
+        ],
+        "action": "reviewed_nonblocking",
+        "rule": null
+      },
+      {
+        "path": "infra/analytics/repair_hello_ingress.py",
+        "line": 10,
+        "wrapper": "controlled.remote",
+        "classification": "dynamic_controlled",
+        "source_evidence": [
+          "escaped"
+        ],
+        "action": "reviewed_nonblocking",
+        "rule": null
+      },
+      {
+        "path": "infra/analytics/repair_hello_ingress.py",
+        "line": 19,
+        "wrapper": "controlled.remote",
+        "classification": "dynamic_controlled",
+        "source_evidence": [
+          "escaped"
+        ],
+        "action": "reviewed_nonblocking",
+        "rule": null
+      },
+      {
+        "path": "infra/analytics/repair_hello_ingress.py",
+        "line": 21,
+        "wrapper": "controlled.remote",
+        "classification": "fixed_trusted",
+        "source_evidence": [],
+        "action": "reviewed_nonblocking",
+        "rule": null
+      },
+      {
+        "path": "infra/analytics/repair_runner.py",
+        "line": 35,
+        "wrapper": "controlled.remote",
+        "classification": "dynamic_controlled",
+        "source_evidence": [
+          "escaped"
+        ],
+        "action": "reviewed_nonblocking",
+        "rule": null
+      },
+      {
+        "path": "infra/analytics/repair_runner.py",
+        "line": 31,
+        "wrapper": "controlled.remote",
+        "classification": "dynamic_controlled",
+        "source_evidence": [
+          "escaped"
+        ],
+        "action": "reviewed_nonblocking",
+        "rule": null
+      },
+      {
+        "path": "infra/analytics/run_flink.py",
+        "line": 9,
+        "wrapper": "controlled.remote",
+        "classification": "unknown",
+        "source_evidence": [
+          "unknown"
+        ],
+        "action": "WARN",
+        "rule": null
+      },
+      {
+        "path": "infra/analytics/run_flink.py",
+        "line": 26,
+        "wrapper": "controlled.remote",
+        "classification": "unknown",
+        "source_evidence": [
+          "unknown"
+        ],
+        "action": "WARN",
+        "rule": null
+      },
+      {
+        "path": "infra/analytics/run_flink.py",
+        "line": 94,
+        "wrapper": "controlled.remote",
+        "classification": "fixed_trusted",
+        "source_evidence": [],
+        "action": "reviewed_nonblocking",
+        "rule": null
+      },
+      {
+        "path": "infra/analytics/run_flink.py",
+        "line": 102,
+        "wrapper": "controlled.remote",
+        "classification": "unknown",
+        "source_evidence": [
+          "unknown"
+        ],
+        "action": "WARN",
+        "rule": null
+      },
+      {
+        "path": "infra/analytics/run_spark.py",
+        "line": 25,
+        "wrapper": "controlled.remote",
+        "classification": "unknown",
+        "source_evidence": [
+          "unknown"
+        ],
+        "action": "WARN",
+        "rule": null
+      },
+      {
+        "path": "infra/analytics/run_spark.py",
+        "line": 204,
+        "wrapper": "controlled.remote",
+        "classification": "fixed_trusted",
+        "source_evidence": [],
+        "action": "reviewed_nonblocking",
+        "rule": null
+      },
+      {
+        "path": "infra/analytics/run_superset.py",
+        "line": 27,
+        "wrapper": "controlled.remote",
+        "classification": "unknown",
+        "source_evidence": [
+          "unknown"
+        ],
+        "action": "WARN",
+        "rule": null
+      },
+      {
+        "path": "infra/analytics/run_superset.py",
+        "line": 28,
+        "wrapper": "controlled.remote",
+        "classification": "unknown",
+        "source_evidence": [
+          "unknown"
+        ],
+        "action": "WARN",
+        "rule": null
+      },
+      {
+        "path": "infra/analytics/run_superset.py",
+        "line": 29,
+        "wrapper": "controlled.remote",
+        "classification": "unknown",
+        "source_evidence": [
+          "unknown"
+        ],
+        "action": "WARN",
+        "rule": null
+      },
+      {
+        "path": "infra/analytics/run_superset.py",
+        "line": 31,
+        "wrapper": "controlled.remote",
+        "classification": "fixed_trusted",
+        "source_evidence": [],
+        "action": "reviewed_nonblocking",
+        "rule": null
+      },
+      {
+        "path": "infra/analytics/run_superset.py",
+        "line": 34,
+        "wrapper": "controlled.remote",
+        "classification": "dynamic_controlled",
+        "source_evidence": [
+          "escaped"
+        ],
+        "action": "reviewed_nonblocking",
+        "rule": null
+      },
+      {
+        "path": "infra/analytics/run_superset.py",
+        "line": 36,
+        "wrapper": "controlled.remote",
+        "classification": "dynamic_controlled",
+        "source_evidence": [
+          "escaped"
+        ],
+        "action": "reviewed_nonblocking",
+        "rule": null
+      },
+      {
+        "path": "infra/analytics/run_superset.py",
+        "line": 38,
+        "wrapper": "controlled.remote",
+        "classification": "fixed_trusted",
+        "source_evidence": [],
+        "action": "reviewed_nonblocking",
+        "rule": null
+      },
+      {
+        "path": "infra/analytics/run_trino.py",
+        "line": 46,
+        "wrapper": "controlled.remote",
+        "classification": "fixed_trusted",
+        "source_evidence": [],
+        "action": "reviewed_nonblocking",
+        "rule": null
+      },
+      {
+        "path": "infra/analytics/run_trino.py",
+        "line": 49,
+        "wrapper": "controlled.remote",
+        "classification": "unknown",
+        "source_evidence": [
+          "unknown"
+        ],
+        "action": "WARN",
+        "rule": null
+      },
+      {
+        "path": "infra/analytics/run_trino.py",
+        "line": 50,
+        "wrapper": "controlled.remote",
+        "classification": "fixed_trusted",
+        "source_evidence": [],
+        "action": "reviewed_nonblocking",
+        "rule": null
+      },
+      {
+        "path": "infra/analytics/trino_local.py",
+        "line": 23,
+        "wrapper": "controlled.remote",
+        "classification": "fixed_trusted",
+        "source_evidence": [],
+        "action": "reviewed_nonblocking",
+        "rule": null
+      },
+      {
+        "path": "infra/analytics/trino_local.py",
+        "line": 25,
+        "wrapper": "controlled.remote",
+        "classification": "unknown",
+        "source_evidence": [
+          "unknown"
+        ],
+        "action": "WARN",
+        "rule": null
+      },
+      {
+        "path": "infra/analytics/trino_local.py",
+        "line": 26,
+        "wrapper": "controlled.remote",
+        "classification": "fixed_trusted",
+        "source_evidence": [],
+        "action": "reviewed_nonblocking",
+        "rule": null
+      },
+      {
+        "path": "infra/data/audit-postgres.py",
+        "line": 34,
+        "wrapper": "dynamic-loaded remote alias",
+        "classification": "fixed_trusted",
+        "source_evidence": [],
+        "action": "reviewed_nonblocking",
+        "rule": null
+      },
+      {
+        "path": "infra/devops-lab/iac/run.py",
+        "line": 31,
+        "wrapper": "controlled.remote",
+        "classification": "unknown",
+        "source_evidence": [
+          "unknown"
+        ],
+        "action": "WARN",
+        "rule": null
+      },
+      {
+        "path": "infra/devops-lab/iac/run.py",
+        "line": 106,
+        "wrapper": "controlled.remote",
+        "classification": "dynamic_controlled",
+        "source_evidence": [
+          "escaped"
+        ],
+        "action": "reviewed_nonblocking",
+        "rule": null
+      },
+      {
+        "path": "infra/devops-lab/iac/run.py",
+        "line": 118,
+        "wrapper": "controlled.remote",
+        "classification": "dynamic_controlled",
+        "source_evidence": [
+          "escaped"
+        ],
+        "action": "reviewed_nonblocking",
+        "rule": null
+      },
+      {
+        "path": "infra/devops-lab/iac/run.py",
+        "line": 150,
+        "wrapper": "controlled.remote",
+        "classification": "unknown",
+        "source_evidence": [
+          "unknown"
+        ],
+        "action": "WARN",
+        "rule": null
+      },
+      {
+        "path": "infra/devops-lab/iac/run.py",
+        "line": 175,
+        "wrapper": "controlled.remote",
+        "classification": "unknown",
+        "source_evidence": [
+          "unknown"
+        ],
+        "action": "WARN",
+        "rule": null
+      },
+      {
+        "path": "infra/devops-lab/rollouts/run.py",
+        "line": 47,
+        "wrapper": "controlled.remote",
+        "classification": "dynamic_controlled",
+        "source_evidence": [
+          "escaped"
+        ],
+        "action": "reviewed_nonblocking",
+        "rule": null
+      },
+      {
+        "path": "infra/devops-lab/rollouts/run.py",
+        "line": 53,
+        "wrapper": "controlled.remote",
+        "classification": "unknown",
+        "source_evidence": [
+          "unknown"
+        ],
+        "action": "WARN",
+        "rule": null
+      },
+      {
+        "path": "infra/devops-lab/rollouts/run.py",
+        "line": 89,
+        "wrapper": "controlled.remote",
+        "classification": "unknown",
+        "source_evidence": [
+          "unknown"
+        ],
+        "action": "WARN",
+        "rule": null
+      },
+      {
+        "path": "infra/devops-lab/rollouts/run.py",
+        "line": 101,
+        "wrapper": "controlled.remote",
+        "classification": "unknown",
+        "source_evidence": [
+          "unknown"
+        ],
+        "action": "WARN",
+        "rule": null
+      },
+      {
+        "path": "infra/devops-lab/rollouts/run.py",
+        "line": 199,
+        "wrapper": "controlled.remote",
+        "classification": "unknown",
+        "source_evidence": [
+          "unknown"
+        ],
+        "action": "WARN",
+        "rule": null
+      },
+      {
+        "path": "infra/observability/sample-capacity.py",
+        "line": 31,
+        "wrapper": "dynamic-loaded remote alias",
+        "classification": "fixed_trusted",
+        "source_evidence": [],
+        "action": "reviewed_nonblocking",
+        "rule": null
+      },
+      {
+        "path": "infra/observability/sample-capacity.py",
+        "line": 24,
+        "wrapper": "dynamic-loaded remote alias",
+        "classification": "fixed_trusted",
+        "source_evidence": [],
+        "action": "reviewed_nonblocking",
+        "rule": null
+      },
+      {
+        "path": "infra/observability/sample-capacity.py",
+        "line": 25,
+        "wrapper": "dynamic-loaded remote alias",
+        "classification": "fixed_trusted",
+        "source_evidence": [],
+        "action": "reviewed_nonblocking",
+        "rule": null
+      },
+      {
+        "path": "infra/observability/validate-ha-workers.py",
+        "line": 87,
+        "wrapper": "dynamic-loaded remote alias",
+        "classification": "unknown",
+        "source_evidence": [
+          "unknown"
+        ],
+        "action": "WARN",
+        "rule": null
+      },
+      {
+        "path": "infra/observability/watch-ha-release.py",
+        "line": 25,
+        "wrapper": "dynamic-loaded remote alias",
+        "classification": "fixed_trusted",
+        "source_evidence": [],
+        "action": "reviewed_nonblocking",
+        "rule": null
+      },
+      {
+        "path": "infra/observability/watch-release.py",
+        "line": 21,
+        "wrapper": "dynamic-loaded remote alias",
+        "classification": "fixed_trusted",
+        "source_evidence": [],
+        "action": "reviewed_nonblocking",
+        "rule": null
+      },
+      {
+        "path": "infra/security/runtime/verify.py",
+        "line": 12,
+        "wrapper": "controlled.remote",
+        "classification": "dynamic_controlled",
+        "source_evidence": [
+          "escaped"
+        ],
+        "action": "reviewed_nonblocking",
+        "rule": null
+      },
+      {
+        "path": "infra/security/runtime/verify.py",
+        "line": 30,
+        "wrapper": "controlled.remote",
+        "classification": "fixed_trusted",
+        "source_evidence": [],
+        "action": "reviewed_nonblocking",
+        "rule": null
+      }
+    ],
+    "blockingFindings": [],
+    "counts": {
+      "fixed_trusted": 17,
+      "dynamic_controlled": 14,
+      "external_controllable": 0,
+      "unknown": 18
+    },
+    "tests": {
+      "external_ssh_detected": 4,
+      "safe_or_unproven_not_blocked": 7,
+      "executed_commands": 0
+    },
+    "scope": "two reviewed SSH wrappers and fixed-host direct SSH; local explicit source flows only; runtime import resolution, general SSH options, environment/file/message provenance and cross-function flow remain WARN",
+    "manual_review": {
+      "baseline_build": 239,
+      "source_binding": {
+        "infra/analytics/controlled.py": "79af08148cbe73e03e14d0c69a4222f1d3ef1b0d0d279ec8264f3e8f4b030998",
+        "infra/observability/audit-production.py": "89f61cad1358bd0d556e7cf801ae3b9ade94fbaa5244d36343581dc3cbdc16fe",
+        "infra/analytics/run_trino.py": "93b5dceb2c2202a651b143be983c1f426e396dfda6e58116557233800b8ab4e0",
+        "infra/analytics/trino_local.py": "f220467210cd789ef071f9635a1edbae283acdd2be45183f1a7cbd6e623aed64",
+        "infra/analytics/run_superset.py": "4059f7f90b18bd8a843dba435257d5ebe6885649ac1dcc9eebdf40a72151d1e5",
+        "infra/analytics/run_flink.py": "89f5830883fa300a17dea34206395a957069fd54a66e3c5833a3209e16e2ab6d",
+        "infra/devops-lab/iac/run.py": "471e951d4db9288167d8e9b3cb3ff08c22a6b9a7b31188bbc0109c2778c4d638",
+        "infra/devops-lab/rollouts/run.py": "c31450f63d851ffeaa1bf9621a0ee7cc978d8f4846589160df06b4f161161295",
+        "Jenkinsfile": "c46ac48976d581890592968272ed664e93bf4de9f86beab13c2144d67ef67b9b",
+        "Jenkinsfile.security-audit": "7ac51fba49b2a12045433c6ae817116e0c946026328a7cfab59abfcf1c0878c7"
+      },
+      "wrappers": [
+        {
+          "path": "infra/analytics/controlled.py",
+          "classification": "dynamic_controlled",
+          "sources": [
+            "trusted local admin scripts",
+            "fixed commands",
+            "shlex-serialized argv",
+            "local repo script via stdin"
+          ],
+          "environment": {
+            "PETCLINIC_SSH_ADDRESS": "SSH HostName option only, separate argv; no command string interpolation",
+            "other_environment": "not proven untrusted at command sink; keep WARN"
+          },
+          "jenkins": "No parameters block or params.* command path in current Jenkinsfiles; security-audit does not call this wrapper for deployment",
+          "http_file_message": "Kubernetes/HTTP results are data; local script files require repository/workstation trust. stdin itself is not a universal sanitizer when receiving interpreter code. No demonstrated untrusted HTTP/message-to-command path.",
+          "remaining_warn": "Generic remote(command) has no intrinsic validation; unknown callers and nested interpreter semantics remain WARN."
+        },
+        {
+          "path": "infra/observability/audit-production.py",
+          "classification": "dynamic_controlled",
+          "sources": [
+            "fixed collect() probes",
+            "local kube(args) fixed callsites",
+            "query() builds curl argv using shlex.join",
+            "watchers use fixed HTTP curl commands",
+            "audit-postgres fixed query/log probes"
+          ],
+          "environment": "No direct environment substitution in SSH command sink",
+          "jenkins": "No direct Jenkins parameter path found",
+          "http_file_message": "Prometheus/Loki/HTTP/database responses are parsed as data; output file path is local only",
+          "remaining_warn": "kube(args) concatenates command text; current callers fixed, future arbitrary caller parameters not automatically trusted"
+        }
+      ],
+      "callsite_reviews": [
+        {
+          "path": "infra/analytics/run_trino.py",
+          "classification": "dynamic_controlled",
+          "evidence": "Concatenated address is Kubernetes Service clusterIP; output path fixed; script from tracked local repository passed over stdin. Cluster API and local repository are trust boundaries, not proof of arbitrary user control."
+        },
+        {
+          "path": "infra/analytics/trino_local.py",
+          "classification": "dynamic_controlled",
+          "evidence": "Same reviewed Service clusterIP and fixed output path; no direct HTTP/message field in shell string."
+        },
+        {
+          "path": "infra/analytics/run_superset.py",
+          "classification": "dynamic_controlled",
+          "evidence": "Backup path fixed prefix plus timestamp; command serialized with shlex; nested bash script built locally. Local code and image inputs trusted by operator; generic nested-shell bypass not granted."
+        },
+        {
+          "path": "infra/analytics/run_flink.py",
+          "classification": "dynamic_controlled",
+          "evidence": "curl argv then shlex.join; JSON request body is one quoted argument, not an evaluated shell program."
+        },
+        {
+          "path": "infra/devops-lab/iac/run.py",
+          "classification": "dynamic_controlled",
+          "evidence": "Known relay command argv serialized by shlex.join; request path/method encoded JSON via stdin; source revision checked as exact hex before reading files."
+        },
+        {
+          "path": "infra/devops-lab/rollouts/run.py",
+          "classification": "dynamic_controlled",
+          "evidence": "Pinned source CLI/script; shlex-serialized argv. Python -c body is local tracked code; address/count transmitted as separate argv."
+        }
+      ],
+      "policy": "Review is evidence only; it never suppresses a scanner finding. Source drift marks review stale. Unknown wrappers, alias resolution, env/file/message origin and nested interpreter flows remain WARN."
+    },
+    "review_source_unchanged": false
+  },
+  "interpreter_audit": {
+    "status": "success",
+    "calls": [
+      {
+        "path": "infra/analytics/grant_app_readonly.py",
+        "line": 17,
+        "kind": "SSH outer quote removed before interpreter code",
+        "classification": "fixed_trusted",
+        "source": [],
+        "action": "reviewed_nonblocking",
+        "rule": null
+      },
+      {
+        "path": "infra/analytics/migrate_schema.py",
+        "line": 35,
+        "kind": "SSH outer quote removed before interpreter code",
+        "classification": "unknown",
+        "source": [
+          "unknown"
+        ],
+        "action": "WARN",
+        "rule": null
+      },
+      {
+        "path": "infra/analytics/persist_kafka.py",
+        "line": 53,
+        "kind": "SSH outer quote removed before interpreter code",
+        "classification": "unknown",
+        "source": [
+          "unknown"
+        ],
+        "action": "WARN",
+        "rule": null
+      },
+      {
+        "path": "infra/analytics/prepare_spark_runtime.py",
+        "line": 33,
+        "kind": "SSH outer quote removed before interpreter code",
+        "classification": "fixed_trusted",
+        "source": [],
+        "action": "reviewed_nonblocking",
+        "rule": null
+      },
+      {
+        "path": "infra/analytics/repair_hello_ingress.py",
+        "line": 10,
+        "kind": "SSH outer quote removed before interpreter code",
+        "classification": "fixed_trusted",
+        "source": [],
+        "action": "reviewed_nonblocking",
+        "rule": null
+      },
+      {
+        "path": "infra/analytics/repair_hello_ingress.py",
+        "line": 19,
+        "kind": "SSH outer quote removed before interpreter code",
+        "classification": "fixed_trusted",
+        "source": [],
+        "action": "reviewed_nonblocking",
+        "rule": null
+      },
+      {
+        "path": "infra/analytics/repair_runner.py",
+        "line": 35,
+        "kind": "SSH outer quote removed before interpreter code",
+        "classification": "fixed_trusted",
+        "source": [],
+        "action": "reviewed_nonblocking",
+        "rule": null
+      },
+      {
+        "path": "infra/analytics/repair_runner.py",
+        "line": 31,
+        "kind": "SSH outer quote removed before interpreter code",
+        "classification": "unknown",
+        "source": [
+          "unknown"
+        ],
+        "action": "WARN",
+        "rule": null
+      },
+      {
+        "path": "infra/devops-lab/iac/run.py",
+        "line": 106,
+        "kind": "SSH outer quote removed before interpreter code",
+        "classification": "fixed_trusted",
+        "source": [],
+        "action": "reviewed_nonblocking",
+        "rule": null
+      },
+      {
+        "path": "infra/devops-lab/iac/run.py",
+        "line": 118,
+        "kind": "SSH outer quote removed before interpreter code",
+        "classification": "unknown",
+        "source": [
+          "unknown"
+        ],
+        "action": "WARN",
+        "rule": null
+      },
+      {
+        "path": "infra/devops-lab/rollouts/run.py",
+        "line": 101,
+        "kind": "SSH serialized nested interpreter code",
+        "classification": "fixed_trusted",
+        "source": [],
+        "action": "reviewed_nonblocking",
+        "rule": null
+      },
+      {
+        "path": "infra/observability/scanner-db-refresh.mjs",
+        "line": 106,
+        "kind": "non-Python interpreter inventory",
+        "classification": "unknown",
+        "action": "WARN"
+      },
+      {
+        "path": "infra/observability/scanner-db-refresh.mjs",
+        "line": 111,
+        "kind": "non-Python interpreter inventory",
+        "classification": "unknown",
+        "action": "WARN"
+      },
+      {
+        "path": "infra/observability/scanner-db-refresh.mjs",
+        "line": 115,
+        "kind": "non-Python interpreter inventory",
+        "classification": "unknown",
+        "action": "WARN"
+      },
+      {
+        "path": "infra/observability/scanner-queue-reservation.mjs",
+        "line": 11,
+        "kind": "non-Python interpreter inventory",
+        "classification": "unknown",
+        "action": "WARN"
+      },
+      {
+        "path": "infra/observability/sonar-resource-slot.mjs",
+        "line": 25,
+        "kind": "non-Python interpreter inventory",
+        "classification": "unknown",
+        "action": "WARN"
+      },
+      {
+        "path": "infra/observability/terraform-executor.mjs",
+        "line": 112,
+        "kind": "non-Python interpreter inventory",
+        "classification": "unknown",
+        "action": "WARN"
+      },
+      {
+        "path": "infra/observability/terraform-sandbox-tests.mjs",
+        "line": 13,
+        "kind": "non-Python interpreter inventory",
+        "classification": "unknown",
+        "action": "WARN"
+      },
+      {
+        "path": "infra/security/command-audit.mjs",
+        "line": 4,
+        "kind": "non-Python interpreter inventory",
+        "classification": "unknown",
+        "action": "WARN"
+      },
+      {
+        "path": "infra/security/command-audit.mjs",
+        "line": 7,
+        "kind": "non-Python interpreter inventory",
+        "classification": "unknown",
+        "action": "WARN"
+      },
+      {
+        "path": "infra/security/manager/tool.mjs",
+        "line": 11,
+        "kind": "non-Python interpreter inventory",
+        "classification": "unknown",
+        "action": "WARN"
+      },
+      {
+        "path": "infra/security/manager/tool.mjs",
+        "line": 17,
+        "kind": "non-Python interpreter inventory",
+        "classification": "unknown",
+        "action": "WARN"
+      },
+      {
+        "path": "infra/security/manager/tool.mjs",
+        "line": 20,
+        "kind": "non-Python interpreter inventory",
+        "classification": "unknown",
+        "action": "WARN"
+      },
+      {
+        "path": "infra/security/manager/tool.mjs",
+        "line": 27,
+        "kind": "non-Python interpreter inventory",
+        "classification": "unknown",
+        "action": "WARN"
+      },
+      {
+        "path": "infra/security/runtime/verify.py",
+        "line": 12,
+        "kind": "SSH outer quote removed before interpreter code",
+        "classification": "unknown",
+        "source": [
+          "unknown"
+        ],
+        "action": "WARN",
+        "rule": null
+      },
+      {
+        "path": "infra/security/scanner-runtime.mjs",
+        "line": 40,
+        "kind": "non-Python interpreter inventory",
+        "classification": "unknown",
+        "action": "WARN"
+      },
+      {
+        "path": "infra/security/scanner-runtime.mjs",
+        "line": 47,
+        "kind": "non-Python interpreter inventory",
+        "classification": "unknown",
+        "action": "WARN"
+      },
+      {
+        "path": "infra/security/scanner-runtime.mjs",
+        "line": 56,
+        "kind": "non-Python interpreter inventory",
+        "classification": "unknown",
+        "action": "WARN"
+      },
+      {
+        "path": "infra/security/semgrep-gate.mjs",
+        "line": 14,
+        "kind": "non-Python interpreter inventory",
+        "classification": "unknown",
+        "action": "WARN"
+      },
+      {
+        "path": "infra/security/semgrep-gate.mjs",
+        "line": 15,
+        "kind": "non-Python interpreter inventory",
+        "classification": "unknown",
+        "action": "WARN"
+      },
+      {
+        "path": "infra/security/semgrep-gate.mjs",
+        "line": 16,
+        "kind": "non-Python interpreter inventory",
+        "classification": "unknown",
+        "action": "WARN"
+      },
+      {
+        "path": "infra/security/semgrep-gate.mjs",
+        "line": 17,
+        "kind": "non-Python interpreter inventory",
+        "classification": "unknown",
+        "action": "WARN"
+      },
+      {
+        "path": "infra/security/semgrep-gate.mjs",
+        "line": 18,
+        "kind": "non-Python interpreter inventory",
+        "classification": "unknown",
+        "action": "WARN"
+      },
+      {
+        "path": "infra/security/source-gate.mjs",
+        "line": 23,
+        "kind": "non-Python interpreter inventory",
+        "classification": "unknown",
+        "action": "WARN"
+      },
+      {
+        "path": "infra/security/source-gate.mjs",
+        "line": 46,
+        "kind": "non-Python interpreter inventory",
+        "classification": "unknown",
+        "action": "WARN"
+      },
+      {
+        "path": "infra/security/source-gate.mjs",
+        "line": 57,
+        "kind": "non-Python interpreter inventory",
+        "classification": "unknown",
+        "action": "WARN"
+      },
+      {
+        "path": "infra/security/zap-gate.mjs",
+        "line": 15,
+        "kind": "non-Python interpreter inventory",
+        "classification": "unknown",
+        "action": "WARN"
+      },
+      {
+        "path": "infra/security/zap-gate.mjs",
+        "line": 16,
+        "kind": "non-Python interpreter inventory",
+        "classification": "unknown",
+        "action": "WARN"
+      },
+      {
+        "path": "infra/security/zap-gate.mjs",
+        "line": 17,
+        "kind": "non-Python interpreter inventory",
+        "classification": "unknown",
+        "action": "WARN"
+      },
+      {
+        "path": "infra/security/zap-gate.mjs",
+        "line": 21,
+        "kind": "non-Python interpreter inventory",
+        "classification": "unknown",
+        "action": "WARN"
+      },
+      {
+        "path": "infra/security/zap-gate.mjs",
+        "line": 57,
+        "kind": "non-Python interpreter inventory",
+        "classification": "unknown",
+        "action": "WARN"
+      },
+      {
+        "path": "infra/security/zap-gate.mjs",
+        "line": 62,
+        "kind": "non-Python interpreter inventory",
+        "classification": "unknown",
+        "action": "WARN"
+      }
+    ],
+    "blockingFindings": [],
+    "tests": {
+      "external_program_detected": 7,
+      "safe_or_unproven_not_blocked": 7,
+      "repeat_consistent": true,
+      "executed_commands": 0
+    },
+    "counts": {
+      "fixed_trusted": 7,
+      "dynamic_controlled": 0,
+      "external_controllable": 0,
+      "unknown": 35
+    },
+    "scope": "Direct interpreter argv/stdin and syntactically proven controlled.remote nested code. General wrappers, environment/file origin, embedded scripts and JavaScript/Shell inventory stay WARN; no interprocedural or exploit-completeness claim."
+  },
+  "podUid": "9eeebf56-4b1c-448f-aea0-5d950b41611e",
+  "isolation": "Existing pinned Python image, read-only filesystem, no service-account token, existing default-deny namespace"
+}

@@ -1,0 +1,25 @@
+import fs from 'node:fs';import crypto from 'node:crypto';import os from 'node:os';import path from 'node:path';import {spawnSync} from 'node:child_process';import {summarizeKubescape,combineKubescape} from './kubescape-report.mjs';
+const lock=JSON.parse(fs.readFileSync('infra/security/governance/tools-lock.json')).kubescape,root='.devsecops/kubescape';fs.mkdirSync(root,{recursive:true});
+const report={status:'failed',mode:'AUDIT',version:lock.version,source:fs.readFileSync('.git-sha','utf8').trim(),startedAt:new Date().toISOString(),scans:[],operatorInstalled:false,hostScan:false,excludedKinds:['Secret'],limitations:['No host or kubelet filesystem collection; not full node CIS certification.','Secret values are excluded and the scan identity cannot read Secrets.','Historical baseline findings are AUDIT, not changes to #250 FAIL gates.']};
+const hash=p=>crypto.createHash('sha256').update(fs.readFileSync(p)).digest('hex');
+const k=(args,allowed=[0])=>{const r=spawnSync('kubectl',['--request-timeout=20s',...args],{encoding:'utf8',timeout:25000,maxBuffer:4*1024*1024});if(r.error||!allowed.includes(r.status))throw Error('Kubescape read-only setup unavailable: '+r.stderr.slice(-800));return r;};
+let temp;
+try{
+ if(hash(lock.path)!==lock.sha256)throw Error('Kubescape executable SHA mismatch');for(const [name,sha] of Object.entries(lock.artifacts))if(hash(path.join(lock.artifactRoot,name))!==sha)throw Error('Kubescape policy snapshot mismatch: '+name);
+ const lease=JSON.parse(k(['-n','data-infra','get','lease','platform-heavy','-o','json']).stdout);if(lease.spec.holderIdentity!==(process.env.HEAVY_HOLDER||'jenkins-petclinic-'+process.env.BUILD_NUMBER))throw Error('Existing outer resource lock required; no nested acquisition');
+ temp=fs.mkdtempSync(path.join(os.tmpdir(),'kubescape-readonly-'));fs.chmodSync(temp,0o700);
+ const server=k(['config','view','--minify','-o','jsonpath={.clusters[0].cluster.server}']).stdout.trim();const ca=JSON.parse(k(['-n','devsecops-system','get','configmap','kube-root-ca.crt','-o','json']).stdout).data['ca.crt'];const current={server,'certificate-authority-data':Buffer.from(ca).toString('base64')};
+ const token=k(['-n','devsecops-system','create','token','kubescape-readonly','--duration=30m']).stdout.trim();
+ const config={apiVersion:'v1',kind:'Config',clusters:[{name:'k3s-readonly',cluster:{server:current.server,'certificate-authority-data':current['certificate-authority-data']}}],users:[{name:'audit',user:{token}}],contexts:[{name:'kubescape-readonly',context:{cluster:'k3s-readonly',user:'audit'}}],'current-context':'kubescape-readonly'};
+ const kubeconfig=path.join(temp,'config');fs.writeFileSync(kubeconfig,JSON.stringify(config),{mode:0o600});
+ const denied=k(['--kubeconfig',kubeconfig,'auth','can-i','list','secrets'],[0,1]).stdout.trim();const write=k(['--kubeconfig',kubeconfig,'auth','can-i','patch','deployments','-n','petclinic'],[0,1]).stdout.trim();if(denied!=='no'||write!=='no')throw Error('Kubescape must not access Secrets or mutate business');report.rbac={secretReadDenied:true,businessWriteDenied:true,tokenTtl:'30m'};
+ const scan=(scope,framework,target)=>{
+  const output=path.join(root,scope+'-'+framework+'.json'),args=['scan','framework',framework,...(target?[target]:[]),'--kube-context','kubescape-readonly','--host-scan=false','--keep-local','--exclude-kinds','Secret','--format','json','--output',output,'--use-artifacts-from',lock.artifactRoot,'--exceptions','infra/security/governance/kubescape-no-exceptions.json','--controls-config',path.join(lock.artifactRoot,'controls-inputs.json'),'--scan-timeout','5m','--control-timeout','20s'];
+  const began=Date.now(),r=spawnSync(lock.path,args,{encoding:'utf8',timeout:330000,maxBuffer:4*1024*1024,env:{...process.env,KUBECONFIG:kubeconfig,GOMAXPROCS:'1',GOMEMLIMIT:'384MiB',OTEL_SDK_DISABLED:'true'}});
+  fs.writeFileSync(output+'.log',String(r.stdout??'')+String(r.stderr??''));if(r.error||r.status!==0)throw Error('Kubescape engine failed for '+scope+'/'+framework+'; see archived log');
+  const data=JSON.parse(fs.readFileSync(output)),summary=summarizeKubescape(data,scope,framework);summary.reportFile=output;summary.reportSha256=hash(output);summary.durationMs=Date.now()-began;report.scans.push(summary);
+ };
+ for(const framework of ['nsa','cis-v1.12.0']){scan('cluster',framework);scan('yaml',framework,'k8s/production');}
+ Object.assign(report,combineKubescape(report.scans));report.frameworks=report.scans.map(({scope,framework,complianceScore,failedControlCount,controls,resources})=>({scope,framework,complianceScore,failedControlCount,controls,resources}));report.status='success';
+} catch(e){report.error=e.message;throw e;}finally{if(temp)fs.rmSync(temp,{recursive:true,force:true});report.finishedAt=new Date().toISOString();fs.writeFileSync('.devsecops/kubescape-gate.json',JSON.stringify(report,null,2));}
+console.log(JSON.stringify({status:report.status,version:report.version,mode:report.mode,failedControls:report.failedControls,highRiskFindings:report.highRiskFindings,frameworks:report.frameworks}));

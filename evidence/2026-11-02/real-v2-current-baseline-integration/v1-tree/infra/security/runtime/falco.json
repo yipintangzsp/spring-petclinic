@@ -1,0 +1,376 @@
+{
+  "apiVersion": "v1",
+  "kind": "List",
+  "items": [
+    {
+      "apiVersion": "v1",
+      "kind": "ServiceAccount",
+      "metadata": {
+        "name": "platform-falco",
+        "namespace": "devsecops-system",
+        "labels": {
+          "helm.sh/chart": "falco-9.2.1",
+          "app.kubernetes.io/name": "falco",
+          "app.kubernetes.io/instance": "platform-devsecops",
+          "app.kubernetes.io/version": "0.45.1",
+          "app.kubernetes.io/managed-by": "Helm",
+          "petclinic.devops.local/owner": "platform-runtime-security"
+        }
+      }
+    },
+    {
+      "apiVersion": "v1",
+      "kind": "ConfigMap",
+      "metadata": {
+        "name": "platform-falco",
+        "namespace": "devsecops-system",
+        "labels": {
+          "helm.sh/chart": "falco-9.2.1",
+          "app.kubernetes.io/name": "falco",
+          "app.kubernetes.io/instance": "platform-devsecops",
+          "app.kubernetes.io/version": "0.45.1",
+          "app.kubernetes.io/managed-by": "Helm",
+          "petclinic.devops.local/owner": "platform-runtime-security"
+        }
+      },
+      "data": {
+        "falco.yaml": "append_output:\n- suggested_output: true\nbase_syscalls:\n  all: false\n  custom_set: []\n  repair: false\nbuffer_format_base64: false\nbuffered_outputs: false\ncapture:\n  default_duration: 5000\n  enabled: false\n  mode: rules\n  path_prefix: /tmp/falco\nconfig_files:\n- /etc/falco/config.d\nengine:\n  kind: modern_ebpf\n  modern_ebpf:\n    buf_size_preset: 2\n    cpus_for_each_buffer: 2\n    disable_iterators: false\n    drop_failed_exit: false\nfalco_libs:\n  snaplen: 80\n  thread_table_auto_purging_interval_s: 300\n  thread_table_auto_purging_thread_timeout_s: 300\n  thread_table_size: 262144\nfile_output:\n  enabled: false\n  filename: ./events.txt\n  keep_alive: false\nhttp_output:\n  ca_bundle: \"\"\n  ca_cert: \"\"\n  ca_path: /etc/falco/certs/\n  client_cert: /etc/falco/certs/client/client.crt\n  client_key: /etc/falco/certs/client/client.key\n  compress_uploads: false\n  echo: false\n  enabled: false\n  insecure: false\n  keep_alive: false\n  max_consecutive_timeouts: 5\n  mtls: false\n  url: \"\"\n  user_agent: falcosecurity/falco\njson_include_message_property: false\njson_include_output_fields_property: true\njson_include_output_property: true\njson_include_tags_property: true\njson_output: true\nlibs_logger:\n  enabled: true\n  severity: info\nload_plugins:\n- container\nlog_level: info\nlog_stderr: true\nlog_syslog: false\nmetrics:\n  convert_memory_to_mb: true\n  enabled: true\n  include_empty_values: false\n  interval: 30s\n  jemalloc_stats_enabled: false\n  kernel_event_counters_enabled: true\n  kernel_event_counters_per_cpu_enabled: false\n  kernel_iter_event_counters_enabled: true\n  libbpf_stats_enabled: false\n  output_rule: false\n  plugins_metrics_enabled: true\n  resource_utilization_enabled: true\n  rules_counters_enabled: true\n  state_counters_enabled: true\noutput_timeout: 2000\noutputs_queue:\n  capacity: 0\nplugins:\n- init_config:\n    engines:\n      bpm:\n        enabled: false\n      containerd:\n        enabled: false\n        sockets:\n        - /run/k3s/containerd/containerd.sock\n      cri:\n        enabled: true\n        sockets:\n        - /run/k3s/containerd/containerd.sock\n      docker:\n        enabled: false\n        sockets:\n        - /var/run/docker.sock\n      libvirt_lxc:\n        enabled: false\n      lxc:\n        enabled: false\n      podman:\n        enabled: false\n        sockets:\n        - /run/podman/podman.sock\n    hooks:\n    - create\n    label_max_len: 100\n    with_size: false\n  library_path: libcontainer.so\n  name: container\nplugins_hostinfo: true\npriority: debug\nprogram_output:\n  enabled: false\n  keep_alive: false\n  program: 'jq ''{text: .output}'' | curl -d @- -X POST https://hooks.slack.com/services/XXX'\nrule_matching: first\nrules_files:\n- /etc/falco/rules.d/platform-rules.yaml\nstdout_output:\n  enabled: true\nsyscall_event_drops:\n  actions:\n  - log\n  - alert\n  max_burst: 1\n  rate: 0.03333\n  simulate_drops: false\n  threshold: 0.1\nsyscall_event_timeouts:\n  max_consecutives: 1000\nsyslog_output:\n  enabled: false\ntime_format_iso_8601: false\nwatch_config_files: true\nwebserver:\n  enabled: true\n  k8s_healthz_endpoint: /healthz\n  listen_address: 0.0.0.0\n  listen_port: 8765\n  prometheus_metrics_enabled: true\n  ssl_certificate: /etc/falco/falco.pem\n  ssl_enabled: false\n  threadiness: 0"
+      }
+    },
+    {
+      "apiVersion": "v1",
+      "kind": "ConfigMap",
+      "metadata": {
+        "name": "platform-falco-rules",
+        "namespace": "devsecops-system",
+        "labels": {
+          "helm.sh/chart": "falco-9.2.1",
+          "app.kubernetes.io/name": "falco",
+          "app.kubernetes.io/instance": "platform-devsecops",
+          "app.kubernetes.io/version": "0.45.1",
+          "app.kubernetes.io/managed-by": "Helm",
+          "petclinic.devops.local/owner": "platform-runtime-security"
+        }
+      },
+      "data": {
+        "platform-rules.yaml": "- list: platform_runtime_namespaces\n  items:\n  - petclinic\n  - devsecops-test\n- macro: platform_runtime_scope\n  condition: container.id != host and k8s.ns.name in (platform_runtime_namespaces)\n- macro: platform_expected_runtime_bootstrap\n  condition: proc.exepath=\"/var/lib/rancher/k3s/data/876326f0487c64e27190fea8c8c5f54263aabc782061df6455fa54c0f7e2a1ad/bin/runc\"\n    and proc.name in (\"runc:[0:PARENT]\", \"runc:[1:CHILD]\") and proc.cmdline in (\"runc:[0:PARENT]\n    init\", \"runc:[1:CHILD] init\", \"runc:[1:CHILD]\") and ((k8s.ns.name=petclinic and\n    container.name in (worker, tests) and container.image.repository=\"192.168.1.58:30050/platform-upgrade/airflow\")\n    or (k8s.ns.name=petclinic and container.name=petclinic and container.image.repository=\"core.harbor.domain/petclinic/petclinic\")\n    or (k8s.ns.name=devsecops-test and container.name=test and container.image.repository=\"127.0.0.1:30050/petclinic/petclinic\"))\n- rule: Platform Runtime Shell\n  desc: Shell start in business or isolated security test namespace; an expected operator\n    exec is still auditable.\n  condition: platform_runtime_scope and (evt.type in (execve, execveat) and evt.failed=false\n    and proc.name in (sh, bash, dash, ash)) and not (k8s.ns.name=petclinic and container.name=worker\n    and container.image.repository=\"192.168.1.58:30050/platform-upgrade/airflow\" and\n    proc.name=sh and proc.cmdline=\"sh -c kill -0 1\") and not (k8s.ns.name=petclinic\n    and container.name=petclinic and container.image.repository=\"core.harbor.domain/petclinic/petclinic\"\n    and proc.exepath=\"/usr/bin/dash\" and proc.name=sh and proc.cmdline=\"sh -c sleep\n    5\")\n  output: runtime_security node=%evt.hostname namespace=%k8s.ns.name pod=%k8s.pod.name\n    container=%container.name image=%container.image.repository process=%proc.name\n    command=%proc.cmdline user=%user.uid result=%evt.res executable=%proc.exepath\n    syscall=%evt.type\n  priority: WARNING\n  tags:\n  - platform_runtime\n  - container\n- rule: Platform Runtime Sensitive Read\n  desc: Sensitive identity file read, including denied attempt; classify libc lookup\n    noise from observed evidence.\n  condition: (platform_runtime_scope and (evt.type in (open, openat, openat2) and\n    evt.is_open_read=true and evt.arg.name in (/etc/shadow, /etc/passwd))) and not\n    platform_expected_runtime_bootstrap\n  output: runtime_security node=%evt.hostname namespace=%k8s.ns.name pod=%k8s.pod.name\n    container=%container.name image=%container.image.repository process=%proc.name\n    command=%proc.cmdline user=%user.uid result=%evt.res executable=%proc.exepath\n    syscall=%evt.type path=%evt.arg.name\n  priority: WARNING\n  tags:\n  - platform_runtime\n  - container\n- rule: Platform Runtime Package Manager\n  desc: Package manager execution; tests use --version, never install software.\n  condition: platform_runtime_scope and (evt.type in (execve, execveat) and evt.failed=false\n    and proc.name in (apt, apt-get, yum, dnf, apk))\n  output: runtime_security node=%evt.hostname namespace=%k8s.ns.name pod=%k8s.pod.name\n    container=%container.name image=%container.image.repository process=%proc.name\n    command=%proc.cmdline user=%user.uid result=%evt.res executable=%proc.exepath\n    syscall=%evt.type\n  priority: WARNING\n  tags:\n  - platform_runtime\n  - container\n- rule: Platform Runtime Network Utility\n  desc: Network utility execution, not proof of network exfiltration; tests use --help\n    only.\n  condition: platform_runtime_scope and (evt.type in (execve, execveat) and evt.failed=false\n    and proc.name in (nc, ncat, netcat, socat))\n  output: runtime_security node=%evt.hostname namespace=%k8s.ns.name pod=%k8s.pod.name\n    container=%container.name image=%container.image.repository process=%proc.name\n    command=%proc.cmdline user=%user.uid result=%evt.res executable=%proc.exepath\n    syscall=%evt.type\n  priority: WARNING\n  tags:\n  - platform_runtime\n  - container\n- rule: Platform Runtime HTTP Utility\n  desc: HTTP utility is visibility, not automatically an attack. Expected use is reviewed\n    by exact workload and command.\n  condition: platform_runtime_scope and (evt.type in (execve, execveat) and evt.failed=false\n    and proc.name in (curl, wget))\n  output: runtime_security node=%evt.hostname namespace=%k8s.ns.name pod=%k8s.pod.name\n    container=%container.name image=%container.image.repository process=%proc.name\n    command=%proc.cmdline user=%user.uid result=%evt.res executable=%proc.exepath\n    syscall=%evt.type\n  priority: NOTICE\n  tags:\n  - platform_runtime\n  - container\n- rule: Platform Runtime Namespace Or Mount\n  desc: Container namespace/mount operation or tool, including unsuccessful attempts.\n    Not proof of an escape.\n  condition: (platform_runtime_scope and (evt.type in (mount, setns, unshare) or (evt.type\n    in (execve, execveat) and proc.name in (mount, nsenter)))) and not platform_expected_runtime_bootstrap\n  output: runtime_security node=%evt.hostname namespace=%k8s.ns.name pod=%k8s.pod.name\n    container=%container.name image=%container.image.repository process=%proc.name\n    command=%proc.cmdline user=%user.uid result=%evt.res executable=%proc.exepath\n    syscall=%evt.type\n  priority: ERROR\n  tags:\n  - platform_runtime\n  - container\n- rule: Platform Runtime Privilege\n  desc: Execution in a privileged container or capability change syscall; no privileged\n    tests are created.\n  condition: (platform_runtime_scope and ((evt.type in (execve, execveat) and evt.failed=false\n    and container.privileged=true) or evt.type=capset)) and not platform_expected_runtime_bootstrap\n  output: runtime_security node=%evt.hostname namespace=%k8s.ns.name pod=%k8s.pod.name\n    container=%container.name image=%container.image.repository process=%proc.name\n    command=%proc.cmdline user=%user.uid result=%evt.res executable=%proc.exepath\n    syscall=%evt.type\n  priority: ERROR\n  tags:\n  - platform_runtime\n  - container\n- rule: Platform Runtime Sensitive Write\n  desc: Attempt to write protected system paths, including readonly denial; never\n    treated as a successful mutation without syscall result.\n  condition: platform_runtime_scope and (evt.type in (open, openat, openat2, creat)\n    and (evt.arg.flags contains O_WRONLY or evt.arg.flags contains O_RDWR or evt.arg.flags\n    contains O_CREAT) and (evt.arg.name startswith /etc/ or evt.arg.name startswith\n    /usr/bin/ or evt.arg.name startswith /usr/sbin/ or evt.arg.name startswith /bin/\n    or evt.arg.name startswith /sbin/))\n  output: runtime_security node=%evt.hostname namespace=%k8s.ns.name pod=%k8s.pod.name\n    container=%container.name image=%container.image.repository process=%proc.name\n    command=%proc.cmdline user=%user.uid result=%evt.res executable=%proc.exepath\n    syscall=%evt.type path=%evt.arg.name\n  priority: ERROR\n  tags:\n  - platform_runtime\n  - container"
+      }
+    },
+    {
+      "apiVersion": "v1",
+      "kind": "Service",
+      "metadata": {
+        "name": "platform-falco-metrics",
+        "namespace": "devsecops-system",
+        "labels": {
+          "helm.sh/chart": "falco-9.2.1",
+          "app.kubernetes.io/name": "falco",
+          "app.kubernetes.io/instance": "platform-devsecops",
+          "app.kubernetes.io/version": "0.45.1",
+          "app.kubernetes.io/managed-by": "Helm",
+          "type": "falco-metrics",
+          "petclinic.devops.local/owner": "platform-runtime-security"
+        }
+      },
+      "spec": {
+        "type": "ClusterIP",
+        "ports": [
+          {
+            "port": 8765,
+            "targetPort": 8765,
+            "protocol": "TCP",
+            "name": "metrics"
+          }
+        ],
+        "selector": {
+          "app.kubernetes.io/name": "falco",
+          "app.kubernetes.io/instance": "platform-falco"
+        }
+      }
+    },
+    {
+      "apiVersion": "apps/v1",
+      "kind": "DaemonSet",
+      "metadata": {
+        "name": "platform-falco",
+        "namespace": "devsecops-system",
+        "labels": {
+          "helm.sh/chart": "falco-9.2.1",
+          "app.kubernetes.io/name": "falco",
+          "app.kubernetes.io/instance": "platform-devsecops",
+          "app.kubernetes.io/version": "0.45.1",
+          "app.kubernetes.io/managed-by": "Helm",
+          "petclinic.devops.local/owner": "platform-runtime-security"
+        }
+      },
+      "spec": {
+        "selector": {
+          "matchLabels": {
+            "app.kubernetes.io/name": "falco",
+            "app.kubernetes.io/instance": "platform-falco"
+          }
+        },
+        "template": {
+          "metadata": {
+            "name": "platform-falco",
+            "labels": {
+              "app.kubernetes.io/name": "falco",
+              "app.kubernetes.io/instance": "platform-falco",
+              "petclinic.devops.local/runtime-ruleset": "59752c1132f0"
+            },
+            "annotations": {
+              "checksum/config": "4c017589113ee09ab4eef0ab186f9546c21e13e1809364867e73f014c140e5b4",
+              "checksum/rules": "6a61c70c91c20f4ae808e5da7d9927725c5d0a3cbef5e52d05987e0247f8d2b9",
+              "checksum/certs": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+              "container.apparmor.security.beta.kubernetes.io/falco": "unconfined"
+            }
+          },
+          "spec": {
+            "serviceAccountName": "platform-falco",
+            "nodeSelector": {
+              "kubernetes.io/arch": "arm64",
+              "kubernetes.io/hostname": "devops"
+            },
+            "tolerations": [
+              {
+                "effect": "NoSchedule",
+                "key": "node-role.kubernetes.io/master"
+              },
+              {
+                "effect": "NoSchedule",
+                "key": "node-role.kubernetes.io/control-plane"
+              }
+            ],
+            "containers": [
+              {
+                "name": "falco",
+                "image": "127.0.0.1:30050/platform-security/falco@sha256:3c5ccde1c8b50ccc8baf016090a5376d182e08dc8751df2b37d8ff2a13499558",
+                "imagePullPolicy": "IfNotPresent",
+                "resources": {
+                  "limits": {
+                    "cpu": "500m",
+                    "memory": "512Mi"
+                  },
+                  "requests": {
+                    "cpu": "100m",
+                    "memory": "256Mi"
+                  }
+                },
+                "securityContext": {
+                  "allowPrivilegeEscalation": false,
+                  "appArmorProfile": {
+                    "type": "Unconfined"
+                  },
+                  "capabilities": {
+                    "add": [
+                      "BPF",
+                      "PERFMON",
+                      "SYS_PTRACE",
+                      "SYS_RESOURCE"
+                    ],
+                    "drop": [
+                      "ALL"
+                    ]
+                  },
+                  "seccompProfile": {
+                    "type": "Unconfined"
+                  }
+                },
+                "args": [
+                  "/usr/bin/falco"
+                ],
+                "env": [
+                  {
+                    "name": "HOST_ROOT",
+                    "value": "/host"
+                  },
+                  {
+                    "name": "FALCO_HOSTNAME",
+                    "valueFrom": {
+                      "fieldRef": {
+                        "fieldPath": "spec.nodeName"
+                      }
+                    }
+                  },
+                  {
+                    "name": "FALCO_K8S_NODE_NAME",
+                    "valueFrom": {
+                      "fieldRef": {
+                        "fieldPath": "spec.nodeName"
+                      }
+                    }
+                  }
+                ],
+                "tty": false,
+                "ports": [
+                  {
+                    "containerPort": 8765,
+                    "name": "web",
+                    "protocol": "TCP"
+                  }
+                ],
+                "startupProbe": {
+                  "initialDelaySeconds": 3,
+                  "timeoutSeconds": 5,
+                  "periodSeconds": 5,
+                  "failureThreshold": 20,
+                  "httpGet": {
+                    "path": "/healthz",
+                    "port": 8765
+                  }
+                },
+                "livenessProbe": {
+                  "initialDelaySeconds": 0,
+                  "timeoutSeconds": 5,
+                  "periodSeconds": 15,
+                  "failureThreshold": 3,
+                  "httpGet": {
+                    "path": "/healthz",
+                    "port": 8765
+                  }
+                },
+                "readinessProbe": {
+                  "initialDelaySeconds": 0,
+                  "timeoutSeconds": 5,
+                  "periodSeconds": 15,
+                  "failureThreshold": 3,
+                  "httpGet": {
+                    "path": "/healthz",
+                    "port": 8765
+                  }
+                },
+                "volumeMounts": [
+                  {
+                    "mountPath": "/host/run/k3s/containerd",
+                    "name": "container-engine-socket-0",
+                    "readOnly": true
+                  },
+                  {
+                    "mountPath": "/etc/falco/config.d",
+                    "name": "specialized-falco-configs"
+                  },
+                  {
+                    "mountPath": "/root/.falco",
+                    "name": "root-falco-fs"
+                  },
+                  {
+                    "mountPath": "/host/proc",
+                    "name": "proc-fs",
+                    "readOnly": true
+                  },
+                  {
+                    "mountPath": "/sys/kernel",
+                    "name": "sys-fs",
+                    "readOnly": true
+                  },
+                  {
+                    "mountPath": "/etc/falco/falco.yaml",
+                    "name": "falco-yaml",
+                    "subPath": "falco.yaml"
+                  },
+                  {
+                    "mountPath": "/etc/falco/rules.d",
+                    "name": "rules-volume"
+                  }
+                ]
+              }
+            ],
+            "volumes": [
+              {
+                "hostPath": {
+                  "path": "/run/k3s/containerd"
+                },
+                "name": "container-engine-socket-0"
+              },
+              {
+                "name": "specialized-falco-configs",
+                "emptyDir": {}
+              },
+              {
+                "name": "root-falco-fs",
+                "emptyDir": {}
+              },
+              {
+                "name": "sys-fs",
+                "hostPath": {
+                  "path": "/sys/kernel"
+                }
+              },
+              {
+                "name": "proc-fs",
+                "hostPath": {
+                  "path": "/proc"
+                }
+              },
+              {
+                "name": "falco-yaml",
+                "configMap": {
+                  "name": "platform-falco",
+                  "items": [
+                    {
+                      "key": "falco.yaml",
+                      "path": "falco.yaml"
+                    }
+                  ]
+                }
+              },
+              {
+                "name": "rules-volume",
+                "configMap": {
+                  "name": "platform-falco-rules"
+                }
+              }
+            ],
+            "hostPID": true,
+            "automountServiceAccountToken": false
+          }
+        },
+        "updateStrategy": {
+          "type": "RollingUpdate"
+        }
+      }
+    },
+    {
+      "apiVersion": "monitoring.coreos.com/v1",
+      "kind": "ServiceMonitor",
+      "metadata": {
+        "name": "platform-falco",
+        "namespace": "devsecops-system",
+        "labels": {
+          "helm.sh/chart": "falco-9.2.1",
+          "app.kubernetes.io/name": "falco",
+          "app.kubernetes.io/instance": "platform-devsecops",
+          "app.kubernetes.io/version": "0.45.1",
+          "app.kubernetes.io/managed-by": "Helm",
+          "release": "kube-stack",
+          "petclinic.devops.local/owner": "platform-runtime-security"
+        }
+      },
+      "spec": {
+        "endpoints": [
+          {
+            "port": "metrics",
+            "interval": "15s",
+            "scrapeTimeout": "10s",
+            "honorLabels": true,
+            "path": "/metrics",
+            "scheme": "http"
+          }
+        ],
+        "jobLabel": "platform-falco",
+        "selector": {
+          "matchLabels": {
+            "app.kubernetes.io/instance": "platform-devsecops",
+            "app.kubernetes.io/name": "falco",
+            "type": "falco-metrics"
+          }
+        },
+        "namespaceSelector": {
+          "matchNames": [
+            "devsecops-system"
+          ]
+        }
+      }
+    }
+  ]
+}

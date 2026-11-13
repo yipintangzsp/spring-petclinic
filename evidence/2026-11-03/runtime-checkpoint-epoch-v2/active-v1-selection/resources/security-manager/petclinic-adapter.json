@@ -1,0 +1,157 @@
+[
+  {
+    "id": "sbom",
+    "stage": "Package SBOM",
+    "command": "( nice -n 10 ./mvnw -B package -DskipTests && node infra/security/sbom-verify.mjs )",
+    "credentials": [],
+    "platform": false
+  },
+  {
+    "id": "regression",
+    "stage": "Regression",
+    "command": "node --test --test-concurrency=1 infra/observability/*.test.mjs infra/security/*.test.mjs",
+    "credentials": [],
+    "platform": true
+  },
+  {
+    "id": "falco-baseline",
+    "stage": "Falco Baseline",
+    "command": "node infra/security/runtime/health.mjs baseline",
+    "credentials": [],
+    "platform": true
+  },
+  {
+    "id": "kyverno",
+    "stage": "Kyverno",
+    "command": "( node infra/security/rbac-contract.mjs && node infra/security/admission-gate.mjs )",
+    "credentials": [],
+    "platform": true
+  },
+  {
+    "id": "kubescape",
+    "stage": "Kubescape Audit",
+    "command": "node --max-old-space-size=128 infra/security/governance/kubescape.mjs",
+    "credentials": [],
+    "platform": false
+  },
+  {
+    "id": "gitleaks",
+    "stage": "Secret Source",
+    "command": "node infra/security/source-gate.mjs",
+    "credentials": [],
+    "platform": false
+  },
+  {
+    "id": "semgrep",
+    "stage": "Semgrep",
+    "command": "( node infra/security/command-audit.mjs && node --max-old-space-size=128 infra/security/semgrep-gate.mjs )",
+    "credentials": [],
+    "platform": false
+  },
+  {
+    "id": "sops",
+    "stage": "Encrypted Credentials",
+    "command": "node infra/security/secrets-gate.mjs",
+    "credentials": [
+      {
+        "type": "file",
+        "id": "platform-business-age",
+        "variable": "BUSINESS_AGE_FILE",
+        "username": "",
+        "password": ""
+      }
+    ],
+    "platform": true
+  },
+  {
+    "id": "trivy",
+    "stage": "Trivy",
+    "command": "( node infra/security/ensure-audit-candidate.mjs && node infra/security/audit-trivy.mjs )",
+    "credentials": [
+      {
+        "type": "usernamePassword",
+        "id": "harbor-creds",
+        "variable": "",
+        "username": "HARBOR_USER",
+        "password": "HARBOR_PASS"
+      }
+    ],
+    "platform": false
+  },
+  {
+    "id": "cosign",
+    "stage": "Cosign Admission",
+    "command": "node infra/security/signing.mjs admission",
+    "credentials": [
+      {
+        "type": "file",
+        "id": "platform-signing-age",
+        "variable": "SIGNING_AGE_FILE",
+        "username": "",
+        "password": ""
+      },
+      {
+        "type": "usernamePassword",
+        "id": "harbor-creds",
+        "variable": "",
+        "username": "HARBOR_USER",
+        "password": "HARBOR_PASS"
+      }
+    ],
+    "platform": false
+  },
+  {
+    "id": "sonarqube",
+    "stage": "SonarQube",
+    "command": "nice -n 10 ./mvnw -B org.sonarsource.scanner.maven:sonar-maven-plugin:5.8.0.7211:sonar -Dsonar.projectKey=petclinic -Dsonar.qualitygate.wait=true -Dsonar.qualitygate.timeout=300",
+    "credentials": [
+      {
+        "type": "string",
+        "id": "sonar-token",
+        "variable": "SONAR_TOKEN",
+        "username": "",
+        "password": ""
+      }
+    ],
+    "platform": false
+  },
+  {
+    "id": "zap",
+    "stage": "ZAP Passive",
+    "command": "node infra/security/zap-gate.mjs",
+    "credentials": [],
+    "platform": false,
+    "environment": {
+      "SECURITY_CLEANUP_SCAN_HOMES": "true"
+    }
+  },
+  {
+    "id": "falco-final",
+    "stage": "Falco Final",
+    "command": "node infra/security/runtime/health.mjs",
+    "credentials": [],
+    "platform": true
+  },
+  {
+    "id": "defectdojo",
+    "stage": "DefectDojo Governance",
+    "command": "node --max-old-space-size=192 infra/security/governance/defectdojo.mjs",
+    "credentials": [
+      {
+        "type": "string",
+        "id": "defectdojo-api-token",
+        "variable": "DEFECTDOJO_TOKEN",
+        "username": "",
+        "password": ""
+      },
+      {
+        "type": "string",
+        "id": "sonar-token",
+        "variable": "SONAR_TOKEN",
+        "username": "",
+        "password": ""
+      }
+    ],
+    "platform": false
+  }
+]

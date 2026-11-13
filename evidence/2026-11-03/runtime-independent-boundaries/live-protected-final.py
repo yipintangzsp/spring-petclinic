@@ -1,0 +1,23 @@
+from pathlib import Path
+import json,subprocess,shlex,hashlib
+O=Path(__file__).resolve().parent;run=json.load(open(O/'run.json'))['validationRunId'];S=['ssh','-o','BatchMode=yes','-o','ConnectTimeout=6','-o','StrictHostKeyChecking=yes','-o','HostName=192.168.64.11','-o','HostKeyAlias=192.168.1.58','zhang@192.168.1.58']
+def k(a):
+ r=subprocess.run(S+['sudo -n kubectl '+shlex.join(a)],capture_output=True,text=True,timeout=30);assert r.returncode==0,r.stderr[-250:];return json.loads(r.stdout) if r.stdout.strip() else None
+def h(x):return hashlib.sha256(json.dumps(x,sort_keys=True,separators=(',',':')).encode()).hexdigest()
+cp=k(['get','clusterpolicy','devsecops-signed-images','-o','json']);before=json.load(open(O/'production-signature-policy-before.json'));assert cp['spec']==before['spec'] and cp['metadata']['uid']==before['metadata']['uid']
+w=k(['get','mutatingwebhookconfiguration','kyverno-resource-mutating-webhook-cfg','-o','json']);selector=[{'name':x['name'],'namespaceSelector':x.get('namespaceSelector')} for x in w['webhooks']];assert all(run+'-cosign' not in json.dumps(x) for x in selector)
+left=k(['get','namespaces,serviceaccounts,roles,rolebindings,policies,pods','-A','-l','runtime-validation-run='+run,'-o','json']);assert not left['items']
+# Only exact temporary credential name is checked; no production Secret is queried.
+assert k(['-n','devsecops-system','get','secret',run+'-registry','--ignore-not-found','-o','json']) is None
+pods=k(['-n','petclinic','get','pods','-l','app.kubernetes.io/name=petclinic','-o','json']);
+if not pods['items']:pods=k(['-n','petclinic','get','pods','-l','app=petclinic','-o','json'])
+rows=[{'name':p['metadata']['name'],'uid':p['metadata']['uid'],'node':p['spec']['nodeName'],'ready':any(c['type']=='Ready' and c['status']=='True' for c in p.get('status',{}).get('conditions',[])),'deletionTimestamp':p['metadata'].get('deletionTimestamp')} for p in pods['items']];assert len(rows)==3 and all(p['ready'] and not p['deletionTimestamp'] for p in rows)
+slices=k(['-n','petclinic','get','endpointslices','-l','kubernetes.io/service-name=petclinic','-o','json']);endpoints=[{'nodeName':e.get('nodeName'),'ready':e.get('conditions',{}).get('ready'),'targetUid':e.get('targetRef',{}).get('uid')} for x in slices['items'] for e in x.get('endpoints',[])];assert len([e for e in endpoints if e['ready']])==3
+svc=k(['-n','petclinic','get','service','petclinic','-o','json']);url='http://'+svc['spec']['clusterIP']+':80/';r=subprocess.run(S+['curl --connect-timeout 5 --max-time 15 -sS -o /dev/null -w '+shlex.quote('%{http_code}')+' '+shlex.quote(url)],capture_output=True,text=True,timeout=20);assert r.returncode==0 and r.stdout=='200'
+arg=k(['-n','argocd','get','application','petclinic','-o','json']);argBefore=json.load(open(O/'argocd-before.json'));assert arg['spec']==argBefore['spec'] and arg['status']['sync']['revision']==argBefore['status']['sync']['revision']
+d=k(['-n','petclinic','get','deployment','petclinic','-o','json']);dBefore=json.load(open(O/'deployment-before.json'));assert d['spec']==dBefore['spec'] and d['metadata']['generation']==dBefore['metadata']['generation']
+for kind,base in [('MutatingWebhookConfiguration','kyverno-resource-mutating-webhook-cfg'),('ValidatingWebhookConfiguration','kyverno-resource-validating-webhook-cfg')]:
+ current=k(['get',kind,base,'-o','json']);old=json.load(open(O/(base+'-before.json')));assert current['webhooks']==old['webhooks'] and current['metadata']['uid']==old['metadata']['uid']
+ remaining=k(['get',kind,'-l','runtime-validation-run='+run,'-o','json']);assert not remaining['items']
+result={'argocdSpecUnchanged':True,'argocdRevision':arg['status']['sync']['revision'],'argocdSync':arg['status']['sync']['status'],'argocdHealth':arg['status']['health']['status'],'deploymentSpecUnchanged':True,'originalWebhooksUnchanged':True,'temporaryWebhookCount':0,'classification':'LIVE_READ_ONLY_FINAL','productionSignaturePolicy':{'uid':cp['metadata']['uid'],'generation':cp['metadata']['generation'],'specUnchanged':True,'specSha256':h(cp['spec'])},'existingWebhook':{'uid':w['metadata']['uid'],'generation':w['metadata']['generation'],'selectors':selector,'testNamespaceIncluded':False},'temporaryLabeledResourceCount':len(left['items']),'temporaryRegistrySecretAbsent':True,'productionSecretReads':0,'petclinicPods':rows,'endpoints':endpoints,'http':{'url':url,'status':200,'readOnlyGet':True},'productionMutation':0}
+(O/'live-protected-final.json').write_text(json.dumps(result,indent=2)+'\n');print(json.dumps({'petclinicReady':len(rows),'readyEndpoints':len(endpoints),'HTTP':200,'temporaryLabeledResources':0,'productionSignaturePolicyUnchanged':True}))

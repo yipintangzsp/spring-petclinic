@@ -1,0 +1,614 @@
+{
+  "files": [
+    {
+      "path": "infra/observability/security-package-cache.test.mjs",
+      "sha256": "70ae3890d525d48a192e421e972a5f805c104d612ad09f7a52a507bd41d742bb",
+      "topLevelTestNames": [],
+      "imports": [
+        "node:test",
+        "node:assert/strict",
+        "node:fs/promises",
+        "node:os",
+        "node:path",
+        "node:crypto",
+        "../runtime/security-package-cache.mjs"
+      ],
+      "usesPolicyEngine": false
+    },
+    {
+      "path": "infra/observability/terraform-provider-build.test.mjs",
+      "sha256": "8f3920c466b77f9c7e0ec11c422c92ce1c5ec5f6d02573daada422c1285c63f0",
+      "topLevelTestNames": [
+        "verified custom source recipe preserves fixed offline build bounds",
+        "resource escalation or unexpected build input cannot enter native build",
+        "unverified vendor, mutable image and online build flags are rejected",
+        "provider package checksum changes on content tampering and refuses extra files or links",
+        "old package path detection crosses streaming block boundaries and keeps maintained fork separate"
+      ],
+      "imports": [
+        "node:test",
+        "node:assert/strict",
+        "node:fs",
+        "node:os",
+        "node:path",
+        "./terraform-provider-build.mjs",
+        "./terraform-provider-build.mjs"
+      ],
+      "usesPolicyEngine": false
+    },
+    {
+      "path": "infra/observability/sonar-resource-slot.test.mjs",
+      "sha256": "fe3ac6004f7c1966bae9097ad2d87917a22dbd616830bcbcf3981a3f8916c073",
+      "topLevelTestNames": [
+        "idle scanner slot borrows the current CI lease without nested acquisition",
+        "foreign lease, replaced UID, foreign resource owner and unready scanner are preserved",
+        "restoration requires exact UID and owner; only proven restored original replica is idempotent",
+        "current CI never waits for itself; other active builds prevent pause"
+      ],
+      "imports": [
+        "node:test",
+        "node:assert/strict",
+        "./sonar-resource-slot.mjs"
+      ],
+      "usesPolicyEngine": false
+    },
+    {
+      "path": "infra/observability/release-preflight.test.mjs",
+      "sha256": "3d2612f17e1c2a0496093aea77a9882e147ffd30aea4604a8bd22601726e902e",
+      "topLevelTestNames": [
+        "three healthy nodes with live endpoints pass",
+        "all Pods Ready on devops cannot conceal disconnected workers",
+        "stale, absent and future Leases fail even with cached Ready",
+        "terminating or mismatched endpoint UID is not counted as available business capacity",
+        "maintenance and pressure block publishing",
+        "a retained unreachable taint blocks release but the existing cloud taint does not",
+        "healthy snapshots with advancing Leases pass the observation window",
+        "a frozen fresh Lease must advance across the observation window",
+        "API failures fail closed and still retain evidence",
+        "explicit local targets exclude an unhealthy cloud worker and report it",
+        "a selector matching no target nodes blocks publishing",
+        "disk pressure False cannot conceal insufficient future build headroom",
+        "missing or stale image filesystem samples fail closed",
+        "saved EFI memory state blocks new builds even before host disk fills",
+        "missing and stale host evidence and low host disk block release",
+        "Harbor requires both ready registry and controller ports before expensive build work",
+        "Both scanner databases must be fresh before costly build work",
+        "initial release rejects space that passes the stop line but cannot cover measured build growth",
+        "two GiB build reserve is additional on local build node; ordinary promotion gate stays unchanged",
+        "security compiler reserve is four GiB above the unchanged stop line"
+      ],
+      "imports": [
+        "node:test",
+        "node:assert/strict",
+        "node:fs",
+        "node:os",
+        "node:path",
+        "./release-preflight.mjs"
+      ],
+      "usesPolicyEngine": false
+    },
+    {
+      "path": "infra/observability/terraform-remote.test.mjs",
+      "sha256": "28f758c1c4ffa37488bbcd2b2011008c03e4f344438124315e73a5cb2e640ef0",
+      "topLevelTestNames": [
+        "permits only isolated ConfigMap and fresh virtual lock probe",
+        "cleanup permits only virtual probe deletion and preserves real ConfigMap",
+        "rejects replacing or deleting real infrastructure",
+        "rejects foreign resource, missing ConfigMap and duplicate state address",
+        "rejects foreign namespace, ownership and additional payload",
+        "bootstrap grants only namespaced metadata permissions without compute or PVC",
+        "rejects cluster-wide bindings, wildcard rights and foreign subjects",
+        "rejects privilege expansion through quotas or added bootstrap objects"
+      ],
+      "imports": [
+        "node:test",
+        "node:assert/strict",
+        "node:fs",
+        "./terraform-remote.mjs"
+      ],
+      "usesPolicyEngine": false
+    },
+    {
+      "path": "infra/observability/terraform-isolation-spec.test.mjs",
+      "sha256": "bb0e1dca62bb348ee1e2fbbad81d9719023398f5eedde3bd8663546a4939b71d",
+      "topLevelTestNames": [
+        "isolated Job has no host storage, no default token, non-root readonly kernel confinement",
+        "mutable images, arbitrary endpoints and wrong node address rejected",
+        "admission denies both Pod and Job escape and fences former runtime identity",
+        "executor metadata forbids persistent storage, service secrets and extra compute",
+        "canary peer resets cannot crash the deployment controller",
+        "DELETE transmits UID precondition and foreground policy to API server",
+        "deadline can use previously observed owned Pod after controller removal",
+        "missing Pod without an observed UID cannot prove deadline completion",
+        "ordinary success and failure cannot silently reuse a disappeared Pod",
+        "foreign owner or replacement Pod cannot pass the cached UID guard",
+        "empty startup logs and transient responses preserve evidence without granting success",
+        "admission readiness waits for serving policy after generation compilation"
+      ],
+      "imports": [
+        "node:test",
+        "node:assert/strict",
+        "node:fs",
+        "./terraform-isolation-spec.mjs",
+        "./terraform-executor.mjs",
+        "node:net",
+        "node:http"
+      ],
+      "usesPolicyEngine": false
+    },
+    {
+      "path": "infra/observability/terraform-runtime.test.mjs",
+      "sha256": "5f6023866b0e2f6bfe2248b79613890351d88112e8d52db425e317bcf4735142",
+      "topLevelTestNames": [
+        "complete report with every severity zero is accepted",
+        "any severity including low and unknown prevents zero claim",
+        "missing incomplete or inconsistent scan evidence fails closed",
+        "runtime rendering only changes the pinned provider and preserves backend/configuration",
+        "custom provider lock requires a full h1 and explicit prerelease version",
+        "documented package-not-present finding preserves raw count and binds exact binary",
+        "new findings or missing detailed report cannot be treated as reviewed false positive",
+        "executor revalidates original report digest and assessment instead of trusting a pass label",
+        "Harbor detailed report uses documented X-Accept-Vulnerabilities and JSON response negotiation",
+        "report formats without embedded artifact still require the exact authenticated request receipt"
+      ],
+      "imports": [
+        "node:test",
+        "node:assert/strict",
+        "./terraform-runtime.mjs",
+        "./terraform-vulnerability-gate.mjs",
+        "node:http",
+        "node:crypto",
+        "./terraform-runtime.mjs"
+      ],
+      "usesPolicyEngine": false
+    },
+    {
+      "path": "infra/observability/rollouts-spec.test.mjs",
+      "sha256": "10b6aa17b1203477b2b084c7deb792407faafa6d99e2c44ce85ea1802ca1a60b",
+      "topLevelTestNames": [
+        "committed lab strategies are valid for their traffic mode",
+        "delay without traffic routing is rejected; blue-green delay remains valid",
+        "CRD pod ports declare the API default to avoid perpetual GitOps drift"
+      ],
+      "imports": [
+        "node:test",
+        "node:assert/strict",
+        "node:fs"
+      ],
+      "usesPolicyEngine": false
+    },
+    {
+      "path": "infra/observability/service-readiness.test.mjs",
+      "sha256": "826fcbd80e79beb8edbf4b4ba603d878958df75e8be28c644b1e2f3558b6da89",
+      "topLevelTestNames": [
+        "waits for authenticated Rails API recovery without an IP allowlist change",
+        "a listening nginx with unhealthy Rails cannot pass",
+        "access errors fail without repeatedly polling",
+        "hung responses terminate within the readiness budget"
+      ],
+      "imports": [
+        "node:test",
+        "node:assert/strict",
+        "node:http",
+        "./service-readiness.mjs"
+      ],
+      "usesPolicyEngine": false
+    },
+    {
+      "path": "infra/observability/scanner-queue-reservation.test.mjs",
+      "sha256": "760d78d188cc60d6be69d356f77052381a090bf53fc9b29773abe15ab0923207",
+      "topLevelTestNames": [
+        "queue reservation accepts only explicit scoped owner and build"
+      ],
+      "imports": [
+        "node:test",
+        "node:assert/strict",
+        "./scanner-queue-reservation.mjs"
+      ],
+      "usesPolicyEngine": false
+    },
+    {
+      "path": "infra/observability/gitops-wait.test.mjs",
+      "sha256": "67bcc3afc7314577cf9ee415fd8a3f8716e2add41dac831cb90af815dc21625c",
+      "topLevelTestNames": [
+        "Argo Synced arriving before the live image waits and succeeds",
+        "live image alone cannot pass when Argo has another source revision",
+        "a temporary API outage does not prematurely fail or pass deployment",
+        "a persistently wrong image fails when the bounded attempts end"
+      ],
+      "imports": [
+        "node:test",
+        "node:assert/strict",
+        "node:fs",
+        "node:os",
+        "node:path",
+        "node:child_process",
+        "node:url"
+      ],
+      "usesPolicyEngine": false
+    },
+    {
+      "path": "infra/observability/verify-rollout.test.mjs",
+      "sha256": "3d24e0515fd8d7b021fd727ef600d01dc2fcc3f53e635226d4589f20e40c6589",
+      "topLevelTestNames": [
+        "three Ready Pods require the exact immutable image and Argo source revision",
+        "a concurrent rollback cannot be reported as successful deployment",
+        "available old replicas cannot conceal an unready new Pod",
+        "FailedMount correlated to its Pod UID, stale Lease and non-Ready node is diagnosed",
+        "a transient network image pull failure is not classified as a permanent image error",
+        "bounded API failure cannot pass a release and creates a diagnostic artifact",
+        "cached Ready Pods on an unreachable node cannot pass a release"
+      ],
+      "imports": [
+        "node:test",
+        "node:assert/strict",
+        "node:fs",
+        "node:os",
+        "node:path",
+        "./verify-rollout.mjs"
+      ],
+      "usesPolicyEngine": false
+    },
+    {
+      "path": "infra/observability/maven-test.test.mjs",
+      "sha256": "c35ff858bd65d57baa6573d922573fa1089811d57854c7816ccdb0820c699661",
+      "topLevelTestNames": [
+        "reclaims a new stopped PostgreSQL test owned by this workspace",
+        "preserves pre-existing containers and data, live containers and foreign ownership"
+      ],
+      "imports": [
+        "node:test",
+        "node:assert/strict",
+        "./maven-test.mjs"
+      ],
+      "usesPolicyEngine": false
+    },
+    {
+      "path": "infra/observability/promote-private.test.mjs",
+      "sha256": "9b4062827940715550e3d8307e6b46e2d4cb75264225006cd90cfc6ea62c24f0",
+      "topLevelTestNames": [
+        "promotion pins a digest and retains database, resources and zero surge",
+        "reject mutable tags and mismatched build identity",
+        "reject missing or duplicate release fields"
+      ],
+      "imports": [
+        "node:test",
+        "node:assert/strict",
+        "node:fs",
+        "./promote-private.mjs"
+      ],
+      "usesPolicyEngine": false
+    },
+    {
+      "path": "infra/observability/ensure-sonar-runtime.test.mjs",
+      "sha256": "b923f5cc1618da51a75a25b6674bd9ee49bff8e77e736694e390a79248b48f8d",
+      "topLevelTestNames": [
+        "runtime patch pins both init containers and main without changing PVC or resources",
+        "already pinned runtime requires no mutation",
+        "another heavy task cannot change Sonar",
+        "replacement StatefulSet cannot be changed",
+        "analysis owner cannot be overridden",
+        "paused service cannot be taken over",
+        "different image or container set is preserved",
+        "cache content must match its immutable digest"
+      ],
+      "imports": [
+        "node:test",
+        "node:assert/strict",
+        "node:crypto",
+        "./ensure-sonar-runtime.mjs"
+      ],
+      "usesPolicyEngine": false
+    },
+    {
+      "path": "infra/observability/scanner-db-refresh.test.mjs",
+      "sha256": "ad0797c66bcbba7707934d3b78cde771d700913520fc59b544169e50ab754ef0",
+      "topLevelTestNames": [
+        "fresh scanner caches do not start maintenance or acquire another lock",
+        "only the expired database is refreshed and actual updater metadata is required",
+        "two expired databases refresh serially under the existing owner",
+        "foreign heavy Lease prevents even fetching metadata",
+        "updater failures and stale output cannot turn the freshness gate green",
+        "official manifest hash and exact layer type are mandatory before using a mirror",
+        "corrupt metadata does not trigger an uncontrolled cache replacement",
+        "official manifest falls back from unavailable proxy to direct TLS without bypassing failures"
+      ],
+      "imports": [
+        "node:test",
+        "node:assert/strict",
+        "node:crypto",
+        "./scanner-db-refresh.mjs"
+      ],
+      "usesPolicyEngine": false
+    },
+    {
+      "path": "infra/observability/terraform-ci.test.mjs",
+      "sha256": "02e3d55e1d54d4eed4995b852ef067ea90f6f37c86ae5f86ac8fd9ef2d0749da",
+      "topLevelTestNames": [
+        "allows only three new isolated lab resources",
+        "rejects deletion, replacement and updates to existing resources",
+        "rejects outside resources and duplicate addresses",
+        "rejects business namespaces and changed owner",
+        "rejects quotas permitting Pods, persistent storage, secrets or services",
+        "rejects config in a foreign namespace or changed business input"
+      ],
+      "imports": [
+        "node:test",
+        "node:assert/strict",
+        "./terraform-ci.mjs"
+      ],
+      "usesPolicyEngine": false
+    },
+    {
+      "path": "infra/security/cosign-verification.test.mjs",
+      "sha256": "9a0d07c7d7965742b2a12b5555a881607450ce56476418a73a3b44ec2095b5f0",
+      "topLevelTestNames": [
+        "negative fixtures accept actual signature failures independent of exit code",
+        "registry and unexpected successes fail closed"
+      ],
+      "imports": [
+        "node:test",
+        "node:assert/strict",
+        "./cosign-verification.mjs"
+      ],
+      "usesPolicyEngine": false
+    },
+    {
+      "path": "infra/security/audit-target.test.mjs",
+      "sha256": "bf7ffe116fce40b79dfa647523475b8e9a6fa851348b25fccf04951980b70cd7",
+      "topLevelTestNames": [
+        "audit target separates live from digest-only Harbor candidates",
+        "transport retries at most twice and never retries authentication rejection"
+      ],
+      "imports": [
+        "node:test",
+        "node:assert/strict",
+        "./audit-target.mjs"
+      ],
+      "usesPolicyEngine": false
+    },
+    {
+      "path": "infra/security/gate-contract.test.mjs",
+      "sha256": "3df6fefc4ceb199dc7a0a85462495caf252b2b8b8c96552b67732272c0492bd6",
+      "topLevelTestNames": [
+        "DAST fails closed on absent report or unknown severity",
+        "DAST blocks High while retaining lower findings",
+        "promotion rejects unsigned, wrong-image or wrong-source evidence"
+      ],
+      "imports": [
+        "node:test",
+        "node:assert/strict",
+        "./gate-contract.mjs"
+      ],
+      "usesPolicyEngine": false
+    },
+    {
+      "path": "infra/security/semgrep-policy.test.mjs",
+      "sha256": "4ecfa62a5144b6d65e011afd33fc288cda0f025ac8597034c34f118f41fac448",
+      "topLevelTestNames": [
+        "only reviewed high severity fixed weak cipher findings block",
+        "only reviewed HTTP command flow rules block, generic commands stay warning"
+      ],
+      "imports": [
+        "node:test",
+        "node:assert/strict",
+        "./semgrep-policy.mjs"
+      ],
+      "usesPolicyEngine": false
+    },
+    {
+      "path": "infra/security/runtime-contract.test.mjs",
+      "sha256": "cce530ae6305a433b2abf30aba5df441a7d6c2710a474887b3257397401899f2",
+      "topLevelTestNames": [
+        "runtime deployed rules, version label, manifest and locked source stay consistent",
+        "bootstrap exception requires fixed host runtime executable and scoped workload; all eight rules remain",
+        "grouped instant vectors show all rows; internal health reports are separate and historical logs remain"
+      ],
+      "imports": [
+        "node:test",
+        "node:assert/strict",
+        "node:fs",
+        "node:crypto"
+      ],
+      "usesPolicyEngine": false
+    },
+    {
+      "path": "infra/security/trivy-medium-policy.test.mjs",
+      "sha256": "3e570d507e69ad2039c4034484b3e963905315c2cc54410db4c5e464116ab7b3",
+      "topLevelTestNames": [
+        "confirmed reachable fixable Medium fails; uncertain does not masquerade as safe"
+      ],
+      "imports": [
+        "node:test",
+        "node:assert/strict",
+        "./trivy-medium-policy.mjs"
+      ],
+      "usesPolicyEngine": false
+    },
+    {
+      "path": "infra/security/zap-policy.test.mjs",
+      "sha256": "23912891d0e7ff8ecc1cbb9f05e1a250d4f1d828d44d128fcbbd114a49a567d5",
+      "topLevelTestNames": [
+        "High alone warns; policy only blocks exact-target reviewed proof (synthetic policy inputs)",
+        "ordinary information and lower severities warn; malformed scans cannot pass"
+      ],
+      "imports": [
+        "node:test",
+        "node:assert/strict",
+        "./zap-policy.mjs"
+      ],
+      "usesPolicyEngine": false
+    },
+    {
+      "path": "infra/security/production-baseline.test.mjs",
+      "sha256": "2001fa7af5f1add6e760719226c6a8163a7d661b3ff381f121a8720957dbe052",
+      "topLevelTestNames": [
+        "production configuration checks cover CREATE/UPDATE, never DeleteOptions; precise exceptions remain per rule"
+      ],
+      "imports": [
+        "node:test",
+        "node:assert/strict",
+        "node:fs"
+      ],
+      "usesPolicyEngine": false
+    },
+    {
+      "path": "infra/security/runtime-health.test.mjs",
+      "sha256": "5e390d959b186d8fe49285cc5dc5a88709559e135094ee6e7b461e8bd082a6ba",
+      "topLevelTestNames": [
+        "historical exits remain visible as warnings; readiness and restart count remain required",
+        "any new restart, zero-count replacement, new boot or container change fails current build continuity",
+        "operational fatal/driver errors block; ordinary security events and proc race warnings stay visible"
+      ],
+      "imports": [
+        "node:test",
+        "node:assert/strict",
+        "./runtime/health-contract.mjs"
+      ],
+      "usesPolicyEngine": false
+    },
+    {
+      "path": "infra/security/hardening.test.mjs",
+      "sha256": "18aef04809a2b3598f08347fda231bed5689e669f1f1624791b4bef04b6abb77",
+      "topLevelTestNames": [
+        "runtime hardening is idempotent and retains existing database, capacity and mounts",
+        "unknown deployment layout fails closed before promotion"
+      ],
+      "imports": [
+        "node:test",
+        "node:assert/strict",
+        "node:fs",
+        "./hardening.mjs"
+      ],
+      "usesPolicyEngine": false
+    },
+    {
+      "path": "infra/security/governance.test.mjs",
+      "sha256": "358370308a62b028905ce7aa020950baf42d9a46b16a36f969e230019adb5086",
+      "topLevelTestNames": [
+        "native Kubescape audit counts actual failed controls and deduplicates shared framework observations",
+        "governance open severity excludes duplicate, accepted, closed and reviewed false positives",
+        "a completed Trivy policy failure reports actual severity while engine failure stays unknown",
+        "only idempotent governance reads and assignments retry transient gateway failures"
+      ],
+      "imports": [
+        "node:test",
+        "node:assert/strict",
+        "./governance/kubescape-report.mjs",
+        "./governance/dojo-client.mjs",
+        "./governance/scan-counts.mjs",
+        "./governance/dojo-client.mjs"
+      ],
+      "usesPolicyEngine": false
+    },
+    {
+      "path": "infra/security/synthetic-credential.test.mjs",
+      "sha256": "870bae71cb33f3959a5c1ec1204a8619aff0e752f7026df3aeae759a457811f6",
+      "topLevelTestNames": [
+        "synthetic scanner fixture always matches pinned rule length and entropy"
+      ],
+      "imports": [
+        "node:test",
+        "node:assert/strict",
+        "./synthetic-credential.mjs"
+      ],
+      "usesPolicyEngine": false
+    },
+    {
+      "path": "infra/security/credential-scope.test.mjs",
+      "sha256": "5de54e144b8f4f23752b566ebac677d0fa6ba17a7e9e0d8e8da9d03f847b1a68",
+      "topLevelTestNames": [
+        "private verifier uses own namespace credential without anonymous or signature bypass",
+        "obsolete cross-namespace binding grants nobody and new reconciliation permission is exact"
+      ],
+      "imports": [
+        "node:test",
+        "node:assert/strict",
+        "node:fs"
+      ],
+      "usesPolicyEngine": false
+    },
+    {
+      "path": "infra/security/runtime-event-policy.test.mjs",
+      "sha256": "aa5fabafe5c82883be19770160f7c93cd0ec3a6edfdf77b4268a5f3247f08445",
+      "topLevelTestNames": [
+        "synthetic policy positive: persistent successful critical writes and shadow reads block",
+        "transient, denied, normal info, namespace-tool execution, priority alone and mixed identities warn",
+        "duplicates, stale logs and overlapping windows cannot establish persistence",
+        "actual isolated six sensor cases remain WARN and never masquerade as production attacks"
+      ],
+      "imports": [
+        "node:test",
+        "node:assert/strict",
+        "./runtime/event-policy.mjs",
+        "node:fs"
+      ],
+      "usesPolicyEngine": false
+    },
+    {
+      "path": "infra/security/registry-dns.test.mjs",
+      "sha256": "ce1b0defafbbce2bccd32dd08cd3917b63ffd252cb263eb2b0273145c558f16e",
+      "topLevelTestNames": [
+        "Harbor zone targets only a valid existing service IPv4 without accepting configuration injection",
+        "shared CoreDNS zones are retained and compared independently of the owned Harbor key"
+      ],
+      "imports": [
+        "node:test",
+        "node:assert/strict",
+        "./registry-dns.mjs"
+      ],
+      "usesPolicyEngine": false
+    },
+    {
+      "path": "infra/security/rbac-contract.test.mjs",
+      "sha256": "d2056781cc1f48fe0347911f6a07ac395653249865134047216e5822e01a6da9",
+      "topLevelTestNames": [
+        "Argo tracking instance label still selects Kyverno official core RBAC",
+        "Argo tracking labels preserve controller ServiceMonitor selection"
+      ],
+      "imports": [
+        "node:test",
+        "node:assert/strict",
+        "node:fs"
+      ],
+      "usesPolicyEngine": false
+    },
+    {
+      "path": "infra/security/test-runtime-preflight.test.mjs",
+      "sha256": "6cd6b5c7d25c3f7fa27d160519c0c234ff6cc75e0d0837b5c34b77a13c9d926e",
+      "topLevelTestNames": [
+        "test runtime refuses changed bytes or foreign architecture"
+      ],
+      "imports": [
+        "node:test",
+        "node:assert/strict",
+        "./test-runtime-preflight.mjs"
+      ],
+      "usesPolicyEngine": false
+    },
+    {
+      "path": "infra/security/promotion.test.mjs",
+      "sha256": "96d25c65fbd14174aa93e0f6a572fbbcf86ba432209a6dc021f77cbd37444c11",
+      "topLevelTestNames": [
+        "failed or mismatched security evidence cannot approve or reach Git mutation",
+        "approval binds candidate, actual SBOM and all verified Cosign digests; promotion changes one image only"
+      ],
+      "imports": [
+        "node:test",
+        "node:assert/strict",
+        "./promotion/contract.mjs"
+      ],
+      "usesPolicyEngine": false
+    }
+  ],
+  "fileCount": 35,
+  "recursiveGlob": false,
+  "policyTestsIncluded": false,
+  "actualScope": "Current top-level unit/contract tests; fixture/reference assertions, no live scanner aggregation",
+  "excludedJenkinsAdjacentCommands": [
+    "terraform-sandbox-tests.mjs",
+    "maven-test.mjs",
+    "messaging/pipeline.mjs test"
+  ],
+  "whyExcluded": "Separate commands in Jenkins Test stage, absent from Security Manager Regression command"
+}

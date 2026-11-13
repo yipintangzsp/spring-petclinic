@@ -1,0 +1,180 @@
+{
+  "apiVersion": "v1",
+  "kind": "List",
+  "items": [
+    {
+      "apiVersion": "monitoring.coreos.com/v1",
+      "kind": "ServiceMonitor",
+      "metadata": {
+        "name": "k3s-kube-scheduler",
+        "namespace": "monitoring",
+        "labels": {
+          "release": "kube-stack"
+        },
+        "annotations": {
+          "petclinic.devops.local/scope": "K3s server shared process metrics; does not independently probe cloud agents",
+          "petclinic.devops.local/reference": "https://docs.k3s.io/reference/metrics"
+        }
+      },
+      "spec": {
+        "namespaceSelector": {
+          "matchNames": [
+            "default"
+          ]
+        },
+        "selector": {
+          "matchLabels": {
+            "component": "apiserver",
+            "provider": "kubernetes"
+          }
+        },
+        "endpoints": [
+          {
+            "port": "https",
+            "scheme": "https",
+            "interval": "30s",
+            "scrapeTimeout": "10s",
+            "bearerTokenFile": "/var/run/secrets/kubernetes.io/serviceaccount/token",
+            "tlsConfig": {
+              "caFile": "/var/run/secrets/kubernetes.io/serviceaccount/ca.crt",
+              "serverName": "kubernetes",
+              "insecureSkipVerify": false
+            },
+            "relabelings": [
+              {
+                "action": "replace",
+                "targetLabel": "job",
+                "replacement": "kube-scheduler"
+              }
+            ],
+            "metricRelabelings": [
+              {
+                "action": "keep",
+                "sourceLabels": [
+                  "__name__"
+                ],
+                "regex": "scheduler_.*"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "apiVersion": "monitoring.coreos.com/v1",
+      "kind": "ServiceMonitor",
+      "metadata": {
+        "name": "k3s-kube-proxy",
+        "namespace": "monitoring",
+        "labels": {
+          "release": "kube-stack"
+        },
+        "annotations": {
+          "petclinic.devops.local/scope": "K3s server shared process metrics; does not independently probe cloud agents",
+          "petclinic.devops.local/reference": "https://docs.k3s.io/reference/metrics"
+        }
+      },
+      "spec": {
+        "namespaceSelector": {
+          "matchNames": [
+            "default"
+          ]
+        },
+        "selector": {
+          "matchLabels": {
+            "component": "apiserver",
+            "provider": "kubernetes"
+          }
+        },
+        "endpoints": [
+          {
+            "port": "https",
+            "scheme": "https",
+            "interval": "30s",
+            "scrapeTimeout": "10s",
+            "bearerTokenFile": "/var/run/secrets/kubernetes.io/serviceaccount/token",
+            "tlsConfig": {
+              "caFile": "/var/run/secrets/kubernetes.io/serviceaccount/ca.crt",
+              "serverName": "kubernetes",
+              "insecureSkipVerify": false
+            },
+            "relabelings": [
+              {
+                "action": "replace",
+                "targetLabel": "job",
+                "replacement": "kube-proxy"
+              }
+            ],
+            "metricRelabelings": [
+              {
+                "action": "keep",
+                "sourceLabels": [
+                  "__name__"
+                ],
+                "regex": "kubeproxy_.*"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "apiVersion": "monitoring.coreos.com/v1",
+      "kind": "ServiceMonitor",
+      "metadata": {
+        "name": "k3s-kube-controller-manager",
+        "namespace": "monitoring",
+        "labels": {
+          "release": "kube-stack"
+        },
+        "annotations": {
+          "petclinic.devops.local/scope": "K3s server shared process metrics; does not independently probe cloud agents",
+          "petclinic.devops.local/reference": "https://docs.k3s.io/reference/metrics"
+        }
+      },
+      "spec": {
+        "namespaceSelector": {
+          "matchNames": [
+            "default"
+          ]
+        },
+        "selector": {
+          "matchLabels": {
+            "component": "apiserver",
+            "provider": "kubernetes"
+          }
+        },
+        "endpoints": [
+          {
+            "port": "https",
+            "scheme": "https",
+            "interval": "30s",
+            "scrapeTimeout": "10s",
+            "bearerTokenFile": "/var/run/secrets/kubernetes.io/serviceaccount/token",
+            "tlsConfig": {
+              "caFile": "/var/run/secrets/kubernetes.io/serviceaccount/ca.crt",
+              "serverName": "kubernetes",
+              "insecureSkipVerify": false
+            },
+            "relabelings": [
+              {
+                "action": "replace",
+                "targetLabel": "job",
+                "replacement": "kube-controller-manager"
+              }
+            ],
+            "metricRelabelings": [
+              {
+                "action": "keep",
+                "sourceLabels": [
+                  "__name__"
+                ],
+                "regex": "(workqueue_.*|leader_election_.*|.*controller.*|endpoint_slice_.*|cronjob_.*|node_collector_.*)"
+              }
+            ]
+          }
+        ]
+      }
+    }
+  ]
+}

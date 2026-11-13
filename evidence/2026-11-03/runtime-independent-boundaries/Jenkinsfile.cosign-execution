@@ -1,0 +1,19 @@
+// Dedicated non-release Cosign trust boundary. No production signing credential.
+pipeline {
+ agent any
+ options { disableConcurrentBuilds(); timeout(time:10,unit:'MINUTES') }
+ environment { HEAVY_HOLDER = 'runtime-three-rf3-20261103-9730f2' }
+ stages {
+ stage('Source and accepted thirteen') { steps { sh 'node infra/security/runtime-facts/verify-bundle.mjs; node infra/security/runtime-facts/thirteen-smoke.mjs' } }
+ stage('Minimum sign identity') { steps { withCredentials([usernamePassword(credentialsId:'harbor-creds',usernameVariable:'HARBOR_USER',passwordVariable:'HARBOR_PASS')]) { sh 'node infra/security/runtime-facts/harbor-validation-identity.mjs sign verify' } } }
+ stage('Original heavy Lease') { steps { sh 'node infra/observability/heavy-lease.mjs acquire' } }
+ stage('Original Cosign parent with disposable trust → owner → Gate') { steps { sh 'node infra/security/runtime-facts/run-cosign-validation.mjs' } }
+ }
+ post { always {
+ sh 'node infra/observability/heavy-lease.mjs release'
+ sh 'node infra/security/runtime-facts/cosign-test-material.mjs delete'
+ withCredentials([usernamePassword(credentialsId:'harbor-creds',usernameVariable:'HARBOR_USER',passwordVariable:'HARBOR_PASS')]) { sh 'node infra/security/runtime-facts/harbor-validation-identity.mjs sign delete' }
+ sh 'node infra/security/runtime-facts/thirteen-smoke.mjs'
+ archiveArtifacts artifacts: '.devsecops/runtime-controlled/build-' + env.BUILD_NUMBER + '/**,runtime-source-bundle.json',allowEmptyArchive:false
+ } }
+}

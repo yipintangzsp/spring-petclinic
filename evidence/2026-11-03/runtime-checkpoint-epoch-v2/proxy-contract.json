@@ -1,0 +1,16 @@
+{
+  "contractVersion": "proxy-current-state-v2.1",
+  "scope": "Current v2rayN GUI, all logical SQLite tables, primary config.json core, and all xray TCP listeners",
+  "jsonCanonicalization": "Python JSON values; sort object keys, preserve array order and scalar types, reject duplicate keys and nonfinite numbers; no omitted fields",
+  "A": {"strategy": "STRICT_BYTE_HASH", "files": ["/Applications/v2rayN.app/Contents/Info.plist", "/Applications/v2rayN.app/Contents/MacOS/v2rayN", "/Users/zhangsir/Library/Application Support/v2rayN/bin/xray/xray"]},
+  "B": {"strategy": "RAW_AUDIT_HASH_PLUS_COMPLETE_LOGICAL_DIGEST", "files": ["guiConfigs/guiNConfig.json", "guiConfigs/guiNDB.db"], "protectedJsonFields": "ALL_RECURSIVE_FIELDS", "protectedDatabaseFields": "ALL_TABLES_ALL_COLUMNS_ALL_ROWS_PLUS_SCHEMA; transactionally consistent read-only snapshot; duplicate rows retained", "rawDbHashLimit": "Audit file bytes are not a substitute for the logical transaction snapshot; no DB backup/export is produced"},
+  "C": {"strategy": "STRICT_BYTE_HASH_AND_ALL_FIELDS_SEMANTIC_DIGEST", "files": ["binConfigs/config.json"], "semanticOnlyAllowed": false, "reason": "Generation is established, but benign byte-changing regeneration of this exact runtime config has not been proven"},
+  "D": {"excludedExactPattern": "guiLogs/*.txt", "reason": "Diagnostic application logs, not source or effective configuration. No cache/config/state directory is broadly exempted."},
+  "excludedJsonFields": [],
+  "excludedDatabaseTables": [],
+  "allowedBenignDifferences": ["JSON object key ordering and whitespace in class B only, with identical complete parsed values", "SQLite physical layout or row enumeration order with identical complete logical table contents and schema", "File mtime/inode replacement with identical protected content; metadata remains recorded"],
+  "neverExempt": ["listener/address/port/LAN", "protocol/authentication/accounts", "routing/rule order", "outbound/server/credential identity", "TLS/transport/security flags", "DNS/sniffing/mux", "selected GUI profile/routing/subscription source", "unknown fields or new SQLite tables", "active main process identity changes", "new/changed xray listening sockets"],
+  "observation": {"samples": 5, "intervalSeconds": 30, "minimumSpanSeconds": 110, "maximumSpanSeconds": 180, "maximumCaptureSeconds": 15},
+  "historicalContinuity": "NOT_PROVEN",
+  "newEpochBaseline": "CURRENT_STATE_ONLY"
+}

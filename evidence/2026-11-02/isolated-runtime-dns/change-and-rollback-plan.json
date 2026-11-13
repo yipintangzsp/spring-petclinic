@@ -1,0 +1,71 @@
+{
+  "classification": "COLIMA_VM_DNS",
+  "cause": "VM /etc/resolv.conf dangling stub symlink; target and systemd-resolved absent. Docker daemon falls back to localhost; container DNS independently succeeds.",
+  "supportedOptionAssessment": {
+    "installed": "Colima 0.10.3 / Lima 2.2.0",
+    "option": "network.dns / --dns",
+    "reasonNotSelected": "This supplies DNS server addresses in Lima/cloud-init network-config (already supplied to eth0), not the missing resolved implementation or /etc/resolv.conf target. Changing upstream servers alone cannot repair the missing libc resolver file. A VM-local resolver file replacement targets the proven failing layer without restart or extra profile variables.",
+    "evidence": [
+      "supported-dns-option-evidence.json",
+      "vm-network-dns-configuration.json",
+      "vm-dns-before.log",
+      "installed-lima-dns-bootstrap.sh"
+    ]
+  },
+  "file": "security-test VM:/etc/resolv.conf",
+  "old": {
+    "hostname": "security-test",
+    "path": "/etc/resolv.conf",
+    "symlink": true,
+    "target": "../run/systemd/resolve/stub-resolv.conf",
+    "targetExists": false,
+    "uid": 0,
+    "gid": 0,
+    "mode": "0o777",
+    "netplanSha256": "516872bd7afd2b99ba403158b1e1c2ffbab231c439153d34c11838f3f042232c"
+  },
+  "new": {
+    "type": "regular file",
+    "uid": 0,
+    "gid": 0,
+    "mode": "0644",
+    "content": "# security-test isolated runtime DNS recovery; 2026-11-02\nnameserver 8.8.8.8\n"
+  },
+  "backup": "security-test VM:/var/tmp/security-test-dns-20261102/resolv.conf.before",
+  "rollback": [
+    "colima ssh -p security-test -- sudo -n sh -c 'rm -f /etc/resolv.conf && cp -a /var/tmp/security-test-dns-20261102/resolv.conf.before /etc/resolv.conf'",
+    "Confirm exact old symlink target/owner and missing target; this intentionally restores the known DNS failure.",
+    "Profile/default/host config are not modified. No daemon restart required."
+  ],
+  "scope": "One DNS-related variable: VM resolver file only. No packages, service, profile, netplan, hosts, proxy or route changes.",
+  "preProtection": [
+    {
+      "path": "/Users/zhangsir/.colima/security-test/colima.yaml",
+      "unchanged": true
+    },
+    {
+      "path": "/Users/zhangsir/.colima/default/colima.yaml",
+      "unchanged": true
+    },
+    {
+      "path": "/Users/zhangsir/.colima/_lima/colima/lima.yaml",
+      "unchanged": true
+    },
+    {
+      "path": "/Users/zhangsir/.ssh/config",
+      "unchanged": true
+    },
+    {
+      "path": "/Users/zhangsir/.kube/config",
+      "unchanged": true
+    },
+    {
+      "path": "/Users/zhangsir/.docker/config.json",
+      "unchanged": true
+    },
+    {
+      "path": "/etc/resolv.conf",
+      "unchanged": true
+    }
+  ]
+}

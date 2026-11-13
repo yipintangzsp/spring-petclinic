@@ -1,0 +1,69 @@
+✔ Kubescape complete Gate archived-findings-retained (30.444833ms)
+✔ Kubescape complete Gate zero-findings (7.480541ms)
+✔ Kubescape complete Gate same-control-across-frameworks (3.645208ms)
+✔ Kubescape complete Gate lock-unreadable (5.30225ms)
+✔ Kubescape complete Gate output-directory-error (5.034375ms)
+✔ Kubescape complete Gate source-read-error (6.301792ms)
+✔ Kubescape complete Gate binary-hash-mismatch (7.300542ms)
+✔ Kubescape complete Gate binary-unavailable (5.148375ms)
+✔ Kubescape complete Gate framework-hash-mismatch (4.751792ms)
+✔ Kubescape complete Gate framework-file-missing (5.641334ms)
+✔ Kubescape complete Gate lease-query-failed (5.064458ms)
+✔ Kubescape complete Gate lease-malformed (5.305041ms)
+✔ Kubescape complete Gate lease-holder-mismatch (6.3095ms)
+✔ Kubescape complete Gate temp-create-failed (5.406792ms)
+✔ Kubescape complete Gate chmod-failed (5.135041ms)
+✔ Kubescape complete Gate context-unavailable (5.755708ms)
+✔ Kubescape complete Gate CA-query-failed (4.9965ms)
+✔ Kubescape complete Gate CA-malformed (4.6205ms)
+✔ Kubescape complete Gate CA-data-absent (6.814708ms)
+✔ Kubescape complete Gate token-request-failed (5.476833ms)
+✔ Kubescape complete Gate kubeconfig-write-failed (5.910375ms)
+✔ Kubescape complete Gate secret-access-not-denied (6.20625ms)
+✔ Kubescape complete Gate business-write-not-denied (5.849416ms)
+✔ Kubescape complete Gate capability-query-error (6.291917ms)
+✔ Kubescape complete Gate scan-nonzero (5.967959ms)
+✔ Kubescape complete Gate scan-timeout (5.1525ms)
+✔ Kubescape complete Gate scan-log-write-failed (4.829292ms)
+✔ Kubescape complete Gate report-missing (4.405917ms)
+✔ Kubescape complete Gate report-malformed (4.691833ms)
+✔ Kubescape complete Gate report-schema-incomplete (4.959708ms)
+✖ Kubescape complete Gate report-hash-read-failed (13.065125ms)
+✔ Kubescape complete Gate cleanup-failed (13.463542ms)
+✔ Kubescape complete Gate report-write-failed (12.271125ms)
+✔ Kubescape complete Gate cleanup-after-scan-failure (5.756375ms)
+✔ Kubescape complete Gate later-framework-failure-1 (9.80775ms)
+✔ Kubescape complete Gate later-framework-failure-2 (7.528667ms)
+✔ Kubescape complete Gate later-framework-failure-3 (11.888292ms)
+✔ uncaptured parent evidence does not PASS (0.421166ms)
+ℹ tests 38
+ℹ suites 0
+ℹ pass 37
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 436.851666
+
+✖ failing tests:
+
+test at infra/security/policy/kubescape-parent.test.mjs:45:43
+✖ Kubescape complete Gate report-hash-read-failed (13.065125ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  'PASS' !== 'FAIL'
+  
+      at TestContext.<anonymous> (file:///Users/zhangsir/code/petclinic-platform-20261011/infra/security/policy/kubescape-parent.test.mjs:46:148)
+      at Test.runInAsyncScope (node:async_hooks:226:14)
+      at Test.run (node:internal/test_runner/test:1201:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:831:18)
+      at Test.postRun (node:internal/test_runner/test:1330:19)
+      at Test.run (node:internal/test_runner/test:1258:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:831:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 'PASS',
+    expected: 'FAIL',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }

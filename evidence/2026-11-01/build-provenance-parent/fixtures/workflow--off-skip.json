@@ -1,0 +1,563 @@
+{
+  "workflow": true,
+  "classification": "CONTROLLED_REPLAY",
+  "cfg": {
+    "mode": "off",
+    "enabled": true,
+    "image": "core.harbor.domain/petclinic/petclinic@sha256:2fbaea65ab030c56c60c62e3ee9fbe362deb8bbbb8216a891ef4c7bbbcea6d55",
+    "commit": "9a78cc89f22fa98fb1ffcc43e2ae279299471793",
+    "repository": "http://gitlab-service.ns-devops.svc.cluster.local/root/petclinic-platform.git",
+    "builder": "http://jenkins.devops.local/job/petclinic-candidate-build",
+    "buildNumber": 2
+  },
+  "environment": {
+    "BUILD_NUMBER": "270",
+    "HARBOR_USER": "synthetic-user",
+    "HARBOR_PASS": "synthetic-password"
+  },
+  "steps": {
+    "stage": {},
+    "withEnv": {},
+    "credentials": {},
+    "status-write": {}
+  },
+  "verificationFacts": {
+    "schema": 1,
+    "source": "build-provenance-verification",
+    "policyVersion": "baseline-v1",
+    "phase": "verify",
+    "classification": "CONTROLLED_REPLAY",
+    "complete": true,
+    "execution": {
+      "exitCode": 0
+    },
+    "inputIdentity": {
+      "source": {
+        "commit": "9a78cc89f22fa98fb1ffcc43e2ae279299471793",
+        "repository": "http://gitlab-service.ns-devops.svc.cluster.local/root/petclinic-platform.git"
+      },
+      "builder": {
+        "identity": "http://jenkins.devops.local/job/petclinic-candidate-build",
+        "buildNumber": 2
+      },
+      "candidateImage": "core.harbor.domain/petclinic/petclinic@sha256:2fbaea65ab030c56c60c62e3ee9fbe362deb8bbbb8216a891ef4c7bbbcea6d55",
+      "requestedVerification": {
+        "image": "core.harbor.domain/petclinic/petclinic@sha256:2fbaea65ab030c56c60c62e3ee9fbe362deb8bbbb8216a891ef4c7bbbcea6d55",
+        "commit": "9a78cc89f22fa98fb1ffcc43e2ae279299471793",
+        "repository": "http://gitlab-service.ns-devops.svc.cluster.local/root/petclinic-platform.git",
+        "builder": "http://jenkins.devops.local/job/petclinic-candidate-build",
+        "buildNumber": "2"
+      }
+    },
+    "observations": [
+      {
+        "type": "checksum-observation",
+        "path": "/var/jenkins_home/platform-security/20261027/cosign",
+        "sha256": "ade83b7aac62e131cacfe96d958948b2150cc9efec46a570a2649b8e27dedad2",
+        "freshSourceHashComputed": false
+      },
+      {
+        "type": "io",
+        "key": "temp-create"
+      },
+      {
+        "type": "io",
+        "key": "temp-chmod"
+      },
+      {
+        "type": "io",
+        "key": "mkdir:/tmp/build-attestation-frozen/docker"
+      },
+      {
+        "type": "io",
+        "key": "write:/tmp/build-attestation-frozen/docker/config.json"
+      },
+      {
+        "type": "command",
+        "tool": "cosign",
+        "args": [
+          "verify-attestation",
+          "--key",
+          "infra/security/cosign.pub",
+          "--insecure-ignore-tlog=true",
+          "--allow-http-registry",
+          "--type",
+          "https://devops.local/attestation/image-build/v1",
+          "core.harbor.domain/petclinic/petclinic@sha256:2fbaea65ab030c56c60c62e3ee9fbe362deb8bbbb8216a891ef4c7bbbcea6d55"
+        ],
+        "result": {
+          "status": 0,
+          "stdout": "{\"payload\":\"eyJfdHlwZSI6Imh0dHBzOi8vaW4tdG90by5pby9TdGF0ZW1lbnQvdjAuMSIsICJzdWJqZWN0IjpbeyJuYW1lIjoiY29yZS5oYXJib3IuZG9tYWluL3BldGNsaW5pYy9wZXRjbGluaWMiLCAiZGlnZXN0Ijp7InNoYTI1NiI6IjJmYmFlYTY1YWIwMzBjNTZjNjBjNjJlM2VlOWZiZTM2MmRlYjhiYmJiODIxNmE4OTFlZjRjN2JiYmNlYTZkNTUifX1dLCAicHJlZGljYXRlVHlwZSI6Imh0dHBzOi8vZGV2b3BzLmxvY2FsL2F0dGVzdGF0aW9uL2ltYWdlLWJ1aWxkL3YxIiwgInByZWRpY2F0ZSI6eyJidWlsZFR5cGUiOiJwZXRjbGluaWMtbWF2ZW4tYnVpbGR4LXYxIiwgImJ1aWxkZXIiOnsiYnVpbGROdW1iZXIiOjIsICJpZGVudGl0eSI6Imh0dHA6Ly9qZW5raW5zLmRldm9wcy5sb2NhbC9qb2IvcGV0Y2xpbmljLWNhbmRpZGF0ZS1idWlsZCJ9LCAiYnVpbGRraXQiOnsibWV0YWRhdGFTaGEyNTYiOiIyYmQ1ZDAyNTE4OTk3NTNmMjZhNDJjNmQ2NzljMTZjOGU0N2NiMDQ4YzNjNGE1ZTc0MjY0NWQ1MDZhNmJhYmMyIiwgIm5hdGl2ZVByb3ZlbmFuY2UiOiJtb2RlPW1pbiIsICJvdXRwdXREaWdlc3QiOiJzaGEyNTY6MmZiYWVhNjVhYjAzMGM1NmM2MGM2MmUzZWU5ZmJlMzYyZGViOGJiYmI4MjE2YTg5MWVmNGM3YmJiY2VhNmQ1NSJ9LCAiY2FuZGlkYXRlSW1hZ2UiOiJjb3JlLmhhcmJvci5kb21haW4vcGV0Y2xpbmljL3BldGNsaW5pY0BzaGEyNTY6MmZiYWVhNjVhYjAzMGM1NmM2MGM2MmUzZWU5ZmJlMzYyZGViOGJiYmI4MjE2YTg5MWVmNGM3YmJiY2VhNmQ1NSIsICJjb21waWxhdGlvbiI6eyJidWlsZGVyIjp7ImJ1aWxkTnVtYmVyIjoyLCAiaWRlbnRpdHkiOiJodHRwOi8vamVua2lucy5kZXZvcHMubG9jYWwvam9iL3BldGNsaW5pYy1jYW5kaWRhdGUtYnVpbGQifSwgImZpbmlzaGVkQXQiOiIyMDI2LTEwLTMwVDAzOjE0OjM3Ljg1M1oiLCAiamFyU2hhMjU2IjoiN2Y1ZDQ5YTY1MTQ5ZDI1ZDE2ZTM4ZGJmN2M1ZDBjMjY4NmFjOGExNWFiNTNjMmQxYTA1YzE1NzVmNDRhODEwMCIsICJtYXZlbkRlcGVuZGVuY2llcyI6Ik5vdCBoZXJtZXRpYzogZXhpc3RpbmcgTWF2ZW4gcmVwb3NpdG9yeSBhbmQgcG9tIHJlc29sdXRpb247IG5vIFNMU0EgbGV2ZWwgY2xhaW1lZCIsICJzb3VyY2UiOnsiY29tbWl0IjoiOWE3OGNjODlmMjJmYTk4ZmIxZmZjYzQzZTJhZTI3OTI5OTQ3MTc5MyIsICJyZXBvc2l0b3J5IjoiaHR0cDovL2dpdGxhYi1zZXJ2aWNlLm5zLWRldm9wcy5zdmMuY2x1c3Rlci5sb2NhbC9yb290L3BldGNsaW5pYy1wbGF0Zm9ybS5naXQifSwgInNvdXJjZUNvbW1pdCI6IjlhNzhjYzg5ZjIyZmE5OGZiMWZmY2M0M2UyYWUyNzkyOTk0NzE3OTMiLCAic3RhcnRlZEF0IjoiMjAyNi0xMC0zMFQwMzoxNDoyMC40MjlaIn0sICJjb250ZXh0Ijp7ImZpbGVzIjpbeyJuYW1lIjoiLmRvY2tlcmlnbm9yZSIsICJzaGEyNTYiOiJmMjZjZTFlNjJkODBiZGMwOGMxNzU3MzgxMTMyMjY5ZjI0NjFlZmI4OTZiMjJiNTY3MjI3ZTBmNTkyYThlZjY4In0sIHsibmFtZSI6IkRvY2tlcmZpbGUiLCAic2hhMjU2IjoiZWJlNzk1YWJlZTJlMmMzM2MxYjUxMzcxOTZiZDA5MTE4OGQ0NjE1OTJjNjVlZThhOWM3M2RkNTNmZGY2MGE2ZCJ9LCB7Im5hbWUiOiJ0YXJnZXQvc2VjdXJpdHktcGFja2FnZXMvYW1kNjQvYnNkdXRpbHNfMi40MS4zLTN1YnVudHUyLjJfYW1kNjQuZGViIiwgInNoYTI1NiI6ImI0ZGFlYzAxYjZjNjZkYzA0NDc1ZTdlYmE1MGJmNDNhM2I1YzIyNjRjMzhhN2JlOWNiYWMxNDAzZDNhYmQ3N2QifSwgeyJuYW1lIjoidGFyZ2V0L3NlY3VyaXR5LXBhY2thZ2VzL2FtZDY0L2N1cmxfOC4xOC4wLTF1YnVudHUyLjhfYW1kNjQuZGViIiwgInNoYTI1NiI6IjJjNDE4YTYxZDcxNjVkMGNkZTAxZDljYjA1YWUwMjVjYzQxZmM3NWVmNmQzZjA5NTk5NmJkMDQ1YmEwOTQ1ZGMifSwgeyJuYW1lIjoidGFyZ2V0L3NlY3VyaXR5LXBhY2thZ2VzL2FtZDY0L2RpZmZ1dGlsc18zLjEyLTF1YnVudHUwLjFfYW1kNjQuZGViIiwgInNoYTI1NiI6IjBkNGEzYWQ3ZmMwNmRkZjczYzI1MGRiMmMzM2ZiMDllNmVlZmQ4MDIyNGQ0OWI2ZTZlOWVlMjViNjVmNGNjZGUifSwgeyJuYW1lIjoidGFyZ2V0L3NlY3VyaXR5LXBhY2thZ2VzL2FtZDY0L2Rpcm1uZ3JfMi40LjgtNHVidW50dTMuMV9hbWQ2NC5kZWIiLCAic2hhMjU2IjoiMGMyMWQyNTcyODgwNjE0NzYzY2UzZGQyM2EyZDZhOTZlMjVmYzcxY2EwMzhlMmNkYzA4NDRjYjAxN2FmMGUxNyJ9LCB7Im5hbWUiOiJ0YXJnZXQvc2VjdXJpdHktcGFja2FnZXMvYW1kNjQvZ251LWNvcmV1dGlsc185LjctM3VidW50dTIuMV9hbWQ2NC5kZWIiLCAic2hhMjU2IjoiZDlhNjcyNGY1MDc3NTlhYzA2ZDhiMDIxNGU0ZDMxZDY3YTRlNjY0N2JlNGQ3NzBhNzBhMWQ0MzA0MWJlNWZhMyJ9LCB7Im5hbWUiOiJ0YXJnZXQvc2VjdXJpdHktcGFja2FnZXMvYW1kNjQvZ251cGdfMi40LjgtNHVidW50dTMuMV9hbGwuZGViIiwgInNoYTI1NiI6ImY4ZTRlNzU0YTg0M2IxMzM0ZTkwMDkyYWFjNGMyNDQzMzgzNmQwNzU2Yzk5NmYzNzgyMmQzMzkwNWYyNTk2ZTUifSwgeyJuYW1lIjoidGFyZ2V0L3NlY3VyaXR5LXBhY2thZ2VzL2FtZDY0L2dwZy1hZ2VudF8yLjQuOC00dWJ1bnR1My4xX2FtZDY0LmRlYiIsICJzaGEyNTYiOiIzNTE3MDQ5N2MyMTkxZmE4ZjRkOWUyNWY4NjcwNTdkOTNkOGY1OWE2NTI5YjBkZWU5Njc4OGQwYzAyODY2ZGI2In0sIHsibmFtZSI6InRhcmdldC9zZWN1cml0eS1wYWNrYWdlcy9hbWQ2NC9ncGdfMi40LjgtNHVidW50dTMuMV9hbWQ2NC5kZWIiLCAic2hhMjU2IjoiZmI4ZGE0ZjY5MWI2ZTIxMzlmYTVjZGY3ZjU0ZDAwMGVmMWI3YjI3NzUzZWZiMmRiZGM1YTk1NDYwNTdhNjJjNiJ9LCB7Im5hbWUiOiJ0YXJnZXQvc2VjdXJpdHktcGFja2FnZXMvYW1kNjQvZ3BnY29uZl8yLjQuOC00dWJ1bnR1My4xX2FtZDY0LmRlYiIsICJzaGEyNTYiOiIzNzQ3ODkwZmQ3OWQ3YzY0ZWU3ZTM0OTZlNTQ3NDJkZDQ4MmNmZjAxNTc0ZDg4NWI4NGFkYjY0NWM3YWRlN2FmIn0sIHsibmFtZSI6InRhcmdldC9zZWN1cml0eS1wYWNrYWdlcy9hbWQ2NC9ncGdzbV8yLjQuOC00dWJ1bnR1My4xX2FtZDY0LmRlYiIsICJzaGEyNTYiOiJlMzZlZWRkZTQ1YjExNzRhNTkxZjU1Y2U5NGJlZWY5OWRmYjg5ZDU4MzA4Yjk2ZTEzNTRhMWU0NTg4ODIwMjI1In0sIHsibmFtZSI6InRhcmdldC9zZWN1cml0eS1wYWNrYWdlcy9hbWQ2NC9ncGd2XzIuNC44LTR1YnVudHUzLjFfYW1kNjQuZGViIiwgInNoYTI1NiI6IjBmY2NlNzI2NTY0MzlkOTA4MjFiYmQyMzU4MGFmYzc5NGEwMWVjMmYyODYyMmFlMzFiNGY1Mzk0YTgzMGJiMDkifSwgeyJuYW1lIjoidGFyZ2V0L3NlY3VyaXR5LXBhY2thZ2VzL2FtZDY0L2xpYmF0dHIxXzIuNS4yLTR1YnVudHUwLjFfYW1kNjQuZGViIiwgInNoYTI1NiI6ImMxMGI2MTkxZTJjNThjMTEwYWYwZDY0OGNiYmRlMmU1NWM1Y2ZhMzAzMjZjNWM2MDUxYmRjZjBhMTJlYzJkMjEifSwgeyJuYW1lIjoidGFyZ2V0L3NlY3VyaXR5LXBhY2thZ2VzL2FtZDY0L2xpYmJsa2lkMV8yLjQxLjMtM3VidW50dTIuMl9hbWQ2NC5kZWIiLCAic2hhMjU2IjoiOTI5ZWJlZGI2MTBmYTRkZmExNmNhZGE3NjNjZWE3ZThlZDRiZDM3YzY4NTczNTYzNDEwNjE0MTg5YmQ0ZTUzNyJ9LCB7Im5hbWUiOiJ0YXJnZXQvc2VjdXJpdHktcGFja2FnZXMvYW1kNjQvbGliYnJvdGxpMV8xLjIuMC0zdWJ1bnR1MC4xX2FtZDY0LmRlYiIsICJzaGEyNTYiOiJiZWRlZWYxY2YzMjY4ZjkwMzM4YzQxMWNkYjBhNDViMjI0ZDA2NjBmZDIyNDBmMzEwZjM4MDMxNmM4MjQ0NjA2In0sIHsibmFtZSI6InRhcmdldC9zZWN1cml0eS1wYWNrYWdlcy9hbWQ2NC9saWJiejItMS4wXzEuMC44LTZ1YnVudHUwLjFfYW1kNjQuZGViIiwgInNoYTI1NiI6ImY0YTAwOGY4MjE5MTE4YWNiN2Q1ZTAzNTZkNjE1ZjRmYzY4MjlhOWY1YTgzODM5NGQwZjdlMTAxZTljNWViZjgifSwgeyJuYW1lIjoidGFyZ2V0L3NlY3VyaXR5LXBhY2thZ2VzL2FtZDY0L2xpYmMtYmluXzIuNDMtMnVidW50dTIuNF9hbWQ2NC5kZWIiLCAic2hhMjU2IjoiYmM0ZjUwYTBhZWJiYjM0ODU5ODc0OWMyOTFhMzc0MmY5NDg1ZDk0YjA0NDcxNWQzODIzODg2MDdiOTE1OWExYiJ9LCB7Im5hbWUiOiJ0YXJnZXQvc2VjdXJpdHktcGFja2FnZXMvYW1kNjQvbGliYy1nY29udi1tb2R1bGVzLWV4dHJhXzIuNDMtMnVidW50dTIuNF9hbWQ2NC5kZWIiLCAic2hhMjU2IjoiYzIxOTRiODdjN2Y2Mjg3MjIwMzZiYmU5ZjliYmRmMjBjMWViZGIwNWVjZDY4YjdhM2E1MmRkMWE3NmYzYzVkNiJ9LCB7Im5hbWUiOiJ0YXJnZXQvc2VjdXJpdHktcGFja2FnZXMvYW1kNjQvbGliYzZfMi40My0ydWJ1bnR1Mi40X2FtZDY0LmRlYiIsICJzaGEyNTYiOiJhNjEzYjQ1N2YzZmY5Yzg0ZWJkMjhhZjhhMDVhZmRlYzIyNjA1YWQ5YWVkODdjNzFlM2E2YWU1MTcwYWViOWNhIn0sIHsibmFtZSI6InRhcmdldC9zZWN1cml0eS1wYWNrYWdlcy9hbWQ2NC9saWJjdXJsNHQ2NF84LjE4LjAtMXVidW50dTIuOF9hbWQ2NC5kZWIiLCAic2hhMjU2IjoiN2MwYjM3NTkyZjgzYTYyOWNjMjJmMGM5OGVmZmExNzZkYTllZGJkNmQ3N2IzZjM4MTg0YTlkMGRkYzVlMDI2NiJ9LCB7Im5hbWUiOiJ0YXJnZXQvc2VjdXJpdHktcGFja2FnZXMvYW1kNjQvbGliZXhwYXQxXzIuNy40LTF1YnVudHUwLjJfYW1kNjQuZGViIiwgInNoYTI1NiI6IjAwNjNlNjhkNzQyZmFjZmQzYzQ2ZDdkN2RmOWViMGQ4NWYxM2UwZmMyOTQ5MDhhNGYxMzhkNDU1NTc2MDc4MzcifSwgeyJuYW1lIjoidGFyZ2V0L3NlY3VyaXR5LXBhY2thZ2VzL2FtZDY0L2xpYmZyZWV0eXBlNl8yLjE0LjIrZGZzZy0xdWJ1bnR1MC4yX2FtZDY0LmRlYiIsICJzaGEyNTYiOiI2ZDdkNTMyYjdkMGM1NzYzOWRlYjNiMjI4ZjFmMGQ3ODZjZjUzMDVkNjEzZWY3ZGY5YmE3NmM3NzZhMGY4MzczIn0sIHsibmFtZSI6InRhcmdldC9zZWN1cml0eS1wYWNrYWdlcy9hbWQ2NC9saWJnY3J5cHQyMF8xLjEyLjAtMnVidW50dTEuMV9hbWQ2NC5kZWIiLCAic2hhMjU2IjoiOGU3NmQ3MTMxYmNmYzdmYmI5ZTdiY2RiY2FmOTM2MjE1YWI2NjdiN2FiMzNlOTBjYjljYjcyZWE3ZWJmODA2MCJ9LCB7Im5hbWUiOiJ0YXJnZXQvc2VjdXJpdHktcGFja2FnZXMvYW1kNjQvbGlibW91bnQxXzIuNDEuMy0zdWJ1bnR1Mi4yX2FtZDY0LmRlYiIsICJzaGEyNTYiOiI3YjhmMDVkNDM0NjA0OWM1MGQ4NDZlMTk0N2VjMTJhZmYzNmYzZGQ0NGNiZDVlZTRlODUwNTI0NWNkODZiNDYxIn0sIHsibmFtZSI6InRhcmdldC9zZWN1cml0eS1wYWNrYWdlcy9hbWQ2NC9saWJwbmcxNi0xNnQ2NF8xLjYuNTctMXVidW50dTAuMV9hbWQ2NC5kZWIiLCAic2hhMjU2IjoiZjI0YTdmN2MwNDI4ZDc0ZTMzZWE5MzQ2OTY5ODdiNzMzNmVjMDk2MmYyMTI1MzUxODVmMDQ5Mzc5MmU3NTM2ZSJ9LCB7Im5hbWUiOiJ0YXJnZXQvc2VjdXJpdHktcGFja2FnZXMvYW1kNjQvbGlic21hcnRjb2xzMV8yLjQxLjMtM3VidW50dTIuMl9hbWQ2NC5kZWIiLCAic2hhMjU2IjoiYWEyMjM5YmE3ZWZkODQ4YmJkZDVkY2IxMWRhOWQ0YTkxYzgxNjM4NDE0ZmUzODBmNDkxZDAzMGQ3OGYwOWZmYiJ9LCB7Im5hbWUiOiJ0YXJnZXQvc2VjdXJpdHktcGFja2FnZXMvYW1kNjQvbGlic3FsaXRlMy0wXzMuNDYuMS05dWJ1bnR1MC4zX2FtZDY0LmRlYiIsICJzaGEyNTYiOiJmZjRiNWExZTdjMDI4YTRiY2MzMDA3NmU0ZDgxOTdhYWQxYTkxMGRmNDRmNGRjOGRjZjI1M2U5ZWU5YTNhMzY3In0sIHsibmFtZSI6InRhcmdldC9zZWN1cml0eS1wYWNrYWdlcy9hbWQ2NC9saWJzc2gyLTF0NjRfMS4xMS4xLTF1YnVudHUwLjI2LjA0LjRfYW1kNjQuZGViIiwgInNoYTI1NiI6ImJiM2UzMzRkYzg4NWQxMjRkMzhjZDQzNTBmMWNiNDYwNmMwM2NlNThlOWY1M2RjNTFhODRjMmM4ZDExYzg0ZTEifSwgeyJuYW1lIjoidGFyZ2V0L3NlY3VyaXR5LXBhY2thZ2VzL2FtZDY0L2xpYnNzbDN0NjRfMy41LjUtMXVidW50dTMuN19hbWQ2NC5kZWIiLCAic2hhMjU2IjoiM2ZmNzNlMTIxZjZjZDRmMTllODBhYjQzMjlkZmQ5MTQxMDhiMzkzNmM5ZGIzNzA4MjAwMjAzYTliMjQ1YjM0ZCJ9LCB7Im5hbWUiOiJ0YXJnZXQvc2VjdXJpdHktcGFja2FnZXMvYW1kNjQvbGlic3lzdGVtZDBfMjU5LjktMHVidW50dTAuMV9hbWQ2NC5kZWIiLCAic2hhMjU2IjoiYjI1NTUyMWIxOGEyODlkNDAxNDllOTNhZWYxZWU4ODFmYjhkMjVjMTZmYTA5OTNkYjk3YzQxNjhmNGY4MmJiMSJ9LCB7Im5hbWUiOiJ0YXJnZXQvc2VjdXJpdHktcGFja2FnZXMvYW1kNjQvbGlidWRldjFfMjU5LjktMHVidW50dTAuMV9hbWQ2NC5kZWIiLCAic2hhMjU2IjoiNTc4YWYzNGUxYjcyMGZmZGYzZTgxNmUxNjhkZDQ3MTlkMDZmMmVmZDE1Y2MwYzE5M2EzNGI5ZDllZTYyMzdjYSJ9LCB7Im5hbWUiOiJ0YXJnZXQvc2VjdXJpdHktcGFja2FnZXMvYW1kNjQvbGlidXVpZDFfMi40MS4zLTN1YnVudHUyLjJfYW1kNjQuZGViIiwgInNoYTI1NiI6Ijc3ZTcwNzhmYmRiOTk0ZTNjOWM4NGNlNmZjNDY0ZjA0NTE1ODBkN2YwYjQ2Yzg3NzBkMDE4OWI0Njk1OWFkNDMifSwgeyJuYW1lIjoidGFyZ2V0L3NlY3VyaXR5LXBhY2thZ2VzL2FtZDY0L2xvY2FsZXNfMi40My0ydWJ1bnR1Mi40X2FsbC5kZWIiLCAic2hhMjU2IjoiYTFhYmY0MWI1MTdmNzY3MDE4ZDVlYWI1MTlkNTViOTI2OWZlMGEwNGFlNDllYTM1ZjdjM2FkMWI4ODcwYWIzMiJ9LCB7Im5hbWUiOiJ0YXJnZXQvc2VjdXJpdHktcGFja2FnZXMvYW1kNjQvbG9naW5fNC4xNi4wLTIrcmVhbGx5Mi40MS4zLTN1YnVudHUyLjJfYW1kNjQuZGViIiwgInNoYTI1NiI6IjExMWZjNzlmOWRhNGYyODFkOGE0Y2YzNjdlMGUyOWEzMGY5NDM2NWIwMDYyMWFlNTc2ODY0NTNkYzNhYjAzMWMifSwgeyJuYW1lIjoidGFyZ2V0L3NlY3VyaXR5LXBhY2thZ2VzL2FtZDY0L21vdW50XzIuNDEuMy0zdWJ1bnR1Mi4yX2FtZDY0LmRlYiIsICJzaGEyNTYiOiI5MDQ1Mzc5OGNiYjU3ZjQ4NTIwMWUxNDg1MzM4OGFmYzAxNDEwYjgxMmViNDMxZjM4ZGIyYTRmNzNjMGQyYzhlIn0sIHsibmFtZSI6InRhcmdldC9zZWN1cml0eS1wYWNrYWdlcy9hbWQ2NC9vcGVuc3NsLXByb3ZpZGVyLWxlZ2FjeV8zLjUuNS0xdWJ1bnR1My43X2FtZDY0LmRlYiIsICJzaGEyNTYiOiI1MWNmNDE4NTcxMDU5ODMxMDk2YWJkNDBlMGJkNWRlYmFhMWFlNDhhNmY4ZDg3ZDllNGU1ZjdmMTJhYTRkYjUyIn0sIHsibmFtZSI6InRhcmdldC9zZWN1cml0eS1wYWNrYWdlcy9hbWQ2NC9vcGVuc3NsXzMuNS41LTF1YnVudHUzLjdfYW1kNjQuZGViIiwgInNoYTI1NiI6IjY5NjVhYWZlNjllMGE0OWVmMzRkMmUyNmY4ZTgzZDA5ZDFjNjAzN2I3ZTllZTM3ZjE5YjI5MmEzYzY4NTE2MjEifSwgeyJuYW1lIjoidGFyZ2V0L3NlY3VyaXR5LXBhY2thZ2VzL2FtZDY0L3BlcmwtYmFzZV81LjQwLjEtN3VidW50dTAuM19hbWQ2NC5kZWIiLCAic2hhMjU2IjoiZWFlMjhlOTQ0ZWNjY2E4YWIxYTUzODdkZmVjNzEwZWQzMmY2NjUzMTg4MGE2YzJhMzI4NWZmZDk1ZDNiNTlmMiJ9LCB7Im5hbWUiOiJ0YXJnZXQvc2VjdXJpdHktcGFja2FnZXMvYW1kNjQvdXRpbC1saW51eF8yLjQxLjMtM3VidW50dTIuMl9hbWQ2NC5kZWIiLCAic2hhMjU2IjoiMTFmZDQxMGIxZDM3OTdiMWU5MTI3YjY4MzAyMTYwMjEzYzE1ZTE1NTM3NDVmYjY5ODJlMjcwYjFlMzJkMWYyYSJ9LCB7Im5hbWUiOiJ0YXJnZXQvc2VjdXJpdHktcGFja2FnZXMvYW1kNjQvemxpYjFnXzEuMy5kZnNnK3JlYWxseTEuMy4xLTF1YnVudHUzLjJfYW1kNjQuZGViIiwgInNoYTI1NiI6IjEwMDg0NjY2Zjc0NzI0NzU1MGMzZTgyZjlhMTJjYmZkOTE4NGMxOTI0MWE0MmViMzRkODg5M2VjYjhlMDNiMzUifSwgeyJuYW1lIjoidGFyZ2V0L3NlY3VyaXR5LXBhY2thZ2VzL2FybTY0L2JzZHV0aWxzXzIuNDEuMy0zdWJ1bnR1Mi4yX2FybTY0LmRlYiIsICJzaGEyNTYiOiI1N2UzMTE0NGNiNzk0M2UxYjNiNWUzMTdmM2MxMDY5Y2E1OTc2NDNhNjk1NWI2ZDg3OWNiZWM4OWE0YWMwYTQ2In0sIHsibmFtZSI6InRhcmdldC9zZWN1cml0eS1wYWNrYWdlcy9hcm02NC9jdXJsXzguMTguMC0xdWJ1bnR1Mi44X2FybTY0LmRlYiIsICJzaGEyNTYiOiJjMzZlYzBkZTY2ZDc5YWRjOWY4NzQ4ZDU0Y2QwYjJhYzZiM2QzNDU4ZTAxNDVkZDgzYzk1MjQzNDVmYjllNTYyIn0sIHsibmFtZSI6InRhcmdldC9zZWN1cml0eS1wYWNrYWdlcy9hcm02NC9kaWZmdXRpbHNfMy4xMi0xdWJ1bnR1MC4xX2FybTY0LmRlYiIsICJzaGEyNTYiOiI1ZDA1NTNlM2MwMjIyMWE4NGI3ZTZlMDUwMWMzNzcxMjY2ZDMxZjYzZjUxYTkxZjIzMzAzZTk5YmRmN2Q3MGNiIn0sIHsibmFtZSI6InRhcmdldC9zZWN1cml0eS1wYWNrYWdlcy9hcm02NC9kaXJtbmdyXzIuNC44LTR1YnVudHUzLjFfYXJtNjQuZGViIiwgInNoYTI1NiI6ImUxNWNkYTY1NjU2N2RmMTFkNGYyNjI2NDE4NzA0YTU0MjQ5NmE2YjZkMDM0YzkxZjcxMTEzOGJlMDEyZTQzOWIifSwgeyJuYW1lIjoidGFyZ2V0L3NlY3VyaXR5LXBhY2thZ2VzL2FybTY0L2dudS1jb3JldXRpbHNfOS43LTN1YnVudHUyLjFfYXJtNjQuZGViIiwgInNoYTI1NiI6IjEyMzgxMDgzNTAzMmQ1ZWZjOTY5Yzk3ZDNlODBkNDUxYjVkYTU0NjNlMTkxNmI4MzJlOGM5OTY4NGE4MzM1ODAifSwgeyJuYW1lIjoidGFyZ2V0L3NlY3VyaXR5LXBhY2thZ2VzL2FybTY0L2dudXBnXzIuNC44LTR1YnVudHUzLjFfYWxsLmRlYiIsICJzaGEyNTYiOiJmOGU0ZTc1NGE4NDNiMTMzNGU5MDA5MmFhYzRjMjQ0MzM4MzZkMDc1NmM5OTZmMzc4MjJkMzM5MDVmMjU5NmU1In0sIHsibmFtZSI6InRhcmdldC9zZWN1cml0eS1wYWNrYWdlcy9hcm02NC9ncGctYWdlbnRfMi40LjgtNHVidW50dTMuMV9hcm02NC5kZWIiLCAic2hhMjU2IjoiNGMxNTA3ODE1NWZiNGRmOGE2NWYzODY3OWYxYTI4Nzk2NDY4NzVlNmI3N2Y2YjAyNmMwYzJlYWE4YzMzMTgzNCJ9LCB7Im5hbWUiOiJ0YXJnZXQvc2VjdXJpdHktcGFja2FnZXMvYXJtNjQvZ3BnXzIuNC44LTR1YnVudHUzLjFfYXJtNjQuZGViIiwgInNoYTI1NiI6IjBhNzJkMDVlMTAwYmEwYWY4YzliOTZmODEwMjE0YzU0ZWYxNmYxY2E1OTVkMjZmMDE1MTVhMDdlMDQwYjM0OWQifSwgeyJuYW1lIjoidGFyZ2V0L3NlY3VyaXR5LXBhY2thZ2VzL2FybTY0L2dwZ2NvbmZfMi40LjgtNHVidW50dTMuMV9hcm02NC5kZWIiLCAic2hhMjU2IjoiMDYyOWFmMzIzNTMyYWYwYzYxODQyZWYxMmJmYWJiMzE2OGE4YzEzZWY5YjQyOWFhZTQ4N2FjMDY2MGY1M2Q5MyJ9LCB7Im5hbWUiOiJ0YXJnZXQvc2VjdXJpdHktcGFja2FnZXMvYXJtNjQvZ3Bnc21fMi40LjgtNHVidW50dTMuMV9hcm02NC5kZWIiLCAic2hhMjU2IjoiZDk5OTAwNzMzZDg1MDhhMTVmM2YyOWVjOWQ5YmZkZDgwYmU5YjZhZThkYTZiYmI4NGZlN2I1ZWQ2Y2U0MWExNyJ9LCB7Im5hbWUiOiJ0YXJnZXQvc2VjdXJpdHktcGFja2FnZXMvYXJtNjQvZ3Bndl8yLjQuOC00dWJ1bnR1My4xX2FybTY0LmRlYiIsICJzaGEyNTYiOiIyZGMyYmNkOTdkYWY5ZmFhYThiYzM5NzA5N2VjYmZmMTI3ZjlmODRkNDRhNjg4YmI5NzY2ZDAyODcyNmM2YTQzIn0sIHsibmFtZSI6InRhcmdldC9zZWN1cml0eS1wYWNrYWdlcy9hcm02NC9saWJhdHRyMV8yLjUuMi00dWJ1bnR1MC4xX2FybTY0LmRlYiIsICJzaGEyNTYiOiJhYTNkNzI1NWE1NjFjMjdjMzkyNjBkNjJkNzFmMGRmMzgxY2QwZGFiMDhlZmQxMTE4Mzc5ODdhMDljOTFjMzJiIn0sIHsibmFtZSI6InRhcmdldC9zZWN1cml0eS1wYWNrYWdlcy9hcm02NC9saWJibGtpZDFfMi40MS4zLTN1YnVudHUyLjJfYXJtNjQuZGViIiwgInNoYTI1NiI6IjQzOTVjZDE4NDc5YmM4OGE3MTA5ZmMxOTk0NzU4MDJlYmZjMDA3ZGUwN2YxY2YxNWM4NWYyNjAwM2ZkZDc1YWUifSwgeyJuYW1lIjoidGFyZ2V0L3NlY3VyaXR5LXBhY2thZ2VzL2FybTY0L2xpYmJyb3RsaTFfMS4yLjAtM3VidW50dTAuMV9hcm02NC5kZWIiLCAic2hhMjU2IjoiOTMxZDgzYmQ5OGFhM2M0NGJhNGZmNDMwNGU3YTY4NTVjMGE3NGJkMzc3MjIyMGQwZmQ3YTczY2Q4NDk2YTAxMiJ9LCB7Im5hbWUiOiJ0YXJnZXQvc2VjdXJpdHktcGFja2FnZXMvYXJtNjQvbGliYnoyLTEuMF8xLjAuOC02dWJ1bnR1MC4xX2FybTY0LmRlYiIsICJzaGEyNTYiOiI0MmM4ZTQxODJlODUwYTQ5ZjZmZTFlMTAwMTNjYTEzOTMxNTEzYTAzNzg3NWY3NjhhNTA1ZGI3NzMwNWFhMzBlIn0sIHsibmFtZSI6InRhcmdldC9zZWN1cml0eS1wYWNrYWdlcy9hcm02NC9saWJjLWJpbl8yLjQzLTJ1YnVudHUyLjRfYXJtNjQuZGViIiwgInNoYTI1NiI6IjdkYWU2ZjZjNWIxMWZiNmE4YWNmOWY4ZTZjYmEyOWEwNmEwMzQ3NTlhOTg0OWJhOTZiZDM0MGFjNDA0MDA1NDUifSwgeyJuYW1lIjoidGFyZ2V0L3NlY3VyaXR5LXBhY2thZ2VzL2FybTY0L2xpYmMtZ2NvbnYtbW9kdWxlcy1leHRyYV8yLjQzLTJ1YnVudHUyLjRfYXJtNjQuZGViIiwgInNoYTI1NiI6IjlkNGQ4Y2ZiOWU3NWViNmM3MzI0YzVkOWM1NDhlYjVlYWE0ZWE1ODRmZTI3NjI3MDY5YTliZGFkMzU4MThlZGEifSwgeyJuYW1lIjoidGFyZ2V0L3NlY3VyaXR5LXBhY2thZ2VzL2FybTY0L2xpYmM2XzIuNDMtMnVidW50dTIuNF9hcm02NC5kZWIiLCAic2hhMjU2IjoiMTY1MjU5N2M4YzM0MTliMjk4ZDhhODdkZDNkOGVlYTFmZGM1YTFhYmQ5YmNjYjVhNjZiOTI4ZjkyZWM0NjNjOSJ9LCB7Im5hbWUiOiJ0YXJnZXQvc2VjdXJpdHktcGFja2FnZXMvYXJtNjQvbGliY3VybDR0NjRfOC4xOC4wLTF1YnVudHUyLjhfYXJtNjQuZGViIiwgInNoYTI1NiI6ImExNDhiNjkyNzlkZmRlNmNmNWFhNzhhM2VlZTg1MDI3ZTlmYjNiYzFjMjM5ZDBhZTYyZGUxYzhlNTc0YWYzMWQifSwgeyJuYW1lIjoidGFyZ2V0L3NlY3VyaXR5LXBhY2thZ2VzL2FybTY0L2xpYmV4cGF0MV8yLjcuNC0xdWJ1bnR1MC4yX2FybTY0LmRlYiIsICJzaGEyNTYiOiJjNTUzY2Y1ODI3ZjkzN2Y5MmI2NWZjZWE4NmMxYjE5YzE4MjI0ZmYwNTMzYmMzMDMwNWUwZGJmZDMyYzE5N2ZmIn0sIHsibmFtZSI6InRhcmdldC9zZWN1cml0eS1wYWNrYWdlcy9hcm02NC9saWJmcmVldHlwZTZfMi4xNC4yK2Rmc2ctMXVidW50dTAuMl9hcm02NC5kZWIiLCAic2hhMjU2IjoiYTQwMmUwNGNkYjIyODZlNDYyOGMwMDViMzBiNjc3N2YzMDgzYTI4MTdkMDRiMzNhYWQ4OTk1MGU2NjlhY2YxYyJ9LCB7Im5hbWUiOiJ0YXJnZXQvc2VjdXJpdHktcGFja2FnZXMvYXJtNjQvbGliZ2NyeXB0MjBfMS4xMi4wLTJ1YnVudHUxLjFfYXJtNjQuZGViIiwgInNoYTI1NiI6ImE4YTZlMzkwZGQ2N2MwNzcxMTcxMmZhNzYwM2MxNTQ5NTUwMzViODNlZDlkMTYwMDdmY2QwZjJmMjQxZGJjNTYifSwgeyJuYW1lIjoidGFyZ2V0L3NlY3VyaXR5LXBhY2thZ2VzL2FybTY0L2xpYm1vdW50MV8yLjQxLjMtM3VidW50dTIuMl9hcm02NC5kZWIiLCAic2hhMjU2IjoiMzU5YmU2MzEwMmM2YmJkNDA1MmVkMmY1YjMzMThmNWYxYzc2MmI0YWMxODI2YTAwZjBkOGE0ODBiOTQyYWU1MyJ9LCB7Im5hbWUiOiJ0YXJnZXQvc2VjdXJpdHktcGFja2FnZXMvYXJtNjQvbGlicG5nMTYtMTZ0NjRfMS42LjU3LTF1YnVudHUwLjFfYXJtNjQuZGViIiwgInNoYTI1NiI6ImM2ODNlZTU1YmMwZGIwOTU0NGQ5ODc0Nzg2NzZiYzkyM2M3MmE5Njc1MGYxOWU0YmNhYjMwYzVmZTFlN2QyZGYifSwgeyJuYW1lIjoidGFyZ2V0L3NlY3VyaXR5LXBhY2thZ2VzL2FybTY0L2xpYnNtYXJ0Y29sczFfMi40MS4zLTN1YnVudHUyLjJfYXJtNjQuZGViIiwgInNoYTI1NiI6ImJhNzQxYjNhNTdhODA5ZmQ1NjA2ZWM2MzQwMTkxZTA0NDg3NjFhMDRhODAzZGJhYjlmMjI3YjI2NmYyZDQ2NzAifSwgeyJuYW1lIjoidGFyZ2V0L3NlY3VyaXR5LXBhY2thZ2VzL2FybTY0L2xpYnNxbGl0ZTMtMF8zLjQ2LjEtOXVidW50dTAuM19hcm02NC5kZWIiLCAic2hhMjU2IjoiYzc5ZWIxZTgyZWViMzUwOWFmMWE5NzkyYTU3NThmZjNjNGZlZDRiNjliYzhjZDdjNTg3MWFkYWZjMzBjMTlhOSJ9LCB7Im5hbWUiOiJ0YXJnZXQvc2VjdXJpdHktcGFja2FnZXMvYXJtNjQvbGlic3NoMi0xdDY0XzEuMTEuMS0xdWJ1bnR1MC4yNi4wNC40X2FybTY0LmRlYiIsICJzaGEyNTYiOiI0ZDZlYTNjOTRhZTcxOTAzMjA4NzlkZTdhYjI0ZTY5OGM5ZjI4ZTZkOTBkNTlmZjA2ZjFhNDc5NmRkZDFmNzBkIn0sIHsibmFtZSI6InRhcmdldC9zZWN1cml0eS1wYWNrYWdlcy9hcm02NC9saWJzc2wzdDY0XzMuNS41LTF1YnVudHUzLjdfYXJtNjQuZGViIiwgInNoYTI1NiI6IjlmZTg3YjZiZWVjNWRlNjM2YTcwZTRmYjYwNzY1MTdhMzlmNTA1M2M3ZTIzZTYyOGM5NDU5Yjk0Zjg1Yzc1ZmYifSwgeyJuYW1lIjoidGFyZ2V0L3NlY3VyaXR5LXBhY2thZ2VzL2FybTY0L2xpYnN5c3RlbWQwXzI1OS45LTB1YnVudHUwLjFfYXJtNjQuZGViIiwgInNoYTI1NiI6Ijc4YzMzMGU0OTBjNzRiODkwMDU3ZDEzMDk0ZWVlNzJmYTViMzJlYTEyN2ZjYzQzMzE2NzNiOTk4MGUwYTI5YjMifSwgeyJuYW1lIjoidGFyZ2V0L3NlY3VyaXR5LXBhY2thZ2VzL2FybTY0L2xpYnVkZXYxXzI1OS45LTB1YnVudHUwLjFfYXJtNjQuZGViIiwgInNoYTI1NiI6IjU2ZTBiYjdjYTZjOTAxOTU3MDU5MjRiNGJjN2M4MmVlMGMwYTgwMjIwYTkzZjkzODRlYTM5M2FmYTE4ZWY1YTQifSwgeyJuYW1lIjoidGFyZ2V0L3NlY3VyaXR5LXBhY2thZ2VzL2FybTY0L2xpYnV1aWQxXzIuNDEuMy0zdWJ1bnR1Mi4yX2FybTY0LmRlYiIsICJzaGEyNTYiOiIxMjk4ZjI3ODYxZjYwNzI5YTRkN2FkODZmYTkwNmFhZWJkYmM4OGJlOWZjMzMxNmU5ZWIxNTRkZTRmMDc5MmUzIn0sIHsibmFtZSI6InRhcmdldC9zZWN1cml0eS1wYWNrYWdlcy9hcm02NC9sb2NhbGVzXzIuNDMtMnVidW50dTIuNF9hbGwuZGViIiwgInNoYTI1NiI6ImExYWJmNDFiNTE3Zjc2NzAxOGQ1ZWFiNTE5ZDU1YjkyNjlmZTBhMDRhZTQ5ZWEzNWY3YzNhZDFiODg3MGFiMzIifSwgeyJuYW1lIjoidGFyZ2V0L3NlY3VyaXR5LXBhY2thZ2VzL2FybTY0L2xvZ2luXzQuMTYuMC0yK3JlYWxseTIuNDEuMy0zdWJ1bnR1Mi4yX2FybTY0LmRlYiIsICJzaGEyNTYiOiI3Y2VmNGQyZjNiMjlmYmRmYTc0MTEyZWUxZWIzZTFmMGZlZTc5Yjg1MzMyMWFmYWFhNzJhODY2ZDU5Yzk4N2Q3In0sIHsibmFtZSI6InRhcmdldC9zZWN1cml0eS1wYWNrYWdlcy9hcm02NC9tb3VudF8yLjQxLjMtM3VidW50dTIuMl9hcm02NC5kZWIiLCAic2hhMjU2IjoiNTIyYzVjMjNmNjY5NDhmMjg1YzM3ZmQ5NzhjZWFlZjJkZjhkYzNiM2YwY2QxOWQ1MTQ5OTEzMmIyZjlmNDQyMSJ9LCB7Im5hbWUiOiJ0YXJnZXQvc2VjdXJpdHktcGFja2FnZXMvYXJtNjQvb3BlbnNzbC1wcm92aWRlci1sZWdhY3lfMy41LjUtMXVidW50dTMuN19hcm02NC5kZWIiLCAic2hhMjU2IjoiNzU3ZWM4OTEyMGZlM2Y0MThhODQyMzQyYjNhMGM1OTZiODliMGUzZmIwYmE3NzAzNDdkZGExMjE5ZjIxOWJiZCJ9LCB7Im5hbWUiOiJ0YXJnZXQvc2VjdXJpdHktcGFja2FnZXMvYXJtNjQvb3BlbnNzbF8zLjUuNS0xdWJ1bnR1My43X2FybTY0LmRlYiIsICJzaGEyNTYiOiI2MjNlYTdlYzBlYjgwZGEzZjQwZTg5ZTMzMThhNGU4MmQ0YzY0MTQ2ZDIwNmM5MGNhYmJjZTY5OThkODIyZmE4In0sIHsibmFtZSI6InRhcmdldC9zZWN1cml0eS1wYWNrYWdlcy9hcm02NC9wZXJsLWJhc2VfNS40MC4xLTd1YnVudHUwLjNfYXJtNjQuZGViIiwgInNoYTI1NiI6ImQyYjAwNmI1NmFlM2NhMjA2NzY1ODFiMjkxOGI3YjQyNTBlNzhmYzRmZWUyNDA3YTRiZWEwYmEyMThlYmE3ZWYifSwgeyJuYW1lIjoidGFyZ2V0L3NlY3VyaXR5LXBhY2thZ2VzL2FybTY0L3V0aWwtbGludXhfMi40MS4zLTN1YnVudHUyLjJfYXJtNjQuZGViIiwgInNoYTI1NiI6IjkzMjFkOGFhZmUzMTg5ZjczMmQwZWU4NWExYjEyNTM4MjBmZDhjZTgyM2E1NWM2NWY4ZDYxMDlkMmZiYWYyZmIifSwgeyJuYW1lIjoidGFyZ2V0L3NlY3VyaXR5LXBhY2thZ2VzL2FybTY0L3psaWIxZ18xLjMuZGZzZytyZWFsbHkxLjMuMS0xdWJ1bnR1My4yX2FybTY0LmRlYiIsICJzaGEyNTYiOiJiOWI1Y2UxNTI4YWM3Zjg4NWM4ZmY3ZGMyMzE0Yzg5YzJiYTVkZDk3M2MyYTc5M2RjNGNmNWQwMmQ3NGIzODEwIn0sIHsibmFtZSI6InRhcmdldC9zcHJpbmctcGV0Y2xpbmljLTQuMC4wLVNOQVBTSE9ULmphciIsICJzaGEyNTYiOiI3ZjVkNDlhNjUxNDlkMjVkMTZlMzhkYmY3YzVkMGMyNjg2YWM4YTE1YWI1M2MyZDFhMDVjMTU3NWY0NGE4MTAwIn1dfSwgImZpbmlzaGVkQXQiOiIyMDI2LTEwLTMwVDAzOjE2OjI4LjA5N1oiLCAibGltaXRhdGlvbnMiOlsiSmVua2lucyBhZG1pbmlzdHJhdG9ycyBhbmQgdGhlIGV4aXN0aW5nIHNpZ25pbmcga2V5IGFyZSB0cnVzdGVkIiwgIk1hdmVuIGRlcGVuZGVuY3kgcmVzb2x1dGlvbiBpcyBub3QgaGVybWV0aWM7IG5vIFNMU0EgY2VydGlmaWNhdGlvbiBjbGFpbWVkIl0sICJwbGF0Zm9ybXMiOlsibGludXgvYW1kNjQiLCAibGludXgvYXJtNjQiXSwgInNvdXJjZSI6eyJjb21taXQiOiI5YTc4Y2M4OWYyMmZhOThmYjFmZmNjNDNlMmFlMjc5Mjk5NDcxNzkzIiwgInJlcG9zaXRvcnkiOiJodHRwOi8vZ2l0bGFiLXNlcnZpY2UubnMtZGV2b3BzLnN2Yy5jbHVzdGVyLmxvY2FsL3Jvb3QvcGV0Y2xpbmljLXBsYXRmb3JtLmdpdCJ9LCAic3RhcnRlZEF0IjoiMjAyNi0xMC0zMFQwMzoxNDoyMC40MjlaIn19\",\"payloadType\":\"application/vnd.in-toto+json\",\"signatures\":[{\"sig\":\"MEUCIQDockujsOO15xnG1DmA+cDou9lEE57o7BAdIHNgDqGHkgIgfZVdOwzp4u43jRwlRSxSZhxTHOflVsZqwgh/JwTDG0Y=\"}]}",
+          "stderr": ""
+        }
+      },
+      {
+        "type": "file-read",
+        "path": "infra/security/cosign.pub",
+        "index": 0
+      },
+      {
+        "type": "existing-dsse-verifier",
+        "verified": true
+      },
+      {
+        "type": "existing-build-validator",
+        "valid": true,
+        "expected": {
+          "image": "core.harbor.domain/petclinic/petclinic@sha256:2fbaea65ab030c56c60c62e3ee9fbe362deb8bbbb8216a891ef4c7bbbcea6d55",
+          "commit": "9a78cc89f22fa98fb1ffcc43e2ae279299471793",
+          "repository": "http://gitlab-service.ns-devops.svc.cluster.local/root/petclinic-platform.git",
+          "builder": "http://jenkins.devops.local/job/petclinic-candidate-build",
+          "buildNumber": "2"
+        },
+        "buildFacts": {
+          "buildType": "petclinic-maven-buildx-v1",
+          "builder": {
+            "buildNumber": 2,
+            "identity": "http://jenkins.devops.local/job/petclinic-candidate-build"
+          },
+          "buildkit": {
+            "metadataSha256": "2bd5d0251899753f26a42c6d679c16c8e47cb048c3c4a5e742645d506a6babc2",
+            "nativeProvenance": "mode=min",
+            "outputDigest": "sha256:2fbaea65ab030c56c60c62e3ee9fbe362deb8bbbb8216a891ef4c7bbbcea6d55"
+          },
+          "candidateImage": "core.harbor.domain/petclinic/petclinic@sha256:2fbaea65ab030c56c60c62e3ee9fbe362deb8bbbb8216a891ef4c7bbbcea6d55",
+          "compilation": {
+            "builder": {
+              "buildNumber": 2,
+              "identity": "http://jenkins.devops.local/job/petclinic-candidate-build"
+            },
+            "finishedAt": "2026-10-30T03:14:37.853Z",
+            "jarSha256": "7f5d49a65149d25d16e38dbf7c5d0c2686ac8a15ab53c2d1a05c1575f44a8100",
+            "mavenDependencies": "Not hermetic: existing Maven repository and pom resolution; no SLSA level claimed",
+            "source": {
+              "commit": "9a78cc89f22fa98fb1ffcc43e2ae279299471793",
+              "repository": "http://gitlab-service.ns-devops.svc.cluster.local/root/petclinic-platform.git"
+            },
+            "sourceCommit": "9a78cc89f22fa98fb1ffcc43e2ae279299471793",
+            "startedAt": "2026-10-30T03:14:20.429Z"
+          },
+          "context": {
+            "files": [
+              {
+                "name": ".dockerignore",
+                "sha256": "f26ce1e62d80bdc08c1757381132269f2461efb896b22b567227e0f592a8ef68"
+              },
+              {
+                "name": "Dockerfile",
+                "sha256": "ebe795abee2e2c33c1b5137196bd091188d461592c65ee8a9c73dd53fdf60a6d"
+              },
+              {
+                "name": "target/security-packages/amd64/bsdutils_2.41.3-3ubuntu2.2_amd64.deb",
+                "sha256": "b4daec01b6c66dc04475e7eba50bf43a3b5c2264c38a7be9cbac1403d3abd77d"
+              },
+              {
+                "name": "target/security-packages/amd64/curl_8.18.0-1ubuntu2.8_amd64.deb",
+                "sha256": "2c418a61d7165d0cde01d9cb05ae025cc41fc75ef6d3f095996bd045ba0945dc"
+              },
+              {
+                "name": "target/security-packages/amd64/diffutils_3.12-1ubuntu0.1_amd64.deb",
+                "sha256": "0d4a3ad7fc06ddf73c250db2c33fb09e6eefd80224d49b6e6e9ee25b65f4ccde"
+              },
+              {
+                "name": "target/security-packages/amd64/dirmngr_2.4.8-4ubuntu3.1_amd64.deb",
+                "sha256": "0c21d2572880614763ce3dd23a2d6a96e25fc71ca038e2cdc0844cb017af0e17"
+              },
+              {
+                "name": "target/security-packages/amd64/gnu-coreutils_9.7-3ubuntu2.1_amd64.deb",
+                "sha256": "d9a6724f507759ac06d8b0214e4d31d67a4e6647be4d770a70a1d43041be5fa3"
+              },
+              {
+                "name": "target/security-packages/amd64/gnupg_2.4.8-4ubuntu3.1_all.deb",
+                "sha256": "f8e4e754a843b1334e90092aac4c24433836d0756c996f37822d33905f2596e5"
+              },
+              {
+                "name": "target/security-packages/amd64/gpg-agent_2.4.8-4ubuntu3.1_amd64.deb",
+                "sha256": "35170497c2191fa8f4d9e25f867057d93d8f59a6529b0dee96788d0c02866db6"
+              },
+              {
+                "name": "target/security-packages/amd64/gpg_2.4.8-4ubuntu3.1_amd64.deb",
+                "sha256": "fb8da4f691b6e2139fa5cdf7f54d000ef1b7b27753efb2dbdc5a9546057a62c6"
+              },
+              {
+                "name": "target/security-packages/amd64/gpgconf_2.4.8-4ubuntu3.1_amd64.deb",
+                "sha256": "3747890fd79d7c64ee7e3496e54742dd482cff01574d885b84adb645c7ade7af"
+              },
+              {
+                "name": "target/security-packages/amd64/gpgsm_2.4.8-4ubuntu3.1_amd64.deb",
+                "sha256": "e36eedde45b1174a591f55ce94beef99dfb89d58308b96e1354a1e4588820225"
+              },
+              {
+                "name": "target/security-packages/amd64/gpgv_2.4.8-4ubuntu3.1_amd64.deb",
+                "sha256": "0fcce72656439d90821bbd23580afc794a01ec2f28622ae31b4f5394a830bb09"
+              },
+              {
+                "name": "target/security-packages/amd64/libattr1_2.5.2-4ubuntu0.1_amd64.deb",
+                "sha256": "c10b6191e2c58c110af0d648cbbde2e55c5cfa30326c5c6051bdcf0a12ec2d21"
+              },
+              {
+                "name": "target/security-packages/amd64/libblkid1_2.41.3-3ubuntu2.2_amd64.deb",
+                "sha256": "929ebedb610fa4dfa16cada763cea7e8ed4bd37c68573563410614189bd4e537"
+              },
+              {
+                "name": "target/security-packages/amd64/libbrotli1_1.2.0-3ubuntu0.1_amd64.deb",
+                "sha256": "bedeef1cf3268f90338c411cdb0a45b224d0660fd2240f310f380316c8244606"
+              },
+              {
+                "name": "target/security-packages/amd64/libbz2-1.0_1.0.8-6ubuntu0.1_amd64.deb",
+                "sha256": "f4a008f8219118acb7d5e0356d615f4fc6829a9f5a838394d0f7e101e9c5ebf8"
+              },
+              {
+                "name": "target/security-packages/amd64/libc-bin_2.43-2ubuntu2.4_amd64.deb",
+                "sha256": "bc4f50a0aebbb348598749c291a3742f9485d94b044715d382388607b9159a1b"
+              },
+              {
+                "name": "target/security-packages/amd64/libc-gconv-modules-extra_2.43-2ubuntu2.4_amd64.deb",
+                "sha256": "c2194b87c7f628722036bbe9f9bbdf20c1ebdb05ecd68b7a3a52dd1a76f3c5d6"
+              },
+              {
+                "name": "target/security-packages/amd64/libc6_2.43-2ubuntu2.4_amd64.deb",
+                "sha256": "a613b457f3ff9c84ebd28af8a05afdec22605ad9aed87c71e3a6ae5170aeb9ca"
+              },
+              {
+                "name": "target/security-packages/amd64/libcurl4t64_8.18.0-1ubuntu2.8_amd64.deb",
+                "sha256": "7c0b37592f83a629cc22f0c98effa176da9edbd6d77b3f38184a9d0ddc5e0266"
+              },
+              {
+                "name": "target/security-packages/amd64/libexpat1_2.7.4-1ubuntu0.2_amd64.deb",
+                "sha256": "0063e68d742facfd3c46d7d7df9eb0d85f13e0fc294908a4f138d45557607837"
+              },
+              {
+                "name": "target/security-packages/amd64/libfreetype6_2.14.2+dfsg-1ubuntu0.2_amd64.deb",
+                "sha256": "6d7d532b7d0c57639deb3b228f1f0d786cf5305d613ef7df9ba76c776a0f8373"
+              },
+              {
+                "name": "target/security-packages/amd64/libgcrypt20_1.12.0-2ubuntu1.1_amd64.deb",
+                "sha256": "8e76d7131bcfc7fbb9e7bcdbcaf936215ab667b7ab33e90cb9cb72ea7ebf8060"
+              },
+              {
+                "name": "target/security-packages/amd64/libmount1_2.41.3-3ubuntu2.2_amd64.deb",
+                "sha256": "7b8f05d4346049c50d846e1947ec12aff36f3dd44cbd5ee4e8505245cd86b461"
+              },
+              {
+                "name": "target/security-packages/amd64/libpng16-16t64_1.6.57-1ubuntu0.1_amd64.deb",
+                "sha256": "f24a7f7c0428d74e33ea934696987b7336ec0962f212535185f0493792e7536e"
+              },
+              {
+                "name": "target/security-packages/amd64/libsmartcols1_2.41.3-3ubuntu2.2_amd64.deb",
+                "sha256": "aa2239ba7efd848bbdd5dcb11da9d4a91c81638414fe380f491d030d78f09ffb"
+              },
+              {
+                "name": "target/security-packages/amd64/libsqlite3-0_3.46.1-9ubuntu0.3_amd64.deb",
+                "sha256": "ff4b5a1e7c028a4bcc30076e4d8197aad1a910df44f4dc8dcf253e9ee9a3a367"
+              },
+              {
+                "name": "target/security-packages/amd64/libssh2-1t64_1.11.1-1ubuntu0.26.04.4_amd64.deb",
+                "sha256": "bb3e334dc885d124d38cd4350f1cb4606c03ce58e9f53dc51a84c2c8d11c84e1"
+              },
+              {
+                "name": "target/security-packages/amd64/libssl3t64_3.5.5-1ubuntu3.7_amd64.deb",
+                "sha256": "3ff73e121f6cd4f19e80ab4329dfd914108b3936c9db3708200203a9b245b34d"
+              },
+              {
+                "name": "target/security-packages/amd64/libsystemd0_259.9-0ubuntu0.1_amd64.deb",
+                "sha256": "b255521b18a289d40149e93aef1ee881fb8d25c16fa0993db97c4168f4f82bb1"
+              },
+              {
+                "name": "target/security-packages/amd64/libudev1_259.9-0ubuntu0.1_amd64.deb",
+                "sha256": "578af34e1b720ffdf3e816e168dd4719d06f2efd15cc0c193a34b9d9ee6237ca"
+              },
+              {
+                "name": "target/security-packages/amd64/libuuid1_2.41.3-3ubuntu2.2_amd64.deb",
+                "sha256": "77e7078fbdb994e3c9c84ce6fc464f0451580d7f0b46c8770d0189b46959ad43"
+              },
+              {
+                "name": "target/security-packages/amd64/locales_2.43-2ubuntu2.4_all.deb",
+                "sha256": "a1abf41b517f767018d5eab519d55b9269fe0a04ae49ea35f7c3ad1b8870ab32"
+              },
+              {
+                "name": "target/security-packages/amd64/login_4.16.0-2+really2.41.3-3ubuntu2.2_amd64.deb",
+                "sha256": "111fc79f9da4f281d8a4cf367e0e29a30f94365b00621ae57686453dc3ab031c"
+              },
+              {
+                "name": "target/security-packages/amd64/mount_2.41.3-3ubuntu2.2_amd64.deb",
+                "sha256": "90453798cbb57f485201e14853388afc01410b812eb431f38db2a4f73c0d2c8e"
+              },
+              {
+                "name": "target/security-packages/amd64/openssl-provider-legacy_3.5.5-1ubuntu3.7_amd64.deb",
+                "sha256": "51cf418571059831096abd40e0bd5debaa1ae48a6f8d87d9e4e5f7f12aa4db52"
+              },
+              {
+                "name": "target/security-packages/amd64/openssl_3.5.5-1ubuntu3.7_amd64.deb",
+                "sha256": "6965aafe69e0a49ef34d2e26f8e83d09d1c6037b7e9ee37f19b292a3c6851621"
+              },
+              {
+                "name": "target/security-packages/amd64/perl-base_5.40.1-7ubuntu0.3_amd64.deb",
+                "sha256": "eae28e944eccca8ab1a5387dfec710ed32f66531880a6c2a3285ffd95d3b59f2"
+              },
+              {
+                "name": "target/security-packages/amd64/util-linux_2.41.3-3ubuntu2.2_amd64.deb",
+                "sha256": "11fd410b1d3797b1e9127b68302160213c15e1553745fb6982e270b1e32d1f2a"
+              },
+              {
+                "name": "target/security-packages/amd64/zlib1g_1.3.dfsg+really1.3.1-1ubuntu3.2_amd64.deb",
+                "sha256": "10084666f747247550c3e82f9a12cbfd9184c19241a42eb34d8893ecb8e03b35"
+              },
+              {
+                "name": "target/security-packages/arm64/bsdutils_2.41.3-3ubuntu2.2_arm64.deb",
+                "sha256": "57e31144cb7943e1b3b5e317f3c1069ca597643a6955b6d879cbec89a4ac0a46"
+              },
+              {
+                "name": "target/security-packages/arm64/curl_8.18.0-1ubuntu2.8_arm64.deb",
+                "sha256": "c36ec0de66d79adc9f8748d54cd0b2ac6b3d3458e0145dd83c9524345fb9e562"
+              },
+              {
+                "name": "target/security-packages/arm64/diffutils_3.12-1ubuntu0.1_arm64.deb",
+                "sha256": "5d0553e3c02221a84b7e6e0501c3771266d31f63f51a91f23303e99bdf7d70cb"
+              },
+              {
+                "name": "target/security-packages/arm64/dirmngr_2.4.8-4ubuntu3.1_arm64.deb",
+                "sha256": "e15cda656567df11d4f2626418704a542496a6b6d034c91f711138be012e439b"
+              },
+              {
+                "name": "target/security-packages/arm64/gnu-coreutils_9.7-3ubuntu2.1_arm64.deb",
+                "sha256": "123810835032d5efc969c97d3e80d451b5da5463e1916b832e8c99684a833580"
+              },
+              {
+                "name": "target/security-packages/arm64/gnupg_2.4.8-4ubuntu3.1_all.deb",
+                "sha256": "f8e4e754a843b1334e90092aac4c24433836d0756c996f37822d33905f2596e5"
+              },
+              {
+                "name": "target/security-packages/arm64/gpg-agent_2.4.8-4ubuntu3.1_arm64.deb",
+                "sha256": "4c15078155fb4df8a65f38679f1a2879646875e6b77f6b026c0c2eaa8c331834"
+              },
+              {
+                "name": "target/security-packages/arm64/gpg_2.4.8-4ubuntu3.1_arm64.deb",
+                "sha256": "0a72d05e100ba0af8c9b96f810214c54ef16f1ca595d26f01515a07e040b349d"
+              },
+              {
+                "name": "target/security-packages/arm64/gpgconf_2.4.8-4ubuntu3.1_arm64.deb",
+                "sha256": "0629af323532af0c61842ef12bfabb3168a8c13ef9b429aae487ac0660f53d93"
+              },
+              {
+                "name": "target/security-packages/arm64/gpgsm_2.4.8-4ubuntu3.1_arm64.deb",
+                "sha256": "d99900733d8508a15f3f29ec9d9bfdd80be9b6ae8da6bbb84fe7b5ed6ce41a17"
+              },
+              {
+                "name": "target/security-packages/arm64/gpgv_2.4.8-4ubuntu3.1_arm64.deb",
+                "sha256": "2dc2bcd97daf9faaa8bc397097ecbff127f9f84d44a688bb9766d028726c6a43"
+              },
+              {
+                "name": "target/security-packages/arm64/libattr1_2.5.2-4ubuntu0.1_arm64.deb",
+                "sha256": "aa3d7255a561c27c39260d62d71f0df381cd0dab08efd111837987a09c91c32b"
+              },
+              {
+                "name": "target/security-packages/arm64/libblkid1_2.41.3-3ubuntu2.2_arm64.deb",
+                "sha256": "4395cd18479bc88a7109fc199475802ebfc007de07f1cf15c85f26003fdd75ae"
+              },
+              {
+                "name": "target/security-packages/arm64/libbrotli1_1.2.0-3ubuntu0.1_arm64.deb",
+                "sha256": "931d83bd98aa3c44ba4ff4304e7a6855c0a74bd3772220d0fd7a73cd8496a012"
+              },
+              {
+                "name": "target/security-packages/arm64/libbz2-1.0_1.0.8-6ubuntu0.1_arm64.deb",
+                "sha256": "42c8e4182e850a49f6fe1e10013ca13931513a037875f768a505db77305aa30e"
+              },
+              {
+                "name": "target/security-packages/arm64/libc-bin_2.43-2ubuntu2.4_arm64.deb",
+                "sha256": "7dae6f6c5b11fb6a8acf9f8e6cba29a06a034759a9849ba96bd340ac40400545"
+              },
+              {
+                "name": "target/security-packages/arm64/libc-gconv-modules-extra_2.43-2ubuntu2.4_arm64.deb",
+                "sha256": "9d4d8cfb9e75eb6c7324c5d9c548eb5eaa4ea584fe27627069a9bdad35818eda"
+              },
+              {
+                "name": "target/security-packages/arm64/libc6_2.43-2ubuntu2.4_arm64.deb",
+                "sha256": "1652597c8c3419b298d8a87dd3d8eea1fdc5a1abd9bccb5a66b928f92ec463c9"
+              },
+              {
+                "name": "target/security-packages/arm64/libcurl4t64_8.18.0-1ubuntu2.8_arm64.deb",
+                "sha256": "a148b69279dfde6cf5aa78a3eee85027e9fb3bc1c239d0ae62de1c8e574af31d"
+              },
+              {
+                "name": "target/security-packages/arm64/libexpat1_2.7.4-1ubuntu0.2_arm64.deb",
+                "sha256": "c553cf5827f937f92b65fcea86c1b19c18224ff0533bc30305e0dbfd32c197ff"
+              },
+              {
+                "name": "target/security-packages/arm64/libfreetype6_2.14.2+dfsg-1ubuntu0.2_arm64.deb",
+                "sha256": "a402e04cdb2286e4628c005b30b6777f3083a2817d04b33aad89950e669acf1c"
+              },
+              {
+                "name": "target/security-packages/arm64/libgcrypt20_1.12.0-2ubuntu1.1_arm64.deb",
+                "sha256": "a8a6e390dd67c07711712fa7603c154955035b83ed9d16007fcd0f2f241dbc56"
+              },
+              {
+                "name": "target/security-packages/arm64/libmount1_2.41.3-3ubuntu2.2_arm64.deb",
+                "sha256": "359be63102c6bbd4052ed2f5b3318f5f1c762b4ac1826a00f0d8a480b942ae53"
+              },
+              {
+                "name": "target/security-packages/arm64/libpng16-16t64_1.6.57-1ubuntu0.1_arm64.deb",
+                "sha256": "c683ee55bc0db09544d987478676bc923c72a96750f19e4bcab30c5fe1e7d2df"
+              },
+              {
+                "name": "target/security-packages/arm64/libsmartcols1_2.41.3-3ubuntu2.2_arm64.deb",
+                "sha256": "ba741b3a57a809fd5606ec6340191e0448761a04a803dbab9f227b266f2d4670"
+              },
+              {
+                "name": "target/security-packages/arm64/libsqlite3-0_3.46.1-9ubuntu0.3_arm64.deb",
+                "sha256": "c79eb1e82eeb3509af1a9792a5758ff3c4fed4b69bc8cd7c5871adafc30c19a9"
+              },
+              {
+                "name": "target/security-packages/arm64/libssh2-1t64_1.11.1-1ubuntu0.26.04.4_arm64.deb",
+                "sha256": "4d6ea3c94ae7190320879de7ab24e698c9f28e6d90d59ff06f1a4796ddd1f70d"
+              },
+              {
+                "name": "target/security-packages/arm64/libssl3t64_3.5.5-1ubuntu3.7_arm64.deb",
+                "sha256": "9fe87b6beec5de636a70e4fb6076517a39f5053c7e23e628c9459b94f85c75ff"
+              },
+              {
+                "name": "target/security-packages/arm64/libsystemd0_259.9-0ubuntu0.1_arm64.deb",
+                "sha256": "78c330e490c74b890057d13094eee72fa5b32ea127fcc4331673b9980e0a29b3"
+              },
+              {
+                "name": "target/security-packages/arm64/libudev1_259.9-0ubuntu0.1_arm64.deb",
+                "sha256": "56e0bb7ca6c90195705924b4bc7c82ee0c0a80220a93f9384ea393afa18ef5a4"
+              },
+              {
+                "name": "target/security-packages/arm64/libuuid1_2.41.3-3ubuntu2.2_arm64.deb",
+                "sha256": "1298f27861f60729a4d7ad86fa906aaebdbc88be9fc3316e9eb154de4f0792e3"
+              },
+              {
+                "name": "target/security-packages/arm64/locales_2.43-2ubuntu2.4_all.deb",
+                "sha256": "a1abf41b517f767018d5eab519d55b9269fe0a04ae49ea35f7c3ad1b8870ab32"
+              },
+              {
+                "name": "target/security-packages/arm64/login_4.16.0-2+really2.41.3-3ubuntu2.2_arm64.deb",
+                "sha256": "7cef4d2f3b29fbdfa74112ee1eb3e1f0fee79b853321afaaa72a866d59c987d7"
+              },
+              {
+                "name": "target/security-packages/arm64/mount_2.41.3-3ubuntu2.2_arm64.deb",
+                "sha256": "522c5c23f66948f285c37fd978ceaef2df8dc3b3f0cd19d51499132b2f9f4421"
+              },
+              {
+                "name": "target/security-packages/arm64/openssl-provider-legacy_3.5.5-1ubuntu3.7_arm64.deb",
+                "sha256": "757ec89120fe3f418a842342b3a0c596b89b0e3fb0ba770347dda1219f219bbd"
+              },
+              {
+                "name": "target/security-packages/arm64/openssl_3.5.5-1ubuntu3.7_arm64.deb",
+                "sha256": "623ea7ec0eb80da3f40e89e3318a4e82d4c64146d206c90cabbce6998d822fa8"
+              },
+              {
+                "name": "target/security-packages/arm64/perl-base_5.40.1-7ubuntu0.3_arm64.deb",
+                "sha256": "d2b006b56ae3ca20676581b2918b7b4250e78fc4fee2407a4bea0ba218eba7ef"
+              },
+              {
+                "name": "target/security-packages/arm64/util-linux_2.41.3-3ubuntu2.2_arm64.deb",
+                "sha256": "9321d8aafe3189f732d0ee85a1b1253820fd8ce823a55c65f8d6109d2fbaf2fb"
+              },
+              {
+                "name": "target/security-packages/arm64/zlib1g_1.3.dfsg+really1.3.1-1ubuntu3.2_arm64.deb",
+                "sha256": "b9b5ce1528ac7f885c8ff7dc2314c89c2ba5dd973c2a793dc4cf5d02d74b3810"
+              },
+              {
+                "name": "target/spring-petclinic-4.0.0-SNAPSHOT.jar",
+                "sha256": "7f5d49a65149d25d16e38dbf7c5d0c2686ac8a15ab53c2d1a05c1575f44a8100"
+              }
+            ]
+          },
+          "finishedAt": "2026-10-30T03:16:28.097Z",
+          "limitations": [
+            "Jenkins administrators and the existing signing key are trusted",
+            "Maven dependency resolution is not hermetic; no SLSA certification claimed"
+          ],
+          "platforms": [
+            "linux/amd64",
+            "linux/arm64"
+          ],
+          "source": {
+            "commit": "9a78cc89f22fa98fb1ffcc43e2ae279299471793",
+            "repository": "http://gitlab-service.ns-devops.svc.cluster.local/root/petclinic-platform.git"
+          },
+          "startedAt": "2026-10-30T03:14:20.429Z"
+        }
+      },
+      {
+        "type": "existing-dsse-verifier",
+        "verified": true
+      },
+      {
+        "type": "existing-build-validator",
+        "valid": false,
+        "expected": {
+          "image": "core.harbor.domain/petclinic/petclinic@sha256:2fbaea65ab030c56c60c62e3ee9fbe362deb8bbbb8216a891ef4c7bbbcea6d50",
+          "commit": "9a78cc89f22fa98fb1ffcc43e2ae279299471793",
+          "repository": "http://gitlab-service.ns-devops.svc.cluster.local/root/petclinic-platform.git",
+          "builder": "http://jenkins.devops.local/job/petclinic-candidate-build",
+          "buildNumber": "2"
+        },
+        "diagnostic": "Build subject mismatch"
+      },
+      {
+        "type": "existing-dsse-verifier",
+        "verified": true
+      },
+      {
+        "type": "existing-build-validator",
+        "valid": false,
+        "expected": {
+          "image": "core.harbor.domain/petclinic/petclinic@sha256:2fbaea65ab030c56c60c62e3ee9fbe362deb8bbbb8216a891ef4c7bbbcea6d55",
+          "commit": "0000000000000000000000000000000000000000",
+          "repository": "http://gitlab-service.ns-devops.svc.cluster.local/root/petclinic-platform.git",
+          "builder": "http://jenkins.devops.local/job/petclinic-candidate-build",
+          "buildNumber": "2"
+        },
+        "diagnostic": "Build identity mismatch"
+      },
+      {
+        "type": "existing-dsse-verifier",
+        "verified": true
+      },
+      {
+        "type": "existing-build-validator",
+        "valid": false,
+        "expected": {
+          "image": "core.harbor.domain/petclinic/petclinic@sha256:2fbaea65ab030c56c60c62e3ee9fbe362deb8bbbb8216a891ef4c7bbbcea6d55",
+          "commit": "9a78cc89f22fa98fb1ffcc43e2ae279299471793",
+          "repository": "http://gitlab-service.ns-devops.svc.cluster.local/root/petclinic-platform.git",
+          "builder": "untrusted-builder",
+          "buildNumber": "2"
+        },
+        "diagnostic": "Build identity mismatch"
+      },
+      {
+        "type": "existing-dsse-verifier",
+        "verified": false,
+        "diagnostic": "Invalid DSSE signature"
+      },
+      {
+        "type": "io",
+        "key": "write:.devsecops/build-attestation-envelope.json"
+      },
+      {
+        "type": "io",
+        "key": "temp-remove"
+      },
+      {
+        "type": "io",
+        "key": "temp-stat"
+      },
+      {
+        "type": "io",
+        "key": "mkdir:.devsecops"
+      },
+      {
+        "type": "io",
+        "key": "write:.devsecops/build-attestation-verification.json"
+      }
+    ],
+    "artifacts": {
+      ".devsecops/build-attestation-envelope.json": "{\"payload\":\"eyJfdHlwZSI6Imh0dHBzOi8vaW4tdG90by5pby9TdGF0ZW1lbnQvdjAuMSIsICJzdWJqZWN0IjpbeyJuYW1lIjoiY29yZS5oYXJib3IuZG9tYWluL3BldGNsaW5pYy9wZXRjbGluaWMiLCAiZGlnZXN0Ijp7InNoYTI1NiI6IjJmYmFlYTY1YWIwMzBjNTZjNjBjNjJlM2VlOWZiZTM2MmRlYjhiYmJiODIxNmE4OTFlZjRjN2JiYmNlYTZkNTUifX1dLCAicHJlZGljYXRlVHlwZSI6Imh0dHBzOi8vZGV2b3BzLmxvY2FsL2F0dGVzdGF0aW9uL2ltYWdlLWJ1aWxkL3YxIiwgInByZWRpY2F0ZSI6eyJidWlsZFR5cGUiOiJwZXRjbGluaWMtbWF2ZW4tYnVpbGR4LXYxIiwgImJ1aWxkZXIiOnsiYnVpbGROdW1iZXIiOjIsICJpZGVudGl0eSI6Imh0dHA6Ly9qZW5raW5zLmRldm9wcy5sb2NhbC9qb2IvcGV0Y2xpbmljLWNhbmRpZGF0ZS1idWlsZCJ9LCAiYnVpbGRraXQiOnsibWV0YWRhdGFTaGEyNTYiOiIyYmQ1ZDAyNTE4OTk3NTNmMjZhNDJjNmQ2NzljMTZjOGU0N2NiMDQ4YzNjNGE1ZTc0MjY0NWQ1MDZhNmJhYmMyIiwgIm5hdGl2ZVByb3ZlbmFuY2UiOiJtb2RlPW1pbiIsICJvdXRwdXREaWdlc3QiOiJzaGEyNTY6MmZiYWVhNjVhYjAzMGM1NmM2MGM2MmUzZWU5ZmJlMzYyZGViOGJiYmI4MjE2YTg5MWVmNGM3YmJiY2VhNmQ1NSJ9LCAiY2FuZGlkYXRlSW1hZ2UiOiJjb3JlLmhhcmJvci5kb21haW4vcGV0Y2xpbmljL3BldGNsaW5pY0BzaGEyNTY6MmZiYWVhNjVhYjAzMGM1NmM2MGM2MmUzZWU5ZmJlMzYyZGViOGJiYmI4MjE2YTg5MWVmNGM3YmJiY2VhNmQ1NSIsICJjb21waWxhdGlvbiI6eyJidWlsZGVyIjp7ImJ1aWxkTnVtYmVyIjoyLCAiaWRlbnRpdHkiOiJodHRwOi8vamVua2lucy5kZXZvcHMubG9jYWwvam9iL3BldGNsaW5pYy1jYW5kaWRhdGUtYnVpbGQifSwgImZpbmlzaGVkQXQiOiIyMDI2LTEwLTMwVDAzOjE0OjM3Ljg1M1oiLCAiamFyU2hhMjU2IjoiN2Y1ZDQ5YTY1MTQ5ZDI1ZDE2ZTM4ZGJmN2M1ZDBjMjY4NmFjOGExNWFiNTNjMmQxYTA1YzE1NzVmNDRhODEwMCIsICJtYXZlbkRlcGVuZGVuY2llcyI6Ik5vdCBoZXJtZXRpYzogZXhpc3RpbmcgTWF2ZW4gcmVwb3NpdG9yeSBhbmQgcG9tIHJlc29sdXRpb247IG5vIFNMU0EgbGV2ZWwgY2xhaW1lZCIsICJzb3VyY2UiOnsiY29tbWl0IjoiOWE3OGNjODlmMjJmYTk4ZmIxZmZjYzQzZTJhZTI3OTI5OTQ3MTc5MyIsICJyZXBvc2l0b3J5IjoiaHR0cDovL2dpdGxhYi1zZXJ2aWNlLm5zLWRldm9wcy5zdmMuY2x1c3Rlci5sb2NhbC9yb290L3BldGNsaW5pYy1wbGF0Zm9ybS5naXQifSwgInNvdXJjZUNvbW1pdCI6IjlhNzhjYzg5ZjIyZmE5OGZiMWZmY2M0M2UyYWUyNzkyOTk0NzE3OTMiLCAic3RhcnRlZEF0IjoiMjAyNi0xMC0zMFQwMzoxNDoyMC40MjlaIn0sICJjb250ZXh0Ijp7ImZpbGVzIjpbeyJuYW1lIjoiLmRvY2tlcmlnbm9yZSIsICJzaGEyNTYiOiJmMjZjZTFlNjJkODBiZGMwOGMxNzU3MzgxMTMyMjY5ZjI0NjFlZmI4OTZiMjJiNTY3MjI3ZTBmNTkyYThlZjY4In0sIHsibmFtZSI6IkRvY2tlcmZpbGUiLCAic2hhMjU2IjoiZWJlNzk1YWJlZTJlMmMzM2MxYjUxMzcxOTZiZDA5MTE4OGQ0NjE1OTJjNjVlZThhOWM3M2RkNTNmZGY2MGE2ZCJ9LCB7Im5hbWUiOiJ0YXJnZXQvc2VjdXJpdHktcGFja2FnZXMvYW1kNjQvYnNkdXRpbHNfMi40MS4zLTN1YnVudHUyLjJfYW1kNjQuZGViIiwgInNoYTI1NiI6ImI0ZGFlYzAxYjZjNjZkYzA0NDc1ZTdlYmE1MGJmNDNhM2I1YzIyNjRjMzhhN2JlOWNiYWMxNDAzZDNhYmQ3N2QifSwgeyJuYW1lIjoidGFyZ2V0L3NlY3VyaXR5LXBhY2thZ2VzL2FtZDY0L2N1cmxfOC4xOC4wLTF1YnVudHUyLjhfYW1kNjQuZGViIiwgInNoYTI1NiI6IjJjNDE4YTYxZDcxNjVkMGNkZTAxZDljYjA1YWUwMjVjYzQxZmM3NWVmNmQzZjA5NTk5NmJkMDQ1YmEwOTQ1ZGMifSwgeyJuYW1lIjoidGFyZ2V0L3NlY3VyaXR5LXBhY2thZ2VzL2FtZDY0L2RpZmZ1dGlsc18zLjEyLTF1YnVudHUwLjFfYW1kNjQuZGViIiwgInNoYTI1NiI6IjBkNGEzYWQ3ZmMwNmRkZjczYzI1MGRiMmMzM2ZiMDllNmVlZmQ4MDIyNGQ0OWI2ZTZlOWVlMjViNjVmNGNjZGUifSwgeyJuYW1lIjoidGFyZ2V0L3NlY3VyaXR5LXBhY2thZ2VzL2FtZDY0L2Rpcm1uZ3JfMi40LjgtNHVidW50dTMuMV9hbWQ2NC5kZWIiLCAic2hhMjU2IjoiMGMyMWQyNTcyODgwNjE0NzYzY2UzZGQyM2EyZDZhOTZlMjVmYzcxY2EwMzhlMmNkYzA4NDRjYjAxN2FmMGUxNyJ9LCB7Im5hbWUiOiJ0YXJnZXQvc2VjdXJpdHktcGFja2FnZXMvYW1kNjQvZ251LWNvcmV1dGlsc185LjctM3VidW50dTIuMV9hbWQ2NC5kZWIiLCAic2hhMjU2IjoiZDlhNjcyNGY1MDc3NTlhYzA2ZDhiMDIxNGU0ZDMxZDY3YTRlNjY0N2JlNGQ3NzBhNzBhMWQ0MzA0MWJlNWZhMyJ9LCB7Im5hbWUiOiJ0YXJnZXQvc2VjdXJpdHktcGFja2FnZXMvYW1kNjQvZ251cGdfMi40LjgtNHVidW50dTMuMV9hbGwuZGViIiwgInNoYTI1NiI6ImY4ZTRlNzU0YTg0M2IxMzM0ZTkwMDkyYWFjNGMyNDQzMzgzNmQwNzU2Yzk5NmYzNzgyMmQzMzkwNWYyNTk2ZTUifSwgeyJuYW1lIjoidGFyZ2V0L3NlY3VyaXR5LXBhY2thZ2VzL2FtZDY0L2dwZy1hZ2VudF8yLjQuOC00dWJ1bnR1My4xX2FtZDY0LmRlYiIsICJzaGEyNTYiOiIzNTE3MDQ5N2MyMTkxZmE4ZjRkOWUyNWY4NjcwNTdkOTNkOGY1OWE2NTI5YjBkZWU5Njc4OGQwYzAyODY2ZGI2In0sIHsibmFtZSI6InRhcmdldC9zZWN1cml0eS1wYWNrYWdlcy9hbWQ2NC9ncGdfMi40LjgtNHVidW50dTMuMV9hbWQ2NC5kZWIiLCAic2hhMjU2IjoiZmI4ZGE0ZjY5MWI2ZTIxMzlmYTVjZGY3ZjU0ZDAwMGVmMWI3YjI3NzUzZWZiMmRiZGM1YTk1NDYwNTdhNjJjNiJ9LCB7Im5hbWUiOiJ0YXJnZXQvc2VjdXJpdHktcGFja2FnZXMvYW1kNjQvZ3BnY29uZl8yLjQuOC00dWJ1bnR1My4xX2FtZDY0LmRlYiIsICJzaGEyNTYiOiIzNzQ3ODkwZmQ3OWQ3YzY0ZWU3ZTM0OTZlNTQ3NDJkZDQ4MmNmZjAxNTc0ZDg4NWI4NGFkYjY0NWM3YWRlN2FmIn0sIHsibmFtZSI6InRhcmdldC9zZWN1cml0eS1wYWNrYWdlcy9hbWQ2NC9ncGdzbV8yLjQuOC00dWJ1bnR1My4xX2FtZDY0LmRlYiIsICJzaGEyNTYiOiJlMzZlZWRkZTQ1YjExNzRhNTkxZjU1Y2U5NGJlZWY5OWRmYjg5ZDU4MzA4Yjk2ZTEzNTRhMWU0NTg4ODIwMjI1In0sIHsibmFtZSI6InRhcmdldC9zZWN1cml0eS1wYWNrYWdlcy9hbWQ2NC9ncGd2XzIuNC44LTR1YnVudHUzLjFfYW1kNjQuZGViIiwgInNoYTI1NiI6IjBmY2NlNzI2NTY0MzlkOTA4MjFiYmQyMzU4MGFmYzc5NGEwMWVjMmYyODYyMmFlMzFiNGY1Mzk0YTgzMGJiMDkifSwgeyJuYW1lIjoidGFyZ2V0L3NlY3VyaXR5LXBhY2thZ2VzL2FtZDY0L2xpYmF0dHIxXzIuNS4yLTR1YnVudHUwLjFfYW1kNjQuZGViIiwgInNoYTI1NiI6ImMxMGI2MTkxZTJjNThjMTEwYWYwZDY0OGNiYmRlMmU1NWM1Y2ZhMzAzMjZjNWM2MDUxYmRjZjBhMTJlYzJkMjEifSwgeyJuYW1lIjoidGFyZ2V0L3NlY3VyaXR5LXBhY2thZ2VzL2FtZDY0L2xpYmJsa2lkMV8yLjQxLjMtM3VidW50dTIuMl9hbWQ2NC5kZWIiLCAic2hhMjU2IjoiOTI5ZWJlZGI2MTBmYTRkZmExNmNhZGE3NjNjZWE3ZThlZDRiZDM3YzY4NTczNTYzNDEwNjE0MTg5YmQ0ZTUzNyJ9LCB7Im5hbWUiOiJ0YXJnZXQvc2VjdXJpdHktcGFja2FnZXMvYW1kNjQvbGliYnJvdGxpMV8xLjIuMC0zdWJ1bnR1MC4xX2FtZDY0LmRlYiIsICJzaGEyNTYiOiJiZWRlZWYxY2YzMjY4ZjkwMzM4YzQxMWNkYjBhNDViMjI0ZDA2NjBmZDIyNDBmMzEwZjM4MDMxNmM4MjQ0NjA2In0sIHsibmFtZSI6InRhcmdldC9zZWN1cml0eS1wYWNrYWdlcy9hbWQ2NC9saWJiejItMS4wXzEuMC44LTZ1YnVudHUwLjFfYW1kNjQuZGViIiwgInNoYTI1NiI6ImY0YTAwOGY4MjE5MTE4YWNiN2Q1ZTAzNTZkNjE1ZjRmYzY4MjlhOWY1YTgzODM5NGQwZjdlMTAxZTljNWViZjgifSwgeyJuYW1lIjoidGFyZ2V0L3NlY3VyaXR5LXBhY2thZ2VzL2FtZDY0L2xpYmMtYmluXzIuNDMtMnVidW50dTIuNF9hbWQ2NC5kZWIiLCAic2hhMjU2IjoiYmM0ZjUwYTBhZWJiYjM0ODU5ODc0OWMyOTFhMzc0MmY5NDg1ZDk0YjA0NDcxNWQzODIzODg2MDdiOTE1OWExYiJ9LCB7Im5hbWUiOiJ0YXJnZXQvc2VjdXJpdHktcGFja2FnZXMvYW1kNjQvbGliYy1nY29udi1tb2R1bGVzLWV4dHJhXzIuNDMtMnVidW50dTIuNF9hbWQ2NC5kZWIiLCAic2hhMjU2IjoiYzIxOTRiODdjN2Y2Mjg3MjIwMzZiYmU5ZjliYmRmMjBjMWViZGIwNWVjZDY4YjdhM2E1MmRkMWE3NmYzYzVkNiJ9LCB7Im5hbWUiOiJ0YXJnZXQvc2VjdXJpdHktcGFja2FnZXMvYW1kNjQvbGliYzZfMi40My0ydWJ1bnR1Mi40X2FtZDY0LmRlYiIsICJzaGEyNTYiOiJhNjEzYjQ1N2YzZmY5Yzg0ZWJkMjhhZjhhMDVhZmRlYzIyNjA1YWQ5YWVkODdjNzFlM2E2YWU1MTcwYWViOWNhIn0sIHsibmFtZSI6InRhcmdldC9zZWN1cml0eS1wYWNrYWdlcy9hbWQ2NC9saWJjdXJsNHQ2NF84LjE4LjAtMXVidW50dTIuOF9hbWQ2NC5kZWIiLCAic2hhMjU2IjoiN2MwYjM3NTkyZjgzYTYyOWNjMjJmMGM5OGVmZmExNzZkYTllZGJkNmQ3N2IzZjM4MTg0YTlkMGRkYzVlMDI2NiJ9LCB7Im5hbWUiOiJ0YXJnZXQvc2VjdXJpdHktcGFja2FnZXMvYW1kNjQvbGliZXhwYXQxXzIuNy40LTF1YnVudHUwLjJfYW1kNjQuZGViIiwgInNoYTI1NiI6IjAwNjNlNjhkNzQyZmFjZmQzYzQ2ZDdkN2RmOWViMGQ4NWYxM2UwZmMyOTQ5MDhhNGYxMzhkNDU1NTc2MDc4MzcifSwgeyJuYW1lIjoidGFyZ2V0L3NlY3VyaXR5LXBhY2thZ2VzL2FtZDY0L2xpYmZyZWV0eXBlNl8yLjE0LjIrZGZzZy0xdWJ1bnR1MC4yX2FtZDY0LmRlYiIsICJzaGEyNTYiOiI2ZDdkNTMyYjdkMGM1NzYzOWRlYjNiMjI4ZjFmMGQ3ODZjZjUzMDVkNjEzZWY3ZGY5YmE3NmM3NzZhMGY4MzczIn0sIHsibmFtZSI6InRhcmdldC9zZWN1cml0eS1wYWNrYWdlcy9hbWQ2NC9saWJnY3J5cHQyMF8xLjEyLjAtMnVidW50dTEuMV9hbWQ2NC5kZWIiLCAic2hhMjU2IjoiOGU3NmQ3MTMxYmNmYzdmYmI5ZTdiY2RiY2FmOTM2MjE1YWI2NjdiN2FiMzNlOTBjYjljYjcyZWE3ZWJmODA2MCJ9LCB7Im5hbWUiOiJ0YXJnZXQvc2VjdXJpdHktcGFja2FnZXMvYW1kNjQvbGlibW91bnQxXzIuNDEuMy0zdWJ1bnR1Mi4yX2FtZDY0LmRlYiIsICJzaGEyNTYiOiI3YjhmMDVkNDM0NjA0OWM1MGQ4NDZlMTk0N2VjMTJhZmYzNmYzZGQ0NGNiZDVlZTRlODUwNTI0NWNkODZiNDYxIn0sIHsibmFtZSI6InRhcmdldC9zZWN1cml0eS1wYWNrYWdlcy9hbWQ2NC9saWJwbmcxNi0xNnQ2NF8xLjYuNTctMXVidW50dTAuMV9hbWQ2NC5kZWIiLCAic2hhMjU2IjoiZjI0YTdmN2MwNDI4ZDc0ZTMzZWE5MzQ2OTY5ODdiNzMzNmVjMDk2MmYyMTI1MzUxODVmMDQ5Mzc5MmU3NTM2ZSJ9LCB7Im5hbWUiOiJ0YXJnZXQvc2VjdXJpdHktcGFja2FnZXMvYW1kNjQvbGlic21hcnRjb2xzMV8yLjQxLjMtM3VidW50dTIuMl9hbWQ2NC5kZWIiLCAic2hhMjU2IjoiYWEyMjM5YmE3ZWZkODQ4YmJkZDVkY2IxMWRhOWQ0YTkxYzgxNjM4NDE0ZmUzODBmNDkxZDAzMGQ3OGYwOWZmYiJ9LCB7Im5hbWUiOiJ0YXJnZXQvc2VjdXJpdHktcGFja2FnZXMvYW1kNjQvbGlic3FsaXRlMy0wXzMuNDYuMS05dWJ1bnR1MC4zX2FtZDY0LmRlYiIsICJzaGEyNTYiOiJmZjRiNWExZTdjMDI4YTRiY2MzMDA3NmU0ZDgxOTdhYWQxYTkxMGRmNDRmNGRjOGRjZjI1M2U5ZWU5YTNhMzY3In0sIHsibmFtZSI6InRhcmdldC9zZWN1cml0eS1wYWNrYWdlcy9hbWQ2NC9saWJzc2gyLTF0NjRfMS4xMS4xLTF1YnVudHUwLjI2LjA0LjRfYW1kNjQuZGViIiwgInNoYTI1NiI6ImJiM2UzMzRkYzg4NWQxMjRkMzhjZDQzNTBmMWNiNDYwNmMwM2NlNThlOWY1M2RjNTFhODRjMmM4ZDExYzg0ZTEifSwgeyJuYW1lIjoidGFyZ2V0L3NlY3VyaXR5LXBhY2thZ2VzL2FtZDY0L2xpYnNzbDN0NjRfMy41LjUtMXVidW50dTMuN19hbWQ2NC5kZWIiLCAic2hhMjU2IjoiM2ZmNzNlMTIxZjZjZDRmMTllODBhYjQzMjlkZmQ5MTQxMDhiMzkzNmM5ZGIzNzA4MjAwMjAzYTliMjQ1YjM0ZCJ9LCB7Im5hbWUiOiJ0YXJnZXQvc2VjdXJpdHktcGFja2FnZXMvYW1kNjQvbGlic3lzdGVtZDBfMjU5LjktMHVidW50dTAuMV9hbWQ2NC5kZWIiLCAic2hhMjU2IjoiYjI1NTUyMWIxOGEyODlkNDAxNDllOTNhZWYxZWU4ODFmYjhkMjVjMTZmYTA5OTNkYjk3YzQxNjhmNGY4MmJiMSJ9LCB7Im5hbWUiOiJ0YXJnZXQvc2VjdXJpdHktcGFja2FnZXMvYW1kNjQvbGlidWRldjFfMjU5LjktMHVidW50dTAuMV9hbWQ2NC5kZWIiLCAic2hhMjU2IjoiNTc4YWYzNGUxYjcyMGZmZGYzZTgxNmUxNjhkZDQ3MTlkMDZmMmVmZDE1Y2MwYzE5M2EzNGI5ZDllZTYyMzdjYSJ9LCB7Im5hbWUiOiJ0YXJnZXQvc2VjdXJpdHktcGFja2FnZXMvYW1kNjQvbGlidXVpZDFfMi40MS4zLTN1YnVudHUyLjJfYW1kNjQuZGViIiwgInNoYTI1NiI6Ijc3ZTcwNzhmYmRiOTk0ZTNjOWM4NGNlNmZjNDY0ZjA0NTE1ODBkN2YwYjQ2Yzg3NzBkMDE4OWI0Njk1OWFkNDMifSwgeyJuYW1lIjoidGFyZ2V0L3NlY3VyaXR5LXBhY2thZ2VzL2FtZDY0L2xvY2FsZXNfMi40My0ydWJ1bnR1Mi40X2FsbC5kZWIiLCAic2hhMjU2IjoiYTFhYmY0MWI1MTdmNzY3MDE4ZDVlYWI1MTlkNTViOTI2OWZlMGEwNGFlNDllYTM1ZjdjM2FkMWI4ODcwYWIzMiJ9LCB7Im5hbWUiOiJ0YXJnZXQvc2VjdXJpdHktcGFja2FnZXMvYW1kNjQvbG9naW5fNC4xNi4wLTIrcmVhbGx5Mi40MS4zLTN1YnVudHUyLjJfYW1kNjQuZGViIiwgInNoYTI1NiI6IjExMWZjNzlmOWRhNGYyODFkOGE0Y2YzNjdlMGUyOWEzMGY5NDM2NWIwMDYyMWFlNTc2ODY0NTNkYzNhYjAzMWMifSwgeyJuYW1lIjoidGFyZ2V0L3NlY3VyaXR5LXBhY2thZ2VzL2FtZDY0L21vdW50XzIuNDEuMy0zdWJ1bnR1Mi4yX2FtZDY0LmRlYiIsICJzaGEyNTYiOiI5MDQ1Mzc5OGNiYjU3ZjQ4NTIwMWUxNDg1MzM4OGFmYzAxNDEwYjgxMmViNDMxZjM4ZGIyYTRmNzNjMGQyYzhlIn0sIHsibmFtZSI6InRhcmdldC9zZWN1cml0eS1wYWNrYWdlcy9hbWQ2NC9vcGVuc3NsLXByb3ZpZGVyLWxlZ2FjeV8zLjUuNS0xdWJ1bnR1My43X2FtZDY0LmRlYiIsICJzaGEyNTYiOiI1MWNmNDE4NTcxMDU5ODMxMDk2YWJkNDBlMGJkNWRlYmFhMWFlNDhhNmY4ZDg3ZDllNGU1ZjdmMTJhYTRkYjUyIn0sIHsibmFtZSI6InRhcmdldC9zZWN1cml0eS1wYWNrYWdlcy9hbWQ2NC9vcGVuc3NsXzMuNS41LTF1YnVudHUzLjdfYW1kNjQuZGViIiwgInNoYTI1NiI6IjY5NjVhYWZlNjllMGE0OWVmMzRkMmUyNmY4ZTgzZDA5ZDFjNjAzN2I3ZTllZTM3ZjE5YjI5MmEzYzY4NTE2MjEifSwgeyJuYW1lIjoidGFyZ2V0L3NlY3VyaXR5LXBhY2thZ2VzL2FtZDY0L3BlcmwtYmFzZV81LjQwLjEtN3VidW50dTAuM19hbWQ2NC5kZWIiLCAic2hhMjU2IjoiZWFlMjhlOTQ0ZWNjY2E4YWIxYTUzODdkZmVjNzEwZWQzMmY2NjUzMTg4MGE2YzJhMzI4NWZmZDk1ZDNiNTlmMiJ9LCB7Im5hbWUiOiJ0YXJnZXQvc2VjdXJpdHktcGFja2FnZXMvYW1kNjQvdXRpbC1saW51eF8yLjQxLjMtM3VidW50dTIuMl9hbWQ2NC5kZWIiLCAic2hhMjU2IjoiMTFmZDQxMGIxZDM3OTdiMWU5MTI3YjY4MzAyMTYwMjEzYzE1ZTE1NTM3NDVmYjY5ODJlMjcwYjFlMzJkMWYyYSJ9LCB7Im5hbWUiOiJ0YXJnZXQvc2VjdXJpdHktcGFja2FnZXMvYW1kNjQvemxpYjFnXzEuMy5kZnNnK3JlYWxseTEuMy4xLTF1YnVudHUzLjJfYW1kNjQuZGViIiwgInNoYTI1NiI6IjEwMDg0NjY2Zjc0NzI0NzU1MGMzZTgyZjlhMTJjYmZkOTE4NGMxOTI0MWE0MmViMzRkODg5M2VjYjhlMDNiMzUifSwgeyJuYW1lIjoidGFyZ2V0L3NlY3VyaXR5LXBhY2thZ2VzL2FybTY0L2JzZHV0aWxzXzIuNDEuMy0zdWJ1bnR1Mi4yX2FybTY0LmRlYiIsICJzaGEyNTYiOiI1N2UzMTE0NGNiNzk0M2UxYjNiNWUzMTdmM2MxMDY5Y2E1OTc2NDNhNjk1NWI2ZDg3OWNiZWM4OWE0YWMwYTQ2In0sIHsibmFtZSI6InRhcmdldC9zZWN1cml0eS1wYWNrYWdlcy9hcm02NC9jdXJsXzguMTguMC0xdWJ1bnR1Mi44X2FybTY0LmRlYiIsICJzaGEyNTYiOiJjMzZlYzBkZTY2ZDc5YWRjOWY4NzQ4ZDU0Y2QwYjJhYzZiM2QzNDU4ZTAxNDVkZDgzYzk1MjQzNDVmYjllNTYyIn0sIHsibmFtZSI6InRhcmdldC9zZWN1cml0eS1wYWNrYWdlcy9hcm02NC9kaWZmdXRpbHNfMy4xMi0xdWJ1bnR1MC4xX2FybTY0LmRlYiIsICJzaGEyNTYiOiI1ZDA1NTNlM2MwMjIyMWE4NGI3ZTZlMDUwMWMzNzcxMjY2ZDMxZjYzZjUxYTkxZjIzMzAzZTk5YmRmN2Q3MGNiIn0sIHsibmFtZSI6InRhcmdldC9zZWN1cml0eS1wYWNrYWdlcy9hcm02NC9kaXJtbmdyXzIuNC44LTR1YnVudHUzLjFfYXJtNjQuZGViIiwgInNoYTI1NiI6ImUxNWNkYTY1NjU2N2RmMTFkNGYyNjI2NDE4NzA0YTU0MjQ5NmE2YjZkMDM0YzkxZjcxMTEzOGJlMDEyZTQzOWIifSwgeyJuYW1lIjoidGFyZ2V0L3NlY3VyaXR5LXBhY2thZ2VzL2FybTY0L2dudS1jb3JldXRpbHNfOS43LTN1YnVudHUyLjFfYXJtNjQuZGViIiwgInNoYTI1NiI6IjEyMzgxMDgzNTAzMmQ1ZWZjOTY5Yzk3ZDNlODBkNDUxYjVkYTU0NjNlMTkxNmI4MzJlOGM5OTY4NGE4MzM1ODAifSwgeyJuYW1lIjoidGFyZ2V0L3NlY3VyaXR5LXBhY2thZ2VzL2FybTY0L2dudXBnXzIuNC44LTR1YnVudHUzLjFfYWxsLmRlYiIsICJzaGEyNTYiOiJmOGU0ZTc1NGE4NDNiMTMzNGU5MDA5MmFhYzRjMjQ0MzM4MzZkMDc1NmM5OTZmMzc4MjJkMzM5MDVmMjU5NmU1In0sIHsibmFtZSI6InRhcmdldC9zZWN1cml0eS1wYWNrYWdlcy9hcm02NC9ncGctYWdlbnRfMi40LjgtNHVidW50dTMuMV9hcm02NC5kZWIiLCAic2hhMjU2IjoiNGMxNTA3ODE1NWZiNGRmOGE2NWYzODY3OWYxYTI4Nzk2NDY4NzVlNmI3N2Y2YjAyNmMwYzJlYWE4YzMzMTgzNCJ9LCB7Im5hbWUiOiJ0YXJnZXQvc2VjdXJpdHktcGFja2FnZXMvYXJtNjQvZ3BnXzIuNC44LTR1YnVudHUzLjFfYXJtNjQuZGViIiwgInNoYTI1NiI6IjBhNzJkMDVlMTAwYmEwYWY4YzliOTZmODEwMjE0YzU0ZWYxNmYxY2E1OTVkMjZmMDE1MTVhMDdlMDQwYjM0OWQifSwgeyJuYW1lIjoidGFyZ2V0L3NlY3VyaXR5LXBhY2thZ2VzL2FybTY0L2dwZ2NvbmZfMi40LjgtNHVidW50dTMuMV9hcm02NC5kZWIiLCAic2hhMjU2IjoiMDYyOWFmMzIzNTMyYWYwYzYxODQyZWYxMmJmYWJiMzE2OGE4YzEzZWY5YjQyOWFhZTQ4N2FjMDY2MGY1M2Q5MyJ9LCB7Im5hbWUiOiJ0YXJnZXQvc2VjdXJpdHktcGFja2FnZXMvYXJtNjQvZ3Bnc21fMi40LjgtNHVidW50dTMuMV9hcm02NC5kZWIiLCAic2hhMjU2IjoiZDk5OTAwNzMzZDg1MDhhMTVmM2YyOWVjOWQ5YmZkZDgwYmU5YjZhZThkYTZiYmI4NGZlN2I1ZWQ2Y2U0MWExNyJ9LCB7Im5hbWUiOiJ0YXJnZXQvc2VjdXJpdHktcGFja2FnZXMvYXJtNjQvZ3Bndl8yLjQuOC00dWJ1bnR1My4xX2FybTY0LmRlYiIsICJzaGEyNTYiOiIyZGMyYmNkOTdkYWY5ZmFhYThiYzM5NzA5N2VjYmZmMTI3ZjlmODRkNDRhNjg4YmI5NzY2ZDAyODcyNmM2YTQzIn0sIHsibmFtZSI6InRhcmdldC9zZWN1cml0eS1wYWNrYWdlcy9hcm02NC9saWJhdHRyMV8yLjUuMi00dWJ1bnR1MC4xX2FybTY0LmRlYiIsICJzaGEyNTYiOiJhYTNkNzI1NWE1NjFjMjdjMzkyNjBkNjJkNzFmMGRmMzgxY2QwZGFiMDhlZmQxMTE4Mzc5ODdhMDljOTFjMzJiIn0sIHsibmFtZSI6InRhcmdldC9zZWN1cml0eS1wYWNrYWdlcy9hcm02NC9saWJibGtpZDFfMi40MS4zLTN1YnVudHUyLjJfYXJtNjQuZGViIiwgInNoYTI1NiI6IjQzOTVjZDE4NDc5YmM4OGE3MTA5ZmMxOTk0NzU4MDJlYmZjMDA3ZGUwN2YxY2YxNWM4NWYyNjAwM2ZkZDc1YWUifSwgeyJuYW1lIjoidGFyZ2V0L3NlY3VyaXR5LXBhY2thZ2VzL2FybTY0L2xpYmJyb3RsaTFfMS4yLjAtM3VidW50dTAuMV9hcm02NC5kZWIiLCAic2hhMjU2IjoiOTMxZDgzYmQ5OGFhM2M0NGJhNGZmNDMwNGU3YTY4NTVjMGE3NGJkMzc3MjIyMGQwZmQ3YTczY2Q4NDk2YTAxMiJ9LCB7Im5hbWUiOiJ0YXJnZXQvc2VjdXJpdHktcGFja2FnZXMvYXJtNjQvbGliYnoyLTEuMF8xLjAuOC02dWJ1bnR1MC4xX2FybTY0LmRlYiIsICJzaGEyNTYiOiI0MmM4ZTQxODJlODUwYTQ5ZjZmZTFlMTAwMTNjYTEzOTMxNTEzYTAzNzg3NWY3NjhhNTA1ZGI3NzMwNWFhMzBlIn0sIHsibmFtZSI6InRhcmdldC9zZWN1cml0eS1wYWNrYWdlcy9hcm02NC9saWJjLWJpbl8yLjQzLTJ1YnVudHUyLjRfYXJtNjQuZGViIiwgInNoYTI1NiI6IjdkYWU2ZjZjNWIxMWZiNmE4YWNmOWY4ZTZjYmEyOWEwNmEwMzQ3NTlhOTg0OWJhOTZiZDM0MGFjNDA0MDA1NDUifSwgeyJuYW1lIjoidGFyZ2V0L3NlY3VyaXR5LXBhY2thZ2VzL2FybTY0L2xpYmMtZ2NvbnYtbW9kdWxlcy1leHRyYV8yLjQzLTJ1YnVudHUyLjRfYXJtNjQuZGViIiwgInNoYTI1NiI6IjlkNGQ4Y2ZiOWU3NWViNmM3MzI0YzVkOWM1NDhlYjVlYWE0ZWE1ODRmZTI3NjI3MDY5YTliZGFkMzU4MThlZGEifSwgeyJuYW1lIjoidGFyZ2V0L3NlY3VyaXR5LXBhY2thZ2VzL2FybTY0L2xpYmM2XzIuNDMtMnVidW50dTIuNF9hcm02NC5kZWIiLCAic2hhMjU2IjoiMTY1MjU5N2M4YzM0MTliMjk4ZDhhODdkZDNkOGVlYTFmZGM1YTFhYmQ5YmNjYjVhNjZiOTI4ZjkyZWM0NjNjOSJ9LCB7Im5hbWUiOiJ0YXJnZXQvc2VjdXJpdHktcGFja2FnZXMvYXJtNjQvbGliY3VybDR0NjRfOC4xOC4wLTF1YnVudHUyLjhfYXJtNjQuZGViIiwgInNoYTI1NiI6ImExNDhiNjkyNzlkZmRlNmNmNWFhNzhhM2VlZTg1MDI3ZTlmYjNiYzFjMjM5ZDBhZTYyZGUxYzhlNTc0YWYzMWQifSwgeyJuYW1lIjoidGFyZ2V0L3NlY3VyaXR5LXBhY2thZ2VzL2FybTY0L2xpYmV4cGF0MV8yLjcuNC0xdWJ1bnR1MC4yX2FybTY0LmRlYiIsICJzaGEyNTYiOiJjNTUzY2Y1ODI3ZjkzN2Y5MmI2NWZjZWE4NmMxYjE5YzE4MjI0ZmYwNTMzYmMzMDMwNWUwZGJmZDMyYzE5N2ZmIn0sIHsibmFtZSI6InRhcmdldC9zZWN1cml0eS1wYWNrYWdlcy9hcm02NC9saWJmcmVldHlwZTZfMi4xNC4yK2Rmc2ctMXVidW50dTAuMl9hcm02NC5kZWIiLCAic2hhMjU2IjoiYTQwMmUwNGNkYjIyODZlNDYyOGMwMDViMzBiNjc3N2YzMDgzYTI4MTdkMDRiMzNhYWQ4OTk1MGU2NjlhY2YxYyJ9LCB7Im5hbWUiOiJ0YXJnZXQvc2VjdXJpdHktcGFja2FnZXMvYXJtNjQvbGliZ2NyeXB0MjBfMS4xMi4wLTJ1YnVudHUxLjFfYXJtNjQuZGViIiwgInNoYTI1NiI6ImE4YTZlMzkwZGQ2N2MwNzcxMTcxMmZhNzYwM2MxNTQ5NTUwMzViODNlZDlkMTYwMDdmY2QwZjJmMjQxZGJjNTYifSwgeyJuYW1lIjoidGFyZ2V0L3NlY3VyaXR5LXBhY2thZ2VzL2FybTY0L2xpYm1vdW50MV8yLjQxLjMtM3VidW50dTIuMl9hcm02NC5kZWIiLCAic2hhMjU2IjoiMzU5YmU2MzEwMmM2YmJkNDA1MmVkMmY1YjMzMThmNWYxYzc2MmI0YWMxODI2YTAwZjBkOGE0ODBiOTQyYWU1MyJ9LCB7Im5hbWUiOiJ0YXJnZXQvc2VjdXJpdHktcGFja2FnZXMvYXJtNjQvbGlicG5nMTYtMTZ0NjRfMS42LjU3LTF1YnVudHUwLjFfYXJtNjQuZGViIiwgInNoYTI1NiI6ImM2ODNlZTU1YmMwZGIwOTU0NGQ5ODc0Nzg2NzZiYzkyM2M3MmE5Njc1MGYxOWU0YmNhYjMwYzVmZTFlN2QyZGYifSwgeyJuYW1lIjoidGFyZ2V0L3NlY3VyaXR5LXBhY2thZ2VzL2FybTY0L2xpYnNtYXJ0Y29sczFfMi40MS4zLTN1YnVudHUyLjJfYXJtNjQuZGViIiwgInNoYTI1NiI6ImJhNzQxYjNhNTdhODA5ZmQ1NjA2ZWM2MzQwMTkxZTA0NDg3NjFhMDRhODAzZGJhYjlmMjI3YjI2NmYyZDQ2NzAifSwgeyJuYW1lIjoidGFyZ2V0L3NlY3VyaXR5LXBhY2thZ2VzL2FybTY0L2xpYnNxbGl0ZTMtMF8zLjQ2LjEtOXVidW50dTAuM19hcm02NC5kZWIiLCAic2hhMjU2IjoiYzc5ZWIxZTgyZWViMzUwOWFmMWE5NzkyYTU3NThmZjNjNGZlZDRiNjliYzhjZDdjNTg3MWFkYWZjMzBjMTlhOSJ9LCB7Im5hbWUiOiJ0YXJnZXQvc2VjdXJpdHktcGFja2FnZXMvYXJtNjQvbGlic3NoMi0xdDY0XzEuMTEuMS0xdWJ1bnR1MC4yNi4wNC40X2FybTY0LmRlYiIsICJzaGEyNTYiOiI0ZDZlYTNjOTRhZTcxOTAzMjA4NzlkZTdhYjI0ZTY5OGM5ZjI4ZTZkOTBkNTlmZjA2ZjFhNDc5NmRkZDFmNzBkIn0sIHsibmFtZSI6InRhcmdldC9zZWN1cml0eS1wYWNrYWdlcy9hcm02NC9saWJzc2wzdDY0XzMuNS41LTF1YnVudHUzLjdfYXJtNjQuZGViIiwgInNoYTI1NiI6IjlmZTg3YjZiZWVjNWRlNjM2YTcwZTRmYjYwNzY1MTdhMzlmNTA1M2M3ZTIzZTYyOGM5NDU5Yjk0Zjg1Yzc1ZmYifSwgeyJuYW1lIjoidGFyZ2V0L3NlY3VyaXR5LXBhY2thZ2VzL2FybTY0L2xpYnN5c3RlbWQwXzI1OS45LTB1YnVudHUwLjFfYXJtNjQuZGViIiwgInNoYTI1NiI6Ijc4YzMzMGU0OTBjNzRiODkwMDU3ZDEzMDk0ZWVlNzJmYTViMzJlYTEyN2ZjYzQzMzE2NzNiOTk4MGUwYTI5YjMifSwgeyJuYW1lIjoidGFyZ2V0L3NlY3VyaXR5LXBhY2thZ2VzL2FybTY0L2xpYnVkZXYxXzI1OS45LTB1YnVudHUwLjFfYXJtNjQuZGViIiwgInNoYTI1NiI6IjU2ZTBiYjdjYTZjOTAxOTU3MDU5MjRiNGJjN2M4MmVlMGMwYTgwMjIwYTkzZjkzODRlYTM5M2FmYTE4ZWY1YTQifSwgeyJuYW1lIjoidGFyZ2V0L3NlY3VyaXR5LXBhY2thZ2VzL2FybTY0L2xpYnV1aWQxXzIuNDEuMy0zdWJ1bnR1Mi4yX2FybTY0LmRlYiIsICJzaGEyNTYiOiIxMjk4ZjI3ODYxZjYwNzI5YTRkN2FkODZmYTkwNmFhZWJkYmM4OGJlOWZjMzMxNmU5ZWIxNTRkZTRmMDc5MmUzIn0sIHsibmFtZSI6InRhcmdldC9zZWN1cml0eS1wYWNrYWdlcy9hcm02NC9sb2NhbGVzXzIuNDMtMnVidW50dTIuNF9hbGwuZGViIiwgInNoYTI1NiI6ImExYWJmNDFiNTE3Zjc2NzAxOGQ1ZWFiNTE5ZDU1YjkyNjlmZTBhMDRhZTQ5ZWEzNWY3YzNhZDFiODg3MGFiMzIifSwgeyJuYW1lIjoidGFyZ2V0L3NlY3VyaXR5LXBhY2thZ2VzL2FybTY0L2xvZ2luXzQuMTYuMC0yK3JlYWxseTIuNDEuMy0zdWJ1bnR1Mi4yX2FybTY0LmRlYiIsICJzaGEyNTYiOiI3Y2VmNGQyZjNiMjlmYmRmYTc0MTEyZWUxZWIzZTFmMGZlZTc5Yjg1MzMyMWFmYWFhNzJhODY2ZDU5Yzk4N2Q3In0sIHsibmFtZSI6InRhcmdldC9zZWN1cml0eS1wYWNrYWdlcy9hcm02NC9tb3VudF8yLjQxLjMtM3VidW50dTIuMl9hcm02NC5kZWIiLCAic2hhMjU2IjoiNTIyYzVjMjNmNjY5NDhmMjg1YzM3ZmQ5NzhjZWFlZjJkZjhkYzNiM2YwY2QxOWQ1MTQ5OTEzMmIyZjlmNDQyMSJ9LCB7Im5hbWUiOiJ0YXJnZXQvc2VjdXJpdHktcGFja2FnZXMvYXJtNjQvb3BlbnNzbC1wcm92aWRlci1sZWdhY3lfMy41LjUtMXVidW50dTMuN19hcm02NC5kZWIiLCAic2hhMjU2IjoiNzU3ZWM4OTEyMGZlM2Y0MThhODQyMzQyYjNhMGM1OTZiODliMGUzZmIwYmE3NzAzNDdkZGExMjE5ZjIxOWJiZCJ9LCB7Im5hbWUiOiJ0YXJnZXQvc2VjdXJpdHktcGFja2FnZXMvYXJtNjQvb3BlbnNzbF8zLjUuNS0xdWJ1bnR1My43X2FybTY0LmRlYiIsICJzaGEyNTYiOiI2MjNlYTdlYzBlYjgwZGEzZjQwZTg5ZTMzMThhNGU4MmQ0YzY0MTQ2ZDIwNmM5MGNhYmJjZTY5OThkODIyZmE4In0sIHsibmFtZSI6InRhcmdldC9zZWN1cml0eS1wYWNrYWdlcy9hcm02NC9wZXJsLWJhc2VfNS40MC4xLTd1YnVudHUwLjNfYXJtNjQuZGViIiwgInNoYTI1NiI6ImQyYjAwNmI1NmFlM2NhMjA2NzY1ODFiMjkxOGI3YjQyNTBlNzhmYzRmZWUyNDA3YTRiZWEwYmEyMThlYmE3ZWYifSwgeyJuYW1lIjoidGFyZ2V0L3NlY3VyaXR5LXBhY2thZ2VzL2FybTY0L3V0aWwtbGludXhfMi40MS4zLTN1YnVudHUyLjJfYXJtNjQuZGViIiwgInNoYTI1NiI6IjkzMjFkOGFhZmUzMTg5ZjczMmQwZWU4NWExYjEyNTM4MjBmZDhjZTgyM2E1NWM2NWY4ZDYxMDlkMmZiYWYyZmIifSwgeyJuYW1lIjoidGFyZ2V0L3NlY3VyaXR5LXBhY2thZ2VzL2FybTY0L3psaWIxZ18xLjMuZGZzZytyZWFsbHkxLjMuMS0xdWJ1bnR1My4yX2FybTY0LmRlYiIsICJzaGEyNTYiOiJiOWI1Y2UxNTI4YWM3Zjg4NWM4ZmY3ZGMyMzE0Yzg5YzJiYTVkZDk3M2MyYTc5M2RjNGNmNWQwMmQ3NGIzODEwIn0sIHsibmFtZSI6InRhcmdldC9zcHJpbmctcGV0Y2xpbmljLTQuMC4wLVNOQVBTSE9ULmphciIsICJzaGEyNTYiOiI3ZjVkNDlhNjUxNDlkMjVkMTZlMzhkYmY3YzVkMGMyNjg2YWM4YTE1YWI1M2MyZDFhMDVjMTU3NWY0NGE4MTAwIn1dfSwgImZpbmlzaGVkQXQiOiIyMDI2LTEwLTMwVDAzOjE2OjI4LjA5N1oiLCAibGltaXRhdGlvbnMiOlsiSmVua2lucyBhZG1pbmlzdHJhdG9ycyBhbmQgdGhlIGV4aXN0aW5nIHNpZ25pbmcga2V5IGFyZSB0cnVzdGVkIiwgIk1hdmVuIGRlcGVuZGVuY3kgcmVzb2x1dGlvbiBpcyBub3QgaGVybWV0aWM7IG5vIFNMU0EgY2VydGlmaWNhdGlvbiBjbGFpbWVkIl0sICJwbGF0Zm9ybXMiOlsibGludXgvYW1kNjQiLCAibGludXgvYXJtNjQiXSwgInNvdXJjZSI6eyJjb21taXQiOiI5YTc4Y2M4OWYyMmZhOThmYjFmZmNjNDNlMmFlMjc5Mjk5NDcxNzkzIiwgInJlcG9zaXRvcnkiOiJodHRwOi8vZ2l0bGFiLXNlcnZpY2UubnMtZGV2b3BzLnN2Yy5jbHVzdGVyLmxvY2FsL3Jvb3QvcGV0Y2xpbmljLXBsYXRmb3JtLmdpdCJ9LCAic3RhcnRlZEF0IjoiMjAyNi0xMC0zMFQwMzoxNDoyMC40MjlaIn19\",\"payloadType\":\"application/vnd.in-toto+json\",\"signatures\":[{\"sig\":\"MEUCIQDockujsOO15xnG1DmA+cDou9lEE57o7BAdIHNgDqGHkgIgfZVdOwzp4u43jRwlRSxSZhxTHOflVsZqwgh/JwTDG0Y=\"}]}",
+      ".devsecops/build-attestation-verification.json": "{\n  \"status\": \"success\",\n  \"candidateImage\": \"core.harbor.domain/petclinic/petclinic@sha256:2fbaea65ab030c56c60c62e3ee9fbe362deb8bbbb8216a891ef4c7bbbcea6d55\",\n  \"expected\": {\n    \"image\": \"core.harbor.domain/petclinic/petclinic@sha256:2fbaea65ab030c56c60c62e3ee9fbe362deb8bbbb8216a891ef4c7bbbcea6d55\",\n    \"commit\": \"9a78cc89f22fa98fb1ffcc43e2ae279299471793\",\n    \"repository\": \"http://gitlab-service.ns-devops.svc.cluster.local/root/petclinic-platform.git\",\n    \"builder\": \"http://jenkins.devops.local/job/petclinic-candidate-build\",\n    \"buildNumber\": \"2\"\n  },\n  \"tests\": [\n    {\n      \"case\": \"correct\",\n      \"result\": \"PASS\"\n    },\n    {\n      \"case\": \"digest\",\n      \"result\": \"REJECTED\"\n    },\n    {\n      \"case\": \"source\",\n      \"result\": \"REJECTED\"\n    },\n    {\n      \"case\": \"builder\",\n      \"result\": \"REJECTED\"\n    },\n    {\n      \"case\": \"tampered\",\n      \"result\": \"REJECTED\"\n    }\n  ],\n  \"temporaryPrivateFilesRemoved\": true\n}"
+    }
+  }
+}

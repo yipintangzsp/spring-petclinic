@@ -1,0 +1,387 @@
+commit 7773df86fb2d0d801693f863026aa0b88a96cb65
+Author:     heil16070-hue <heil16070@gmail.com>
+AuthorDate: Wed Nov 4 09:58:06 2026 +0800
+Commit:     heil16070-hue <heil16070@gmail.com>
+CommitDate: Wed Nov 4 09:58:06 2026 +0800
+
+    fix(security): version Trivy source lock for Helm shadow compatibility
+
+diff --git a/docs/TRIVY-HELM-COMPATIBILITY-20261104.md b/docs/TRIVY-HELM-COMPATIBILITY-20261104.md
+new file mode 100644
+index 0000000..bf2335b
+--- /dev/null
++++ b/docs/TRIVY-HELM-COMPATIBILITY-20261104.md
+@@ -0,0 +1,69 @@
++# Trivy / Helm source-identity transition and execution review
++
++This is a local source-compatibility change. No production pipeline, scan, DB refresh, Argo/GitOps update, image promotion or Summary V2 activation.
++
++## Version lineage
++
++- FROZEN_BASELINE_V1: existing `trivy-parent-baseline-v1.json`, SHA256 `dc3b95d577707b9d9137663bd88a8034f5ce75f87a377a3504c83afd941a6f8f`. Bytes unchanged.
++- Original Jenkinsfile identity: `e6e7c1b8f838e42e8bc9b3aa35e731515e2e05feb300bd1833d64aa921c54ed2`, reproducible from Git commit 741ea28.
++- HELM_SHADOW_INTEGRATION_BASELINE: new `trivy-parent-helm-shadow-v1.json`, SHA256 `e1ac4a6cac7d7282899ece510a411988576a67e272de46f159ddab48ff858ff8`.
++- New Jenkinsfile identity: `6179859f70c1d6fec2560621ec1ae71dba20514de4ff430d84b7d60a1c319b3c`. Four additive, pinned Helm shadow blocks introduced in 90b4fca; c2338e0 tightens a Helm input guard, not this Jenkinsfile. 4de943b follows c2338e0 and adds the inactive Trivy validation guard.
++- Policy rules remain `baseline-v1`. Source compatibility baseline has its own ID; this is not a change to severity, Gate decisions or report schema.
++
++The source verifier pins both entire manifest byte streams, all thirteen Gate-source hashes, all thirty-three accepted Helm source hashes and explicit parent lineage. Only the two known Jenkinsfile identities are recognized. Unknown edits, changed manifests, unsafe paths, symlinks or missing sources fail closed. No environment variable disables verification.
++
++After authenticating the entire new source, removing exactly one of each reviewed Helm block proves that the original pipeline text is preserved. This is a transition proof only. The actual new Jenkinsfile remains complete during replay; it is not stripped or substituted to get a success.
++
++Only the initial source-lock selection in `trivy-parent.mjs` changes. Its decision body from `const absent` onward is byte-identical to the archived original adapter. The classifier, original scanner/DB helper, manager, commands, report parsing and Policy Engine are unchanged. Identity receipts are separate; no metadata is injected into the active Summary.
++
++## Independent verification
++
++Unmodified existing suites run in disposable copied source trees because their after-hooks write historical-looking output paths relative to cwd. No suite is run against the real historical evidence directory.
++
++1. Original adapter + original matching Jenkinsfile: 190/190 tests.
++2. Original adapter + current Jenkinsfile: reproduced 2/190 passing, 188 SOURCE_IDENTITY_LOCK_MISMATCH failures before decisions.
++3. Versioned adapter + complete current Jenkinsfile: 190/190 tests.
++4. Compare every generated differential record, input/raw digest, old Gate decision and standard decision. All 184 samples and all three aggregate JSON byte streams are identical between original and new versions. There are also six invariant tests. No real scanner is used.
++5. Independent source-lock tests exercise known-old/known-new selection, every locked Gate and Helm source mutation, both manifest mutations, missing/symlinked sources, decision-body preservation and marker ambiguity.
++
++### Historical evidence anomaly
++
++At this round's start three old aggregate JSON files no longer match their original artifact manifest. The preceding direct test run's after-hooks had rewritten them. This is a historical evidence-integrity failure, distinct from Gate semantic drift.
++
++Original-v1 replay regenerated exact copies matching each original sealed SHA. They are stored only in this round's directory, with a recovery mapping. Old files and old manifests are not silently restored or rewritten. The original source manifest and original-code reproducibility are verified; the original on-disk evidence bundle still has three failed entries and must be reported as such. Successful new compatibility testing does not erase that anomaly.
++
++## Local rollback
++
++Perform only as a separate reviewed local source change, never a production action here:
++
++1. Copy `versions/trivy-parent.frozen-v1.mjs` back to `infra/security/policy/trivy-parent.mjs`. The frozen copy must hash to `b0b6b034228e26ec8c9b4d052202505999ac9e5534f8106713e55eb6a4f167c6`. Do not import it in place from the versions directory; its relative imports are for the original location.
++2. Restore the matching original Jenkinsfile from the pinned V1 text/Git object in the isolated checkout. The restored SHA must be the original identity above.
++3. Re-run the original 190 cases in a disposable tree. Keeping the new Jenkinsfile with the old-only adapter is expected to reject the source lock; never delete a check to make rollback green.
++4. Preserve all manifests and evidence versions. No Git push or production source switch is implied.
++
++## Guard audit boundaries
++
++The guard code and every numeric limit remain exactly as accepted in 4de943b. Its default production delegate and original production formula are unchanged. Existing tests verify ordinary owned process-group termination and cleanup; they are insufficient to certify execution safety.
++
++New controlled tests demonstrate three unresolved risks:
++
++- A detached descendant can escape the tracked process group, while `processGroupStopped` is reported true. A cgroup or equivalent verified descendant containment strategy is needed before execution. The disposable escaped test process is explicitly stopped and checked before test-directory cleanup.
++- Cache metadata reads follow an inner symlink outside the cache subtree. Recursive removal does not follow that symlink, but reads need a verified no-follow boundary; assertOwned and pathname operations also have a race window.
++- Domain coverage and peak attestations depend on trusted caller evidence. The code cannot discover omitted physical backing domains, certify a caller's PROVEN string or prevent arbitrary concurrent writers. Monitoring alone cannot prevent a burst from crossing the hard floor between samples.
++
++Other required controls include a final pre-spawn bound check, pinned executable identity, non-retry failure behavior, storage-identity continuity and cleanup proof. Existing checks help but are not a kernel-enforced quota or an exhaustive process-tree proof. These findings are not repaired by changing a free-space threshold.
++
++## Existing-capacity decision
++
++Use separate refresh and scan budgets. Do not add guest free bytes to Mac/APFS backing free bytes; containerd/overlay/cache directories can share one physical device. A 5Gi PVC declaration is not an enforced local-path quota.
++
++- A: existing compliant DB scan is unavailable while either DB is stale, full integrity is unproven or scan peak is unknown. Do not use skip-update flags to bypass freshness.
++- B: bounded refresh remains unavailable without peak, instantaneous-write, cleanup, other-writer and host-COW bounds above unchanged hard floors.
++- C: independent work/cache directories may improve isolation but add no capacity, can duplicate DB storage, and change the frozen path/topology. They require separate compatibility and space proof.
++- D: remain blocked. The next engineering action is validation-guard containment/path hardening under the same fixed numeric limits, with no scan/refresh activation. Space and freshness blockers remain independently in force.
++
++Full current evidence and verdicts are in the new compatibility-capacity-review report. Runtime remains 14/16 and INCOMPLETE. STOP.
++
++## Delivery boundary
++
++This round records only the scoped compatibility files in a local commit, with no push. Much of the pre-existing Policy/Runtime implementation is still untracked in this workspace. This local commit is not a self-contained release checkout and does not authorize publishing that unrelated implementation. The replay receipt records the actual workspace source identities; production Jenkins remains pinned to its existing source revision.
+diff --git a/infra/observability/testing/scanner-validation-review.test.mjs b/infra/observability/testing/scanner-validation-review.test.mjs
+new file mode 100644
+index 0000000..025dae0
+--- /dev/null
++++ b/infra/observability/testing/scanner-validation-review.test.mjs
+@@ -0,0 +1,21 @@
++import test from 'node:test';import assert from 'node:assert/strict';import fs from 'node:fs';import os from 'node:os';import path from 'node:path';import {createHash} from 'node:crypto';
++import {GiB,assessValidationBudget,createValidationWorkspace,createValidationRefreshIO,runOwnedValidationCommand,validationHardFloor,productionRefreshRequirement,validationLimits} from '../scanner-validation-guard.mjs';
++import {requireFreshScannerMetadata} from '../scanner-db-refresh.mjs';
++const sha=x=>createHash('sha256').update(x).digest('hex');
++const proof=()=>({status:'PROVEN_CONSERVATIVE_UPPER_BOUND',artifactDigests:{db:'sha256:'+'a'.repeat(64),'java-db':'sha256:'+'b'.repeat(64)},evidenceSha256:'c'.repeat(64),evidenceIdentity:'SYNTHETIC_AUDIT_ONLY',domains:[{id:'guest',identity:'synthetic',capacityBytes:100*GiB,peakAdditionalBytes:4*GiB,instantaneousWriteBytes:GiB,cleanupBytes:GiB,otherWriterBytes:GiB,peakAdditionalInodes:100,instantaneousWindowMs:4000,boundIncludesDownloadExtractionOldNewTemp:true,boundIncludesScanAndReports:true,cleanupProven:true,backingAllocationProven:true}]});
++const sample=()=>({at:Date.now(),diskPressure:false,unownedWriter:false,ownerValid:true,domains:[{id:'guest',identity:'synthetic',capacityBytes:100*GiB,availableBytes:64*GiB,inodesFree:100000}]});
++async function work(){const parent=fs.mkdtempSync(path.join(os.tmpdir(),'trivy-audit-only-'));fs.chmodSync(parent,0o700);const w=await createValidationWorkspace({parent,runId:'trivy-validation-'+'e'.repeat(16),sample,budget:proof()});return {parent,w,clean(){w.cleanup();fs.rmSync(parent,{recursive:true});}};}
++test('guard source and all numeric constants remain as accepted 4de943b',()=>{assert.equal(sha(fs.readFileSync('infra/observability/scanner-validation-guard.mjs')),'21c29ecdc38d2f0e20d64fd1d26d22228c680347b44f2a10292c64dbbc928c4a');assert.equal(validationHardFloor(100*GiB),23*GiB);assert.equal(productionRefreshRequirement(100*GiB),27*GiB);assert.deepEqual(validationLimits,{pollMs:100,maxSampleGapMs:1000,sampleTimeoutMs:500,termGraceMs:1000,killGraceMs:1000,maxLogBytes:1024**2,maxRunMs:210000,minimumInodes:4096});});
++test('AUDIT_FINDING: complete actual filesystem coverage needs trusted external proof',()=>{const b=proof();assert.equal(assessValidationBudget(sample(),b).allowed,true);assert.equal(b.domains.length,1);assert.equal(b.domains.some(d=>d.id==='physical-host'),false);});
++test('AUDIT_FINDING: readable cache metadata symlink can escape cache subtree',async()=>{const x=await work();try{fs.mkdirSync(x.w.cacheDir+'/db');const sentinel=x.parent+'/synthetic-public-metadata.json';fs.writeFileSync(sentinel,'{"syntheticOnly":true}');fs.symlinkSync(sentinel,x.w.cacheDir+'/db/metadata.json');const io=createValidationRefreshIO({workspace:x.w,binary:process.execPath,binarySha256:sha(fs.readFileSync(process.execPath)),assertOwner:()=>{}});assert.equal(io.read('db').syntheticOnly,true);}finally{x.clean();}});
++test('AUDIT_FINDING: owned process group alone does not contain a detached descendant',async()=>{const x=await work();let escaped;let safe=false;try{
++ const script="const fs=require('fs'),cp=require('child_process');const c=cp.spawn(process.execPath,['-e','setTimeout(()=>{},3000)'],{detached:true,stdio:'ignore'});fs.writeFileSync('escaped.pid',String(c.pid));c.unref();";
++ const r=await runOwnedValidationCommand(x.w,{binary:process.execPath,args:['-e',script]});escaped=Number(fs.readFileSync(x.w.directory+'/escaped.pid','utf8'));assert.ok(Number.isSafeInteger(escaped)&&escaped>1);assert.equal(r.processGroupStopped,true);assert.doesNotThrow(()=>process.kill(escaped,0));
++ }finally{
++  if(escaped){try{process.kill(-escaped,'SIGTERM');}catch(e){if(e.code!=='ESRCH')throw e;}const until=Date.now()+4000;while(Date.now()<until){try{process.kill(escaped,0);}catch(e){if(e.code==='ESRCH'){safe=true;break;}throw e;}await new Promise(r=>setTimeout(r,25));}}else safe=true;
++  assert.equal(safe,true,'Owned escaped fixture process not proven stopped; preserve directory and STOP');
++  x.clean();
++ }});
++test('fresh metadata for BOTH schemas is required by unchanged production prerequisite',()=>{const now=Date.now(),stamp=x=>new Date(x).toISOString(),m=Object.fromEntries([['db',2],['java-db',1]].map(([k,Version])=>[k,{Version,UpdatedAt:stamp(now-60000),DownloadedAt:stamp(now-1000),NextUpdate:stamp(now+60000)}]));assert.doesNotThrow(()=>requireFreshScannerMetadata(m,now));for(const k of ['db','java-db']){const b=structuredClone(m);b[k].NextUpdate=stamp(now-1);assert.throws(()=>requireFreshScannerMetadata(b,now),/REFRESH_REQUIRED/);}});
++test('schema/missing metadata cannot masquerade as usable DB',()=>{assert.throws(()=>requireFreshScannerMetadata({}));const now=Date.now(),m={db:{Version:99,NextUpdate:new Date(now+100000).toISOString()}};assert.throws(()=>requireFreshScannerMetadata(m,now));});
++test('monitor timeout does not certify instantaneous or cleanup write bound',()=>{const b=proof();delete b.domains[0].instantaneousWriteBytes;assert.equal(assessValidationBudget(sample(),b).allowed,false);b.domains[0].instantaneousWriteBytes=GiB;delete b.domains[0].cleanupProven;assert.equal(assessValidationBudget(sample(),b).allowed,false);});
+diff --git a/infra/security/policy/trivy-parent.mjs b/infra/security/policy/trivy-parent.mjs
+new file mode 100644
+index 0000000..b62d968
+--- /dev/null
++++ b/infra/security/policy/trivy-parent.mjs
+@@ -0,0 +1,41 @@
++import fs from 'node:fs';import crypto from 'node:crypto';
++import {isDeepStrictEqual} from 'node:util';
++import {classifyVulnerability} from '../trivy-medium-policy.mjs';
++import {verifyTrivySourceLock} from './trivy-source-lock.mjs';
++// Frozen execution facts and the unchanged classifier; no HTTP, DB updater or scanner.
++export function trivyParent(raw){
++ const {lock}=verifyTrivySourceLock();
++ const absent=reason=>({status:'NOT_TESTED',decision:null,reason,rawEvidence:structuredClone(raw)});
++ if(!raw||raw.schema!==1||raw.complete!==true)return absent('Complete original Trivy observations absent');
++ if(raw.stage==='wrapper'){
++  if(!Array.isArray(raw.observations)||typeof raw.execution?.failed!=='boolean')return absent('Original selected Manager execution absent');
++  const decision=raw.execution.failed||raw.module?.status==='failed'?'FAIL':raw.module?.status==='success'?'PASS':null;
++  return decision?{status:decision,decision,rawEvidence:structuredClone(raw)}:absent('Selected module result absent');
++ }
++ if(['release-scan','database-prerequisite'].includes(raw.stage)){
++  if(!Number.isInteger(raw.execution?.exitStatus)||!Array.isArray(raw.observations))return absent('Existing stage execution observations absent');
++  if(raw.execution.exitStatus===0){
++   if(raw.stage==='release-scan'&&typeof raw.reports?.['target/platform/harbor.json']!=='string')return absent('Successful release scan lacks original report');
++   if(raw.stage==='database-prerequisite'&&(!raw.metadataBefore||!raw.result?.metadata||!Array.isArray(raw.result.actions)))return absent('Successful DB prerequisite lacks original metadata/result');
++  }
++  const decision=raw.execution.exitStatus===0?'PASS':'FAIL';
++  return {status:decision,decision,normalizedFacts:{execution:structuredClone(raw.execution),scope:raw.stage==='release-scan'?'Existing Harbor scan-completion Gate only; no added vulnerability severity gate':'Separate existing upstream database prerequisite; not imposed on audit command'},rawEvidence:structuredClone(raw)};
++ }
++ if(raw.stage!=='parent'||raw.command!==lock.command||!Array.isArray(raw.operations)||!raw.operations.length)return absent('Original combined parent receipt absent');
++ const first=raw.operations[0];if(first.stage!=='ensure-candidate'||!Number.isInteger(first.execution?.exitStatus))return absent('Candidate prerequisite execution absent');
++ if(first.execution.exitStatus===0){if(raw.operations.length!==2||raw.operations[1]?.stage!=='audit'||!Number.isInteger(raw.operations[1].execution?.exitStatus))return absent('Original && continuation observations absent');}
++ else if(raw.operations.length!==1)return absent('Original && short circuit inconsistent');
++ if(raw.operations.some(x=>!Array.isArray(x.observations)||!x.reports))return absent('Original command/report facts absent');
++ const audit=raw.operations.find(x=>x.stage==='audit');let classifications=null,classifierError=null;
++ if(audit?.classifierInput){try{classifications=audit.classifierInput.findings.map(v=>classifyVulnerability(v,audit.classifierInput.review,audit.classifierInput.image));}catch(e){classifierError=e.message;}}
++ let decision=raw.operations.some(x=>x.execution.exitStatus!==0)?'FAIL':'PASS';
++ if(decision==='PASS'){
++  const bytes=audit.reports['.devsecops/trivy-audit.json'];if(typeof bytes!=='string'||!classifications)return absent('Successful original audit lacks complete report/classifier facts');
++  let report;try{report=JSON.parse(bytes);}catch{return absent('Successful original report malformed');}
++  if(report.status!=='success')return absent('Successful receipt conflicts with original report');
++  let reportedFindings;try{reportedFindings=report.scans.flatMap(s=>Object.values(s.raw).flatMap(x=>x.vulnerabilities??[]));}catch{return absent('Successful original raw scan facts incomplete');}
++  if(report.image!==audit.classifierInput.image||!isDeepStrictEqual(reportedFindings,audit.classifierInput.findings))return absent('Classifier facts do not match original report/image');
++  if(classifications.some(x=>x.mode==='FAIL'))decision='FAIL';
++ }
++ return {status:decision,decision,normalizedFacts:{classifications,classifierError,scope:'Existing && parent. Nonblocking Medium/Low remain raw WARN while original whole stage can PASS; no new severity or DB rule'},rawEvidence:structuredClone(raw)};
++}
+diff --git a/infra/security/policy/trivy-source-lock.mjs b/infra/security/policy/trivy-source-lock.mjs
+new file mode 100644
+index 0000000..af03652
+--- /dev/null
++++ b/infra/security/policy/trivy-source-lock.mjs
+@@ -0,0 +1,53 @@
++// Versioned source identities only. No finding/decision conversion or scanner execution.
++import fs from 'node:fs';
++import path from 'node:path';
++import {fileURLToPath} from 'node:url';
++import {createHash} from 'node:crypto';
++const sha=x=>createHash('sha256').update(x).digest('hex');
++const parentHash='dc3b95d577707b9d9137663bd88a8034f5ce75f87a377a3504c83afd941a6f8f';
++const integrationHash='e1ac4a6cac7d7282899ece510a411988576a67e272de46f159ddab48ff858ff8';
++const fail=message=>{throw Error('POLICY_ERROR: Trivy source identity: '+message);};
++const blocks=['ARCHIVE','PARAMETERS','PRECONDITIONS','STAGES'];
++export function removePinnedHelmBlocks(text) {
++ for(const key of blocks){
++  const begin='// HELM_SHADOW_'+key+'_BEGIN',end='// HELM_SHADOW_'+key+'_END';
++  if(text.split(begin).length!==2 || text.split(end).length!==2)fail('ambiguous Helm block '+key);
++  const regex=new RegExp('// HELM_SHADOW_'+key+'_BEGIN[\\s\\S]*?// HELM_SHADOW_'+key+'_END\\n'+(key==='STAGES'?'\\n':''));
++  const next=text.replace(regex,'');if(next===text)fail('malformed Helm block '+key);text=next;
++ }
++ return text;
++}
++export function verifyTrivySourceLock({root=fileURLToPath(new URL('../../../',import.meta.url))}={}) {
++ root=path.resolve(root);
++ const read=p=>{
++  if(path.isAbsolute(p)||p.split('/').some(x=>['..','.',''].includes(x)))fail('unsafe locked path');
++  const name=path.join(root,p);if(fs.realpathSync(name)!==name)fail('symlink locked path '+p);
++  if(!fs.lstatSync(name).isFile())fail('non-file locked path '+p);return fs.readFileSync(name);
++ };
++ const parentBytes=read('infra/security/policy/versions/trivy-parent-baseline-v1.json');
++ if(sha(parentBytes)!==parentHash)fail('frozen v1 manifest changed');
++ const parent=JSON.parse(parentBytes),integrationBytes=read('infra/security/policy/versions/trivy-parent-helm-shadow-v1.json');
++ if(sha(integrationBytes)!==integrationHash)fail('integration manifest changed');
++ const integration=JSON.parse(integrationBytes),pipeline=read('Jenkinsfile.security-audit'),identity=sha(pipeline);
++ let lock,baselineId;
++ if(identity===parent.sourceHashes['Jenkinsfile.security-audit']){lock=parent;baselineId='frozen-baseline-v1';}
++ else if(identity===integration.sourceHashes['Jenkinsfile.security-audit']){lock=integration;baselineId='helm-shadow-integration-v1';}
++ else fail('unknown Jenkinsfile identity');
++ if(integration.parentManifestSha256!==parentHash || integration.policyVersion!==parent.policyVersion
++  || integration.command!==parent.command || integration.productionActivation!==false)fail('invalid version lineage');
++ if(JSON.stringify(Object.keys(integration.sourceHashes).sort())!==JSON.stringify(Object.keys(parent.sourceHashes).sort()))fail('source coverage changed');
++ for(const [p,h]of Object.entries(parent.sourceHashes))if(p!=='Jenkinsfile.security-audit'&&integration.sourceHashes[p]!==h)fail('non-Helm gate identity changed '+p);
++ for(const [p,h]of Object.entries(lock.sourceHashes))if(sha(read(p))!==h)fail('locked file changed '+p);
++ let restoredV1Sha256=null;
++ if(baselineId==='helm-shadow-integration-v1'){
++  // Proof of the reviewed transition, after the complete new source identity was verified.
++  // The actual current Jenkinsfile is never replaced or stripped for execution/replay.
++  for(const [p,h]of Object.entries(integration.helmSourceHashes))if(sha(read(p))!==h)fail('Helm integration identity changed '+p);
++  restoredV1Sha256=sha(removePinnedHelmBlocks(pipeline.toString('utf8')));
++  if(restoredV1Sha256!==parent.sourceHashes['Jenkinsfile.security-audit'])fail('security stage text changed');
++ }
++ return {lock,baselineId,policyVersion:parent.policyVersion,JenkinsfileSha256:identity,
++  manifestSha256:baselineId==='frozen-baseline-v1'?parentHash:integrationHash,
++  parentManifestSha256:parentHash,restoredV1Sha256,sourceIdentityChecks:Object.keys(lock.sourceHashes).length,
++  helmIdentityChecks:baselineId==='helm-shadow-integration-v1'?Object.keys(integration.helmSourceHashes).length:0};
++}
+diff --git a/infra/security/policy/trivy-source-lock.test.mjs b/infra/security/policy/trivy-source-lock.test.mjs
+new file mode 100644
+index 0000000..f45e456
+--- /dev/null
++++ b/infra/security/policy/trivy-source-lock.test.mjs
+@@ -0,0 +1,15 @@
++import test from 'node:test';import assert from 'node:assert/strict';import fs from 'node:fs';import path from 'node:path';import os from 'node:os';import {createHash} from 'node:crypto';
++import {verifyTrivySourceLock,removePinnedHelmBlocks} from './trivy-source-lock.mjs';
++const sha=x=>createHash('sha256').update(x).digest('hex'),V='infra/security/policy/versions/',old=JSON.parse(fs.readFileSync(V+'trivy-parent-baseline-v1.json')),next=JSON.parse(fs.readFileSync(V+'trivy-parent-helm-shadow-v1.json'));
++function tree(){const root=fs.realpathSync(fs.mkdtempSync(path.join(os.tmpdir(),'trivy-source-lock-test-')));const paths=new Set([...Object.keys(old.sourceHashes),...Object.keys(next.helmSourceHashes),V+'trivy-parent-baseline-v1.json',V+'trivy-parent-helm-shadow-v1.json']);for(const p of paths){fs.mkdirSync(path.dirname(root+'/'+p),{recursive:true});fs.copyFileSync(p,root+'/'+p);}return {root,done:()=>fs.rmSync(root,{recursive:true,force:true})};}
++test('new source identity is explicit, pinned and non-release',()=>{const r=verifyTrivySourceLock();assert.equal(r.baselineId,'helm-shadow-integration-v1');assert.equal(r.sourceIdentityChecks,13);assert.equal(r.helmIdentityChecks,33);assert.equal(r.restoredV1Sha256,old.sourceHashes['Jenkinsfile.security-audit']);assert.equal(r.lock.productionActivation,false);assert.equal(r.policyVersion,'baseline-v1');});
++test('old manifest retains its original hash and command',()=>{assert.equal(sha(fs.readFileSync(V+'trivy-parent-baseline-v1.json')),'dc3b95d577707b9d9137663bd88a8034f5ce75f87a377a3504c83afd941a6f8f');assert.equal(next.command,old.command);assert.equal(next.parentManifestSha256,sha(fs.readFileSync(V+'trivy-parent-baseline-v1.json')));});
++test('Gate decision body byte-identical to archived original adapter',()=>{const a=fs.readFileSync(V+'trivy-parent.frozen-v1.mjs','utf8'),b=fs.readFileSync('infra/security/policy/trivy-parent.mjs','utf8');assert.equal(sha(a),'b0b6b034228e26ec8c9b4d052202505999ac9e5534f8106713e55eb6a4f167c6');assert.equal(a.slice(a.indexOf(' const absent=')),b.slice(b.indexOf(' const absent=')));});
++test('original source still selects the unmodified v1 baseline',()=>{const t=tree();try{fs.copyFileSync('infra/helm/baseline/Jenkinsfile.security-audit.v1.txt',t.root+'/Jenkinsfile.security-audit');const r=verifyTrivySourceLock({root:t.root});assert.equal(r.baselineId,'frozen-baseline-v1');assert.equal(r.helmIdentityChecks,0);assert.equal(r.manifestSha256,next.parentManifestSha256);}finally{t.done();}});
++for(const p of Object.keys(old.sourceHashes))test('unknown frozen-source edit fails closed: '+p,()=>{const t=tree();try{fs.appendFileSync(t.root+'/'+p,'\nUNKNOWN_CHANGE');assert.throws(()=>verifyTrivySourceLock({root:t.root}),/POLICY_ERROR/);}finally{t.done();}});
++for(const p of Object.keys(next.helmSourceHashes).filter(p=>!Object.hasOwn(old.sourceHashes,p)))test('unknown Helm-only source edit fails closed: '+p,()=>{const t=tree();try{fs.appendFileSync(t.root+'/'+p,'\nUNKNOWN_CHANGE');assert.throws(()=>verifyTrivySourceLock({root:t.root}),/POLICY_ERROR/);}finally{t.done();}});
++for(const name of ['trivy-parent-baseline-v1.json','trivy-parent-helm-shadow-v1.json'])test('manifest tampering cannot approve new SHA: '+name,()=>{const t=tree();try{fs.appendFileSync(t.root+'/'+V+name,' ');assert.throws(()=>verifyTrivySourceLock({root:t.root}),/manifest changed/);}finally{t.done();}});
++test('symlinked locked source is rejected',()=>{const t=tree();try{const p=t.root+'/infra/security/trivy-medium-review.json',copy=t.root+'/copy.json';fs.renameSync(p,copy);fs.symlinkSync(copy,p);assert.throws(()=>verifyTrivySourceLock({root:t.root}),/symlink locked/);}finally{t.done();}});
++test('missing locked source fails, never falls back to another manifest',()=>{const t=tree();try{fs.unlinkSync(t.root+'/infra/security/audit-trivy.mjs');assert.throws(()=>verifyTrivySourceLock({root:t.root}));}finally{t.done();}});
++test('non-Helm stage edit cannot be normalized away',()=>{const text=fs.readFileSync('Jenkinsfile.security-audit','utf8'),changed=text.replace("stage('Security Manager')","stage('Security Manager CHANGED')");assert.notEqual(sha(removePinnedHelmBlocks(changed)),old.sourceHashes['Jenkinsfile.security-audit']);});
++test('duplicate or malformed markers rejected',()=>{const text=fs.readFileSync('Jenkinsfile.security-audit','utf8');assert.throws(()=>removePinnedHelmBlocks(text+'\n// HELM_SHADOW_STAGES_BEGIN'),/ambiguous/);assert.throws(()=>removePinnedHelmBlocks(text.replace('// HELM_SHADOW_STAGES_END','// removed')),/ambiguous/);});
+diff --git a/infra/security/policy/versions/trivy-parent-baseline-v1.json b/infra/security/policy/versions/trivy-parent-baseline-v1.json
+new file mode 100644
+index 0000000..6dcbf74
+--- /dev/null
++++ b/infra/security/policy/versions/trivy-parent-baseline-v1.json
+@@ -0,0 +1,19 @@
++{
++  "policyVersion": "baseline-v1",
++  "command": "( node infra/security/ensure-audit-candidate.mjs && node infra/security/audit-trivy.mjs )",
++  "sourceHashes": {
++    "infra/security/ensure-audit-candidate.mjs": "2757bf7b3b1a8612481f17542ad045bc1dbf424766e7b3cdbc47b2e3a2d51027",
++    "infra/security/audit-trivy.mjs": "7c36099392e5b90ae5d0d20150e693f2250429c7939fcfd606cf9658c37c5741",
++    "infra/security/audit-target.mjs": "143d62c2ded087aa837084ef38db45cfa646bce644e161bf4d33aa677f5d90da",
++    "infra/security/trivy-medium-policy.mjs": "b46ab32c7e456574c12dbd5b5637fc031f319cbf3345fa87f01007ded32d43bd",
++    "infra/security/trivy-medium-review.json": "c2d65514ad524478a1728b0b020df641e8a59078aa510d3fa4495988dac7dd20",
++    "infra/security/governance/scan-counts.mjs": "4a60c60444c6760c3cb462300330486f811f826b9d5c9fe12faf8326b452fd5f",
++    "infra/observability/scanner-db-refresh.mjs": "6e49e8e3d79264e916f0c3c424181ab6e8d15342fcca24a811e3f78de89f306a",
++    "infra/observability/release-preflight.mjs": "ed7fd6439bba1036937024c98228c61c6e1c088eceb9e12ae3543e946cbaefb7",
++    "infra/observability/publish-artifacts.mjs": "6dac524335127357959174d55ea720c962f0c5e3c1b224bdae4f152cd01d3ffd",
++    "vars/securityManager.groovy": "ae297e7313cbf9bdde9e38acb32a3ee3310c571f2d70e289783c5c1c448811af",
++    "resources/security-manager/petclinic-adapter.json": "b7ffcdcb7466e679ad8739d1d910343b8ccab7217ba24a3d2e3f1f363215fc57",
++    "Jenkinsfile": "c46ac48976d581890592968272ed664e93bf4de9f86beab13c2144d67ef67b9b",
++    "Jenkinsfile.security-audit": "e6e7c1b8f838e42e8bc9b3aa35e731515e2e05feb300bd1833d64aa921c54ed2"
++  }
++}
+diff --git a/infra/security/policy/versions/trivy-parent-helm-shadow-v1.json b/infra/security/policy/versions/trivy-parent-helm-shadow-v1.json
+new file mode 100644
+index 0000000..c563c72
+--- /dev/null
++++ b/infra/security/policy/versions/trivy-parent-helm-shadow-v1.json
+@@ -0,0 +1,72 @@
++{
++  "schemaVersion": 1,
++  "baselineId": "helm-shadow-integration-v1",
++  "parentBaselineId": "frozen-baseline-v1",
++  "parentManifestSha256": "dc3b95d577707b9d9137663bd88a8034f5ce75f87a377a3504c83afd941a6f8f",
++  "policyVersion": "baseline-v1",
++  "command": "( node infra/security/ensure-audit-candidate.mjs && node infra/security/audit-trivy.mjs )",
++  "integrationCommits": [
++    "90b4fcaaa2dce362049dc8bac2cfa4ad7e817a1e",
++    "c2338e00e07d5b028b1bb331bbc06885af433ee0"
++  ],
++  "changedSourceFiles": [
++    {
++      "path": "Jenkinsfile.security-audit",
++      "before": "e6e7c1b8f838e42e8bc9b3aa35e731515e2e05feb300bd1833d64aa921c54ed2",
++      "after": "6179859f70c1d6fec2560621ec1ae71dba20514de4ff430d84b7d60a1c319b3c",
++      "reason": "Pinned additive non-release Helm shadow parameters, preconditions, validation and archive blocks only"
++    }
++  ],
++  "sourceHashes": {
++    "infra/security/ensure-audit-candidate.mjs": "2757bf7b3b1a8612481f17542ad045bc1dbf424766e7b3cdbc47b2e3a2d51027",
++    "infra/security/audit-trivy.mjs": "7c36099392e5b90ae5d0d20150e693f2250429c7939fcfd606cf9658c37c5741",
++    "infra/security/audit-target.mjs": "143d62c2ded087aa837084ef38db45cfa646bce644e161bf4d33aa677f5d90da",
++    "infra/security/trivy-medium-policy.mjs": "b46ab32c7e456574c12dbd5b5637fc031f319cbf3345fa87f01007ded32d43bd",
++    "infra/security/trivy-medium-review.json": "c2d65514ad524478a1728b0b020df641e8a59078aa510d3fa4495988dac7dd20",
++    "infra/security/governance/scan-counts.mjs": "4a60c60444c6760c3cb462300330486f811f826b9d5c9fe12faf8326b452fd5f",
++    "infra/observability/scanner-db-refresh.mjs": "6e49e8e3d79264e916f0c3c424181ab6e8d15342fcca24a811e3f78de89f306a",
++    "infra/observability/release-preflight.mjs": "ed7fd6439bba1036937024c98228c61c6e1c088eceb9e12ae3543e946cbaefb7",
++    "infra/observability/publish-artifacts.mjs": "6dac524335127357959174d55ea720c962f0c5e3c1b224bdae4f152cd01d3ffd",
++    "vars/securityManager.groovy": "ae297e7313cbf9bdde9e38acb32a3ee3310c571f2d70e289783c5c1c448811af",
++    "resources/security-manager/petclinic-adapter.json": "b7ffcdcb7466e679ad8739d1d910343b8ccab7217ba24a3d2e3f1f363215fc57",
++    "Jenkinsfile": "c46ac48976d581890592968272ed664e93bf4de9f86beab13c2144d67ef67b9b",
++    "Jenkinsfile.security-audit": "6179859f70c1d6fec2560621ec1ae71dba20514de4ff430d84b7d60a1c319b3c"
++  },
++  "helmSourceHashes": {
++    "Jenkinsfile": "c46ac48976d581890592968272ed664e93bf4de9f86beab13c2144d67ef67b9b",
++    "Jenkinsfile.candidate-build": "728823efbed710a1aae2ad8ca80a9162020e8fa8393fd905981699b3b2cbe2b8",
++    "Jenkinsfile.helm-shadow": "8528b182877b1bbae9d58bab6ef4227865296f5cde50e86ba717a7db92bcdc61",
++    "Jenkinsfile.security-audit": "6179859f70c1d6fec2560621ec1ae71dba20514de4ff430d84b7d60a1c319b3c",
++    "charts/petclinic/.helmignore": "3be9b7a5ae53c21fcae2b576c6e50e797ff32925e0670999bee5a6ccc9ce874b",
++    "charts/petclinic/Chart.yaml": "214a03ea4694d0af78dd21f3575b1249125d05e529ffdd457a39c4baffa737e1",
++    "charts/petclinic/files/observability.json": "cbf7576e36afe4f189ffc0736157229dc4dc1a307c7284e8b760dafdeee4c064",
++    "charts/petclinic/templates/_helpers.tpl": "58e5130046e5282bb80ca1f28e9c570556de21f2efc7c5dada580b576e46c669",
++    "charts/petclinic/templates/configmap.yaml": "51f80d63489c39c2d360671ef3a2d24025ce967def71d94d4832a1bbed4bb172",
++    "charts/petclinic/templates/deployment.yaml": "aaad1b292cd6517a4a136a34a77c9ccb4f08ecba78191b29ef462da39ef95b6a",
++    "charts/petclinic/templates/ingress.yaml": "77c44439010b920f74a60744d84d8bd7077fd5f45bb0fb03692477bb3c69263d",
++    "charts/petclinic/templates/observability.yaml": "055f43e8e61fac24e6012ed7e0e73345033e737b7487aa2e830594b979082d32",
++    "charts/petclinic/templates/pdb.yaml": "0d33524ef5002cf7cb1488f434f14a8550b56f7d90a307f84655219ce3b4c7fb",
++    "charts/petclinic/templates/service.yaml": "9d747dc1384cbed649af144a44085949f945100921f7e9c2f5534436ac8e2d35",
++    "charts/petclinic/values-prod.yaml": "91f1e6f1cb71fa2ccae34a6d992b5815d8cd1c3396dc96bcdbb29893445884b9",
++    "charts/petclinic/values.schema.json": "39c3227bae8b863419e2c0b7cfac39e0c2c225a7433a5c958fe5503e3f88862b",
++    "charts/petclinic/values.yaml": "1aed2a25429e783ccd17afdc9a63c9c355702c5ea6da1ddf3d6bbda72feca2a3",
++    "infra/argocd/petclinic-helm-candidate.yaml": "1b690c21a981ce7dd6ccf9d8f6ca3935fc724d0c7869b16fa2b081c8ec787bfb",
++    "infra/helm/baseline/Jenkinsfile.security-audit.v1.txt": "e6e7c1b8f838e42e8bc9b3aa35e731515e2e05feb300bd1833d64aa921c54ed2",
++    "infra/helm/baseline/current-desired.json": "2868b879162a8311a4d36fcc704b23c1048d5f4541bad43c4e45c9875881ce38",
++    "infra/helm/baseline/identity.json": "a0678589146d9d9c4037c592fb4f07d98ddca13b17c5f052affc72c0e73564c0",
++    "infra/helm/chart.test.mjs": "dd8870a54784fec1f468315aee912d160a9f5147af766c4298de1f1125eb1105",
++    "infra/helm/direct-deploy-guard.mjs": "9c3083fa586cf648017aa883e535598acc396cf9da92bf225eb0c8aebcacab19",
++    "infra/helm/pipeline-contract.test.mjs": "014914f4adfd81beb73b11440add4a20a7bdb962da0b32b27c7df3fe683db1f0",
++    "infra/helm/pipeline.mjs": "db41ab04d600b95ad823ace4d7600d083bff80badc47a40d55e439220b1bd23c",
++    "infra/helm/shadow.mjs": "80573c2e0340f2c655bc8c79617ed984a22a8dcdbcb9d2313cdb1dbc4e3790b1",
++    "infra/helm/tool.mjs": "8b6b9902620aecf1045359f045e4fd6655af2265d6bc807916e85268b1192d01",
++    "infra/helm/tools-lock.json": "95d341fc651d4e43af30804d87164ff2eaf70d160afde0edfa881af43a4679d4",
++    "infra/helm/update-image-digest.mjs": "7f22d30c9e14f626349e1d7cbd7f91f6779727f8a38086cf722c66c1f881ebaf",
++    "infra/helm/verify-review-bundle.mjs": "77799ef1f270e2f04f029e65dbebccec22ea8f31a3f2b1096618c489921bcea4",
++    "infra/security/production-baseline.json": "e17cd584ba5ac715071e3901c5cca2bccf1b596f032df047edd2bf28b062f5dd",
++    "infra/security/promotion/contract.mjs": "109410034fd99c131ed88ae0b9f1b001e52ac3e948396587eed7a3f554d094bc",
++    "vars/helmShadow.groovy": "c392582ead091db82446085c1bc0163af1ab42c0e87f7bdbab9b125daf698bec"
++  },
++  "productionActivation": false,
++  "rollback": "Restore byte-exact frozen-v1 adapter and original matching Jenkinsfile source in a separate local revision; do not weaken source checks or alter production."
++}
+diff --git a/infra/security/policy/versions/trivy-parent.frozen-v1.mjs b/infra/security/policy/versions/trivy-parent.frozen-v1.mjs
+new file mode 100644
+index 0000000..1b1f586
+--- /dev/null
++++ b/infra/security/policy/versions/trivy-parent.frozen-v1.mjs
+@@ -0,0 +1,41 @@
++import fs from 'node:fs';import crypto from 'node:crypto';
++import {isDeepStrictEqual} from 'node:util';
++import {classifyVulnerability} from '../trivy-medium-policy.mjs';
++// Frozen execution facts and the unchanged classifier; no HTTP, DB updater or scanner.
++export function trivyParent(raw){
++ const lock=JSON.parse(fs.readFileSync(new URL('./versions/trivy-parent-baseline-v1.json',import.meta.url)));
++ for(const [p,h]of Object.entries(lock.sourceHashes))if(crypto.createHash('sha256').update(fs.readFileSync(new URL('../../../'+p,import.meta.url))).digest('hex')!==h)throw Error('POLICY_ERROR: frozen Trivy source changed');
++ const absent=reason=>({status:'NOT_TESTED',decision:null,reason,rawEvidence:structuredClone(raw)});
++ if(!raw||raw.schema!==1||raw.complete!==true)return absent('Complete original Trivy observations absent');
++ if(raw.stage==='wrapper'){
++  if(!Array.isArray(raw.observations)||typeof raw.execution?.failed!=='boolean')return absent('Original selected Manager execution absent');
++  const decision=raw.execution.failed||raw.module?.status==='failed'?'FAIL':raw.module?.status==='success'?'PASS':null;
++  return decision?{status:decision,decision,rawEvidence:structuredClone(raw)}:absent('Selected module result absent');
++ }
++ if(['release-scan','database-prerequisite'].includes(raw.stage)){
++  if(!Number.isInteger(raw.execution?.exitStatus)||!Array.isArray(raw.observations))return absent('Existing stage execution observations absent');
++  if(raw.execution.exitStatus===0){
++   if(raw.stage==='release-scan'&&typeof raw.reports?.['target/platform/harbor.json']!=='string')return absent('Successful release scan lacks original report');
++   if(raw.stage==='database-prerequisite'&&(!raw.metadataBefore||!raw.result?.metadata||!Array.isArray(raw.result.actions)))return absent('Successful DB prerequisite lacks original metadata/result');
++  }
++  const decision=raw.execution.exitStatus===0?'PASS':'FAIL';
++  return {status:decision,decision,normalizedFacts:{execution:structuredClone(raw.execution),scope:raw.stage==='release-scan'?'Existing Harbor scan-completion Gate only; no added vulnerability severity gate':'Separate existing upstream database prerequisite; not imposed on audit command'},rawEvidence:structuredClone(raw)};
++ }
++ if(raw.stage!=='parent'||raw.command!==lock.command||!Array.isArray(raw.operations)||!raw.operations.length)return absent('Original combined parent receipt absent');
++ const first=raw.operations[0];if(first.stage!=='ensure-candidate'||!Number.isInteger(first.execution?.exitStatus))return absent('Candidate prerequisite execution absent');
++ if(first.execution.exitStatus===0){if(raw.operations.length!==2||raw.operations[1]?.stage!=='audit'||!Number.isInteger(raw.operations[1].execution?.exitStatus))return absent('Original && continuation observations absent');}
++ else if(raw.operations.length!==1)return absent('Original && short circuit inconsistent');
++ if(raw.operations.some(x=>!Array.isArray(x.observations)||!x.reports))return absent('Original command/report facts absent');
++ const audit=raw.operations.find(x=>x.stage==='audit');let classifications=null,classifierError=null;
++ if(audit?.classifierInput){try{classifications=audit.classifierInput.findings.map(v=>classifyVulnerability(v,audit.classifierInput.review,audit.classifierInput.image));}catch(e){classifierError=e.message;}}
++ let decision=raw.operations.some(x=>x.execution.exitStatus!==0)?'FAIL':'PASS';
++ if(decision==='PASS'){
++  const bytes=audit.reports['.devsecops/trivy-audit.json'];if(typeof bytes!=='string'||!classifications)return absent('Successful original audit lacks complete report/classifier facts');
++  let report;try{report=JSON.parse(bytes);}catch{return absent('Successful original report malformed');}
++  if(report.status!=='success')return absent('Successful receipt conflicts with original report');
++  let reportedFindings;try{reportedFindings=report.scans.flatMap(s=>Object.values(s.raw).flatMap(x=>x.vulnerabilities??[]));}catch{return absent('Successful original raw scan facts incomplete');}
++  if(report.image!==audit.classifierInput.image||!isDeepStrictEqual(reportedFindings,audit.classifierInput.findings))return absent('Classifier facts do not match original report/image');
++  if(classifications.some(x=>x.mode==='FAIL'))decision='FAIL';
++ }
++ return {status:decision,decision,normalizedFacts:{classifications,classifierError,scope:'Existing && parent. Nonblocking Medium/Low remain raw WARN while original whole stage can PASS; no new severity or DB rule'},rawEvidence:structuredClone(raw)};
++}

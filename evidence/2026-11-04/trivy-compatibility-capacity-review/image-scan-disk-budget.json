@@ -1,0 +1,92 @@
+{
+  "classification": "READ_ONLY_BUDGET_ASSESSMENT_NO_EXECUTION",
+  "sampledAt": "2026-11-04T01:51:53.523605+00:00",
+  "availableBytes": 45624180736,
+  "capacityBytes": 270430261248,
+  "availableGiB": 42.49082946777344,
+  "validationHardFloorBytes": 49154473780,
+  "validationHardFloorGiB": 45.77867107465863,
+  "belowValidationFloorBytes": 3530293044,
+  "productionRefreshRequirementBytes": 53449441075.2,
+  "productionRefreshRequirementGiB": 49.77867107391357,
+  "numericGuardChange": false,
+  "hostBackingAvailableBytes": 23655387136,
+  "hostBackingAvailableGiB": 22.03079605102539,
+  "hostCOWPeakUpperBound": "UNKNOWN",
+  "guestAndHostBytesAdded": false,
+  "storageDomains": [
+    {
+      "id": "devops-vda2",
+      "observedMount": "/dev/vda2 ext4",
+      "writers": [
+        "local-path Trivy PVC/cache",
+        "container overlay upper/tmp",
+        "containerd/node image store",
+        "other platform writers"
+      ],
+      "independentFreeCapacity": false,
+      "mountEvidence": "trivy-filesystem-after.stdout"
+    },
+    {
+      "id": "mac-backing",
+      "independentStorageLayer": true,
+      "cowAdditionalAllocation": "UNKNOWN",
+      "capacityCanBeAddedToGuestFreeBytes": false,
+      "budgetProof": "NOT_PROVEN"
+    }
+  ],
+  "otherWriterBound": "UNKNOWN",
+  "instantaneousWriteAndStopLatencyBound": "UNKNOWN",
+  "failureCleanupAdditionalSpace": "UNKNOWN",
+  "cleanupContainment": "NOT_PROVEN",
+  "pvcDeclared5GiIsEnforcedQuota": false,
+  "measuredPeakIsUpperBound": false,
+  "status": "NOT_PROVEN",
+  "allowedToExecute": false,
+  "operation": "IMAGE_SCAN_DISK_BUDGET",
+  "frozenExecution": "audit requests Harbor scan of selected non-release image digests/architectures; consumes native Harbor reports",
+  "paths": [
+    "Harbor Trivy cache/fanal",
+    "container /tmp and writable layer for unpack/analysis",
+    "audit output/report artifacts"
+  ],
+  "fanalDBLogicalBytes": 16777216,
+  "fanalAllocatedBytes": 12136448,
+  "nodeImageCacheProvesScannerLayerReuse": false,
+  "components": [
+    {
+      "component": "image layer downloads and cache reuse",
+      "upperBound": "UNKNOWN"
+    },
+    {
+      "component": "image extraction/analysis temporary files",
+      "upperBound": "UNKNOWN"
+    },
+    {
+      "component": "fanal cache and native report/artifact writes",
+      "upperBound": "UNKNOWN"
+    },
+    {
+      "component": "aborted scan cleanup leftovers",
+      "upperBound": "UNKNOWN"
+    }
+  ],
+  "peakAdditionalBytes": "UNKNOWN",
+  "freshWarmDBCouldAvoidRefreshBudget": true,
+  "currentDBQualifiesAsFreshWarmDB": false,
+  "refreshAndScanAreSeparateOperationsButBothNeedOwnSafeBudget": true,
+  "frozenScanGateDoesNotItselfRecomputeDatabaseFreshness": true,
+  "implementationEvidence": [
+    "infra/security/audit-trivy.mjs",
+    "infra/observability/scanner-db-refresh.mjs"
+  ],
+  "blockers": [
+    "DB_STALE",
+    "DB_FULL_INTEGRITY_UNKNOWN",
+    "SCAN_PEAK_UNKNOWN",
+    "FAILURE_CLEANUP_BOUND_UNKNOWN",
+    "HOST_COW_BOUND_UNKNOWN",
+    "NO_VALIDATED_ISOLATED_EXECUTION_PATH"
+  ],
+  "scanCount": 0
+}

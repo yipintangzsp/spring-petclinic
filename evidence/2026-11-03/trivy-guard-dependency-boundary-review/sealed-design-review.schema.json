@@ -1,0 +1,138 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Read-only review contract for existing sealed design",
+  "type": "object",
+  "required": [
+    "designVersion",
+    "executionAuthorized",
+    "experimentRunCount",
+    "productionMutationAllowed",
+    "guardChangeAllowed",
+    "isolationArchitecture",
+    "proxyStrategy",
+    "credentialsStrategy",
+    "diskSizing",
+    "filesystemEquivalence",
+    "measurement",
+    "cases",
+    "successCriteria"
+  ],
+  "properties": {
+    "designVersion": {
+      "const": "trivy-guard-isolated-v1"
+    },
+    "executionAuthorized": {
+      "const": false
+    },
+    "experimentRunCount": {
+      "const": 0
+    },
+    "productionMutationAllowed": {
+      "const": false
+    },
+    "guardChangeAllowed": {
+      "const": false
+    },
+    "isolationArchitecture": {
+      "type": "string",
+      "minLength": 1
+    },
+    "proxyStrategy": {
+      "type": "string",
+      "minLength": 1
+    },
+    "credentialsStrategy": {
+      "type": "string",
+      "minLength": 1
+    },
+    "diskSizing": {
+      "type": "object",
+      "required": [
+        "productionFilesystemCapacityBytes",
+        "currentFrozenGuardBytesCeil",
+        "physicalAllocation",
+        "bounds"
+      ]
+    },
+    "filesystemEquivalence": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": [
+          "property",
+          "classification",
+          "requirement"
+        ],
+        "properties": {
+          "classification": {
+            "enum": [
+              "MUST_MATCH_PRODUCTION",
+              "SHOULD_MATCH",
+              "NOT_RELEVANT"
+            ]
+          }
+        }
+      }
+    },
+    "measurement": {
+      "type": "object",
+      "required": [
+        "fastSampler",
+        "peakValidity",
+        "failureCleanup",
+        "repeatability"
+      ],
+      "properties": {
+        "fastSampler": {
+          "type": "object",
+          "required": [
+            "periodMs"
+          ],
+          "properties": {
+            "periodMs": {
+              "const": 10
+            }
+          }
+        }
+      }
+    },
+    "cases": {
+      "type": "array",
+      "minItems": 8,
+      "maxItems": 8,
+      "items": {
+        "type": "object",
+        "required": [
+          "case",
+          "setup",
+          "trigger",
+          "expected",
+          "components",
+          "repeats"
+        ],
+        "properties": {
+          "case": {
+            "enum": [
+              "A",
+              "B",
+              "C",
+              "D",
+              "E",
+              "F",
+              "G",
+              "H"
+            ]
+          }
+        }
+      }
+    },
+    "successCriteria": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "string"
+      }
+    }
+  }
+}

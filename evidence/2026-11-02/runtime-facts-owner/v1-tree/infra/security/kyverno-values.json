@@ -1,0 +1,92 @@
+{
+  "admissionController": {
+    "replicas": 1,
+    "nodeSelector": {
+      "kubernetes.io/hostname": "devops"
+    },
+    "container": {
+      "resources": {
+        "requests": {
+          "cpu": "100m",
+          "memory": "192Mi"
+        },
+        "limits": {
+          "cpu": "500m",
+          "memory": "512Mi"
+        }
+      }
+    },
+    "initContainer": {
+      "resources": {
+        "requests": {
+          "cpu": "10m",
+          "memory": "64Mi"
+        },
+        "limits": {
+          "cpu": "100m",
+          "memory": "256Mi"
+        }
+      }
+    },
+    "serviceMonitor": {
+      "enabled": true,
+      "additionalLabels": {
+        "release": "kube-stack"
+      }
+    }
+  },
+  "backgroundController": {
+    "enabled": false
+  },
+  "cleanupController": {
+    "enabled": false
+  },
+  "reportsController": {
+    "enabled": false
+  },
+  "features": {
+    "admissionReports": {
+      "enabled": false
+    },
+    "aggregateReports": {
+      "enabled": false
+    },
+    "policyReports": {
+      "enabled": false
+    },
+    "validatingAdmissionPolicyReports": {
+      "enabled": false
+    }
+  },
+  "config": {
+    "preserve": false,
+    "enableDefaultRegistryMutation": false,
+    "webhooks": {
+      "namespaceSelector": {
+        "matchExpressions": [
+          {
+            "key": "kubernetes.io/metadata.name",
+            "operator": "In",
+            "values": [
+              "devsecops-execution",
+              "devsecops-supply-chain",
+              "petclinic"
+            ]
+          }
+        ]
+      }
+    }
+  },
+  "grafana": {
+    "enabled": false
+  },
+  "crds": {
+    "install": true
+  },
+  "webhooksCleanup": {
+    "enabled": false
+  },
+  "policyReportsCleanup": {
+    "enabled": false
+  }
+}

@@ -1,0 +1,405 @@
+{
+  "items": [
+    {
+      "number": 1,
+      "name": "starting wired count",
+      "result": "13/16。当前已接受的完整来源边界仍为 13/16；新增两条真实失败分支回执，见第25项。"
+    },
+    {
+      "number": 2,
+      "name": "Trivy required Harbor API operations",
+      "result": "GET 指定 candidate root、GET child scan_overview、POST 指定非发布 child /scan、成功后 GET additions/vulnerabilities。候选已存在，原 ensure-candidate 仅 GET；copy/push/tag/delete 分支由 guard 禁止。详见 required-api-operations.json。"
+    },
+    {
+      "number": 3,
+      "name": "Trivy minimum permissions",
+      "result": "project petclinic：artifact:read、scan:read、scan:create；无 push/delete/admin/tag/promotion。运行期请求 guard 进一步限制到指定 candidate/root/两个架构 child，禁止扫描当前发布镜像。"
+    },
+    {
+      "number": 4,
+      "name": "Trivy validation identity",
+      "result": "robot$petclinic+rf3-20261103-7d6715-scan，Harbor ID246；#21/#23 实际验证 grant；#23 post 撤销并确认404。管理身份仅用于 bootstrap/revoke，未传入 scanner。"
+    },
+    {
+      "number": 5,
+      "name": "Trivy validation candidate",
+      "result": "预先存在的非发布候选 petclinic/petclinic@sha256:2fbaea65ab030c56c60c62e3ee9fbe362deb8bbbb8216a891ef4c7bbbcea6d55；生产者 petclinic-candidate-build #2；amd64/arm64 child 见 trivy-source-receipt.json。未创建/覆盖 release tag，无 GitOps 消费；保留既有候选。"
+    },
+    {
+      "number": 6,
+      "name": "Trivy runtime result",
+      "result": "真实 #23 FAILURE。POST scan=202，随后服务端 scan=Error；job 4c304eedbe6aea086bdfbf49。下载 ghcr.io Trivy DB 时代理192.168.1.238:10808拒绝连接。old FAIL == standard FAIL。没有 CVE native report，Critical/High/Medium、DB freshness 均 UNKNOWN，不能填写0或宣称扫描成功。adapter对已发生失败分支 evidenceComplete=true；未补齐成功扫描/报告生命周期。"
+    },
+    {
+      "number": 7,
+      "name": "Trivy resultDigest reuse",
+      "result": "9c3318b7cfef6af72907402273bb278bb71644fe3d501a39106bc7b894e7f4d7；owner == GateInputDigest，evaluationCount=1，raw facts未改变。"
+    },
+    {
+      "number": 8,
+      "name": "Trivy production mutation count",
+      "result": "生产 artifact/tag/GitOps/release变更均0；仅触发非发布候选 child 的 scan metadata，未改共享 Trivy 配置。生产 root/children/tag 前后相同，#30 再核对。"
+    },
+    {
+      "number": 9,
+      "name": "Cosign frozen fact requirements",
+      "result": "原 signing.mjs admission：锁定工具/Lease、SOPS解密、key与输入public key一致、registry fixture digest、sign/verify、unsigned/wrong-key分类、真实server admission、临时key清理及原报告写入；不使用verify-only替代。"
+    },
+    {
+      "number": 10,
+      "name": "Cosign validation trust boundary",
+      "result": "独立一次性 age + Cosign keypair，在独立临时checkout覆盖测试输入文件，未改仓库生产公钥/密文。namespace rf3-20261103-7d6715-cosign 内创建测试 Policy；public SHA256 3d537f14db1f5088b4a88666d584cfbcc71cef2381e628b00bfcaea8f388d896。测试 Policy 被共享 webhook namespaceSelector 排除，admission边界未验收。"
+    },
+    {
+      "number": 11,
+      "name": "production Cosign key access count",
+      "result": "0；没有绑定 platform-signing-age，未读取生产私钥或解密生产 signing bundle。测试私钥仅生成/解密在临时目录和内存fd3；未归档。"
+    },
+    {
+      "number": 12,
+      "name": "Cosign validation artifact",
+      "result": "仅 petclinic/signature-fixtures 的 ci-26-signed / ci-26-unsigned / ci-26-wrong-key；三个精确digest见 cosign-source-receipt.json。没有 production release/GitOps/tag 覆盖。"
+    },
+    {
+      "number": 13,
+      "name": "Cosign runtime result",
+      "result": "真实 #26 FAILURE：签名及CLI验签实际成功，unsigned CLI正常拒绝；signed server dry-run=0，unsigned server dry-run也=0，原父阶段以 Actual signature admission mismatch: unsigned 失败。Policy正确FAIL；未伪造deny，wrong-key admission尚未执行。现有allowlisted namespace另有限定image repositories，不能绕过全局Gate强行换目标。"
+    },
+    {
+      "number": 14,
+      "name": "Cosign resultDigest reuse",
+      "result": "92bcc507fa6ad1d6b24ca19598895da1f9ff49fb5538c81e34f1a85d274ba498；old FAIL == standard FAIL，owner == Gate，evaluationCount=1。失败分支事实完整不等同于所有admission cases已覆盖。"
+    },
+    {
+      "number": 15,
+      "name": "Cosign cleanup",
+      "result": "测试age/Cosign私钥、password、临时Docker auth、短时kubeconfig/token、robot248、10个测试Kubernetes对象均已移除；#30对三个fixture tag及对应三个.sig tag全部GET404。删除父artifact会级联删除signature：#28/#29出现过后续DELETE404；最终只读查无残留，未绕过registry权限或改保留规则。"
+    },
+    {
+      "number": 16,
+      "name": "Dojo required API actions",
+      "result": "Product可见性；Engagement/Test列表；import/reimport-scan multipart；按Test查询Finding及分页；同报告二次reimport/dedupe；对验证Finding的既有false-positive PATCH；最终Product finding query。完整顺序仍采用未改原父阶段。"
+    },
+    {
+      "number": 17,
+      "name": "Dojo minimum permission model",
+      "result": "Dojo_User非staff/非superuser，无groups/global model permissions，仅新Product.authorized_users授权。管理bootstrap使用既有可信SSH的manage.py，仅创建/删除自己的fixture；runtime仅临时用户token，无生产admin token fallback。"
+    },
+    {
+      "number": 18,
+      "name": "Dojo validation identity",
+      "result": "rf3-20261103-7d6715-dojo，user5；实际只可列出Product5，生产Product1/2均404，错误测试token=403。身份边界真实验证通过，不代表import/dedupe权限已完整验证。"
+    },
+    {
+      "number": 19,
+      "name": "Dojo Product/Engagement/Test IDs",
+      "result": "Product5=security-manager-runtime-validation-rf3-20261103-7d6715；Engagement3=runtime-rf3-20261103-7d6715；Test未创建。没有复用生产Test ID。"
+    },
+    {
+      "number": 20,
+      "name": "Dojo import result",
+      "result": "NOT_EXECUTED：原父阶段强制要求当前完整Trivy native reports，#23没有报告。未用历史报告、合成Finding或私有前序文件伪装当前上下文；imports=0。"
+    },
+    {
+      "number": 21,
+      "name": "Dojo query-back result",
+      "result": "完整scan import query-back NOT_TESTED；只完成Product授权边界真实GET及专属Engagement POST201。"
+    },
+    {
+      "number": 22,
+      "name": "Dojo dedupe result",
+      "result": "NOT_TESTED。没有发生真实import/reimport，不使用69个本地测试替代在线dedupe。"
+    },
+    {
+      "number": 23,
+      "name": "Dojo cleanup/retention state",
+      "result": "REMOVED：Product5、Engagement3、user5、短时API token及Jenkins私有文件已删除。删除前确认Test0、Finding0；正常Product1/2完整元数据摘要不变。"
+    },
+    {
+      "number": 24,
+      "name": "Dojo production mutation count",
+      "result": "0。只创建过自己的验证Product/Engagement/user/token；没有生产import/PATCH/DELETE。"
+    },
+    {
+      "number": 25,
+      "name": "final three successfully wired",
+      "result": "完整边界验收新增0。Trivy/Cosign已实际执行并完成失败分支 RuntimeSourceFacts→冻结adapter→owner一次→相同digest Gate；两者已有事实完整回执，但未将未生成的漏洞报告或未生效的admission负例冒充验收完成。Dojo只有身份/生命周期前半段，无父阶段Policy回执。"
+    },
+    {
+      "number": 26,
+      "name": "final wired count",
+      "result": "已接受完整边界13/16；有真实回执的来源ID合计15（含本轮两个FAIL分支），这不是same-run15/16，更不是COMPLETE artifact。runtime-source-matrix.json同时保留这两个不同计数。"
+    },
+    {
+      "number": 27,
+      "name": "existing 13 regression",
+      "result": "#21/#23/#24/#25/#26/#27/#28/#29/#30轻量smoke均验证既有13来源原绑定和16条原receipt；原fact/result/Gate digest不变，未重评、未重新绑定。runtime 154/154及candidate40/40通过。"
+    },
+    {
+      "number": 28,
+      "name": "same-run validation build ID",
+      "result": "未执行：三个完整边界尚未全部验收。#30为清理/保留状态及Regression回归，不是canonical16流水线。"
+    },
+    {
+      "number": 29,
+      "name": "same-run canonical source count",
+      "result": "#23=3（Regression/SBOM/Trivy），#26=1（Cosign）；其他来源仍在各自原build。没有同run16。"
+    },
+    {
+      "number": 30,
+      "name": "same-run missing source count",
+      "result": "N/A（16-source execution未启动）；不得将#12/#14/#15/#20/#23/#26拼接成16。"
+    },
+    {
+      "number": 31,
+      "name": "per-source executionScope",
+      "result": "附录及runtime-source-matrix.json逐来源记录，历史来源不重绑定。SOPS=CONTROLLED_ISOLATED_RUNTIME；Trivy/Cosign=CONTROLLED_NON_RELEASE；Dojo=CONTROLLED_VALIDATION_IDENTITY_ONLY。"
+    },
+    {
+      "number": 32,
+      "name": "per-source evaluation count",
+      "result": "既有13各原receipt=1；#23 Trivy=1，#26 Cosign=1，Dojo=0。没有same-run16次评价证明。"
+    },
+    {
+      "number": 33,
+      "name": "duplicate-evaluation result",
+      "result": "PASS（runtime原子claim/重复评价单元测试，新增runtime completeness duplicate evaluation receipt负例拒绝）；真实两个新owner各1次。"
+    },
+    {
+      "number": 34,
+      "name": "per-source resultDigest",
+      "result": "见附录及源receipt；Dojo=null。所有历史digest仅用于原绑定回归，不输入当前artifact。"
+    },
+    {
+      "number": 35,
+      "name": "Gate resultDigest reuse",
+      "result": "#23 Trivy / #26 Cosign均精确复用；既有13原回执smoke一致；16-source aggregate Gate=NOT_EXECUTED。"
+    },
+    {
+      "number": 36,
+      "name": "canonical completeness",
+      "result": "INCOMPLETE；16-source same-run未满足。"
+    },
+    {
+      "number": 37,
+      "name": "immutable artifact status",
+      "result": "NOT_GENERATED；未输出COMPLETE。"
+    },
+    {
+      "number": 38,
+      "name": "immutable artifact path",
+      "result": "null。artifact-sha256.json若生成，仅是本轮证据目录封存清单，不是ImmutablePreApprovalArtifact。"
+    },
+    {
+      "number": 39,
+      "name": "artifact hash",
+      "result": "null（无真实COMPLETE artifact）。"
+    },
+    {
+      "number": 40,
+      "name": "same-run binding result",
+      "result": "全16 NOT_TESTED；两个真实新source各自build/source/candidate绑定已保存，未跨run。"
+    },
+    {
+      "number": 41,
+      "name": "stale cross-run rejection",
+      "result": "PASS（candidate40/40及完整性负例11/11）；只是单元证明，不冒充线上16-source执行。"
+    },
+    {
+      "number": 42,
+      "name": "candidate/build binding",
+      "result": "Trivy=build23非发布候选2fba…；Cosign=build26测试fixture393c…/cabc…/fef2…；Dojo无scan artifact。sourceRevision均741ea2866ea142b24c7838e1ef25c8327c79d279；具体运行工具working-tree hash见各build bundle，不能仅凭Git SHA推断新增collector代码。"
+    },
+    {
+      "number": 43,
+      "name": "aggregate Gate result",
+      "result": "NOT_EXECUTED。两个失败分支独立Gate均FAIL，#30 SUCCESS不会覆盖它们。"
+    },
+    {
+      "number": 44,
+      "name": "negative artifact tests",
+      "result": "11/11：15/16、duplicate source、wrong runId、stale previous build、wrong sourceRevision、wrong candidate、invalid/tampered factDigest、invalid resultDigest、malformed status、missing executionScope、duplicate evaluation receipt。SYNTHETIC_UNIT_ONLY，不生成真实COMPLETE。"
+    },
+    {
+      "number": 45,
+      "name": "Falco normal regression",
+      "result": "baseline正常和final正常：whole-Gate受控replay各PASS，Policy/owner/Gate一致；本轮不是新live Falco runtime观察。"
+    },
+    {
+      "number": 46,
+      "name": "Falco 2-second regression",
+      "result": "baseline/final两条原2秒边界replay：old FAIL=Policy FAIL=owner FAIL，Gate同digest；4/4 Falco矩阵通过，无固定+16s。"
+    },
+    {
+      "number": 47,
+      "name": "SOPS production access count",
+      "result": "Secret/age私钥/credential value读取均0；本轮无新SOPS执行，只复核既有isolated receipt/三条脱敏archive shape，不向Engine输入脱敏的虚假plaintext。"
+    },
+    {
+      "number": 48,
+      "name": "Sonar lineage",
+      "result": "未产生新analysis；已接受#12 task c146a69e-cb30-4708-9535-d7f923a2ae20 → analysis db7cf501-fc84-40d6-9fbe-a28fb745b94b → GateOK保持原绑定。没有将旧analysis替代当前run。"
+    },
+    {
+      "number": 49,
+      "name": "Sonar compatibility debt",
+      "result": "DEFERRED_REAL_NEGATIVE_EVIDENCE，不变。"
+    },
+    {
+      "number": 50,
+      "name": "ZAP isolation regression",
+      "result": "保留#20真实隔离positive原绑定；22项ZAP guard回归通过。本轮ZAP生产target访问0、ZAP新扫描0，没有回退固定生产URL。"
+    },
+    {
+      "number": 51,
+      "name": "portability classification",
+      "result": "附录逐16来源列出PIPELINE_COUPLED / EXTERNAL_SYSTEM_COUPLED / NEEDS_ADAPTER；没有因collector实现就宣布工具可移植。"
+    },
+    {
+      "number": 52,
+      "name": "pipeline/external coupling debt",
+      "result": "Trivy Harbor auth/API/DB/proxy；Cosign trust/key/registry+共享admission路由；Dojo minimum Product身份+原native report文件顺序耦合仍在；本轮不做最终解耦。"
+    },
+    {
+      "number": 53,
+      "name": "future plugin-contract readiness",
+      "result": "部分：id/事实收集/规范化边界已清晰，execute仍含Kubernetes/工作区/外部API耦合；不能直接宣称全部Plugin{requiredCapabilities,execute,collect,normalize}就绪。未实现Plugin Registry。"
+    },
+    {
+      "number": 54,
+      "name": "display-contract readiness",
+      "result": "PARTIAL：sourceId/scope/decision/证据与digest可提供；旧来源部分startedAt/completedAt和规范化finding/risk摘要仍缺。Dojo缺完整结果。不能把当前metadata提升为Router/Unified Summary完成。"
+    },
+    {
+      "number": 55,
+      "name": "runtime/collector tests",
+      "result": "154/154 PASS（含完整性11项，勿重复相加）。collector/owner/projection原hash不变。"
+    },
+    {
+      "number": 56,
+      "name": "side-effect guard tests",
+      "result": "Trivy20、Cosign17、ZAP22及既有通用guard均PASS；真实Cosign admission路由失败另记，单元guard PASS不能覆盖在线边界失败。"
+    },
+    {
+      "number": 57,
+      "name": "candidate tests",
+      "result": "40/40 PASS；临时checkout执行，旧证据未修改。"
+    },
+    {
+      "number": 58,
+      "name": "Policy core",
+      "result": "5/5 PASS，baseline-v1/default standard等既有规则未改。"
+    },
+    {
+      "number": 59,
+      "name": "contract checks",
+      "result": "10/10 PASS。"
+    },
+    {
+      "number": 60,
+      "name": "Regression 147/147",
+      "result": "#23和#30均真实147/147；#30 SUCCESS，regression log hash b59e0dbf39ab505904ad1f99a2d503547ebeb7f0101ce4e51616f92cd4382e28。"
+    },
+    {
+      "number": 61,
+      "name": "Trivy tests",
+      "result": "129/129冻结父阶段差分回归PASS；另20项boundary单元PASS。真实执行为DB Error，不以129单元宣称漏洞扫描成功。"
+    },
+    {
+      "number": 62,
+      "name": "Cosign tests",
+      "result": "268/268冻结父阶段回归PASS；另17项guard单元PASS。真实admission负例失败仍保留。"
+    },
+    {
+      "number": 63,
+      "name": "Dojo tests",
+      "result": "69/69冻结父阶段回归PASS；线上只验证隔离身份/Engagement生命周期，没有import/dedupe runtime完成声明。"
+    },
+    {
+      "number": 64,
+      "name": "permission tests",
+      "result": "Trivy实际7项can-i匹配、错误robot密码401；robot grant读取精确一致。Dojo实际仅Product5可见、Product1/2=404、无效token403。Cosign真实dry-run只进入测试namespace，但namespace不被webhook选择，因此admission边界FAILED/未验收；未降低Gate。"
+    },
+    {
+      "number": 65,
+      "name": "cleanup tests",
+      "result": "真实清理已验证：临时label资源0、两robot已撤销、短时token/private dir已移除；三fixture+三signature引用GET404；Dojo Test0/Finding0后定向删除；无force delete/finalizer绕过。"
+    },
+    {
+      "number": 66,
+      "name": "completeness tests",
+      "result": "11/11 PASS；missing executionScope/duplicate evaluation由runtime artifact前置校验拒绝，未修改冻结Policy或V1 Summary。"
+    },
+    {
+      "number": 67,
+      "name": "artifact integrity tests",
+      "result": "candidate与negative tests通过；实际COMPLETE artifact integrity=NOT_TESTED，因为没有生成artifact。原不可变证据3118引用复核一致。"
+    },
+    {
+      "number": 68,
+      "name": "source/hash preservation",
+      "result": "原6315文件基线：仅5个允许的runtime/专用Jenkins文件变化；455个冻结source引用/229文件和3118历史索引引用全部保持（沿用2个已批准历史snapshot解析）。Policy baseline、canonical、collector、owner、projection、V1、Promotion/Regression语义不变；2202 authoritative compatibility total不变。"
+    },
+    {
+      "number": 69,
+      "name": "V1 active state",
+      "result": "V1 active；Summary SHA256 ec9ee51a06d4b9f61c6c0eaf50b374d1e25e6d3ca687908b7596d3a2c794f5d8不变；live工作区文件hash一致。"
+    },
+    {
+      "number": 70,
+      "name": "production Jenkins state",
+      "result": "petclinic-ci仍#270 SUCCESS；生产job定义未修改、未触发production run。PetClinic generation175/revision164，三个node各一个Pod，3/3Ready、3Ready Endpoint、HTTP200，Argo Synced/Healthy且原revision不变。"
+    },
+    {
+      "number": 71,
+      "name": "validation Jenkins builds",
+      "result": "#21 SUCCESS最小scan身份；#22 FAILURE专用CPS语法（已修）；#23 FAILURE真实Trivy DB；#24 FAILURE测试SOPS stdin参数（已修）；#25 SUCCESS测试信任根；#26 FAILURE真实admission unsigned mismatch；#27 FAILURE清理inventory上限保护；#28 FAILURE级联删除后404；#29 SUCCESS隔离Dojo授权+清理；#30 SUCCESS真实Regression+最终只读清理核对。全部为专用non-release job；逐build定义与bundle已取证。"
+    },
+    {
+      "number": 72,
+      "name": "release count",
+      "result": "0。"
+    },
+    {
+      "number": 73,
+      "name": "rollout count",
+      "result": "0。"
+    },
+    {
+      "number": 74,
+      "name": "REAL_RUNTIME_FACT_CAPTURE",
+      "result": "INCOMPLETE"
+    },
+    {
+      "number": 75,
+      "name": "REAL_POLICY_OWNER",
+      "result": "INCOMPLETE"
+    },
+    {
+      "number": 76,
+      "name": "IMMUTABLE_ARTIFACT_RUNTIME",
+      "result": "INCOMPLETE"
+    },
+    {
+      "number": 77,
+      "name": "SUMMARY_V2_MIGRATION",
+      "result": "INCOMPLETE"
+    },
+    {
+      "number": 78,
+      "name": "exact blocker if incomplete",
+      "result": "①共享Harbor Trivy DB下载走失效proxy，导致当前native report缺失；②独立test namespace未进共享Kyverno webhook allowlist，现有allowlisted namespace又有原始镜像仓库限制，不能修改/绕过生产Gate；③Dojo完整真实report/import/dedupe链依赖①。最小身份与测试签名边界已推进，但不能宣称整体永久收口。"
+    },
+    {
+      "number": 79,
+      "name": "exact next permitted action if all three runtime verdicts VERIFIED",
+      "result": "前置条件不成立，post-VERIFIED阶段不适用。STOP；不启用Summary V2、不迁移Promotion/Regression。下一轮应先提交共享scanner proxy/DB的最小恢复方案，以及独立admission入口的隔离方案；实施共享配置变更须另行限定范围。报告链恢复后仅重建专属身份执行真实父阶段；三个边界通过后，才允许同run16/16。"
+    }
+  ],
+  "verdicts": {
+    "REAL_RUNTIME_FACT_CAPTURE": "INCOMPLETE",
+    "REAL_POLICY_OWNER": "INCOMPLETE",
+    "IMMUTABLE_ARTIFACT_RUNTIME": "INCOMPLETE",
+    "SUMMARY_V2_MIGRATION": "INCOMPLETE"
+  }
+}

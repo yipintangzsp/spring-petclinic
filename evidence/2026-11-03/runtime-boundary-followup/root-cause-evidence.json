@@ -1,0 +1,64 @@
+{
+  "xrayListener": {
+    "process": "xray",
+    "pid": 98992,
+    "listenAddress": "127.0.0.1",
+    "port": 10808,
+    "LANAddress": "192.168.1.238",
+    "LANListener": false
+  },
+  "proxyProbe": {
+    "loopback": {
+      "proxy": "http://127.0.0.1:10808",
+      "curlExit": 0,
+      "ghcrRegistryStatus": 401,
+      "meaning": "Registry reachable; registry challenge is expected, not download failure"
+    },
+    "LAN": {
+      "proxy": "http://192.168.1.238:10808",
+      "curlExit": 7,
+      "httpStatus": 0,
+      "reason": "Connection refused"
+    }
+  },
+  "cacheMetadata": {
+    "db": {
+      "Version": 2,
+      "NextUpdate": "2026-10-31T01:01:11.134359572Z",
+      "UpdatedAt": "2026-10-30T01:01:11.134360213Z",
+      "DownloadedAt": "2026-10-30T03:09:17.523947883Z"
+    },
+    "java-db": {
+      "Version": 1,
+      "NextUpdate": "2026-10-31T01:07:04.331012865Z",
+      "UpdatedAt": "2026-10-28T01:07:04.331013306Z",
+      "DownloadedAt": "2026-10-28T07:08:54.767827988Z"
+    }
+  },
+  "existingRefreshPath": "infra/observability/scanner-db-refresh.mjs",
+  "refreshPathSha256": "6e49e8e3d79264e916f0c3c424181ab6e8d15342fcca24a811e3f78de89f306a",
+  "directConfiguredMirrorProbe": {
+    "origin": "devops host",
+    "endpoint": "https://ghcr.nju.edu.cn/v2/",
+    "httpStatus": 200,
+    "registryManifestOnly": true,
+    "blobDownloadNotTested": true
+  },
+  "officialManifestSource": "Original scannerRefreshIO.upstream via existing loopback proxy; pinned official manifest/header digest and layer media/size validation unchanged",
+  "writes": {
+    "clusterConfiguration": 0,
+    "nodeConfiguration": 0,
+    "proxyConfiguration": 0,
+    "scannerCache": 0,
+    "registryArtifact": 0,
+    "productionDeployment": 0,
+    "GatePolicy": 0,
+    "JenkinsBuildTriggered": 0
+  },
+  "remainingBlockers": [
+    "Frozen scanner refresh disk headroom threshold not met; no cache refresh performed",
+    "Cosign dedicated validation namespace excluded by shared webhook; no safe existing namespace compatible with original image repository rule proven",
+    "DefectDojo full report chain remains blocked by unavailable current Trivy native report"
+  ],
+  "nextPermittedWork": "Read-only disk ownership/retention inventory to identify an exact safe reclaim proposal; preserve images needed for active workloads and rollback, PVC/database/business data. Do not prune broadly or lower disk guard."
+}

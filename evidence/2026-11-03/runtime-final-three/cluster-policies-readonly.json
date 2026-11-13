@@ -1,0 +1,755 @@
+{
+    "apiVersion": "v1",
+    "items": [
+        {
+            "apiVersion": "kyverno.io/v1",
+            "kind": "ClusterPolicy",
+            "metadata": {
+                "annotations": {
+                    "pod-policies.kyverno.io/autogen-controllers": "none",
+                    "policies.kyverno.io/title": "Reviewed production and security namespace high-risk baseline"
+                },
+                "creationTimestamp": "2026-10-28T21:33:43Z",
+                "generation": 6,
+                "labels": {
+                    "app.kubernetes.io/instance": "platform-devsecops",
+                    "petclinic.devops.local/owner": "platform-devsecops"
+                },
+                "name": "devsecops-production-baseline",
+                "resourceVersion": "15716367",
+                "uid": "99d4166f-4d2b-4e62-9b65-8b25ca2ec381"
+            },
+            "spec": {
+                "admission": true,
+                "background": false,
+                "emitWarning": false,
+                "failurePolicy": "Fail",
+                "rules": [
+                    {
+                        "match": {
+                            "any": [
+                                {
+                                    "resources": {
+                                        "kinds": [
+                                            "Pod"
+                                        ],
+                                        "namespaces": [
+                                            "devsecops-execution",
+                                            "petclinic",
+                                            "devsecops-system",
+                                            "monitoring",
+                                            "sonarqube"
+                                        ]
+                                    }
+                                }
+                            ]
+                        },
+                        "name": "no-privileged-containers",
+                        "preconditions": {
+                            "all": [
+                                {
+                                    "key": "{{ request.operation || 'BACKGROUND' }}",
+                                    "operator": "AnyIn",
+                                    "value": [
+                                        "CREATE",
+                                        "UPDATE"
+                                    ]
+                                }
+                            ]
+                        },
+                        "skipBackgroundRequests": true,
+                        "validate": {
+                            "allowExistingViolations": false,
+                            "cel": {
+                                "expressions": [
+                                    {
+                                        "expression": "variables.containers.all(c, !has(c.securityContext) || !has(c.securityContext.privileged) || !c.securityContext.privileged || (variables.sonar \u0026\u0026 (has(c.env) \u0026\u0026 (c.env.size() == 3 \u0026\u0026 (has(c.env[0].name) \u0026\u0026 c.env[0].name == \"SONAR_WEB_CONTEXT\" \u0026\u0026 has(c.env[0].value) \u0026\u0026 c.env[0].value == \"/\") \u0026\u0026 (has(c.env[1].name) \u0026\u0026 c.env[1].name == \"SONAR_WEB_JAVAOPTS\" \u0026\u0026 has(c.env[1].value) \u0026\u0026 c.env[1].value == \"-Xmx768m -Xms768m -XX:MaxMetaspaceSize=256m\") \u0026\u0026 (has(c.env[2].name) \u0026\u0026 c.env[2].name == \"SONAR_CE_JAVAOPTS\")) \u0026\u0026 (!has(c.envFrom) || c.envFrom.size() == 0) \u0026\u0026 has(c.volumeMounts) \u0026\u0026 (c.volumeMounts.size() == 1 \u0026\u0026 (has(c.volumeMounts[0].mountPath) \u0026\u0026 c.volumeMounts[0].mountPath == \"/tmp/scripts/\" \u0026\u0026 has(c.volumeMounts[0].name) \u0026\u0026 c.volumeMounts[0].name == \"init-sysctl\")) \u0026\u0026 has(object.spec.volumes) \u0026\u0026 object.spec.volumes.exists(v, (has(v.configMap) \u0026\u0026 (has(v.configMap.defaultMode) \u0026\u0026 v.configMap.defaultMode == 420 \u0026\u0026 has(v.configMap.items) \u0026\u0026 (v.configMap.items.size() == 1 \u0026\u0026 (has(v.configMap.items[0].key) \u0026\u0026 v.configMap.items[0].key == \"init_sysctl.sh\" \u0026\u0026 has(v.configMap.items[0].path) \u0026\u0026 v.configMap.items[0].path == \"init_sysctl.sh\")) \u0026\u0026 has(v.configMap.name) \u0026\u0026 v.configMap.name == \"sonarqube-sonarqube-init-sysctl\") \u0026\u0026 has(v.name) \u0026\u0026 v.name == \"init-sysctl\")) \u0026\u0026 !has(c.env[0].valueFrom) \u0026\u0026 !has(c.env[1].valueFrom) \u0026\u0026 !has(c.env[2].valueFrom) \u0026\u0026 (!has(c.env[2].value) || c.env[2].value == \"\") \u0026\u0026 (!has(c.volumeMounts[0].subPath) || c.volumeMounts[0].subPath == \"\") \u0026\u0026 (!has(c.volumeMounts[0].subPathExpr) || c.volumeMounts[0].subPathExpr == \"\")) \u0026\u0026 has(object.spec.initContainers) \u0026\u0026 object.spec.initContainers.exists(i, i.name == c.name) \u0026\u0026 has(c.securityContext) \u0026\u0026 has(c.securityContext.readOnlyRootFilesystem) \u0026\u0026 c.securityContext.readOnlyRootFilesystem \u0026\u0026 c.name == \"init-sysctl\" \u0026\u0026 c.image == \"192.168.1.58:30050/platform-cache/sonarqube@sha256:f5593e4a6fe6f3d93e8d4d398b7bb6ba6fb3fe93b0a6b760d5ddaa24b8533cf2\" \u0026\u0026 has(c.command) \u0026\u0026 c.command == [\"/bin/bash\",\"-e\",\"/tmp/scripts/init_sysctl.sh\"] \u0026\u0026 (!has(c.args) || c.args.size() == 0)))",
+                                        "message": "DevSecOps production baseline: no-privileged-containers"
+                                    }
+                                ],
+                                "generate": false,
+                                "variables": [
+                                    {
+                                        "expression": "object.spec.containers + (has(object.spec.initContainers) ? object.spec.initContainers : []) + (has(object.spec.ephemeralContainers) ? object.spec.ephemeralContainers : [])",
+                                        "name": "containers"
+                                    },
+                                    {
+                                        "expression": "object.metadata.namespace == \"devsecops-system\" \u0026\u0026 has(object.metadata.ownerReferences) \u0026\u0026 object.metadata.ownerReferences.exists(o, o.kind == \"DaemonSet\" \u0026\u0026 o.name == \"platform-falco\" \u0026\u0026 has(o.controller) \u0026\u0026 o.controller \u0026\u0026 has(o.blockOwnerDeletion) \u0026\u0026 o.blockOwnerDeletion \u0026\u0026 o.uid == \"c33ae390-de88-4fc2-bce4-b19c5b828a9c\") \u0026\u0026 object.spec.serviceAccountName == \"platform-falco\" \u0026\u0026 object.spec.containers.size() == 1 \u0026\u0026 (!has(object.spec.initContainers) || object.spec.initContainers.size() == 0) \u0026\u0026 (!has(object.spec.ephemeralContainers) || object.spec.ephemeralContainers.size() == 0) \u0026\u0026 object.spec.containers.all(c, c.name == \"falco\" \u0026\u0026 c.image == \"127.0.0.1:30050/platform-security/falco@sha256:3c5ccde1c8b50ccc8baf016090a5376d182e08dc8751df2b37d8ff2a13499558\" \u0026\u0026 (!has(c.command) || c.command.size() == 0) \u0026\u0026 has(c.args) \u0026\u0026 c.args == [\"/usr/bin/falco\"]) \u0026\u0026 object.spec.containers.all(c, has(c.env) \u0026\u0026 (c.env.size() == 3 \u0026\u0026 (has(c.env[0].name) \u0026\u0026 c.env[0].name == \"HOST_ROOT\" \u0026\u0026 has(c.env[0].value) \u0026\u0026 c.env[0].value == \"/host\") \u0026\u0026 (has(c.env[1].name) \u0026\u0026 c.env[1].name == \"FALCO_HOSTNAME\" \u0026\u0026 has(c.env[1].valueFrom) \u0026\u0026 (has(c.env[1].valueFrom.fieldRef) \u0026\u0026 (has(c.env[1].valueFrom.fieldRef.apiVersion) \u0026\u0026 c.env[1].valueFrom.fieldRef.apiVersion == \"v1\" \u0026\u0026 has(c.env[1].valueFrom.fieldRef.fieldPath) \u0026\u0026 c.env[1].valueFrom.fieldRef.fieldPath == \"spec.nodeName\"))) \u0026\u0026 (has(c.env[2].name) \u0026\u0026 c.env[2].name == \"FALCO_K8S_NODE_NAME\" \u0026\u0026 has(c.env[2].valueFrom) \u0026\u0026 (has(c.env[2].valueFrom.fieldRef) \u0026\u0026 (has(c.env[2].valueFrom.fieldRef.apiVersion) \u0026\u0026 c.env[2].valueFrom.fieldRef.apiVersion == \"v1\" \u0026\u0026 has(c.env[2].valueFrom.fieldRef.fieldPath) \u0026\u0026 c.env[2].valueFrom.fieldRef.fieldPath == \"spec.nodeName\")))) \u0026\u0026 (!has(c.envFrom) || c.envFrom.size() == 0) \u0026\u0026 has(c.volumeMounts) \u0026\u0026 (c.volumeMounts.size() == 7 \u0026\u0026 (has(c.volumeMounts[0].mountPath) \u0026\u0026 c.volumeMounts[0].mountPath == \"/host/run/k3s/containerd\" \u0026\u0026 has(c.volumeMounts[0].name) \u0026\u0026 c.volumeMounts[0].name == \"container-engine-socket-0\" \u0026\u0026 has(c.volumeMounts[0].readOnly) \u0026\u0026 c.volumeMounts[0].readOnly == true) \u0026\u0026 (has(c.volumeMounts[1].mountPath) \u0026\u0026 c.volumeMounts[1].mountPath == \"/etc/falco/config.d\" \u0026\u0026 has(c.volumeMounts[1].name) \u0026\u0026 c.volumeMounts[1].name == \"specialized-falco-configs\") \u0026\u0026 (has(c.volumeMounts[2].mountPath) \u0026\u0026 c.volumeMounts[2].mountPath == \"/root/.falco\" \u0026\u0026 has(c.volumeMounts[2].name) \u0026\u0026 c.volumeMounts[2].name == \"root-falco-fs\") \u0026\u0026 (has(c.volumeMounts[3].mountPath) \u0026\u0026 c.volumeMounts[3].mountPath == \"/host/proc\" \u0026\u0026 has(c.volumeMounts[3].name) \u0026\u0026 c.volumeMounts[3].name == \"proc-fs\" \u0026\u0026 has(c.volumeMounts[3].readOnly) \u0026\u0026 c.volumeMounts[3].readOnly == true) \u0026\u0026 (has(c.volumeMounts[4].mountPath) \u0026\u0026 c.volumeMounts[4].mountPath == \"/sys/kernel\" \u0026\u0026 has(c.volumeMounts[4].name) \u0026\u0026 c.volumeMounts[4].name == \"sys-fs\" \u0026\u0026 has(c.volumeMounts[4].readOnly) \u0026\u0026 c.volumeMounts[4].readOnly == true) \u0026\u0026 (has(c.volumeMounts[5].mountPath) \u0026\u0026 c.volumeMounts[5].mountPath == \"/etc/falco/falco.yaml\" \u0026\u0026 has(c.volumeMounts[5].name) \u0026\u0026 c.volumeMounts[5].name == \"falco-yaml\" \u0026\u0026 has(c.volumeMounts[5].subPath) \u0026\u0026 c.volumeMounts[5].subPath == \"falco.yaml\") \u0026\u0026 (has(c.volumeMounts[6].mountPath) \u0026\u0026 c.volumeMounts[6].mountPath == \"/etc/falco/rules.d\" \u0026\u0026 has(c.volumeMounts[6].name) \u0026\u0026 c.volumeMounts[6].name == \"rules-volume\")) \u0026\u0026 has(object.spec.volumes) \u0026\u0026 object.spec.volumes.exists(v, (has(v.hostPath) \u0026\u0026 (has(v.hostPath.path) \u0026\u0026 v.hostPath.path == \"/run/k3s/containerd\" \u0026\u0026 has(v.hostPath.type) \u0026\u0026 v.hostPath.type == \"\") \u0026\u0026 has(v.name) \u0026\u0026 v.name == \"container-engine-socket-0\")) \u0026\u0026 has(object.spec.volumes) \u0026\u0026 object.spec.volumes.exists(v, (has(v.emptyDir) \u0026\u0026 (true) \u0026\u0026 has(v.name) \u0026\u0026 v.name == \"specialized-falco-configs\")) \u0026\u0026 has(object.spec.volumes) \u0026\u0026 object.spec.volumes.exists(v, (has(v.emptyDir) \u0026\u0026 (true) \u0026\u0026 has(v.name) \u0026\u0026 v.name == \"root-falco-fs\")) \u0026\u0026 has(object.spec.volumes) \u0026\u0026 object.spec.volumes.exists(v, (has(v.hostPath) \u0026\u0026 (has(v.hostPath.path) \u0026\u0026 v.hostPath.path == \"/sys/kernel\" \u0026\u0026 has(v.hostPath.type) \u0026\u0026 v.hostPath.type == \"\") \u0026\u0026 has(v.name) \u0026\u0026 v.name == \"sys-fs\")) \u0026\u0026 has(object.spec.volumes) \u0026\u0026 object.spec.volumes.exists(v, (has(v.hostPath) \u0026\u0026 (has(v.hostPath.path) \u0026\u0026 v.hostPath.path == \"/proc\" \u0026\u0026 has(v.hostPath.type) \u0026\u0026 v.hostPath.type == \"\") \u0026\u0026 has(v.name) \u0026\u0026 v.name == \"proc-fs\")) \u0026\u0026 has(object.spec.volumes) \u0026\u0026 object.spec.volumes.exists(v, (has(v.configMap) \u0026\u0026 (has(v.configMap.defaultMode) \u0026\u0026 v.configMap.defaultMode == 420 \u0026\u0026 has(v.configMap.items) \u0026\u0026 (v.configMap.items.size() == 1 \u0026\u0026 (has(v.configMap.items[0].key) \u0026\u0026 v.configMap.items[0].key == \"falco.yaml\" \u0026\u0026 has(v.configMap.items[0].path) \u0026\u0026 v.configMap.items[0].path == \"falco.yaml\")) \u0026\u0026 has(v.configMap.name) \u0026\u0026 v.configMap.name == \"platform-falco\") \u0026\u0026 has(v.name) \u0026\u0026 v.name == \"falco-yaml\")) \u0026\u0026 has(object.spec.volumes) \u0026\u0026 object.spec.volumes.exists(v, (has(v.configMap) \u0026\u0026 (has(v.configMap.defaultMode) \u0026\u0026 v.configMap.defaultMode == 420 \u0026\u0026 has(v.configMap.name) \u0026\u0026 v.configMap.name == \"platform-falco-rules\") \u0026\u0026 has(v.name) \u0026\u0026 v.name == \"rules-volume\")) \u0026\u0026 !has(c.env[0].valueFrom) \u0026\u0026 (!has(c.env[1].value) || c.env[1].value == \"\") \u0026\u0026 (!has(c.env[2].value) || c.env[2].value == \"\") \u0026\u0026 (!has(c.volumeMounts[0].subPath) || c.volumeMounts[0].subPath == \"\") \u0026\u0026 (!has(c.volumeMounts[0].subPathExpr) || c.volumeMounts[0].subPathExpr == \"\") \u0026\u0026 (!has(c.volumeMounts[1].subPath) || c.volumeMounts[1].subPath == \"\") \u0026\u0026 (!has(c.volumeMounts[1].subPathExpr) || c.volumeMounts[1].subPathExpr == \"\") \u0026\u0026 (!has(c.volumeMounts[2].subPath) || c.volumeMounts[2].subPath == \"\") \u0026\u0026 (!has(c.volumeMounts[2].subPathExpr) || c.volumeMounts[2].subPathExpr == \"\") \u0026\u0026 (!has(c.volumeMounts[3].subPath) || c.volumeMounts[3].subPath == \"\") \u0026\u0026 (!has(c.volumeMounts[3].subPathExpr) || c.volumeMounts[3].subPathExpr == \"\") \u0026\u0026 (!has(c.volumeMounts[4].subPath) || c.volumeMounts[4].subPath == \"\") \u0026\u0026 (!has(c.volumeMounts[4].subPathExpr) || c.volumeMounts[4].subPathExpr == \"\") \u0026\u0026 (!has(c.volumeMounts[5].subPathExpr) || c.volumeMounts[5].subPathExpr == \"\") \u0026\u0026 (!has(c.volumeMounts[6].subPath) || c.volumeMounts[6].subPath == \"\") \u0026\u0026 (!has(c.volumeMounts[6].subPathExpr) || c.volumeMounts[6].subPathExpr == \"\"))",
+                                        "name": "falco"
+                                    },
+                                    {
+                                        "expression": "object.metadata.namespace == \"monitoring\" \u0026\u0026 has(object.metadata.ownerReferences) \u0026\u0026 object.metadata.ownerReferences.exists(o, o.kind == \"DaemonSet\" \u0026\u0026 o.name == \"kube-stack-prometheus-node-exporter\" \u0026\u0026 has(o.controller) \u0026\u0026 o.controller \u0026\u0026 has(o.blockOwnerDeletion) \u0026\u0026 o.blockOwnerDeletion \u0026\u0026 o.uid == \"d63a0442-dbc1-4021-9fdf-f374bf67825a\") \u0026\u0026 object.spec.serviceAccountName == \"kube-stack-prometheus-node-exporter\" \u0026\u0026 object.spec.containers.size() == 1 \u0026\u0026 (!has(object.spec.initContainers) || object.spec.initContainers.size() == 0) \u0026\u0026 (!has(object.spec.ephemeralContainers) || object.spec.ephemeralContainers.size() == 0) \u0026\u0026 object.spec.containers.all(c, c.name == \"node-exporter\" \u0026\u0026 c.image == \"quay.io/prometheus/node-exporter:v1.12.1\" \u0026\u0026 (!has(c.command) || c.command.size() == 0) \u0026\u0026 has(c.args) \u0026\u0026 c.args == [\"--path.procfs=/host/proc\",\"--path.sysfs=/host/sys\",\"--path.rootfs=/host/root\",\"--path.udev.data=/host/root/run/udev/data\",\"--web.listen-address=[\" + \"$\" + \"(\" + \"HOST_IP)]:9100\",\"--collector.filesystem.mount-points-exclude=^/(dev|proc|sys|run/containerd/.+|var/lib/docker/.+|var/lib/kubelet/.+)($|/)\",\"--collector.filesystem.fs-types-exclude=^(autofs|binfmt_misc|bpf|cgroup2?|configfs|debugfs|devpts|devtmpfs|fusectl|hugetlbfs|iso9660|mqueue|nsfs|overlay|proc|procfs|pstore|rpc_pipefs|securityfs|selinuxfs|squashfs|sysfs|tracefs|erofs)$\"]) \u0026\u0026 object.spec.containers.all(c, has(c.env) \u0026\u0026 (c.env.size() == 1 \u0026\u0026 (has(c.env[0].name) \u0026\u0026 c.env[0].name == \"HOST_IP\" \u0026\u0026 has(c.env[0].value) \u0026\u0026 c.env[0].value == \"0.0.0.0\")) \u0026\u0026 (!has(c.envFrom) || c.envFrom.size() == 0) \u0026\u0026 has(c.volumeMounts) \u0026\u0026 (c.volumeMounts.size() == 3 \u0026\u0026 (has(c.volumeMounts[0].mountPath) \u0026\u0026 c.volumeMounts[0].mountPath == \"/host/proc\" \u0026\u0026 has(c.volumeMounts[0].name) \u0026\u0026 c.volumeMounts[0].name == \"proc\" \u0026\u0026 has(c.volumeMounts[0].readOnly) \u0026\u0026 c.volumeMounts[0].readOnly == true) \u0026\u0026 (has(c.volumeMounts[1].mountPath) \u0026\u0026 c.volumeMounts[1].mountPath == \"/host/sys\" \u0026\u0026 has(c.volumeMounts[1].name) \u0026\u0026 c.volumeMounts[1].name == \"sys\" \u0026\u0026 has(c.volumeMounts[1].readOnly) \u0026\u0026 c.volumeMounts[1].readOnly == true) \u0026\u0026 (has(c.volumeMounts[2].mountPath) \u0026\u0026 c.volumeMounts[2].mountPath == \"/host/root\" \u0026\u0026 has(c.volumeMounts[2].mountPropagation) \u0026\u0026 c.volumeMounts[2].mountPropagation == \"HostToContainer\" \u0026\u0026 has(c.volumeMounts[2].name) \u0026\u0026 c.volumeMounts[2].name == \"root\" \u0026\u0026 has(c.volumeMounts[2].readOnly) \u0026\u0026 c.volumeMounts[2].readOnly == true)) \u0026\u0026 has(object.spec.volumes) \u0026\u0026 object.spec.volumes.exists(v, (has(v.hostPath) \u0026\u0026 (has(v.hostPath.path) \u0026\u0026 v.hostPath.path == \"/proc\" \u0026\u0026 has(v.hostPath.type) \u0026\u0026 v.hostPath.type == \"\") \u0026\u0026 has(v.name) \u0026\u0026 v.name == \"proc\")) \u0026\u0026 has(object.spec.volumes) \u0026\u0026 object.spec.volumes.exists(v, (has(v.hostPath) \u0026\u0026 (has(v.hostPath.path) \u0026\u0026 v.hostPath.path == \"/sys\" \u0026\u0026 has(v.hostPath.type) \u0026\u0026 v.hostPath.type == \"\") \u0026\u0026 has(v.name) \u0026\u0026 v.name == \"sys\")) \u0026\u0026 has(object.spec.volumes) \u0026\u0026 object.spec.volumes.exists(v, (has(v.hostPath) \u0026\u0026 (has(v.hostPath.path) \u0026\u0026 v.hostPath.path == \"/\" \u0026\u0026 has(v.hostPath.type) \u0026\u0026 v.hostPath.type == \"\") \u0026\u0026 has(v.name) \u0026\u0026 v.name == \"root\")) \u0026\u0026 !has(c.env[0].valueFrom) \u0026\u0026 (!has(c.volumeMounts[0].subPath) || c.volumeMounts[0].subPath == \"\") \u0026\u0026 (!has(c.volumeMounts[0].subPathExpr) || c.volumeMounts[0].subPathExpr == \"\") \u0026\u0026 (!has(c.volumeMounts[1].subPath) || c.volumeMounts[1].subPath == \"\") \u0026\u0026 (!has(c.volumeMounts[1].subPathExpr) || c.volumeMounts[1].subPathExpr == \"\") \u0026\u0026 (!has(c.volumeMounts[2].subPath) || c.volumeMounts[2].subPath == \"\") \u0026\u0026 (!has(c.volumeMounts[2].subPathExpr) || c.volumeMounts[2].subPathExpr == \"\"))",
+                                        "name": "nodeExporter"
+                                    },
+                                    {
+                                        "expression": "object.metadata.namespace == \"sonarqube\" \u0026\u0026 has(object.metadata.ownerReferences) \u0026\u0026 object.metadata.ownerReferences.exists(o, o.kind == \"StatefulSet\" \u0026\u0026 o.name == \"sonarqube-sonarqube\" \u0026\u0026 has(o.controller) \u0026\u0026 o.controller \u0026\u0026 has(o.blockOwnerDeletion) \u0026\u0026 o.blockOwnerDeletion \u0026\u0026 o.uid == \"12f0c30f-732f-4db1-9efe-6e811ab7d6c4\") \u0026\u0026 object.spec.serviceAccountName == \"default\"",
+                                        "name": "sonar"
+                                    }
+                                ]
+                            }
+                        }
+                    },
+                    {
+                        "match": {
+                            "any": [
+                                {
+                                    "resources": {
+                                        "kinds": [
+                                            "Pod"
+                                        ],
+                                        "namespaces": [
+                                            "devsecops-execution",
+                                            "petclinic",
+                                            "devsecops-system",
+                                            "monitoring",
+                                            "sonarqube"
+                                        ]
+                                    }
+                                }
+                            ]
+                        },
+                        "name": "no-explicit-uid-zero",
+                        "preconditions": {
+                            "all": [
+                                {
+                                    "key": "{{ request.operation || 'BACKGROUND' }}",
+                                    "operator": "AnyIn",
+                                    "value": [
+                                        "CREATE",
+                                        "UPDATE"
+                                    ]
+                                }
+                            ]
+                        },
+                        "skipBackgroundRequests": true,
+                        "validate": {
+                            "allowExistingViolations": false,
+                            "cel": {
+                                "expressions": [
+                                    {
+                                        "expression": "variables.containers.all(c, ((has(c.securityContext) \u0026\u0026 has(c.securityContext.runAsUser)) ? c.securityContext.runAsUser != 0 : (!has(object.spec.securityContext) || !has(object.spec.securityContext.runAsUser) || object.spec.securityContext.runAsUser != 0)) || (variables.sonar \u0026\u0026 (has(c.env) \u0026\u0026 (c.env.size() == 3 \u0026\u0026 (has(c.env[0].name) \u0026\u0026 c.env[0].name == \"SONAR_WEB_CONTEXT\" \u0026\u0026 has(c.env[0].value) \u0026\u0026 c.env[0].value == \"/\") \u0026\u0026 (has(c.env[1].name) \u0026\u0026 c.env[1].name == \"SONAR_WEB_JAVAOPTS\" \u0026\u0026 has(c.env[1].value) \u0026\u0026 c.env[1].value == \"-Xmx768m -Xms768m -XX:MaxMetaspaceSize=256m\") \u0026\u0026 (has(c.env[2].name) \u0026\u0026 c.env[2].name == \"SONAR_CE_JAVAOPTS\")) \u0026\u0026 (!has(c.envFrom) || c.envFrom.size() == 0) \u0026\u0026 has(c.volumeMounts) \u0026\u0026 (c.volumeMounts.size() == 1 \u0026\u0026 (has(c.volumeMounts[0].mountPath) \u0026\u0026 c.volumeMounts[0].mountPath == \"/tmp/scripts/\" \u0026\u0026 has(c.volumeMounts[0].name) \u0026\u0026 c.volumeMounts[0].name == \"init-sysctl\")) \u0026\u0026 has(object.spec.volumes) \u0026\u0026 object.spec.volumes.exists(v, (has(v.configMap) \u0026\u0026 (has(v.configMap.defaultMode) \u0026\u0026 v.configMap.defaultMode == 420 \u0026\u0026 has(v.configMap.items) \u0026\u0026 (v.configMap.items.size() == 1 \u0026\u0026 (has(v.configMap.items[0].key) \u0026\u0026 v.configMap.items[0].key == \"init_sysctl.sh\" \u0026\u0026 has(v.configMap.items[0].path) \u0026\u0026 v.configMap.items[0].path == \"init_sysctl.sh\")) \u0026\u0026 has(v.configMap.name) \u0026\u0026 v.configMap.name == \"sonarqube-sonarqube-init-sysctl\") \u0026\u0026 has(v.name) \u0026\u0026 v.name == \"init-sysctl\")) \u0026\u0026 !has(c.env[0].valueFrom) \u0026\u0026 !has(c.env[1].valueFrom) \u0026\u0026 !has(c.env[2].valueFrom) \u0026\u0026 (!has(c.env[2].value) || c.env[2].value == \"\") \u0026\u0026 (!has(c.volumeMounts[0].subPath) || c.volumeMounts[0].subPath == \"\") \u0026\u0026 (!has(c.volumeMounts[0].subPathExpr) || c.volumeMounts[0].subPathExpr == \"\")) \u0026\u0026 has(object.spec.initContainers) \u0026\u0026 object.spec.initContainers.exists(i, i.name == c.name) \u0026\u0026 has(c.securityContext) \u0026\u0026 has(c.securityContext.readOnlyRootFilesystem) \u0026\u0026 c.securityContext.readOnlyRootFilesystem \u0026\u0026 c.name == \"init-sysctl\" \u0026\u0026 c.image == \"192.168.1.58:30050/platform-cache/sonarqube@sha256:f5593e4a6fe6f3d93e8d4d398b7bb6ba6fb3fe93b0a6b760d5ddaa24b8533cf2\" \u0026\u0026 has(c.command) \u0026\u0026 c.command == [\"/bin/bash\",\"-e\",\"/tmp/scripts/init_sysctl.sh\"] \u0026\u0026 (!has(c.args) || c.args.size() == 0)))",
+                                        "message": "DevSecOps production baseline: no-explicit-uid-zero"
+                                    }
+                                ],
+                                "generate": false,
+                                "variables": [
+                                    {
+                                        "expression": "object.spec.containers + (has(object.spec.initContainers) ? object.spec.initContainers : []) + (has(object.spec.ephemeralContainers) ? object.spec.ephemeralContainers : [])",
+                                        "name": "containers"
+                                    },
+                                    {
+                                        "expression": "object.metadata.namespace == \"devsecops-system\" \u0026\u0026 has(object.metadata.ownerReferences) \u0026\u0026 object.metadata.ownerReferences.exists(o, o.kind == \"DaemonSet\" \u0026\u0026 o.name == \"platform-falco\" \u0026\u0026 has(o.controller) \u0026\u0026 o.controller \u0026\u0026 has(o.blockOwnerDeletion) \u0026\u0026 o.blockOwnerDeletion \u0026\u0026 o.uid == \"c33ae390-de88-4fc2-bce4-b19c5b828a9c\") \u0026\u0026 object.spec.serviceAccountName == \"platform-falco\" \u0026\u0026 object.spec.containers.size() == 1 \u0026\u0026 (!has(object.spec.initContainers) || object.spec.initContainers.size() == 0) \u0026\u0026 (!has(object.spec.ephemeralContainers) || object.spec.ephemeralContainers.size() == 0) \u0026\u0026 object.spec.containers.all(c, c.name == \"falco\" \u0026\u0026 c.image == \"127.0.0.1:30050/platform-security/falco@sha256:3c5ccde1c8b50ccc8baf016090a5376d182e08dc8751df2b37d8ff2a13499558\" \u0026\u0026 (!has(c.command) || c.command.size() == 0) \u0026\u0026 has(c.args) \u0026\u0026 c.args == [\"/usr/bin/falco\"]) \u0026\u0026 object.spec.containers.all(c, has(c.env) \u0026\u0026 (c.env.size() == 3 \u0026\u0026 (has(c.env[0].name) \u0026\u0026 c.env[0].name == \"HOST_ROOT\" \u0026\u0026 has(c.env[0].value) \u0026\u0026 c.env[0].value == \"/host\") \u0026\u0026 (has(c.env[1].name) \u0026\u0026 c.env[1].name == \"FALCO_HOSTNAME\" \u0026\u0026 has(c.env[1].valueFrom) \u0026\u0026 (has(c.env[1].valueFrom.fieldRef) \u0026\u0026 (has(c.env[1].valueFrom.fieldRef.apiVersion) \u0026\u0026 c.env[1].valueFrom.fieldRef.apiVersion == \"v1\" \u0026\u0026 has(c.env[1].valueFrom.fieldRef.fieldPath) \u0026\u0026 c.env[1].valueFrom.fieldRef.fieldPath == \"spec.nodeName\"))) \u0026\u0026 (has(c.env[2].name) \u0026\u0026 c.env[2].name == \"FALCO_K8S_NODE_NAME\" \u0026\u0026 has(c.env[2].valueFrom) \u0026\u0026 (has(c.env[2].valueFrom.fieldRef) \u0026\u0026 (has(c.env[2].valueFrom.fieldRef.apiVersion) \u0026\u0026 c.env[2].valueFrom.fieldRef.apiVersion == \"v1\" \u0026\u0026 has(c.env[2].valueFrom.fieldRef.fieldPath) \u0026\u0026 c.env[2].valueFrom.fieldRef.fieldPath == \"spec.nodeName\")))) \u0026\u0026 (!has(c.envFrom) || c.envFrom.size() == 0) \u0026\u0026 has(c.volumeMounts) \u0026\u0026 (c.volumeMounts.size() == 7 \u0026\u0026 (has(c.volumeMounts[0].mountPath) \u0026\u0026 c.volumeMounts[0].mountPath == \"/host/run/k3s/containerd\" \u0026\u0026 has(c.volumeMounts[0].name) \u0026\u0026 c.volumeMounts[0].name == \"container-engine-socket-0\" \u0026\u0026 has(c.volumeMounts[0].readOnly) \u0026\u0026 c.volumeMounts[0].readOnly == true) \u0026\u0026 (has(c.volumeMounts[1].mountPath) \u0026\u0026 c.volumeMounts[1].mountPath == \"/etc/falco/config.d\" \u0026\u0026 has(c.volumeMounts[1].name) \u0026\u0026 c.volumeMounts[1].name == \"specialized-falco-configs\") \u0026\u0026 (has(c.volumeMounts[2].mountPath) \u0026\u0026 c.volumeMounts[2].mountPath == \"/root/.falco\" \u0026\u0026 has(c.volumeMounts[2].name) \u0026\u0026 c.volumeMounts[2].name == \"root-falco-fs\") \u0026\u0026 (has(c.volumeMounts[3].mountPath) \u0026\u0026 c.volumeMounts[3].mountPath == \"/host/proc\" \u0026\u0026 has(c.volumeMounts[3].name) \u0026\u0026 c.volumeMounts[3].name == \"proc-fs\" \u0026\u0026 has(c.volumeMounts[3].readOnly) \u0026\u0026 c.volumeMounts[3].readOnly == true) \u0026\u0026 (has(c.volumeMounts[4].mountPath) \u0026\u0026 c.volumeMounts[4].mountPath == \"/sys/kernel\" \u0026\u0026 has(c.volumeMounts[4].name) \u0026\u0026 c.volumeMounts[4].name == \"sys-fs\" \u0026\u0026 has(c.volumeMounts[4].readOnly) \u0026\u0026 c.volumeMounts[4].readOnly == true) \u0026\u0026 (has(c.volumeMounts[5].mountPath) \u0026\u0026 c.volumeMounts[5].mountPath == \"/etc/falco/falco.yaml\" \u0026\u0026 has(c.volumeMounts[5].name) \u0026\u0026 c.volumeMounts[5].name == \"falco-yaml\" \u0026\u0026 has(c.volumeMounts[5].subPath) \u0026\u0026 c.volumeMounts[5].subPath == \"falco.yaml\") \u0026\u0026 (has(c.volumeMounts[6].mountPath) \u0026\u0026 c.volumeMounts[6].mountPath == \"/etc/falco/rules.d\" \u0026\u0026 has(c.volumeMounts[6].name) \u0026\u0026 c.volumeMounts[6].name == \"rules-volume\")) \u0026\u0026 has(object.spec.volumes) \u0026\u0026 object.spec.volumes.exists(v, (has(v.hostPath) \u0026\u0026 (has(v.hostPath.path) \u0026\u0026 v.hostPath.path == \"/run/k3s/containerd\" \u0026\u0026 has(v.hostPath.type) \u0026\u0026 v.hostPath.type == \"\") \u0026\u0026 has(v.name) \u0026\u0026 v.name == \"container-engine-socket-0\")) \u0026\u0026 has(object.spec.volumes) \u0026\u0026 object.spec.volumes.exists(v, (has(v.emptyDir) \u0026\u0026 (true) \u0026\u0026 has(v.name) \u0026\u0026 v.name == \"specialized-falco-configs\")) \u0026\u0026 has(object.spec.volumes) \u0026\u0026 object.spec.volumes.exists(v, (has(v.emptyDir) \u0026\u0026 (true) \u0026\u0026 has(v.name) \u0026\u0026 v.name == \"root-falco-fs\")) \u0026\u0026 has(object.spec.volumes) \u0026\u0026 object.spec.volumes.exists(v, (has(v.hostPath) \u0026\u0026 (has(v.hostPath.path) \u0026\u0026 v.hostPath.path == \"/sys/kernel\" \u0026\u0026 has(v.hostPath.type) \u0026\u0026 v.hostPath.type == \"\") \u0026\u0026 has(v.name) \u0026\u0026 v.name == \"sys-fs\")) \u0026\u0026 has(object.spec.volumes) \u0026\u0026 object.spec.volumes.exists(v, (has(v.hostPath) \u0026\u0026 (has(v.hostPath.path) \u0026\u0026 v.hostPath.path == \"/proc\" \u0026\u0026 has(v.hostPath.type) \u0026\u0026 v.hostPath.type == \"\") \u0026\u0026 has(v.name) \u0026\u0026 v.name == \"proc-fs\")) \u0026\u0026 has(object.spec.volumes) \u0026\u0026 object.spec.volumes.exists(v, (has(v.configMap) \u0026\u0026 (has(v.configMap.defaultMode) \u0026\u0026 v.configMap.defaultMode == 420 \u0026\u0026 has(v.configMap.items) \u0026\u0026 (v.configMap.items.size() == 1 \u0026\u0026 (has(v.configMap.items[0].key) \u0026\u0026 v.configMap.items[0].key == \"falco.yaml\" \u0026\u0026 has(v.configMap.items[0].path) \u0026\u0026 v.configMap.items[0].path == \"falco.yaml\")) \u0026\u0026 has(v.configMap.name) \u0026\u0026 v.configMap.name == \"platform-falco\") \u0026\u0026 has(v.name) \u0026\u0026 v.name == \"falco-yaml\")) \u0026\u0026 has(object.spec.volumes) \u0026\u0026 object.spec.volumes.exists(v, (has(v.configMap) \u0026\u0026 (has(v.configMap.defaultMode) \u0026\u0026 v.configMap.defaultMode == 420 \u0026\u0026 has(v.configMap.name) \u0026\u0026 v.configMap.name == \"platform-falco-rules\") \u0026\u0026 has(v.name) \u0026\u0026 v.name == \"rules-volume\")) \u0026\u0026 !has(c.env[0].valueFrom) \u0026\u0026 (!has(c.env[1].value) || c.env[1].value == \"\") \u0026\u0026 (!has(c.env[2].value) || c.env[2].value == \"\") \u0026\u0026 (!has(c.volumeMounts[0].subPath) || c.volumeMounts[0].subPath == \"\") \u0026\u0026 (!has(c.volumeMounts[0].subPathExpr) || c.volumeMounts[0].subPathExpr == \"\") \u0026\u0026 (!has(c.volumeMounts[1].subPath) || c.volumeMounts[1].subPath == \"\") \u0026\u0026 (!has(c.volumeMounts[1].subPathExpr) || c.volumeMounts[1].subPathExpr == \"\") \u0026\u0026 (!has(c.volumeMounts[2].subPath) || c.volumeMounts[2].subPath == \"\") \u0026\u0026 (!has(c.volumeMounts[2].subPathExpr) || c.volumeMounts[2].subPathExpr == \"\") \u0026\u0026 (!has(c.volumeMounts[3].subPath) || c.volumeMounts[3].subPath == \"\") \u0026\u0026 (!has(c.volumeMounts[3].subPathExpr) || c.volumeMounts[3].subPathExpr == \"\") \u0026\u0026 (!has(c.volumeMounts[4].subPath) || c.volumeMounts[4].subPath == \"\") \u0026\u0026 (!has(c.volumeMounts[4].subPathExpr) || c.volumeMounts[4].subPathExpr == \"\") \u0026\u0026 (!has(c.volumeMounts[5].subPathExpr) || c.volumeMounts[5].subPathExpr == \"\") \u0026\u0026 (!has(c.volumeMounts[6].subPath) || c.volumeMounts[6].subPath == \"\") \u0026\u0026 (!has(c.volumeMounts[6].subPathExpr) || c.volumeMounts[6].subPathExpr == \"\"))",
+                                        "name": "falco"
+                                    },
+                                    {
+                                        "expression": "object.metadata.namespace == \"monitoring\" \u0026\u0026 has(object.metadata.ownerReferences) \u0026\u0026 object.metadata.ownerReferences.exists(o, o.kind == \"DaemonSet\" \u0026\u0026 o.name == \"kube-stack-prometheus-node-exporter\" \u0026\u0026 has(o.controller) \u0026\u0026 o.controller \u0026\u0026 has(o.blockOwnerDeletion) \u0026\u0026 o.blockOwnerDeletion \u0026\u0026 o.uid == \"d63a0442-dbc1-4021-9fdf-f374bf67825a\") \u0026\u0026 object.spec.serviceAccountName == \"kube-stack-prometheus-node-exporter\" \u0026\u0026 object.spec.containers.size() == 1 \u0026\u0026 (!has(object.spec.initContainers) || object.spec.initContainers.size() == 0) \u0026\u0026 (!has(object.spec.ephemeralContainers) || object.spec.ephemeralContainers.size() == 0) \u0026\u0026 object.spec.containers.all(c, c.name == \"node-exporter\" \u0026\u0026 c.image == \"quay.io/prometheus/node-exporter:v1.12.1\" \u0026\u0026 (!has(c.command) || c.command.size() == 0) \u0026\u0026 has(c.args) \u0026\u0026 c.args == [\"--path.procfs=/host/proc\",\"--path.sysfs=/host/sys\",\"--path.rootfs=/host/root\",\"--path.udev.data=/host/root/run/udev/data\",\"--web.listen-address=[\" + \"$\" + \"(\" + \"HOST_IP)]:9100\",\"--collector.filesystem.mount-points-exclude=^/(dev|proc|sys|run/containerd/.+|var/lib/docker/.+|var/lib/kubelet/.+)($|/)\",\"--collector.filesystem.fs-types-exclude=^(autofs|binfmt_misc|bpf|cgroup2?|configfs|debugfs|devpts|devtmpfs|fusectl|hugetlbfs|iso9660|mqueue|nsfs|overlay|proc|procfs|pstore|rpc_pipefs|securityfs|selinuxfs|squashfs|sysfs|tracefs|erofs)$\"]) \u0026\u0026 object.spec.containers.all(c, has(c.env) \u0026\u0026 (c.env.size() == 1 \u0026\u0026 (has(c.env[0].name) \u0026\u0026 c.env[0].name == \"HOST_IP\" \u0026\u0026 has(c.env[0].value) \u0026\u0026 c.env[0].value == \"0.0.0.0\")) \u0026\u0026 (!has(c.envFrom) || c.envFrom.size() == 0) \u0026\u0026 has(c.volumeMounts) \u0026\u0026 (c.volumeMounts.size() == 3 \u0026\u0026 (has(c.volumeMounts[0].mountPath) \u0026\u0026 c.volumeMounts[0].mountPath == \"/host/proc\" \u0026\u0026 has(c.volumeMounts[0].name) \u0026\u0026 c.volumeMounts[0].name == \"proc\" \u0026\u0026 has(c.volumeMounts[0].readOnly) \u0026\u0026 c.volumeMounts[0].readOnly == true) \u0026\u0026 (has(c.volumeMounts[1].mountPath) \u0026\u0026 c.volumeMounts[1].mountPath == \"/host/sys\" \u0026\u0026 has(c.volumeMounts[1].name) \u0026\u0026 c.volumeMounts[1].name == \"sys\" \u0026\u0026 has(c.volumeMounts[1].readOnly) \u0026\u0026 c.volumeMounts[1].readOnly == true) \u0026\u0026 (has(c.volumeMounts[2].mountPath) \u0026\u0026 c.volumeMounts[2].mountPath == \"/host/root\" \u0026\u0026 has(c.volumeMounts[2].mountPropagation) \u0026\u0026 c.volumeMounts[2].mountPropagation == \"HostToContainer\" \u0026\u0026 has(c.volumeMounts[2].name) \u0026\u0026 c.volumeMounts[2].name == \"root\" \u0026\u0026 has(c.volumeMounts[2].readOnly) \u0026\u0026 c.volumeMounts[2].readOnly == true)) \u0026\u0026 has(object.spec.volumes) \u0026\u0026 object.spec.volumes.exists(v, (has(v.hostPath) \u0026\u0026 (has(v.hostPath.path) \u0026\u0026 v.hostPath.path == \"/proc\" \u0026\u0026 has(v.hostPath.type) \u0026\u0026 v.hostPath.type == \"\") \u0026\u0026 has(v.name) \u0026\u0026 v.name == \"proc\")) \u0026\u0026 has(object.spec.volumes) \u0026\u0026 object.spec.volumes.exists(v, (has(v.hostPath) \u0026\u0026 (has(v.hostPath.path) \u0026\u0026 v.hostPath.path == \"/sys\" \u0026\u0026 has(v.hostPath.type) \u0026\u0026 v.hostPath.type == \"\") \u0026\u0026 has(v.name) \u0026\u0026 v.name == \"sys\")) \u0026\u0026 has(object.spec.volumes) \u0026\u0026 object.spec.volumes.exists(v, (has(v.hostPath) \u0026\u0026 (has(v.hostPath.path) \u0026\u0026 v.hostPath.path == \"/\" \u0026\u0026 has(v.hostPath.type) \u0026\u0026 v.hostPath.type == \"\") \u0026\u0026 has(v.name) \u0026\u0026 v.name == \"root\")) \u0026\u0026 !has(c.env[0].valueFrom) \u0026\u0026 (!has(c.volumeMounts[0].subPath) || c.volumeMounts[0].subPath == \"\") \u0026\u0026 (!has(c.volumeMounts[0].subPathExpr) || c.volumeMounts[0].subPathExpr == \"\") \u0026\u0026 (!has(c.volumeMounts[1].subPath) || c.volumeMounts[1].subPath == \"\") \u0026\u0026 (!has(c.volumeMounts[1].subPathExpr) || c.volumeMounts[1].subPathExpr == \"\") \u0026\u0026 (!has(c.volumeMounts[2].subPath) || c.volumeMounts[2].subPath == \"\") \u0026\u0026 (!has(c.volumeMounts[2].subPathExpr) || c.volumeMounts[2].subPathExpr == \"\"))",
+                                        "name": "nodeExporter"
+                                    },
+                                    {
+                                        "expression": "object.metadata.namespace == \"sonarqube\" \u0026\u0026 has(object.metadata.ownerReferences) \u0026\u0026 object.metadata.ownerReferences.exists(o, o.kind == \"StatefulSet\" \u0026\u0026 o.name == \"sonarqube-sonarqube\" \u0026\u0026 has(o.controller) \u0026\u0026 o.controller \u0026\u0026 has(o.blockOwnerDeletion) \u0026\u0026 o.blockOwnerDeletion \u0026\u0026 o.uid == \"12f0c30f-732f-4db1-9efe-6e811ab7d6c4\") \u0026\u0026 object.spec.serviceAccountName == \"default\"",
+                                        "name": "sonar"
+                                    }
+                                ]
+                            }
+                        }
+                    },
+                    {
+                        "match": {
+                            "any": [
+                                {
+                                    "resources": {
+                                        "kinds": [
+                                            "Pod"
+                                        ],
+                                        "namespaces": [
+                                            "devsecops-execution",
+                                            "petclinic",
+                                            "devsecops-system",
+                                            "monitoring",
+                                            "sonarqube"
+                                        ]
+                                    }
+                                }
+                            ]
+                        },
+                        "name": "restricted-added-capabilities",
+                        "preconditions": {
+                            "all": [
+                                {
+                                    "key": "{{ request.operation || 'BACKGROUND' }}",
+                                    "operator": "AnyIn",
+                                    "value": [
+                                        "CREATE",
+                                        "UPDATE"
+                                    ]
+                                }
+                            ]
+                        },
+                        "skipBackgroundRequests": true,
+                        "validate": {
+                            "allowExistingViolations": false,
+                            "cel": {
+                                "expressions": [
+                                    {
+                                        "expression": "variables.containers.all(c, !has(c.securityContext) || !has(c.securityContext.capabilities) || !has(c.securityContext.capabilities.add) || c.securityContext.capabilities.add.all(cap, cap == 'NET_BIND_SERVICE' || (variables.falco \u0026\u0026 c.name == 'falco' \u0026\u0026 cap in ['BPF','PERFMON','SYS_PTRACE','SYS_RESOURCE'])))",
+                                        "message": "DevSecOps production baseline: restricted-added-capabilities"
+                                    }
+                                ],
+                                "generate": false,
+                                "variables": [
+                                    {
+                                        "expression": "object.spec.containers + (has(object.spec.initContainers) ? object.spec.initContainers : []) + (has(object.spec.ephemeralContainers) ? object.spec.ephemeralContainers : [])",
+                                        "name": "containers"
+                                    },
+                                    {
+                                        "expression": "object.metadata.namespace == \"devsecops-system\" \u0026\u0026 has(object.metadata.ownerReferences) \u0026\u0026 object.metadata.ownerReferences.exists(o, o.kind == \"DaemonSet\" \u0026\u0026 o.name == \"platform-falco\" \u0026\u0026 has(o.controller) \u0026\u0026 o.controller \u0026\u0026 has(o.blockOwnerDeletion) \u0026\u0026 o.blockOwnerDeletion \u0026\u0026 o.uid == \"c33ae390-de88-4fc2-bce4-b19c5b828a9c\") \u0026\u0026 object.spec.serviceAccountName == \"platform-falco\" \u0026\u0026 object.spec.containers.size() == 1 \u0026\u0026 (!has(object.spec.initContainers) || object.spec.initContainers.size() == 0) \u0026\u0026 (!has(object.spec.ephemeralContainers) || object.spec.ephemeralContainers.size() == 0) \u0026\u0026 object.spec.containers.all(c, c.name == \"falco\" \u0026\u0026 c.image == \"127.0.0.1:30050/platform-security/falco@sha256:3c5ccde1c8b50ccc8baf016090a5376d182e08dc8751df2b37d8ff2a13499558\" \u0026\u0026 (!has(c.command) || c.command.size() == 0) \u0026\u0026 has(c.args) \u0026\u0026 c.args == [\"/usr/bin/falco\"]) \u0026\u0026 object.spec.containers.all(c, has(c.env) \u0026\u0026 (c.env.size() == 3 \u0026\u0026 (has(c.env[0].name) \u0026\u0026 c.env[0].name == \"HOST_ROOT\" \u0026\u0026 has(c.env[0].value) \u0026\u0026 c.env[0].value == \"/host\") \u0026\u0026 (has(c.env[1].name) \u0026\u0026 c.env[1].name == \"FALCO_HOSTNAME\" \u0026\u0026 has(c.env[1].valueFrom) \u0026\u0026 (has(c.env[1].valueFrom.fieldRef) \u0026\u0026 (has(c.env[1].valueFrom.fieldRef.apiVersion) \u0026\u0026 c.env[1].valueFrom.fieldRef.apiVersion == \"v1\" \u0026\u0026 has(c.env[1].valueFrom.fieldRef.fieldPath) \u0026\u0026 c.env[1].valueFrom.fieldRef.fieldPath == \"spec.nodeName\"))) \u0026\u0026 (has(c.env[2].name) \u0026\u0026 c.env[2].name == \"FALCO_K8S_NODE_NAME\" \u0026\u0026 has(c.env[2].valueFrom) \u0026\u0026 (has(c.env[2].valueFrom.fieldRef) \u0026\u0026 (has(c.env[2].valueFrom.fieldRef.apiVersion) \u0026\u0026 c.env[2].valueFrom.fieldRef.apiVersion == \"v1\" \u0026\u0026 has(c.env[2].valueFrom.fieldRef.fieldPath) \u0026\u0026 c.env[2].valueFrom.fieldRef.fieldPath == \"spec.nodeName\")))) \u0026\u0026 (!has(c.envFrom) || c.envFrom.size() == 0) \u0026\u0026 has(c.volumeMounts) \u0026\u0026 (c.volumeMounts.size() == 7 \u0026\u0026 (has(c.volumeMounts[0].mountPath) \u0026\u0026 c.volumeMounts[0].mountPath == \"/host/run/k3s/containerd\" \u0026\u0026 has(c.volumeMounts[0].name) \u0026\u0026 c.volumeMounts[0].name == \"container-engine-socket-0\" \u0026\u0026 has(c.volumeMounts[0].readOnly) \u0026\u0026 c.volumeMounts[0].readOnly == true) \u0026\u0026 (has(c.volumeMounts[1].mountPath) \u0026\u0026 c.volumeMounts[1].mountPath == \"/etc/falco/config.d\" \u0026\u0026 has(c.volumeMounts[1].name) \u0026\u0026 c.volumeMounts[1].name == \"specialized-falco-configs\") \u0026\u0026 (has(c.volumeMounts[2].mountPath) \u0026\u0026 c.volumeMounts[2].mountPath == \"/root/.falco\" \u0026\u0026 has(c.volumeMounts[2].name) \u0026\u0026 c.volumeMounts[2].name == \"root-falco-fs\") \u0026\u0026 (has(c.volumeMounts[3].mountPath) \u0026\u0026 c.volumeMounts[3].mountPath == \"/host/proc\" \u0026\u0026 has(c.volumeMounts[3].name) \u0026\u0026 c.volumeMounts[3].name == \"proc-fs\" \u0026\u0026 has(c.volumeMounts[3].readOnly) \u0026\u0026 c.volumeMounts[3].readOnly == true) \u0026\u0026 (has(c.volumeMounts[4].mountPath) \u0026\u0026 c.volumeMounts[4].mountPath == \"/sys/kernel\" \u0026\u0026 has(c.volumeMounts[4].name) \u0026\u0026 c.volumeMounts[4].name == \"sys-fs\" \u0026\u0026 has(c.volumeMounts[4].readOnly) \u0026\u0026 c.volumeMounts[4].readOnly == true) \u0026\u0026 (has(c.volumeMounts[5].mountPath) \u0026\u0026 c.volumeMounts[5].mountPath == \"/etc/falco/falco.yaml\" \u0026\u0026 has(c.volumeMounts[5].name) \u0026\u0026 c.volumeMounts[5].name == \"falco-yaml\" \u0026\u0026 has(c.volumeMounts[5].subPath) \u0026\u0026 c.volumeMounts[5].subPath == \"falco.yaml\") \u0026\u0026 (has(c.volumeMounts[6].mountPath) \u0026\u0026 c.volumeMounts[6].mountPath == \"/etc/falco/rules.d\" \u0026\u0026 has(c.volumeMounts[6].name) \u0026\u0026 c.volumeMounts[6].name == \"rules-volume\")) \u0026\u0026 has(object.spec.volumes) \u0026\u0026 object.spec.volumes.exists(v, (has(v.hostPath) \u0026\u0026 (has(v.hostPath.path) \u0026\u0026 v.hostPath.path == \"/run/k3s/containerd\" \u0026\u0026 has(v.hostPath.type) \u0026\u0026 v.hostPath.type == \"\") \u0026\u0026 has(v.name) \u0026\u0026 v.name == \"container-engine-socket-0\")) \u0026\u0026 has(object.spec.volumes) \u0026\u0026 object.spec.volumes.exists(v, (has(v.emptyDir) \u0026\u0026 (true) \u0026\u0026 has(v.name) \u0026\u0026 v.name == \"specialized-falco-configs\")) \u0026\u0026 has(object.spec.volumes) \u0026\u0026 object.spec.volumes.exists(v, (has(v.emptyDir) \u0026\u0026 (true) \u0026\u0026 has(v.name) \u0026\u0026 v.name == \"root-falco-fs\")) \u0026\u0026 has(object.spec.volumes) \u0026\u0026 object.spec.volumes.exists(v, (has(v.hostPath) \u0026\u0026 (has(v.hostPath.path) \u0026\u0026 v.hostPath.path == \"/sys/kernel\" \u0026\u0026 has(v.hostPath.type) \u0026\u0026 v.hostPath.type == \"\") \u0026\u0026 has(v.name) \u0026\u0026 v.name == \"sys-fs\")) \u0026\u0026 has(object.spec.volumes) \u0026\u0026 object.spec.volumes.exists(v, (has(v.hostPath) \u0026\u0026 (has(v.hostPath.path) \u0026\u0026 v.hostPath.path == \"/proc\" \u0026\u0026 has(v.hostPath.type) \u0026\u0026 v.hostPath.type == \"\") \u0026\u0026 has(v.name) \u0026\u0026 v.name == \"proc-fs\")) \u0026\u0026 has(object.spec.volumes) \u0026\u0026 object.spec.volumes.exists(v, (has(v.configMap) \u0026\u0026 (has(v.configMap.defaultMode) \u0026\u0026 v.configMap.defaultMode == 420 \u0026\u0026 has(v.configMap.items) \u0026\u0026 (v.configMap.items.size() == 1 \u0026\u0026 (has(v.configMap.items[0].key) \u0026\u0026 v.configMap.items[0].key == \"falco.yaml\" \u0026\u0026 has(v.configMap.items[0].path) \u0026\u0026 v.configMap.items[0].path == \"falco.yaml\")) \u0026\u0026 has(v.configMap.name) \u0026\u0026 v.configMap.name == \"platform-falco\") \u0026\u0026 has(v.name) \u0026\u0026 v.name == \"falco-yaml\")) \u0026\u0026 has(object.spec.volumes) \u0026\u0026 object.spec.volumes.exists(v, (has(v.configMap) \u0026\u0026 (has(v.configMap.defaultMode) \u0026\u0026 v.configMap.defaultMode == 420 \u0026\u0026 has(v.configMap.name) \u0026\u0026 v.configMap.name == \"platform-falco-rules\") \u0026\u0026 has(v.name) \u0026\u0026 v.name == \"rules-volume\")) \u0026\u0026 !has(c.env[0].valueFrom) \u0026\u0026 (!has(c.env[1].value) || c.env[1].value == \"\") \u0026\u0026 (!has(c.env[2].value) || c.env[2].value == \"\") \u0026\u0026 (!has(c.volumeMounts[0].subPath) || c.volumeMounts[0].subPath == \"\") \u0026\u0026 (!has(c.volumeMounts[0].subPathExpr) || c.volumeMounts[0].subPathExpr == \"\") \u0026\u0026 (!has(c.volumeMounts[1].subPath) || c.volumeMounts[1].subPath == \"\") \u0026\u0026 (!has(c.volumeMounts[1].subPathExpr) || c.volumeMounts[1].subPathExpr == \"\") \u0026\u0026 (!has(c.volumeMounts[2].subPath) || c.volumeMounts[2].subPath == \"\") \u0026\u0026 (!has(c.volumeMounts[2].subPathExpr) || c.volumeMounts[2].subPathExpr == \"\") \u0026\u0026 (!has(c.volumeMounts[3].subPath) || c.volumeMounts[3].subPath == \"\") \u0026\u0026 (!has(c.volumeMounts[3].subPathExpr) || c.volumeMounts[3].subPathExpr == \"\") \u0026\u0026 (!has(c.volumeMounts[4].subPath) || c.volumeMounts[4].subPath == \"\") \u0026\u0026 (!has(c.volumeMounts[4].subPathExpr) || c.volumeMounts[4].subPathExpr == \"\") \u0026\u0026 (!has(c.volumeMounts[5].subPathExpr) || c.volumeMounts[5].subPathExpr == \"\") \u0026\u0026 (!has(c.volumeMounts[6].subPath) || c.volumeMounts[6].subPath == \"\") \u0026\u0026 (!has(c.volumeMounts[6].subPathExpr) || c.volumeMounts[6].subPathExpr == \"\"))",
+                                        "name": "falco"
+                                    },
+                                    {
+                                        "expression": "object.metadata.namespace == \"monitoring\" \u0026\u0026 has(object.metadata.ownerReferences) \u0026\u0026 object.metadata.ownerReferences.exists(o, o.kind == \"DaemonSet\" \u0026\u0026 o.name == \"kube-stack-prometheus-node-exporter\" \u0026\u0026 has(o.controller) \u0026\u0026 o.controller \u0026\u0026 has(o.blockOwnerDeletion) \u0026\u0026 o.blockOwnerDeletion \u0026\u0026 o.uid == \"d63a0442-dbc1-4021-9fdf-f374bf67825a\") \u0026\u0026 object.spec.serviceAccountName == \"kube-stack-prometheus-node-exporter\" \u0026\u0026 object.spec.containers.size() == 1 \u0026\u0026 (!has(object.spec.initContainers) || object.spec.initContainers.size() == 0) \u0026\u0026 (!has(object.spec.ephemeralContainers) || object.spec.ephemeralContainers.size() == 0) \u0026\u0026 object.spec.containers.all(c, c.name == \"node-exporter\" \u0026\u0026 c.image == \"quay.io/prometheus/node-exporter:v1.12.1\" \u0026\u0026 (!has(c.command) || c.command.size() == 0) \u0026\u0026 has(c.args) \u0026\u0026 c.args == [\"--path.procfs=/host/proc\",\"--path.sysfs=/host/sys\",\"--path.rootfs=/host/root\",\"--path.udev.data=/host/root/run/udev/data\",\"--web.listen-address=[\" + \"$\" + \"(\" + \"HOST_IP)]:9100\",\"--collector.filesystem.mount-points-exclude=^/(dev|proc|sys|run/containerd/.+|var/lib/docker/.+|var/lib/kubelet/.+)($|/)\",\"--collector.filesystem.fs-types-exclude=^(autofs|binfmt_misc|bpf|cgroup2?|configfs|debugfs|devpts|devtmpfs|fusectl|hugetlbfs|iso9660|mqueue|nsfs|overlay|proc|procfs|pstore|rpc_pipefs|securityfs|selinuxfs|squashfs|sysfs|tracefs|erofs)$\"]) \u0026\u0026 object.spec.containers.all(c, has(c.env) \u0026\u0026 (c.env.size() == 1 \u0026\u0026 (has(c.env[0].name) \u0026\u0026 c.env[0].name == \"HOST_IP\" \u0026\u0026 has(c.env[0].value) \u0026\u0026 c.env[0].value == \"0.0.0.0\")) \u0026\u0026 (!has(c.envFrom) || c.envFrom.size() == 0) \u0026\u0026 has(c.volumeMounts) \u0026\u0026 (c.volumeMounts.size() == 3 \u0026\u0026 (has(c.volumeMounts[0].mountPath) \u0026\u0026 c.volumeMounts[0].mountPath == \"/host/proc\" \u0026\u0026 has(c.volumeMounts[0].name) \u0026\u0026 c.volumeMounts[0].name == \"proc\" \u0026\u0026 has(c.volumeMounts[0].readOnly) \u0026\u0026 c.volumeMounts[0].readOnly == true) \u0026\u0026 (has(c.volumeMounts[1].mountPath) \u0026\u0026 c.volumeMounts[1].mountPath == \"/host/sys\" \u0026\u0026 has(c.volumeMounts[1].name) \u0026\u0026 c.volumeMounts[1].name == \"sys\" \u0026\u0026 has(c.volumeMounts[1].readOnly) \u0026\u0026 c.volumeMounts[1].readOnly == true) \u0026\u0026 (has(c.volumeMounts[2].mountPath) \u0026\u0026 c.volumeMounts[2].mountPath == \"/host/root\" \u0026\u0026 has(c.volumeMounts[2].mountPropagation) \u0026\u0026 c.volumeMounts[2].mountPropagation == \"HostToContainer\" \u0026\u0026 has(c.volumeMounts[2].name) \u0026\u0026 c.volumeMounts[2].name == \"root\" \u0026\u0026 has(c.volumeMounts[2].readOnly) \u0026\u0026 c.volumeMounts[2].readOnly == true)) \u0026\u0026 has(object.spec.volumes) \u0026\u0026 object.spec.volumes.exists(v, (has(v.hostPath) \u0026\u0026 (has(v.hostPath.path) \u0026\u0026 v.hostPath.path == \"/proc\" \u0026\u0026 has(v.hostPath.type) \u0026\u0026 v.hostPath.type == \"\") \u0026\u0026 has(v.name) \u0026\u0026 v.name == \"proc\")) \u0026\u0026 has(object.spec.volumes) \u0026\u0026 object.spec.volumes.exists(v, (has(v.hostPath) \u0026\u0026 (has(v.hostPath.path) \u0026\u0026 v.hostPath.path == \"/sys\" \u0026\u0026 has(v.hostPath.type) \u0026\u0026 v.hostPath.type == \"\") \u0026\u0026 has(v.name) \u0026\u0026 v.name == \"sys\")) \u0026\u0026 has(object.spec.volumes) \u0026\u0026 object.spec.volumes.exists(v, (has(v.hostPath) \u0026\u0026 (has(v.hostPath.path) \u0026\u0026 v.hostPath.path == \"/\" \u0026\u0026 has(v.hostPath.type) \u0026\u0026 v.hostPath.type == \"\") \u0026\u0026 has(v.name) \u0026\u0026 v.name == \"root\")) \u0026\u0026 !has(c.env[0].valueFrom) \u0026\u0026 (!has(c.volumeMounts[0].subPath) || c.volumeMounts[0].subPath == \"\") \u0026\u0026 (!has(c.volumeMounts[0].subPathExpr) || c.volumeMounts[0].subPathExpr == \"\") \u0026\u0026 (!has(c.volumeMounts[1].subPath) || c.volumeMounts[1].subPath == \"\") \u0026\u0026 (!has(c.volumeMounts[1].subPathExpr) || c.volumeMounts[1].subPathExpr == \"\") \u0026\u0026 (!has(c.volumeMounts[2].subPath) || c.volumeMounts[2].subPath == \"\") \u0026\u0026 (!has(c.volumeMounts[2].subPathExpr) || c.volumeMounts[2].subPathExpr == \"\"))",
+                                        "name": "nodeExporter"
+                                    },
+                                    {
+                                        "expression": "object.metadata.namespace == \"sonarqube\" \u0026\u0026 has(object.metadata.ownerReferences) \u0026\u0026 object.metadata.ownerReferences.exists(o, o.kind == \"StatefulSet\" \u0026\u0026 o.name == \"sonarqube-sonarqube\" \u0026\u0026 has(o.controller) \u0026\u0026 o.controller \u0026\u0026 has(o.blockOwnerDeletion) \u0026\u0026 o.blockOwnerDeletion \u0026\u0026 o.uid == \"12f0c30f-732f-4db1-9efe-6e811ab7d6c4\") \u0026\u0026 object.spec.serviceAccountName == \"default\"",
+                                        "name": "sonar"
+                                    }
+                                ]
+                            }
+                        }
+                    },
+                    {
+                        "match": {
+                            "any": [
+                                {
+                                    "resources": {
+                                        "kinds": [
+                                            "Pod"
+                                        ],
+                                        "namespaces": [
+                                            "devsecops-execution",
+                                            "petclinic",
+                                            "devsecops-system",
+                                            "monitoring",
+                                            "sonarqube"
+                                        ]
+                                    }
+                                }
+                            ]
+                        },
+                        "name": "no-host-namespaces",
+                        "preconditions": {
+                            "all": [
+                                {
+                                    "key": "{{ request.operation || 'BACKGROUND' }}",
+                                    "operator": "AnyIn",
+                                    "value": [
+                                        "CREATE",
+                                        "UPDATE"
+                                    ]
+                                }
+                            ]
+                        },
+                        "skipBackgroundRequests": true,
+                        "validate": {
+                            "allowExistingViolations": false,
+                            "cel": {
+                                "expressions": [
+                                    {
+                                        "expression": "(!has(object.spec.hostIPC) || !object.spec.hostIPC) \u0026\u0026 (!has(object.spec.hostPID) || !object.spec.hostPID || variables.falco || variables.nodeExporter) \u0026\u0026 (!has(object.spec.hostNetwork) || !object.spec.hostNetwork || variables.nodeExporter)",
+                                        "message": "DevSecOps production baseline: no-host-namespaces"
+                                    }
+                                ],
+                                "generate": false,
+                                "variables": [
+                                    {
+                                        "expression": "object.spec.containers + (has(object.spec.initContainers) ? object.spec.initContainers : []) + (has(object.spec.ephemeralContainers) ? object.spec.ephemeralContainers : [])",
+                                        "name": "containers"
+                                    },
+                                    {
+                                        "expression": "object.metadata.namespace == \"devsecops-system\" \u0026\u0026 has(object.metadata.ownerReferences) \u0026\u0026 object.metadata.ownerReferences.exists(o, o.kind == \"DaemonSet\" \u0026\u0026 o.name == \"platform-falco\" \u0026\u0026 has(o.controller) \u0026\u0026 o.controller \u0026\u0026 has(o.blockOwnerDeletion) \u0026\u0026 o.blockOwnerDeletion \u0026\u0026 o.uid == \"c33ae390-de88-4fc2-bce4-b19c5b828a9c\") \u0026\u0026 object.spec.serviceAccountName == \"platform-falco\" \u0026\u0026 object.spec.containers.size() == 1 \u0026\u0026 (!has(object.spec.initContainers) || object.spec.initContainers.size() == 0) \u0026\u0026 (!has(object.spec.ephemeralContainers) || object.spec.ephemeralContainers.size() == 0) \u0026\u0026 object.spec.containers.all(c, c.name == \"falco\" \u0026\u0026 c.image == \"127.0.0.1:30050/platform-security/falco@sha256:3c5ccde1c8b50ccc8baf016090a5376d182e08dc8751df2b37d8ff2a13499558\" \u0026\u0026 (!has(c.command) || c.command.size() == 0) \u0026\u0026 has(c.args) \u0026\u0026 c.args == [\"/usr/bin/falco\"]) \u0026\u0026 object.spec.containers.all(c, has(c.env) \u0026\u0026 (c.env.size() == 3 \u0026\u0026 (has(c.env[0].name) \u0026\u0026 c.env[0].name == \"HOST_ROOT\" \u0026\u0026 has(c.env[0].value) \u0026\u0026 c.env[0].value == \"/host\") \u0026\u0026 (has(c.env[1].name) \u0026\u0026 c.env[1].name == \"FALCO_HOSTNAME\" \u0026\u0026 has(c.env[1].valueFrom) \u0026\u0026 (has(c.env[1].valueFrom.fieldRef) \u0026\u0026 (has(c.env[1].valueFrom.fieldRef.apiVersion) \u0026\u0026 c.env[1].valueFrom.fieldRef.apiVersion == \"v1\" \u0026\u0026 has(c.env[1].valueFrom.fieldRef.fieldPath) \u0026\u0026 c.env[1].valueFrom.fieldRef.fieldPath == \"spec.nodeName\"))) \u0026\u0026 (has(c.env[2].name) \u0026\u0026 c.env[2].name == \"FALCO_K8S_NODE_NAME\" \u0026\u0026 has(c.env[2].valueFrom) \u0026\u0026 (has(c.env[2].valueFrom.fieldRef) \u0026\u0026 (has(c.env[2].valueFrom.fieldRef.apiVersion) \u0026\u0026 c.env[2].valueFrom.fieldRef.apiVersion == \"v1\" \u0026\u0026 has(c.env[2].valueFrom.fieldRef.fieldPath) \u0026\u0026 c.env[2].valueFrom.fieldRef.fieldPath == \"spec.nodeName\")))) \u0026\u0026 (!has(c.envFrom) || c.envFrom.size() == 0) \u0026\u0026 has(c.volumeMounts) \u0026\u0026 (c.volumeMounts.size() == 7 \u0026\u0026 (has(c.volumeMounts[0].mountPath) \u0026\u0026 c.volumeMounts[0].mountPath == \"/host/run/k3s/containerd\" \u0026\u0026 has(c.volumeMounts[0].name) \u0026\u0026 c.volumeMounts[0].name == \"container-engine-socket-0\" \u0026\u0026 has(c.volumeMounts[0].readOnly) \u0026\u0026 c.volumeMounts[0].readOnly == true) \u0026\u0026 (has(c.volumeMounts[1].mountPath) \u0026\u0026 c.volumeMounts[1].mountPath == \"/etc/falco/config.d\" \u0026\u0026 has(c.volumeMounts[1].name) \u0026\u0026 c.volumeMounts[1].name == \"specialized-falco-configs\") \u0026\u0026 (has(c.volumeMounts[2].mountPath) \u0026\u0026 c.volumeMounts[2].mountPath == \"/root/.falco\" \u0026\u0026 has(c.volumeMounts[2].name) \u0026\u0026 c.volumeMounts[2].name == \"root-falco-fs\") \u0026\u0026 (has(c.volumeMounts[3].mountPath) \u0026\u0026 c.volumeMounts[3].mountPath == \"/host/proc\" \u0026\u0026 has(c.volumeMounts[3].name) \u0026\u0026 c.volumeMounts[3].name == \"proc-fs\" \u0026\u0026 has(c.volumeMounts[3].readOnly) \u0026\u0026 c.volumeMounts[3].readOnly == true) \u0026\u0026 (has(c.volumeMounts[4].mountPath) \u0026\u0026 c.volumeMounts[4].mountPath == \"/sys/kernel\" \u0026\u0026 has(c.volumeMounts[4].name) \u0026\u0026 c.volumeMounts[4].name == \"sys-fs\" \u0026\u0026 has(c.volumeMounts[4].readOnly) \u0026\u0026 c.volumeMounts[4].readOnly == true) \u0026\u0026 (has(c.volumeMounts[5].mountPath) \u0026\u0026 c.volumeMounts[5].mountPath == \"/etc/falco/falco.yaml\" \u0026\u0026 has(c.volumeMounts[5].name) \u0026\u0026 c.volumeMounts[5].name == \"falco-yaml\" \u0026\u0026 has(c.volumeMounts[5].subPath) \u0026\u0026 c.volumeMounts[5].subPath == \"falco.yaml\") \u0026\u0026 (has(c.volumeMounts[6].mountPath) \u0026\u0026 c.volumeMounts[6].mountPath == \"/etc/falco/rules.d\" \u0026\u0026 has(c.volumeMounts[6].name) \u0026\u0026 c.volumeMounts[6].name == \"rules-volume\")) \u0026\u0026 has(object.spec.volumes) \u0026\u0026 object.spec.volumes.exists(v, (has(v.hostPath) \u0026\u0026 (has(v.hostPath.path) \u0026\u0026 v.hostPath.path == \"/run/k3s/containerd\" \u0026\u0026 has(v.hostPath.type) \u0026\u0026 v.hostPath.type == \"\") \u0026\u0026 has(v.name) \u0026\u0026 v.name == \"container-engine-socket-0\")) \u0026\u0026 has(object.spec.volumes) \u0026\u0026 object.spec.volumes.exists(v, (has(v.emptyDir) \u0026\u0026 (true) \u0026\u0026 has(v.name) \u0026\u0026 v.name == \"specialized-falco-configs\")) \u0026\u0026 has(object.spec.volumes) \u0026\u0026 object.spec.volumes.exists(v, (has(v.emptyDir) \u0026\u0026 (true) \u0026\u0026 has(v.name) \u0026\u0026 v.name == \"root-falco-fs\")) \u0026\u0026 has(object.spec.volumes) \u0026\u0026 object.spec.volumes.exists(v, (has(v.hostPath) \u0026\u0026 (has(v.hostPath.path) \u0026\u0026 v.hostPath.path == \"/sys/kernel\" \u0026\u0026 has(v.hostPath.type) \u0026\u0026 v.hostPath.type == \"\") \u0026\u0026 has(v.name) \u0026\u0026 v.name == \"sys-fs\")) \u0026\u0026 has(object.spec.volumes) \u0026\u0026 object.spec.volumes.exists(v, (has(v.hostPath) \u0026\u0026 (has(v.hostPath.path) \u0026\u0026 v.hostPath.path == \"/proc\" \u0026\u0026 has(v.hostPath.type) \u0026\u0026 v.hostPath.type == \"\") \u0026\u0026 has(v.name) \u0026\u0026 v.name == \"proc-fs\")) \u0026\u0026 has(object.spec.volumes) \u0026\u0026 object.spec.volumes.exists(v, (has(v.configMap) \u0026\u0026 (has(v.configMap.defaultMode) \u0026\u0026 v.configMap.defaultMode == 420 \u0026\u0026 has(v.configMap.items) \u0026\u0026 (v.configMap.items.size() == 1 \u0026\u0026 (has(v.configMap.items[0].key) \u0026\u0026 v.configMap.items[0].key == \"falco.yaml\" \u0026\u0026 has(v.configMap.items[0].path) \u0026\u0026 v.configMap.items[0].path == \"falco.yaml\")) \u0026\u0026 has(v.configMap.name) \u0026\u0026 v.configMap.name == \"platform-falco\") \u0026\u0026 has(v.name) \u0026\u0026 v.name == \"falco-yaml\")) \u0026\u0026 has(object.spec.volumes) \u0026\u0026 object.spec.volumes.exists(v, (has(v.configMap) \u0026\u0026 (has(v.configMap.defaultMode) \u0026\u0026 v.configMap.defaultMode == 420 \u0026\u0026 has(v.configMap.name) \u0026\u0026 v.configMap.name == \"platform-falco-rules\") \u0026\u0026 has(v.name) \u0026\u0026 v.name == \"rules-volume\")) \u0026\u0026 !has(c.env[0].valueFrom) \u0026\u0026 (!has(c.env[1].value) || c.env[1].value == \"\") \u0026\u0026 (!has(c.env[2].value) || c.env[2].value == \"\") \u0026\u0026 (!has(c.volumeMounts[0].subPath) || c.volumeMounts[0].subPath == \"\") \u0026\u0026 (!has(c.volumeMounts[0].subPathExpr) || c.volumeMounts[0].subPathExpr == \"\") \u0026\u0026 (!has(c.volumeMounts[1].subPath) || c.volumeMounts[1].subPath == \"\") \u0026\u0026 (!has(c.volumeMounts[1].subPathExpr) || c.volumeMounts[1].subPathExpr == \"\") \u0026\u0026 (!has(c.volumeMounts[2].subPath) || c.volumeMounts[2].subPath == \"\") \u0026\u0026 (!has(c.volumeMounts[2].subPathExpr) || c.volumeMounts[2].subPathExpr == \"\") \u0026\u0026 (!has(c.volumeMounts[3].subPath) || c.volumeMounts[3].subPath == \"\") \u0026\u0026 (!has(c.volumeMounts[3].subPathExpr) || c.volumeMounts[3].subPathExpr == \"\") \u0026\u0026 (!has(c.volumeMounts[4].subPath) || c.volumeMounts[4].subPath == \"\") \u0026\u0026 (!has(c.volumeMounts[4].subPathExpr) || c.volumeMounts[4].subPathExpr == \"\") \u0026\u0026 (!has(c.volumeMounts[5].subPathExpr) || c.volumeMounts[5].subPathExpr == \"\") \u0026\u0026 (!has(c.volumeMounts[6].subPath) || c.volumeMounts[6].subPath == \"\") \u0026\u0026 (!has(c.volumeMounts[6].subPathExpr) || c.volumeMounts[6].subPathExpr == \"\"))",
+                                        "name": "falco"
+                                    },
+                                    {
+                                        "expression": "object.metadata.namespace == \"monitoring\" \u0026\u0026 has(object.metadata.ownerReferences) \u0026\u0026 object.metadata.ownerReferences.exists(o, o.kind == \"DaemonSet\" \u0026\u0026 o.name == \"kube-stack-prometheus-node-exporter\" \u0026\u0026 has(o.controller) \u0026\u0026 o.controller \u0026\u0026 has(o.blockOwnerDeletion) \u0026\u0026 o.blockOwnerDeletion \u0026\u0026 o.uid == \"d63a0442-dbc1-4021-9fdf-f374bf67825a\") \u0026\u0026 object.spec.serviceAccountName == \"kube-stack-prometheus-node-exporter\" \u0026\u0026 object.spec.containers.size() == 1 \u0026\u0026 (!has(object.spec.initContainers) || object.spec.initContainers.size() == 0) \u0026\u0026 (!has(object.spec.ephemeralContainers) || object.spec.ephemeralContainers.size() == 0) \u0026\u0026 object.spec.containers.all(c, c.name == \"node-exporter\" \u0026\u0026 c.image == \"quay.io/prometheus/node-exporter:v1.12.1\" \u0026\u0026 (!has(c.command) || c.command.size() == 0) \u0026\u0026 has(c.args) \u0026\u0026 c.args == [\"--path.procfs=/host/proc\",\"--path.sysfs=/host/sys\",\"--path.rootfs=/host/root\",\"--path.udev.data=/host/root/run/udev/data\",\"--web.listen-address=[\" + \"$\" + \"(\" + \"HOST_IP)]:9100\",\"--collector.filesystem.mount-points-exclude=^/(dev|proc|sys|run/containerd/.+|var/lib/docker/.+|var/lib/kubelet/.+)($|/)\",\"--collector.filesystem.fs-types-exclude=^(autofs|binfmt_misc|bpf|cgroup2?|configfs|debugfs|devpts|devtmpfs|fusectl|hugetlbfs|iso9660|mqueue|nsfs|overlay|proc|procfs|pstore|rpc_pipefs|securityfs|selinuxfs|squashfs|sysfs|tracefs|erofs)$\"]) \u0026\u0026 object.spec.containers.all(c, has(c.env) \u0026\u0026 (c.env.size() == 1 \u0026\u0026 (has(c.env[0].name) \u0026\u0026 c.env[0].name == \"HOST_IP\" \u0026\u0026 has(c.env[0].value) \u0026\u0026 c.env[0].value == \"0.0.0.0\")) \u0026\u0026 (!has(c.envFrom) || c.envFrom.size() == 0) \u0026\u0026 has(c.volumeMounts) \u0026\u0026 (c.volumeMounts.size() == 3 \u0026\u0026 (has(c.volumeMounts[0].mountPath) \u0026\u0026 c.volumeMounts[0].mountPath == \"/host/proc\" \u0026\u0026 has(c.volumeMounts[0].name) \u0026\u0026 c.volumeMounts[0].name == \"proc\" \u0026\u0026 has(c.volumeMounts[0].readOnly) \u0026\u0026 c.volumeMounts[0].readOnly == true) \u0026\u0026 (has(c.volumeMounts[1].mountPath) \u0026\u0026 c.volumeMounts[1].mountPath == \"/host/sys\" \u0026\u0026 has(c.volumeMounts[1].name) \u0026\u0026 c.volumeMounts[1].name == \"sys\" \u0026\u0026 has(c.volumeMounts[1].readOnly) \u0026\u0026 c.volumeMounts[1].readOnly == true) \u0026\u0026 (has(c.volumeMounts[2].mountPath) \u0026\u0026 c.volumeMounts[2].mountPath == \"/host/root\" \u0026\u0026 has(c.volumeMounts[2].mountPropagation) \u0026\u0026 c.volumeMounts[2].mountPropagation == \"HostToContainer\" \u0026\u0026 has(c.volumeMounts[2].name) \u0026\u0026 c.volumeMounts[2].name == \"root\" \u0026\u0026 has(c.volumeMounts[2].readOnly) \u0026\u0026 c.volumeMounts[2].readOnly == true)) \u0026\u0026 has(object.spec.volumes) \u0026\u0026 object.spec.volumes.exists(v, (has(v.hostPath) \u0026\u0026 (has(v.hostPath.path) \u0026\u0026 v.hostPath.path == \"/proc\" \u0026\u0026 has(v.hostPath.type) \u0026\u0026 v.hostPath.type == \"\") \u0026\u0026 has(v.name) \u0026\u0026 v.name == \"proc\")) \u0026\u0026 has(object.spec.volumes) \u0026\u0026 object.spec.volumes.exists(v, (has(v.hostPath) \u0026\u0026 (has(v.hostPath.path) \u0026\u0026 v.hostPath.path == \"/sys\" \u0026\u0026 has(v.hostPath.type) \u0026\u0026 v.hostPath.type == \"\") \u0026\u0026 has(v.name) \u0026\u0026 v.name == \"sys\")) \u0026\u0026 has(object.spec.volumes) \u0026\u0026 object.spec.volumes.exists(v, (has(v.hostPath) \u0026\u0026 (has(v.hostPath.path) \u0026\u0026 v.hostPath.path == \"/\" \u0026\u0026 has(v.hostPath.type) \u0026\u0026 v.hostPath.type == \"\") \u0026\u0026 has(v.name) \u0026\u0026 v.name == \"root\")) \u0026\u0026 !has(c.env[0].valueFrom) \u0026\u0026 (!has(c.volumeMounts[0].subPath) || c.volumeMounts[0].subPath == \"\") \u0026\u0026 (!has(c.volumeMounts[0].subPathExpr) || c.volumeMounts[0].subPathExpr == \"\") \u0026\u0026 (!has(c.volumeMounts[1].subPath) || c.volumeMounts[1].subPath == \"\") \u0026\u0026 (!has(c.volumeMounts[1].subPathExpr) || c.volumeMounts[1].subPathExpr == \"\") \u0026\u0026 (!has(c.volumeMounts[2].subPath) || c.volumeMounts[2].subPath == \"\") \u0026\u0026 (!has(c.volumeMounts[2].subPathExpr) || c.volumeMounts[2].subPathExpr == \"\"))",
+                                        "name": "nodeExporter"
+                                    },
+                                    {
+                                        "expression": "object.metadata.namespace == \"sonarqube\" \u0026\u0026 has(object.metadata.ownerReferences) \u0026\u0026 object.metadata.ownerReferences.exists(o, o.kind == \"StatefulSet\" \u0026\u0026 o.name == \"sonarqube-sonarqube\" \u0026\u0026 has(o.controller) \u0026\u0026 o.controller \u0026\u0026 has(o.blockOwnerDeletion) \u0026\u0026 o.blockOwnerDeletion \u0026\u0026 o.uid == \"12f0c30f-732f-4db1-9efe-6e811ab7d6c4\") \u0026\u0026 object.spec.serviceAccountName == \"default\"",
+                                        "name": "sonar"
+                                    }
+                                ]
+                            }
+                        }
+                    },
+                    {
+                        "match": {
+                            "any": [
+                                {
+                                    "resources": {
+                                        "kinds": [
+                                            "Pod"
+                                        ],
+                                        "namespaces": [
+                                            "devsecops-execution",
+                                            "petclinic",
+                                            "devsecops-system",
+                                            "monitoring",
+                                            "sonarqube"
+                                        ]
+                                    }
+                                }
+                            ]
+                        },
+                        "name": "restricted-hostpath",
+                        "preconditions": {
+                            "all": [
+                                {
+                                    "key": "{{ request.operation || 'BACKGROUND' }}",
+                                    "operator": "AnyIn",
+                                    "value": [
+                                        "CREATE",
+                                        "UPDATE"
+                                    ]
+                                }
+                            ]
+                        },
+                        "skipBackgroundRequests": true,
+                        "validate": {
+                            "allowExistingViolations": false,
+                            "cel": {
+                                "expressions": [
+                                    {
+                                        "expression": "!has(object.spec.volumes) || object.spec.volumes.all(v, !has(v.hostPath) || ((variables.falco \u0026\u0026 v.hostPath.path in ['/run/k3s/containerd','/sys/kernel','/proc'] || variables.nodeExporter \u0026\u0026 v.hostPath.path in ['/proc','/sys','/']) \u0026\u0026 variables.containers.all(c, !has(c.volumeMounts) || c.volumeMounts.all(m, m.name != v.name || (has(m.readOnly) \u0026\u0026 m.readOnly)))))",
+                                        "message": "DevSecOps production baseline: restricted-hostpath"
+                                    }
+                                ],
+                                "generate": false,
+                                "variables": [
+                                    {
+                                        "expression": "object.spec.containers + (has(object.spec.initContainers) ? object.spec.initContainers : []) + (has(object.spec.ephemeralContainers) ? object.spec.ephemeralContainers : [])",
+                                        "name": "containers"
+                                    },
+                                    {
+                                        "expression": "object.metadata.namespace == \"devsecops-system\" \u0026\u0026 has(object.metadata.ownerReferences) \u0026\u0026 object.metadata.ownerReferences.exists(o, o.kind == \"DaemonSet\" \u0026\u0026 o.name == \"platform-falco\" \u0026\u0026 has(o.controller) \u0026\u0026 o.controller \u0026\u0026 has(o.blockOwnerDeletion) \u0026\u0026 o.blockOwnerDeletion \u0026\u0026 o.uid == \"c33ae390-de88-4fc2-bce4-b19c5b828a9c\") \u0026\u0026 object.spec.serviceAccountName == \"platform-falco\" \u0026\u0026 object.spec.containers.size() == 1 \u0026\u0026 (!has(object.spec.initContainers) || object.spec.initContainers.size() == 0) \u0026\u0026 (!has(object.spec.ephemeralContainers) || object.spec.ephemeralContainers.size() == 0) \u0026\u0026 object.spec.containers.all(c, c.name == \"falco\" \u0026\u0026 c.image == \"127.0.0.1:30050/platform-security/falco@sha256:3c5ccde1c8b50ccc8baf016090a5376d182e08dc8751df2b37d8ff2a13499558\" \u0026\u0026 (!has(c.command) || c.command.size() == 0) \u0026\u0026 has(c.args) \u0026\u0026 c.args == [\"/usr/bin/falco\"]) \u0026\u0026 object.spec.containers.all(c, has(c.env) \u0026\u0026 (c.env.size() == 3 \u0026\u0026 (has(c.env[0].name) \u0026\u0026 c.env[0].name == \"HOST_ROOT\" \u0026\u0026 has(c.env[0].value) \u0026\u0026 c.env[0].value == \"/host\") \u0026\u0026 (has(c.env[1].name) \u0026\u0026 c.env[1].name == \"FALCO_HOSTNAME\" \u0026\u0026 has(c.env[1].valueFrom) \u0026\u0026 (has(c.env[1].valueFrom.fieldRef) \u0026\u0026 (has(c.env[1].valueFrom.fieldRef.apiVersion) \u0026\u0026 c.env[1].valueFrom.fieldRef.apiVersion == \"v1\" \u0026\u0026 has(c.env[1].valueFrom.fieldRef.fieldPath) \u0026\u0026 c.env[1].valueFrom.fieldRef.fieldPath == \"spec.nodeName\"))) \u0026\u0026 (has(c.env[2].name) \u0026\u0026 c.env[2].name == \"FALCO_K8S_NODE_NAME\" \u0026\u0026 has(c.env[2].valueFrom) \u0026\u0026 (has(c.env[2].valueFrom.fieldRef) \u0026\u0026 (has(c.env[2].valueFrom.fieldRef.apiVersion) \u0026\u0026 c.env[2].valueFrom.fieldRef.apiVersion == \"v1\" \u0026\u0026 has(c.env[2].valueFrom.fieldRef.fieldPath) \u0026\u0026 c.env[2].valueFrom.fieldRef.fieldPath == \"spec.nodeName\")))) \u0026\u0026 (!has(c.envFrom) || c.envFrom.size() == 0) \u0026\u0026 has(c.volumeMounts) \u0026\u0026 (c.volumeMounts.size() == 7 \u0026\u0026 (has(c.volumeMounts[0].mountPath) \u0026\u0026 c.volumeMounts[0].mountPath == \"/host/run/k3s/containerd\" \u0026\u0026 has(c.volumeMounts[0].name) \u0026\u0026 c.volumeMounts[0].name == \"container-engine-socket-0\" \u0026\u0026 has(c.volumeMounts[0].readOnly) \u0026\u0026 c.volumeMounts[0].readOnly == true) \u0026\u0026 (has(c.volumeMounts[1].mountPath) \u0026\u0026 c.volumeMounts[1].mountPath == \"/etc/falco/config.d\" \u0026\u0026 has(c.volumeMounts[1].name) \u0026\u0026 c.volumeMounts[1].name == \"specialized-falco-configs\") \u0026\u0026 (has(c.volumeMounts[2].mountPath) \u0026\u0026 c.volumeMounts[2].mountPath == \"/root/.falco\" \u0026\u0026 has(c.volumeMounts[2].name) \u0026\u0026 c.volumeMounts[2].name == \"root-falco-fs\") \u0026\u0026 (has(c.volumeMounts[3].mountPath) \u0026\u0026 c.volumeMounts[3].mountPath == \"/host/proc\" \u0026\u0026 has(c.volumeMounts[3].name) \u0026\u0026 c.volumeMounts[3].name == \"proc-fs\" \u0026\u0026 has(c.volumeMounts[3].readOnly) \u0026\u0026 c.volumeMounts[3].readOnly == true) \u0026\u0026 (has(c.volumeMounts[4].mountPath) \u0026\u0026 c.volumeMounts[4].mountPath == \"/sys/kernel\" \u0026\u0026 has(c.volumeMounts[4].name) \u0026\u0026 c.volumeMounts[4].name == \"sys-fs\" \u0026\u0026 has(c.volumeMounts[4].readOnly) \u0026\u0026 c.volumeMounts[4].readOnly == true) \u0026\u0026 (has(c.volumeMounts[5].mountPath) \u0026\u0026 c.volumeMounts[5].mountPath == \"/etc/falco/falco.yaml\" \u0026\u0026 has(c.volumeMounts[5].name) \u0026\u0026 c.volumeMounts[5].name == \"falco-yaml\" \u0026\u0026 has(c.volumeMounts[5].subPath) \u0026\u0026 c.volumeMounts[5].subPath == \"falco.yaml\") \u0026\u0026 (has(c.volumeMounts[6].mountPath) \u0026\u0026 c.volumeMounts[6].mountPath == \"/etc/falco/rules.d\" \u0026\u0026 has(c.volumeMounts[6].name) \u0026\u0026 c.volumeMounts[6].name == \"rules-volume\")) \u0026\u0026 has(object.spec.volumes) \u0026\u0026 object.spec.volumes.exists(v, (has(v.hostPath) \u0026\u0026 (has(v.hostPath.path) \u0026\u0026 v.hostPath.path == \"/run/k3s/containerd\" \u0026\u0026 has(v.hostPath.type) \u0026\u0026 v.hostPath.type == \"\") \u0026\u0026 has(v.name) \u0026\u0026 v.name == \"container-engine-socket-0\")) \u0026\u0026 has(object.spec.volumes) \u0026\u0026 object.spec.volumes.exists(v, (has(v.emptyDir) \u0026\u0026 (true) \u0026\u0026 has(v.name) \u0026\u0026 v.name == \"specialized-falco-configs\")) \u0026\u0026 has(object.spec.volumes) \u0026\u0026 object.spec.volumes.exists(v, (has(v.emptyDir) \u0026\u0026 (true) \u0026\u0026 has(v.name) \u0026\u0026 v.name == \"root-falco-fs\")) \u0026\u0026 has(object.spec.volumes) \u0026\u0026 object.spec.volumes.exists(v, (has(v.hostPath) \u0026\u0026 (has(v.hostPath.path) \u0026\u0026 v.hostPath.path == \"/sys/kernel\" \u0026\u0026 has(v.hostPath.type) \u0026\u0026 v.hostPath.type == \"\") \u0026\u0026 has(v.name) \u0026\u0026 v.name == \"sys-fs\")) \u0026\u0026 has(object.spec.volumes) \u0026\u0026 object.spec.volumes.exists(v, (has(v.hostPath) \u0026\u0026 (has(v.hostPath.path) \u0026\u0026 v.hostPath.path == \"/proc\" \u0026\u0026 has(v.hostPath.type) \u0026\u0026 v.hostPath.type == \"\") \u0026\u0026 has(v.name) \u0026\u0026 v.name == \"proc-fs\")) \u0026\u0026 has(object.spec.volumes) \u0026\u0026 object.spec.volumes.exists(v, (has(v.configMap) \u0026\u0026 (has(v.configMap.defaultMode) \u0026\u0026 v.configMap.defaultMode == 420 \u0026\u0026 has(v.configMap.items) \u0026\u0026 (v.configMap.items.size() == 1 \u0026\u0026 (has(v.configMap.items[0].key) \u0026\u0026 v.configMap.items[0].key == \"falco.yaml\" \u0026\u0026 has(v.configMap.items[0].path) \u0026\u0026 v.configMap.items[0].path == \"falco.yaml\")) \u0026\u0026 has(v.configMap.name) \u0026\u0026 v.configMap.name == \"platform-falco\") \u0026\u0026 has(v.name) \u0026\u0026 v.name == \"falco-yaml\")) \u0026\u0026 has(object.spec.volumes) \u0026\u0026 object.spec.volumes.exists(v, (has(v.configMap) \u0026\u0026 (has(v.configMap.defaultMode) \u0026\u0026 v.configMap.defaultMode == 420 \u0026\u0026 has(v.configMap.name) \u0026\u0026 v.configMap.name == \"platform-falco-rules\") \u0026\u0026 has(v.name) \u0026\u0026 v.name == \"rules-volume\")) \u0026\u0026 !has(c.env[0].valueFrom) \u0026\u0026 (!has(c.env[1].value) || c.env[1].value == \"\") \u0026\u0026 (!has(c.env[2].value) || c.env[2].value == \"\") \u0026\u0026 (!has(c.volumeMounts[0].subPath) || c.volumeMounts[0].subPath == \"\") \u0026\u0026 (!has(c.volumeMounts[0].subPathExpr) || c.volumeMounts[0].subPathExpr == \"\") \u0026\u0026 (!has(c.volumeMounts[1].subPath) || c.volumeMounts[1].subPath == \"\") \u0026\u0026 (!has(c.volumeMounts[1].subPathExpr) || c.volumeMounts[1].subPathExpr == \"\") \u0026\u0026 (!has(c.volumeMounts[2].subPath) || c.volumeMounts[2].subPath == \"\") \u0026\u0026 (!has(c.volumeMounts[2].subPathExpr) || c.volumeMounts[2].subPathExpr == \"\") \u0026\u0026 (!has(c.volumeMounts[3].subPath) || c.volumeMounts[3].subPath == \"\") \u0026\u0026 (!has(c.volumeMounts[3].subPathExpr) || c.volumeMounts[3].subPathExpr == \"\") \u0026\u0026 (!has(c.volumeMounts[4].subPath) || c.volumeMounts[4].subPath == \"\") \u0026\u0026 (!has(c.volumeMounts[4].subPathExpr) || c.volumeMounts[4].subPathExpr == \"\") \u0026\u0026 (!has(c.volumeMounts[5].subPathExpr) || c.volumeMounts[5].subPathExpr == \"\") \u0026\u0026 (!has(c.volumeMounts[6].subPath) || c.volumeMounts[6].subPath == \"\") \u0026\u0026 (!has(c.volumeMounts[6].subPathExpr) || c.volumeMounts[6].subPathExpr == \"\"))",
+                                        "name": "falco"
+                                    },
+                                    {
+                                        "expression": "object.metadata.namespace == \"monitoring\" \u0026\u0026 has(object.metadata.ownerReferences) \u0026\u0026 object.metadata.ownerReferences.exists(o, o.kind == \"DaemonSet\" \u0026\u0026 o.name == \"kube-stack-prometheus-node-exporter\" \u0026\u0026 has(o.controller) \u0026\u0026 o.controller \u0026\u0026 has(o.blockOwnerDeletion) \u0026\u0026 o.blockOwnerDeletion \u0026\u0026 o.uid == \"d63a0442-dbc1-4021-9fdf-f374bf67825a\") \u0026\u0026 object.spec.serviceAccountName == \"kube-stack-prometheus-node-exporter\" \u0026\u0026 object.spec.containers.size() == 1 \u0026\u0026 (!has(object.spec.initContainers) || object.spec.initContainers.size() == 0) \u0026\u0026 (!has(object.spec.ephemeralContainers) || object.spec.ephemeralContainers.size() == 0) \u0026\u0026 object.spec.containers.all(c, c.name == \"node-exporter\" \u0026\u0026 c.image == \"quay.io/prometheus/node-exporter:v1.12.1\" \u0026\u0026 (!has(c.command) || c.command.size() == 0) \u0026\u0026 has(c.args) \u0026\u0026 c.args == [\"--path.procfs=/host/proc\",\"--path.sysfs=/host/sys\",\"--path.rootfs=/host/root\",\"--path.udev.data=/host/root/run/udev/data\",\"--web.listen-address=[\" + \"$\" + \"(\" + \"HOST_IP)]:9100\",\"--collector.filesystem.mount-points-exclude=^/(dev|proc|sys|run/containerd/.+|var/lib/docker/.+|var/lib/kubelet/.+)($|/)\",\"--collector.filesystem.fs-types-exclude=^(autofs|binfmt_misc|bpf|cgroup2?|configfs|debugfs|devpts|devtmpfs|fusectl|hugetlbfs|iso9660|mqueue|nsfs|overlay|proc|procfs|pstore|rpc_pipefs|securityfs|selinuxfs|squashfs|sysfs|tracefs|erofs)$\"]) \u0026\u0026 object.spec.containers.all(c, has(c.env) \u0026\u0026 (c.env.size() == 1 \u0026\u0026 (has(c.env[0].name) \u0026\u0026 c.env[0].name == \"HOST_IP\" \u0026\u0026 has(c.env[0].value) \u0026\u0026 c.env[0].value == \"0.0.0.0\")) \u0026\u0026 (!has(c.envFrom) || c.envFrom.size() == 0) \u0026\u0026 has(c.volumeMounts) \u0026\u0026 (c.volumeMounts.size() == 3 \u0026\u0026 (has(c.volumeMounts[0].mountPath) \u0026\u0026 c.volumeMounts[0].mountPath == \"/host/proc\" \u0026\u0026 has(c.volumeMounts[0].name) \u0026\u0026 c.volumeMounts[0].name == \"proc\" \u0026\u0026 has(c.volumeMounts[0].readOnly) \u0026\u0026 c.volumeMounts[0].readOnly == true) \u0026\u0026 (has(c.volumeMounts[1].mountPath) \u0026\u0026 c.volumeMounts[1].mountPath == \"/host/sys\" \u0026\u0026 has(c.volumeMounts[1].name) \u0026\u0026 c.volumeMounts[1].name == \"sys\" \u0026\u0026 has(c.volumeMounts[1].readOnly) \u0026\u0026 c.volumeMounts[1].readOnly == true) \u0026\u0026 (has(c.volumeMounts[2].mountPath) \u0026\u0026 c.volumeMounts[2].mountPath == \"/host/root\" \u0026\u0026 has(c.volumeMounts[2].mountPropagation) \u0026\u0026 c.volumeMounts[2].mountPropagation == \"HostToContainer\" \u0026\u0026 has(c.volumeMounts[2].name) \u0026\u0026 c.volumeMounts[2].name == \"root\" \u0026\u0026 has(c.volumeMounts[2].readOnly) \u0026\u0026 c.volumeMounts[2].readOnly == true)) \u0026\u0026 has(object.spec.volumes) \u0026\u0026 object.spec.volumes.exists(v, (has(v.hostPath) \u0026\u0026 (has(v.hostPath.path) \u0026\u0026 v.hostPath.path == \"/proc\" \u0026\u0026 has(v.hostPath.type) \u0026\u0026 v.hostPath.type == \"\") \u0026\u0026 has(v.name) \u0026\u0026 v.name == \"proc\")) \u0026\u0026 has(object.spec.volumes) \u0026\u0026 object.spec.volumes.exists(v, (has(v.hostPath) \u0026\u0026 (has(v.hostPath.path) \u0026\u0026 v.hostPath.path == \"/sys\" \u0026\u0026 has(v.hostPath.type) \u0026\u0026 v.hostPath.type == \"\") \u0026\u0026 has(v.name) \u0026\u0026 v.name == \"sys\")) \u0026\u0026 has(object.spec.volumes) \u0026\u0026 object.spec.volumes.exists(v, (has(v.hostPath) \u0026\u0026 (has(v.hostPath.path) \u0026\u0026 v.hostPath.path == \"/\" \u0026\u0026 has(v.hostPath.type) \u0026\u0026 v.hostPath.type == \"\") \u0026\u0026 has(v.name) \u0026\u0026 v.name == \"root\")) \u0026\u0026 !has(c.env[0].valueFrom) \u0026\u0026 (!has(c.volumeMounts[0].subPath) || c.volumeMounts[0].subPath == \"\") \u0026\u0026 (!has(c.volumeMounts[0].subPathExpr) || c.volumeMounts[0].subPathExpr == \"\") \u0026\u0026 (!has(c.volumeMounts[1].subPath) || c.volumeMounts[1].subPath == \"\") \u0026\u0026 (!has(c.volumeMounts[1].subPathExpr) || c.volumeMounts[1].subPathExpr == \"\") \u0026\u0026 (!has(c.volumeMounts[2].subPath) || c.volumeMounts[2].subPath == \"\") \u0026\u0026 (!has(c.volumeMounts[2].subPathExpr) || c.volumeMounts[2].subPathExpr == \"\"))",
+                                        "name": "nodeExporter"
+                                    },
+                                    {
+                                        "expression": "object.metadata.namespace == \"sonarqube\" \u0026\u0026 has(object.metadata.ownerReferences) \u0026\u0026 object.metadata.ownerReferences.exists(o, o.kind == \"StatefulSet\" \u0026\u0026 o.name == \"sonarqube-sonarqube\" \u0026\u0026 has(o.controller) \u0026\u0026 o.controller \u0026\u0026 has(o.blockOwnerDeletion) \u0026\u0026 o.blockOwnerDeletion \u0026\u0026 o.uid == \"12f0c30f-732f-4db1-9efe-6e811ab7d6c4\") \u0026\u0026 object.spec.serviceAccountName == \"default\"",
+                                        "name": "sonar"
+                                    }
+                                ]
+                            }
+                        }
+                    },
+                    {
+                        "match": {
+                            "any": [
+                                {
+                                    "resources": {
+                                        "kinds": [
+                                            "Pod"
+                                        ],
+                                        "namespaces": [
+                                            "devsecops-execution",
+                                            "petclinic",
+                                            "devsecops-system",
+                                            "monitoring",
+                                            "sonarqube"
+                                        ]
+                                    }
+                                }
+                            ]
+                        },
+                        "name": "authorized-image-repositories",
+                        "preconditions": {
+                            "all": [
+                                {
+                                    "key": "{{ request.operation || 'BACKGROUND' }}",
+                                    "operator": "AnyIn",
+                                    "value": [
+                                        "CREATE",
+                                        "UPDATE"
+                                    ]
+                                }
+                            ]
+                        },
+                        "skipBackgroundRequests": true,
+                        "validate": {
+                            "allowExistingViolations": false,
+                            "cel": {
+                                "expressions": [
+                                    {
+                                        "expression": "variables.containers.all(c, (object.metadata.namespace == \"devsecops-execution\" \u0026\u0026 (c.image.startsWith(\"127.0.0.1:30050/platform-security/\") || c.image.startsWith(\"192.168.1.58:30050/platform-upgrade/airflow@sha256:\") || c.image == \"127.0.0.1:30050/petclinic/petclinic@sha256:83c2ae787a3d160cad1681228a669ac46afb19000558f4eefb45da50f08bf05c\")) || (object.metadata.namespace == \"petclinic\" \u0026\u0026 (c.image.startsWith(\"core.harbor.domain/petclinic/\") || c.image.startsWith(\"192.168.1.58:30050/platform-upgrade/airflow@sha256:\"))) || (object.metadata.namespace == \"devsecops-system\" \u0026\u0026 (c.image.startsWith(\"127.0.0.1:30050/platform-security/\"))) || (object.metadata.namespace == \"monitoring\" \u0026\u0026 (c.image.startsWith(\"127.0.0.1:30050/platform-upgrade/\") || c.image.startsWith(\"192.168.1.58:30050/platform-upgrade/\") || c.image.startsWith(\"docker.io/grafana/alloy:\") || c.image.startsWith(\"quay.io/prometheus/node-exporter:\") || c.image.startsWith(\"quay.io/prometheus-operator/prometheus-config-reloader:\"))) || (object.metadata.namespace == \"sonarqube\" \u0026\u0026 (c.image.startsWith(\"192.168.1.58:30050/platform-cache/sonarqube@sha256:\"))))",
+                                        "message": "DevSecOps production baseline: authorized-image-repositories"
+                                    }
+                                ],
+                                "generate": false,
+                                "variables": [
+                                    {
+                                        "expression": "object.spec.containers + (has(object.spec.initContainers) ? object.spec.initContainers : []) + (has(object.spec.ephemeralContainers) ? object.spec.ephemeralContainers : [])",
+                                        "name": "containers"
+                                    },
+                                    {
+                                        "expression": "object.metadata.namespace == \"devsecops-system\" \u0026\u0026 has(object.metadata.ownerReferences) \u0026\u0026 object.metadata.ownerReferences.exists(o, o.kind == \"DaemonSet\" \u0026\u0026 o.name == \"platform-falco\" \u0026\u0026 has(o.controller) \u0026\u0026 o.controller \u0026\u0026 has(o.blockOwnerDeletion) \u0026\u0026 o.blockOwnerDeletion \u0026\u0026 o.uid == \"c33ae390-de88-4fc2-bce4-b19c5b828a9c\") \u0026\u0026 object.spec.serviceAccountName == \"platform-falco\" \u0026\u0026 object.spec.containers.size() == 1 \u0026\u0026 (!has(object.spec.initContainers) || object.spec.initContainers.size() == 0) \u0026\u0026 (!has(object.spec.ephemeralContainers) || object.spec.ephemeralContainers.size() == 0) \u0026\u0026 object.spec.containers.all(c, c.name == \"falco\" \u0026\u0026 c.image == \"127.0.0.1:30050/platform-security/falco@sha256:3c5ccde1c8b50ccc8baf016090a5376d182e08dc8751df2b37d8ff2a13499558\" \u0026\u0026 (!has(c.command) || c.command.size() == 0) \u0026\u0026 has(c.args) \u0026\u0026 c.args == [\"/usr/bin/falco\"]) \u0026\u0026 object.spec.containers.all(c, has(c.env) \u0026\u0026 (c.env.size() == 3 \u0026\u0026 (has(c.env[0].name) \u0026\u0026 c.env[0].name == \"HOST_ROOT\" \u0026\u0026 has(c.env[0].value) \u0026\u0026 c.env[0].value == \"/host\") \u0026\u0026 (has(c.env[1].name) \u0026\u0026 c.env[1].name == \"FALCO_HOSTNAME\" \u0026\u0026 has(c.env[1].valueFrom) \u0026\u0026 (has(c.env[1].valueFrom.fieldRef) \u0026\u0026 (has(c.env[1].valueFrom.fieldRef.apiVersion) \u0026\u0026 c.env[1].valueFrom.fieldRef.apiVersion == \"v1\" \u0026\u0026 has(c.env[1].valueFrom.fieldRef.fieldPath) \u0026\u0026 c.env[1].valueFrom.fieldRef.fieldPath == \"spec.nodeName\"))) \u0026\u0026 (has(c.env[2].name) \u0026\u0026 c.env[2].name == \"FALCO_K8S_NODE_NAME\" \u0026\u0026 has(c.env[2].valueFrom) \u0026\u0026 (has(c.env[2].valueFrom.fieldRef) \u0026\u0026 (has(c.env[2].valueFrom.fieldRef.apiVersion) \u0026\u0026 c.env[2].valueFrom.fieldRef.apiVersion == \"v1\" \u0026\u0026 has(c.env[2].valueFrom.fieldRef.fieldPath) \u0026\u0026 c.env[2].valueFrom.fieldRef.fieldPath == \"spec.nodeName\")))) \u0026\u0026 (!has(c.envFrom) || c.envFrom.size() == 0) \u0026\u0026 has(c.volumeMounts) \u0026\u0026 (c.volumeMounts.size() == 7 \u0026\u0026 (has(c.volumeMounts[0].mountPath) \u0026\u0026 c.volumeMounts[0].mountPath == \"/host/run/k3s/containerd\" \u0026\u0026 has(c.volumeMounts[0].name) \u0026\u0026 c.volumeMounts[0].name == \"container-engine-socket-0\" \u0026\u0026 has(c.volumeMounts[0].readOnly) \u0026\u0026 c.volumeMounts[0].readOnly == true) \u0026\u0026 (has(c.volumeMounts[1].mountPath) \u0026\u0026 c.volumeMounts[1].mountPath == \"/etc/falco/config.d\" \u0026\u0026 has(c.volumeMounts[1].name) \u0026\u0026 c.volumeMounts[1].name == \"specialized-falco-configs\") \u0026\u0026 (has(c.volumeMounts[2].mountPath) \u0026\u0026 c.volumeMounts[2].mountPath == \"/root/.falco\" \u0026\u0026 has(c.volumeMounts[2].name) \u0026\u0026 c.volumeMounts[2].name == \"root-falco-fs\") \u0026\u0026 (has(c.volumeMounts[3].mountPath) \u0026\u0026 c.volumeMounts[3].mountPath == \"/host/proc\" \u0026\u0026 has(c.volumeMounts[3].name) \u0026\u0026 c.volumeMounts[3].name == \"proc-fs\" \u0026\u0026 has(c.volumeMounts[3].readOnly) \u0026\u0026 c.volumeMounts[3].readOnly == true) \u0026\u0026 (has(c.volumeMounts[4].mountPath) \u0026\u0026 c.volumeMounts[4].mountPath == \"/sys/kernel\" \u0026\u0026 has(c.volumeMounts[4].name) \u0026\u0026 c.volumeMounts[4].name == \"sys-fs\" \u0026\u0026 has(c.volumeMounts[4].readOnly) \u0026\u0026 c.volumeMounts[4].readOnly == true) \u0026\u0026 (has(c.volumeMounts[5].mountPath) \u0026\u0026 c.volumeMounts[5].mountPath == \"/etc/falco/falco.yaml\" \u0026\u0026 has(c.volumeMounts[5].name) \u0026\u0026 c.volumeMounts[5].name == \"falco-yaml\" \u0026\u0026 has(c.volumeMounts[5].subPath) \u0026\u0026 c.volumeMounts[5].subPath == \"falco.yaml\") \u0026\u0026 (has(c.volumeMounts[6].mountPath) \u0026\u0026 c.volumeMounts[6].mountPath == \"/etc/falco/rules.d\" \u0026\u0026 has(c.volumeMounts[6].name) \u0026\u0026 c.volumeMounts[6].name == \"rules-volume\")) \u0026\u0026 has(object.spec.volumes) \u0026\u0026 object.spec.volumes.exists(v, (has(v.hostPath) \u0026\u0026 (has(v.hostPath.path) \u0026\u0026 v.hostPath.path == \"/run/k3s/containerd\" \u0026\u0026 has(v.hostPath.type) \u0026\u0026 v.hostPath.type == \"\") \u0026\u0026 has(v.name) \u0026\u0026 v.name == \"container-engine-socket-0\")) \u0026\u0026 has(object.spec.volumes) \u0026\u0026 object.spec.volumes.exists(v, (has(v.emptyDir) \u0026\u0026 (true) \u0026\u0026 has(v.name) \u0026\u0026 v.name == \"specialized-falco-configs\")) \u0026\u0026 has(object.spec.volumes) \u0026\u0026 object.spec.volumes.exists(v, (has(v.emptyDir) \u0026\u0026 (true) \u0026\u0026 has(v.name) \u0026\u0026 v.name == \"root-falco-fs\")) \u0026\u0026 has(object.spec.volumes) \u0026\u0026 object.spec.volumes.exists(v, (has(v.hostPath) \u0026\u0026 (has(v.hostPath.path) \u0026\u0026 v.hostPath.path == \"/sys/kernel\" \u0026\u0026 has(v.hostPath.type) \u0026\u0026 v.hostPath.type == \"\") \u0026\u0026 has(v.name) \u0026\u0026 v.name == \"sys-fs\")) \u0026\u0026 has(object.spec.volumes) \u0026\u0026 object.spec.volumes.exists(v, (has(v.hostPath) \u0026\u0026 (has(v.hostPath.path) \u0026\u0026 v.hostPath.path == \"/proc\" \u0026\u0026 has(v.hostPath.type) \u0026\u0026 v.hostPath.type == \"\") \u0026\u0026 has(v.name) \u0026\u0026 v.name == \"proc-fs\")) \u0026\u0026 has(object.spec.volumes) \u0026\u0026 object.spec.volumes.exists(v, (has(v.configMap) \u0026\u0026 (has(v.configMap.defaultMode) \u0026\u0026 v.configMap.defaultMode == 420 \u0026\u0026 has(v.configMap.items) \u0026\u0026 (v.configMap.items.size() == 1 \u0026\u0026 (has(v.configMap.items[0].key) \u0026\u0026 v.configMap.items[0].key == \"falco.yaml\" \u0026\u0026 has(v.configMap.items[0].path) \u0026\u0026 v.configMap.items[0].path == \"falco.yaml\")) \u0026\u0026 has(v.configMap.name) \u0026\u0026 v.configMap.name == \"platform-falco\") \u0026\u0026 has(v.name) \u0026\u0026 v.name == \"falco-yaml\")) \u0026\u0026 has(object.spec.volumes) \u0026\u0026 object.spec.volumes.exists(v, (has(v.configMap) \u0026\u0026 (has(v.configMap.defaultMode) \u0026\u0026 v.configMap.defaultMode == 420 \u0026\u0026 has(v.configMap.name) \u0026\u0026 v.configMap.name == \"platform-falco-rules\") \u0026\u0026 has(v.name) \u0026\u0026 v.name == \"rules-volume\")) \u0026\u0026 !has(c.env[0].valueFrom) \u0026\u0026 (!has(c.env[1].value) || c.env[1].value == \"\") \u0026\u0026 (!has(c.env[2].value) || c.env[2].value == \"\") \u0026\u0026 (!has(c.volumeMounts[0].subPath) || c.volumeMounts[0].subPath == \"\") \u0026\u0026 (!has(c.volumeMounts[0].subPathExpr) || c.volumeMounts[0].subPathExpr == \"\") \u0026\u0026 (!has(c.volumeMounts[1].subPath) || c.volumeMounts[1].subPath == \"\") \u0026\u0026 (!has(c.volumeMounts[1].subPathExpr) || c.volumeMounts[1].subPathExpr == \"\") \u0026\u0026 (!has(c.volumeMounts[2].subPath) || c.volumeMounts[2].subPath == \"\") \u0026\u0026 (!has(c.volumeMounts[2].subPathExpr) || c.volumeMounts[2].subPathExpr == \"\") \u0026\u0026 (!has(c.volumeMounts[3].subPath) || c.volumeMounts[3].subPath == \"\") \u0026\u0026 (!has(c.volumeMounts[3].subPathExpr) || c.volumeMounts[3].subPathExpr == \"\") \u0026\u0026 (!has(c.volumeMounts[4].subPath) || c.volumeMounts[4].subPath == \"\") \u0026\u0026 (!has(c.volumeMounts[4].subPathExpr) || c.volumeMounts[4].subPathExpr == \"\") \u0026\u0026 (!has(c.volumeMounts[5].subPathExpr) || c.volumeMounts[5].subPathExpr == \"\") \u0026\u0026 (!has(c.volumeMounts[6].subPath) || c.volumeMounts[6].subPath == \"\") \u0026\u0026 (!has(c.volumeMounts[6].subPathExpr) || c.volumeMounts[6].subPathExpr == \"\"))",
+                                        "name": "falco"
+                                    },
+                                    {
+                                        "expression": "object.metadata.namespace == \"monitoring\" \u0026\u0026 has(object.metadata.ownerReferences) \u0026\u0026 object.metadata.ownerReferences.exists(o, o.kind == \"DaemonSet\" \u0026\u0026 o.name == \"kube-stack-prometheus-node-exporter\" \u0026\u0026 has(o.controller) \u0026\u0026 o.controller \u0026\u0026 has(o.blockOwnerDeletion) \u0026\u0026 o.blockOwnerDeletion \u0026\u0026 o.uid == \"d63a0442-dbc1-4021-9fdf-f374bf67825a\") \u0026\u0026 object.spec.serviceAccountName == \"kube-stack-prometheus-node-exporter\" \u0026\u0026 object.spec.containers.size() == 1 \u0026\u0026 (!has(object.spec.initContainers) || object.spec.initContainers.size() == 0) \u0026\u0026 (!has(object.spec.ephemeralContainers) || object.spec.ephemeralContainers.size() == 0) \u0026\u0026 object.spec.containers.all(c, c.name == \"node-exporter\" \u0026\u0026 c.image == \"quay.io/prometheus/node-exporter:v1.12.1\" \u0026\u0026 (!has(c.command) || c.command.size() == 0) \u0026\u0026 has(c.args) \u0026\u0026 c.args == [\"--path.procfs=/host/proc\",\"--path.sysfs=/host/sys\",\"--path.rootfs=/host/root\",\"--path.udev.data=/host/root/run/udev/data\",\"--web.listen-address=[\" + \"$\" + \"(\" + \"HOST_IP)]:9100\",\"--collector.filesystem.mount-points-exclude=^/(dev|proc|sys|run/containerd/.+|var/lib/docker/.+|var/lib/kubelet/.+)($|/)\",\"--collector.filesystem.fs-types-exclude=^(autofs|binfmt_misc|bpf|cgroup2?|configfs|debugfs|devpts|devtmpfs|fusectl|hugetlbfs|iso9660|mqueue|nsfs|overlay|proc|procfs|pstore|rpc_pipefs|securityfs|selinuxfs|squashfs|sysfs|tracefs|erofs)$\"]) \u0026\u0026 object.spec.containers.all(c, has(c.env) \u0026\u0026 (c.env.size() == 1 \u0026\u0026 (has(c.env[0].name) \u0026\u0026 c.env[0].name == \"HOST_IP\" \u0026\u0026 has(c.env[0].value) \u0026\u0026 c.env[0].value == \"0.0.0.0\")) \u0026\u0026 (!has(c.envFrom) || c.envFrom.size() == 0) \u0026\u0026 has(c.volumeMounts) \u0026\u0026 (c.volumeMounts.size() == 3 \u0026\u0026 (has(c.volumeMounts[0].mountPath) \u0026\u0026 c.volumeMounts[0].mountPath == \"/host/proc\" \u0026\u0026 has(c.volumeMounts[0].name) \u0026\u0026 c.volumeMounts[0].name == \"proc\" \u0026\u0026 has(c.volumeMounts[0].readOnly) \u0026\u0026 c.volumeMounts[0].readOnly == true) \u0026\u0026 (has(c.volumeMounts[1].mountPath) \u0026\u0026 c.volumeMounts[1].mountPath == \"/host/sys\" \u0026\u0026 has(c.volumeMounts[1].name) \u0026\u0026 c.volumeMounts[1].name == \"sys\" \u0026\u0026 has(c.volumeMounts[1].readOnly) \u0026\u0026 c.volumeMounts[1].readOnly == true) \u0026\u0026 (has(c.volumeMounts[2].mountPath) \u0026\u0026 c.volumeMounts[2].mountPath == \"/host/root\" \u0026\u0026 has(c.volumeMounts[2].mountPropagation) \u0026\u0026 c.volumeMounts[2].mountPropagation == \"HostToContainer\" \u0026\u0026 has(c.volumeMounts[2].name) \u0026\u0026 c.volumeMounts[2].name == \"root\" \u0026\u0026 has(c.volumeMounts[2].readOnly) \u0026\u0026 c.volumeMounts[2].readOnly == true)) \u0026\u0026 has(object.spec.volumes) \u0026\u0026 object.spec.volumes.exists(v, (has(v.hostPath) \u0026\u0026 (has(v.hostPath.path) \u0026\u0026 v.hostPath.path == \"/proc\" \u0026\u0026 has(v.hostPath.type) \u0026\u0026 v.hostPath.type == \"\") \u0026\u0026 has(v.name) \u0026\u0026 v.name == \"proc\")) \u0026\u0026 has(object.spec.volumes) \u0026\u0026 object.spec.volumes.exists(v, (has(v.hostPath) \u0026\u0026 (has(v.hostPath.path) \u0026\u0026 v.hostPath.path == \"/sys\" \u0026\u0026 has(v.hostPath.type) \u0026\u0026 v.hostPath.type == \"\") \u0026\u0026 has(v.name) \u0026\u0026 v.name == \"sys\")) \u0026\u0026 has(object.spec.volumes) \u0026\u0026 object.spec.volumes.exists(v, (has(v.hostPath) \u0026\u0026 (has(v.hostPath.path) \u0026\u0026 v.hostPath.path == \"/\" \u0026\u0026 has(v.hostPath.type) \u0026\u0026 v.hostPath.type == \"\") \u0026\u0026 has(v.name) \u0026\u0026 v.name == \"root\")) \u0026\u0026 !has(c.env[0].valueFrom) \u0026\u0026 (!has(c.volumeMounts[0].subPath) || c.volumeMounts[0].subPath == \"\") \u0026\u0026 (!has(c.volumeMounts[0].subPathExpr) || c.volumeMounts[0].subPathExpr == \"\") \u0026\u0026 (!has(c.volumeMounts[1].subPath) || c.volumeMounts[1].subPath == \"\") \u0026\u0026 (!has(c.volumeMounts[1].subPathExpr) || c.volumeMounts[1].subPathExpr == \"\") \u0026\u0026 (!has(c.volumeMounts[2].subPath) || c.volumeMounts[2].subPath == \"\") \u0026\u0026 (!has(c.volumeMounts[2].subPathExpr) || c.volumeMounts[2].subPathExpr == \"\"))",
+                                        "name": "nodeExporter"
+                                    },
+                                    {
+                                        "expression": "object.metadata.namespace == \"sonarqube\" \u0026\u0026 has(object.metadata.ownerReferences) \u0026\u0026 object.metadata.ownerReferences.exists(o, o.kind == \"StatefulSet\" \u0026\u0026 o.name == \"sonarqube-sonarqube\" \u0026\u0026 has(o.controller) \u0026\u0026 o.controller \u0026\u0026 has(o.blockOwnerDeletion) \u0026\u0026 o.blockOwnerDeletion \u0026\u0026 o.uid == \"12f0c30f-732f-4db1-9efe-6e811ab7d6c4\") \u0026\u0026 object.spec.serviceAccountName == \"default\"",
+                                        "name": "sonar"
+                                    }
+                                ]
+                            }
+                        }
+                    }
+                ],
+                "validationFailureAction": "Enforce"
+            },
+            "status": {
+                "autogen": {},
+                "conditions": [
+                    {
+                        "lastTransitionTime": "2026-10-28T21:33:43Z",
+                        "message": "Ready",
+                        "reason": "Succeeded",
+                        "status": "True",
+                        "type": "Ready"
+                    }
+                ],
+                "rulecount": {
+                    "generate": 0,
+                    "mutate": 0,
+                    "validate": 6,
+                    "verifyimages": 0
+                },
+                "validatingadmissionpolicy": {
+                    "generated": false,
+                    "message": "skip generating ValidatingAdmissionPolicy: multiple rules are not applicable."
+                }
+            }
+        },
+        {
+            "apiVersion": "kyverno.io/v1",
+            "kind": "ClusterPolicy",
+            "metadata": {
+                "annotations": {
+                    "pod-policies.kyverno.io/autogen-controllers": "none"
+                },
+                "creationTimestamp": "2026-10-27T17:03:01Z",
+                "generation": 2,
+                "labels": {
+                    "app.kubernetes.io/instance": "platform-devsecops",
+                    "petclinic.devops.local/owner": "platform-devsecops"
+                },
+                "name": "devsecops-signed-images",
+                "resourceVersion": "15427791",
+                "uid": "4f2459cf-1ad8-4da8-8f4f-632135ac0c4b"
+            },
+            "spec": {
+                "admission": true,
+                "background": false,
+                "emitWarning": false,
+                "rules": [
+                    {
+                        "match": {
+                            "any": [
+                                {
+                                    "resources": {
+                                        "kinds": [
+                                            "Pod"
+                                        ],
+                                        "namespaces": [
+                                            "petclinic",
+                                            "devsecops-supply-chain"
+                                        ]
+                                    }
+                                }
+                            ]
+                        },
+                        "name": "verify-private-petclinic-image",
+                        "skipBackgroundRequests": true,
+                        "verifyImages": [
+                            {
+                                "attestors": [
+                                    {
+                                        "count": 1,
+                                        "entries": [
+                                            {
+                                                "keys": {
+                                                    "publicKeys": "-----BEGIN PUBLIC KEY-----\nMFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAEDcDmCR1VAKgVHFo0oCkd6XeqXn14\nACzzOaks1UDTLAl7c2WBQSpQwiK6DpovLg9IFgHlwqR96xaECMITPawOaw==\n-----END PUBLIC KEY-----\n",
+                                                    "rekor": {
+                                                        "ignoreTlog": true
+                                                    },
+                                                    "signatureAlgorithm": "sha256"
+                                                },
+                                                "signatureAlgorithm": "sha256"
+                                            }
+                                        ]
+                                    }
+                                ],
+                                "imageReferences": [
+                                    "core.harbor.domain/petclinic/*"
+                                ],
+                                "imageRegistryCredentials": {
+                                    "allowInsecureRegistry": true,
+                                    "secrets": [
+                                        "kyverno-registry-pull"
+                                    ]
+                                },
+                                "mutateDigest": true,
+                                "required": true,
+                                "type": "Cosign",
+                                "useCache": false,
+                                "verifyDigest": true
+                            }
+                        ]
+                    }
+                ],
+                "validationFailureAction": "Enforce",
+                "webhookConfiguration": {
+                    "failurePolicy": "Fail",
+                    "timeoutSeconds": 20
+                }
+            },
+            "status": {
+                "autogen": {},
+                "conditions": [
+                    {
+                        "lastTransitionTime": "2026-10-27T17:03:01Z",
+                        "message": "Ready",
+                        "reason": "Succeeded",
+                        "status": "True",
+                        "type": "Ready"
+                    }
+                ],
+                "rulecount": {
+                    "generate": 0,
+                    "mutate": 0,
+                    "validate": 0,
+                    "verifyimages": 1
+                },
+                "validatingadmissionpolicy": {
+                    "generated": false,
+                    "message": ""
+                }
+            }
+        },
+        {
+            "apiVersion": "kyverno.io/v1",
+            "kind": "ClusterPolicy",
+            "metadata": {
+                "annotations": {
+                    "pod-policies.kyverno.io/autogen-controllers": "none",
+                    "policies.kyverno.io/title": "DevSecOps isolated scanner contract"
+                },
+                "creationTimestamp": "2026-10-26T06:38:11Z",
+                "generation": 2,
+                "labels": {
+                    "app.kubernetes.io/instance": "platform-devsecops",
+                    "petclinic.devops.local/owner": "platform-devsecops"
+                },
+                "name": "devsecops-workload-contract",
+                "resourceVersion": "15080436",
+                "uid": "2303fcfa-4075-4264-bf20-1656b074a96f"
+            },
+            "spec": {
+                "admission": true,
+                "background": false,
+                "emitWarning": false,
+                "rules": [
+                    {
+                        "match": {
+                            "any": [
+                                {
+                                    "resources": {
+                                        "kinds": [
+                                            "Pod"
+                                        ],
+                                        "namespaces": [
+                                            "devsecops-execution"
+                                        ]
+                                    }
+                                }
+                            ]
+                        },
+                        "name": "no-host-access",
+                        "skipBackgroundRequests": true,
+                        "validate": {
+                            "allowExistingViolations": false,
+                            "message": "DevSecOps: host namespaces and hostPath are forbidden",
+                            "pattern": {
+                                "spec": {
+                                    "=(hostIPC)": false,
+                                    "=(hostNetwork)": false,
+                                    "=(hostPID)": false,
+                                    "=(volumes)": [
+                                        {
+                                            "X(hostPath)": "null"
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    {
+                        "match": {
+                            "any": [
+                                {
+                                    "resources": {
+                                        "kinds": [
+                                            "Pod"
+                                        ],
+                                        "namespaces": [
+                                            "devsecops-execution"
+                                        ]
+                                    }
+                                }
+                            ]
+                        },
+                        "name": "immutable-image",
+                        "skipBackgroundRequests": true,
+                        "validate": {
+                            "allowExistingViolations": false,
+                            "message": "DevSecOps: image digest pin required",
+                            "pattern": {
+                                "spec": {
+                                    "=(initContainers)": [
+                                        {
+                                            "image": "*@sha256:*"
+                                        }
+                                    ],
+                                    "containers": [
+                                        {
+                                            "image": "*@sha256:*"
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    {
+                        "match": {
+                            "any": [
+                                {
+                                    "resources": {
+                                        "kinds": [
+                                            "Pod"
+                                        ],
+                                        "namespaces": [
+                                            "devsecops-execution"
+                                        ]
+                                    }
+                                }
+                            ]
+                        },
+                        "name": "resource-contract",
+                        "skipBackgroundRequests": true,
+                        "validate": {
+                            "allowExistingViolations": false,
+                            "message": "DevSecOps: CPU and memory requests and limits required",
+                            "pattern": {
+                                "spec": {
+                                    "containers": [
+                                        {
+                                            "resources": {
+                                                "limits": {
+                                                    "cpu": "?*",
+                                                    "memory": "?*"
+                                                },
+                                                "requests": {
+                                                    "cpu": "?*",
+                                                    "memory": "?*"
+                                                }
+                                            }
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    {
+                        "match": {
+                            "any": [
+                                {
+                                    "resources": {
+                                        "kinds": [
+                                            "Pod"
+                                        ],
+                                        "namespaces": [
+                                            "devsecops-execution"
+                                        ]
+                                    }
+                                }
+                            ]
+                        },
+                        "name": "non-root",
+                        "skipBackgroundRequests": true,
+                        "validate": {
+                            "allowExistingViolations": false,
+                            "message": "DevSecOps: no token mount; non-root, seccomp, no escalation and capabilities required",
+                            "pattern": {
+                                "spec": {
+                                    "automountServiceAccountToken": false,
+                                    "containers": [
+                                        {
+                                            "securityContext": {
+                                                "=(privileged)": false,
+                                                "allowPrivilegeEscalation": false,
+                                                "capabilities": {
+                                                    "drop": [
+                                                        "ALL"
+                                                    ]
+                                                },
+                                                "readOnlyRootFilesystem": true
+                                            }
+                                        }
+                                    ],
+                                    "securityContext": {
+                                        "runAsNonRoot": true,
+                                        "seccompProfile": {
+                                            "type": "RuntimeDefault"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                ],
+                "validationFailureAction": "Enforce"
+            },
+            "status": {
+                "autogen": {},
+                "conditions": [
+                    {
+                        "lastTransitionTime": "2026-10-26T06:38:11Z",
+                        "message": "Ready",
+                        "reason": "Succeeded",
+                        "status": "True",
+                        "type": "Ready"
+                    }
+                ],
+                "rulecount": {
+                    "generate": 0,
+                    "mutate": 0,
+                    "validate": 4,
+                    "verifyimages": 0
+                },
+                "validatingadmissionpolicy": {
+                    "generated": false,
+                    "message": "skip generating ValidatingAdmissionPolicy: multiple rules are not applicable."
+                }
+            }
+        }
+    ],
+    "kind": "List",
+    "metadata": {
+        "resourceVersion": ""
+    }
+}

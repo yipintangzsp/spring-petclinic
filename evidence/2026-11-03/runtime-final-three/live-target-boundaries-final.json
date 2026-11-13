@@ -1,0 +1,60 @@
+{
+  "classification": "LIVE_READ_ONLY",
+  "deployment": {
+    "uid": "ae889fa4-5f34-4c85-9bbb-73d80e5a0b1f",
+    "generation": 175,
+    "specSha256": "edca3e3eefe7c6d7d89ac41b6870d4086a81d0aeab6775d7111847c48ec2cb9c",
+    "replicas": 3,
+    "readyReplicas": 3,
+    "image": [
+      "core.harbor.domain/petclinic/petclinic@sha256:489cb821573ff1f98edd846d5949d74bf3391b24e2f1fe5bcfb71c6be0793137"
+    ],
+    "revision": "164",
+    "managedTimes": []
+  },
+  "petclinicLikeDeployments": [
+    {
+      "namespace": "petclinic",
+      "name": "petclinic",
+      "uid": "ae889fa4-5f34-4c85-9bbb-73d80e5a0b1f"
+    }
+  ],
+  "relatedServices": [
+    {
+      "namespace": "devsecops-system",
+      "name": "defectdojo-compose",
+      "uid": "7730ffcf-0046-4f00-957e-909b0337c893",
+      "ports": [
+        {
+          "name": "http",
+          "port": 8080,
+          "protocol": "TCP",
+          "targetPort": 18095
+        }
+      ]
+    },
+    {
+      "namespace": "petclinic",
+      "name": "petclinic",
+      "uid": "30158602-165f-4c25-a96c-0718fc3ffd0b",
+      "ports": [
+        {
+          "name": "http",
+          "port": 80,
+          "protocol": "TCP",
+          "targetPort": "http"
+        }
+      ]
+    }
+  ],
+  "argo": [
+    {
+      "name": "petclinic",
+      "specSha256": "5666d66ffee1c3b82df5c62accbdf8db9eb5d27183e7565c3963513f5bd2e889",
+      "revision": "340ef4b8c74e3c2a5820da8d98b0f134283bb8d9",
+      "sync": "Synced",
+      "health": "Healthy"
+    }
+  ],
+  "scannerNetworkPoliciesSha256": "66f1a6891b574330711f6e76df81eb27520e2bc5a0dbc7105ade8d42ffc900e6"
+}

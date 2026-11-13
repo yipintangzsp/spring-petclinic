@@ -1,0 +1,6 @@
+// Read accepted receipts in their ORIGINAL bindings; never evaluate/rebind them.
+import fs from 'node:fs';import assert from 'node:assert/strict';import {validateResult,gateView} from '../summary-v2/results.mjs';import {EXPECTED_SOURCES} from '../summary-v2/inventory.mjs';
+const base=JSON.parse(fs.readFileSync('runtime-accepted-baseline.json')),extra=JSON.parse(fs.readFileSync('runtime-accepted-extra.json')),seen=new Set();let receipts=0;
+const zap=JSON.parse(fs.readFileSync('runtime-accepted-zap.json'));
+for(const run of [base,...extra,zap])for(const [p,r]of Object.entries(run.artifacts))if(p.endsWith('.result.json')){const prefix=p.slice(0,-'.result.json'.length),c=run.artifacts[prefix+'.capture.json'],g=run.artifacts[prefix+'.gate.json'];validateResult(r,r.binding);assert.equal(r.binding.build,run.build);assert.equal(c.evaluationCount,1);assert.equal(c.rawFactDigest,r.rawFactDigest);assert.equal(c.resultDigest,r.resultDigest);assert.equal(gateView(r,r.binding).resultDigest,g.resultDigest);assert.equal(g.resultDigest,r.resultDigest);seen.add(r.sourceId);receipts++;}
+assert.equal(seen.size,13);assert.equal(EXPECTED_SOURCES.length,16);assert.ok(!seen.has('security-approval-promotion'));console.log(JSON.stringify({acceptedCapabilities:13,originalReceipts:receipts,policyEvaluations:0,historicalBindingPreserved:true,noCrossRunArtifactMerge:true}));

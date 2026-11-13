@@ -1,0 +1,42 @@
+{
+  "profile": "security-test",
+  "LimaInstance": "colima-security-test",
+  "VMHostname": "security-test",
+  "VMMachineID": "a093ffaa4d594b5298d97235be9e69ae",
+  "VZIdentifierSHA256": "b826a6f5999b69b28763bc8a926e3f64ec278f004a37e9d96d8d93e9a941239b",
+  "LimaVersion": "2.2.0",
+  "VMType": "vz",
+  "localIP": "192.168.5.1/24",
+  "DockerServer": {
+    "ID": "f0a9c4bb-ef14-4087-b0b1-7d5f02aa1ff8",
+    "Name": "security-test",
+    "OperatingSystem": "Ubuntu 24.04.4 LTS",
+    "OSType": "linux",
+    "Architecture": "aarch64",
+    "DockerRootDir": "/var/lib/docker",
+    "ServerVersion": "29.5.2",
+    "KernelVersion": "6.8.0-117-generic",
+    "NCPU": 2,
+    "MemTotal": 2054762496,
+    "SecurityOptions": [
+      "name=apparmor",
+      "name=seccomp,profile=builtin",
+      "name=cgroupns"
+    ]
+  },
+  "endpoint": "unix:///Users/zhangsir/.colima/security-test/docker.sock",
+  "transport": "LOCAL_UNIX_SOCKET",
+  "hostSocketOwnerValidated": true,
+  "hostSocketMode": "0600",
+  "remoteDockerTCPSSHEndpoint": "NONE",
+  "proofChain": [
+    "Existing approved security-test profile SHA unchanged",
+    "New owned colima-security-test instance + no mounts rendered Lima settings",
+    "Guest hostname/machine-id/arch and actual mount metadata inspected via only profile-local management channel",
+    "Lima guest Docker socket -> exact profile-local Unix socket",
+    "Docker info name/arch/kernel matches dedicated VM and stable server ID",
+    "Smoke and post-check use same explicit socket/server, never global Docker context"
+  ],
+  "credentialPathContentsRead": false,
+  "managementSSHIdentity": "Colima-managed local VM channel only; no host SSH public key loading/agent forwarding/production identity injection"
+}

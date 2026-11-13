@@ -1,0 +1,13 @@
+[Pipeline] { (Security / Semgrep)
+[Pipeline] withCredentials
+[Pipeline] {
+[Pipeline] withEnv
+[Pipeline] {
+[Pipeline] sh
++ set +e
++ rc=0
++ cat .devsecops/gates/semgrep.log
++ node infra/security/command-audit.mjs
+{"counts":{"safe":11,"dangerous":0,"unknown":43},"round3":{"fixed_trusted":6,"dynamic_controlled":34,"external_controllable":1,"unknown":2},"tests":{"external_shell_detected":4,"safe_or_unproven_not_blocked":5,"executed_commands":0}}
++ node --max-old-space-size=128 infra/security/semgrep-gate.mjs
++ exit 0

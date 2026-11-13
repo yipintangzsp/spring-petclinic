@@ -1,0 +1,103 @@
+{
+  "observation": {
+    "newAnalysis": 0,
+    "credentialRef": "sonar-token",
+    "origin": {
+      "auditTargetImage": "core.harbor.domain/petclinic/petclinic@sha256:2fbaea65ab030c56c60c62e3ee9fbe362deb8bbbb8216a891ef4c7bbbcea6d55",
+      "evidenceSha256": "17832b55bfdf0949ee1aa6f760288ede2698d0d40fe8f8ea1faf50fa82a80fcd",
+      "runtimeImage": "core.harbor.domain/petclinic/petclinic@sha256:489cb821573ff1f98edd846d5949d74bf3391b24e2f1fe5bcfb71c6be0793137",
+      "evidencePath": "evidence/2026-11-01/sonar-policy/analysis-bound-facts.json",
+      "directArchivedBuildTaskBinding": "NOT_TESTED",
+      "binding": {
+        "projectKey": "petclinic",
+        "requestedAnalysisId": "45274956-df04-4d69-8869-62961b4d762e",
+        "taskId": "0241e049-d93c-469d-ba33-4a7efa5f67d2"
+      },
+      "source": "9a78cc89f22fa98fb1ffcc43e2ae279299471793",
+      "originBuild": 270
+    },
+    "raw": {
+      "task": {
+        "task": {
+          "componentId": "184bf5b6-9cce-4004-873d-116fe843688b",
+          "executedAt": "2026-10-30T03:23:19+0000",
+          "executionTimeMs": 4319,
+          "warnings": [],
+          "startedAt": "2026-10-30T03:23:15+0000",
+          "type": "REPORT",
+          "submitterLogin": "admin",
+          "hasScannerContext": true,
+          "componentQualifier": "TRK",
+          "analysisId": "45274956-df04-4d69-8869-62961b4d762e",
+          "infoMessages": [],
+          "id": "0241e049-d93c-469d-ba33-4a7efa5f67d2",
+          "componentName": "petclinic",
+          "warningCount": 0,
+          "submittedAt": "2026-10-30T03:23:13+0000",
+          "componentKey": "petclinic",
+          "status": "SUCCESS"
+        }
+      },
+      "binding": {
+        "projectKey": "petclinic",
+        "requestedAnalysisId": "45274956-df04-4d69-8869-62961b4d762e",
+        "taskId": "0241e049-d93c-469d-ba33-4a7efa5f67d2"
+      },
+      "gate": {
+        "projectStatus": {
+          "period": {
+            "mode": "PREVIOUS_VERSION",
+            "date": "2026-10-02T08:19:18+0000"
+          },
+          "ignoredConditions": false,
+          "caycStatus": "compliant",
+          "conditions": [
+            {
+              "comparator": "LT",
+              "metricKey": "new_coverage",
+              "errorThreshold": "80",
+              "actualValue": "92.0",
+              "status": "OK"
+            },
+            {
+              "comparator": "GT",
+              "metricKey": "new_duplicated_lines_density",
+              "errorThreshold": "3",
+              "actualValue": "0.0",
+              "status": "OK"
+            },
+            {
+              "comparator": "GT",
+              "metricKey": "new_violations",
+              "errorThreshold": "0",
+              "actualValue": "0",
+              "status": "OK"
+            }
+          ],
+          "status": "OK"
+        }
+      }
+    },
+    "canonicalAdmission": "BLOCKED_PENDING_CURRENT_SOURCE_CANDIDATE_LINEAGE",
+    "requests": [
+      {
+        "path": "/api/ce/task?id=0241e049-d93c-469d-ba33-4a7efa5f67d2",
+        "method": "GET",
+        "httpStatus": 200
+      },
+      {
+        "path": "/api/qualitygates/project_status?analysisId=45274956-df04-4d69-8869-62961b4d762e",
+        "method": "GET",
+        "httpStatus": 200
+      }
+    ],
+    "classification": "REAL_READ_ONLY_EXISTING_ANALYSIS_OBSERVATION",
+    "policyEvaluations": 0,
+    "status": "OBSERVED_EXISTING_ANALYSIS_ONLY"
+  },
+  "canonicalOwnerAdmission": "NOT_OBSERVED",
+  "reason": "Historical source/audit target differs from current collector source/runtime candidate; direct per-build task archive missing. No lineage exemption introduced.",
+  "negativeCompatibility": "DEFERRED_REAL_NEGATIVE_EVIDENCE",
+  "privilegeExpansion": false,
+  "credentialExported": false
+}

@@ -1,0 +1,192 @@
+{
+  "classification": "ACTUAL_FROZEN_SOURCE_RECONSTRUCTION",
+  "selectedProductionBranch": "petclinic adapter",
+  "parentCommand": "node --max-old-space-size=192 infra/security/governance/defectdojo.mjs",
+  "acceptedReportTypes": [
+    {
+      "source": "gitleaks",
+      "scanType": "Gitleaks Scan",
+      "report": ".devsecops/gitleaks-native.json",
+      "evidence": {
+        "path": "infra/security/governance/defectdojo.mjs",
+        "line": 7,
+        "note": "Fixed tasks array",
+        "sha256": "f620f0a85650fc834aff56cbc7aeaf8f0d99de971136bfadcfff6a763d4148b7"
+      }
+    },
+    {
+      "source": "semgrep-command-audit",
+      "scanType": "Semgrep JSON Report",
+      "report": ".devsecops/semgrep-native.json",
+      "evidence": {
+        "path": "infra/security/governance/defectdojo.mjs",
+        "line": 7,
+        "note": "Only Semgrep native report is imported; command-audit findings are not imported separately",
+        "sha256": "f620f0a85650fc834aff56cbc7aeaf8f0d99de971136bfadcfff6a763d4148b7"
+      }
+    },
+    {
+      "source": "zap",
+      "scanType": "ZAP Scan",
+      "report": ".devsecops/zap-business-report.xml",
+      "evidence": {
+        "path": "infra/security/governance/defectdojo.mjs",
+        "line": 7,
+        "note": "Fixed ZAP business report, not generic zap-native.json",
+        "sha256": "f620f0a85650fc834aff56cbc7aeaf8f0d99de971136bfadcfff6a763d4148b7"
+      }
+    },
+    {
+      "source": "trivy",
+      "scanType": "Harbor Vulnerability Scan",
+      "report": ".devsecops/trivy-audit.json -> .devsecops/governance/trivy-<digest>.json",
+      "evidence": {
+        "path": "infra/security/governance/defectdojo.mjs",
+        "line": 8,
+        "note": "Mandatory status/scan/raw validation before derived per-digest tasks",
+        "sha256": "f620f0a85650fc834aff56cbc7aeaf8f0d99de971136bfadcfff6a763d4148b7"
+      }
+    },
+    {
+      "source": "kubescape",
+      "scanType": "Kubescape JSON Importer",
+      "report": ".devsecops/kubescape-gate.json.scans[*].reportFile",
+      "evidence": {
+        "path": "infra/security/governance/defectdojo.mjs",
+        "line": 11,
+        "note": "Exactly four same-source reports required",
+        "sha256": "f620f0a85650fc834aff56cbc7aeaf8f0d99de971136bfadcfff6a763d4148b7"
+      }
+    },
+    {
+      "source": "sonarqube",
+      "scanType": "SonarQube Scan",
+      "report": "current API export -> .devsecops/governance/sonarqube-native.json",
+      "evidence": {
+        "path": "infra/security/governance/defectdojo.mjs",
+        "line": 13,
+        "note": "Bounded complete issues export via live Sonar API",
+        "sha256": "f620f0a85650fc834aff56cbc7aeaf8f0d99de971136bfadcfff6a763d4148b7"
+      }
+    }
+  ],
+  "discoveryLogic": "fixed tasks plus mandatory Trivy digest expansion and four Kubescape scan reportFile entries plus Sonar API export; no directory discovery or one-of selection",
+  "multipleReportTypesSupported": true,
+  "anyOneReportSufficient": false,
+  "trivyMandatory": true,
+  "dependencyClass": "TRIVY_HARD_DEPENDENCY",
+  "scannerTypesHardcoded": true,
+  "dynamicSelection": false,
+  "genericBranch": {
+    "exists": true,
+    "file": "infra/security/manager/tool.mjs",
+    "selection": "enabledModules and matching current manager reports, at least one report",
+    "notSelectedByCanonicalAdapter": true,
+    "cannotSubstituteWithoutFrozenContractChange": true
+  },
+  "branchEvidence": [
+    {
+      "path": "Jenkinsfile.security-audit",
+      "line": 33,
+      "note": "securityManager adapter petclinic",
+      "sha256": "e6e7c1b8f838e42e8bc9b3aa35e731515e2e05feb300bd1833d64aa921c54ed2"
+    },
+    {
+      "path": "vars/securityManager.groovy",
+      "line": 27,
+      "note": "petclinic uses library resource plan; else generic module plan",
+      "sha256": "ae297e7313cbf9bdde9e38acb32a3ee3310c571f2d70e289783c5c1c448811af"
+    },
+    {
+      "path": "resources/security-manager/petclinic-adapter.json",
+      "line": 136,
+      "note": "canonical Dojo module command",
+      "sha256": "b7ffcdcb7466e679ad8739d1d910343b8ccab7217ba24a3d2e3f1f363215fc57"
+    },
+    {
+      "path": "infra/security/manager/tool.mjs",
+      "line": 29,
+      "note": "separate optional generic Dojo branch",
+      "sha256": "f688fd19f1ca5e7655f4f9fed0c0d479da818c57e10d870618aabdcbe47e0ad2"
+    },
+    {
+      "path": "active-v1-selection/vars/securityManager.groovy",
+      "line": 18,
+      "sha256": "6854436a43b347fc94e895eada0b2048be238668817a4af33a228396f1c57c32",
+      "note": "Actual live V1 fixed petclinic branch; local optional-switch additions are not assumed active"
+    }
+  ],
+  "hardDependencyEvidence": [
+    {
+      "path": "infra/security/governance/defectdojo.mjs",
+      "line": 8,
+      "note": "Unconditional Trivy file read and completed scan/raw checks",
+      "sha256": "f620f0a85650fc834aff56cbc7aeaf8f0d99de971136bfadcfff6a763d4148b7"
+    },
+    {
+      "path": "infra/security/governance/defectdojo.mjs",
+      "line": 14,
+      "note": "Import loop reached only after mandatory prerequisites",
+      "sha256": "f620f0a85650fc834aff56cbc7aeaf8f0d99de971136bfadcfff6a763d4148b7"
+    },
+    {
+      "path": "infra/security/policy/dojo-parent.mjs",
+      "line": 15,
+      "note": "adapter repeats frozen unconditional input contract",
+      "sha256": "237f6dfce80c0b395c7c2a5b3d7f14b1c7b3714a132db57d6e27011258a3b0f6"
+    }
+  ],
+  "currentRunBinding": {
+    "sourceRead": ".git-sha",
+    "buildRead": "BUILD_NUMBER",
+    "importFields": [
+      "build_id",
+      "commit_hash"
+    ],
+    "canonicalExplicitCrossReportCheck": "Kubescape source equals current report.source",
+    "canonicalTrivyBuildSourceRunIdCheck": false,
+    "sameRunMechanism": "Actual Audit Checkout clears .devsecops; fixed stage order generates reports in same workspace. Not a cryptographic freshness check. Never claim a historical file is current merely because its path matches.",
+    "testReuse": "title match within Engagement, across builds; no validationRunId title requirement in canonical code",
+    "runtimeEnvelopeAdditionalContract": "collector/owner require exact job/build/project/source/candidate/targetScope/runId binding; not implemented by the frozen Dojo parent itself"
+  },
+  "findingSemantics": {
+    "parserDependent": true,
+    "parentDoesNotRescore": true,
+    "governanceGate": "import/query/dedupe/metadata acceptance, not CVE severity gate",
+    "gitleaksSpecialHandling": "Only pre-existing source-gate proven exact file/line/rule/hash false-positive update",
+    "supportedScannerIdentitySet": "fixed six scanner/parser mappings collectively required; Trivy cannot be substituted"
+  },
+  "activeProductionCodeIdentity": {
+    "classification": "REAL_READ_ONLY_ACTIVE_CODE_SNAPSHOT",
+    "workspace": "/var/jenkins_home/workspace/petclinic-ci",
+    "productionBuild": 270,
+    "files": {
+      "vars/securityManager.groovy": {
+        "liveSha256": "6854436a43b347fc94e895eada0b2048be238668817a4af33a228396f1c57c32",
+        "localSha256": "ae297e7313cbf9bdde9e38acb32a3ee3310c571f2d70e289783c5c1c448811af",
+        "equal": false,
+        "snapshot": "active-v1-selection/vars/securityManager.groovy"
+      },
+      "resources/security-manager/petclinic-adapter.json": {
+        "liveSha256": "b7ffcdcb7466e679ad8739d1d910343b8ccab7217ba24a3d2e3f1f363215fc57",
+        "localSha256": "b7ffcdcb7466e679ad8739d1d910343b8ccab7217ba24a3d2e3f1f363215fc57",
+        "equal": true,
+        "snapshot": "active-v1-selection/resources/security-manager/petclinic-adapter.json"
+      },
+      "infra/security/governance/defectdojo.mjs": {
+        "liveSha256": "f620f0a85650fc834aff56cbc7aeaf8f0d99de971136bfadcfff6a763d4148b7",
+        "localSha256": "f620f0a85650fc834aff56cbc7aeaf8f0d99de971136bfadcfff6a763d4148b7",
+        "equal": true,
+        "snapshot": "active-v1-selection/infra/security/governance/defectdojo.mjs"
+      },
+      "infra/security/manager/tool.mjs": {
+        "liveSha256": "f688fd19f1ca5e7655f4f9fed0c0d479da818c57e10d870618aabdcbe47e0ad2",
+        "localSha256": "f688fd19f1ca5e7655f4f9fed0c0d479da818c57e10d870618aabdcbe47e0ad2",
+        "equal": true,
+        "snapshot": "active-v1-selection/infra/security/manager/tool.mjs"
+      }
+    },
+    "writesToRemote": 0,
+    "localManagerDiffersButCanonicalBranchAndDojoParentIdentical": true
+  }
+}

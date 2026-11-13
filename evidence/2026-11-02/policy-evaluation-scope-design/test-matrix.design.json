@@ -1,0 +1,166 @@
+{
+  "classification": "FUTURE_IMPLEMENTATION_TEST_DESIGN",
+  "cases": [
+    {
+      "id": 1,
+      "case": "one source one evaluation",
+      "input": "same canonical source/fact/config/run",
+      "expected": "actual Engine=1; repeated request reuses result",
+      "scope": "EVALUATION",
+      "implementationExecution": "NOT_EXECUTED"
+    },
+    {
+      "id": 2,
+      "case": "Gate reuse",
+      "input": "existing source result",
+      "expected": "same digest; aggregate Engine=0",
+      "scope": "EVALUATION",
+      "implementationExecution": "NOT_EXECUTED"
+    },
+    {
+      "id": 3,
+      "case": "Summary reuse",
+      "input": "existing source result",
+      "expected": "same digest and metadata values",
+      "scope": "EVALUATION",
+      "implementationExecution": "NOT_EXECUTED"
+    },
+    {
+      "id": 4,
+      "case": "Summary cannot evaluate",
+      "input": "attempt evaluator dependency/call",
+      "expected": "reject dependency/call; Summary Engine=0",
+      "scope": "EVALUATION",
+      "implementationExecution": "NOT_EXECUTED"
+    },
+    {
+      "id": 5,
+      "case": "missing result",
+      "input": "omit expected canonical source",
+      "expected": "INCOMPLETE; no PASS fill",
+      "scope": "EVALUATION",
+      "implementationExecution": "NOT_EXECUTED"
+    },
+    {
+      "id": 6,
+      "case": "duplicate result",
+      "input": "repeat source or alias as second evaluation",
+      "expected": "reject; aliases only reference",
+      "scope": "EVALUATION",
+      "implementationExecution": "NOT_EXECUTED"
+    },
+    {
+      "id": 7,
+      "case": "wrong source identity",
+      "input": "wrong component/source/scope",
+      "expected": "POLICY_ERROR/reject",
+      "scope": "EVALUATION",
+      "implementationExecution": "NOT_EXECUTED"
+    },
+    {
+      "id": 8,
+      "case": "stale source result",
+      "input": "wrong job/build/revision/raw/config binding",
+      "expected": "reject replay",
+      "scope": "EVALUATION",
+      "implementationExecution": "NOT_EXECUTED"
+    },
+    {
+      "id": 9,
+      "case": "complete source collection",
+      "input": "all terminal bound results plus final Gate context",
+      "expected": "aggregate allowed; COMPLETE may still be failed",
+      "scope": "AGGREGATE",
+      "implementationExecution": "NOT_EXECUTED"
+    },
+    {
+      "id": 10,
+      "case": "incomplete collection",
+      "input": "expected canonical source not observed",
+      "expected": "no complete eligibility",
+      "scope": "AGGREGATE",
+      "implementationExecution": "NOT_EXECUTED"
+    },
+    {
+      "id": 11,
+      "case": "POLICY_ERROR retained",
+      "input": "actual Engine throws POLICY_ERROR",
+      "expected": "explicit error receipt; no successful default metadata",
+      "scope": "AGGREGATE",
+      "implementationExecution": "NOT_EXECUTED"
+    },
+    {
+      "id": 12,
+      "case": "SKIPPED retained",
+      "input": "existing allowed optional skip selection",
+      "expected": "explicit SKIPPED; no fake scan, no invented mandatory FAIL",
+      "scope": "AGGREGATE",
+      "implementationExecution": "NOT_EXECUTED"
+    },
+    {
+      "id": 13,
+      "case": "NOT_CONFIGURED retained",
+      "input": "existing configuration/capability facts",
+      "expected": "original enforce/audit semantics; no default PASS",
+      "scope": "AGGREGATE",
+      "implementationExecution": "NOT_EXECUTED"
+    },
+    {
+      "id": 14,
+      "case": "pre facts only",
+      "input": "pre view output and evidence whitelist",
+      "expected": "reject post facts/refs",
+      "scope": "PRE_APPROVAL",
+      "implementationExecution": "NOT_EXECUTED"
+    },
+    {
+      "id": 15,
+      "case": "future result absent",
+      "input": "Promotion not yet executed",
+      "expected": "no fabricated approval/signature/runtimeAfter",
+      "scope": "PRE_APPROVAL",
+      "implementationExecution": "NOT_EXECUTED"
+    },
+    {
+      "id": 16,
+      "case": "self-approval injection",
+      "input": "inject own future result or Summary self-approval flag",
+      "expected": "cannot authorize; no backward dependency",
+      "scope": "PRE_APPROVAL",
+      "implementationExecution": "NOT_EXECUTED"
+    },
+    {
+      "id": 17,
+      "case": "candidate mismatch",
+      "input": "artifact/native report/approval target differs",
+      "expected": "reject",
+      "scope": "PRE_APPROVAL",
+      "implementationExecution": "NOT_EXECUTED"
+    },
+    {
+      "id": 18,
+      "case": "separate PromotionResult",
+      "input": "actual later operation or observed exception",
+      "expected": "separate native output/diagnostic; no pre mutation",
+      "scope": "POST_PROMOTION",
+      "implementationExecution": "NOT_EXECUTED"
+    },
+    {
+      "id": 19,
+      "case": "post binding",
+      "input": "later output candidate/job/build/source differs",
+      "expected": "reject wrong binding",
+      "scope": "POST_PROMOTION",
+      "implementationExecution": "NOT_EXECUTED"
+    },
+    {
+      "id": 20,
+      "case": "promotion failure",
+      "input": "actual FAIL/rollback after eligible pre snapshot",
+      "expected": "retain post failure and unchanged pre digest",
+      "scope": "POST_PROMOTION",
+      "implementationExecution": "NOT_EXECUTED"
+    }
+  ],
+  "runtimeTestsRun": 0
+}

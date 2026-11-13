@@ -1,0 +1,257 @@
+{
+  "sourceId": "zap",
+  "scannerCleanupChecks": [
+    {
+      "uid": "2d27db9e-f713-4ea8-8c97-bd68d52d875a",
+      "name": "zap-20-b58b06",
+      "absent": true
+    }
+  ],
+  "completedAt": "2026-11-02T20:36:46.887Z",
+  "oldExit": 0,
+  "policyDecision": "PASS",
+  "productionTargetAccess": 0,
+  "binding": {
+    "candidate": "127.0.0.1:30050/petclinic/petclinic@sha256:489cb821573ff1f98edd846d5949d74bf3391b24e2f1fe5bcfb71c6be0793137",
+    "build": 20,
+    "project": "petclinic",
+    "source": "741ea2866ea142b24c7838e1ef25c8327c79d279",
+    "runId": "security-runtime-facts-20261102#20",
+    "job": "security-runtime-facts-20261102",
+    "targetScope": "runtime"
+  },
+  "startedAt": "2026-11-02T20:34:34.800Z",
+  "factDigest": "38aa77d77127584d8fbdce8b5d3512e7905138ddf09aa45dd9b4138cb6a7f376",
+  "cleanupCompleted": true,
+  "productionDatabaseAccess": 0,
+  "error": null,
+  "resultDigest": "57c2721f6d44be76647a5daa4a2f1291ad26e50db128cc468ad4a73284b58a78",
+  "target": {
+    "serviceIP": "10.43.42.36",
+    "image": "127.0.0.1:30050/petclinic/petclinic@sha256:489cb821573ff1f98edd846d5949d74bf3391b24e2f1fe5bcfb71c6be0793137",
+    "namespace": "rf4-20261103-004987",
+    "productionServiceIPDenied": "10.43.39.130"
+  },
+  "minimumPermissions": "Own isolated scanner Pods/exec, exact isolated target reads, named outer Lease read; no Secret or production app permission",
+  "oldDecision": "PASS",
+  "gateResultDigest": "57c2721f6d44be76647a5daa4a2f1291ad26e50db128cc468ad4a73284b58a78",
+  "rawReports": [
+    {
+      "path": ".devsecops/zap-gate.json",
+      "sha256": "7b19b64828a8ffd9144e171c31990dad48b0869d31837a0cc033e6ba13a47843",
+      "bytes": 4177
+    },
+    {
+      "path": ".devsecops/zap-fixture-native.json",
+      "sha256": "c564666e2627bf0ffc6ab822c973a5d51401d4b12645b3d91ed27e325ee1b5bc",
+      "bytes": 9079
+    },
+    {
+      "path": ".devsecops/zap-fixture-plan.json",
+      "sha256": "9d55c0c333118e0337bd0be807e7dc953b3cb8b09694b0c42cc3d1d7aeb22037",
+      "bytes": 740
+    },
+    {
+      "path": ".devsecops/zap-fixture-negative-native.json",
+      "sha256": "e8b76c89d41cfc4d6afff60d01c50fd44d6a544a5e7db48441079781982f2bff",
+      "bytes": 7506
+    },
+    {
+      "path": ".devsecops/zap-fixture-negative-plan.json",
+      "sha256": "575cefd1994d86dd600cdb0ded57175cceb2fec8c684b74113382bd2e3f984e3",
+      "bytes": 768
+    },
+    {
+      "path": ".devsecops/zap-fixture-negative-report.json",
+      "sha256": "e8b76c89d41cfc4d6afff60d01c50fd44d6a544a5e7db48441079781982f2bff",
+      "bytes": 7506
+    },
+    {
+      "path": ".devsecops/zap-fixture-report.json",
+      "sha256": "c564666e2627bf0ffc6ab822c973a5d51401d4b12645b3d91ed27e325ee1b5bc",
+      "bytes": 9079
+    },
+    {
+      "path": ".devsecops/zap-auth-readonly.json",
+      "sha256": "54e6c1e535eb5c5b71f16ac029e53b83fbaf546c0b69e772df8e207b6a829c88",
+      "bytes": 7679
+    },
+    {
+      "path": ".devsecops/zap-business-native.json",
+      "sha256": "3613bdbdcb8b26b7ac6569095a317c3f878bd815fe0791c4f13a03ded226a0ac",
+      "bytes": 11038
+    },
+    {
+      "path": ".devsecops/zap-business-plan.json",
+      "sha256": "42ec9346a4c233a22b3412e53683561e003ff1e4f31d7f0bd408f2848cfcb12b",
+      "bytes": 1482
+    },
+    {
+      "path": ".devsecops/zap-business-report.json",
+      "sha256": "3613bdbdcb8b26b7ac6569095a317c3f878bd815fe0791c4f13a03ded226a0ac",
+      "bytes": 11038
+    }
+  ],
+  "evaluationCount": 1,
+  "credentialIdentity": "system:serviceaccount:rf4-20261103-004987:runtime-executor",
+  "executionScope": "CONTROLLED_NON_RELEASE",
+  "validationRunId": "rf4-20261103-004987",
+  "productionSigningKeyAccess": 0,
+  "findingSummary": {
+    "rawHigh": 0,
+    "unconfirmedHigh": 0,
+    "blockingHigh": 0,
+    "findings": [
+      {
+        "pluginid": "10038",
+        "name": "Content Security Policy (CSP) Header Not Set",
+        "riskcode": "2",
+        "count": "3"
+      },
+      {
+        "pluginid": "10020",
+        "name": "Missing Anti-clickjacking Header",
+        "riskcode": "2",
+        "count": "3"
+      },
+      {
+        "pluginid": "10021",
+        "name": "X-Content-Type-Options Header Missing",
+        "riskcode": "1",
+        "count": "4"
+      }
+    ],
+    "warnings": [
+      "Unconfirmed High and ordinary passive DAST findings remain WARN",
+      "Production user/admin/ownership differential unavailable; synthetic evidence is not production authorization proof"
+    ],
+    "coverage": {
+      "sqlInjection": "not confirmed by passive GET",
+      "ssrf": "not confirmed by passive GET",
+      "authBypass": "public GET credential observations and isolated role fixtures; real production identity model unavailable; exploit not confirmed",
+      "commandInjection": "not confirmed by passive GET",
+      "xss": "not confirmed exploitable",
+      "pathTraversal": "not confirmed by passive GET"
+    },
+    "tests": {
+      "unconfirmedInformationHighWarn": true,
+      "cleanFixtureNoPiiHigh": true,
+      "syntheticHighDetected": [
+        {
+          "pluginid": "10062",
+          "riskcode": "3"
+        }
+      ],
+      "exploitValidationNotClaimed": true
+    },
+    "authentication": {
+      "fixtureCases": 20,
+      "unsupported": [
+        "user/admin differential",
+        "cross-user ownership",
+        "valid/expired real tokens",
+        "server session revocation"
+      ],
+      "publicGetObservations": 16,
+      "scope": "Existing public GET routes only; credential observations are not authorization bypass proof",
+      "status": "WARN-production-identity-model-unavailable"
+    },
+    "memoryPeakBytes": "787767296"
+  },
+  "severityAlertCounts": {
+    "0": 0,
+    "1": 1,
+    "2": 2,
+    "3": 0
+  },
+  "scopeNotes": {
+    "frozenBusinessLabelNowUses": "Real namespace rf4-20261103-004987; legacy business/production strings are retained in original native reports, not a claim of production authorization evidence",
+    "expectedAppDigestSameAsProductionBytesButTargetIsIsolated": true,
+    "runtimeSourceRevisionIsCollectorCheckoutNotNewImageBuild": true,
+    "transportMapping": "Actual original kube calls \u2192 real validation namespace responses; no fabricated response/report"
+  },
+  "cleanupResult": {
+    "objectsRemoved": [
+      {
+        "kind": "Deployment",
+        "apiVersion": "apps/v1",
+        "name": "petclinic",
+        "namespace": "rf4-20261103-004987",
+        "uid": "be6b38c5-e41b-4f8a-9659-5e3362d785fe"
+      },
+      {
+        "kind": "Service",
+        "apiVersion": "v1",
+        "name": "petclinic",
+        "namespace": "rf4-20261103-004987",
+        "uid": "b8f01135-87f8-4f1a-99b2-19eda512cf83"
+      },
+      {
+        "kind": "RoleBinding",
+        "apiVersion": "rbac.authorization.k8s.io/v1",
+        "name": "rf4-20261103-004987-zap",
+        "namespace": "rf4-20261103-004987",
+        "uid": "2c90439b-c259-43e0-be7c-21587781b4e3"
+      },
+      {
+        "kind": "RoleBinding",
+        "apiVersion": "rbac.authorization.k8s.io/v1",
+        "name": "rf4-20261103-004987-zap",
+        "namespace": "data-infra",
+        "uid": "a9a92d88-820f-4aa2-90aa-c9e1204d5777"
+      },
+      {
+        "kind": "Role",
+        "apiVersion": "rbac.authorization.k8s.io/v1",
+        "name": "rf4-20261103-004987-zap",
+        "namespace": "rf4-20261103-004987",
+        "uid": "01443297-b076-41d5-9cdc-106fc31d59ec"
+      },
+      {
+        "kind": "Role",
+        "apiVersion": "rbac.authorization.k8s.io/v1",
+        "name": "rf4-20261103-004987-zap",
+        "namespace": "data-infra",
+        "uid": "1ca04568-ca6d-4237-b979-2a5107d51095"
+      },
+      {
+        "kind": "ServiceAccount",
+        "apiVersion": "v1",
+        "name": "runtime-executor",
+        "namespace": "rf4-20261103-004987",
+        "uid": "ce0a3a01-45ed-4b40-aaf4-a7735f81f5d2"
+      },
+      {
+        "kind": "NetworkPolicy",
+        "apiVersion": "networking.k8s.io/v1",
+        "name": "deny-all",
+        "namespace": "rf4-20261103-004987",
+        "uid": "832fa09d-16f0-47aa-a182-9eaed8dbef96"
+      },
+      {
+        "kind": "NetworkPolicy",
+        "apiVersion": "networking.k8s.io/v1",
+        "name": "scanner-to-validation-only",
+        "namespace": "rf4-20261103-004987",
+        "uid": "7a74933e-2c50-450e-acc7-28477a5f0893"
+      },
+      {
+        "kind": "NetworkPolicy",
+        "apiVersion": "networking.k8s.io/v1",
+        "name": "app-from-validation-scanner",
+        "namespace": "rf4-20261103-004987",
+        "uid": "526f976b-879f-4f05-af82-8837fbbdcd2c"
+      },
+      {
+        "kind": "Namespace",
+        "apiVersion": "v1",
+        "name": "rf4-20261103-004987",
+        "namespace": null,
+        "uid": "74867996-06d5-4d17-869c-00ac3ae1f765"
+      }
+    ],
+    "namespaceRemoved": true,
+    "tokenDirectoryRemoved": true,
+    "productionObjectsDeleted": 0
+  }
+}

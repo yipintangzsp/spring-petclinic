@@ -1,0 +1,29 @@
+{
+  "probes": [
+    {
+      "origin": "Mac",
+      "proxy": "http://127.0.0.1:10808",
+      "endpoint": "https://ghcr.io/v2/",
+      "exit": 0,
+      "httpStatus": "401",
+      "error": ""
+    },
+    {
+      "origin": "Mac",
+      "proxy": "http://192.168.1.238:10808",
+      "endpoint": "https://ghcr.io/v2/",
+      "exit": 7,
+      "httpStatus": "000",
+      "error": "curl: (7) Failed to connect to 192.168.1.238 port 10808 after 3 ms: Couldn't connect to server\n"
+    },
+    {
+      "origin": "Harbor Trivy container",
+      "proxy": "http://192.168.1.238:10808",
+      "endpoint": "https://ghcr.io/v2/",
+      "exit": 1,
+      "diagnostic": "Connecting to 192.168.1.238:10808 (192.168.1.238:10808)\nwget: can't connect to remote host (192.168.1.238): Connection refused\ncommand terminated with exit code 1\n"
+    }
+  ],
+  "configurationChanges": 0,
+  "TLSVerificationDisabled": false
+}

@@ -1,0 +1,40 @@
+import unittest,math
+from readiness_guards import *
+class Guards(unittest.TestCase):
+ def offline(self):return {'vmState':'Stopped','fresh':True,'qemuPids':[],'imageOpenHandles':[],'allWritersChecked':True}
+ def backup(self):return dict.fromkeys(('capacityReady','targetVerified','strategySelected','sourceIdentityBound','platformHealthy','jobsIdle','gcIdle','refreshIdle','registryMaintenanceIdle','exclusiveWindowPlanned','restorePlanDefined'),True)
+ def validated(self):return dict.fromkeys(('exists','sourceWasStopped','sourceImageReleased','sourceIdentityMatches','sizeMatches','hashMatches','recognizedFormat','offlineCheckPassed','notTruncated'),True)
+ def gates(self):return {k:('VERIFIED' if k=='BACKUP_VALIDATION' else 'READY') for k in GATES}
+ def test_01_current_capacity_blocks(self):self.assertFalse(host_capacity(25*GIB,341*GIB,16*GIB,GIB,4*GIB,16*GIB)['ready'])
+ def test_02_exact_boundary(self):self.assertTrue(host_capacity(37*GIB,0,16*GIB,GIB,4*GIB,16*GIB)['ready'])
+ def test_03_one_byte_short_blocks(self):self.assertFalse(host_capacity(37*GIB-1,0,16*GIB,GIB,4*GIB,16*GIB)['ready'])
+ def test_04_purgeable_not_accepted_as_argument(self):self.assertFalse(host_capacity({'actual':25*GIB,'purgeable':999*GIB},0,16*GIB,GIB,4*GIB,16*GIB)['ready'])
+ def test_05_missing_invalid_measure(self):
+  for v in [None,'999999999999',True,-1,float('inf'),float('nan')]:self.assertFalse(host_capacity(v,0,16*GIB,GIB,4*GIB,16*GIB)['ready'])
+ def test_06_backup_storage_included(self):self.assertEqual(host_capacity(1,341*GIB,16*GIB,GIB,4*GIB,16*GIB)['requiredBytes'],378*GIB)
+ def test_07_running_blocks(self):e=self.offline();e['vmState']='Running';self.assertFalse(image_in_use_guard(e))
+ def test_08_pid_blocks(self):e=self.offline();e['qemuPids']=[18121];self.assertFalse(image_in_use_guard(e))
+ def test_09_handle_blocks(self):e=self.offline();e['imageOpenHandles']=[{'fd':18,'mode':'read-write'}];self.assertFalse(image_in_use_guard(e))
+ def test_10_missing_handle_scan_blocks(self):e=self.offline();del e['imageOpenHandles'];self.assertFalse(image_in_use_guard(e))
+ def test_11_stale_probe_blocks(self):e=self.offline();e['fresh']=False;self.assertFalse(image_in_use_guard(e))
+ def test_12_string_boolean_blocks(self):e=self.offline();e['allWritersChecked']='true';self.assertFalse(image_in_use_guard(e))
+ def test_13_complete_offline_proof(self):self.assertTrue(image_in_use_guard(self.offline()))
+ def test_14_unknown_backup_prereq_blocks(self):e=self.backup();e['gcIdle']=None;self.assertFalse(backup_ready(e))
+ def test_15_missing_backup_destination_blocks(self):e=self.backup();e['targetVerified']=False;self.assertFalse(backup_ready(e))
+ def test_16_synthetic_complete_backup_prereqs(self):self.assertTrue(backup_ready(self.backup()))
+ def test_17_live_copy_never_validated(self):e=self.validated();e['sourceWasStopped']=False;self.assertFalse(validate_backup(e))
+ def test_18_hash_mismatch_blocks(self):e=self.validated();e['hashMatches']=False;self.assertFalse(validate_backup(e))
+ def test_19_truncation_blocks(self):e=self.validated();e['notTruncated']=False;self.assertFalse(validate_backup(e))
+ def test_20_metadata_not_real_backup(self):self.assertFalse(validate_backup({'exists':True,'recognizedFormat':True}))
+ def test_21_synthetic_complete_backup_validation(self):self.assertTrue(validate_backup(self.validated()))
+ def test_22_metadata_only_not_restore_ready(self):e={'backupValidated':True,'planValidated':True,'capacityReady':True,'neverOverwriteLiveVMForTest':True,'validationLevel':'METADATA_ONLY'};self.assertFalse(restore_ready(e))
+ def test_23_no_backup_never_restore_ready(self):self.assertFalse(restore_ready({'backupValidated':False}))
+ def test_24_no_network_isolation_no_clone_boot(self):e=dict.fromkeys(('backupValidated','newVmIdentity','allNetworkingDisabled','noSharedWritableProductionStorage','cpuMemoryCapacityProven'),True);e['allNetworkingDisabled']=False;self.assertFalse(isolated_boot_ready(e))
+ def test_25_resize_requires_every_gate(self):
+  for k in GATES:e=self.gates();e[k]='NOT_READY';self.assertFalse(resize_ready(e,True))
+ def test_26_missing_gate_blocks(self):e=self.gates();del e['RESTORE_READINESS'];self.assertFalse(resize_ready(e,True))
+ def test_27_ready_not_backup_verified(self):e=self.gates();e['BACKUP_VALIDATION']='READY';self.assertFalse(resize_ready(e,True))
+ def test_28_active_image_blocks_even_all_ready(self):self.assertFalse(resize_ready(self.gates(),False))
+ def test_29_synthetic_all_ready(self):self.assertTrue(resize_ready(self.gates(),True))
+ def test_30_current_no_target_no_strategy(self):self.assertFalse(backup_ready({'capacityReady':False,'targetVerified':False,'strategySelected':False}))
+if __name__=='__main__':unittest.main(verbosity=2)

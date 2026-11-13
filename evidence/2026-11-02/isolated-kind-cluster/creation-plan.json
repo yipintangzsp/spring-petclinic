@@ -1,0 +1,19 @@
+{
+  "cluster": "security-test-sops",
+  "provider": "docker",
+  "dockerHost": "unix:///Users/zhangsir/.colima/security-test/docker.sock",
+  "kubeconfig": "/private/tmp/security-manager-kind-gdasvx1h/kubeconfig",
+  "emptyHome": "/private/tmp/security-manager-kind-gdasvx1h/home",
+  "emptyDockerConfig": "/private/tmp/security-manager-kind-gdasvx1h/docker-config",
+  "nodeImage": "docker.io/kindest/node:v1.35.0@sha256:452d707d4862f52530247495d180205e029056831160e22870e37e3f6c1ac31f",
+  "nodes": 1,
+  "apiBinding": "127.0.0.1 with Docker allocated port; no extra port mapping",
+  "extraMounts": [],
+  "extraPrivilegeOptions": [],
+  "scope": "Create standard kind single control-plane and security-smoke namespace only. Standard kind/kubeadm automatically creates its own system objects; no user SOPS/Secret/SA/RBAC/Lease fixtures or changes.",
+  "cleanup": "Delete only security-smoke namespace in verified dedicated kubeconfig. Retain owned test cluster and root-private kubeconfig for next separately authorized phase. Prepare guarded kind delete command.",
+  "sources": [
+    "https://github.com/kubernetes-sigs/kind/releases/tag/v0.31.0",
+    "https://kind.sigs.k8s.io/docs/user/configuration/"
+  ]
+}

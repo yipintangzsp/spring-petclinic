@@ -1,0 +1,38 @@
+{
+  "kind": "RuntimeDependencyBlockerReceipt",
+  "classification": "ENGINEERING_DEPENDENCY_EVIDENCE_NOT_RESOLVED_POLICY_RESULT",
+  "sourceId": "defectdojo",
+  "dependencyChain": [
+    {
+      "source": "defectdojo",
+      "requires": "current complete Trivy native report",
+      "evidence": {
+        "path": "infra/security/governance/defectdojo.mjs",
+        "line": 8,
+        "note": "Unconditional native report prerequisite",
+        "sha256": "f620f0a85650fc834aff56cbc7aeaf8f0d99de971136bfadcfff6a763d4148b7"
+      }
+    },
+    {
+      "source": "trivy",
+      "requires": "safe host capacity and backup",
+      "state": "ENVIRONMENT_BLOCKED",
+      "evidenceRef": "../runtime-independent-boundaries/trivy-engineering-blocker.json"
+    }
+  ],
+  "DOJO_INPUT_DEPENDENCY": "TRIVY_HARD_DEPENDENCY",
+  "DEFECTDOJO_RUNTIME_DEPENDENCY": "BLOCKED_BY_TRIVY",
+  "DEFECTDOJO_RUNTIME_FACT_CAPTURE": "INCOMPLETE",
+  "capabilityCount": "14/16",
+  "productionLogicChanged": false,
+  "alternativeReportSelected": false,
+  "historicalOrSyntheticReportUsedAsRuntime": false,
+  "realDojoParentExecutions": 0,
+  "apiImports": 0,
+  "policyEvaluationCount": 0,
+  "realFactDigest": null,
+  "realResultDigest": null,
+  "PIPELINE_COUPLING_DEBT": true,
+  "DOJO_DECOUPLING_REQUIRED": "YES",
+  "nextAction": "STOP after regression and protected-state checks; wait for separate authorization of future report/Result Router decoupling or environment recovery. Do neither this round."
+}

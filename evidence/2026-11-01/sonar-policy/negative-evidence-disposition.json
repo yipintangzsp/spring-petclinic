@@ -1,0 +1,66 @@
+{
+  "sonarPositiveStatus": "VERIFIED",
+  "sonarNegativeStatus": "NOT_TESTED",
+  "disposition": "DEFERRED_REAL_NEGATIVE_EVIDENCE",
+  "realFailureObservationsExist": true,
+  "realFailureBuilds": [
+    174,
+    173,
+    130,
+    122,
+    121,
+    120
+  ],
+  "completeBoundRealNegativeExists": false,
+  "observedArchivedNegative": {
+    "build": 174,
+    "gate": "ERROR",
+    "failedConditions": [
+      {
+        "actualValue": "6",
+        "comparator": "GT",
+        "errorThreshold": "0",
+        "metricKey": "new_violations",
+        "status": "ERROR"
+      }
+    ],
+    "oldJenkinsGate": [
+      "[ERROR] QUALITY GATE STATUS: FAILED - View details on http://sonarqube-sonarqube.sonarqube.svc.cluster.local:9000/dashboard?id=petclinic"
+    ]
+  },
+  "missingEvidence": [
+    "Jenkins failed-build directly archived ceTaskId/report-task/Sonar action",
+    "That task ID to analysis ID mapping",
+    "Analysis-ID-bound Quality Gate response matching failed build"
+  ],
+  "adapterBehaviorImplemented": true,
+  "syntheticErrorMapping": "Unit test only, not VERIFIED real-negative evidence",
+  "unboundEvidenceRejection": "POLICY_ERROR: Sonar task/project/analysis binding incomplete or mismatched",
+  "originalRawUnchanged": true,
+  "checked": {
+    "jenkinsJob": "petclinic-ci",
+    "completedFailureBuilds": 139,
+    "totalFailureBuildsInScope": 139,
+    "logBytesRead": 33390169,
+    "localSearch": "local-negative-search.json",
+    "targetedLocalFiles": [
+      "sonar-findings-120.json",
+      "sonar-findings-121.json",
+      "sonar-findings-122.json",
+      "sonar-findings-130.json"
+    ],
+    "targetedLocalBuildLogs": [
+      173,
+      174
+    ],
+    "sonarApi": "Prior authorized exact-task/exact-analysis OK responses retained; known-403 history endpoint not retried"
+  },
+  "mayProceedToRemainingProductionGateAdapterDifferential": true,
+  "allPolicyEngineVerified": false,
+  "scope": "Permission to proceed with remaining adapter differential only; no Summary integration/all-gates success claim",
+  "permissionsExpanded": false,
+  "qualityGateChanged": false,
+  "jenkinsGateChanged": false,
+  "summaryChanged": false,
+  "rolloutExecuted": false
+}

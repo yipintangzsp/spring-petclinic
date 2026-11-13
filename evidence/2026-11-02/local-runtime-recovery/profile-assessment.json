@@ -1,0 +1,66 @@
+{
+  "profile": "/Users/zhangsir/.colima/default/colima.yaml",
+  "limaConfig": "/Users/zhangsir/.colima/_lima/colima/lima.yaml",
+  "configuredVM": {
+    "name": "colima",
+    "profile": "default",
+    "vmType": "vz",
+    "arch": "aarch64",
+    "runtime": "docker",
+    "cpu": 2,
+    "memoryGiB": 2,
+    "dataDiskGiB": 100,
+    "rootDiskGiB": 20,
+    "networkMode": "shared",
+    "forwardAgent": false,
+    "kubernetesEnabled": false,
+    "customProfileProvision": null,
+    "dockerDaemonOverrides": {}
+  },
+  "evidence": {
+    "profileMounts": {
+      "line": 262,
+      "value": [],
+      "meaning": "Empty profile list uses Colima default home sharing; generated Lima config is authoritative for effective mounts"
+    },
+    "effectiveMounts": {
+      "line": 13,
+      "text": "mounts:\n    - location: \"~\"\n      writable: true"
+    },
+    "profileSSHConfig": {
+      "line": 241,
+      "value": true
+    },
+    "profileAutoActivate": {
+      "line": 67,
+      "value": true
+    },
+    "profileKubernetes": {
+      "line": 41,
+      "text": "kubernetes:\n  # Enable kubernetes.\n  # Default: false\n  enabled: false\n  \n  # Kubernetes version to use.\n  # This needs to exactly match a k3s version https://github.com/k3s-io/k3s/releases\n  # Default: latest stable release\n  version: v1.35.0+k3s1\n  \n  # Additional args to pass to k3s https://docs.k3s.io/cli/server\n  # Default: traefik is disabled\n  k3sArgs:\n    - --disable=traefik\n  \n  # Kubernetes port to listen on\n  # A common port is 6443, though left unbound to ensure no port conflicts\n  # Default: pick random unbound port\n  port: 0\n\n# Auto-activate on the Host for client access.\n# Setting to true does the following on startup\n#  - sets as active Docker context (for Docker runtime).\n#  - sets as active Kubernetes context (if Kubernetes is enabled).\n#  - sets as active Incus remote (for Incus runtime).\n# Default: true"
+    },
+    "limaSocketForwarding": [
+      "guestSocket: /var/run/docker.sock",
+      "hostSocket: /Users/zhangsir/.colima/default/docker.sock",
+      "guestSocket: /var/run/containerd/containerd.sock",
+      "hostSocket: /Users/zhangsir/.colima/default/containerd.sock",
+      "guestSocket: /var/run/docker.sock",
+      "hostSocket: /Users/zhangsir/.colima/docker.sock"
+    ],
+    "imagePathMetadata": {
+      "line": 3,
+      "text": "images:\n    - location: /Users/zhangsir/Library/Caches/colima/caches/b0992ab88f5a3c0c436bbb3065c01466f20dc1dd0eb0a60299d410176f21a1c3\n      arch: aarch64"
+    }
+  },
+  "assessment": {
+    "configuredAsLocalVM": true,
+    "effectiveWritableHomeMount": true,
+    "productionKubeconfigDirectoryExposedOnBoot": true,
+    "sshAgentForwardingDisabled": true,
+    "kubernetesIntegrationDisabled": true,
+    "safeToStartUnchanged": false,
+    "safelyDisposableDataStatus": "NOT_PROVEN; no deletion/rebuild proposed",
+    "reason": "Home sharing includes ~/.kube and other host credentials. automatic SSH config writes and Docker context activation also need prior scope review."
+  },
+  "hostPrivateKeyContentsRead": false
+}

@@ -1,0 +1,33 @@
+{
+  "01_call_graph": "Guard offline -> private snapshot -> pinned TLS namespace UID -> sanitized child -> unchanged runtime -> kubectl shim -> absolute kubectl with forced config/context. No Gate run.",
+  "02_original_fallback": "Original runtime delegates to kubectl default loading. Wrapper avoids it with mandatory explicit validated input, snapshot, clean HOME and forced shim flags.",
+  "03_guard_location": "infra/security/testing/isolated_sops_executor.py",
+  "04_production_files_modified": "NO",
+  "05_explicit_enforcement": "Argument and nonempty env required; one absolute expected file, safe regular file/owner/mode, exact context/cluster/server/CA/config digest; live UID before child.",
+  "06_clean_home": "New private temporary HOME, no default .kube/config. Does not rename/edit user HOME.",
+  "07_sanitized_environment": "Default deny; preserve only LANG/LC_ALL/TZ; explicit HOME/KUBECONFIG/PATH/TMPDIR/cache/context; cloud/Kube/SSH/SOPS/AGE/Docker/proxy inheritance removed.",
+  "08_unset": "PASS KUBECONFIG_UNSET",
+  "09_empty": "PASS KUBECONFIG_EMPTY; empty file separately rejected",
+  "10_nonexistent": "PASS CONFIG_FILE_MISSING",
+  "11_malformed": "PASS MALFORMED_CONFIG",
+  "12_wrong_server": "PASS SERVER_MISMATCH",
+  "13_wrong_cluster": "PASS CLUSTER_IDENTITY_MISMATCH; wrong CA/current-context also tested",
+  "14_default_home_fallback": "PASS fake HOME A dedicated source wins with real sentinel; B missing env fails before API/child. Real default existence-only negative tests also pass.",
+  "15_valid_config": "PASS real CLI check with one pinned local metadata GET; wouldPermitChild true, child not run.",
+  "16_sentinel": "PASS real CLI and trusted-child library fixed sentinels; explicit snapshot, clean HOME, sanitized env; Gate never invoked.",
+  "17_rejected_cases_api_calls": 0,
+  "18_production_api_access": 0,
+  "19_production_secret_credential_reads": 0,
+  "20_user_kubeconfig_unchanged": "YES",
+  "21_protected_state": "YES; 3843 existing project files, protected host configs, dedicated config and kind resources unchanged; global context default.",
+  "22_created_files": [
+    "infra/security/testing/isolated_sops_executor.py",
+    "infra/security/testing/test_isolated_sops_executor.py",
+    "docs/KUBECONFIG-FAIL-CLOSED-BOUNDARY-20261102.md",
+    "evidence/2026-11-02/kubeconfig-fail-closed-boundary/"
+  ],
+  "23_production_change_decision": "TEST_WRAPPER_SUFFICIENT",
+  "24_KUBECONFIG_FAIL_CLOSED_BOUNDARY": "READY",
+  "25_blocker": null,
+  "26_next_permitted_action": "Separately scoped next iteration may resume unfinished SOPS/age toolchain and fixture prerequisite review; do not automatically resume/create fixture or execute Gate."
+}

@@ -1,0 +1,98 @@
+{
+  "job": "security-runtime-facts-20261102",
+  "build": 25,
+  "building": false,
+  "result": "SUCCESS",
+  "duration": 3380,
+  "startedAtMs": 1793668898464,
+  "artifacts": {
+    ".devsecops/runtime-controlled/build-25/cosign-test-trust.json": {
+      "encryptedBundleSha256": "5d2d3e96e50b85711677d359c67a77b1797682e401cde0f066d86d4379a1ed25",
+      "productionPrivateKeyReads": 0,
+      "validationRunId": "rf3-20261103-7d6715",
+      "publicKeySha256": "3d537f14db1f5088b4a88666d584cfbcc71cef2381e628b00bfcaea8f388d896",
+      "publicKey": "-----BEGIN PUBLIC KEY-----\nMFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAEwm5H2/+acRefQOTz+SEeVJ8PwvWK\njXTjMWuRB+JlvzxE0qBL1hwR9ecB4oxycCRM3JTfCsHUSwPhIZWuuxEDUA==\n-----END PUBLIC KEY-----\n",
+      "classification": "DISPOSABLE_VALIDATION_TRUST"
+    },
+    ".devsecops/runtime-controlled/build-25/robot-sign-verified.json": {
+      "level": "project",
+      "permissions": [
+        {
+          "access": [
+            {
+              "resource": "repository",
+              "action": "pull"
+            },
+            {
+              "resource": "repository",
+              "action": "push"
+            },
+            {
+              "resource": "artifact",
+              "action": "read"
+            }
+          ],
+          "kind": "project",
+          "namespace": "petclinic"
+        }
+      ],
+      "liveVerified": true,
+      "name": "robot$petclinic+rf3-20261103-7d6715-sign",
+      "id": 248
+    }
+  },
+  "artifactHashes": {
+    ".devsecops/runtime-controlled/build-25/cosign-test-trust.json": "253a7c6e3b032ba9077d5f47f442003bd878ed209faf40036c75cf12232c24a4",
+    ".devsecops/runtime-controlled/build-25/robot-sign-verified.json": "755aafe09fe6b6bf58b47cbc12e38d1fa29ccf6e5f64513bc02f89a6df6947a7"
+  },
+  "regression": [],
+  "definitionSha256": "6352fd71d5ea57426994d01e372beeb39e9702628d2d719e4dc919b601e3d0ba",
+  "consoleTail": [
+    "[...truncated 6 lines...]",
+    "Timeout set to expire in 5 min 0 sec",
+    "[Pipeline] {",
+    "[Pipeline] stage",
+    "[Pipeline] { (Source verification)",
+    "[Pipeline] sh",
+    "+ node infra/security/runtime-facts/verify-bundle.mjs",
+    "Exact uploaded source identities verified; non-release only",
+    "+ node infra/security/runtime-facts/thirteen-smoke.mjs",
+    "{\"acceptedCapabilities\":13,\"originalReceipts\":16,\"policyEvaluations\":0,\"historicalBindingPreserved\":true,\"noCrossRunArtifactMerge\":true}",
+    "[Pipeline] }",
+    "[Pipeline] // stage",
+    "[Pipeline] stage",
+    "[Pipeline] { (Create isolated sign robot)",
+    "[Pipeline] withCredentials",
+    "Masking supported pattern matches of $HARBOR_PASS",
+    "[Pipeline] {",
+    "[Pipeline] sh",
+    "+ node infra/security/runtime-facts/harbor-validation-identity.mjs sign verify",
+    "{\"id\":248,\"permissionsVerified\":true}",
+    "+ node infra/security/runtime-facts/harbor-validation-identity.mjs sign verify",
+    "{\"id\":248,\"permissionsVerified\":true}",
+    "[Pipeline] }",
+    "[Pipeline] // withCredentials",
+    "[Pipeline] }",
+    "[Pipeline] // stage",
+    "[Pipeline] stage",
+    "[Pipeline] { (Disposable test trust)",
+    "[Pipeline] sh",
+    "+ node infra/security/runtime-facts/cosign-test-material.mjs create",
+    "{\"status\":\"TEST_TRUST_CREATED\",\"publicKeySha256\":\"3d537f14db1f5088b4a88666d584cfbcc71cef2381e628b00bfcaea8f388d896\",\"privateMaterialArchived\":false}",
+    "[Pipeline] }",
+    "[Pipeline] // stage",
+    "[Pipeline] stage",
+    "[Pipeline] { (Declarative: Post Actions)",
+    "[Pipeline] archiveArtifacts",
+    "Archiving artifacts",
+    "[Pipeline] }",
+    "[Pipeline] // stage",
+    "[Pipeline] }",
+    "[Pipeline] // timeout",
+    "[Pipeline] }",
+    "[Pipeline] // node",
+    "[Pipeline] End of Pipeline",
+    "Finished: SUCCESS"
+  ],
+  "productionJobModified": false
+}

@@ -1,0 +1,2492 @@
+{
+  "records": [
+    {
+      "name": "healthy",
+      "branch": "healthy",
+      "classification": "CONTROLLED_REPLAY",
+      "oldDecision": "PASS",
+      "standardDecision": "PASS",
+      "rawPreserved": true,
+      "inputSha256": "43cd0ea86875971a29991d38846cdae500a7918a0ccdd2c210c6f461e97f60a2",
+      "rawSha256": "ab106cd98169dd6a2a7d2f745d5af843f91cc872fe9becff0262aeb06685e833",
+      "fixture": "healthy.json",
+      "stageCount": 2,
+      "originalParentShell": {
+        "exitStatus": 0,
+        "command": "( node infra/security/command-audit.mjs && node --max-old-space-size=128 infra/security/semgrep-gate.mjs )",
+        "trace": [
+          "infra/security/command-audit.mjs",
+          "--max-old-space-size=128 infra/security/semgrep-gate.mjs"
+        ]
+      }
+    },
+    {
+      "name": "shell-input",
+      "branch": "direct-shell",
+      "classification": "CONTROLLED_REPLAY",
+      "oldDecision": "FAIL",
+      "standardDecision": "FAIL",
+      "rawPreserved": true,
+      "inputSha256": "a6d4ca2a6b9341717e0c6934c62bab682f083972bc4bd4ba4f0a3b4c602da079",
+      "rawSha256": "21695d0aca3ecf0d1f60b58bffa1d97bf5be403decf50dd5168787e9c7ed8eb8",
+      "fixture": "shell-input.json",
+      "stageCount": 1,
+      "originalParentShell": {
+        "exitStatus": 1,
+        "command": "( node infra/security/command-audit.mjs && node --max-old-space-size=128 infra/security/semgrep-gate.mjs )",
+        "trace": [
+          "infra/security/command-audit.mjs"
+        ]
+      },
+      "diagnostic": "Script command gate blocked; inspect command-audit.json"
+    },
+    {
+      "name": "os-system-input",
+      "branch": "direct-shell",
+      "classification": "CONTROLLED_REPLAY",
+      "oldDecision": "FAIL",
+      "standardDecision": "FAIL",
+      "rawPreserved": true,
+      "inputSha256": "cd03f4d477c9cd581a215c9da3028dfaf55216a9ff7a54a94c7c330c62742c8f",
+      "rawSha256": "d7c3e2a6a4e94ade41939e6a44e76ae0194ecb742b80c0b970ff7a1bea002aaa",
+      "fixture": "os-system-input.json",
+      "stageCount": 1,
+      "originalParentShell": {
+        "exitStatus": 1,
+        "command": "( node infra/security/command-audit.mjs && node --max-old-space-size=128 infra/security/semgrep-gate.mjs )",
+        "trace": [
+          "infra/security/command-audit.mjs"
+        ]
+      },
+      "diagnostic": "Script command gate blocked; inspect command-audit.json"
+    },
+    {
+      "name": "sys-argv-shell",
+      "branch": "direct-shell",
+      "classification": "CONTROLLED_REPLAY",
+      "oldDecision": "FAIL",
+      "standardDecision": "FAIL",
+      "rawPreserved": true,
+      "inputSha256": "4a9ddce18a26886a0bb61737f5551e616373e747c378d74358e5660eadf8c1c3",
+      "rawSha256": "5ad47f303e26db642dd6f22b704f6aab77b37599c0e9bda946e441c311363f7a",
+      "fixture": "sys-argv-shell.json",
+      "stageCount": 1,
+      "originalParentShell": {
+        "exitStatus": 1,
+        "command": "( node infra/security/command-audit.mjs && node --max-old-space-size=128 infra/security/semgrep-gate.mjs )",
+        "trace": [
+          "infra/security/command-audit.mjs"
+        ]
+      },
+      "diagnostic": "Script command gate blocked; inspect command-audit.json"
+    },
+    {
+      "name": "flask-shell",
+      "branch": "direct-shell",
+      "classification": "CONTROLLED_REPLAY",
+      "oldDecision": "FAIL",
+      "standardDecision": "FAIL",
+      "rawPreserved": true,
+      "inputSha256": "fbc87c8e47c2c711e88cf1d477806f6f20a19a56f9f495f1742701e9342207b4",
+      "rawSha256": "fad3c452b2ba632fb365943ca49aad0f51d76ea34df139d08bde56a2ef80fb76",
+      "fixture": "flask-shell.json",
+      "stageCount": 1,
+      "originalParentShell": {
+        "exitStatus": 1,
+        "command": "( node infra/security/command-audit.mjs && node --max-old-space-size=128 infra/security/semgrep-gate.mjs )",
+        "trace": [
+          "infra/security/command-audit.mjs"
+        ]
+      },
+      "diagnostic": "Script command gate blocked; inspect command-audit.json"
+    },
+    {
+      "name": "assignment-shell",
+      "branch": "direct-shell",
+      "classification": "CONTROLLED_REPLAY",
+      "oldDecision": "FAIL",
+      "standardDecision": "FAIL",
+      "rawPreserved": true,
+      "inputSha256": "c41e763e21e68d3a7baa63cac853df26078fab7c98cdc8fa5aa0d380465ad6ce",
+      "rawSha256": "cd55ccc7a9c55b88bd05ada3da3de21aca49e75913a9917a8d040624bf51cf94",
+      "fixture": "assignment-shell.json",
+      "stageCount": 1,
+      "originalParentShell": {
+        "exitStatus": 1,
+        "command": "( node infra/security/command-audit.mjs && node --max-old-space-size=128 infra/security/semgrep-gate.mjs )",
+        "trace": [
+          "infra/security/command-audit.mjs"
+        ]
+      },
+      "diagnostic": "Script command gate blocked; inspect command-audit.json"
+    },
+    {
+      "name": "eval-input",
+      "branch": "direct-shell",
+      "classification": "CONTROLLED_REPLAY",
+      "oldDecision": "FAIL",
+      "standardDecision": "FAIL",
+      "rawPreserved": true,
+      "inputSha256": "a72a73e95dc792b428e13500c92f40deb065921d3a5ca1746dfdf5c83fb5ac11",
+      "rawSha256": "c1a0f549c894456b104a8ae01011d8f16b425abf496d6787d9a5a5eed35a2569",
+      "fixture": "eval-input.json",
+      "stageCount": 1,
+      "originalParentShell": {
+        "exitStatus": 1,
+        "command": "( node infra/security/command-audit.mjs && node --max-old-space-size=128 infra/security/semgrep-gate.mjs )",
+        "trace": [
+          "infra/security/command-audit.mjs"
+        ]
+      },
+      "diagnostic": "Script command gate blocked; inspect command-audit.json"
+    },
+    {
+      "name": "argv-safe-argument",
+      "branch": "safe-control",
+      "classification": "CONTROLLED_REPLAY",
+      "oldDecision": "PASS",
+      "standardDecision": "PASS",
+      "rawPreserved": true,
+      "inputSha256": "df9bd6af87a69d4950a2f68cc5d7c547f0159540020214b8cba5e11a4c43e49d",
+      "rawSha256": "5d88ecb2ec1a25437efd73c522a9458e1e1ff45191d1fd7138e003a7d0bc340b",
+      "fixture": "argv-safe-argument.json",
+      "stageCount": 2,
+      "originalParentShell": {
+        "exitStatus": 0,
+        "command": "( node infra/security/command-audit.mjs && node --max-old-space-size=128 infra/security/semgrep-gate.mjs )",
+        "trace": [
+          "infra/security/command-audit.mjs",
+          "--max-old-space-size=128 infra/security/semgrep-gate.mjs"
+        ]
+      }
+    },
+    {
+      "name": "constant-allowlist",
+      "branch": "safe-control",
+      "classification": "CONTROLLED_REPLAY",
+      "oldDecision": "PASS",
+      "standardDecision": "PASS",
+      "rawPreserved": true,
+      "inputSha256": "e62a727638f184aaa6ec1d22186922ae8a27b749eb69a4cc3f312fd61e8491ee",
+      "rawSha256": "7ddef825b182081e410ed296419159fac84bfe41360971c97f1ba2e1452554b6",
+      "fixture": "constant-allowlist.json",
+      "stageCount": 2,
+      "originalParentShell": {
+        "exitStatus": 0,
+        "command": "( node infra/security/command-audit.mjs && node --max-old-space-size=128 infra/security/semgrep-gate.mjs )",
+        "trace": [
+          "infra/security/command-audit.mjs",
+          "--max-old-space-size=128 infra/security/semgrep-gate.mjs"
+        ]
+      }
+    },
+    {
+      "name": "quoted-shell",
+      "branch": "safe-control",
+      "classification": "CONTROLLED_REPLAY",
+      "oldDecision": "PASS",
+      "standardDecision": "PASS",
+      "rawPreserved": true,
+      "inputSha256": "951810507ef5f29ff8a3eac122f5ab69834ac390ede1a55ed7c4971ec7233bbb",
+      "rawSha256": "2e23cfa87a366a30b57ce608d50b531052eaa37e83c393966de77b0367c34d0e",
+      "fixture": "quoted-shell.json",
+      "stageCount": 2,
+      "originalParentShell": {
+        "exitStatus": 0,
+        "command": "( node infra/security/command-audit.mjs && node --max-old-space-size=128 infra/security/semgrep-gate.mjs )",
+        "trace": [
+          "infra/security/command-audit.mjs",
+          "--max-old-space-size=128 infra/security/semgrep-gate.mjs"
+        ]
+      }
+    },
+    {
+      "name": "environment-unconfirmed",
+      "branch": "unconfirmed",
+      "classification": "CONTROLLED_REPLAY",
+      "oldDecision": "PASS",
+      "standardDecision": "PASS",
+      "rawPreserved": true,
+      "inputSha256": "a75dd3998a2aa715dfee144761f3f01ef59516cf640ef21cb0f0df3b031720f5",
+      "rawSha256": "0689df3d93f728c0a0e0a6ef42f9d2b2ef5c9aadf4ca07bc49ee476c5463bff0",
+      "fixture": "environment-unconfirmed.json",
+      "stageCount": 2,
+      "originalParentShell": {
+        "exitStatus": 0,
+        "command": "( node infra/security/command-audit.mjs && node --max-old-space-size=128 infra/security/semgrep-gate.mjs )",
+        "trace": [
+          "infra/security/command-audit.mjs",
+          "--max-old-space-size=128 infra/security/semgrep-gate.mjs"
+        ]
+      }
+    },
+    {
+      "name": "wrapped-input-unknown",
+      "branch": "unconfirmed",
+      "classification": "CONTROLLED_REPLAY",
+      "oldDecision": "PASS",
+      "standardDecision": "PASS",
+      "rawPreserved": true,
+      "inputSha256": "ea7032339b9c267105696bbb9d080bee6a9979b5c9692843f6bf020c1e17057f",
+      "rawSha256": "3653c16d668300ad34beca09105d616a0c88c5beea6905dad6359a4c4bd47ef9",
+      "fixture": "wrapped-input-unknown.json",
+      "stageCount": 2,
+      "originalParentShell": {
+        "exitStatus": 0,
+        "command": "( node infra/security/command-audit.mjs && node --max-old-space-size=128 infra/security/semgrep-gate.mjs )",
+        "trace": [
+          "infra/security/command-audit.mjs",
+          "--max-old-space-size=128 infra/security/semgrep-gate.mjs"
+        ]
+      }
+    },
+    {
+      "name": "shadowed-input",
+      "branch": "safe-control",
+      "classification": "CONTROLLED_REPLAY",
+      "oldDecision": "PASS",
+      "standardDecision": "PASS",
+      "rawPreserved": true,
+      "inputSha256": "93f89da01fd7fbe67d40dace600529eab27e3d2a180871985d14f6a88cb291c6",
+      "rawSha256": "349376315547ad20f3cb3aa8f6ea66d9ec6ad2a157a92243b251960eeddfcd5d",
+      "fixture": "shadowed-input.json",
+      "stageCount": 2,
+      "originalParentShell": {
+        "exitStatus": 0,
+        "command": "( node infra/security/command-audit.mjs && node --max-old-space-size=128 infra/security/semgrep-gate.mjs )",
+        "trace": [
+          "infra/security/command-audit.mjs",
+          "--max-old-space-size=128 infra/security/semgrep-gate.mjs"
+        ]
+      }
+    },
+    {
+      "name": "ssh-controlled-input",
+      "branch": "direct-ssh",
+      "classification": "CONTROLLED_REPLAY",
+      "oldDecision": "FAIL",
+      "standardDecision": "FAIL",
+      "rawPreserved": true,
+      "inputSha256": "8ab01805ba6fbc488d2973accf912815760ff22f9888061d6e968130c8331af5",
+      "rawSha256": "f94b07c772840a21cca12ca40a8f17103cccd1fb7c1b8ae91ce4f68d642b42fe",
+      "fixture": "ssh-controlled-input.json",
+      "stageCount": 1,
+      "originalParentShell": {
+        "exitStatus": 1,
+        "command": "( node infra/security/command-audit.mjs && node --max-old-space-size=128 infra/security/semgrep-gate.mjs )",
+        "trace": [
+          "infra/security/command-audit.mjs"
+        ]
+      },
+      "diagnostic": "Script command gate blocked; inspect command-audit.json"
+    },
+    {
+      "name": "ssh-fixed-host",
+      "branch": "direct-ssh",
+      "classification": "CONTROLLED_REPLAY",
+      "oldDecision": "FAIL",
+      "standardDecision": "FAIL",
+      "rawPreserved": true,
+      "inputSha256": "77e2a3aa8eafbffff23097990f6005cc54ea368e12b8152d2f2e15e810d2dcd7",
+      "rawSha256": "78107ba00e9aa684b083a79552e9722fb6b797febb065a4da393b4e19ac92ca8",
+      "fixture": "ssh-fixed-host.json",
+      "stageCount": 1,
+      "originalParentShell": {
+        "exitStatus": 1,
+        "command": "( node infra/security/command-audit.mjs && node --max-old-space-size=128 infra/security/semgrep-gate.mjs )",
+        "trace": [
+          "infra/security/command-audit.mjs"
+        ]
+      },
+      "diagnostic": "Script command gate blocked; inspect command-audit.json"
+    },
+    {
+      "name": "ssh-argv-source",
+      "branch": "direct-ssh",
+      "classification": "CONTROLLED_REPLAY",
+      "oldDecision": "FAIL",
+      "standardDecision": "FAIL",
+      "rawPreserved": true,
+      "inputSha256": "666e1948686c99cd68e5dc47f081a31f63565712f237bde3fb530c9ed3534d7e",
+      "rawSha256": "c85b7e74e2515eb92cb5cb0321e8400297b90e81aa164094146b9bd14f40bbdb",
+      "fixture": "ssh-argv-source.json",
+      "stageCount": 1,
+      "originalParentShell": {
+        "exitStatus": 1,
+        "command": "( node infra/security/command-audit.mjs && node --max-old-space-size=128 infra/security/semgrep-gate.mjs )",
+        "trace": [
+          "infra/security/command-audit.mjs"
+        ]
+      },
+      "diagnostic": "Script command gate blocked; inspect command-audit.json"
+    },
+    {
+      "name": "ssh-quote-safe",
+      "branch": "safe-control",
+      "classification": "CONTROLLED_REPLAY",
+      "oldDecision": "PASS",
+      "standardDecision": "PASS",
+      "rawPreserved": true,
+      "inputSha256": "bf3ff7196b0fef0cf2bfa9b5a4957a2e0b5862ca2761382d0c98047990be38d7",
+      "rawSha256": "64f3a5c99cfbad9551e09a6660168e3f09d598da2a276c3116627a8dde4dc0d7",
+      "fixture": "ssh-quote-safe.json",
+      "stageCount": 2,
+      "originalParentShell": {
+        "exitStatus": 0,
+        "command": "( node infra/security/command-audit.mjs && node --max-old-space-size=128 infra/security/semgrep-gate.mjs )",
+        "trace": [
+          "infra/security/command-audit.mjs",
+          "--max-old-space-size=128 infra/security/semgrep-gate.mjs"
+        ]
+      }
+    },
+    {
+      "name": "ssh-join-safe",
+      "branch": "safe-control",
+      "classification": "CONTROLLED_REPLAY",
+      "oldDecision": "PASS",
+      "standardDecision": "PASS",
+      "rawPreserved": true,
+      "inputSha256": "1fe845faddd5bc6763e6196f702c7de9f3343b3500378e051de4ce41acb3d33b",
+      "rawSha256": "9da4c24e68339691546f0da17b76bb3ffcec66fb7bed1d0cfb99ade68ac1fe37",
+      "fixture": "ssh-join-safe.json",
+      "stageCount": 2,
+      "originalParentShell": {
+        "exitStatus": 0,
+        "command": "( node infra/security/command-audit.mjs && node --max-old-space-size=128 infra/security/semgrep-gate.mjs )",
+        "trace": [
+          "infra/security/command-audit.mjs",
+          "--max-old-space-size=128 infra/security/semgrep-gate.mjs"
+        ]
+      }
+    },
+    {
+      "name": "ssh-file-origin-unknown",
+      "branch": "unconfirmed",
+      "classification": "CONTROLLED_REPLAY",
+      "oldDecision": "PASS",
+      "standardDecision": "PASS",
+      "rawPreserved": true,
+      "inputSha256": "1fda14458517bf83973ad3507e33b3bcac03de6b1d4a9882e9ec28e5c948d545",
+      "rawSha256": "d2c31521dcde983abc1235808009509d22ea8112596d608c1c443369b33bf12c",
+      "fixture": "ssh-file-origin-unknown.json",
+      "stageCount": 2,
+      "originalParentShell": {
+        "exitStatus": 0,
+        "command": "( node infra/security/command-audit.mjs && node --max-old-space-size=128 infra/security/semgrep-gate.mjs )",
+        "trace": [
+          "infra/security/command-audit.mjs",
+          "--max-old-space-size=128 infra/security/semgrep-gate.mjs"
+        ]
+      }
+    },
+    {
+      "name": "ssh-dynamic-loaded-alias",
+      "branch": "unconfirmed",
+      "classification": "CONTROLLED_REPLAY",
+      "oldDecision": "PASS",
+      "standardDecision": "PASS",
+      "rawPreserved": true,
+      "inputSha256": "08a47dc7ba8dc17ba0e6251077c3a4f8bf9005a30a9e8ebaf90fe07745324cbf",
+      "rawSha256": "3a6779fc2c75d0184ccfe118faa98d45f13175d8e56c928c2708da3bf9a0d1dc",
+      "fixture": "ssh-dynamic-loaded-alias.json",
+      "stageCount": 2,
+      "originalParentShell": {
+        "exitStatus": 0,
+        "command": "( node infra/security/command-audit.mjs && node --max-old-space-size=128 infra/security/semgrep-gate.mjs )",
+        "trace": [
+          "infra/security/command-audit.mjs",
+          "--max-old-space-size=128 infra/security/semgrep-gate.mjs"
+        ]
+      }
+    },
+    {
+      "name": "shell-code-argv",
+      "branch": "direct-interpreter",
+      "classification": "CONTROLLED_REPLAY",
+      "oldDecision": "FAIL",
+      "standardDecision": "FAIL",
+      "rawPreserved": true,
+      "inputSha256": "5fe1b955ac13d7a170fca6665e97449b632593e0846e682bf2d8c36e0068490b",
+      "rawSha256": "c21326a72a9570cd718940a00c7feba950778a490491ba563d394467e8c20898",
+      "fixture": "shell-code-argv.json",
+      "stageCount": 1,
+      "originalParentShell": {
+        "exitStatus": 1,
+        "command": "( node infra/security/command-audit.mjs && node --max-old-space-size=128 infra/security/semgrep-gate.mjs )",
+        "trace": [
+          "infra/security/command-audit.mjs"
+        ]
+      },
+      "diagnostic": "Script command gate blocked; inspect command-audit.json"
+    },
+    {
+      "name": "python-code-argv",
+      "branch": "direct-interpreter",
+      "classification": "CONTROLLED_REPLAY",
+      "oldDecision": "FAIL",
+      "standardDecision": "FAIL",
+      "rawPreserved": true,
+      "inputSha256": "e92310323cd256899f50587f455ecaa3b35c81694305c2bd8f382329dca65947",
+      "rawSha256": "a1809c02dacd5b48b644b8d5bf84aefe27ffdda759a2e6dc9d5a1b57ca359ee8",
+      "fixture": "python-code-argv.json",
+      "stageCount": 1,
+      "originalParentShell": {
+        "exitStatus": 1,
+        "command": "( node infra/security/command-audit.mjs && node --max-old-space-size=128 infra/security/semgrep-gate.mjs )",
+        "trace": [
+          "infra/security/command-audit.mjs"
+        ]
+      },
+      "diagnostic": "Script command gate blocked; inspect command-audit.json"
+    },
+    {
+      "name": "node-code-argv",
+      "branch": "direct-interpreter",
+      "classification": "CONTROLLED_REPLAY",
+      "oldDecision": "FAIL",
+      "standardDecision": "FAIL",
+      "rawPreserved": true,
+      "inputSha256": "f9da6b08ab91b3826f35ef4fd37668b573db4b4c663f1216c30ed80067031d04",
+      "rawSha256": "a0f6a2e0ebff1d29393663718bfb4fb0927721d48fa5b9c5a1d4fbfe899a11c3",
+      "fixture": "node-code-argv.json",
+      "stageCount": 1,
+      "originalParentShell": {
+        "exitStatus": 1,
+        "command": "( node infra/security/command-audit.mjs && node --max-old-space-size=128 infra/security/semgrep-gate.mjs )",
+        "trace": [
+          "infra/security/command-audit.mjs"
+        ]
+      },
+      "diagnostic": "Script command gate blocked; inspect command-audit.json"
+    },
+    {
+      "name": "interpreter-stdin",
+      "branch": "direct-interpreter",
+      "classification": "CONTROLLED_REPLAY",
+      "oldDecision": "FAIL",
+      "standardDecision": "FAIL",
+      "rawPreserved": true,
+      "inputSha256": "2f09ae8c482fd768f9c761b1a173b1df2f19a1699a105b75f168bc294999674a",
+      "rawSha256": "29e8109d0dca629d87472e3db6d3aab4c873aa334aa41f9052ad6441cac8d815",
+      "fixture": "interpreter-stdin.json",
+      "stageCount": 1,
+      "originalParentShell": {
+        "exitStatus": 1,
+        "command": "( node infra/security/command-audit.mjs && node --max-old-space-size=128 infra/security/semgrep-gate.mjs )",
+        "trace": [
+          "infra/security/command-audit.mjs"
+        ]
+      },
+      "diagnostic": "Script command gate blocked; inspect command-audit.json"
+    },
+    {
+      "name": "ssh-nested-join",
+      "branch": "nested-interpreter",
+      "classification": "CONTROLLED_REPLAY",
+      "oldDecision": "FAIL",
+      "standardDecision": "FAIL",
+      "rawPreserved": true,
+      "inputSha256": "52ffe82a4ffaaa677565db64df025a17d6407e18c67f1e87d80ab597c04ad54e",
+      "rawSha256": "c522064cd3429abfb6a48a097377bf1608d061b84d0e1e9e118feaf812690d6d",
+      "fixture": "ssh-nested-join.json",
+      "stageCount": 1,
+      "originalParentShell": {
+        "exitStatus": 1,
+        "command": "( node infra/security/command-audit.mjs && node --max-old-space-size=128 infra/security/semgrep-gate.mjs )",
+        "trace": [
+          "infra/security/command-audit.mjs"
+        ]
+      },
+      "diagnostic": "Script command gate blocked; inspect command-audit.json"
+    },
+    {
+      "name": "ssh-nested-outer-quote",
+      "branch": "nested-interpreter",
+      "classification": "CONTROLLED_REPLAY",
+      "oldDecision": "FAIL",
+      "standardDecision": "FAIL",
+      "rawPreserved": true,
+      "inputSha256": "37d0448206340a5fbd28fb1b504e06d635ac03b4eda87095368efde073e63a32",
+      "rawSha256": "750bb545d403ef7e03437ee52e31be097cf8d17a5b8ad5d225a5a360f840c33e",
+      "fixture": "ssh-nested-outer-quote.json",
+      "stageCount": 1,
+      "originalParentShell": {
+        "exitStatus": 1,
+        "command": "( node infra/security/command-audit.mjs && node --max-old-space-size=128 infra/security/semgrep-gate.mjs )",
+        "trace": [
+          "infra/security/command-audit.mjs"
+        ]
+      },
+      "diagnostic": "Script command gate blocked; inspect command-audit.json"
+    },
+    {
+      "name": "interpreter-environment",
+      "branch": "unconfirmed",
+      "classification": "CONTROLLED_REPLAY",
+      "oldDecision": "PASS",
+      "standardDecision": "PASS",
+      "rawPreserved": true,
+      "inputSha256": "86c608a37b56003d062c86eb3f8acc164f0de477c4693799ec9e9d6fedd23c68",
+      "rawSha256": "86a3a3316309e66709df128315e8b1ff1feb74227ab7015397dc903c134137b6",
+      "fixture": "interpreter-environment.json",
+      "stageCount": 2,
+      "originalParentShell": {
+        "exitStatus": 0,
+        "command": "( node infra/security/command-audit.mjs && node --max-old-space-size=128 infra/security/semgrep-gate.mjs )",
+        "trace": [
+          "infra/security/command-audit.mjs",
+          "--max-old-space-size=128 infra/security/semgrep-gate.mjs"
+        ]
+      }
+    },
+    {
+      "name": "interpreter-data-not-code",
+      "branch": "safe-control",
+      "classification": "CONTROLLED_REPLAY",
+      "oldDecision": "PASS",
+      "standardDecision": "PASS",
+      "rawPreserved": true,
+      "inputSha256": "18fcd4d3a3d6ca1678a2b23884821b9ddd08077193b8042308119a8300a0779b",
+      "rawSha256": "868a9182b4022eecfa31ddc1fd2a101160fbc10a0ff54ab6f6967bdcaa16b0be",
+      "fixture": "interpreter-data-not-code.json",
+      "stageCount": 2,
+      "originalParentShell": {
+        "exitStatus": 0,
+        "command": "( node infra/security/command-audit.mjs && node --max-old-space-size=128 infra/security/semgrep-gate.mjs )",
+        "trace": [
+          "infra/security/command-audit.mjs",
+          "--max-old-space-size=128 infra/security/semgrep-gate.mjs"
+        ]
+      }
+    },
+    {
+      "name": "interpreter-file-source-unknown",
+      "branch": "unconfirmed",
+      "classification": "CONTROLLED_REPLAY",
+      "oldDecision": "PASS",
+      "standardDecision": "PASS",
+      "rawPreserved": true,
+      "inputSha256": "1ef519159c5693e6a8378ae307ef2c866e41262297f0fdf0fe0d83faa8304b16",
+      "rawSha256": "8edf0efb6b6889183abef9e4f064215f062db6350e4ca49b1d04a2c09e6b9ac7",
+      "fixture": "interpreter-file-source-unknown.json",
+      "stageCount": 2,
+      "originalParentShell": {
+        "exitStatus": 0,
+        "command": "( node infra/security/command-audit.mjs && node --max-old-space-size=128 infra/security/semgrep-gate.mjs )",
+        "trace": [
+          "infra/security/command-audit.mjs",
+          "--max-old-space-size=128 infra/security/semgrep-gate.mjs"
+        ]
+      }
+    },
+    {
+      "name": "interpreter-quoted-code-unknown",
+      "branch": "unconfirmed",
+      "classification": "CONTROLLED_REPLAY",
+      "oldDecision": "PASS",
+      "standardDecision": "PASS",
+      "rawPreserved": true,
+      "inputSha256": "df88a37c027de2cd984c5a9ca99a354bfe620d310f480f0765df66fd92f3f51b",
+      "rawSha256": "6d52e9db131af0e56eea9b608a467ce35cbaa4aa3d9ab78f2ac55cb2687c94d6",
+      "fixture": "interpreter-quoted-code-unknown.json",
+      "stageCount": 2,
+      "originalParentShell": {
+        "exitStatus": 0,
+        "command": "( node infra/security/command-audit.mjs && node --max-old-space-size=128 infra/security/semgrep-gate.mjs )",
+        "trace": [
+          "infra/security/command-audit.mjs",
+          "--max-old-space-size=128 infra/security/semgrep-gate.mjs"
+        ]
+      }
+    },
+    {
+      "name": "malformed-Python",
+      "branch": "parser-error",
+      "classification": "CONTROLLED_REPLAY",
+      "oldDecision": "FAIL",
+      "standardDecision": "FAIL",
+      "rawPreserved": true,
+      "inputSha256": "e0e682b24ca7c4b5503e370b7002eb0e277c9d9355c170d87151975e8c91511b",
+      "rawSha256": "5c16aa6b24814400ad73541f0484d699322c5baf3c0976f38ee67a92a787f292",
+      "fixture": "malformed-Python.json",
+      "stageCount": 1,
+      "originalParentShell": {
+        "exitStatus": 1,
+        "command": "( node infra/security/command-audit.mjs && node --max-old-space-size=128 infra/security/semgrep-gate.mjs )",
+        "trace": [
+          "infra/security/command-audit.mjs"
+        ]
+      },
+      "diagnostic": "Unexpected end of JSON input"
+    },
+    {
+      "name": "shell-inventory-only",
+      "branch": "unconfirmed",
+      "classification": "CONTROLLED_REPLAY",
+      "oldDecision": "PASS",
+      "standardDecision": "PASS",
+      "rawPreserved": true,
+      "inputSha256": "54912bb4414ab58383d32cd52f5d71e332295f0ee3b99231685684c6cd124d1b",
+      "rawSha256": "c761bf08768942181c5671076cecd509252e7bacad427f6faa8c3b41962513bb",
+      "fixture": "shell-inventory-only.json",
+      "stageCount": 2,
+      "originalParentShell": {
+        "exitStatus": 0,
+        "command": "( node infra/security/command-audit.mjs && node --max-old-space-size=128 infra/security/semgrep-gate.mjs )",
+        "trace": [
+          "infra/security/command-audit.mjs",
+          "--max-old-space-size=128 infra/security/semgrep-gate.mjs"
+        ]
+      }
+    },
+    {
+      "name": "mjs-inventory-only",
+      "branch": "unconfirmed",
+      "classification": "CONTROLLED_REPLAY",
+      "oldDecision": "PASS",
+      "standardDecision": "PASS",
+      "rawPreserved": true,
+      "inputSha256": "4506d51e56ad91a40cf7c3af23935d9fe409ebbacea8490b93cde0b29b7e44a2",
+      "rawSha256": "b90b79b58a705d9521c2abb7c204ecd3b639db6a662a5556d58d3c02b45d995c",
+      "fixture": "mjs-inventory-only.json",
+      "stageCount": 2,
+      "originalParentShell": {
+        "exitStatus": 0,
+        "command": "( node infra/security/command-audit.mjs && node --max-old-space-size=128 infra/security/semgrep-gate.mjs )",
+        "trace": [
+          "infra/security/command-audit.mjs",
+          "--max-old-space-size=128 infra/security/semgrep-gate.mjs"
+        ]
+      }
+    },
+    {
+      "name": "historical-audit-report-replayed",
+      "branch": "historical-child",
+      "classification": "CONTROLLED_REPLAY",
+      "oldDecision": "PASS",
+      "standardDecision": "PASS",
+      "rawPreserved": true,
+      "inputSha256": "092dc08004bcf601a7a8fc03a20199bee2a7edf8cad402bf89dbece0b1181907",
+      "rawSha256": "06d0735d8c3911f3fadcb9485b574e686126f6e68558d51e1b5719d76dadcafc",
+      "fixture": "historical-audit-report-replayed.json",
+      "stageCount": 2,
+      "originalParentShell": {
+        "exitStatus": 0,
+        "command": "( node infra/security/command-audit.mjs && node --max-old-space-size=128 infra/security/semgrep-gate.mjs )",
+        "trace": [
+          "infra/security/command-audit.mjs",
+          "--max-old-space-size=128 infra/security/semgrep-gate.mjs"
+        ]
+      }
+    },
+    {
+      "name": "java-http-runtime-exec",
+      "branch": "direct-java",
+      "classification": "CONTROLLED_REPLAY",
+      "oldDecision": "FAIL",
+      "standardDecision": "FAIL",
+      "rawPreserved": true,
+      "inputSha256": "d37ca850c69b216db19344df1de4b05df4bbe0d455df7429fba3db99e2f4ca18",
+      "rawSha256": "6bd291e6246927bdecdf3e9cdaf0fb7eab4bfd7780dd46bb431bd4af40961b12",
+      "fixture": "java-http-runtime-exec.json",
+      "stageCount": 2,
+      "originalParentShell": {
+        "exitStatus": 1,
+        "command": "( node infra/security/command-audit.mjs && node --max-old-space-size=128 infra/security/semgrep-gate.mjs )",
+        "trace": [
+          "infra/security/command-audit.mjs",
+          "--max-old-space-size=128 infra/security/semgrep-gate.mjs"
+        ]
+      },
+      "diagnostic": "Reviewed high-confidence SAST findings: 1"
+    },
+    {
+      "name": "java-http-process-builder",
+      "branch": "direct-java",
+      "classification": "CONTROLLED_REPLAY",
+      "oldDecision": "FAIL",
+      "standardDecision": "FAIL",
+      "rawPreserved": true,
+      "inputSha256": "0c9ea5ed3b98270d9aaa65193002dc8432fbd26a13c1f7cd956ab36d3d56e8d5",
+      "rawSha256": "cf1171f2a305e884ea32b2a1319582c3829e79fd7c7e265652f363287cd74945",
+      "fixture": "java-http-process-builder.json",
+      "stageCount": 2,
+      "originalParentShell": {
+        "exitStatus": 1,
+        "command": "( node infra/security/command-audit.mjs && node --max-old-space-size=128 infra/security/semgrep-gate.mjs )",
+        "trace": [
+          "infra/security/command-audit.mjs",
+          "--max-old-space-size=128 infra/security/semgrep-gate.mjs"
+        ]
+      },
+      "diagnostic": "Reviewed high-confidence SAST findings: 1"
+    },
+    {
+      "name": "Java-direct-FAIL-even-finding-mode-warn",
+      "branch": "direct-java",
+      "classification": "CONTROLLED_REPLAY",
+      "oldDecision": "FAIL",
+      "standardDecision": "FAIL",
+      "rawPreserved": true,
+      "inputSha256": "bed39b830c54e149e17c1eba1d495b32e55c854b0c10280183ed26efd6d6677e",
+      "rawSha256": "32b7e16aa1f0b4a449fa8d5dda55370e75dccb416c3bf6e86a5d72b5a2512edd",
+      "fixture": "Java-direct-FAIL-even-finding-mode-warn.json",
+      "stageCount": 2,
+      "originalParentShell": {
+        "exitStatus": 1,
+        "command": "( node infra/security/command-audit.mjs && node --max-old-space-size=128 infra/security/semgrep-gate.mjs )",
+        "trace": [
+          "infra/security/command-audit.mjs",
+          "--max-old-space-size=128 infra/security/semgrep-gate.mjs"
+        ]
+      },
+      "diagnostic": "Reviewed high-confidence SAST findings: 1"
+    },
+    {
+      "name": "Java-generic-exec-is-warning-fact",
+      "branch": "unconfirmed",
+      "classification": "CONTROLLED_REPLAY",
+      "oldDecision": "PASS",
+      "standardDecision": "PASS",
+      "rawPreserved": true,
+      "inputSha256": "c04542ee62067f9f3b3a8ef0f18ded41ed2f3c3bb73b6fde9d145ac2d383e291",
+      "rawSha256": "d9807015fcfeabef42f16e7b7b4a2d3dded7ecddf319cd5251be0c1132b1caa4",
+      "fixture": "Java-generic-exec-is-warning-fact.json",
+      "stageCount": 2,
+      "originalParentShell": {
+        "exitStatus": 0,
+        "command": "( node infra/security/command-audit.mjs && node --max-old-space-size=128 infra/security/semgrep-gate.mjs )",
+        "trace": [
+          "infra/security/command-audit.mjs",
+          "--max-old-space-size=128 infra/security/semgrep-gate.mjs"
+        ]
+      }
+    },
+    {
+      "name": "Java-generic-builder-is-warning-fact",
+      "branch": "unconfirmed",
+      "classification": "CONTROLLED_REPLAY",
+      "oldDecision": "PASS",
+      "standardDecision": "PASS",
+      "rawPreserved": true,
+      "inputSha256": "494d9620938d66efde3601301cdb72e1e11c8adfbf14a93b6fba271a0e87db18",
+      "rawSha256": "b78e8881dab27976bbdb872259d693c387737cdb49e86c2d4ab7014c248b0416",
+      "fixture": "Java-generic-builder-is-warning-fact.json",
+      "stageCount": 2,
+      "originalParentShell": {
+        "exitStatus": 0,
+        "command": "( node infra/security/command-audit.mjs && node --max-old-space-size=128 infra/security/semgrep-gate.mjs )",
+        "trace": [
+          "infra/security/command-audit.mjs",
+          "--max-old-space-size=128 infra/security/semgrep-gate.mjs"
+        ]
+      }
+    },
+    {
+      "name": "Java-unreviewed-rule-is-warning-fact",
+      "branch": "unconfirmed",
+      "classification": "CONTROLLED_REPLAY",
+      "oldDecision": "PASS",
+      "standardDecision": "PASS",
+      "rawPreserved": true,
+      "inputSha256": "313cf98db87479fc6b5446c4cfc50d136d275df5ae14ecd64a41ccdaab9bd44e",
+      "rawSha256": "83c9e65278db6a31faed83d3bd9152012cc93fbfd19575a86af6e9e22a3f5c6a",
+      "fixture": "Java-unreviewed-rule-is-warning-fact.json",
+      "stageCount": 2,
+      "originalParentShell": {
+        "exitStatus": 0,
+        "command": "( node infra/security/command-audit.mjs && node --max-old-space-size=128 infra/security/semgrep-gate.mjs )",
+        "trace": [
+          "infra/security/command-audit.mjs",
+          "--max-old-space-size=128 infra/security/semgrep-gate.mjs"
+        ]
+      }
+    },
+    {
+      "name": "Java-direct-low-severity-remains-warning",
+      "branch": "unconfirmed",
+      "classification": "CONTROLLED_REPLAY",
+      "oldDecision": "PASS",
+      "standardDecision": "PASS",
+      "rawPreserved": true,
+      "inputSha256": "a55ac2696b9912fc502f40f91db2ac9eb1dc5c2295a7a84995d4e7fc275e3500",
+      "rawSha256": "89142627c4f5243775e8b4fe91d3f84b119c16b0bbb36b0934c5d1f0ba0c1156",
+      "fixture": "Java-direct-low-severity-remains-warning.json",
+      "stageCount": 2,
+      "originalParentShell": {
+        "exitStatus": 0,
+        "command": "( node infra/security/command-audit.mjs && node --max-old-space-size=128 infra/security/semgrep-gate.mjs )",
+        "trace": [
+          "infra/security/command-audit.mjs",
+          "--max-old-space-size=128 infra/security/semgrep-gate.mjs"
+        ]
+      }
+    },
+    {
+      "name": "existing-weak-cipher-parent-rule-not-removed",
+      "branch": "existing-parent-rule",
+      "classification": "CONTROLLED_REPLAY",
+      "oldDecision": "FAIL",
+      "standardDecision": "FAIL",
+      "rawPreserved": true,
+      "inputSha256": "d9fe8683dd70d11eaf9e2047da4d62d19b806ac91d019b91f4765fea5a2980b7",
+      "rawSha256": "f98774e03de2c6d95f48dee746f6a6e8ac7df44056ae494fa595b27f1d34904c",
+      "fixture": "existing-weak-cipher-parent-rule-not-removed.json",
+      "stageCount": 2,
+      "originalParentShell": {
+        "exitStatus": 1,
+        "command": "( node infra/security/command-audit.mjs && node --max-old-space-size=128 infra/security/semgrep-gate.mjs )",
+        "trace": [
+          "infra/security/command-audit.mjs",
+          "--max-old-space-size=128 infra/security/semgrep-gate.mjs"
+        ]
+      },
+      "diagnostic": "Reviewed high-confidence SAST findings: 1"
+    },
+    {
+      "name": "command-audit-create-failed",
+      "branch": "lifecycle",
+      "classification": "CONTROLLED_REPLAY",
+      "oldDecision": "FAIL",
+      "standardDecision": "FAIL",
+      "rawPreserved": true,
+      "inputSha256": "a816c14949d80e972a486740d26db0fd4f8da4c78ac77641f399d3f4b61553c4",
+      "rawSha256": "044bf76e87d33cbdc2b56db984b9b29a0799ef7882d66eea3e3a846e35a55120",
+      "fixture": "command-audit-create-failed.json",
+      "stageCount": 1,
+      "originalParentShell": {
+        "exitStatus": 1,
+        "command": "( node infra/security/command-audit.mjs && node --max-old-space-size=128 infra/security/semgrep-gate.mjs )",
+        "trace": [
+          "infra/security/command-audit.mjs"
+        ]
+      },
+      "diagnostic": "kubectl failed (1): create failed"
+    },
+    {
+      "name": "command-audit-ready-failed",
+      "branch": "lifecycle",
+      "classification": "CONTROLLED_REPLAY",
+      "oldDecision": "FAIL",
+      "standardDecision": "FAIL",
+      "rawPreserved": true,
+      "inputSha256": "8eb707d676e625f9ca6e089e8fe997d22329cd8b37b574cbc4aa8b7d6d8389d6",
+      "rawSha256": "235c43c74d764860b473f08db06660230c087cd7cfa497de761bffac928d82c7",
+      "fixture": "command-audit-ready-failed.json",
+      "stageCount": 1,
+      "originalParentShell": {
+        "exitStatus": 1,
+        "command": "( node infra/security/command-audit.mjs && node --max-old-space-size=128 infra/security/semgrep-gate.mjs )",
+        "trace": [
+          "infra/security/command-audit.mjs"
+        ]
+      },
+      "diagnostic": "kubectl failed (1): readiness timeout"
+    },
+    {
+      "name": "command-audit-delete-failed",
+      "branch": "lifecycle",
+      "classification": "CONTROLLED_REPLAY",
+      "oldDecision": "FAIL",
+      "standardDecision": "FAIL",
+      "rawPreserved": true,
+      "inputSha256": "f1aa4706e4801f1a3580f6896cc1816b3ec172b568b228efae7123b4c197646e",
+      "rawSha256": "376107581aabe470b21bdfee7d134bd812c79ccb94b055f02ee570f01513e625",
+      "fixture": "command-audit-delete-failed.json",
+      "stageCount": 1,
+      "originalParentShell": {
+        "exitStatus": 1,
+        "command": "( node infra/security/command-audit.mjs && node --max-old-space-size=128 infra/security/semgrep-gate.mjs )",
+        "trace": [
+          "infra/security/command-audit.mjs"
+        ]
+      },
+      "diagnostic": "kubectl failed (1): delete failed"
+    },
+    {
+      "name": "command-audit-replacement-UID-preserved",
+      "branch": "identity",
+      "classification": "CONTROLLED_REPLAY",
+      "oldDecision": "FAIL",
+      "standardDecision": "FAIL",
+      "rawPreserved": true,
+      "inputSha256": "6ce090691128ce635654274ff05f1e861f4ff8056015a40127410328eeb790c9",
+      "rawSha256": "86f9c42d0ae8e8ba3978bd14fc31ae8cc670cf1ad51f4a20208b33e4db6b32d0",
+      "fixture": "command-audit-replacement-UID-preserved.json",
+      "stageCount": 1,
+      "originalParentShell": {
+        "exitStatus": 1,
+        "command": "( node infra/security/command-audit.mjs && node --max-old-space-size=128 infra/security/semgrep-gate.mjs )",
+        "trace": [
+          "infra/security/command-audit.mjs"
+        ]
+      },
+      "diagnostic": "Foreign audit Pod preserved"
+    },
+    {
+      "name": "semgrep-create-failed",
+      "branch": "lifecycle",
+      "classification": "CONTROLLED_REPLAY",
+      "oldDecision": "FAIL",
+      "standardDecision": "FAIL",
+      "rawPreserved": true,
+      "inputSha256": "d88b5a57d2c0b177bf28b30b221f9214c55a951a8c21f5f29dc979bcb9680b08",
+      "rawSha256": "e870ade09f479077dd32e82735aae524c1aa1445746277a799df1a944a3c8796",
+      "fixture": "semgrep-create-failed.json",
+      "stageCount": 2,
+      "originalParentShell": {
+        "exitStatus": 1,
+        "command": "( node infra/security/command-audit.mjs && node --max-old-space-size=128 infra/security/semgrep-gate.mjs )",
+        "trace": [
+          "infra/security/command-audit.mjs",
+          "--max-old-space-size=128 infra/security/semgrep-gate.mjs"
+        ]
+      },
+      "diagnostic": "kubectl failed (1): create failed"
+    },
+    {
+      "name": "semgrep-ready-failed",
+      "branch": "lifecycle",
+      "classification": "CONTROLLED_REPLAY",
+      "oldDecision": "FAIL",
+      "standardDecision": "FAIL",
+      "rawPreserved": true,
+      "inputSha256": "8d346fd7eb98979e67857d290b2bda0b0a436bdf4a4ce9cfbbdec7855ab0f89e",
+      "rawSha256": "a955ecef121365373473c7348b55a860b6c0b01dcb707010561ddffdd5a62eb8",
+      "fixture": "semgrep-ready-failed.json",
+      "stageCount": 2,
+      "originalParentShell": {
+        "exitStatus": 1,
+        "command": "( node infra/security/command-audit.mjs && node --max-old-space-size=128 infra/security/semgrep-gate.mjs )",
+        "trace": [
+          "infra/security/command-audit.mjs",
+          "--max-old-space-size=128 infra/security/semgrep-gate.mjs"
+        ]
+      },
+      "diagnostic": "kubectl failed (1): readiness timeout"
+    },
+    {
+      "name": "semgrep-delete-failed",
+      "branch": "lifecycle",
+      "classification": "CONTROLLED_REPLAY",
+      "oldDecision": "FAIL",
+      "standardDecision": "FAIL",
+      "rawPreserved": true,
+      "inputSha256": "c2252171df3829fa6294befb67238a1c45f149a46a4df7f56e439b096bcf2fcf",
+      "rawSha256": "bf0d75ed4552bfbe5575fefb863bd08512ad3bca7d9e5140ccac69826b3a3961",
+      "fixture": "semgrep-delete-failed.json",
+      "stageCount": 2,
+      "originalParentShell": {
+        "exitStatus": 1,
+        "command": "( node infra/security/command-audit.mjs && node --max-old-space-size=128 infra/security/semgrep-gate.mjs )",
+        "trace": [
+          "infra/security/command-audit.mjs",
+          "--max-old-space-size=128 infra/security/semgrep-gate.mjs"
+        ]
+      },
+      "diagnostic": "kubectl failed (1): delete failed"
+    },
+    {
+      "name": "semgrep-replacement-UID-preserved",
+      "branch": "identity",
+      "classification": "CONTROLLED_REPLAY",
+      "oldDecision": "FAIL",
+      "standardDecision": "FAIL",
+      "rawPreserved": true,
+      "inputSha256": "33fee15a68d4f2bd38e2235f85b0ee26d8e465a219694e9f6959662a8be7ccc7",
+      "rawSha256": "eb1effbe7390b773aa5943a2efd2d9ddca1ecc7e94832e6c986e8f593f6d29a9",
+      "fixture": "semgrep-replacement-UID-preserved.json",
+      "stageCount": 2,
+      "originalParentShell": {
+        "exitStatus": 1,
+        "command": "( node infra/security/command-audit.mjs && node --max-old-space-size=128 infra/security/semgrep-gate.mjs )",
+        "trace": [
+          "infra/security/command-audit.mjs",
+          "--max-old-space-size=128 infra/security/semgrep-gate.mjs"
+        ]
+      },
+      "diagnostic": "Replacement scanner preserved"
+    },
+    {
+      "name": "audit-delete-wait-failure",
+      "branch": "lifecycle",
+      "classification": "CONTROLLED_REPLAY",
+      "oldDecision": "FAIL",
+      "standardDecision": "FAIL",
+      "rawPreserved": true,
+      "inputSha256": "4567d61398a77949b57a634679630ab7d0cf0eff97edb2fd12d8127921f3e801",
+      "rawSha256": "f5b3ae3f8a5b79822d8b8ad258549e83c7c097ef9241cc7fe29c81efc64d33ce",
+      "fixture": "audit-delete-wait-failure.json",
+      "stageCount": 1,
+      "originalParentShell": {
+        "exitStatus": 1,
+        "command": "( node infra/security/command-audit.mjs && node --max-old-space-size=128 infra/security/semgrep-gate.mjs )",
+        "trace": [
+          "infra/security/command-audit.mjs"
+        ]
+      },
+      "diagnostic": "kubectl failed (1): delete wait failed"
+    },
+    {
+      "name": "scanner-cleanup-incomplete",
+      "branch": "lifecycle",
+      "classification": "CONTROLLED_REPLAY",
+      "oldDecision": "FAIL",
+      "standardDecision": "FAIL",
+      "rawPreserved": true,
+      "inputSha256": "d1d541ef29524bceefffaddefb1d1972902eac5cb89de7b9e1c032fc622ca86e",
+      "rawSha256": "c2be18d5ac127e1a6753ef62e70e8e68ae021d797ea3ec6f28fd6b884dd8de81",
+      "fixture": "scanner-cleanup-incomplete.json",
+      "stageCount": 2,
+      "originalParentShell": {
+        "exitStatus": 1,
+        "command": "( node infra/security/command-audit.mjs && node --max-old-space-size=128 infra/security/semgrep-gate.mjs )",
+        "trace": [
+          "infra/security/command-audit.mjs",
+          "--max-old-space-size=128 infra/security/semgrep-gate.mjs"
+        ]
+      },
+      "diagnostic": "Scanner cleanup incomplete"
+    },
+    {
+      "name": "foreign-heavy-Lease",
+      "branch": "prerequisite",
+      "classification": "CONTROLLED_REPLAY",
+      "oldDecision": "FAIL",
+      "standardDecision": "FAIL",
+      "rawPreserved": true,
+      "inputSha256": "cddd92c276d401d1bfb5d8460de0e0babf7b7dbe54c08842faf467b974e440e5",
+      "rawSha256": "5564889aed58ec022d701410ae725f00dbf6f66819bde5273d241b3c6b234e77",
+      "fixture": "foreign-heavy-Lease.json",
+      "stageCount": 1,
+      "originalParentShell": {
+        "exitStatus": 1,
+        "command": "( node infra/security/command-audit.mjs && node --max-old-space-size=128 infra/security/semgrep-gate.mjs )",
+        "trace": [
+          "infra/security/command-audit.mjs"
+        ]
+      },
+      "diagnostic": "Existing outer heavy Lease required; nested acquisition forbidden"
+    },
+    {
+      "name": "manifest-hash-mismatch",
+      "branch": "prerequisite",
+      "classification": "CONTROLLED_REPLAY",
+      "oldDecision": "FAIL",
+      "standardDecision": "FAIL",
+      "rawPreserved": true,
+      "inputSha256": "f33ece3c7dc9f1b0caa41662fcaf73c4d9988be649e0b5fc88f7497cbad09779",
+      "rawSha256": "c0114a34fa4c13b6e2908e1d47aa53f9f5b204ffc526f929c1b960fb67425d20",
+      "fixture": "manifest-hash-mismatch.json",
+      "stageCount": 1,
+      "originalParentShell": {
+        "exitStatus": 1,
+        "command": "( node infra/security/command-audit.mjs && node --max-old-space-size=128 infra/security/semgrep-gate.mjs )",
+        "trace": [
+          "infra/security/command-audit.mjs"
+        ]
+      },
+      "diagnostic": "Locked scanner tool manifest mismatch"
+    },
+    {
+      "name": "malformed-manifest",
+      "branch": "malformed",
+      "classification": "CONTROLLED_REPLAY",
+      "oldDecision": "FAIL",
+      "standardDecision": "FAIL",
+      "rawPreserved": true,
+      "inputSha256": "be056e2b04c95f86f28c40298577a63449923b98ba51eb020d2dcfc054db7947",
+      "rawSha256": "771f33b6785837eb84ec4e113597e630734105a666e026e659fb516acd2b3195",
+      "fixture": "malformed-manifest.json",
+      "stageCount": 1,
+      "originalParentShell": {
+        "exitStatus": 1,
+        "command": "( node infra/security/command-audit.mjs && node --max-old-space-size=128 infra/security/semgrep-gate.mjs )",
+        "trace": [
+          "infra/security/command-audit.mjs"
+        ]
+      },
+      "diagnostic": "Expected property name or '}' in JSON at position 1 (line 1 column 2)"
+    },
+    {
+      "name": "semgrep-tool-hash-mismatch",
+      "branch": "prerequisite",
+      "classification": "CONTROLLED_REPLAY",
+      "oldDecision": "FAIL",
+      "standardDecision": "FAIL",
+      "rawPreserved": true,
+      "inputSha256": "0b7f06959ef56d060ac7399fac4f225ff0bcc5a36723e3582ae22b9a40d554eb",
+      "rawSha256": "7484ad040fa1475996e236fe9fd406730ca6557fab28cb360f984482cd823d01",
+      "fixture": "semgrep-tool-hash-mismatch.json",
+      "stageCount": 2,
+      "originalParentShell": {
+        "exitStatus": 1,
+        "command": "( node infra/security/command-audit.mjs && node --max-old-space-size=128 infra/security/semgrep-gate.mjs )",
+        "trace": [
+          "infra/security/command-audit.mjs",
+          "--max-old-space-size=128 infra/security/semgrep-gate.mjs"
+        ]
+      },
+      "diagnostic": "Tool changed: semgrep/__init__.py"
+    },
+    {
+      "name": "semgrep-tool-file-missing",
+      "branch": "prerequisite",
+      "classification": "CONTROLLED_REPLAY",
+      "oldDecision": "FAIL",
+      "standardDecision": "FAIL",
+      "rawPreserved": true,
+      "inputSha256": "1da7788a28236726e3883c88d7eb0e0c90a883a35fb7279655df98dadd2c1edd",
+      "rawSha256": "2ec674dd3f715805786020d76a31dfbe0232adad0f751aa15b7a51dbcda8b4ab",
+      "fixture": "semgrep-tool-file-missing.json",
+      "stageCount": 2,
+      "originalParentShell": {
+        "exitStatus": 1,
+        "command": "( node infra/security/command-audit.mjs && node --max-old-space-size=128 infra/security/semgrep-gate.mjs )",
+        "trace": [
+          "infra/security/command-audit.mjs",
+          "--max-old-space-size=128 infra/security/semgrep-gate.mjs"
+        ]
+      },
+      "diagnostic": "Tool unavailable"
+    },
+    {
+      "name": "scanner-securityProbe-failure",
+      "branch": "execution",
+      "classification": "CONTROLLED_REPLAY",
+      "oldDecision": "FAIL",
+      "standardDecision": "FAIL",
+      "rawPreserved": true,
+      "inputSha256": "7c242c7ee672332d0152049ee9ed673252a9291c766f97833a7aa47a0258d020",
+      "rawSha256": "91449e935f7d8da73172bfb607e6c38d3f003ecde3437234327f5d7029fd9577",
+      "fixture": "scanner-securityProbe-failure.json",
+      "stageCount": 2,
+      "originalParentShell": {
+        "exitStatus": 1,
+        "command": "( node infra/security/command-audit.mjs && node --max-old-space-size=128 infra/security/semgrep-gate.mjs )",
+        "trace": [
+          "infra/security/command-audit.mjs",
+          "--max-old-space-size=128 infra/security/semgrep-gate.mjs"
+        ]
+      },
+      "diagnostic": "kubectl failed (1): security probe failed"
+    },
+    {
+      "name": "scanner-sourceTransfer-failure",
+      "branch": "execution",
+      "classification": "CONTROLLED_REPLAY",
+      "oldDecision": "FAIL",
+      "standardDecision": "FAIL",
+      "rawPreserved": true,
+      "inputSha256": "b0bda8fb73ebeaa9db70b12ae96cd0e82fda8edc9049342bb6a8bfbb7c07a1b6",
+      "rawSha256": "e83c3d7f841dc3add8f07c426de8689e762f1b5886e0e820ccbd6cbeb5094479",
+      "fixture": "scanner-sourceTransfer-failure.json",
+      "stageCount": 2,
+      "originalParentShell": {
+        "exitStatus": 1,
+        "command": "( node infra/security/command-audit.mjs && node --max-old-space-size=128 infra/security/semgrep-gate.mjs )",
+        "trace": [
+          "infra/security/command-audit.mjs",
+          "--max-old-space-size=128 infra/security/semgrep-gate.mjs"
+        ]
+      },
+      "diagnostic": "Bounded archive transfer failed"
+    },
+    {
+      "name": "scanner-sourceArchive-failure",
+      "branch": "execution",
+      "classification": "CONTROLLED_REPLAY",
+      "oldDecision": "FAIL",
+      "standardDecision": "FAIL",
+      "rawPreserved": true,
+      "inputSha256": "1e7b4f61d01f0b8d27ceac5942f565556621c89aae3b6a1a08e74f2a5233b3d9",
+      "rawSha256": "28ce922c5eb21890231be13772d97a84398592de953b64668ca994ffc7339cf8",
+      "fixture": "scanner-sourceArchive-failure.json",
+      "stageCount": 2,
+      "originalParentShell": {
+        "exitStatus": 1,
+        "command": "( node infra/security/command-audit.mjs && node --max-old-space-size=128 infra/security/semgrep-gate.mjs )",
+        "trace": [
+          "infra/security/command-audit.mjs",
+          "--max-old-space-size=128 infra/security/semgrep-gate.mjs"
+        ]
+      },
+      "diagnostic": "Exact-source transfer failed"
+    },
+    {
+      "name": "scanner-toolTransfer-failure",
+      "branch": "execution",
+      "classification": "CONTROLLED_REPLAY",
+      "oldDecision": "FAIL",
+      "standardDecision": "FAIL",
+      "rawPreserved": true,
+      "inputSha256": "e54fec10925e345465874e653623ac1224cc96c905e278885ca3b85f0acee74c",
+      "rawSha256": "11e3fa23d02d9d647e37b2ad86945cdeaaf83b763060689d6b2af62e4627485c",
+      "fixture": "scanner-toolTransfer-failure.json",
+      "stageCount": 2,
+      "originalParentShell": {
+        "exitStatus": 1,
+        "command": "( node infra/security/command-audit.mjs && node --max-old-space-size=128 infra/security/semgrep-gate.mjs )",
+        "trace": [
+          "infra/security/command-audit.mjs",
+          "--max-old-space-size=128 infra/security/semgrep-gate.mjs"
+        ]
+      },
+      "diagnostic": "Bounded archive transfer failed"
+    },
+    {
+      "name": "scanner-fixtureWrites-failure",
+      "branch": "execution",
+      "classification": "CONTROLLED_REPLAY",
+      "oldDecision": "FAIL",
+      "standardDecision": "FAIL",
+      "rawPreserved": true,
+      "inputSha256": "7407544eb4e08fa01483ee653c1e60d5cf5994da7bebdacbfbdd42f85791a96d",
+      "rawSha256": "2839c39b783086d70b0c45b2cc72d62b2e7ea06996d1bf8f66fc70d2aba3190e",
+      "fixture": "scanner-fixtureWrites-failure.json",
+      "stageCount": 2,
+      "originalParentShell": {
+        "exitStatus": 1,
+        "command": "( node infra/security/command-audit.mjs && node --max-old-space-size=128 infra/security/semgrep-gate.mjs )",
+        "trace": [
+          "infra/security/command-audit.mjs",
+          "--max-old-space-size=128 infra/security/semgrep-gate.mjs"
+        ]
+      },
+      "diagnostic": "kubectl failed (1): fixture transfer failed"
+    },
+    {
+      "name": "scanner-find-failure",
+      "branch": "execution",
+      "classification": "CONTROLLED_REPLAY",
+      "oldDecision": "FAIL",
+      "standardDecision": "FAIL",
+      "rawPreserved": true,
+      "inputSha256": "6fd58fa70a33192afc74c7c77cc59df010e61690d9c9c2301dbb7d2fe467c125",
+      "rawSha256": "d77a9363d7dc47324e2aee0c050fff7674c31df05cedb41554b7110b18f6d31c",
+      "fixture": "scanner-find-failure.json",
+      "stageCount": 2,
+      "originalParentShell": {
+        "exitStatus": 1,
+        "command": "( node infra/security/command-audit.mjs && node --max-old-space-size=128 infra/security/semgrep-gate.mjs )",
+        "trace": [
+          "infra/security/command-audit.mjs",
+          "--max-old-space-size=128 infra/security/semgrep-gate.mjs"
+        ]
+      },
+      "diagnostic": "kubectl failed (1): find failed"
+    },
+    {
+      "name": "canaryWorks-failed",
+      "branch": "isolation",
+      "classification": "CONTROLLED_REPLAY",
+      "oldDecision": "FAIL",
+      "standardDecision": "FAIL",
+      "rawPreserved": true,
+      "inputSha256": "4f87b0f801d99071749433a33c6065de5f107d8f59fd725e4d1b1027773f0641",
+      "rawSha256": "ba8f52b3229ba3c67a79cca55d9f6b6e32266814a44175055408eba7ec9a2560",
+      "fixture": "canaryWorks-failed.json",
+      "stageCount": 2,
+      "originalParentShell": {
+        "exitStatus": 1,
+        "command": "( node infra/security/command-audit.mjs && node --max-old-space-size=128 infra/security/semgrep-gate.mjs )",
+        "trace": [
+          "infra/security/command-audit.mjs",
+          "--max-old-space-size=128 infra/security/semgrep-gate.mjs"
+        ]
+      },
+      "diagnostic": "canary baseline failed"
+    },
+    {
+      "name": "canaryListen-failed",
+      "branch": "isolation",
+      "classification": "CONTROLLED_REPLAY",
+      "oldDecision": "FAIL",
+      "standardDecision": "FAIL",
+      "rawPreserved": true,
+      "inputSha256": "e21a8207a64eb4da6f5b71b54febe22eefb3b935bfd55d4641037471919fbd82",
+      "rawSha256": "f35f71037cd64c188135ae81f4dd43e4dca70b00cc3d4bcd1aeeb649e87bf1cb",
+      "fixture": "canaryListen-failed.json",
+      "stageCount": 2,
+      "originalParentShell": {
+        "exitStatus": 1,
+        "command": "( node infra/security/command-audit.mjs && node --max-old-space-size=128 infra/security/semgrep-gate.mjs )",
+        "trace": [
+          "infra/security/command-audit.mjs",
+          "--max-old-space-size=128 infra/security/semgrep-gate.mjs"
+        ]
+      },
+      "diagnostic": "canary listen failed"
+    },
+    {
+      "name": "isolationDenied-failed",
+      "branch": "isolation",
+      "classification": "CONTROLLED_REPLAY",
+      "oldDecision": "FAIL",
+      "standardDecision": "FAIL",
+      "rawPreserved": true,
+      "inputSha256": "8ceb8065846a9c62c4575754c99a43b3a85e8328a3d0a825871a1c739a5ae4d9",
+      "rawSha256": "3b6d3744ce94dcacf298f134dcfd0f9631c6bd283957e5365c7458ffa9597468",
+      "fixture": "isolationDenied-failed.json",
+      "stageCount": 2,
+      "originalParentShell": {
+        "exitStatus": 1,
+        "command": "( node infra/security/command-audit.mjs && node --max-old-space-size=128 infra/security/semgrep-gate.mjs )",
+        "trace": [
+          "infra/security/command-audit.mjs",
+          "--max-old-space-size=128 infra/security/semgrep-gate.mjs"
+        ]
+      },
+      "diagnostic": "Network isolation not proven; tool/source transfer refused"
+    },
+    {
+      "name": "unmeasured-Jenkins-IP",
+      "branch": "isolation",
+      "classification": "CONTROLLED_REPLAY",
+      "oldDecision": "FAIL",
+      "standardDecision": "FAIL",
+      "rawPreserved": true,
+      "inputSha256": "c0161170e5dbce234aabc6f91e16696fb8e3fb6c6f8d3778f8a0623d24109402",
+      "rawSha256": "584be9640bb3f30bb31a1fb3bd969172b5d5243d0a3c5516bcefa335e24e3f9c",
+      "fixture": "unmeasured-Jenkins-IP.json",
+      "stageCount": 2,
+      "originalParentShell": {
+        "exitStatus": 1,
+        "command": "( node infra/security/command-audit.mjs && node --max-old-space-size=128 infra/security/semgrep-gate.mjs )",
+        "trace": [
+          "infra/security/command-audit.mjs",
+          "--max-old-space-size=128 infra/security/semgrep-gate.mjs"
+        ]
+      },
+      "diagnostic": "Measured Jenkins Pod IP required"
+    },
+    {
+      "name": "empty-Java-file-list",
+      "branch": "missing",
+      "classification": "CONTROLLED_REPLAY",
+      "oldDecision": "FAIL",
+      "standardDecision": "FAIL",
+      "rawPreserved": true,
+      "inputSha256": "aa284a1ffe1915616d02f5b1bb6da7ed07a88fc9dc69db283d159b8de7391bab",
+      "rawSha256": "d5c442518b6e4038ef395d5db0f36e84f84a28064183949ce0d3541c4cb44282",
+      "fixture": "empty-Java-file-list.json",
+      "stageCount": 2,
+      "originalParentShell": {
+        "exitStatus": 1,
+        "command": "( node infra/security/command-audit.mjs && node --max-old-space-size=128 infra/security/semgrep-gate.mjs )",
+        "trace": [
+          "infra/security/command-audit.mjs",
+          "--max-old-space-size=128 infra/security/semgrep-gate.mjs"
+        ]
+      },
+      "diagnostic": "Bounded nonempty Java source list required"
+    },
+    {
+      "name": "unbounded-Java-file-list",
+      "branch": "bounds",
+      "classification": "CONTROLLED_REPLAY",
+      "oldDecision": "FAIL",
+      "standardDecision": "FAIL",
+      "rawPreserved": true,
+      "inputSha256": "bb16b3cbe891e8de585d2782f08683c4eca630ead405e854a96d1617a93db7ee",
+      "rawSha256": "82d0ae11e16bdbdf27e0dcdf0bf3518b171d5b206b88c8d72a61132ce79821ad",
+      "fixture": "unbounded-Java-file-list.json",
+      "stageCount": 2,
+      "originalParentShell": {
+        "exitStatus": 1,
+        "command": "( node infra/security/command-audit.mjs && node --max-old-space-size=128 infra/security/semgrep-gate.mjs )",
+        "trace": [
+          "infra/security/command-audit.mjs",
+          "--max-old-space-size=128 infra/security/semgrep-gate.mjs"
+        ]
+      },
+      "diagnostic": "Bounded nonempty Java source list required"
+    },
+    {
+      "name": "Java-file-outside-target",
+      "branch": "identity",
+      "classification": "CONTROLLED_REPLAY",
+      "oldDecision": "FAIL",
+      "standardDecision": "FAIL",
+      "rawPreserved": true,
+      "inputSha256": "6d31dbaca943e51a9e2c89940fe859a9a2bea68ef60489e3805a84721f5863f8",
+      "rawSha256": "2b460805fe23e5182bce4db3829bf45893afb9830183795eef89cea5f32db290",
+      "fixture": "Java-file-outside-target.json",
+      "stageCount": 2,
+      "originalParentShell": {
+        "exitStatus": 1,
+        "command": "( node infra/security/command-audit.mjs && node --max-old-space-size=128 infra/security/semgrep-gate.mjs )",
+        "trace": [
+          "infra/security/command-audit.mjs",
+          "--max-old-space-size=128 infra/security/semgrep-gate.mjs"
+        ]
+      },
+      "diagnostic": "Unexpected target path"
+    },
+    {
+      "name": "positive-parser-error",
+      "branch": "parser-error",
+      "classification": "CONTROLLED_REPLAY",
+      "oldDecision": "FAIL",
+      "standardDecision": "FAIL",
+      "rawPreserved": true,
+      "inputSha256": "faaa5030b9edc677104ad23b5ca425e65c34a8b1f9b7009c98aac89eb34ca840",
+      "rawSha256": "c0aebe07e7b00f4aaf20b1e7a948e8a0bccaf4e6a883c2bcb8938d69d189f472",
+      "fixture": "positive-parser-error.json",
+      "stageCount": 2,
+      "originalParentShell": {
+        "exitStatus": 1,
+        "command": "( node infra/security/command-audit.mjs && node --max-old-space-size=128 infra/security/semgrep-gate.mjs )",
+        "trace": [
+          "infra/security/command-audit.mjs",
+          "--max-old-space-size=128 infra/security/semgrep-gate.mjs"
+        ]
+      },
+      "diagnostic": "Semgrep parse/scan errors are blocking"
+    },
+    {
+      "name": "positive-malformed-JSON",
+      "branch": "malformed",
+      "classification": "CONTROLLED_REPLAY",
+      "oldDecision": "FAIL",
+      "standardDecision": "FAIL",
+      "rawPreserved": true,
+      "inputSha256": "d8ff4d54b17a7864a2c561f910f33de62d7735a0b819dafa15a2473cd5858730",
+      "rawSha256": "532264486823f2738b6d1d77f03544aa395d92c01796c84832800eb4be194f42",
+      "fixture": "positive-malformed-JSON.json",
+      "stageCount": 2,
+      "originalParentShell": {
+        "exitStatus": 1,
+        "command": "( node infra/security/command-audit.mjs && node --max-old-space-size=128 infra/security/semgrep-gate.mjs )",
+        "trace": [
+          "infra/security/command-audit.mjs",
+          "--max-old-space-size=128 infra/security/semgrep-gate.mjs"
+        ]
+      },
+      "diagnostic": "Expected property name or '}' in JSON at position 1 (line 1 column 2)"
+    },
+    {
+      "name": "positive-scanner-timeout",
+      "branch": "execution",
+      "classification": "CONTROLLED_REPLAY",
+      "oldDecision": "FAIL",
+      "standardDecision": "FAIL",
+      "rawPreserved": true,
+      "inputSha256": "9e9f55afd88382c43643e0ec40a39ca5d4ce53bcfaf191c84c8ce07feec6bc2f",
+      "rawSha256": "4302caa52d352d9ca4672d29de4484190174833e0453ed847f1d86de72e01cbc",
+      "fixture": "positive-scanner-timeout.json",
+      "stageCount": 2,
+      "originalParentShell": {
+        "exitStatus": 1,
+        "command": "( node infra/security/command-audit.mjs && node --max-old-space-size=128 infra/security/semgrep-gate.mjs )",
+        "trace": [
+          "infra/security/command-audit.mjs",
+          "--max-old-space-size=128 infra/security/semgrep-gate.mjs"
+        ]
+      },
+      "diagnostic": "kubectl failed (null): timeout"
+    },
+    {
+      "name": "negative-parser-error",
+      "branch": "parser-error",
+      "classification": "CONTROLLED_REPLAY",
+      "oldDecision": "FAIL",
+      "standardDecision": "FAIL",
+      "rawPreserved": true,
+      "inputSha256": "743597a28f5e30e5658fe8aac15ab0b512d72efcbad45fc9f7c3687f0870240c",
+      "rawSha256": "af01f53c3b801166d15e94a683153baa2376c177b79166bb4aea0b5ff78959eb",
+      "fixture": "negative-parser-error.json",
+      "stageCount": 2,
+      "originalParentShell": {
+        "exitStatus": 1,
+        "command": "( node infra/security/command-audit.mjs && node --max-old-space-size=128 infra/security/semgrep-gate.mjs )",
+        "trace": [
+          "infra/security/command-audit.mjs",
+          "--max-old-space-size=128 infra/security/semgrep-gate.mjs"
+        ]
+      },
+      "diagnostic": "Semgrep parse/scan errors are blocking"
+    },
+    {
+      "name": "negative-malformed-JSON",
+      "branch": "malformed",
+      "classification": "CONTROLLED_REPLAY",
+      "oldDecision": "FAIL",
+      "standardDecision": "FAIL",
+      "rawPreserved": true,
+      "inputSha256": "994019bdeeef0df753537671c01a394a34e9e14dd2c3852655d7fccb29bc5d10",
+      "rawSha256": "1dfc0d48825c03bdd1d6b0bfc16c950b9336a73f7774dbf6dc17eadc73ad9ccd",
+      "fixture": "negative-malformed-JSON.json",
+      "stageCount": 2,
+      "originalParentShell": {
+        "exitStatus": 1,
+        "command": "( node infra/security/command-audit.mjs && node --max-old-space-size=128 infra/security/semgrep-gate.mjs )",
+        "trace": [
+          "infra/security/command-audit.mjs",
+          "--max-old-space-size=128 infra/security/semgrep-gate.mjs"
+        ]
+      },
+      "diagnostic": "Expected property name or '}' in JSON at position 1 (line 1 column 2)"
+    },
+    {
+      "name": "negative-scanner-timeout",
+      "branch": "execution",
+      "classification": "CONTROLLED_REPLAY",
+      "oldDecision": "FAIL",
+      "standardDecision": "FAIL",
+      "rawPreserved": true,
+      "inputSha256": "1a683ea38242240539d329c148ee1808ea933a6881291e10e792aac0099c3330",
+      "rawSha256": "35facc8c634cd950d9e74830d8a4e819d62652f5df4561ea17f1aec7a04638be",
+      "fixture": "negative-scanner-timeout.json",
+      "stageCount": 2,
+      "originalParentShell": {
+        "exitStatus": 1,
+        "command": "( node infra/security/command-audit.mjs && node --max-old-space-size=128 infra/security/semgrep-gate.mjs )",
+        "trace": [
+          "infra/security/command-audit.mjs",
+          "--max-old-space-size=128 infra/security/semgrep-gate.mjs"
+        ]
+      },
+      "diagnostic": "kubectl failed (null): timeout"
+    },
+    {
+      "name": "repeat-parser-error",
+      "branch": "parser-error",
+      "classification": "CONTROLLED_REPLAY",
+      "oldDecision": "FAIL",
+      "standardDecision": "FAIL",
+      "rawPreserved": true,
+      "inputSha256": "7a46b0ad726c2eae403d0bf31275f22b866bd79b88edaac4d73f42c85879ce15",
+      "rawSha256": "daca9f3edb83b58fb9d0f29fff70382d3d3e9a02e2ebf816add9d4abb744830b",
+      "fixture": "repeat-parser-error.json",
+      "stageCount": 2,
+      "originalParentShell": {
+        "exitStatus": 1,
+        "command": "( node infra/security/command-audit.mjs && node --max-old-space-size=128 infra/security/semgrep-gate.mjs )",
+        "trace": [
+          "infra/security/command-audit.mjs",
+          "--max-old-space-size=128 infra/security/semgrep-gate.mjs"
+        ]
+      },
+      "diagnostic": "Semgrep parse/scan errors are blocking"
+    },
+    {
+      "name": "repeat-malformed-JSON",
+      "branch": "malformed",
+      "classification": "CONTROLLED_REPLAY",
+      "oldDecision": "FAIL",
+      "standardDecision": "FAIL",
+      "rawPreserved": true,
+      "inputSha256": "74a4e24f32980063dd7b5324c2ac74abab496bdd3b839649a3e2fb877b779545",
+      "rawSha256": "52a19ce6d7067c24413f34d294a715c0731e75ddad609d81d580fe032c07ad67",
+      "fixture": "repeat-malformed-JSON.json",
+      "stageCount": 2,
+      "originalParentShell": {
+        "exitStatus": 1,
+        "command": "( node infra/security/command-audit.mjs && node --max-old-space-size=128 infra/security/semgrep-gate.mjs )",
+        "trace": [
+          "infra/security/command-audit.mjs",
+          "--max-old-space-size=128 infra/security/semgrep-gate.mjs"
+        ]
+      },
+      "diagnostic": "Expected property name or '}' in JSON at position 1 (line 1 column 2)"
+    },
+    {
+      "name": "repeat-scanner-timeout",
+      "branch": "execution",
+      "classification": "CONTROLLED_REPLAY",
+      "oldDecision": "FAIL",
+      "standardDecision": "FAIL",
+      "rawPreserved": true,
+      "inputSha256": "25dd4d079cfbdf11fc879f67df83943353f14cadd741595b64cea7c6223308fd",
+      "rawSha256": "6ec395637fd3782d992a80a581152b78958a9e4f05c404ff95d6fbab3ee9f496",
+      "fixture": "repeat-scanner-timeout.json",
+      "stageCount": 2,
+      "originalParentShell": {
+        "exitStatus": 1,
+        "command": "( node infra/security/command-audit.mjs && node --max-old-space-size=128 infra/security/semgrep-gate.mjs )",
+        "trace": [
+          "infra/security/command-audit.mjs",
+          "--max-old-space-size=128 infra/security/semgrep-gate.mjs"
+        ]
+      },
+      "diagnostic": "kubectl failed (null): timeout"
+    },
+    {
+      "name": "commandPositive-parser-error",
+      "branch": "parser-error",
+      "classification": "CONTROLLED_REPLAY",
+      "oldDecision": "FAIL",
+      "standardDecision": "FAIL",
+      "rawPreserved": true,
+      "inputSha256": "41720497d4d9805728102bd81708f18214e0e7e20db9445f40190045fdcf9063",
+      "rawSha256": "a496f9b5a51219ad47b768b315996bc96e1037157bb50eac1619731cfd177efc",
+      "fixture": "commandPositive-parser-error.json",
+      "stageCount": 2,
+      "originalParentShell": {
+        "exitStatus": 1,
+        "command": "( node infra/security/command-audit.mjs && node --max-old-space-size=128 infra/security/semgrep-gate.mjs )",
+        "trace": [
+          "infra/security/command-audit.mjs",
+          "--max-old-space-size=128 infra/security/semgrep-gate.mjs"
+        ]
+      },
+      "diagnostic": "Semgrep parse/scan errors are blocking"
+    },
+    {
+      "name": "commandPositive-malformed-JSON",
+      "branch": "malformed",
+      "classification": "CONTROLLED_REPLAY",
+      "oldDecision": "FAIL",
+      "standardDecision": "FAIL",
+      "rawPreserved": true,
+      "inputSha256": "4600656e034f7359e380ac297a8d124d0dd3c02ca1f68014df27b190d92366e1",
+      "rawSha256": "e3154ced21f6337becea0b804661066379183883cd3a04af3357b143c93beec5",
+      "fixture": "commandPositive-malformed-JSON.json",
+      "stageCount": 2,
+      "originalParentShell": {
+        "exitStatus": 1,
+        "command": "( node infra/security/command-audit.mjs && node --max-old-space-size=128 infra/security/semgrep-gate.mjs )",
+        "trace": [
+          "infra/security/command-audit.mjs",
+          "--max-old-space-size=128 infra/security/semgrep-gate.mjs"
+        ]
+      },
+      "diagnostic": "Expected property name or '}' in JSON at position 1 (line 1 column 2)"
+    },
+    {
+      "name": "commandPositive-scanner-timeout",
+      "branch": "execution",
+      "classification": "CONTROLLED_REPLAY",
+      "oldDecision": "FAIL",
+      "standardDecision": "FAIL",
+      "rawPreserved": true,
+      "inputSha256": "567068978666970d08f261ff01c328fd9b41f3ae68a0ba19d6d56a53f78e8b83",
+      "rawSha256": "bc7cfbfaced3b40ae7e5ec6abcb254123d343d660f25e638e8f67ce6f1757509",
+      "fixture": "commandPositive-scanner-timeout.json",
+      "stageCount": 2,
+      "originalParentShell": {
+        "exitStatus": 1,
+        "command": "( node infra/security/command-audit.mjs && node --max-old-space-size=128 infra/security/semgrep-gate.mjs )",
+        "trace": [
+          "infra/security/command-audit.mjs",
+          "--max-old-space-size=128 infra/security/semgrep-gate.mjs"
+        ]
+      },
+      "diagnostic": "kubectl failed (null): timeout"
+    },
+    {
+      "name": "commandNegative-parser-error",
+      "branch": "parser-error",
+      "classification": "CONTROLLED_REPLAY",
+      "oldDecision": "FAIL",
+      "standardDecision": "FAIL",
+      "rawPreserved": true,
+      "inputSha256": "dec44bd8db6281951fbebfc319516f14e24ae264b156ca44554312b0a7999220",
+      "rawSha256": "9b7be50fd61a6e30848ee66dff2fd950139e9249f6f3b5c60da6340bad062610",
+      "fixture": "commandNegative-parser-error.json",
+      "stageCount": 2,
+      "originalParentShell": {
+        "exitStatus": 1,
+        "command": "( node infra/security/command-audit.mjs && node --max-old-space-size=128 infra/security/semgrep-gate.mjs )",
+        "trace": [
+          "infra/security/command-audit.mjs",
+          "--max-old-space-size=128 infra/security/semgrep-gate.mjs"
+        ]
+      },
+      "diagnostic": "Semgrep parse/scan errors are blocking"
+    },
+    {
+      "name": "commandNegative-malformed-JSON",
+      "branch": "malformed",
+      "classification": "CONTROLLED_REPLAY",
+      "oldDecision": "FAIL",
+      "standardDecision": "FAIL",
+      "rawPreserved": true,
+      "inputSha256": "f7dcc37768d4efaeb046fc44b84aa5a32f58926025308434f542240488009d90",
+      "rawSha256": "3da2769a78f882dda013901b08fdeeaca44be9c26d48c5232f7d94598707ed13",
+      "fixture": "commandNegative-malformed-JSON.json",
+      "stageCount": 2,
+      "originalParentShell": {
+        "exitStatus": 1,
+        "command": "( node infra/security/command-audit.mjs && node --max-old-space-size=128 infra/security/semgrep-gate.mjs )",
+        "trace": [
+          "infra/security/command-audit.mjs",
+          "--max-old-space-size=128 infra/security/semgrep-gate.mjs"
+        ]
+      },
+      "diagnostic": "Expected property name or '}' in JSON at position 1 (line 1 column 2)"
+    },
+    {
+      "name": "commandNegative-scanner-timeout",
+      "branch": "execution",
+      "classification": "CONTROLLED_REPLAY",
+      "oldDecision": "FAIL",
+      "standardDecision": "FAIL",
+      "rawPreserved": true,
+      "inputSha256": "2e89f2bf6c8c907a3f3d76bec59905f7a017fbd604e22ca261f17835cf5eb885",
+      "rawSha256": "a92f00148ecfb21c20a6948cbab3576f964b891983d358e242bfda30067c6672",
+      "fixture": "commandNegative-scanner-timeout.json",
+      "stageCount": 2,
+      "originalParentShell": {
+        "exitStatus": 1,
+        "command": "( node infra/security/command-audit.mjs && node --max-old-space-size=128 infra/security/semgrep-gate.mjs )",
+        "trace": [
+          "infra/security/command-audit.mjs",
+          "--max-old-space-size=128 infra/security/semgrep-gate.mjs"
+        ]
+      },
+      "diagnostic": "kubectl failed (null): timeout"
+    },
+    {
+      "name": "commandRepeat-parser-error",
+      "branch": "parser-error",
+      "classification": "CONTROLLED_REPLAY",
+      "oldDecision": "FAIL",
+      "standardDecision": "FAIL",
+      "rawPreserved": true,
+      "inputSha256": "e8de47569bc7e6a37a7a6ea7ff98ba1de9fd733cddc9e8733476cfca1e3f1d4e",
+      "rawSha256": "5cea47e738d55a6a50ec75c2acb516a22812e1a68c2741e0b93884e9b0c54a07",
+      "fixture": "commandRepeat-parser-error.json",
+      "stageCount": 2,
+      "originalParentShell": {
+        "exitStatus": 1,
+        "command": "( node infra/security/command-audit.mjs && node --max-old-space-size=128 infra/security/semgrep-gate.mjs )",
+        "trace": [
+          "infra/security/command-audit.mjs",
+          "--max-old-space-size=128 infra/security/semgrep-gate.mjs"
+        ]
+      },
+      "diagnostic": "Semgrep parse/scan errors are blocking"
+    },
+    {
+      "name": "commandRepeat-malformed-JSON",
+      "branch": "malformed",
+      "classification": "CONTROLLED_REPLAY",
+      "oldDecision": "FAIL",
+      "standardDecision": "FAIL",
+      "rawPreserved": true,
+      "inputSha256": "8d07b98676ea0b317a173d645d1d2562f781c98b2fb6f85600460b1f0a15bd65",
+      "rawSha256": "7cfd66ed32aae9e55bb157486e15aa6d6a7345291b9cc1e72f72c2b61c7e6d72",
+      "fixture": "commandRepeat-malformed-JSON.json",
+      "stageCount": 2,
+      "originalParentShell": {
+        "exitStatus": 1,
+        "command": "( node infra/security/command-audit.mjs && node --max-old-space-size=128 infra/security/semgrep-gate.mjs )",
+        "trace": [
+          "infra/security/command-audit.mjs",
+          "--max-old-space-size=128 infra/security/semgrep-gate.mjs"
+        ]
+      },
+      "diagnostic": "Expected property name or '}' in JSON at position 1 (line 1 column 2)"
+    },
+    {
+      "name": "commandRepeat-scanner-timeout",
+      "branch": "execution",
+      "classification": "CONTROLLED_REPLAY",
+      "oldDecision": "FAIL",
+      "standardDecision": "FAIL",
+      "rawPreserved": true,
+      "inputSha256": "0956e3f5acdb54f54ede5aeff01766b50f95649af7c7e674431254f7dbf2cef4",
+      "rawSha256": "680d60a56cc0e007842f144485f68147d5e0b1924fb9ffa7e71288d50ffc2b20",
+      "fixture": "commandRepeat-scanner-timeout.json",
+      "stageCount": 2,
+      "originalParentShell": {
+        "exitStatus": 1,
+        "command": "( node infra/security/command-audit.mjs && node --max-old-space-size=128 infra/security/semgrep-gate.mjs )",
+        "trace": [
+          "infra/security/command-audit.mjs",
+          "--max-old-space-size=128 infra/security/semgrep-gate.mjs"
+        ]
+      },
+      "diagnostic": "kubectl failed (null): timeout"
+    },
+    {
+      "name": "sourceReport-parser-error",
+      "branch": "parser-error",
+      "classification": "CONTROLLED_REPLAY",
+      "oldDecision": "FAIL",
+      "standardDecision": "FAIL",
+      "rawPreserved": true,
+      "inputSha256": "0135b56eba81bf002fb1b21d1f7d9e070d9a7af6199fc556831e14198f9478a1",
+      "rawSha256": "44730766365de932aeb09165b599f1021a75d623216aba703d2699a961fbaa10",
+      "fixture": "sourceReport-parser-error.json",
+      "stageCount": 2,
+      "originalParentShell": {
+        "exitStatus": 1,
+        "command": "( node infra/security/command-audit.mjs && node --max-old-space-size=128 infra/security/semgrep-gate.mjs )",
+        "trace": [
+          "infra/security/command-audit.mjs",
+          "--max-old-space-size=128 infra/security/semgrep-gate.mjs"
+        ]
+      },
+      "diagnostic": "Semgrep parse/scan errors are blocking"
+    },
+    {
+      "name": "sourceReport-malformed-JSON",
+      "branch": "malformed",
+      "classification": "CONTROLLED_REPLAY",
+      "oldDecision": "FAIL",
+      "standardDecision": "FAIL",
+      "rawPreserved": true,
+      "inputSha256": "a042d20a40b952c32c31708e1b345c23762bf08e38f68ef1ea4a006376e82eec",
+      "rawSha256": "e5def145f280306416cc332cf6de370658b735ec292bdd63c576a8bafa26bc5c",
+      "fixture": "sourceReport-malformed-JSON.json",
+      "stageCount": 2,
+      "originalParentShell": {
+        "exitStatus": 1,
+        "command": "( node infra/security/command-audit.mjs && node --max-old-space-size=128 infra/security/semgrep-gate.mjs )",
+        "trace": [
+          "infra/security/command-audit.mjs",
+          "--max-old-space-size=128 infra/security/semgrep-gate.mjs"
+        ]
+      },
+      "diagnostic": "Expected property name or '}' in JSON at position 1 (line 1 column 2)"
+    },
+    {
+      "name": "sourceReport-scanner-timeout",
+      "branch": "execution",
+      "classification": "CONTROLLED_REPLAY",
+      "oldDecision": "FAIL",
+      "standardDecision": "FAIL",
+      "rawPreserved": true,
+      "inputSha256": "c02feafa3ed758f6722a5d1cbfee2340d1e020e25979d671bfad4b94ee28a9b2",
+      "rawSha256": "a613aa2721408216d8df6d4aa3ec572c63ad99ad1e90c5533859809fc32b7c8e",
+      "fixture": "sourceReport-scanner-timeout.json",
+      "stageCount": 2,
+      "originalParentShell": {
+        "exitStatus": 1,
+        "command": "( node infra/security/command-audit.mjs && node --max-old-space-size=128 infra/security/semgrep-gate.mjs )",
+        "trace": [
+          "infra/security/command-audit.mjs",
+          "--max-old-space-size=128 infra/security/semgrep-gate.mjs"
+        ]
+      },
+      "diagnostic": "kubectl failed (null): timeout"
+    },
+    {
+      "name": "fixture-positive-detection-missing",
+      "branch": "fixture-contract",
+      "classification": "CONTROLLED_REPLAY",
+      "oldDecision": "FAIL",
+      "standardDecision": "FAIL",
+      "rawPreserved": true,
+      "inputSha256": "68a46a4af20fc199d74655c5d8bc95f0783d4c97cdc60c53970c2c8263ddbf7e",
+      "rawSha256": "6fa7d8acae997879d1ec8a92f39c5afa4b66d99d086d5a56e97b52304fad424d",
+      "fixture": "fixture-positive-detection-missing.json",
+      "stageCount": 2,
+      "originalParentShell": {
+        "exitStatus": 1,
+        "command": "( node infra/security/command-audit.mjs && node --max-old-space-size=128 infra/security/semgrep-gate.mjs )",
+        "trace": [
+          "infra/security/command-audit.mjs",
+          "--max-old-space-size=128 infra/security/semgrep-gate.mjs"
+        ]
+      },
+      "diagnostic": "Semgrep detection/allow/repeat contract failed"
+    },
+    {
+      "name": "fixture-negative-unexpected-finding",
+      "branch": "fixture-contract",
+      "classification": "CONTROLLED_REPLAY",
+      "oldDecision": "FAIL",
+      "standardDecision": "FAIL",
+      "rawPreserved": true,
+      "inputSha256": "e6eb6da18d125aa46936a48cf087b6fa980e55cb9b2205b1eef09017617f9f37",
+      "rawSha256": "f47ccc33b2bc06016220027a0ad37b2fefe16e91a7447000ac95f875efc3de42",
+      "fixture": "fixture-negative-unexpected-finding.json",
+      "stageCount": 2,
+      "originalParentShell": {
+        "exitStatus": 1,
+        "command": "( node infra/security/command-audit.mjs && node --max-old-space-size=128 infra/security/semgrep-gate.mjs )",
+        "trace": [
+          "infra/security/command-audit.mjs",
+          "--max-old-space-size=128 infra/security/semgrep-gate.mjs"
+        ]
+      },
+      "diagnostic": "Semgrep detection/allow/repeat contract failed"
+    },
+    {
+      "name": "command-fixture-direct-detection-missing",
+      "branch": "fixture-contract",
+      "classification": "CONTROLLED_REPLAY",
+      "oldDecision": "FAIL",
+      "standardDecision": "FAIL",
+      "rawPreserved": true,
+      "inputSha256": "af56ac8abe01814d5bef0ba67b7f66d2424ae81e33a20569db34d73b9d3c1002",
+      "rawSha256": "aa5213d3265083d37f50a036e07984098f1fded268ebe3cdef3fb13a36ff89b1",
+      "fixture": "command-fixture-direct-detection-missing.json",
+      "stageCount": 2,
+      "originalParentShell": {
+        "exitStatus": 1,
+        "command": "( node infra/security/command-audit.mjs && node --max-old-space-size=128 infra/security/semgrep-gate.mjs )",
+        "trace": [
+          "infra/security/command-audit.mjs",
+          "--max-old-space-size=128 infra/security/semgrep-gate.mjs"
+        ]
+      },
+      "diagnostic": "HTTP command taint positive/negative/repeat contract failed"
+    },
+    {
+      "name": "command-fixture-negative-unexpected",
+      "branch": "fixture-contract",
+      "classification": "CONTROLLED_REPLAY",
+      "oldDecision": "FAIL",
+      "standardDecision": "FAIL",
+      "rawPreserved": true,
+      "inputSha256": "da8ddbffaa575203b1b7ba5ced1706c6f7d759fed2ebe177d1e07a70bcbf5a93",
+      "rawSha256": "e55a2351c00d2f6f59702a184cc8944ba371cbbef86772bdc05b4700d967efd6",
+      "fixture": "command-fixture-negative-unexpected.json",
+      "stageCount": 2,
+      "originalParentShell": {
+        "exitStatus": 1,
+        "command": "( node infra/security/command-audit.mjs && node --max-old-space-size=128 infra/security/semgrep-gate.mjs )",
+        "trace": [
+          "infra/security/command-audit.mjs",
+          "--max-old-space-size=128 infra/security/semgrep-gate.mjs"
+        ]
+      },
+      "diagnostic": "HTTP command taint positive/negative/repeat contract failed"
+    },
+    {
+      "name": "command-fixture-repeat-drift",
+      "branch": "fixture-contract",
+      "classification": "CONTROLLED_REPLAY",
+      "oldDecision": "FAIL",
+      "standardDecision": "FAIL",
+      "rawPreserved": true,
+      "inputSha256": "e83868f5a1bfe9781e20e6e5d69d83a00cd7fe39e7f42e8092f04ae0ac42d8ca",
+      "rawSha256": "c1ebf6ff0179500af23eb75a4e8b01bced343a40ac836731519c26b099db9de6",
+      "fixture": "command-fixture-repeat-drift.json",
+      "stageCount": 2,
+      "originalParentShell": {
+        "exitStatus": 1,
+        "command": "( node infra/security/command-audit.mjs && node --max-old-space-size=128 infra/security/semgrep-gate.mjs )",
+        "trace": [
+          "infra/security/command-audit.mjs",
+          "--max-old-space-size=128 infra/security/semgrep-gate.mjs"
+        ]
+      },
+      "diagnostic": "HTTP command taint positive/negative/repeat contract failed"
+    },
+    {
+      "name": "read-failed-infra_messaging_dependencies.json",
+      "branch": "missing",
+      "classification": "CONTROLLED_REPLAY",
+      "oldDecision": "FAIL",
+      "standardDecision": "FAIL",
+      "rawPreserved": true,
+      "inputSha256": "66c7007b8f1c4c94c5d6a46f0e2a79f5425f5ea27aa941541cbadde6ccb79b6f",
+      "rawSha256": "0d1d49c02312448b35fdfd668ba482c1221941642e70b78d273a184e1216bc3a",
+      "fixture": "read-failed-infra_messaging_dependencies.json.json",
+      "stageCount": 1,
+      "originalParentShell": {
+        "exitStatus": 1,
+        "command": "( node infra/security/command-audit.mjs && node --max-old-space-size=128 infra/security/semgrep-gate.mjs )",
+        "trace": [
+          "infra/security/command-audit.mjs"
+        ]
+      },
+      "diagnostic": "ENOENT"
+    },
+    {
+      "name": "read-failed-infra_security_command-audit.py",
+      "branch": "missing",
+      "classification": "CONTROLLED_REPLAY",
+      "oldDecision": "FAIL",
+      "standardDecision": "FAIL",
+      "rawPreserved": true,
+      "inputSha256": "80eb58faa16ead73c7329ca99f3d4d824e8eb6e1fbff11c58e7c301ba64362e6",
+      "rawSha256": "fbcce56e5758612da1b7e97e2e54b8e4a9a77f6f573c3d1372d0ec410c0b74e3",
+      "fixture": "read-failed-infra_security_command-audit.py.json",
+      "stageCount": 1,
+      "originalParentShell": {
+        "exitStatus": 1,
+        "command": "( node infra/security/command-audit.mjs && node --max-old-space-size=128 infra/security/semgrep-gate.mjs )",
+        "trace": [
+          "infra/security/command-audit.mjs"
+        ]
+      },
+      "diagnostic": "ENOENT"
+    },
+    {
+      "name": "read-failed-infra_security_script-command-policy.py",
+      "branch": "missing",
+      "classification": "CONTROLLED_REPLAY",
+      "oldDecision": "FAIL",
+      "standardDecision": "FAIL",
+      "rawPreserved": true,
+      "inputSha256": "e19e9f637356a353cb8b3b3fbaabc1e7fb2f3cbb9579dec4e97fdfa5bce90cc4",
+      "rawSha256": "479ffd6ae941ada96ae991f7d35dbeb13ef6a9712d75d7047122d32e694a58b7",
+      "fixture": "read-failed-infra_security_script-command-policy.py.json",
+      "stageCount": 1,
+      "originalParentShell": {
+        "exitStatus": 1,
+        "command": "( node infra/security/command-audit.mjs && node --max-old-space-size=128 infra/security/semgrep-gate.mjs )",
+        "trace": [
+          "infra/security/command-audit.mjs"
+        ]
+      },
+      "diagnostic": "ENOENT"
+    },
+    {
+      "name": "read-failed-infra_security_ssh-command-policy.py",
+      "branch": "missing",
+      "classification": "CONTROLLED_REPLAY",
+      "oldDecision": "FAIL",
+      "standardDecision": "FAIL",
+      "rawPreserved": true,
+      "inputSha256": "c041b64738ecb7401dae7984778bed36832207ea1d28278d3b019a4832a63247",
+      "rawSha256": "3b4d8a13f1bfc1e89606e6e0f33bbb8022ff059926bc00c563147b751d392ed3",
+      "fixture": "read-failed-infra_security_ssh-command-policy.py.json",
+      "stageCount": 1,
+      "originalParentShell": {
+        "exitStatus": 1,
+        "command": "( node infra/security/command-audit.mjs && node --max-old-space-size=128 infra/security/semgrep-gate.mjs )",
+        "trace": [
+          "infra/security/command-audit.mjs"
+        ]
+      },
+      "diagnostic": "ENOENT"
+    },
+    {
+      "name": "read-failed-infra_security_interpreter-command-policy.py",
+      "branch": "missing",
+      "classification": "CONTROLLED_REPLAY",
+      "oldDecision": "FAIL",
+      "standardDecision": "FAIL",
+      "rawPreserved": true,
+      "inputSha256": "17c01c4c1a1ea22d27a37c5dd786759e50ce0aa9b4a46785e90b03b698c40fcc",
+      "rawSha256": "7c6652c96498d21a7cd474a7ca70f52b598dda21b278d3c71aada0eb485de212",
+      "fixture": "read-failed-infra_security_interpreter-command-policy.py.json",
+      "stageCount": 1,
+      "originalParentShell": {
+        "exitStatus": 1,
+        "command": "( node infra/security/command-audit.mjs && node --max-old-space-size=128 infra/security/semgrep-gate.mjs )",
+        "trace": [
+          "infra/security/command-audit.mjs"
+        ]
+      },
+      "diagnostic": "ENOENT"
+    },
+    {
+      "name": "read-failed-infra_security_script-command-review.json",
+      "branch": "missing",
+      "classification": "CONTROLLED_REPLAY",
+      "oldDecision": "FAIL",
+      "standardDecision": "FAIL",
+      "rawPreserved": true,
+      "inputSha256": "35a577aba38000c1e9998ab42ed826b9235f95ca7d9973c2ba5d8dfb93a585e6",
+      "rawSha256": "933d6f242534f81d31e582898560ab637c86bd2b32e36548a62c57be55eed0b5",
+      "fixture": "read-failed-infra_security_script-command-review.json.json",
+      "stageCount": 1,
+      "originalParentShell": {
+        "exitStatus": 1,
+        "command": "( node infra/security/command-audit.mjs && node --max-old-space-size=128 infra/security/semgrep-gate.mjs )",
+        "trace": [
+          "infra/security/command-audit.mjs"
+        ]
+      },
+      "diagnostic": "ENOENT"
+    },
+    {
+      "name": "read-failed-infra_security_ssh-command-review.json",
+      "branch": "missing",
+      "classification": "CONTROLLED_REPLAY",
+      "oldDecision": "FAIL",
+      "standardDecision": "FAIL",
+      "rawPreserved": true,
+      "inputSha256": "cd21dd2086fcece49287ccea04a914176a5dab9d833970417d590584835934a7",
+      "rawSha256": "0165507aacce37a2ab2d45a14fc34fa79e17a4c1e5a3c0a80f92f668da9cecfa",
+      "fixture": "read-failed-infra_security_ssh-command-review.json.json",
+      "stageCount": 1,
+      "originalParentShell": {
+        "exitStatus": 1,
+        "command": "( node infra/security/command-audit.mjs && node --max-old-space-size=128 infra/security/semgrep-gate.mjs )",
+        "trace": [
+          "infra/security/command-audit.mjs"
+        ]
+      },
+      "diagnostic": "ENOENT"
+    },
+    {
+      "name": "read-failed-.git-sha",
+      "branch": "missing",
+      "classification": "CONTROLLED_REPLAY",
+      "oldDecision": "FAIL",
+      "standardDecision": "FAIL",
+      "rawPreserved": true,
+      "inputSha256": "7a8805ace52f9274e117597d2fabc5771b15e1397d8f23afdcd46422847accc9",
+      "rawSha256": "5b172ad0b10646ac965a35dd3badd7dad708e4280e30a948c55f498b53e0ef13",
+      "fixture": "read-failed-.git-sha.json",
+      "stageCount": 2,
+      "originalParentShell": {
+        "exitStatus": 1,
+        "command": "( node infra/security/command-audit.mjs && node --max-old-space-size=128 infra/security/semgrep-gate.mjs )",
+        "trace": [
+          "infra/security/command-audit.mjs",
+          "--max-old-space-size=128 infra/security/semgrep-gate.mjs"
+        ]
+      },
+      "diagnostic": "ENOENT"
+    },
+    {
+      "name": "read-failed-infra_security_scan-rules.json",
+      "branch": "missing",
+      "classification": "CONTROLLED_REPLAY",
+      "oldDecision": "FAIL",
+      "standardDecision": "FAIL",
+      "rawPreserved": true,
+      "inputSha256": "656cec6bd0b40328f065b39f96cc64cbca108e140d2789d5c938629450efa528",
+      "rawSha256": "326f00c40ac0435dbb115b37ec9f328642330a8bdddf8c83727dcf2b622fc769",
+      "fixture": "read-failed-infra_security_scan-rules.json.json",
+      "stageCount": 2,
+      "originalParentShell": {
+        "exitStatus": 1,
+        "command": "( node infra/security/command-audit.mjs && node --max-old-space-size=128 infra/security/semgrep-gate.mjs )",
+        "trace": [
+          "infra/security/command-audit.mjs",
+          "--max-old-space-size=128 infra/security/semgrep-gate.mjs"
+        ]
+      },
+      "diagnostic": "ENOENT"
+    },
+    {
+      "name": "IO-write:.devsecops_command-audit.json",
+      "branch": "io",
+      "classification": "CONTROLLED_REPLAY",
+      "oldDecision": "FAIL",
+      "standardDecision": "FAIL",
+      "rawPreserved": true,
+      "inputSha256": "9909cd8f1392a8e1d06092b7ac0e2dd5c05735dbb9de43904c075e07e410e04f",
+      "rawSha256": "05e1a5d754cb9a0dc5b53cc0264539ee883b4027a029fd990c20b6a8e559cd19",
+      "fixture": "IO-write:.devsecops_command-audit.json.json",
+      "stageCount": 1,
+      "originalParentShell": {
+        "exitStatus": 1,
+        "command": "( node infra/security/command-audit.mjs && node --max-old-space-size=128 infra/security/semgrep-gate.mjs )",
+        "trace": [
+          "infra/security/command-audit.mjs"
+        ]
+      },
+      "diagnostic": "ENOSPC"
+    },
+    {
+      "name": "IO-write:.devsecops_semgrep-native.json",
+      "branch": "io",
+      "classification": "CONTROLLED_REPLAY",
+      "oldDecision": "FAIL",
+      "standardDecision": "FAIL",
+      "rawPreserved": true,
+      "inputSha256": "b7f4cc3c1a95fd0ff100512d9f96543322b315ffd1ea14a6381c72443e3d5f2e",
+      "rawSha256": "9b8818c60df13bfefe538cfd3b2306c69d1bbbbeadda3c5bbb4f104f026a8da1",
+      "fixture": "IO-write:.devsecops_semgrep-native.json.json",
+      "stageCount": 2,
+      "originalParentShell": {
+        "exitStatus": 1,
+        "command": "( node infra/security/command-audit.mjs && node --max-old-space-size=128 infra/security/semgrep-gate.mjs )",
+        "trace": [
+          "infra/security/command-audit.mjs",
+          "--max-old-space-size=128 infra/security/semgrep-gate.mjs"
+        ]
+      },
+      "diagnostic": "ENOSPC"
+    },
+    {
+      "name": "IO-write:.devsecops_semgrep-gate.json",
+      "branch": "io",
+      "classification": "CONTROLLED_REPLAY",
+      "oldDecision": "FAIL",
+      "standardDecision": "FAIL",
+      "rawPreserved": true,
+      "inputSha256": "1c4d75b7c5920fdcbead7e3ecf023d02b2d85e623a34fa9f26cee7665c450d24",
+      "rawSha256": "444b221e62b054f067d5165a6ec3e436d7655d57c67753b25f2bebed291f2a70",
+      "fixture": "IO-write:.devsecops_semgrep-gate.json.json",
+      "stageCount": 2,
+      "originalParentShell": {
+        "exitStatus": 1,
+        "command": "( node infra/security/command-audit.mjs && node --max-old-space-size=128 infra/security/semgrep-gate.mjs )",
+        "trace": [
+          "infra/security/command-audit.mjs",
+          "--max-old-space-size=128 infra/security/semgrep-gate.mjs"
+        ]
+      },
+      "diagnostic": "ENOSPC"
+    },
+    {
+      "name": "IO-mkdir:.devsecops",
+      "branch": "io",
+      "classification": "CONTROLLED_REPLAY",
+      "oldDecision": "FAIL",
+      "standardDecision": "FAIL",
+      "rawPreserved": true,
+      "inputSha256": "d453b3d79acd67026838f131c1dd9c0c61384717c98d0cd767bdb147ee693d39",
+      "rawSha256": "67044090c34388784c5d695eff1dcb21affeef70d5fead02929b63f00539b480",
+      "fixture": "IO-mkdir:.devsecops.json",
+      "stageCount": 2,
+      "originalParentShell": {
+        "exitStatus": 1,
+        "command": "( node infra/security/command-audit.mjs && node --max-old-space-size=128 infra/security/semgrep-gate.mjs )",
+        "trace": [
+          "infra/security/command-audit.mjs",
+          "--max-old-space-size=128 infra/security/semgrep-gate.mjs"
+        ]
+      },
+      "diagnostic": "ENOSPC"
+    },
+    {
+      "name": "Python-no-JSON-output",
+      "branch": "execution",
+      "classification": "CONTROLLED_REPLAY",
+      "oldDecision": "FAIL",
+      "standardDecision": "FAIL",
+      "rawPreserved": true,
+      "inputSha256": "a95388a1e4d95de4261fec47f431b1ab64a8cc42f1b42704dc5a107dbc30f195",
+      "rawSha256": "b182e2139b5535871a84e4a471aa08ed0d0a487925b85ce2e01dde0750d44013",
+      "fixture": "Python-no-JSON-output.json",
+      "stageCount": 1,
+      "originalParentShell": {
+        "exitStatus": 1,
+        "command": "( node infra/security/command-audit.mjs && node --max-old-space-size=128 infra/security/semgrep-gate.mjs )",
+        "trace": [
+          "infra/security/command-audit.mjs"
+        ]
+      },
+      "diagnostic": "Unexpected end of JSON input"
+    },
+    {
+      "name": "Python-invalid-report-JSON",
+      "branch": "malformed",
+      "classification": "CONTROLLED_REPLAY",
+      "oldDecision": "FAIL",
+      "standardDecision": "FAIL",
+      "rawPreserved": true,
+      "inputSha256": "e4fcd8c4de80b923c47338c686d74db2b2f1bbc0d2d09f605ebd502c8312034e",
+      "rawSha256": "939a322807a4319ea9847839180341bf9afa5e2a1b2df855ae2cb5dd3f985d44",
+      "fixture": "Python-invalid-report-JSON.json",
+      "stageCount": 1,
+      "originalParentShell": {
+        "exitStatus": 1,
+        "command": "( node infra/security/command-audit.mjs && node --max-old-space-size=128 infra/security/semgrep-gate.mjs )",
+        "trace": [
+          "infra/security/command-audit.mjs"
+        ]
+      },
+      "diagnostic": "Expected property name or '}' in JSON at position 1 (line 1 column 2)"
+    },
+    {
+      "name": "Python-JSON-null-report",
+      "branch": "malformed",
+      "classification": "CONTROLLED_REPLAY",
+      "oldDecision": "FAIL",
+      "standardDecision": "FAIL",
+      "rawPreserved": true,
+      "inputSha256": "9793db171af4af4f0a0e4e4f89c9a7b230a441e51e8455680e58c96612e88979",
+      "rawSha256": "7e056ea35ac0502b3cbb35268e9e0b696a3173a8ee3a8425217b497cb733f320",
+      "fixture": "Python-JSON-null-report.json",
+      "stageCount": 1,
+      "originalParentShell": {
+        "exitStatus": 1,
+        "command": "( node infra/security/command-audit.mjs && node --max-old-space-size=128 infra/security/semgrep-gate.mjs )",
+        "trace": [
+          "infra/security/command-audit.mjs"
+        ]
+      },
+      "diagnostic": "Cannot set properties of null (setting 'podUid')"
+    },
+    {
+      "name": "invalid-finding-mode",
+      "branch": "configuration",
+      "classification": "CONTROLLED_REPLAY",
+      "oldDecision": "FAIL",
+      "standardDecision": "FAIL",
+      "rawPreserved": true,
+      "inputSha256": "d178f67a6bb9dc3ab9caaae66a1560ab47cc5da24d0771a182602ef5cb0c196a",
+      "rawSha256": "909ecd39cedf9d271a498d58989fe534ead751dbcbb383632397e15ae1011e50",
+      "fixture": "invalid-finding-mode.json",
+      "stageCount": 2,
+      "originalParentShell": {
+        "exitStatus": 1,
+        "command": "( node infra/security/command-audit.mjs && node --max-old-space-size=128 infra/security/semgrep-gate.mjs )",
+        "trace": [
+          "infra/security/command-audit.mjs",
+          "--max-old-space-size=128 infra/security/semgrep-gate.mjs"
+        ]
+      },
+      "diagnostic": "Invalid Semgrep finding mode"
+    },
+    {
+      "name": "tracked-source-list-git-failure",
+      "branch": "execution",
+      "classification": "CONTROLLED_REPLAY",
+      "oldDecision": "FAIL",
+      "standardDecision": "FAIL",
+      "rawPreserved": true,
+      "inputSha256": "47c22674cd13e9d41220f5f00ebc2e24c020df9943c3c296d88a4976a4d57ff3",
+      "rawSha256": "7a64f6b3fbc022942aa5cdee8dd872926ba8f1c1eb8cc846682652dc3a85b827",
+      "fixture": "tracked-source-list-git-failure.json",
+      "stageCount": 1,
+      "originalParentShell": {
+        "exitStatus": 1,
+        "command": "( node infra/security/command-audit.mjs && node --max-old-space-size=128 infra/security/semgrep-gate.mjs )",
+        "trace": [
+          "infra/security/command-audit.mjs"
+        ]
+      },
+      "diagnostic": "git failed (1): git listing failed"
+    },
+    {
+      "name": "memory-peak-operational-failure-not-success-report",
+      "branch": "execution",
+      "classification": "CONTROLLED_REPLAY",
+      "oldDecision": "FAIL",
+      "standardDecision": "FAIL",
+      "rawPreserved": true,
+      "inputSha256": "0e3288afc4dc1cb240afa5a190ea16151e699b645a9b87e808ccf841e506605b",
+      "rawSha256": "668ac512070d2f9d7458a9fdd54ffe9cb668c4f78de7cd851cb0c7f1e88575ff",
+      "fixture": "memory-peak-operational-failure-not-success-report.json",
+      "stageCount": 2,
+      "originalParentShell": {
+        "exitStatus": 1,
+        "command": "( node infra/security/command-audit.mjs && node --max-old-space-size=128 infra/security/semgrep-gate.mjs )",
+        "trace": [
+          "infra/security/command-audit.mjs",
+          "--max-old-space-size=128 infra/security/semgrep-gate.mjs"
+        ]
+      },
+      "diagnostic": "kubectl failed (2): memory peak read failed"
+    },
+    {
+      "name": "Python-prerequisite-unavailable",
+      "branch": "prerequisite",
+      "classification": "CONTROLLED_REPLAY",
+      "oldDecision": "FAIL",
+      "standardDecision": "FAIL",
+      "rawPreserved": true,
+      "inputSha256": "7bc927e397488b9bb6b2c258f6b68fd725449904053d6347f46be3a126294ebb",
+      "rawSha256": "bb028763d5c555bdcfd082661199bb4130f0ab8edddd58c0b8e61466b2159924",
+      "fixture": "Python-prerequisite-unavailable.json",
+      "stageCount": 1,
+      "originalParentShell": {
+        "exitStatus": 1,
+        "command": "( node infra/security/command-audit.mjs && node --max-old-space-size=128 infra/security/semgrep-gate.mjs )",
+        "trace": [
+          "infra/security/command-audit.mjs"
+        ]
+      },
+      "diagnostic": "kubectl failed (null): python unavailable"
+    },
+    {
+      "name": "historical-SSH-review-binding-is-inventory-not-bypass",
+      "branch": "existing-review-semantics",
+      "classification": "CONTROLLED_REPLAY",
+      "oldDecision": "PASS",
+      "standardDecision": "PASS",
+      "rawPreserved": true,
+      "inputSha256": "092dc08004bcf601a7a8fc03a20199bee2a7edf8cad402bf89dbece0b1181907",
+      "rawSha256": "ab82b1b78f1eb75c76d163a29b9ff8f06498e724156d0bf642adbb816dbb5924",
+      "fixture": "historical-SSH-review-binding-is-inventory-not-bypass.json",
+      "stageCount": 2,
+      "originalParentShell": {
+        "exitStatus": 0,
+        "command": "( node infra/security/command-audit.mjs && node --max-old-space-size=128 infra/security/semgrep-gate.mjs )",
+        "trace": [
+          "infra/security/command-audit.mjs",
+          "--max-old-space-size=128 infra/security/semgrep-gate.mjs"
+        ]
+      }
+    },
+    {
+      "name": "zero-tracked-scripts-no-added-nonempty-rule",
+      "branch": "existing-review-semantics",
+      "classification": "CONTROLLED_REPLAY",
+      "oldDecision": "PASS",
+      "standardDecision": "PASS",
+      "rawPreserved": true,
+      "inputSha256": "08d284f6506e471c4231ffec5ad378a29068b5d066dfe467e72fcab0409775ec",
+      "rawSha256": "aa18188b0f9f843cb83f0b0058f685731a91832da61f7c9a0cf8284a1aa0b1c6",
+      "fixture": "zero-tracked-scripts-no-added-nonempty-rule.json",
+      "stageCount": 2,
+      "originalParentShell": {
+        "exitStatus": 0,
+        "command": "( node infra/security/command-audit.mjs && node --max-old-space-size=128 infra/security/semgrep-gate.mjs )",
+        "trace": [
+          "infra/security/command-audit.mjs",
+          "--max-old-space-size=128 infra/security/semgrep-gate.mjs"
+        ]
+      }
+    },
+    {
+      "name": "Python-report-status-missing",
+      "branch": "missing",
+      "classification": "CONTROLLED_REPLAY",
+      "oldDecision": "FAIL",
+      "standardDecision": "FAIL",
+      "rawPreserved": true,
+      "inputSha256": "557831e8795a8518138b54c626a3a8fb189289d823fb54d831789a9c360c5da1",
+      "rawSha256": "6036890b5743768a05d480b07fe266351bd2e490603bea8f488ab2ecda7f45d0",
+      "fixture": "Python-report-status-missing.json",
+      "stageCount": 1,
+      "originalParentShell": {
+        "exitStatus": 1,
+        "command": "( node infra/security/command-audit.mjs && node --max-old-space-size=128 infra/security/semgrep-gate.mjs )",
+        "trace": [
+          "infra/security/command-audit.mjs"
+        ]
+      },
+      "diagnostic": "Script command gate blocked; inspect command-audit.json"
+    },
+    {
+      "name": "Python-report-status-failed",
+      "branch": "missing",
+      "classification": "CONTROLLED_REPLAY",
+      "oldDecision": "FAIL",
+      "standardDecision": "FAIL",
+      "rawPreserved": true,
+      "inputSha256": "332462a1d5c3ee29038d584c0bb4baa937552947f7a735c0bb504d49248e28b2",
+      "rawSha256": "15083dc47740409c2f597d8827b096664d0432ec9fcb66b40bd9de8e12ad356b",
+      "fixture": "Python-report-status-failed.json",
+      "stageCount": 1,
+      "originalParentShell": {
+        "exitStatus": 1,
+        "command": "( node infra/security/command-audit.mjs && node --max-old-space-size=128 infra/security/semgrep-gate.mjs )",
+        "trace": [
+          "infra/security/command-audit.mjs"
+        ]
+      },
+      "diagnostic": "Script command gate blocked; inspect command-audit.json"
+    },
+    {
+      "name": "historical-270",
+      "branch": "historical-parent",
+      "classification": "REAL_HISTORICAL",
+      "oldDecision": "PASS",
+      "standardDecision": "PASS",
+      "rawPreserved": true,
+      "rawSha256": "42185f0ed25305714493240e01268a6083678c2f3371e9c8bb268f5ad1754e76",
+      "fixture": "historical-parent.json"
+    },
+    {
+      "name": "Semgrep-missing-native-result-shape",
+      "branch": "missing",
+      "classification": "CONTROLLED_REPLAY",
+      "oldDecision": "FAIL",
+      "standardDecision": "FAIL",
+      "rawPreserved": true,
+      "inputSha256": "c26c3a46e3e6fa66728d64af1fd3583ebac90db829794497bcb3f4d2034a5804",
+      "rawSha256": "949daeb055c5db1ccd5ec88a40aece26e118f8cc17aff277279350c02475de42",
+      "fixture": "Semgrep-missing-native-result-shape.json",
+      "stageCount": 2,
+      "originalParentShell": {
+        "exitStatus": 1,
+        "command": "( node infra/security/command-audit.mjs && node --max-old-space-size=128 infra/security/semgrep-gate.mjs )",
+        "trace": [
+          "infra/security/command-audit.mjs",
+          "--max-old-space-size=128 infra/security/semgrep-gate.mjs"
+        ]
+      },
+      "diagnostic": "d.results is not iterable (cannot read property undefined)"
+    }
+  ]
+}

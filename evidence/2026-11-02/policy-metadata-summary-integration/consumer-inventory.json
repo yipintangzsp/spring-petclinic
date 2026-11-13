@@ -1,0 +1,113 @@
+{
+  "scope": "Repository-visible consumers; no claim about undisclosed external parsers",
+  "closedJsonSchemaFound": false,
+  "exactSourceConstraintFound": true,
+  "consumers": [
+    {
+      "consumer": "Promotion evidence loader",
+      "paths": [
+        "infra/security/promotion/evidence.mjs:3"
+      ],
+      "class": "A",
+      "behavior": "JSON.parse Summary; no closed field-set validation",
+      "validation": "STATIC_INSPECTION"
+    },
+    {
+      "consumer": "Promotion contract/sign-approve/promote",
+      "paths": [
+        "infra/security/promotion/contract.mjs:2",
+        "infra/security/promotion/sign-approve.mjs",
+        "infra/security/promotion/promote.mjs"
+      ],
+      "class": "B",
+      "behavior": "Select known identity/build/targetScope/trivy C/H fields",
+      "validation": "CONTROLLED_CONTRACT_ONLY; no approval/sign/release"
+    },
+    {
+      "consumer": "Jenkins archive",
+      "paths": [
+        "Jenkinsfile.security-audit:48",
+        "Jenkinsfile.security-audit:75",
+        "Jenkinsfile.security-audit:76"
+      ],
+      "class": "A",
+      "behavior": "Archive fixed path/name; no JSON field equality",
+      "validation": "STATIC_INSPECTION_ONLY"
+    },
+    {
+      "consumer": "Shared Library invocation",
+      "paths": [
+        "vars/securityManager.groovy:74",
+        "vars/securityManager.groovy:75"
+      ],
+      "class": "A",
+      "behavior": "Runs libraryResource script; no Summary parser at caller",
+      "validation": "STATIC_INSPECTION_ONLY"
+    },
+    {
+      "consumer": "Loki publishing",
+      "paths": [
+        "infra/security/security-summary.mjs:30",
+        "resources/security-manager/summary.mjs:8",
+        "infra/security/manager/summary.mjs:8"
+      ],
+      "class": "A",
+      "behavior": "Complete record serialized as log-line string; labels independent of extra fields",
+      "validation": "STATIC_INSPECTION_ONLY; no publish"
+    },
+    {
+      "consumer": "Grafana LogQL",
+      "paths": [
+        "infra/security/governance/grafana-panels.json"
+      ],
+      "class": "B",
+      "behavior": "Named extraction of existing Kubescape/Dojo fields",
+      "validation": "STATIC_INSPECTION_ONLY; no query"
+    },
+    {
+      "consumer": "Promotion frozen source guard",
+      "paths": [
+        "infra/security/policy/promotion-evidence.mjs:4",
+        "infra/security/policy/versions/promotion-baseline-v1.json:19"
+      ],
+      "class": "C/D",
+      "behavior": "Exact producer SOURCE SHA, distinct from JSON field equality",
+      "validation": "CONTROLLED_IN_MEMORY_PROBE_CONFIRMED"
+    },
+    {
+      "consumer": "Regression frozen source guard",
+      "paths": [
+        "infra/security/policy/regression-evidence.mjs:5",
+        "infra/security/policy/versions/regression-baseline-v1.json:60"
+      ],
+      "class": "C/D",
+      "behavior": "Exact producer SOURCE SHA, distinct from JSON field equality",
+      "validation": "CONTROLLED_IN_MEMORY_PROBE_CONFIRMED"
+    },
+    {
+      "consumer": "Promotion parent tests/oracle",
+      "paths": [
+        "infra/security/policy/promotion-parent.test.mjs",
+        "infra/security/policy/promotion-fixtures.mjs",
+        "infra/security/policy/promotion-workflow-oracle.groovy"
+      ],
+      "class": "B/D",
+      "behavior": "Summary fixture JSON and missing/malformed input cases; source identity transitively frozen",
+      "validation": "STATIC_INSPECTION_ONLY; no regeneration"
+    },
+    {
+      "consumer": "Workflow regression oracles",
+      "paths": [
+        "infra/security/policy/regression-workflow-oracle.groovy",
+        "infra/security/policy/command-parent-workflow-oracle.groovy",
+        "infra/security/policy/gitleaks-parent-workflow-oracle.groovy",
+        "infra/security/policy/zap-parent-workflow-oracle.groovy",
+        "infra/security/policy/trivy-parent-workflow-oracle.groovy",
+        "infra/security/policy/sbom-workflow-oracle.groovy"
+      ],
+      "class": "A",
+      "behavior": "Treat generic Summary invocation as inert step, not real Summary integration",
+      "validation": "STATIC_INSPECTION_ONLY"
+    }
+  ]
+}

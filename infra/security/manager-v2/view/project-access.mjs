@@ -4,6 +4,12 @@ import {sbomProjects} from '../sbom-real.mjs';
 const file=new URL('../../../../.devsecops/security-view-project-access-v1.json',import.meta.url);
 const secret=()=>randomBytes(32).toString('hex');
 const same=(a,b)=>typeof a==='string'&&typeof b==='string'&&a.length===b.length&&timingSafeEqual(Buffer.from(a),Buffer.from(b));
+// Preserve the existing local read policy for both original and supplemental data.
+export function canReadRun(req,run,access){
+ if(run.ciContext)return access.operator(req);
+ if(run.pluginId==='sbom')return access.authorized(req,run.projectId)&&(!access.project(req)||access.project(req)===run.projectId);
+ return !access.project(req)||access.operator(req);
+}
 export function accessCredentials(){
  const parent=path.dirname(file.pathname),st=fs.lstatSync(parent);if(st.uid!==process.getuid()||(st.mode&0o022)||fs.realpathSync(parent)!==parent)throw Error('UNSAFE_ACCESS_STORAGE');
  let v;

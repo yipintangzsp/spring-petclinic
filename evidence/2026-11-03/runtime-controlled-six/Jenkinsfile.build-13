@@ -1,0 +1,16 @@
+// Dedicated controlled non-release transaction. Never used by production V1.
+pipeline {
+ agent any
+ options { disableConcurrentBuilds(); timeout(time: 10, unit: 'MINUTES') }
+ environment { HEAVY_HOLDER = 'runtime-six-rfv-20261103-29dad1' }
+ stages {
+  stage('Verify exact source bundle and accepted ten-source baseline') { steps { sh 'node infra/security/runtime-facts/verify-bundle.mjs; node infra/security/runtime-facts/baseline-smoke.mjs' } }
+  stage('Acquire original heavy task Lease') { steps { sh 'node infra/observability/heavy-lease.mjs acquire' } }
+  stage('Controlled Gitleaks parent → owner → Gate → cleanup') { steps { sh 'node infra/security/runtime-facts/run-controlled-source.mjs gitleaks' } }
+  stage('Recheck accepted runtime baseline') { steps { sh 'node infra/security/runtime-facts/baseline-smoke.mjs' } }
+ }
+ post { always {
+  sh 'node infra/observability/heavy-lease.mjs release'
+  archiveArtifacts artifacts: '.devsecops/runtime-controlled/build-' + env.BUILD_NUMBER + '/**,runtime-source-bundle.json', allowEmptyArchive: false
+ } }
+}

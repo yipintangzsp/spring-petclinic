@@ -1,0 +1,254 @@
+{
+  "collectorOwnerAndSourceSpecific": {
+    "tests": 39,
+    "pass": 39,
+    "fail": 0,
+    "cancelled": 0,
+    "skipped": 0,
+    "todo": 0,
+    "path": "collector-source-tests-final.log",
+    "sha256": "201d571db1e4b6735f5021d699d19d98b9c2ddf9e5d7a8227156b2161b8c841c"
+  },
+  "candidate": {
+    "tests": 40,
+    "pass": 40,
+    "fail": 0,
+    "cancelled": 0,
+    "skipped": 0,
+    "todo": 0,
+    "path": "candidate-tests.log",
+    "sha256": "c4120023795a7d36f1a18693f2d6ec94d3c5bbd5371012fc95f9160882a986bb"
+  },
+  "policyCore": {
+    "tests": 5,
+    "pass": 5,
+    "fail": 0,
+    "cancelled": 0,
+    "skipped": 0,
+    "todo": 0,
+    "path": "policy-core.log",
+    "sha256": "a5ad0a7a884717a3a535534d9933a47591d9df18274551fb339b0b0e3c5eb02e"
+  },
+  "regression": {
+    "path": ".devsecops/runtime-facts/build-9/regression.log",
+    "counts": {
+      "tests": 147,
+      "pass": 147,
+      "fail": 0,
+      "cancelled": 0,
+      "skipped": 0,
+      "todo": 0
+    },
+    "sha256": "41e9b986f6479576985b85a70671e87c26564f0372a8a1308f360967442157b4"
+  },
+  "policyContracts": {
+    "scope": "Read-only audit observations; not new cumulative Policy test cases",
+    "checks": [
+      {
+        "capability": "baseline-v1",
+        "status": "VERIFIED",
+        "evidence": "Existing version document resolved"
+      },
+      {
+        "capability": "default standard",
+        "status": "VERIFIED",
+        "evidence": "Absent level resolves to standard"
+      },
+      {
+        "capability": "explicit low",
+        "status": "VERIFIED",
+        "evidence": "Explicit low only; invalid level rejected"
+      },
+      {
+        "capability": "strict",
+        "status": "VERIFIED",
+        "evidence": "Same immutable finding WARN -> FAIL"
+      },
+      {
+        "capability": "component override",
+        "status": "VERIFIED",
+        "evidence": "Target only"
+      },
+      {
+        "capability": "project override",
+        "status": "VERIFIED",
+        "evidence": "Project overrides component; mismatched identity rejected"
+      },
+      {
+        "capability": "policy version metadata",
+        "status": "VERIFIED",
+        "evidence": "Engine return payload only; no actual Summary integration"
+      },
+      {
+        "capability": "effective policy",
+        "status": "VERIFIED",
+        "evidence": "Resolved component map present"
+      },
+      {
+        "capability": "override source",
+        "status": "VERIFIED",
+        "evidence": [
+          {
+            "layer": "component",
+            "component": "semgrep",
+            "values": {
+              "Medium": "FAIL"
+            }
+          },
+          {
+            "layer": "project",
+            "component": "semgrep",
+            "values": {
+              "Medium": "WARN"
+            }
+          }
+        ]
+      },
+      {
+        "capability": "POLICY_ERROR on broken config",
+        "status": "VERIFIED",
+        "evidence": [
+          "unreadable: POLICY_ERROR",
+          "malformed: POLICY_ERROR",
+          "wrong schema: POLICY_ERROR"
+        ]
+      }
+    ],
+    "ready": true,
+    "classifierRecheck": [
+      {
+        "component": "semgrep",
+        "oldDecision": "FAIL",
+        "standardDecision": "FAIL",
+        "rawPreserved": true
+      },
+      {
+        "component": "semgrep",
+        "oldDecision": "WARN",
+        "standardDecision": "WARN",
+        "rawPreserved": true
+      },
+      {
+        "component": "semgrep",
+        "oldDecision": "FAIL",
+        "standardDecision": "FAIL",
+        "rawPreserved": true
+      },
+      {
+        "component": "semgrep",
+        "oldDecision": "WARN",
+        "standardDecision": "WARN",
+        "rawPreserved": true
+      },
+      {
+        "component": "semgrep",
+        "oldDecision": "FAIL",
+        "standardDecision": "FAIL",
+        "rawPreserved": true
+      },
+      {
+        "component": "semgrep",
+        "oldDecision": "WARN",
+        "standardDecision": "WARN",
+        "rawPreserved": true
+      },
+      {
+        "component": "semgrep",
+        "oldDecision": "WARN",
+        "standardDecision": "WARN",
+        "rawPreserved": true
+      },
+      {
+        "component": "semgrep",
+        "oldDecision": "WARN",
+        "standardDecision": "WARN",
+        "rawPreserved": true
+      },
+      {
+        "component": "trivy",
+        "oldDecision": "FAIL",
+        "standardDecision": "FAIL",
+        "rawPreserved": true
+      },
+      {
+        "component": "trivy",
+        "oldDecision": "FAIL",
+        "standardDecision": "FAIL",
+        "rawPreserved": true
+      },
+      {
+        "component": "trivy",
+        "oldDecision": "FAIL",
+        "standardDecision": "FAIL",
+        "rawPreserved": true
+      },
+      {
+        "component": "trivy",
+        "oldDecision": "FAIL",
+        "standardDecision": "FAIL",
+        "rawPreserved": true
+      },
+      {
+        "component": "trivy",
+        "oldDecision": "WARN",
+        "standardDecision": "WARN",
+        "rawPreserved": true
+      },
+      {
+        "component": "trivy",
+        "oldDecision": "FAIL",
+        "standardDecision": "FAIL",
+        "rawPreserved": true
+      },
+      {
+        "component": "trivy",
+        "oldDecision": "WARN",
+        "standardDecision": "WARN",
+        "rawPreserved": true
+      },
+      {
+        "component": "trivy",
+        "oldDecision": "WARN",
+        "standardDecision": "WARN",
+        "rawPreserved": true
+      },
+      {
+        "component": "zap",
+        "oldDecision": "WARN",
+        "standardDecision": "WARN",
+        "rawPreserved": true
+      },
+      {
+        "component": "zap",
+        "oldDecision": "WARN",
+        "standardDecision": "WARN",
+        "rawPreserved": true
+      },
+      {
+        "component": "zap",
+        "oldDecision": "WARN",
+        "standardDecision": "WARN",
+        "rawPreserved": true
+      },
+      {
+        "component": "zap",
+        "oldDecision": "WARN",
+        "standardDecision": "WARN",
+        "rawPreserved": true
+      }
+    ],
+    "sonarLogic": {
+      "positive": {
+        "classification": "HISTORICAL_ARCHIVE",
+        "decision": "PASS",
+        "rawPreserved": true
+      },
+      "negative": {
+        "classification": "SYNTHETIC_UNIT_ONLY",
+        "decision": "FAIL",
+        "rawPreserved": true,
+        "realNegativeStatus": "DEFERRED_REAL_NEGATIVE_EVIDENCE"
+      }
+    }
+  }
+}

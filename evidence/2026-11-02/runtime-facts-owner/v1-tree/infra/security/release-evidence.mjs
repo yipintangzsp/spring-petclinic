@@ -1,0 +1,10 @@
+import fs from 'node:fs';
+import crypto from 'node:crypto';
+const source=fs.readFileSync('.git-sha','utf8').trim();
+const load=n=>JSON.parse(fs.readFileSync(n));
+const scan=load('.devsecops/source-gate.json'),admission=load('.devsecops/admission-gate.json'),sbom=load('.devsecops/sbom-summary.json'),image=load('target/platform/image.json'),harbor=load('target/platform/harbor.json');
+if([scan,admission,sbom].some(x=>x.status!=='success')||!scan.cleanup||scan.source!==source||admission.source!==source||sbom.source!==source||image.source!==source||image.digest!==harbor.digest||harbor.scan_status!=='Success'||harbor.scans?.length!==2)throw Error('Security evidence must match this exact source and released image');
+if(sbom.sha256!==crypto.createHash('sha256').update(fs.readFileSync('.devsecops/sbom.json')).digest('hex'))throw Error('SBOM changed after validation');
+for(const s of harbor.scans)if(s.scan_status!=='Success'||(s.summary?.summary?.Critical??0)>0||(s.summary?.summary?.High??0)>0)throw Error('Both architectures must pass existing Critical/High gate');
+const proof={status:'success',createdAt:new Date().toISOString(),source,imageDigest:image.digest,architectures:image.architectures,sbomSha256:sbom.sha256,secretFindings:scan.sourceScan.blockingFindings.length,rawSecretFindings:scan.sourceScan.rawCount,verifiedFalsePositives:scan.sourceScan.verifiedFalsePositives.length,admissionDenials:admission.cases.filter(x=>!x.allowed).length,harborScans:harbor.scans.map(s=>({architecture:s.architecture,digest:s.digest,summary:s.summary})),scope:'PetClinic source and release; not a claim of platform-wide vulnerability zero',signed:false};
+fs.writeFileSync('.devsecops/release-evidence.json',JSON.stringify(proof,null,2));console.log(JSON.stringify(proof));

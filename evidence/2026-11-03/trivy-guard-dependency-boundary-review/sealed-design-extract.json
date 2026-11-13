@@ -1,0 +1,156 @@
+{
+  "isolationArchitecture": "Disposable Linux arm64 VM on independent external backing; no prod kubeconfig, Secret, PVC, registry writes, PetClinic workloads, Lease or proxy. Isolated kube API with only lab harbor-trivy-0/harbor and platform-heavy/data-infra/devops stats identity, because frozen IO hardcodes these names. Exact immutable source copied read-only; record schema, imageID, binary hash, UID10000, Node version. DNS/network isolation must deny prod control plane/registry addresses before any execution. Only anonymous official GHCR read + digest-addressed mirror fetch allowed. No change to frozen hardcoded command sequence.",
+  "proxyStrategy": "Prefer direct egress; independent validation-only proxy if required, no production proxy listener/runtime dependency. Production proxy was used only to GET four small public source files read-only this design round, not for a lab run; no state mutation. All future experimental routes must be isolated and logged sans credentials.",
+  "credentialsStrategy": "Anonymous public token scoped repository pull only as frozen upstream uses. No production registry/age/SA secrets. Lab-only ephemeral Kube identity + Lease in isolated control plane; no prod RBAC writes. Redact Authorization/curl stdin/env, no set -x; secret references only. No credentials archived.",
+  "filesystemEquivalence": [
+    {
+      "property": "architecture/tool",
+      "classification": "MUST_MATCH_PRODUCTION",
+      "requirement": "Linux arm64; exact c7586c image and d860 binary; UID/GID10000; same Node runtime version for frozen JS, record version before execution"
+    },
+    {
+      "property": "filesystem type / features",
+      "classification": "MUST_MATCH_PRODUCTION",
+      "requirement": "ext4 on lab Linux block device; record kernel, feature flags, journal/reserved-block ratio/delalloc and mount options; production cache mount is ext4 /dev/vda2"
+    },
+    {
+      "property": "block and inode accounting",
+      "classification": "MUST_MATCH_PRODUCTION",
+      "requirement": "4096-byte fundamental block observed; compare statvfs f_bavail/f_bfree, inode counts, ext4 reserved blocks. PVC nominal5Gi is NOT an enforced quota here"
+    },
+    {
+      "property": "cache/temp placement",
+      "classification": "MUST_MATCH_PRODUCTION",
+      "requirement": "PVC-style bind at /home/scanner/.cache; /tmp on container overlay; same underlying ext4 device as cache; controller os.tmpdir manifests on controller filesystem tracked separately"
+    },
+    {
+      "property": "rename / copy boundary",
+      "classification": "MUST_MATCH_PRODUCTION",
+      "requirement": "Preserve production device relationships; never move temp to tmpfs or different disk. Do not implement a replacement rename or wrapper backup"
+    },
+    {
+      "property": "overlay container layer",
+      "classification": "MUST_MATCH_PRODUCTION",
+      "requirement": "Same containerd snapshotter overlayfs and image lower layers; fresh writable upperdir per case, same backing ext4. Collect upperdir, workdir and deleted-open-file accounting"
+    },
+    {
+      "property": "guest filesystem capacity",
+      "classification": "MUST_MATCH_PRODUCTION",
+      "requirement": "For guard classification compare same measured capacityBytes270430261248 and reserve ratio; differing capacity only supplementary sensitivity run"
+    },
+    {
+      "property": "sparse / host COW",
+      "classification": "MUST_MATCH_PRODUCTION",
+      "requirement": "For end-to-end backing-space safety use dedicated qcow2 on APFS with adequate physical space and matched COW policy. ext4-only lab proves guest peak only; cannot validate production host/backup safety"
+    },
+    {
+      "property": "hypervisor/host version",
+      "classification": "SHOULD_MATCH",
+      "requirement": "Match existing UTM/QEMU/APFS where possible; record differences; no claim of backing-store equivalence if not matched"
+    },
+    {
+      "property": "DNS / proxy / throughput",
+      "classification": "SHOULD_MATCH",
+      "requirement": "Independent egress, same official source and digest; record latency/retries; production mutable proxy excluded"
+    },
+    {
+      "property": "business namespace labels / production registry tags",
+      "classification": "NOT_RELEVANT",
+      "requirement": "No PetClinic or production registry needed; isolated kube API can use same harbor/data-infra/devops names solely because frozen IO hardcodes them"
+    }
+  ],
+  "measurement": {
+    "baseline": [
+      "timestamp UTC + monotonic_ns",
+      "statvfs every distinct device: capacity, used/free/available, inode free",
+      "df -B1/du -B1 (allocated) and du --apparent-size",
+      "cache/db/java-db, overlay upper/work, controller manifest temp, /tmp, qcow2/APFS physical allocation",
+      "DB checksum+metadata on isolated public seed only; block allocation st_blocks*512; device+inode"
+    ],
+    "fastSampler": {
+      "periodMs": 10,
+      "fields": [
+        "monotonic_ns",
+        "device",
+        "f_blocks",
+        "f_bfree",
+        "f_bavail",
+        "block_size",
+        "inodesFree"
+      ],
+      "scheduler": "prestarted independent sampler on observer filesystem; record actual gaps, dropped samples, execution overhead; >50ms gap invalid unless event reconstruction bounds it"
+    },
+    "directorySampler": {
+      "periodMs": 100,
+      "method": "stat tracked files/inodes and allocation deltas from watcher events; full recursive du at start/end and >=1s cadence to avoid workload perturbation"
+    },
+    "eventTrace": "Lab-only trace ext4 block allocation/free, delayed-allocation reservations, truncate/unlink/open-close, overlay copy-up and process phase events. Observer buffers/logs outside measured filesystem; validate event accounting against statvfs and allocated-inode snapshots; track open-unlinked blocks. No eBPF privileges requested or installed this round.",
+    "peakValidity": "10ms sampling alone is a lower bound, NOT exact true peak. Reconstruct filesystem allocation high-water incl transient created/deleted files from loss-free allocation/free trace and reservation accounting. Record trace counters and lost events. If kernel instrumentation cannot account for short-lived peaks, report SAMPLED_PEAK_LOWER_BOUND / PEAK_NOT_PROVEN, no guard decision or reduction; improve isolated instrumentation under future authorization. Do not use max(bytesWritten), apparent-size or before/after as allocation peak.",
+    "formula": "per device: incremental_peak=max_t(available_before - available_t), absolute_peak_used=max_t(used_t); combined concurrency only for SAME instant and shared backing. Report f_bfree and f_bavail separately, safety reserves excluded from MEASURED_PEAK. Guest physical blocks, overlay and host qcow2 peaks reported independently without double counting.",
+    "peakComponents": [
+      "existing_db",
+      "compressed_download",
+      "extracted_new_db",
+      "temporary_archive",
+      "temporary_extraction",
+      "old_db_retained",
+      "rollback_copy",
+      "filesystem_overhead",
+      "container_overlay_overhead"
+    ],
+    "componentRules": "OCI compressed_download and temporary_archive may be the same inode: count once. old_db_retained is existing_db until deletion, not an additional copy. rollback_copy=0 unless observed implementation creates it (wrapper has none). extraction temporary path only if observed dependency uses it. Sequential db/java-db peaks not summed. Retained other-kind DB stays in baseline.",
+    "failureCleanup": "Observe without manual cleanup; seal artifacts; destroy disposable lab only. Cleanup insufficiency is evidence, never patch frozen tool to make experiment pass.",
+    "repeatability": ">=3 real successful full B refreshes with identical seed+new digest; A/C supplemental >=3 attempts. Each failure mode >=2 where reproducible, include TERM and KILL with different cleanup guarantees. Restore clean lab snapshot between runs outside measured window; 3 repeats per free-space band. Record min/max/median/population variance, every sample and censored run. Controlled changed-digest successor run if upstream changes, separate cohort, do not merge.",
+    "labStop": "Abort owned updater if physical host budget exhausted, observer drops events, unexpected target/API/production address appears, unowned process exists, or device available <8GiB (lab emergency stop only, NOT new guard). Censored peak cannot support guard reduction; re-size external lab and repeat."
+  },
+  "successCriteria": [
+    "exact image/binary/frozen wrapper/Node identity pinned and effective commands match",
+    "same sources/digests/media types and applicable filesystem semantics",
+    ">=3 actual full refreshes validated with real fresh metadata and DB readable by same Trivy (isolated offline known fixture scan); no production scan",
+    "loss-free peak reconstruction OR explicitly NOT_PROVEN; no single-sample decision",
+    "representative failure cleanup outcomes captured including residual bytes and DB loss",
+    "repeatability stats and all evidence sealed; no silent discarded runs",
+    "independent backing-space/backup safety assessed separately from guest peak; no production impact"
+  ],
+  "diskSizing": {
+    "units": "GiB=2^30 bytes",
+    "productionFilesystemCapacityBytes": 270430261248,
+    "currentFrozenGuardBytesCeil": 53449441076,
+    "currentFrozenGuardGiB": 49.77867107391357,
+    "currentAvailableGiB": 42.3257942199707,
+    "guardFormulaUnchanged": "C*0.15 + 12GiB; 8GiB platform +4GiB DB refresh reserve",
+    "labEnvelopeOnlyNotMeasuredPeak": {
+      "OSAndToolImageGiB": 16,
+      "existingPublicDBFixtureGiB": 4,
+      "OCICompressedTwoKindsMaxGiB": 3,
+      "extractionAndFailureWorkspaceGiB": 16,
+      "observabilityOutsideDataFsGiB": 8,
+      "additionalAboveGuardGiB": 8
+    },
+    "minimumIllustrativeDataFsGiB": 70,
+    "minimumFormula": "C >= (B + 12GiB + above_guard_delta)/0.85 with B=OS/tool + seed + compressed + extraction allowance; illustrative B=39GiB gives C>=69.412GiB →70GiB filesystem. Recompute after authentic lab artifact expansion measurement; not a production guard proposal.",
+    "primaryDesign": "Match measured filesystem capacity270430261248B on disposable258GiB virtual disk with production partition/features, not illustrative70GiB lab; guard then remains49.77867GiB. /tmp overlay + cache bind share same backing. Separate observer disk >=8GiB.",
+    "physicalAllocation": "Use external dedicated storage, no creation on current constrained production Mac/APFS. Reserve at least full258GiB virtual disk physical backing +8GiB observer + measured snapshot/COW budget + host safety; planning floor300GiB usable with ONE active base and no snapshots. Snapshot/backup copies require additional proven unique-block budget, e.g. independent full backup adds258GiB. Sparse capacity is not free physical headroom.",
+    "bounds": "Compressed layer <=1.5GiB each proven wrapper bound; decompressed size NOT bounded by that. The16GiB extraction allowance is planning-only. Future lab preflight must inspect authentic tar manifest/expansion and safe quotas before fill-to-band; if larger, recalc B/re-size external lab. No undersizing to force ENOSPC."
+  },
+  "readinessReason": "Current proxy live-state differs from preserved verified epoch, attribution UNKNOWN; do not assert protection=unchanged or approve runtime resume. Experimental infrastructure and telemetry still require isolated preflight; this package is design-only.",
+  "networkAndDBPath": {
+    "entry": "release-preflight.mjs: preflight collect → assessPreflight → only productionCollection && assessment.ok calls ensureScannerDatabases(snapshot.scannerMetadata, scannerRefreshIO()). This round did NOT run preflight CLI because it can refresh.",
+    "wrapper": "Loop db(schema2) then java-db(schema1). Invalid Version/UpdatedAt/DownloadedAt/NextUpdate rejects. Fresh NextUpdate skips. Expired → assertOwner → upstream → download → read → require fresh metadata, then final requireFreshScannerMetadata. No outer force flag.",
+    "prerequisites": "platform-heavy Lease data-infra must be owned by HEAVY_HOLDER or jenkins-petclinic-BUILD_NUMBER; node devops stats nodefs AND imagefs must be fresh[-5s,+90s] and available >= capacity*.15+12GiB; ps must show no other trivy CLI. Both guards unchanged.",
+    "upstream": "For each kind: GHCR anonymous scoped pull token → official /v2/aquasecurity/trivy-{db,java-db}/manifests/{2,1} → compute SHA256 of response and compare Docker-Content-Digest → require schema2/single layer/correct media type/sha256/0<size<=1610612736. Return ghcr.nju.edu.cn/aquasecurity/trivy-{kind}@official_manifest_digest; mirror content addressed; no Harbor write.",
+    "commandTemplate": "kubectl -n harbor exec harbor-trivy-0 -c trivy -- sh -c [set -eu; umask077; random owned pidfile; exec env HTTP_PROXY= HTTPS_PROXY= ALL_PROXY= NO_PROXY=ghcr.nju.edu.cn PETCLINIC_DB_REFRESH_OWNER=<nonce> trivy image (--download-db-only | --download-java-db-only) (--db-repository | --java-db-repository) <mirror@digest> --cache-dir /home/scanner/.cache/trivy --timeout 3m --no-progress]",
+    "cache": "/home/scanner/.cache/trivy/{db,java-db}; wrapper allows default path or /tmp/petclinic-db-check-[a-f0-9]+ only. Main experiment keeps default path and topology, not /tmp cache shortcut.",
+    "controllerTemp": "fs.mkdtempSync(path.join(os.tmpdir(),clinic-db-manifest-)); curl headers saved here; finally fs.rmSync recursive force. Controller actual os.tmpdir/TMPDIR placement must be captured in future isolated runner, not assumed to be Harbor /tmp.",
+    "containerTemp": "TMPDIR=UNSET in live pod; Go uses container default /tmp. Upstream v0.69.3 OCI path creates oci-download-* compressed layer then passes archive filename and destination to downloader. Exact nested go-getter temp names/allocation/rename calls must be traced in lab; not invented.",
+    "replacement": "Same-version upstream downloader.Download removes destination (RemoveAll) before getter.Client.Get, with file getter Copy:true. No atomic old→new rename or rollback copy in inspected wrapper/upstream path. Destination may be absent or partially written after extraction error. Unknown nested dependency temp allocation is a future trace prerequisite, not a proven additional copy.",
+    "oldRetention": "Old DB may coexist with full compressed archive before destination removal. It is not retained as a guaranteed backup after removal. Other-kind DB remains because wrapper is sequential. rollback_copy=0 unless observed, no new backup inserted inside measured path.",
+    "cleanup": "upstream normal-return/error defer after file creation closes archive and removes oci-download temp. Failure before defer registration can leave temp directory; signal/kill need not run Go defers. Wrapper finally only stops same random-owner process, waits10 checks1s then removes pidfile; does not restore DB or guarantee cleaning archive/extraction. kube/stop failures themselves may interrupt finally. Freeze and observe all paths.",
+    "proxy": "Official manifest curl tries PACKAGE_HTTPS_PROXY then direct fallback; download CLI explicitly clears HTTP_PROXY/HTTPS_PROXY/ALL_PROXY and sets NO_PROXY only mirror. Future isolated network must support this exact split. Do not point at mutable production v2rayN runtime.",
+    "provenanceLimit": "Live version/image digest/binary SHA observed; inspected public v0.69.3 source corroborates expected behavior, not proof image was reproducibly built from tag. Future lab must use exact image and binary and trace actual operations. Four upstream sources fetched and hashed; two missing source files + go.mod explicitly unavailable via local fetch; operation.go was inspected using official web source. No complete dependency tree/build attestation claim."
+  },
+  "source": {
+    "path": "evidence/2026-11-03/trivy-guard-experiment-design/experiment-plan.json",
+    "sha256": "c6641e3518ef4aa0c99fd70d196ff272fe4405d8560ed99473ecdb9271e4ef6e"
+  }
+}

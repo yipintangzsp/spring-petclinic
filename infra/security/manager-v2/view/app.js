@@ -211,6 +211,12 @@ function renderLive(runs){
   if(l.reason)card.append(row('投递原因',l.reason));
   if(l.grafanaUrl?.startsWith('http://grafana.devops.local/d/security-manager-v2-candidate/')){const a=el('a','在 Grafana 查看此次 Run');a.href=l.grafanaUrl;card.append(a);}
  }else card.append(row('本轮自动 Loki 投递','NOT_TESTED（历史记录）'));
+ for(const l of r.lokiReplayEvents??[]){
+  const audit=el('section',undefined,'consumer');
+  audit.append(el('h4','历史真实结果 · 后续补投（非新扫描）'),row('补投状态',l.state),row('同 Run 查询',l.queryState),row('Policy（原判定）',l.policyDecision),row('Run ID',l.runId),row('Result Digest（原摘要）',l.resultDigest),row('补投时间',time(l.deliveryAt)),row('回查时间',time(l.queryAt)),row('回执 Digest',l.receiptDigest));
+  if(l.grafanaUrl?.startsWith('http://grafana.devops.local/d/security-manager-v2-candidate/')){const a=el('a','在 Grafana 查看历史补投记录');a.href=l.grafanaUrl;audit.append(a);}
+  card.append(audit);
+ }
  if(r.auditDigest)card.append(el('p','Audit Digest: '+r.auditDigest));
  if(r.source)card.append(el('code',r.source,'source-path'));else card.append(el('p','没有已验证的扫描报告或 Policy Result。'));
  return card;

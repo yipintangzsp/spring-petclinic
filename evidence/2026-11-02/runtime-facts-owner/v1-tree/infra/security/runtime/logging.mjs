@@ -1,0 +1,12 @@
+import fs from 'node:fs';
+import crypto from 'node:crypto';
+import {spawnSync} from 'node:child_process';
+const run=(a,input)=>{const r=spawnSync('kubectl',['--request-timeout=20s',...a],{input,encoding:'utf8',timeout:40000,maxBuffer:4*1024*1024});if(r.status!==0)throw Error(r.stderr.slice(-1500));return r.stdout;};
+const cm=JSON.parse(run(['-n','monitoring','get','cm','alloy','-o','json']));
+const old=cm.data['config.alloy'],fragment=fs.readFileSync('infra/security/runtime/falco-logs.alloy','utf8');
+const marker=/\/\/ BEGIN platform-falco owned log source v1[\s\S]*?\/\/ END platform-falco owned log source v1\n?/g;
+if([...old.matchAll(marker)].length>1||!old.includes('discovery.kubernetes "pods"')||!old.includes('loki.write "default"'))throw Error('Existing collector contract changed; preserve it');
+const next=old.match(marker)?old.replace(marker,fragment):old+'\n'+fragment;
+run(['-n','monitoring','exec','-i','ds/alloy','-c','alloy','--','/bin/sh','-c','set -eu; f=$(mktemp /tmp/platform-falco-validate.XXXXXX); trap \'rm -f "$f"\' EXIT; cat > "$f"; /bin/alloy validate "$f"'],next);
+if(next!==old)run(['-n','monitoring','patch','cm','alloy','--type=json','-p',JSON.stringify([{op:'test',path:'/metadata/resourceVersion',value:cm.metadata.resourceVersion},{op:'replace',path:'/data/config.alloy',value:next}])]);
+fs.mkdirSync('.devsecops',{recursive:true});fs.writeFileSync('.devsecops/runtime-logging.json',JSON.stringify({status:'success',changed:next!==old,existingChainsPreserved:true,fragmentSha256:crypto.createHash('sha256').update(fragment).digest('hex')},null,2));

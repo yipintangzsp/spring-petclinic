@@ -1,0 +1,36 @@
+{
+  "historicalEvidence": [
+    {
+      "path": "evidence/2026-11-01/falco-parent",
+      "status": "SUPERSEDED_FOR_TIME_BOUNDARY_COVERAGE",
+      "retained": true,
+      "reason": "Original 52/54 accepted cases remain valid, but zero-time-IO evidence does not cover actual per-sample wall-clock latency"
+    },
+    {
+      "path": "evidence/2026-11-02/real-v2-pipeline-integration/falco-clock-preflight.json",
+      "status": "HISTORICAL_DEFECT_REPRODUCTION_RETAINED",
+      "retained": true
+    }
+  ],
+  "sourceTransitions": [
+    {
+      "path": "infra/security/policy/falco-parent.mjs",
+      "oldSha256": "906addbb70afed7178f8bfa8c09cdd53f7d5a4de02526e21596056bdeb837803",
+      "newSha256": "2c31980a19c9443215fd196e6aab3e89e312c6bca535857a869b6fe2a610519b",
+      "archivedOldPath": "evidence/2026-11-02/falco-time-contract-repair/before/infra/security/policy/falco-parent.mjs",
+      "archivedOldSha256": "906addbb70afed7178f8bfa8c09cdd53f7d5a4de02526e21596056bdeb837803",
+      "reason": "Observed per-sample time contract repair"
+    },
+    {
+      "path": "infra/security/policy/falco-parent.test.mjs",
+      "oldSha256": "4e01631ebfcb8746b45ffee6a56c0a3bcde390cbf6a3812522e0ea95a361280a",
+      "newSha256": "4187b3832e8fb2d41281cc310b48f5d7d17c9bf5f9fb12351f668c01f9b256d1",
+      "archivedOldPath": "evidence/2026-11-02/falco-time-contract-repair/before/infra/security/policy/falco-parent.test.mjs",
+      "archivedOldSha256": "4e01631ebfcb8746b45ffee6a56c0a3bcde390cbf6a3812522e0ea95a361280a",
+      "reason": "Accepted fixtures gain explicit zero-IO clock facts and verify query clock; output redirected to new evidence; all 106 case identities preserved"
+    }
+  ],
+  "oldEvidenceOverwritten": false,
+  "newAuthority": "evidence/2026-11-02/falco-time-contract-repair",
+  "scope": "Falco only; not a replacement for the 18-source aggregate audit"
+}

@@ -1,0 +1,1759 @@
+{
+  "guard": {
+    "status": "ACCEPTED",
+    "profile": "MIN_RBAC_EXECUTOR",
+    "server": "https://security-test-sops-control-plane:6443",
+    "kubeSystemUID": "54f300a4-5f1b-4e1e-86a1-d173e5a402d8",
+    "wouldPermitChild": true,
+    "gateExecuted": false,
+    "environment": {
+      "preserved": [],
+      "explicitlySet": [
+        "BUSINESS_AGE_FILE",
+        "DEVSECOPS_READ_ONLY",
+        "HEAVY_HOLDER",
+        "HOME",
+        "ISOLATED_BOUNDARY_CONTEXT",
+        "KUBECONFIG",
+        "PATH",
+        "PYTHONDONTWRITEBYTECODE",
+        "TMPDIR",
+        "XDG_CACHE_HOME"
+      ],
+      "removedInheritedNames": [],
+      "sourceAndSnapshotBytesIdentical": true,
+      "defaultKubeconfigAbsent": true
+    },
+    "trustedChild": {
+      "exit": 0,
+      "outputSuppressed": true
+    },
+    "temporaryDirectory": "/fixture/boundary/isolated-sops-boundary-3u57gd5i",
+    "temporaryDirectoryRemoved": true,
+    "audit": {
+      "api_attempts": 3,
+      "kubectl_invocations": 0,
+      "child_executions": 1
+    }
+  },
+  "child": {
+    "schemaVersion": "sops-observation-v1",
+    "factType": "CHILD_EXIT_FACT",
+    "source": "real-local-subprocess",
+    "identity": "system:serviceaccount:devsecops-system:security-fixture-executor",
+    "expectedTarget": {
+      "executable": "/fixture/node/bin/node"
+    },
+    "observedTarget": {
+      "executable": "/fixture/node/bin/node"
+    },
+    "status": "EXECUTION_ERROR",
+    "errorClass": "NONZERO_EXIT",
+    "evidenceRef": "result.json",
+    "commandIdentity": {
+      "executable": "/fixture/node/bin/node",
+      "argvSha256": "27852a53d0e2459b8271fe3715e940389c10f300c4a33e6bf5c73f12591d05bc"
+    },
+    "exit": {
+      "code": 1,
+      "signal": null,
+      "timedOut": false,
+      "outputLimitExceeded": false
+    },
+    "stdout": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "contentStored": false
+    },
+    "stderr": {
+      "bytes": 450,
+      "sha256": "831d9563ad84c73328bb054afc25f0397ee28f32479ab66da99b20be11248753",
+      "contentStored": false
+    }
+  },
+  "result": {
+    "scenario": "REPORT_WRITE_FAILURE",
+    "classification": "REAL_CONTROLLED_EXECUTION",
+    "rawEvidence": {
+      "facts": {
+        "prerequisites": {
+          "credentialPresent": true,
+          "manifest": true,
+          "lease": true,
+          "tools": true
+        },
+        "sourceReadSucceeded": true,
+        "readOnly": false,
+        "expectedTargetCount": 4,
+        "targets": [
+          {
+            "expected": {
+              "namespace": "petclinic",
+              "name": "petclinic-db"
+            },
+            "decrypt": {
+              "exitStatus": 0,
+              "stdout": {
+                "bytes": 272,
+                "sha256": "d3f1a0cbcce13695c7818cbc7cd2743d1088684c893f7d3cd8317ae2be5d3144"
+              }
+            },
+            "readSucceeded": true,
+            "actual": {
+              "kind": "Secret",
+              "metadata": {
+                "name": "petclinic-db",
+                "namespace": "petclinic",
+                "uid": "aecea28d-5a2d-474a-8ea0-01f71e106058"
+              },
+              "type": "Opaque",
+              "keyNames": [
+                "password",
+                "username"
+              ],
+              "dataSha256": "8e4ccc550e0b8321cd7508929fe754025eba9d9c6e967702587204b810324776"
+            },
+            "applySucceeded": true,
+            "afterReadSucceeded": true,
+            "after": {
+              "kind": "Secret",
+              "metadata": {
+                "name": "petclinic-db",
+                "namespace": "petclinic",
+                "uid": "aecea28d-5a2d-474a-8ea0-01f71e106058"
+              },
+              "type": "Opaque",
+              "keyNames": [
+                "password",
+                "username"
+              ],
+              "dataSha256": "8e4ccc550e0b8321cd7508929fe754025eba9d9c6e967702587204b810324776"
+            },
+            "uidEqual": true,
+            "dataEqual": true
+          },
+          {
+            "expected": {
+              "namespace": "petclinic",
+              "name": "rabbitmq-client"
+            },
+            "decrypt": {
+              "exitStatus": 0,
+              "stdout": {
+                "bytes": 275,
+                "sha256": "d0881627975276da41eeb81b96b38d48387d2bd3a47f64a7ea9901d22319437e"
+              }
+            },
+            "readSucceeded": true,
+            "actual": {
+              "kind": "Secret",
+              "metadata": {
+                "name": "rabbitmq-client",
+                "namespace": "petclinic",
+                "uid": "be0dae34-d534-44fe-ad83-0fc278873db5"
+              },
+              "type": "Opaque",
+              "keyNames": [
+                "password",
+                "username"
+              ],
+              "dataSha256": "138729346ccf2c574cb4c592d3ca286465200a5078985625d79531881279df54"
+            },
+            "applySucceeded": true,
+            "afterReadSucceeded": true,
+            "after": {
+              "kind": "Secret",
+              "metadata": {
+                "name": "rabbitmq-client",
+                "namespace": "petclinic",
+                "uid": "be0dae34-d534-44fe-ad83-0fc278873db5"
+              },
+              "type": "Opaque",
+              "keyNames": [
+                "password",
+                "username"
+              ],
+              "dataSha256": "138729346ccf2c574cb4c592d3ca286465200a5078985625d79531881279df54"
+            },
+            "uidEqual": true,
+            "dataEqual": true
+          },
+          {
+            "expected": {
+              "namespace": "petclinic",
+              "name": "petclinic-harbor-pull"
+            },
+            "decrypt": {
+              "exitStatus": 0,
+              "stdout": {
+                "bytes": 368,
+                "sha256": "e9519cf8075cdbcb37e4ae226b18b495c63169fa44026b407c06c90f4e9625f9"
+              }
+            },
+            "readSucceeded": true,
+            "actual": {
+              "kind": "Secret",
+              "metadata": {
+                "name": "petclinic-harbor-pull",
+                "namespace": "petclinic",
+                "uid": "c16e5234-f79a-4559-a19a-f275d7ca4122"
+              },
+              "type": "kubernetes.io/dockerconfigjson",
+              "keyNames": [
+                ".dockerconfigjson"
+              ],
+              "dataSha256": "d8c5404269e76eba7c02983955c00b44578d520bed7fec52275c931d288d5535"
+            },
+            "applySucceeded": true,
+            "afterReadSucceeded": true,
+            "after": {
+              "kind": "Secret",
+              "metadata": {
+                "name": "petclinic-harbor-pull",
+                "namespace": "petclinic",
+                "uid": "c16e5234-f79a-4559-a19a-f275d7ca4122"
+              },
+              "type": "kubernetes.io/dockerconfigjson",
+              "keyNames": [
+                ".dockerconfigjson"
+              ],
+              "dataSha256": "d8c5404269e76eba7c02983955c00b44578d520bed7fec52275c931d288d5535"
+            },
+            "uidEqual": true,
+            "dataEqual": true
+          },
+          {
+            "expected": {
+              "namespace": "devsecops-system",
+              "name": "kyverno-registry-pull"
+            },
+            "decrypt": {
+              "exitStatus": 0,
+              "stdout": {
+                "bytes": 379,
+                "sha256": "d48252be114d4b6fa7b2db5de1a0079b975f49e08fb5e02f1d62a182a4395037"
+              }
+            },
+            "readSucceeded": true,
+            "actual": {
+              "kind": "Secret",
+              "metadata": {
+                "name": "kyverno-registry-pull",
+                "namespace": "devsecops-system",
+                "uid": "7eb84227-e1d8-4d79-8269-5d8f4b1e49ca"
+              },
+              "type": "kubernetes.io/dockerconfigjson",
+              "keyNames": [
+                ".dockerconfigjson"
+              ],
+              "dataSha256": "ded88bd78c1192b099b7f9bd0cc4e8b16054894955ee2b1fd88a5a2cc9a58bad"
+            },
+            "applySucceeded": true,
+            "afterReadSucceeded": true,
+            "after": {
+              "kind": "Secret",
+              "metadata": {
+                "name": "kyverno-registry-pull",
+                "namespace": "devsecops-system",
+                "uid": "7eb84227-e1d8-4d79-8269-5d8f4b1e49ca"
+              },
+              "type": "kubernetes.io/dockerconfigjson",
+              "keyNames": [
+                ".dockerconfigjson"
+              ],
+              "dataSha256": "ded88bd78c1192b099b7f9bd0cc4e8b16054894955ee2b1fd88a5a2cc9a58bad"
+            },
+            "uidEqual": true,
+            "dataEqual": true
+          }
+        ],
+        "rbac": {
+          "knownRegistryGet": "yes",
+          "registryForeignGet": "no",
+          "registryList": "no",
+          "registryCreate": "no",
+          "knownGet": "yes",
+          "foreignGet": "no",
+          "createSecret": "no",
+          "listSecrets": "no",
+          "otherNamespace": "no"
+        },
+        "verifierRbac": {
+          "ownCredentialGet": "yes",
+          "oldCrossGet": "no",
+          "businessDatabaseGet": "no",
+          "businessSecretList": "no"
+        },
+        "reportWriteSucceeded": false
+      },
+      "events": [
+        {
+          "kind": "PROCESS",
+          "command": "kubectl",
+          "argv": [
+            "--request-timeout=20s",
+            "-n",
+            "data-infra",
+            "get",
+            "lease",
+            "platform-heavy",
+            "-o",
+            "json"
+          ],
+          "exitCode": 0,
+          "signal": null,
+          "errorClass": null,
+          "timedOut": false,
+          "stdout": {
+            "bytes": 760,
+            "sha256": "5c9e74c27bab085595fefbce9948e61683851f6080278b20f817d623fcc7c400"
+          },
+          "stderr": {
+            "bytes": 0,
+            "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          }
+        },
+        {
+          "kind": "LEASE_READ",
+          "uid": "ff5e9671-9b22-4a88-892c-64eeac8307cb",
+          "holderIdentity": "sm-sops-20261102-02",
+          "holderMatched": true
+        },
+        {
+          "kind": "TOOL_SHA_READ",
+          "sha256": "53b0abacd38ef1b12a66d6c100956691b9cefce018d91f81e73ddf7438b94d77"
+        },
+        {
+          "kind": "PROCESS",
+          "command": "/var/jenkins_home/platform-security/20261027/sops",
+          "argv": [
+            "decrypt",
+            "infra/security/secrets/petclinic-db.enc.json"
+          ],
+          "exitCode": 0,
+          "signal": null,
+          "errorClass": null,
+          "timedOut": false,
+          "stdout": {
+            "bytes": 272,
+            "sha256": "d3f1a0cbcce13695c7818cbc7cd2743d1088684c893f7d3cd8317ae2be5d3144"
+          },
+          "stderr": {
+            "bytes": 0,
+            "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          }
+        },
+        {
+          "kind": "PROCESS",
+          "command": "kubectl",
+          "argv": [
+            "--request-timeout=20s",
+            "--as=system:serviceaccount:devsecops-system:platform-secret-reconciler",
+            "-n",
+            "petclinic",
+            "get",
+            "secret",
+            "petclinic-db",
+            "-o",
+            "json"
+          ],
+          "exitCode": 0,
+          "signal": null,
+          "errorClass": null,
+          "timedOut": false,
+          "stdout": {
+            "bytes": 757,
+            "sha256": "59d842dce9ec55416dc866bcf90458aac5bd929e28c0cf4c3b37d24c59f39c4c"
+          },
+          "stderr": {
+            "bytes": 0,
+            "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          }
+        },
+        {
+          "kind": "PROCESS",
+          "command": "kubectl",
+          "argv": [
+            "--request-timeout=20s",
+            "--as=system:serviceaccount:devsecops-system:platform-secret-reconciler",
+            "apply",
+            "--server-side",
+            "--field-manager=platform-secret-reconciler",
+            "-f",
+            "-"
+          ],
+          "exitCode": 0,
+          "signal": null,
+          "errorClass": null,
+          "timedOut": false,
+          "stdout": {
+            "bytes": 39,
+            "sha256": "14ef8454f2a6a5aa62b3f14cb014a9b36f685ad5553dd98be9374788fd4d703b"
+          },
+          "stderr": {
+            "bytes": 0,
+            "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          }
+        },
+        {
+          "kind": "PROCESS",
+          "command": "kubectl",
+          "argv": [
+            "--request-timeout=20s",
+            "--as=system:serviceaccount:devsecops-system:platform-secret-reconciler",
+            "-n",
+            "petclinic",
+            "get",
+            "secret",
+            "petclinic-db",
+            "-o",
+            "json"
+          ],
+          "exitCode": 0,
+          "signal": null,
+          "errorClass": null,
+          "timedOut": false,
+          "stdout": {
+            "bytes": 757,
+            "sha256": "b2375c9d4ad15982e133c0a7ee3315c2395d68dbc3f0bd92ba4f0910e14a7252"
+          },
+          "stderr": {
+            "bytes": 0,
+            "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          }
+        },
+        {
+          "kind": "PROCESS",
+          "command": "/var/jenkins_home/platform-security/20261027/sops",
+          "argv": [
+            "decrypt",
+            "infra/security/secrets/rabbitmq-client.enc.json"
+          ],
+          "exitCode": 0,
+          "signal": null,
+          "errorClass": null,
+          "timedOut": false,
+          "stdout": {
+            "bytes": 275,
+            "sha256": "d0881627975276da41eeb81b96b38d48387d2bd3a47f64a7ea9901d22319437e"
+          },
+          "stderr": {
+            "bytes": 0,
+            "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          }
+        },
+        {
+          "kind": "PROCESS",
+          "command": "kubectl",
+          "argv": [
+            "--request-timeout=20s",
+            "--as=system:serviceaccount:devsecops-system:platform-secret-reconciler",
+            "-n",
+            "petclinic",
+            "get",
+            "secret",
+            "rabbitmq-client",
+            "-o",
+            "json"
+          ],
+          "exitCode": 0,
+          "signal": null,
+          "errorClass": null,
+          "timedOut": false,
+          "stdout": {
+            "bytes": 760,
+            "sha256": "44f3d5263250b945b3b970ce5d96c337c6faee801d2720f69091bd9f7f571f99"
+          },
+          "stderr": {
+            "bytes": 0,
+            "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          }
+        },
+        {
+          "kind": "PROCESS",
+          "command": "kubectl",
+          "argv": [
+            "--request-timeout=20s",
+            "--as=system:serviceaccount:devsecops-system:platform-secret-reconciler",
+            "apply",
+            "--server-side",
+            "--field-manager=platform-secret-reconciler",
+            "-f",
+            "-"
+          ],
+          "exitCode": 0,
+          "signal": null,
+          "errorClass": null,
+          "timedOut": false,
+          "stdout": {
+            "bytes": 42,
+            "sha256": "4844efbd35ac2bcc1e8c8011ee1fbad2d19b7adfe8fc56675fb4d1f734601cee"
+          },
+          "stderr": {
+            "bytes": 0,
+            "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          }
+        },
+        {
+          "kind": "PROCESS",
+          "command": "kubectl",
+          "argv": [
+            "--request-timeout=20s",
+            "--as=system:serviceaccount:devsecops-system:platform-secret-reconciler",
+            "-n",
+            "petclinic",
+            "get",
+            "secret",
+            "rabbitmq-client",
+            "-o",
+            "json"
+          ],
+          "exitCode": 0,
+          "signal": null,
+          "errorClass": null,
+          "timedOut": false,
+          "stdout": {
+            "bytes": 760,
+            "sha256": "44f3d5263250b945b3b970ce5d96c337c6faee801d2720f69091bd9f7f571f99"
+          },
+          "stderr": {
+            "bytes": 0,
+            "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          }
+        },
+        {
+          "kind": "PROCESS",
+          "command": "/var/jenkins_home/platform-security/20261027/sops",
+          "argv": [
+            "decrypt",
+            "infra/security/secrets/petclinic-harbor-pull.enc.json"
+          ],
+          "exitCode": 0,
+          "signal": null,
+          "errorClass": null,
+          "timedOut": false,
+          "stdout": {
+            "bytes": 368,
+            "sha256": "e9519cf8075cdbcb37e4ae226b18b495c63169fa44026b407c06c90f4e9625f9"
+          },
+          "stderr": {
+            "bytes": 0,
+            "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          }
+        },
+        {
+          "kind": "PROCESS",
+          "command": "kubectl",
+          "argv": [
+            "--request-timeout=20s",
+            "--as=system:serviceaccount:devsecops-system:platform-secret-reconciler",
+            "-n",
+            "petclinic",
+            "get",
+            "secret",
+            "petclinic-harbor-pull",
+            "-o",
+            "json"
+          ],
+          "exitCode": 0,
+          "signal": null,
+          "errorClass": null,
+          "timedOut": false,
+          "stdout": {
+            "bytes": 847,
+            "sha256": "18721f598d96d7697843ce86fc341142e36e95b4c641cf84c6ab5fd495307807"
+          },
+          "stderr": {
+            "bytes": 0,
+            "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          }
+        },
+        {
+          "kind": "PROCESS",
+          "command": "kubectl",
+          "argv": [
+            "--request-timeout=20s",
+            "--as=system:serviceaccount:devsecops-system:platform-secret-reconciler",
+            "apply",
+            "--server-side",
+            "--field-manager=platform-secret-reconciler",
+            "-f",
+            "-"
+          ],
+          "exitCode": 0,
+          "signal": null,
+          "errorClass": null,
+          "timedOut": false,
+          "stdout": {
+            "bytes": 48,
+            "sha256": "2cb431739325d3908a93448b36217de73725fb9de8c5e0798bc65a1d303087b4"
+          },
+          "stderr": {
+            "bytes": 0,
+            "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          }
+        },
+        {
+          "kind": "PROCESS",
+          "command": "kubectl",
+          "argv": [
+            "--request-timeout=20s",
+            "--as=system:serviceaccount:devsecops-system:platform-secret-reconciler",
+            "-n",
+            "petclinic",
+            "get",
+            "secret",
+            "petclinic-harbor-pull",
+            "-o",
+            "json"
+          ],
+          "exitCode": 0,
+          "signal": null,
+          "errorClass": null,
+          "timedOut": false,
+          "stdout": {
+            "bytes": 847,
+            "sha256": "18721f598d96d7697843ce86fc341142e36e95b4c641cf84c6ab5fd495307807"
+          },
+          "stderr": {
+            "bytes": 0,
+            "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          }
+        },
+        {
+          "kind": "PROCESS",
+          "command": "/var/jenkins_home/platform-security/20261027/sops",
+          "argv": [
+            "decrypt",
+            "infra/security/secrets/kyverno-registry-pull.enc.json"
+          ],
+          "exitCode": 0,
+          "signal": null,
+          "errorClass": null,
+          "timedOut": false,
+          "stdout": {
+            "bytes": 379,
+            "sha256": "d48252be114d4b6fa7b2db5de1a0079b975f49e08fb5e02f1d62a182a4395037"
+          },
+          "stderr": {
+            "bytes": 0,
+            "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          }
+        },
+        {
+          "kind": "PROCESS",
+          "command": "kubectl",
+          "argv": [
+            "--request-timeout=20s",
+            "--as=system:serviceaccount:devsecops-system:platform-secret-reconciler",
+            "-n",
+            "devsecops-system",
+            "get",
+            "secret",
+            "kyverno-registry-pull",
+            "-o",
+            "json"
+          ],
+          "exitCode": 0,
+          "signal": null,
+          "errorClass": null,
+          "timedOut": false,
+          "stdout": {
+            "bytes": 858,
+            "sha256": "c10488aa9870945dd7497e3dee8f734eee3e02a39a9d7b4fa351115897238ab3"
+          },
+          "stderr": {
+            "bytes": 0,
+            "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          }
+        },
+        {
+          "kind": "PROCESS",
+          "command": "kubectl",
+          "argv": [
+            "--request-timeout=20s",
+            "--as=system:serviceaccount:devsecops-system:platform-secret-reconciler",
+            "apply",
+            "--server-side",
+            "--field-manager=platform-secret-reconciler",
+            "-f",
+            "-"
+          ],
+          "exitCode": 0,
+          "signal": null,
+          "errorClass": null,
+          "timedOut": false,
+          "stdout": {
+            "bytes": 48,
+            "sha256": "e06348ac5361b59d8fdda91baeea20716e4cad7ee2ceebfb0b73e5759d7c846a"
+          },
+          "stderr": {
+            "bytes": 0,
+            "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          }
+        },
+        {
+          "kind": "PROCESS",
+          "command": "kubectl",
+          "argv": [
+            "--request-timeout=20s",
+            "--as=system:serviceaccount:devsecops-system:platform-secret-reconciler",
+            "-n",
+            "devsecops-system",
+            "get",
+            "secret",
+            "kyverno-registry-pull",
+            "-o",
+            "json"
+          ],
+          "exitCode": 0,
+          "signal": null,
+          "errorClass": null,
+          "timedOut": false,
+          "stdout": {
+            "bytes": 858,
+            "sha256": "c10488aa9870945dd7497e3dee8f734eee3e02a39a9d7b4fa351115897238ab3"
+          },
+          "stderr": {
+            "bytes": 0,
+            "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          }
+        },
+        {
+          "kind": "PROCESS",
+          "command": "kubectl",
+          "argv": [
+            "--request-timeout=20s",
+            "auth",
+            "can-i",
+            "get",
+            "secret/kyverno-registry-pull",
+            "-n",
+            "devsecops-system",
+            "--as=system:serviceaccount:devsecops-system:platform-secret-reconciler"
+          ],
+          "exitCode": 0,
+          "signal": null,
+          "errorClass": null,
+          "timedOut": false,
+          "stdout": {
+            "bytes": 4,
+            "sha256": "5040625b1fb6fa4af07226683f6e6003b29e5e70b16f8cfb24be7a752393f0ee"
+          },
+          "stderr": {
+            "bytes": 0,
+            "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          }
+        },
+        {
+          "kind": "PROCESS",
+          "command": "kubectl",
+          "argv": [
+            "--request-timeout=20s",
+            "auth",
+            "can-i",
+            "get",
+            "secret/unrelated-secret",
+            "-n",
+            "devsecops-system",
+            "--as=system:serviceaccount:devsecops-system:platform-secret-reconciler"
+          ],
+          "exitCode": 1,
+          "signal": null,
+          "errorClass": null,
+          "timedOut": false,
+          "stdout": {
+            "bytes": 3,
+            "sha256": "564739ea8fa5926d4fa5c9734fed462061960a22e6b8d5c06e94969d97891bf2"
+          },
+          "stderr": {
+            "bytes": 0,
+            "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          }
+        },
+        {
+          "kind": "PROCESS",
+          "command": "kubectl",
+          "argv": [
+            "--request-timeout=20s",
+            "auth",
+            "can-i",
+            "list",
+            "secrets",
+            "-n",
+            "devsecops-system",
+            "--as=system:serviceaccount:devsecops-system:platform-secret-reconciler"
+          ],
+          "exitCode": 1,
+          "signal": null,
+          "errorClass": null,
+          "timedOut": false,
+          "stdout": {
+            "bytes": 3,
+            "sha256": "564739ea8fa5926d4fa5c9734fed462061960a22e6b8d5c06e94969d97891bf2"
+          },
+          "stderr": {
+            "bytes": 0,
+            "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          }
+        },
+        {
+          "kind": "PROCESS",
+          "command": "kubectl",
+          "argv": [
+            "--request-timeout=20s",
+            "auth",
+            "can-i",
+            "create",
+            "secrets",
+            "-n",
+            "devsecops-system",
+            "--as=system:serviceaccount:devsecops-system:platform-secret-reconciler"
+          ],
+          "exitCode": 1,
+          "signal": null,
+          "errorClass": null,
+          "timedOut": false,
+          "stdout": {
+            "bytes": 3,
+            "sha256": "564739ea8fa5926d4fa5c9734fed462061960a22e6b8d5c06e94969d97891bf2"
+          },
+          "stderr": {
+            "bytes": 0,
+            "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          }
+        },
+        {
+          "kind": "PROCESS",
+          "command": "kubectl",
+          "argv": [
+            "--request-timeout=20s",
+            "auth",
+            "can-i",
+            "get",
+            "secret/petclinic-db",
+            "-n",
+            "petclinic",
+            "--as=system:serviceaccount:devsecops-system:platform-secret-reconciler"
+          ],
+          "exitCode": 0,
+          "signal": null,
+          "errorClass": null,
+          "timedOut": false,
+          "stdout": {
+            "bytes": 4,
+            "sha256": "5040625b1fb6fa4af07226683f6e6003b29e5e70b16f8cfb24be7a752393f0ee"
+          },
+          "stderr": {
+            "bytes": 0,
+            "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          }
+        },
+        {
+          "kind": "PROCESS",
+          "command": "kubectl",
+          "argv": [
+            "--request-timeout=20s",
+            "auth",
+            "can-i",
+            "get",
+            "secret/unrelated-secret",
+            "-n",
+            "petclinic",
+            "--as=system:serviceaccount:devsecops-system:platform-secret-reconciler"
+          ],
+          "exitCode": 1,
+          "signal": null,
+          "errorClass": null,
+          "timedOut": false,
+          "stdout": {
+            "bytes": 3,
+            "sha256": "564739ea8fa5926d4fa5c9734fed462061960a22e6b8d5c06e94969d97891bf2"
+          },
+          "stderr": {
+            "bytes": 0,
+            "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          }
+        },
+        {
+          "kind": "PROCESS",
+          "command": "kubectl",
+          "argv": [
+            "--request-timeout=20s",
+            "auth",
+            "can-i",
+            "create",
+            "secrets",
+            "-n",
+            "petclinic",
+            "--as=system:serviceaccount:devsecops-system:platform-secret-reconciler"
+          ],
+          "exitCode": 1,
+          "signal": null,
+          "errorClass": null,
+          "timedOut": false,
+          "stdout": {
+            "bytes": 3,
+            "sha256": "564739ea8fa5926d4fa5c9734fed462061960a22e6b8d5c06e94969d97891bf2"
+          },
+          "stderr": {
+            "bytes": 0,
+            "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          }
+        },
+        {
+          "kind": "PROCESS",
+          "command": "kubectl",
+          "argv": [
+            "--request-timeout=20s",
+            "auth",
+            "can-i",
+            "list",
+            "secrets",
+            "-n",
+            "petclinic",
+            "--as=system:serviceaccount:devsecops-system:platform-secret-reconciler"
+          ],
+          "exitCode": 1,
+          "signal": null,
+          "errorClass": null,
+          "timedOut": false,
+          "stdout": {
+            "bytes": 3,
+            "sha256": "564739ea8fa5926d4fa5c9734fed462061960a22e6b8d5c06e94969d97891bf2"
+          },
+          "stderr": {
+            "bytes": 0,
+            "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          }
+        },
+        {
+          "kind": "PROCESS",
+          "command": "kubectl",
+          "argv": [
+            "--request-timeout=20s",
+            "auth",
+            "can-i",
+            "get",
+            "secret/rabbitmq-auth",
+            "-n",
+            "data-infra",
+            "--as=system:serviceaccount:devsecops-system:platform-secret-reconciler"
+          ],
+          "exitCode": 1,
+          "signal": null,
+          "errorClass": null,
+          "timedOut": false,
+          "stdout": {
+            "bytes": 3,
+            "sha256": "564739ea8fa5926d4fa5c9734fed462061960a22e6b8d5c06e94969d97891bf2"
+          },
+          "stderr": {
+            "bytes": 0,
+            "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          }
+        },
+        {
+          "kind": "PROCESS",
+          "command": "kubectl",
+          "argv": [
+            "--request-timeout=20s",
+            "auth",
+            "can-i",
+            "get",
+            "secret/kyverno-registry-pull",
+            "-n",
+            "devsecops-system",
+            "--as=system:serviceaccount:devsecops-system:kyverno-admission-controller"
+          ],
+          "exitCode": 0,
+          "signal": null,
+          "errorClass": null,
+          "timedOut": false,
+          "stdout": {
+            "bytes": 4,
+            "sha256": "5040625b1fb6fa4af07226683f6e6003b29e5e70b16f8cfb24be7a752393f0ee"
+          },
+          "stderr": {
+            "bytes": 0,
+            "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          }
+        },
+        {
+          "kind": "PROCESS",
+          "command": "kubectl",
+          "argv": [
+            "--request-timeout=20s",
+            "auth",
+            "can-i",
+            "get",
+            "secret/petclinic-harbor-pull",
+            "-n",
+            "petclinic",
+            "--as=system:serviceaccount:devsecops-system:kyverno-admission-controller"
+          ],
+          "exitCode": 1,
+          "signal": null,
+          "errorClass": null,
+          "timedOut": false,
+          "stdout": {
+            "bytes": 3,
+            "sha256": "564739ea8fa5926d4fa5c9734fed462061960a22e6b8d5c06e94969d97891bf2"
+          },
+          "stderr": {
+            "bytes": 0,
+            "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          }
+        },
+        {
+          "kind": "PROCESS",
+          "command": "kubectl",
+          "argv": [
+            "--request-timeout=20s",
+            "auth",
+            "can-i",
+            "get",
+            "secret/petclinic-db",
+            "-n",
+            "petclinic",
+            "--as=system:serviceaccount:devsecops-system:kyverno-admission-controller"
+          ],
+          "exitCode": 1,
+          "signal": null,
+          "errorClass": null,
+          "timedOut": false,
+          "stdout": {
+            "bytes": 3,
+            "sha256": "564739ea8fa5926d4fa5c9734fed462061960a22e6b8d5c06e94969d97891bf2"
+          },
+          "stderr": {
+            "bytes": 0,
+            "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          }
+        },
+        {
+          "kind": "PROCESS",
+          "command": "kubectl",
+          "argv": [
+            "--request-timeout=20s",
+            "auth",
+            "can-i",
+            "list",
+            "secrets",
+            "-n",
+            "petclinic",
+            "--as=system:serviceaccount:devsecops-system:kyverno-admission-controller"
+          ],
+          "exitCode": 1,
+          "signal": null,
+          "errorClass": null,
+          "timedOut": false,
+          "stdout": {
+            "bytes": 3,
+            "sha256": "564739ea8fa5926d4fa5c9734fed462061960a22e6b8d5c06e94969d97891bf2"
+          },
+          "stderr": {
+            "bytes": 0,
+            "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          }
+        },
+        {
+          "kind": "REPORT_WRITE",
+          "succeeded": false,
+          "errorClass": "EISDIR"
+        },
+        {
+          "kind": "UNCAUGHT_EXCEPTION",
+          "errorClass": "EISDIR",
+          "messageSha256": "e76480997c298eb83db741aa6406cf5aaeb07dd17ce59f4e04765c53c6bcf1ab"
+        }
+      ],
+      "rawInputSha256": "57a93e7a8eff606473cfb253f748103f8ad63d33db52b5da5d722ec3f5131430",
+      "rawPreserved": true,
+      "redaction": "Synthetic decrypted stdout/data stay in memory only; original fingerprints+equality retained, no raw values archived"
+    },
+    "oldGate": {
+      "exitCode": 1,
+      "signal": null,
+      "errorClass": "EISDIR",
+      "oldDecision": "FAIL"
+    },
+    "adapterRawOutput": {
+      "component": "sops",
+      "status": "success",
+      "checks": [
+        {
+          "id": "manifest",
+          "passed": true
+        },
+        {
+          "id": "lease",
+          "passed": true
+        },
+        {
+          "id": "tools",
+          "passed": true
+        },
+        {
+          "id": "credential",
+          "passed": true
+        },
+        {
+          "id": "source-read",
+          "passed": true
+        },
+        {
+          "id": "decrypt-0",
+          "passed": true
+        },
+        {
+          "id": "scope-0",
+          "passed": true
+        },
+        {
+          "id": "read-0",
+          "passed": true
+        },
+        {
+          "id": "data-type-0",
+          "passed": true
+        },
+        {
+          "id": "apply-0",
+          "passed": true
+        },
+        {
+          "id": "after-read-0",
+          "passed": true
+        },
+        {
+          "id": "identity-values-0",
+          "passed": true
+        },
+        {
+          "id": "decrypt-1",
+          "passed": true
+        },
+        {
+          "id": "scope-1",
+          "passed": true
+        },
+        {
+          "id": "read-1",
+          "passed": true
+        },
+        {
+          "id": "data-type-1",
+          "passed": true
+        },
+        {
+          "id": "apply-1",
+          "passed": true
+        },
+        {
+          "id": "after-read-1",
+          "passed": true
+        },
+        {
+          "id": "identity-values-1",
+          "passed": true
+        },
+        {
+          "id": "decrypt-2",
+          "passed": true
+        },
+        {
+          "id": "scope-2",
+          "passed": true
+        },
+        {
+          "id": "read-2",
+          "passed": true
+        },
+        {
+          "id": "data-type-2",
+          "passed": true
+        },
+        {
+          "id": "apply-2",
+          "passed": true
+        },
+        {
+          "id": "after-read-2",
+          "passed": true
+        },
+        {
+          "id": "identity-values-2",
+          "passed": true
+        },
+        {
+          "id": "decrypt-3",
+          "passed": true
+        },
+        {
+          "id": "scope-3",
+          "passed": true
+        },
+        {
+          "id": "read-3",
+          "passed": true
+        },
+        {
+          "id": "data-type-3",
+          "passed": true
+        },
+        {
+          "id": "apply-3",
+          "passed": true
+        },
+        {
+          "id": "after-read-3",
+          "passed": true
+        },
+        {
+          "id": "identity-values-3",
+          "passed": true
+        },
+        {
+          "id": "rbac",
+          "passed": true
+        },
+        {
+          "id": "verifierRbac",
+          "passed": true
+        },
+        {
+          "id": "report-write",
+          "passed": false
+        }
+      ],
+      "failureKind": "execution error"
+    },
+    "policy": {
+      "policyVersion": "baseline-v1",
+      "securityLevel": "standard",
+      "profile": "java-web",
+      "effectivePolicy": {
+        "security-approval-promotion": {
+          "Critical": "FAIL",
+          "High": "FAIL",
+          "Medium": "WARN",
+          "Low": "WARN",
+          "Info": "WARN"
+        },
+        "regression": {
+          "Critical": "FAIL",
+          "High": "FAIL",
+          "Medium": "WARN",
+          "Low": "WARN",
+          "Info": "WARN"
+        },
+        "gitleaks": {
+          "Critical": "FAIL",
+          "High": "FAIL",
+          "Medium": "WARN",
+          "Low": "WARN",
+          "Info": "WARN"
+        },
+        "semgrep": {
+          "Critical": "FAIL",
+          "High": "FAIL",
+          "Medium": "WARN",
+          "Low": "WARN",
+          "Info": "WARN"
+        },
+        "sonarqube": {
+          "Critical": "FAIL",
+          "High": "FAIL",
+          "Medium": "WARN",
+          "Low": "WARN",
+          "Info": "WARN"
+        },
+        "sbom": {
+          "Critical": "FAIL",
+          "High": "FAIL",
+          "Medium": "WARN",
+          "Low": "WARN",
+          "Info": "WARN"
+        },
+        "trivy": {
+          "Critical": "FAIL",
+          "High": "FAIL",
+          "Medium": "WARN",
+          "Low": "WARN",
+          "Info": "WARN"
+        },
+        "cosign": {
+          "Critical": "FAIL",
+          "High": "FAIL",
+          "Medium": "WARN",
+          "Low": "WARN",
+          "Info": "WARN"
+        },
+        "kubescape": {
+          "Critical": "FAIL",
+          "High": "FAIL",
+          "Medium": "WARN",
+          "Low": "WARN",
+          "Info": "WARN"
+        },
+        "zap": {
+          "Critical": "FAIL",
+          "High": "FAIL",
+          "Medium": "WARN",
+          "Low": "WARN",
+          "Info": "WARN"
+        },
+        "defectdojo": {
+          "Critical": "FAIL",
+          "High": "FAIL",
+          "Medium": "WARN",
+          "Low": "WARN",
+          "Info": "WARN"
+        },
+        "provenance": {
+          "Critical": "FAIL",
+          "High": "FAIL",
+          "Medium": "WARN",
+          "Low": "WARN",
+          "Info": "WARN"
+        },
+        "build-provenance": {
+          "Critical": "FAIL",
+          "High": "FAIL",
+          "Medium": "WARN",
+          "Low": "WARN",
+          "Info": "WARN"
+        },
+        "sops": {
+          "Critical": "FAIL",
+          "High": "FAIL",
+          "Medium": "WARN",
+          "Low": "WARN",
+          "Info": "WARN"
+        },
+        "falco-baseline": {
+          "Critical": "FAIL",
+          "High": "FAIL",
+          "Medium": "WARN",
+          "Low": "WARN",
+          "Info": "WARN"
+        },
+        "falco-final": {
+          "Critical": "FAIL",
+          "High": "FAIL",
+          "Medium": "WARN",
+          "Low": "WARN",
+          "Info": "WARN"
+        },
+        "kyverno": {
+          "Critical": "FAIL",
+          "High": "FAIL",
+          "Medium": "WARN",
+          "Low": "WARN",
+          "Info": "WARN"
+        },
+        "kyverno-admission": {
+          "Critical": "FAIL",
+          "High": "FAIL",
+          "Medium": "WARN",
+          "Low": "WARN",
+          "Info": "WARN"
+        },
+        "kyverno-rbac": {
+          "Critical": "FAIL",
+          "High": "FAIL",
+          "Medium": "WARN",
+          "Low": "WARN",
+          "Info": "WARN"
+        },
+        "falco": {
+          "Critical": "FAIL",
+          "High": "FAIL",
+          "Medium": "WARN",
+          "Low": "WARN",
+          "Info": "WARN"
+        },
+        "semgrep-command-audit": {
+          "Critical": "FAIL",
+          "High": "FAIL",
+          "Medium": "WARN",
+          "Low": "WARN",
+          "Info": "WARN"
+        },
+        "cosign-cli": {
+          "Critical": "FAIL",
+          "High": "FAIL",
+          "Medium": "WARN",
+          "Low": "WARN",
+          "Info": "WARN"
+        },
+        "falco-prior-exit": {
+          "Critical": "FAIL",
+          "High": "FAIL",
+          "Medium": "WARN",
+          "Low": "WARN",
+          "Info": "WARN"
+        },
+        "falco-continuity": {
+          "Critical": "FAIL",
+          "High": "FAIL",
+          "Medium": "WARN",
+          "Low": "WARN",
+          "Info": "WARN"
+        },
+        "falco-persistence": {
+          "Critical": "FAIL",
+          "High": "FAIL",
+          "Medium": "WARN",
+          "Low": "WARN",
+          "Info": "WARN"
+        },
+        "provenance-signature": {
+          "Critical": "FAIL",
+          "High": "FAIL",
+          "Medium": "WARN",
+          "Low": "WARN",
+          "Info": "WARN"
+        },
+        "build-provenance-signature": {
+          "Critical": "FAIL",
+          "High": "FAIL",
+          "Medium": "WARN",
+          "Low": "WARN",
+          "Info": "WARN"
+        },
+        "approval-evidence": {
+          "Critical": "FAIL",
+          "High": "FAIL",
+          "Medium": "WARN",
+          "Low": "WARN",
+          "Info": "WARN"
+        },
+        "approval-signatures": {
+          "Critical": "FAIL",
+          "High": "FAIL",
+          "Medium": "WARN",
+          "Low": "WARN",
+          "Info": "WARN"
+        }
+      },
+      "appliedOverrides": [],
+      "status": "FAIL",
+      "decision": "FAIL",
+      "failureKind": "execution error",
+      "checks": [
+        {
+          "id": "manifest",
+          "passed": true
+        },
+        {
+          "id": "lease",
+          "passed": true
+        },
+        {
+          "id": "tools",
+          "passed": true
+        },
+        {
+          "id": "credential",
+          "passed": true
+        },
+        {
+          "id": "source-read",
+          "passed": true
+        },
+        {
+          "id": "decrypt-0",
+          "passed": true
+        },
+        {
+          "id": "scope-0",
+          "passed": true
+        },
+        {
+          "id": "read-0",
+          "passed": true
+        },
+        {
+          "id": "data-type-0",
+          "passed": true
+        },
+        {
+          "id": "apply-0",
+          "passed": true
+        },
+        {
+          "id": "after-read-0",
+          "passed": true
+        },
+        {
+          "id": "identity-values-0",
+          "passed": true
+        },
+        {
+          "id": "decrypt-1",
+          "passed": true
+        },
+        {
+          "id": "scope-1",
+          "passed": true
+        },
+        {
+          "id": "read-1",
+          "passed": true
+        },
+        {
+          "id": "data-type-1",
+          "passed": true
+        },
+        {
+          "id": "apply-1",
+          "passed": true
+        },
+        {
+          "id": "after-read-1",
+          "passed": true
+        },
+        {
+          "id": "identity-values-1",
+          "passed": true
+        },
+        {
+          "id": "decrypt-2",
+          "passed": true
+        },
+        {
+          "id": "scope-2",
+          "passed": true
+        },
+        {
+          "id": "read-2",
+          "passed": true
+        },
+        {
+          "id": "data-type-2",
+          "passed": true
+        },
+        {
+          "id": "apply-2",
+          "passed": true
+        },
+        {
+          "id": "after-read-2",
+          "passed": true
+        },
+        {
+          "id": "identity-values-2",
+          "passed": true
+        },
+        {
+          "id": "decrypt-3",
+          "passed": true
+        },
+        {
+          "id": "scope-3",
+          "passed": true
+        },
+        {
+          "id": "read-3",
+          "passed": true
+        },
+        {
+          "id": "data-type-3",
+          "passed": true
+        },
+        {
+          "id": "apply-3",
+          "passed": true
+        },
+        {
+          "id": "after-read-3",
+          "passed": true
+        },
+        {
+          "id": "identity-values-3",
+          "passed": true
+        },
+        {
+          "id": "rbac",
+          "passed": true
+        },
+        {
+          "id": "verifierRbac",
+          "passed": true
+        },
+        {
+          "id": "report-write",
+          "passed": false
+        }
+      ],
+      "severity": null,
+      "sopsFacts": {
+        "component": "sops",
+        "status": "success",
+        "checks": [
+          {
+            "id": "manifest",
+            "passed": true
+          },
+          {
+            "id": "lease",
+            "passed": true
+          },
+          {
+            "id": "tools",
+            "passed": true
+          },
+          {
+            "id": "credential",
+            "passed": true
+          },
+          {
+            "id": "source-read",
+            "passed": true
+          },
+          {
+            "id": "decrypt-0",
+            "passed": true
+          },
+          {
+            "id": "scope-0",
+            "passed": true
+          },
+          {
+            "id": "read-0",
+            "passed": true
+          },
+          {
+            "id": "data-type-0",
+            "passed": true
+          },
+          {
+            "id": "apply-0",
+            "passed": true
+          },
+          {
+            "id": "after-read-0",
+            "passed": true
+          },
+          {
+            "id": "identity-values-0",
+            "passed": true
+          },
+          {
+            "id": "decrypt-1",
+            "passed": true
+          },
+          {
+            "id": "scope-1",
+            "passed": true
+          },
+          {
+            "id": "read-1",
+            "passed": true
+          },
+          {
+            "id": "data-type-1",
+            "passed": true
+          },
+          {
+            "id": "apply-1",
+            "passed": true
+          },
+          {
+            "id": "after-read-1",
+            "passed": true
+          },
+          {
+            "id": "identity-values-1",
+            "passed": true
+          },
+          {
+            "id": "decrypt-2",
+            "passed": true
+          },
+          {
+            "id": "scope-2",
+            "passed": true
+          },
+          {
+            "id": "read-2",
+            "passed": true
+          },
+          {
+            "id": "data-type-2",
+            "passed": true
+          },
+          {
+            "id": "apply-2",
+            "passed": true
+          },
+          {
+            "id": "after-read-2",
+            "passed": true
+          },
+          {
+            "id": "identity-values-2",
+            "passed": true
+          },
+          {
+            "id": "decrypt-3",
+            "passed": true
+          },
+          {
+            "id": "scope-3",
+            "passed": true
+          },
+          {
+            "id": "read-3",
+            "passed": true
+          },
+          {
+            "id": "data-type-3",
+            "passed": true
+          },
+          {
+            "id": "apply-3",
+            "passed": true
+          },
+          {
+            "id": "after-read-3",
+            "passed": true
+          },
+          {
+            "id": "identity-values-3",
+            "passed": true
+          },
+          {
+            "id": "rbac",
+            "passed": true
+          },
+          {
+            "id": "verifierRbac",
+            "passed": true
+          },
+          {
+            "id": "report-write",
+            "passed": false
+          }
+        ],
+        "failureKind": "execution error"
+      }
+    },
+    "adapterError": null,
+    "comparison": "MATCH"
+  },
+  "executor": {
+    "exitCode": 0,
+    "elapsedSeconds": 4.139,
+    "stderrBytes": 0,
+    "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "nonRootUid": 65532,
+    "network": "kind",
+    "noAdminCredential": true,
+    "noHostMount": true,
+    "containerRemoved": true
+  },
+  "controlledDelta": {}
+}

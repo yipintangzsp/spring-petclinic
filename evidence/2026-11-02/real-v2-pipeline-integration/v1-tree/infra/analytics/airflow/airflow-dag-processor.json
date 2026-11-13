@@ -1,0 +1,372 @@
+{
+  "apiVersion": "apps/v1",
+  "kind": "Deployment",
+  "metadata": {
+    "name": "airflow-dag-processor",
+    "namespace": "data-infra",
+    "labels": {
+      "app.kubernetes.io/part-of": "petclinic-analysis"
+    }
+  },
+  "spec": {
+    "progressDeadlineSeconds": 600,
+    "replicas": 0,
+    "revisionHistoryLimit": 10,
+    "selector": {
+      "matchLabels": {
+        "component": "dag-processor",
+        "release": "airflow",
+        "tier": "airflow"
+      }
+    },
+    "strategy": {
+      "type": "Recreate"
+    },
+    "template": {
+      "metadata": {
+        "annotations": {
+          "checksum/airflow-config": "4f211f77bb46dc872c2d6bd0ef5f1ca37f6f79f72aac054efc9819b61cf99ab4",
+          "checksum/extra-configmaps": "e862ea47e13e634cf17d476323784fa27dac20015550c230953b526182f5cac8",
+          "checksum/extra-secrets": "e9582fdd622296c976cbc10a5ba7d6702c28a24fe80795ea5b84ba443a56c827",
+          "checksum/metadata-secret": "7026c5aaf5972476bfd9ae918b7baa8d607fdd139f2eac25dbf7c847a75999cb",
+          "checksum/pgbouncer-config-secret": "1dae2adc757473469686d37449d076b0c82404f61413b58ae68b3c5e99527688",
+          "cluster-autoscaler.kubernetes.io/safe-to-evict": "true",
+          "kubectl.kubernetes.io/restartedAt": "2026-04-22T12:11:07+08:00"
+        },
+        "labels": {
+          "component": "dag-processor",
+          "release": "airflow",
+          "tier": "airflow"
+        }
+      },
+      "spec": {
+        "affinity": {
+          "podAntiAffinity": {
+            "preferredDuringSchedulingIgnoredDuringExecution": [
+              {
+                "podAffinityTerm": {
+                  "labelSelector": {
+                    "matchLabels": {
+                      "component": "dag-processor"
+                    }
+                  },
+                  "topologyKey": "kubernetes.io/hostname"
+                },
+                "weight": 100
+              }
+            ]
+          }
+        },
+        "containers": [
+          {
+            "args": [
+              "bash",
+              "-c",
+              "exec airflow dag-processor"
+            ],
+            "env": [
+              {
+                "name": "AIRFLOW__CORE__FERNET_KEY",
+                "valueFrom": {
+                  "secretKeyRef": {
+                    "key": "fernet-key",
+                    "name": "airflow-fernet-key"
+                  }
+                }
+              },
+              {
+                "name": "AIRFLOW_HOME",
+                "value": "/opt/airflow"
+              },
+              {
+                "name": "AIRFLOW__DATABASE__SQL_ALCHEMY_CONN",
+                "valueFrom": {
+                  "secretKeyRef": {
+                    "key": "connection",
+                    "name": "airflow-metadata"
+                  }
+                }
+              },
+              {
+                "name": "AIRFLOW_CONN_AIRFLOW_DB",
+                "valueFrom": {
+                  "secretKeyRef": {
+                    "key": "connection",
+                    "name": "airflow-metadata"
+                  }
+                }
+              },
+              {
+                "name": "AIRFLOW__API__SECRET_KEY",
+                "valueFrom": {
+                  "secretKeyRef": {
+                    "key": "api-secret-key",
+                    "name": "airflow-api-secret-key"
+                  }
+                }
+              },
+              {
+                "name": "AIRFLOW__CORE__PARALLELISM",
+                "value": "1"
+              },
+              {
+                "name": "AIRFLOW__SCHEDULER__PARSING_PROCESSES",
+                "value": "1"
+              },
+              {
+                "name": "AIRFLOW__DAG_PROCESSOR__PARSING_PROCESSES",
+                "value": "1"
+              }
+            ],
+            "image": "192.168.1.58:30050/platform-upgrade/airflow@sha256:1803ed9d010ddcdc6e09e0052c179a72a99d8f3e2f909ff073d5e88f54fbdce8",
+            "imagePullPolicy": "IfNotPresent",
+            "livenessProbe": {
+              "exec": {
+                "command": [
+                  "sh",
+                  "-c",
+                  "CONNECTION_CHECK_MAX_COUNT=0 AIRFLOW__LOGGING__LOGGING_LEVEL=ERROR exec /entrypoint \\\nairflow jobs check --local --job-type DagProcessorJob\n"
+                ]
+              },
+              "failureThreshold": 5,
+              "initialDelaySeconds": 10,
+              "periodSeconds": 60,
+              "successThreshold": 1,
+              "timeoutSeconds": 20
+            },
+            "name": "dag-processor",
+            "resources": {
+              "requests": {
+                "cpu": "100m",
+                "memory": "768Mi"
+              },
+              "limits": {
+                "cpu": "750m",
+                "memory": "768Mi"
+              }
+            },
+            "securityContext": {
+              "allowPrivilegeEscalation": false,
+              "capabilities": {
+                "drop": [
+                  "ALL"
+                ]
+              }
+            },
+            "terminationMessagePath": "/dev/termination-log",
+            "terminationMessagePolicy": "File",
+            "volumeMounts": [
+              {
+                "mountPath": "/opt/airflow/logs",
+                "name": "logs"
+              },
+              {
+                "mountPath": "/opt/airflow/airflow.cfg",
+                "name": "config",
+                "readOnly": true,
+                "subPath": "airflow.cfg"
+              },
+              {
+                "mountPath": "/opt/airflow/config/airflow_local_settings.py",
+                "name": "config",
+                "readOnly": true,
+                "subPath": "airflow_local_settings.py"
+              },
+              {
+                "name": "analysis-code",
+                "mountPath": "/opt/airflow/dags/petclinic_dag.py",
+                "subPath": "petclinic_dag.py",
+                "readOnly": true
+              },
+              {
+                "name": "analysis-code",
+                "mountPath": "/opt/airflow/dags/clinic_task.py",
+                "subPath": "clinic_task.py",
+                "readOnly": true
+              }
+            ],
+            "envFrom": [
+              {
+                "secretRef": {
+                  "name": "petclinic-analysis-db"
+                }
+              }
+            ]
+          },
+          {
+            "args": [
+              "bash",
+              "/clean-logs"
+            ],
+            "env": [
+              {
+                "name": "AIRFLOW__LOG_RETENTION_DAYS",
+                "value": "15"
+              },
+              {
+                "name": "AIRFLOW__LOG_CLEANUP_FREQUENCY_MINUTES",
+                "value": "15"
+              },
+              {
+                "name": "AIRFLOW_HOME",
+                "value": "/opt/airflow"
+              }
+            ],
+            "image": "192.168.1.58:30050/platform-upgrade/airflow@sha256:1803ed9d010ddcdc6e09e0052c179a72a99d8f3e2f909ff073d5e88f54fbdce8",
+            "imagePullPolicy": "IfNotPresent",
+            "name": "dag-processor-log-groomer",
+            "resources": {
+              "requests": {
+                "cpu": "10m",
+                "memory": "64Mi"
+              },
+              "limits": {
+                "cpu": "100m",
+                "memory": "64Mi"
+              }
+            },
+            "securityContext": {
+              "allowPrivilegeEscalation": false,
+              "capabilities": {
+                "drop": [
+                  "ALL"
+                ]
+              }
+            },
+            "terminationMessagePath": "/dev/termination-log",
+            "terminationMessagePolicy": "File",
+            "volumeMounts": [
+              {
+                "mountPath": "/opt/airflow/logs",
+                "name": "logs"
+              }
+            ]
+          }
+        ],
+        "dnsPolicy": "ClusterFirst",
+        "initContainers": [
+          {
+            "args": [
+              "airflow",
+              "db",
+              "check-migrations",
+              "--migration-wait-timeout=60"
+            ],
+            "env": [
+              {
+                "name": "AIRFLOW__CORE__FERNET_KEY",
+                "valueFrom": {
+                  "secretKeyRef": {
+                    "key": "fernet-key",
+                    "name": "airflow-fernet-key"
+                  }
+                }
+              },
+              {
+                "name": "AIRFLOW_HOME",
+                "value": "/opt/airflow"
+              },
+              {
+                "name": "AIRFLOW__DATABASE__SQL_ALCHEMY_CONN",
+                "valueFrom": {
+                  "secretKeyRef": {
+                    "key": "connection",
+                    "name": "airflow-metadata"
+                  }
+                }
+              },
+              {
+                "name": "AIRFLOW_CONN_AIRFLOW_DB",
+                "valueFrom": {
+                  "secretKeyRef": {
+                    "key": "connection",
+                    "name": "airflow-metadata"
+                  }
+                }
+              },
+              {
+                "name": "AIRFLOW__API__SECRET_KEY",
+                "valueFrom": {
+                  "secretKeyRef": {
+                    "key": "api-secret-key",
+                    "name": "airflow-api-secret-key"
+                  }
+                }
+              }
+            ],
+            "image": "192.168.1.58:30050/platform-upgrade/airflow@sha256:1803ed9d010ddcdc6e09e0052c179a72a99d8f3e2f909ff073d5e88f54fbdce8",
+            "imagePullPolicy": "IfNotPresent",
+            "name": "wait-for-airflow-migrations",
+            "resources": {
+              "requests": {
+                "cpu": "100m",
+                "memory": "384Mi"
+              },
+              "limits": {
+                "cpu": "500m",
+                "memory": "384Mi"
+              }
+            },
+            "securityContext": {
+              "allowPrivilegeEscalation": false,
+              "capabilities": {
+                "drop": [
+                  "ALL"
+                ]
+              }
+            },
+            "terminationMessagePath": "/dev/termination-log",
+            "terminationMessagePolicy": "File",
+            "volumeMounts": [
+              {
+                "mountPath": "/opt/airflow/airflow.cfg",
+                "name": "config",
+                "readOnly": true,
+                "subPath": "airflow.cfg"
+              },
+              {
+                "mountPath": "/opt/airflow/config/airflow_local_settings.py",
+                "name": "config",
+                "readOnly": true,
+                "subPath": "airflow_local_settings.py"
+              }
+            ]
+          }
+        ],
+        "restartPolicy": "Always",
+        "schedulerName": "default-scheduler",
+        "securityContext": {
+          "fsGroup": 0,
+          "runAsUser": 50000
+        },
+        "serviceAccount": "airflow-dag-processor",
+        "serviceAccountName": "airflow-dag-processor",
+        "terminationGracePeriodSeconds": 60,
+        "volumes": [
+          {
+            "configMap": {
+              "defaultMode": 420,
+              "name": "airflow-config"
+            },
+            "name": "config"
+          },
+          {
+            "name": "logs",
+            "persistentVolumeClaim": {
+              "claimName": "logs-airflow-triggerer-0"
+            }
+          },
+          {
+            "name": "analysis-code",
+            "configMap": {
+              "name": "petclinic-analysis-code"
+            }
+          }
+        ],
+        "nodeSelector": {
+          "kubernetes.io/hostname": "devops"
+        }
+      }
+    }
+  }
+}

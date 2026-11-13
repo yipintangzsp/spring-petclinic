@@ -1,0 +1,76 @@
+{
+  "create": {
+    "command": [
+      "/opt/homebrew/bin/kubectl",
+      "--kubeconfig",
+      "/private/tmp/security-manager-kind-gdasvx1h/kubeconfig",
+      "--context",
+      "kind-security-test-sops",
+      "--request-timeout=20s",
+      "create",
+      "namespace",
+      "security-smoke"
+    ],
+    "exit": 0,
+    "stdout": "namespace/security-smoke created\n",
+    "stderr": "",
+    "seconds": 0.104
+  },
+  "readMetadata": {
+    "command": [
+      "/opt/homebrew/bin/kubectl",
+      "--kubeconfig",
+      "/private/tmp/security-manager-kind-gdasvx1h/kubeconfig",
+      "--context",
+      "kind-security-test-sops",
+      "--request-timeout=20s",
+      "get",
+      "namespace",
+      "security-smoke",
+      "-o",
+      "jsonpath={.metadata.name}{\"|\"}{.metadata.uid}{\"\\n\"}"
+    ],
+    "exit": 0,
+    "stdout": "security-smoke|3155a571-a666-4d80-b128-610e978b5926\n",
+    "stderr": "",
+    "seconds": 0.072
+  },
+  "delete": {
+    "command": [
+      "/opt/homebrew/bin/kubectl",
+      "--kubeconfig",
+      "/private/tmp/security-manager-kind-gdasvx1h/kubeconfig",
+      "--context",
+      "kind-security-test-sops",
+      "--request-timeout=20s",
+      "delete",
+      "namespace",
+      "security-smoke",
+      "--wait=true",
+      "--timeout=90s"
+    ],
+    "exit": 0,
+    "stdout": "namespace \"security-smoke\" deleted\n",
+    "stderr": "",
+    "seconds": 5.24
+  },
+  "namespacesAfter": {
+    "command": [
+      "/opt/homebrew/bin/kubectl",
+      "--kubeconfig",
+      "/private/tmp/security-manager-kind-gdasvx1h/kubeconfig",
+      "--context",
+      "kind-security-test-sops",
+      "--request-timeout=20s",
+      "get",
+      "namespaces",
+      "-o",
+      "json"
+    ],
+    "exit": 0,
+    "stdout": "{\n    \"apiVersion\": \"v1\",\n    \"items\": [\n        {\n            \"apiVersion\": \"v1\",\n            \"kind\": \"Namespace\",\n            \"metadata\": {\n                \"creationTimestamp\": \"2026-11-02T03:35:35Z\",\n                \"labels\": {\n                    \"kubernetes.io/metadata.name\": \"default\"\n                },\n                \"name\": \"default\",\n                \"resourceVersion\": \"28\",\n                \"uid\": \"95e89e62-5d99-4dab-be07-b8e86856f05d\"\n            },\n            \"spec\": {\n                \"finalizers\": [\n                    \"kubernetes\"\n                ]\n            },\n            \"status\": {\n                \"phase\": \"Active\"\n            }\n        },\n        {\n            \"apiVersion\": \"v1\",\n            \"kind\": \"Namespace\",\n            \"metadata\": {\n                \"creationTimestamp\": \"2026-11-02T03:35:35Z\",\n                \"labels\": {\n                    \"kubernetes.io/metadata.name\": \"kube-node-lease\"\n                },\n                \"name\": \"kube-node-lease\",\n                \"resourceVersion\": \"35\",\n                \"uid\": \"29787524-c715-48e3-9ece-0345dc20d7c2\"\n            },\n            \"spec\": {\n                \"finalizers\": [\n                    \"kubernetes\"\n                ]\n            },\n            \"status\": {\n                \"phase\": \"Active\"\n            }\n        },\n        {\n            \"apiVersion\": \"v1\",\n            \"kind\": \"Namespace\",\n            \"metadata\": {\n                \"creationTimestamp\": \"2026-11-02T03:35:35Z\",\n                \"labels\": {\n                    \"kubernetes.io/metadata.name\": \"kube-public\"\n                },\n                \"name\": \"kube-public\",\n                \"resourceVersion\": \"17\",\n                \"uid\": \"ec42b6bc-4ca0-4dc2-9bbd-c287f56dd938\"\n            },\n            \"spec\": {\n                \"finalizers\": [\n                    \"kubernetes\"\n                ]\n            },\n            \"status\": {\n                \"phase\": \"Active\"\n            }\n        },\n        {\n            \"apiVersion\": \"v1\",\n            \"kind\": \"Namespace\",\n            \"metadata\": {\n                \"creationTimestamp\": \"2026-11-02T03:35:34Z\",\n                \"labels\": {\n                    \"kubernetes.io/metadata.name\": \"kube-system\"\n                },\n                \"name\": \"kube-system\",\n                \"resourceVersion\": \"8\",\n                \"uid\": \"54f300a4-5f1b-4e1e-86a1-d173e5a402d8\"\n            },\n            \"spec\": {\n                \"finalizers\": [\n                    \"kubernetes\"\n                ]\n            },\n            \"status\": {\n                \"phase\": \"Active\"\n            }\n        },\n        {\n            \"apiVersion\": \"v1\",\n            \"kind\": \"Namespace\",\n            \"metadata\": {\n                \"annotations\": {\n                    \"kubectl.kubernetes.io/last-applied-configuration\": \"{\\\"apiVersion\\\":\\\"v1\\\",\\\"kind\\\":\\\"Namespace\\\",\\\"metadata\\\":{\\\"annotations\\\":{},\\\"name\\\":\\\"local-path-storage\\\"}}\\n\"\n                },\n                \"creationTimestamp\": \"2026-11-02T03:35:39Z\",\n                \"labels\": {\n                    \"kubernetes.io/metadata.name\": \"local-path-storage\"\n                },\n                \"name\": \"local-path-storage\",\n                \"resourceVersion\": \"320\",\n                \"uid\": \"0121c06a-b649-45bf-acc3-01bb27fc171b\"\n            },\n            \"spec\": {\n                \"finalizers\": [\n                    \"kubernetes\"\n                ]\n            },\n            \"status\": {\n                \"phase\": \"Active\"\n            }\n        }\n    ],\n    \"kind\": \"List\",\n    \"metadata\": {\n        \"resourceVersion\": \"\"\n    }\n}\n",
+    "stderr": "",
+    "seconds": 0.089
+  },
+  "status": "PASS"
+}

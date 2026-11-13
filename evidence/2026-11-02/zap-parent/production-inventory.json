@@ -1,0 +1,257 @@
+{
+  "source": "zap",
+  "policyVersion": "baseline-v1",
+  "securityLevel": "standard",
+  "productionImplementationLocations": [
+    "Jenkinsfile",
+    "Jenkinsfile.security-audit",
+    "resources/security-manager/petclinic-adapter.json",
+    "vars/securityManager.groovy",
+    "infra/security/zap-gate.mjs",
+    "infra/security/scanner-runtime.mjs",
+    "infra/security/zap-policy.mjs",
+    "infra/security/zap-confirmations.json",
+    "infra/security/scanner-tools.json",
+    "infra/security/tools-lock.json",
+    "infra/security/gate-contract.mjs",
+    "infra/security/ZapAuthProbe.java"
+  ],
+  "layers": [
+    "prerequisite/target facts",
+    "scanner execution",
+    "raw alerts",
+    "original confirmation/evidence facts",
+    "whole parent decision"
+  ],
+  "items": [
+    {
+      "item": "entry",
+      "model": "Jenkinsfile DAST Read-only Gate, node --max-old-space-size=128；security-audit原Manager petclinic adapter ZAP Passive模块node zap-gate；不同入口同一Gate",
+      "evidence": {
+        "path": "resources/security-manager/petclinic-adapter.json",
+        "line": 119
+      }
+    },
+    {
+      "item": "modules",
+      "model": "zap-gate + shared scanner-runtime + highAlerts/classifyZap + ZapAuthProbe.java；本轮不修改任何原模块",
+      "evidence": {
+        "path": "infra/security/zap-gate.mjs",
+        "line": 6
+      }
+    },
+    {
+      "item": "runtime prerequisite",
+      "model": "manifest/锁定SHA、Lease owner、prefix tool files hash/symlink、.git-sha、Pod Ready、UID/token/root安全探测、可信Jenkins Pod IP/canary/egress拒绝",
+      "evidence": {
+        "path": "infra/security/scanner-runtime.mjs",
+        "line": 37
+      }
+    },
+    {
+      "item": "target",
+      "model": "读取PetClinic Service clusterIP/第一个port，固定GET / /owners/find /vets.html /actuator/health；Deployment image与可选K8S_IMAGE比对",
+      "evidence": {
+        "path": "infra/security/zap-gate.mjs",
+        "line": 63
+      }
+    },
+    {
+      "item": "target readiness",
+      "model": "loopback fixture最多20次TCP探测；business无独立健康HTTP预检，ZAP requestor要求responseCode200并通过scanner执行结果判断；不新增Deployment available条件",
+      "evidence": {
+        "path": "infra/security/zap-gate.mjs",
+        "line": 17
+      }
+    },
+    {
+      "item": "tool/container",
+      "model": "payload=[zap]；源tools manifest校验及zap目录文件哈希/symlink；工具tar传入非root临时Pod；javac本地执行、java/ZAP JAR在Pod执行",
+      "evidence": {
+        "path": "infra/security/scanner-runtime.mjs",
+        "line": 20
+      }
+    },
+    {
+      "item": "auth/session",
+      "model": "ZapAuthProbe synthetic roles/ownership fixture；business只public GET+合成invalid/stale-cookie/removed凭据观察；real identity unsupported，不读真实用户或cookie",
+      "evidence": {
+        "path": "infra/security/zap-gate.mjs",
+        "line": 58
+      }
+    },
+    {
+      "item": "invocation",
+      "model": "java -Xmx384m -Djava.awt.headless=true -Djava.util.prefs.userRoot=/work/prefs -jar /work/tools/zap/zap-2.17.0.jar -cmd -silent -host 127.0.0.1 -port 18084 -dir /work/<label>-home -autorun /work/<label>.yaml",
+      "evidence": {
+        "path": "infra/security/zap-gate.mjs",
+        "line": 22
+      }
+    },
+    {
+      "item": "scan mode",
+      "model": "只有固定GET requestor + passiveScan-wait(maxDuration1) + reports；无spider/forms/activeScan",
+      "evidence": {
+        "path": "infra/security/zap-gate.mjs",
+        "line": 20
+      }
+    },
+    {
+      "item": "timeouts",
+      "model": "Ready190s，默认exec90s，ZAP150s，auth240s，tool transfer150s controller；outer Jenkins原8min；run.error/非allowed status失败",
+      "evidence": {
+        "path": "infra/security/scanner-runtime.mjs",
+        "line": 9
+      }
+    },
+    {
+      "item": "report path",
+      "model": "/work/{fixture,fixture-negative,business}.json；business.xml；workspace logs/native/plan、fixture报告、auth-readonly、business-report和最终zap-gate",
+      "evidence": {
+        "path": "infra/security/zap-gate.mjs",
+        "line": 24
+      }
+    },
+    {
+      "item": "formats",
+      "model": "ZAP traditional-json；business另traditional-xml；reportSha256针对JSON.stringify(parsed business report)，非原XML/原JSON字节hash",
+      "evidence": {
+        "path": "infra/security/zap-gate.mjs",
+        "line": 20
+      }
+    },
+    {
+      "item": "parsing",
+      "model": "JSON.parse+hostname白名单；highAlerts要求非空site、整数risk0..3；缺alerts按空；confidence原样保留不额外做Gate",
+      "evidence": {
+        "path": "infra/security/zap-gate.mjs",
+        "line": 26
+      }
+    },
+    {
+      "item": "classifier",
+      "model": "原classifyZap完整复用，不重写rule/risk/confirmation算法",
+      "evidence": {
+        "path": "infra/security/zap-policy.mjs",
+        "line": 4
+      }
+    },
+    {
+      "item": "confirmed High",
+      "model": "risk3且非ordinary，plugin/image/reportSHA/GET URI严格匹配，允许六类，positive/negative/exploit/evidenceVerified，非空path，expiresAt有效且未来；Gate先读原proof file验证SHA/五身份字段/三个true",
+      "evidence": {
+        "path": "infra/security/zap-gate.mjs",
+        "line": 40
+      }
+    },
+    {
+      "item": "lower/unconfirmed",
+      "model": "普通信息10020/10021/10038/10062及未确认High/较低风险均WARN事实；不推断无漏洞",
+      "evidence": {
+        "path": "infra/security/zap-policy.mjs",
+        "line": 10
+      }
+    },
+    {
+      "item": "parent decisions",
+      "model": "nonblocking findings仍可全阶段PASS；blocking High抛错FAIL，即使GATE_ZAP=warn；mode只接受warn/enforce；无独立父WARN退出",
+      "evidence": {
+        "path": "infra/security/zap-gate.mjs",
+        "line": 75
+      }
+    },
+    {
+      "item": "missing report",
+      "model": "kubectl cat缺文件/非0或缺成功native事实不允许PASS；stdout损坏等原JSON异常FAIL",
+      "evidence": {
+        "path": "infra/security/zap-gate.mjs",
+        "line": 24
+      }
+    },
+    {
+      "item": "malformed report",
+      "model": "JSON/null/no-site/risk越界/confirmation schema等按原解析/校验失败；不能以额外schema失败替代旧行为",
+      "evidence": {
+        "path": "infra/security/gate-contract.mjs",
+        "line": 1
+      }
+    },
+    {
+      "item": "target unavailable",
+      "model": "fixed GET requestor失败由ZAP执行非0反映；auth探测服务连接异常由probe非0反映，无真实生产请求",
+      "evidence": {
+        "path": "infra/security/zap-gate.mjs",
+        "line": 20
+      }
+    },
+    {
+      "item": "execution failure",
+      "model": "run.error或非allowedstatus抛错；ZAP仅允许0，不把ZAP非0当漏洞finding的另一种PASS",
+      "evidence": {
+        "path": "infra/security/scanner-runtime.mjs",
+        "line": 11
+      }
+    },
+    {
+      "item": "timeout behavior",
+      "model": "保留r.error/signal/status；fixture启动不成功失败、scan/PodReady/auth超时失败；canary基线timeout失败",
+      "evidence": {
+        "path": "infra/security/zap-gate.mjs",
+        "line": 20
+      }
+    },
+    {
+      "item": "API/container/network",
+      "model": "kubectl create/read/exec失败，工具传输spawn/close/timeout，isolation不收敛或canary失败均保留执行FAIL",
+      "evidence": {
+        "path": "infra/security/scanner-runtime.mjs",
+        "line": 27
+      }
+    },
+    {
+      "item": "report read",
+      "model": "Pod JSON/XML、审查proof bytes、native保留hash读取失败均按原run/fs路径失败",
+      "evidence": {
+        "path": "infra/security/zap-gate.mjs",
+        "line": 43
+      }
+    },
+    {
+      "item": "report write",
+      "model": "initial/final Gate report、scan logs、native/plan/xml/auth等写失败保持父进程FAIL；status字段success不覆盖进程失败",
+      "evidence": {
+        "path": "infra/security/zap-gate.mjs",
+        "line": 74
+      }
+    },
+    {
+      "item": "cleanup",
+      "model": "scan JVM完成后可清scratch homes且先保留native/plan/log；kill fixture server，finally rm localtemp，共享finally关canary、UID保护delete并读回<=45次；失败保留FAIL",
+      "evidence": {
+        "path": "infra/security/scanner-runtime.mjs",
+        "line": 35
+      }
+    },
+    {
+      "item": "parent aggregation",
+      "model": "原Manager只选择ZAP，enforce生产配置不可off/audit/disable；shell非0、stage/credentials/write/archive异常FAIL；无真实Jenkins CPS或Summary运行",
+      "evidence": {
+        "path": "vars/securityManager.groovy",
+        "line": 58
+      }
+    }
+  ],
+  "syntheticToolchainBoundary": "Controlled manifest contains representative zap jar/addon/symlink entries with actual SHA verification of synthetic bytes; not a fresh certification of all148 real production zap files. Actual production manifest/lock bytes are source-hash pinned and unchanged.",
+  "originalSafetyLimits": [
+    "No independent business deployment readiness/health preflight inside this Gate",
+    "Whitelist validates hostname, not exact path/port; fixed invocation URL list remains original",
+    "K8S_IMAGE matching is conditional; no new build/source/report attestation",
+    "Confidence is preserved, not a separate blocking condition",
+    "Production confirmation list is empty and unchanged; synthetic proofs exist only in controlled fixture input/virtual fs",
+    "Auth program observed as an external subprocess with original Java source pinned; no Java compilation, real sessions or endpoint probing claimed",
+    "Missing createdUID skips original deletion branch; no extra enforcement added",
+    "Memory peak exit1 allowed; raw info retained",
+    "SECURITY_CLEANUP_SCAN_HOMES=true in production adapter; false alternative path covered without changing config",
+    "Generic manager/tool.mjs ZAP branch is distinct and not certified by this production parent proof"
+  ]
+}

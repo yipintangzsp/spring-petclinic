@@ -1,0 +1,97 @@
+{
+  "HOST_FREE_AUTHORITATIVE": 26980331520,
+  "measurementBasis": {
+    "APFSContainerFree": 26980331520,
+    "volumeAPFSContainerFree": 26980331520,
+    "dfAvailableBytes": 26980376576,
+    "selected": "minimum of fresh real free-byte measurements; purgeable not counted"
+  },
+  "APFSContainer": "disk3",
+  "physicalStore": "disk0s2",
+  "volume": "disk3s5",
+  "volumeUUID": "93D70CA8-E424-45ED-A50F-ABCCF064AE47",
+  "capacityBytes": 494384795648,
+  "DataCapacityInUseBytes": 440037502976,
+  "containerUsedBytes": 467404464128,
+  "quotaBytes": 0,
+  "reservationBytes": 0,
+  "purgeableBytes": "NOT_SEPARATELY_REPORTED_NOT_GUARANTEED_NOT_COUNTED",
+  "dataSnapshots": [],
+  "systemSnapshot": {
+    "exit": 0,
+    "DeviceIdentifier": "disk3s1s1",
+    "APFSContainerReference": "disk3",
+    "MountPoint": "/",
+    "FilesystemType": "apfs",
+    "APFSSnapshot": true,
+    "APFSSnapshotName": "com.apple.os.update-182F06D70C9D02A9A9077E3BC880E61BFCEE97BDF8F6804B657B29E28EBBCDF0",
+    "APFSSnapshotUUID": "BBEA0D51-A9D6-4EB2-B1CD-3EC884556B18",
+    "ReadOnlyVolume": null,
+    "VolumeName": "Macintosh HD"
+  },
+  "models": [
+    {
+      "growthGiB": 16,
+      "backupSourceLogicalBytes": 365811222552,
+      "backupSourceAllocatedBytes": 220097060864,
+      "backupBudgetBytes": 367958706200,
+      "backupBudgetBasis": "Conservative full logical bundle size +2GiB filesystem/receipt allowance. A 64MiB same-APFS sparse fixture passed, but this does not guarantee the allocation of a full VM copy on an unverified backup target.",
+      "optimisticSparseLowerBoundLocalHostBytes": 261972992000,
+      "qcow2MetadataAllowanceBytes": 1073741824,
+      "temporaryOperationAllowanceBytes": 4294967296,
+      "macOSSafetyReserveBytes": 17179869184,
+      "localFullBackupScenario": {
+        "ready": false,
+        "requiredBytes": 407687153688,
+        "remainingBytes": -380706822168
+      },
+      "separateExternalBackupScenario": {
+        "host": {
+          "ready": false,
+          "requiredBytes": 39728447488,
+          "remainingBytes": -12748115968
+        },
+        "externalBackupRequiredBytes": 367958706200,
+        "externalStorageAvailable": false
+      },
+      "separateFullRestoreStagingAdditionalBytesIfNeeded": 367958706200,
+      "thinProvisioningNote": "Logical resize does not immediately consume growthGiB, but actual writes/COW and a recoverable backup must be budgeted.",
+      "risk": "NOT_READY: insufficient local budget and no verified external backup destination"
+    },
+    {
+      "growthGiB": 32,
+      "backupSourceLogicalBytes": 365811222552,
+      "backupSourceAllocatedBytes": 220097060864,
+      "backupBudgetBytes": 367958706200,
+      "backupBudgetBasis": "Conservative full logical bundle size +2GiB filesystem/receipt allowance. A 64MiB same-APFS sparse fixture passed, but this does not guarantee the allocation of a full VM copy on an unverified backup target.",
+      "optimisticSparseLowerBoundLocalHostBytes": 279152861184,
+      "qcow2MetadataAllowanceBytes": 1073741824,
+      "temporaryOperationAllowanceBytes": 4294967296,
+      "macOSSafetyReserveBytes": 17179869184,
+      "localFullBackupScenario": {
+        "ready": false,
+        "requiredBytes": 424867022872,
+        "remainingBytes": -397886691352
+      },
+      "separateExternalBackupScenario": {
+        "host": {
+          "ready": false,
+          "requiredBytes": 56908316672,
+          "remainingBytes": -29927985152
+        },
+        "externalBackupRequiredBytes": 367958706200,
+        "externalStorageAvailable": false
+      },
+      "separateFullRestoreStagingAdditionalBytesIfNeeded": 367958706200,
+      "thinProvisioningNote": "Logical resize does not immediately consume growthGiB, but actual writes/COW and a recoverable backup must be budgeted.",
+      "risk": "NOT_READY: insufficient local budget and no verified external backup destination"
+    }
+  ],
+  "HOST_FREE_REQUIRED_MINIMUM": 407687153688,
+  "HOST_FREE_REQUIRED_RECOMMENDED": 424867022872,
+  "requirementBasis": "Current topology has NO external backup target; therefore default requires full independent local backup budget. 37/53GiB are HOST-only requirements conditional on a separate external target, not the current total.",
+  "selectedExpansionSize": "NO_SAFE_EXPANSION_SIZE_CURRENTLY",
+  "HOST_CAPACITY_READINESS": "NOT_READY",
+  "backupTarget": null,
+  "restoreStagingCapacity": "NOT_PROVEN; a second full restore staging copy needs an additional backup-sized budget unless a verified clone/move strategy is selected"
+}

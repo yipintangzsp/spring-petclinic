@@ -1,0 +1,139 @@
+{
+  "sourceId": "trivy",
+  "validationRunId": "rf3-20261103-7d6715",
+  "executionScope": "CONTROLLED_NON_RELEASE",
+  "credentialIdentity": "robot$petclinic+rf3-20261103-7d6715-scan",
+  "permissionScope": [
+    {
+      "access": [
+        {
+          "resource": "artifact",
+          "action": "read"
+        },
+        {
+          "resource": "scan",
+          "action": "read"
+        },
+        {
+          "resource": "scan",
+          "action": "create"
+        }
+      ],
+      "kind": "project",
+      "namespace": "petclinic"
+    }
+  ],
+  "inputArtifact": {
+    "architectures": [
+      {
+        "digest": "sha256:2bd9c1c445afbf55e390bfc41910551c32e09913143f7a137038cc87941b7c94",
+        "architecture": "amd64"
+      },
+      {
+        "digest": "sha256:06a515708b6783db7d545544bbefb02e9f94abfc0fdf13a7355ccbe2deb3ed42",
+        "architecture": "arm64"
+      }
+    ],
+    "image": "core.harbor.domain/petclinic/petclinic@sha256:2fbaea65ab030c56c60c62e3ee9fbe362deb8bbbb8216a891ef4c7bbbcea6d55",
+    "preexisting": true,
+    "digest": "sha256:2fbaea65ab030c56c60c62e3ee9fbe362deb8bbbb8216a891ef4c7bbbcea6d55",
+    "retention": "PREEXISTING_NON_RELEASE_VALIDATION_ARTIFACT_RETAINED"
+  },
+  "externalSystem": "http://harbor-core.harbor.svc.cluster.local",
+  "rawReport": [
+    {
+      "path": ".devsecops/trivy-audit.json",
+      "sha256": "438ee105f880508913c51804268733b71113b85cf6ce6643ed6fe3043e722d55",
+      "bytes": 4559
+    }
+  ],
+  "factDigest": "8ada1bca2ff2e94e4933c2999ee3ac13d74c894ef240447eea781d97c137cddc",
+  "evaluationId": "security-runtime-facts-20261102#23:trivy",
+  "resultDigest": "9c3318b7cfef6af72907402273bb278bb71644fe3d501a39106bc7b894e7f4d7",
+  "GateInputDigest": "9c3318b7cfef6af72907402273bb278bb71644fe3d501a39106bc7b894e7f4d7",
+  "factsCompleteForObservedFailurePath": true,
+  "fullBoundaryAcceptance": "INCOMPLETE",
+  "evaluationCount": 1,
+  "oldDecision": "FAIL",
+  "policyDecision": "FAIL",
+  "rawPayloadPersisted": false,
+  "productionMutation": 0,
+  "cleanupState": "REMOVED",
+  "receiptEvidence": "jenkins-build-23.json",
+  "externalObjectsCreated": [
+    {
+      "kind": "Harbor robot",
+      "id": 246
+    },
+    {
+      "kind": "Harbor scan job",
+      "id": "4c304eedbe6aea086bdfbf49"
+    }
+  ],
+  "externalObjectsModified": [
+    {
+      "kind": "validation candidate scan metadata",
+      "digest": "sha256:2bd9c1c445afbf55e390bfc41910551c32e09913143f7a137038cc87941b7c94"
+    }
+  ],
+  "externalObjectsRetained": [
+    {
+      "kind": "preexisting validation candidate",
+      "digest": "sha256:2fbaea65ab030c56c60c62e3ee9fbe362deb8bbbb8216a891ef4c7bbbcea6d55"
+    },
+    {
+      "kind": "failed scan job history",
+      "id": "4c304eedbe6aea086bdfbf49"
+    }
+  ],
+  "externalObjectsDeleted": [
+    {
+      "kind": "Harbor robot",
+      "id": 246
+    },
+    {
+      "kind": "RoleBinding",
+      "name": "rf3-20261103-7d6715-maps",
+      "namespace": "petclinic",
+      "uid": "d38cf12d-8dfa-467d-b679-d9025c867beb",
+      "apiVersion": "rbac.authorization.k8s.io/v1"
+    },
+    {
+      "kind": "Role",
+      "name": "rf3-20261103-7d6715-maps",
+      "namespace": "petclinic",
+      "uid": "60fad25f-7d03-482b-9121-ba2215ac180a",
+      "apiVersion": "rbac.authorization.k8s.io/v1"
+    },
+    {
+      "kind": "ServiceAccount",
+      "name": "maps-reader",
+      "namespace": "rf3-20261103-7d6715-trivy",
+      "uid": "da2855d6-6e5e-4c20-8dc6-89d2287a3c76",
+      "apiVersion": "v1"
+    },
+    {
+      "kind": "Namespace",
+      "name": "rf3-20261103-7d6715-trivy",
+      "namespace": null,
+      "uid": "d9a20b7c-42b7-42ce-b84f-2aff839decdc",
+      "apiVersion": "v1"
+    }
+  ],
+  "blocker": "Current native vulnerability report unavailable: Harbor Trivy DB download proxy connection refused at 192.168.1.238:10808. No shared scanner configuration change authorized in this iteration.",
+  "scanDataAvailable": false,
+  "severityCounts": null,
+  "databaseFreshness": null,
+  "directFallback": "NOT_EXERCISED_BY_CURRENT_FROZEN_PATH",
+  "startedAt": "2026-11-03T01:12:37.533Z",
+  "completedAt": "2026-11-03T01:12:47.115Z",
+  "binding": {
+    "candidate": "core.harbor.domain/petclinic/petclinic@sha256:2fbaea65ab030c56c60c62e3ee9fbe362deb8bbbb8216a891ef4c7bbbcea6d55",
+    "build": 23,
+    "project": "petclinic",
+    "source": "741ea2866ea142b24c7838e1ef25c8327c79d279",
+    "runId": "security-runtime-facts-20261102#23",
+    "job": "security-runtime-facts-20261102",
+    "targetScope": "candidate"
+  }
+}

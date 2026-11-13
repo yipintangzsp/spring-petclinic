@@ -1,0 +1,203 @@
+{
+  "source": "trivy",
+  "finalStatus": "VERIFIED",
+  "scope": "Frozen current ensure-audit-candidate && audit-trivy complete production parent and Trivy-selected original Manager baseline-v1 / standard compatibility; separate release-scan and DB prerequisite dependency proof. No live scan/DB or generic-Trivy portability certification",
+  "adapterImplemented": true,
+  "existingClassifierUnchanged": true,
+  "classifierOnlySamplesPreserved": 8,
+  "completeParentDifferentials": {
+    "samples": 123,
+    "matched": 123,
+    "mismatched": 0,
+    "oldDecisions": {
+      "PASS": 43,
+      "FAIL": 80
+    },
+    "standardDecisions": {
+      "PASS": 43,
+      "FAIL": 80
+    },
+    "branches": {
+      "positive": 1,
+      "vulnerability": 18,
+      "identity": 6,
+      "existing-boundary": 13,
+      "architecture": 3,
+      "runtime": 2,
+      "registry": 8,
+      "candidate-copy": 2,
+      "prerequisite": 2,
+      "transport": 12,
+      "timeout": 4,
+      "execution-error": 5,
+      "execution": 2,
+      "missing-report": 3,
+      "malformed-report": 15,
+      "transport-error": 2,
+      "transport-abort": 1,
+      "io-write": 4,
+      "parent-aggregation": 20
+    }
+  },
+  "scriptParentSamples": 103,
+  "managerWrapperSamples": 20,
+  "releaseScanHealthDependency": {
+    "samples": 20,
+    "matched": 20,
+    "mismatched": 0,
+    "oldDecisions": {
+      "PASS": 4,
+      "FAIL": 16
+    },
+    "standardDecisions": {
+      "PASS": 4,
+      "FAIL": 16
+    },
+    "branches": {
+      "release-scan": 14,
+      "release-registry": 5,
+      "existing-boundary": 1
+    }
+  },
+  "databasePrerequisiteDependency": {
+    "samples": 41,
+    "matched": 41,
+    "mismatched": 0,
+    "oldDecisions": {
+      "PASS": 7,
+      "FAIL": 34
+    },
+    "standardDecisions": {
+      "PASS": 7,
+      "FAIL": 34
+    },
+    "branches": {
+      "db-normal": 1,
+      "db-boundary": 1,
+      "db-update": 3,
+      "db-fallback": 2,
+      "db-metadata": 6,
+      "db-prerequisite": 7,
+      "db-execution": 7,
+      "db-cleanup": 3,
+      "db-io": 3,
+      "db-update-error": 3,
+      "db-manifest": 5
+    }
+  },
+  "allCurrentDifferentials": {
+    "samples": 184,
+    "matched": 184,
+    "mismatched": 0,
+    "oldDecisions": {
+      "PASS": 54,
+      "FAIL": 130
+    },
+    "standardDecisions": {
+      "PASS": 54,
+      "FAIL": 130
+    },
+    "branches": {
+      "positive": 1,
+      "vulnerability": 18,
+      "identity": 6,
+      "existing-boundary": 14,
+      "architecture": 3,
+      "runtime": 2,
+      "registry": 8,
+      "candidate-copy": 2,
+      "prerequisite": 2,
+      "transport": 12,
+      "timeout": 4,
+      "execution-error": 5,
+      "execution": 2,
+      "missing-report": 3,
+      "malformed-report": 15,
+      "transport-error": 2,
+      "transport-abort": 1,
+      "io-write": 4,
+      "release-scan": 14,
+      "release-registry": 5,
+      "parent-aggregation": 20,
+      "db-normal": 1,
+      "db-boundary": 1,
+      "db-update": 3,
+      "db-fallback": 2,
+      "db-metadata": 6,
+      "db-prerequisite": 7,
+      "db-execution": 7,
+      "db-cleanup": 3,
+      "db-io": 3,
+      "db-update-error": 3,
+      "db-manifest": 5
+    }
+  },
+  "realHistoricalCompleteParentSamples": 0,
+  "controlledReplayCompleteParentSamples": 123,
+  "controlledReplayAllScopes": 184,
+  "allNewInputsSynthetic": true,
+  "syntheticUnitOnlyAuxiliaryChecks": 6,
+  "historicalChildArtifacts": 3,
+  "historicalChildClassification": "HISTORICAL_ARCHIVE, DB metadata/download only; not full parent",
+  "constructedCountsFixture": {
+    "classification": "CONTROLLED_REPLAY synthetic input only",
+    "counts": {
+      "Critical": 0,
+      "High": 0,
+      "Medium": 108,
+      "Low": 8
+    },
+    "historicalCountClaim": false
+  },
+  "prerequisiteSamples": 2,
+  "vulnerabilityDecisionSamples": 18,
+  "registrySamples": 8,
+  "transportSamples": 12,
+  "databaseSamples": 41,
+  "executionErrorSamples": 5,
+  "timeoutSamples": 4,
+  "missingReportSamples": 3,
+  "malformedReportSamples": 15,
+  "IOWriteSamples": 4,
+  "auditCleanup": "NOT_APPLICABLE: no owned scanner Pod/temp-directory; finally persists original report only",
+  "upstreamDbCleanupSamples": 3,
+  "upstreamDbIOSamples": 3,
+  "rawFactsPreserved": true,
+  "persistedFixtureVerification": {
+    "fixtures": 184,
+    "rawHashesMatched": 184,
+    "inputHashesMatched": 164,
+    "decisionsMatched": 184,
+    "rawPreserved": 184,
+    "note": "Reevaluation of already counted fixtures, not additional tests or differential samples"
+  },
+  "faultReachabilityChecks": 84,
+  "policyTests": {
+    "newTestsExecuted": 190,
+    "newTestsPassed": 190,
+    "newTestsFailed": 0,
+    "originalClassifierTestExecuted": 1,
+    "originalClassifierTestPassed": 1,
+    "currentTotalExecuted": 191,
+    "currentTotalPassed": 191,
+    "currentTotalFailed": 0,
+    "eightExistingFrozenClassifierCasesRecheckedWithinNewSuite": true,
+    "otherVerifiedAdaptersRerun": false,
+    "allPolicyTestsRerun": false
+  },
+  "remainingCompatibilityBlockers": [],
+  "remainingEvidenceGaps": [
+    "No complete historical parent CLI/HTTP/prerequisite execution transcript; real historical parent sample count0",
+    "No new online Harbor/Trivy binary/database/isolation health certification; all external effects controlled",
+    "Manager ran original local Groovy with inert Jenkins DSL, not Jenkins CPS",
+    "DB refresh is an upstream release-preflight dependency; no new DB freshness rule imposed on security-audit Trivy"
+  ],
+  "canLeaveTrivyCompatibilityPhase": true,
+  "productionGateModified": false,
+  "actualSummaryModified": false,
+  "releaseFlowModified": false,
+  "finalReadinessAuditRegenerated": false,
+  "nextSourceStarted": false,
+  "rollout": false,
+  "transportExceptionSamples": 3
+}

@@ -1,0 +1,143 @@
+{
+  "classification": "SYNTHETIC_FROZEN_COMPLETE_STAGE",
+  "stage": "bootstrap",
+  "configuration": {
+    "build": 270,
+    "project": "disposable-policy-fixture",
+    "mode": "enforce",
+    "sourceRoot": "/fixture/project",
+    "image": "core.harbor.domain/petclinic/petclinic@sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "cosignPublicKey": "trust.pub"
+  },
+  "environment": {
+    "BUILD_NUMBER": "270",
+    "SIGNING_AGE_FILE": "/fixture/NOT_A_REAL_KEY",
+    "HARBOR_USER": "synthetic-user",
+    "HARBOR_PASS": "synthetic-password"
+  },
+  "runtime": {
+    "manifest": "{",
+    "expectedManifestSha256": "4fdb335010b9bf57d61d5e28d1397285c813bfa9bbf2ac008efddb8f27e3b703",
+    "lease": {
+      "stdout": "{\"spec\":{\"holderIdentity\":\"jenkins-petclinic-270\"}}",
+      "status": 0,
+      "stderr": ""
+    },
+    "tools": {
+      "cosign": {
+        "sha256": "ade83b7aac62e131cacfe96d958948b2150cc9efec46a570a2649b8e27dedad2"
+      },
+      "sops": {
+        "sha256": "53b0abacd38ef1b12a66d6c100956691b9cefce018d91f81e73ddf7438b94d77"
+      }
+    }
+  },
+  "files": {
+    ".git-sha": {
+      "value": "fixture-source"
+    },
+    "infra/security/cosign.pub": {
+      "value": "-----BEGIN PUBLIC KEY-----\nMFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAEDcDmCR1VAKgVHFo0oCkd6XeqXn14\nACzzOaks1UDTLAl7c2WBQSpQwiK6DpovLg9IFgHlwqR96xaECMITPawOaw==\n-----END PUBLIC KEY-----\n"
+    },
+    "target/platform/image.json": {
+      "value": "{\"source\":\"fixture-source\",\"digest\":\"sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\"}"
+    },
+    "target/platform/harbor.json": {
+      "value": "{\"digest\":\"sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"scan_status\":\"Success\",\"scans\":[{\"digest\":\"sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb\"},{\"digest\":\"sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc\"}]}"
+    },
+    ".devsecops/release-evidence.json": {
+      "value": "{\"source\":\"fixture-source\",\"imageDigest\":\"sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\"}"
+    },
+    "proof-after-write": {
+      "value": "synthetic artifact after signing"
+    }
+  },
+  "io": {
+    "output-mkdir": {},
+    "temp-create": {},
+    "temp-chmod": {},
+    "key-write": {},
+    "docker-mkdir": {},
+    "docker-write": {},
+    "proof-write": {},
+    "temp-remove": {},
+    "temp-exists": {
+      "value": false
+    },
+    "signing-report-write": {},
+    "manager-report-write": {}
+  },
+  "commands": {
+    "sops:decrypt": [
+      {
+        "stdout": "{\"schema\":1,\"data\":{\"privateKey\":\"SYNTHETIC_NOT_PRIVATE_KEY_MATERIAL\",\"password\":\"SYNTHETIC_PASSWORD\"}}",
+        "status": 0,
+        "stderr": ""
+      }
+    ],
+    "cosign:public-key": [
+      {
+        "stdout": "-----BEGIN PUBLIC KEY-----\nMFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAEDcDmCR1VAKgVHFo0oCkd6XeqXn14\nACzzOaks1UDTLAl7c2WBQSpQwiK6DpovLg9IFgHlwqR96xaECMITPawOaw==\n-----END PUBLIC KEY-----\n",
+        "status": 0,
+        "stderr": ""
+      }
+    ],
+    "cosign:sign": [
+      {
+        "stdout": "",
+        "status": 0,
+        "stderr": ""
+      },
+      {
+        "stdout": "",
+        "status": 0,
+        "stderr": ""
+      },
+      {
+        "stdout": "",
+        "status": 0,
+        "stderr": ""
+      }
+    ],
+    "cosign:generate-key-pair": [
+      {
+        "stdout": "",
+        "status": 0,
+        "stderr": ""
+      }
+    ],
+    "cosign:sign-blob": [
+      {
+        "stdout": "",
+        "status": 0,
+        "stderr": ""
+      }
+    ],
+    "cosign:verify-blob": [
+      {
+        "stdout": "",
+        "status": 0,
+        "stderr": ""
+      }
+    ],
+    "cosign:verify": [
+      {
+        "stdout": "[{\"critical\":{\"image\":{\"docker-manifest-digest\":\"sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\"}}}]",
+        "status": 0,
+        "stderr": ""
+      },
+      {
+        "stdout": "[{\"critical\":{\"image\":{\"docker-manifest-digest\":\"sha256:a8c03e462e44ec81d4b685dd88618ab5fd0b3847411ddcd067d8a92b2071e268\"}}}]",
+        "status": 0,
+        "stderr": ""
+      }
+    ]
+  },
+  "registry": [],
+  "admissions": [],
+  "currentImage": {
+    "stdout": "{\"spec\":{\"template\":{\"spec\":{\"containers\":[{\"image\":\"core.harbor.domain/petclinic/petclinic@sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\"}]}}}}",
+    "status": 0,
+    "stderr": ""
+  }
+}

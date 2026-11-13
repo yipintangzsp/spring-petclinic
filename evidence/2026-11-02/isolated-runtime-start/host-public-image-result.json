@@ -1,0 +1,43 @@
+{
+  "scope": "Ordinary public BusyBox acquisition through installed host skopeo; guest DNS/network configuration unchanged",
+  "source": "docker.io/library/busybox:1.37.0",
+  "anonymous": true,
+  "productionCredentialsUsed": false,
+  "startedUTC": "2026-11-02T01:10:32.524712+00:00",
+  "copyCommand": [
+    "/opt/homebrew/bin/skopeo",
+    "--command-timeout",
+    "100s",
+    "--override-os",
+    "linux",
+    "--override-arch",
+    "arm64",
+    "copy",
+    "--src-no-creds",
+    "--src-tls-verify=true",
+    "--authfile",
+    "/Users/zhangsir/code/petclinic-platform-20261011/evidence/2026-11-02/isolated-runtime-start/anonymous-public-registry-auth.json",
+    "--retry-times",
+    "1",
+    "--digestfile",
+    "/Users/zhangsir/code/petclinic-platform-20261011/evidence/2026-11-02/isolated-runtime-start/public-image-copy.digest",
+    "docker://docker.io/library/busybox:1.37.0",
+    "docker-archive:/var/folders/jc/_2vrrrl544v3287_9gs3ngxh0000gn/T/security-test-busybox-k2rgma8w/busybox.tar:security-test-smoke:busybox-1.37.0"
+  ],
+  "copyExit": 0,
+  "archiveBytes": 4348928,
+  "archiveSHA256": "7a7e40f68ba50fa164136fe8c34504be3543932b63e9152b1d7b3c53ed9faa33",
+  "loadCommand": [
+    "/opt/homebrew/bin/docker",
+    "--host",
+    "unix:///Users/zhangsir/.colima/security-test/docker.sock",
+    "load",
+    "--input",
+    "/var/folders/jc/_2vrrrl544v3287_9gs3ngxh0000gn/T/security-test-busybox-k2rgma8w/busybox.tar"
+  ],
+  "loadExit": 0,
+  "loadStdout": "Loaded image: security-test-smoke:busybox-1.37.0\n",
+  "loadStderr": "",
+  "temporaryArchiveCleaned": true,
+  "finishedUTC": "2026-11-02T01:10:41.617250+00:00"
+}

@@ -1,0 +1,410 @@
+{
+  "guard": {
+    "status": "ACCEPTED",
+    "profile": "MIN_RBAC_EXECUTOR",
+    "server": "https://security-test-sops-control-plane:6443",
+    "kubeSystemUID": "54f300a4-5f1b-4e1e-86a1-d173e5a402d8",
+    "wouldPermitChild": true,
+    "gateExecuted": false,
+    "environment": {
+      "preserved": [],
+      "explicitlySet": [
+        "BUSINESS_AGE_FILE",
+        "DEVSECOPS_READ_ONLY",
+        "HEAVY_HOLDER",
+        "HOME",
+        "ISOLATED_BOUNDARY_CONTEXT",
+        "KUBECONFIG",
+        "PATH",
+        "PYTHONDONTWRITEBYTECODE",
+        "TMPDIR",
+        "XDG_CACHE_HOME"
+      ],
+      "removedInheritedNames": [],
+      "sourceAndSnapshotBytesIdentical": true,
+      "defaultKubeconfigAbsent": true
+    },
+    "trustedChild": {
+      "exit": 0,
+      "outputSuppressed": true
+    },
+    "temporaryDirectory": "/fixture/boundary/isolated-sops-boundary-8o30gp49",
+    "temporaryDirectoryRemoved": true,
+    "audit": {
+      "api_attempts": 3,
+      "kubectl_invocations": 0,
+      "child_executions": 1
+    }
+  },
+  "child": {
+    "schemaVersion": "sops-observation-v1",
+    "factType": "CHILD_EXIT_FACT",
+    "source": "real-local-subprocess",
+    "identity": "system:serviceaccount:devsecops-system:security-fixture-executor",
+    "expectedTarget": {
+      "executable": "/fixture/node/bin/node"
+    },
+    "observedTarget": {
+      "executable": "/fixture/node/bin/node"
+    },
+    "status": "EXECUTION_ERROR",
+    "errorClass": "NONZERO_EXIT",
+    "evidenceRef": "result.json",
+    "commandIdentity": {
+      "executable": "/fixture/node/bin/node",
+      "argvSha256": "27852a53d0e2459b8271fe3715e940389c10f300c4a33e6bf5c73f12591d05bc"
+    },
+    "exit": {
+      "code": 1,
+      "signal": null,
+      "timedOut": false,
+      "outputLimitExceeded": false
+    },
+    "stdout": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "contentStored": false
+    },
+    "stderr": {
+      "bytes": 836,
+      "sha256": "d852e6ec8129f353ece0a0f06411a7e97f66c3578d6ab9b68d34b99351f36668",
+      "contentStored": false
+    }
+  },
+  "result": {
+    "scenario": "LEASE_HOLDER_MISMATCH",
+    "classification": "REAL_CONTROLLED_EXECUTION",
+    "rawEvidence": {
+      "facts": {
+        "prerequisites": {
+          "credentialPresent": true,
+          "manifest": true,
+          "lease": false
+        },
+        "readOnly": false,
+        "expectedTargetCount": 4,
+        "targets": []
+      },
+      "events": [
+        {
+          "kind": "PROCESS",
+          "command": "kubectl",
+          "argv": [
+            "--request-timeout=20s",
+            "-n",
+            "data-infra",
+            "get",
+            "lease",
+            "platform-heavy",
+            "-o",
+            "json"
+          ],
+          "exitCode": 0,
+          "signal": null,
+          "errorClass": null,
+          "timedOut": false,
+          "stdout": {
+            "bytes": 768,
+            "sha256": "2d22427bc8bf91791bac061d32d7c8d93f6e8e72b9237c901684f26b84d38181"
+          },
+          "stderr": {
+            "bytes": 0,
+            "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          }
+        },
+        {
+          "kind": "LEASE_READ",
+          "uid": "ff5e9671-9b22-4a88-892c-64eeac8307cb",
+          "holderIdentity": "sm-sops-controlled-mismatch",
+          "holderMatched": false
+        },
+        {
+          "kind": "UNCAUGHT_EXCEPTION",
+          "errorClass": "Error",
+          "messageSha256": "58bce49f204d83e319829b039bec4bc77b3a5d3d33e8cd2d726841004f4861af"
+        }
+      ],
+      "rawInputSha256": "47d24327f7283f742a9ef37e1ef5ea3eecb88182e0ee8bdc1fd32cda11a822bd",
+      "rawPreserved": true,
+      "redaction": "Synthetic decrypted stdout/data stay in memory only; original fingerprints+equality retained, no raw values archived"
+    },
+    "oldGate": {
+      "exitCode": 1,
+      "signal": null,
+      "errorClass": "Error",
+      "oldDecision": "FAIL"
+    },
+    "adapterRawOutput": {
+      "component": "sops",
+      "status": "success",
+      "checks": [
+        {
+          "id": "manifest",
+          "passed": true
+        },
+        {
+          "id": "lease",
+          "passed": false
+        }
+      ],
+      "failureKind": "execution error"
+    },
+    "policy": {
+      "policyVersion": "baseline-v1",
+      "securityLevel": "standard",
+      "profile": "java-web",
+      "effectivePolicy": {
+        "security-approval-promotion": {
+          "Critical": "FAIL",
+          "High": "FAIL",
+          "Medium": "WARN",
+          "Low": "WARN",
+          "Info": "WARN"
+        },
+        "regression": {
+          "Critical": "FAIL",
+          "High": "FAIL",
+          "Medium": "WARN",
+          "Low": "WARN",
+          "Info": "WARN"
+        },
+        "gitleaks": {
+          "Critical": "FAIL",
+          "High": "FAIL",
+          "Medium": "WARN",
+          "Low": "WARN",
+          "Info": "WARN"
+        },
+        "semgrep": {
+          "Critical": "FAIL",
+          "High": "FAIL",
+          "Medium": "WARN",
+          "Low": "WARN",
+          "Info": "WARN"
+        },
+        "sonarqube": {
+          "Critical": "FAIL",
+          "High": "FAIL",
+          "Medium": "WARN",
+          "Low": "WARN",
+          "Info": "WARN"
+        },
+        "sbom": {
+          "Critical": "FAIL",
+          "High": "FAIL",
+          "Medium": "WARN",
+          "Low": "WARN",
+          "Info": "WARN"
+        },
+        "trivy": {
+          "Critical": "FAIL",
+          "High": "FAIL",
+          "Medium": "WARN",
+          "Low": "WARN",
+          "Info": "WARN"
+        },
+        "cosign": {
+          "Critical": "FAIL",
+          "High": "FAIL",
+          "Medium": "WARN",
+          "Low": "WARN",
+          "Info": "WARN"
+        },
+        "kubescape": {
+          "Critical": "FAIL",
+          "High": "FAIL",
+          "Medium": "WARN",
+          "Low": "WARN",
+          "Info": "WARN"
+        },
+        "zap": {
+          "Critical": "FAIL",
+          "High": "FAIL",
+          "Medium": "WARN",
+          "Low": "WARN",
+          "Info": "WARN"
+        },
+        "defectdojo": {
+          "Critical": "FAIL",
+          "High": "FAIL",
+          "Medium": "WARN",
+          "Low": "WARN",
+          "Info": "WARN"
+        },
+        "provenance": {
+          "Critical": "FAIL",
+          "High": "FAIL",
+          "Medium": "WARN",
+          "Low": "WARN",
+          "Info": "WARN"
+        },
+        "build-provenance": {
+          "Critical": "FAIL",
+          "High": "FAIL",
+          "Medium": "WARN",
+          "Low": "WARN",
+          "Info": "WARN"
+        },
+        "sops": {
+          "Critical": "FAIL",
+          "High": "FAIL",
+          "Medium": "WARN",
+          "Low": "WARN",
+          "Info": "WARN"
+        },
+        "falco-baseline": {
+          "Critical": "FAIL",
+          "High": "FAIL",
+          "Medium": "WARN",
+          "Low": "WARN",
+          "Info": "WARN"
+        },
+        "falco-final": {
+          "Critical": "FAIL",
+          "High": "FAIL",
+          "Medium": "WARN",
+          "Low": "WARN",
+          "Info": "WARN"
+        },
+        "kyverno": {
+          "Critical": "FAIL",
+          "High": "FAIL",
+          "Medium": "WARN",
+          "Low": "WARN",
+          "Info": "WARN"
+        },
+        "kyverno-admission": {
+          "Critical": "FAIL",
+          "High": "FAIL",
+          "Medium": "WARN",
+          "Low": "WARN",
+          "Info": "WARN"
+        },
+        "kyverno-rbac": {
+          "Critical": "FAIL",
+          "High": "FAIL",
+          "Medium": "WARN",
+          "Low": "WARN",
+          "Info": "WARN"
+        },
+        "falco": {
+          "Critical": "FAIL",
+          "High": "FAIL",
+          "Medium": "WARN",
+          "Low": "WARN",
+          "Info": "WARN"
+        },
+        "semgrep-command-audit": {
+          "Critical": "FAIL",
+          "High": "FAIL",
+          "Medium": "WARN",
+          "Low": "WARN",
+          "Info": "WARN"
+        },
+        "cosign-cli": {
+          "Critical": "FAIL",
+          "High": "FAIL",
+          "Medium": "WARN",
+          "Low": "WARN",
+          "Info": "WARN"
+        },
+        "falco-prior-exit": {
+          "Critical": "FAIL",
+          "High": "FAIL",
+          "Medium": "WARN",
+          "Low": "WARN",
+          "Info": "WARN"
+        },
+        "falco-continuity": {
+          "Critical": "FAIL",
+          "High": "FAIL",
+          "Medium": "WARN",
+          "Low": "WARN",
+          "Info": "WARN"
+        },
+        "falco-persistence": {
+          "Critical": "FAIL",
+          "High": "FAIL",
+          "Medium": "WARN",
+          "Low": "WARN",
+          "Info": "WARN"
+        },
+        "provenance-signature": {
+          "Critical": "FAIL",
+          "High": "FAIL",
+          "Medium": "WARN",
+          "Low": "WARN",
+          "Info": "WARN"
+        },
+        "build-provenance-signature": {
+          "Critical": "FAIL",
+          "High": "FAIL",
+          "Medium": "WARN",
+          "Low": "WARN",
+          "Info": "WARN"
+        },
+        "approval-evidence": {
+          "Critical": "FAIL",
+          "High": "FAIL",
+          "Medium": "WARN",
+          "Low": "WARN",
+          "Info": "WARN"
+        },
+        "approval-signatures": {
+          "Critical": "FAIL",
+          "High": "FAIL",
+          "Medium": "WARN",
+          "Low": "WARN",
+          "Info": "WARN"
+        }
+      },
+      "appliedOverrides": [],
+      "status": "FAIL",
+      "decision": "FAIL",
+      "failureKind": "execution error",
+      "checks": [
+        {
+          "id": "manifest",
+          "passed": true
+        },
+        {
+          "id": "lease",
+          "passed": false
+        }
+      ],
+      "severity": null,
+      "sopsFacts": {
+        "component": "sops",
+        "status": "success",
+        "checks": [
+          {
+            "id": "manifest",
+            "passed": true
+          },
+          {
+            "id": "lease",
+            "passed": false
+          }
+        ],
+        "failureKind": "execution error"
+      }
+    },
+    "adapterError": null,
+    "comparison": "MATCH"
+  },
+  "executor": {
+    "exitCode": 0,
+    "elapsedSeconds": 0.615,
+    "stderrBytes": 0,
+    "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "nonRootUid": 65532,
+    "network": "kind",
+    "noAdminCredential": true,
+    "noHostMount": true,
+    "containerRemoved": true
+  },
+  "controlledDelta": {
+    "holder": "sm-sops-controlled-mismatch",
+    "uid": "ff5e9671-9b22-4a88-892c-64eeac8307cb"
+  }
+}

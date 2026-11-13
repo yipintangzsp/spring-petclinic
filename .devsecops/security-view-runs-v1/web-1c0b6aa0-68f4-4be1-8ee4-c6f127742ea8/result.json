@@ -1,0 +1,220 @@
+{
+  "runId": "web-1c0b6aa0-68f4-4be1-8ee4-c6f127742ea8",
+  "pluginId": "build-provenance",
+  "projectId": "petclinic-platform",
+  "scenarioId": "verified",
+  "configurationSnapshot": {
+    "revision": 50,
+    "updatedAt": "2026-11-12T18:56:03.817Z",
+    "settings": {
+      "enabled": true,
+      "securityLevel": "standard",
+      "plugins": {
+        "gitleaks": {
+          "enabled": true
+        },
+        "semgrep": {
+          "enabled": true
+        },
+        "cosign": {
+          "enabled": true
+        },
+        "sbom": {
+          "enabled": true
+        },
+        "trivy": {
+          "enabled": true
+        },
+        "kyverno": {
+          "enabled": true
+        },
+        "sonarqube": {
+          "enabled": true
+        },
+        "kubescape": {
+          "enabled": true
+        },
+        "zap": {
+          "enabled": true
+        },
+        "provenance": {
+          "enabled": true
+        },
+        "build-provenance": {
+          "enabled": true
+        }
+      }
+    },
+    "source": {
+      "kind": "LOCAL_EXPLICIT_OVERRIDE",
+      "path": ".devsecops/security-view-controls-v1.json",
+      "settingsDigest": "c0d456b751c511f2cf017f11c16c5ec3872896775e04e3cb62b7e2d7cf7a6196"
+    },
+    "configurationOrigins": [
+      {
+        "layer": "global",
+        "securityLevel": "standard",
+        "policyVersion": "baseline-v1"
+      },
+      {
+        "layer": "registryDefaults",
+        "plugins": {
+          "build-provenance": {
+            "enabled": true
+          },
+          "cosign": {
+            "enabled": true
+          },
+          "falco": {
+            "enabled": false
+          },
+          "gitleaks": {
+            "enabled": true
+          },
+          "kubescape": {
+            "enabled": true
+          },
+          "kyverno": {
+            "enabled": true
+          },
+          "provenance": {
+            "enabled": true
+          },
+          "sbom": {
+            "enabled": true
+          },
+          "semgrep": {
+            "enabled": true
+          },
+          "sonarqube": {
+            "enabled": true
+          },
+          "sops": {
+            "enabled": false
+          },
+          "trivy": {
+            "enabled": true
+          },
+          "zap": {
+            "enabled": true
+          }
+        }
+      },
+      {
+        "layer": "globalExplicit",
+        "values": {
+          "enabled": true,
+          "securityLevel": "standard",
+          "plugins": {
+            "gitleaks": {
+              "enabled": true
+            },
+            "semgrep": {
+              "enabled": true
+            },
+            "cosign": {
+              "enabled": true
+            },
+            "sbom": {
+              "enabled": true
+            },
+            "trivy": {
+              "enabled": true
+            },
+            "kyverno": {
+              "enabled": true
+            },
+            "sonarqube": {
+              "enabled": true
+            },
+            "kubescape": {
+              "enabled": true
+            },
+            "zap": {
+              "enabled": true
+            },
+            "provenance": {
+              "enabled": true
+            },
+            "build-provenance": {
+              "enabled": true
+            }
+          },
+          "globalMode": "audit",
+          "profile": "java-web",
+          "policyVersion": "baseline-v1"
+        }
+      },
+      {
+        "layer": "profile",
+        "values": {}
+      },
+      {
+        "layer": "project",
+        "values": {}
+      }
+    ],
+    "effectiveConfigDigest": "95636eaa1a4702db509d997c0f4ca3f15b583509ff8c4f37288e6a9383d5c54d"
+  },
+  "securityLevel": "standard",
+  "startedAt": "2026-11-12T18:56:44.603Z",
+  "kind": "LocalValidationRequest",
+  "executionLocation": "MAC_ONLY",
+  "state": "COMPLETED",
+  "evidenceClass": "REAL",
+  "scannerExecuted": true,
+  "policyDecision": "PASS",
+  "evaluationCount": 1,
+  "resultDigest": "a045615f2b8d0a1b1ad1f9b7a090a073ba325cbd22a030d9b7edbe9b1c6a8f01",
+  "artifactDigest": "4a76d6df11b5484cd04f7a4e36279943425e28266fcf129280e3e999f8f0930b",
+  "source": ".devsecops/security-view-runs-v1/web-1c0b6aa0-68f4-4be1-8ee4-c6f127742ea8/artifact/build-provenance.result.json",
+  "reason": null,
+  "executionDiagnostic": null,
+  "caseId": "historical-build",
+  "subjectImage": "core.harbor.domain/petclinic/petclinic@sha256:2fbaea65ab030c56c60c62e3ee9fbe362deb8bbbb8216a891ef4c7bbbcea6d55",
+  "commit": "9a78cc89f22fa98fb1ffcc43e2ae279299471793",
+  "buildNumber": 2,
+  "jarSha256": "7f5d49a65149d25d16e38dbf7c5d0c2686ac8a15ab53c2d1a05c1575f44a8100",
+  "envelopeSha256": "f72e882c6abf54786216e2aabe894d7a44a097fbbae361d76e1f69f83ce1222f",
+  "exitCode": 0,
+  "toolVersion": null,
+  "toolSha256": null,
+  "executionIdentity": "local-operator",
+  "executionHost": "local/offline",
+  "router": [
+    {
+      "consumerId": "dry-run",
+      "deliveryDecision": "DRY_RUN"
+    },
+    {
+      "consumerId": "local-evidence",
+      "deliveryDecision": "DELIVERED_LOCAL_ONLY"
+    }
+  ],
+  "cleanup": "VERIFIED",
+  "lokiDelivery": {
+    "consumerId": "loki-candidate",
+    "automatic": true,
+    "sourceClassification": "REAL_CONTROLLED_EXECUTION",
+    "runId": "web-1c0b6aa0-68f4-4be1-8ee4-c6f127742ea8",
+    "resultDigest": "a045615f2b8d0a1b1ad1f9b7a090a073ba325cbd22a030d9b7edbe9b1c6a8f01",
+    "pushState": "ACKNOWLEDGED",
+    "pushHttpStatus": 204,
+    "receiptDigest": "35e1e59653689fae32bd7b4b5574e5a8621cd4ae6781e679340cfa553614f0df",
+    "httpRequestCount": 1,
+    "queryState": "VERIFIED",
+    "state": "DELIVERED",
+    "reason": null,
+    "deliveryAt": "2026-11-12T18:56:45.011Z",
+    "grafanaUrl": "http://grafana.devops.local/d/security-manager-v2-candidate/devsecops-security-manager-v2-overview?var-DS_LOKI=loki&var-project=petclinic-platform&var-run=web-1c0b6aa0-68f4-4be1-8ee4-c6f127742ea8&var-resultDigest=a045615f2b8d0a1b1ad1f9b7a090a073ba325cbd22a030d9b7edbe9b1c6a8f01&from=1794509744640&to=1794510104640",
+    "receiptSource": "loki-delivery/router-receipt.json",
+    "queryAt": "2026-11-12T18:56:45.093Z",
+    "queryHttpStatus": 200,
+    "matchedEvents": 1
+  },
+  "completedAt": "2026-11-12T18:56:45.100Z",
+  "durationMs": 489,
+  "releaseCount": 0,
+  "rolloutCount": 0,
+  "auditDigest": "26aac4debe8de0c900c6e5858a062a3cc148d5efb95d1a25565ef48354a7517d"
+}

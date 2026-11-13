@@ -1,0 +1,10 @@
+import fs from 'node:fs';import crypto from 'node:crypto';
+export const base='evidence/2026-11-01/trivy-parent/';
+export const sha=v=>crypto.createHash('sha256').update(v).digest('hex');
+export const child=['sha256:'+'b'.repeat(64),'sha256:'+'c'.repeat(64)];
+export function fixture(){
+ const manifest=JSON.stringify({schemaVersion:2,mediaType:'application/vnd.oci.image.index.v1+json',manifests:child.map((digest,i)=>({digest,platform:{os:'linux',architecture:i?'arm64':'amd64'}}))}),digest='sha256:'+sha(manifest),image='core.harbor.domain/petclinic/petclinic@'+digest;
+ return {env:{BUILD_NUMBER:'270',AUDIT_CANDIDATE_IMAGE:image,HARBOR_USER:'synthetic-user',HARBOR_PASS:'synthetic-disposable-marker',IMAGE_TAG:'0.10.0-ci-270'},manifest,expectedDigest:digest,root:{digest,references:child.map((child_digest,i)=>({child_digest,platform:{architecture:i?'arm64':'amd64'}}))},deployment:{spec:{template:{spec:{containers:[{image}]}},selector:{matchLabels:{app:'petclinic'}}}},pods:[{metadata:{name:'fixture-pod',uid:'fixture-pod-uid'},status:{containerStatuses:[{name:'petclinic',ready:true,image}]}}],maps:'000-001 r-xp 0 /usr/lib/libfixture.so',sbom:'{"components":[]}',review:JSON.stringify({image,entries:[],reviewAfter:'2026-12-01T00:00:00Z',limitations:['synthetic control']}),scanSummary:{scan_status:'Success',scanner:{name:'Trivy'},summary:{Critical:0,High:0,Medium:0,Low:0}},defaultNative:{'application/vnd.security.vulnerability.report; version=1.1':{vulnerabilities:[]}},nativeReports:{},http:{},commands:{},io:{}};
+}
+export function findings(r,values,entries=[]){r.defaultNative={'application/vnd.security.vulnerability.report; version=1.1':{vulnerabilities:values}};r.review=JSON.stringify({image:r.env.AUDIT_CANDIDATE_IMAGE,entries,reviewAfter:'2026-12-01T00:00:00Z',limitations:['controlled test']});}
+export const vulnerability=severity=>({id:'SYNTHETIC-CVE-1',package:'fixture',version:'1.0',fix_version:'2.0',severity,description:'Non-production controlled vulnerability metadata'});

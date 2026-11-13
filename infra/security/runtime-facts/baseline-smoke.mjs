@@ -1,0 +1,9 @@
+// Verify accepted runtime receipts, never relabel them as this build's facts.
+import fs from 'node:fs';import assert from 'node:assert/strict';import {validateResult,gateView} from '../summary-v2/results.mjs';import {EXPECTED_SOURCES} from '../summary-v2/inventory.mjs';
+const baseline=JSON.parse(fs.readFileSync(process.argv[2]??'runtime-accepted-baseline.json')),art=baseline.artifacts;
+const get=s=>Object.entries(art).find(([p])=>p.endsWith('/'+s))?.[1],c=get('coverage.json');
+assert.equal(baseline.build,12);assert.equal(c.failures.length,0);const rows=c.sources.filter(s=>s.state==='CAPTURED');assert.equal(rows.length,10);assert.deepEqual(c.sources.map(s=>s.sourceId),EXPECTED_SOURCES);
+for(const row of rows){const r=validateResult(get(row.sourceId+'.result.json'),c.binding),g=get(row.sourceId+'.gate.json'),capture=get(row.sourceId+'.capture.json');assert.equal(row.evaluationCount,1);assert.equal(row.resultDigest,r.resultDigest);assert.equal(r.resultDigest,g.resultDigest);assert.equal(r.resultDigest,capture.resultDigest);assert.equal(capture.rawFactDigest,r.rawFactDigest);assert.equal(gateView(r,c.binding).resultDigest,g.resultDigest);}
+const s=get('sops-runtime-receipt.json');assert.equal(s.executionScope,'CONTROLLED_ISOLATED_RUNTIME');assert.equal(s.productionSecretAccess,0);assert.equal(s.productionAgeKeyAccess,0);assert.equal(s.guard.profile,'MIN_RBAC_EXECUTOR');
+const son=get('sonar-current-lineage.json');assert.deepEqual(son.raw.lineage.validationBinding,c.binding);assert.equal(son.raw.binding.taskId,son.raw.task.task.id);assert.equal(son.raw.binding.requestedAnalysisId,son.raw.task.task.analysisId);assert.equal(son.negativeCompatibility,'DEFERRED_REAL_NEGATIVE_EVIDENCE');
+console.log(JSON.stringify({acceptedBaselineBuild:12,receiptsValidated:rows.length,policyReevaluations:0,reboundAsCurrentBuildFacts:false,sopsScopePreserved:true,sonarLineagePreserved:true}));

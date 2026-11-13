@@ -1,0 +1,37 @@
+{
+  "rows": [
+    {
+      "classification": "REAL_CONTROLLED_LOCAL_NODE_TEST_EXECUTION",
+      "command": "node --test --test-concurrency=1 infra/observability/*.test.mjs infra/security/*.test.mjs",
+      "log": "legacy-regression.log",
+      "environment": "sandbox localhost listen EPERM",
+      "exitCode": 1,
+      "oldDecision": "FAIL",
+      "standardDecision": "FAIL",
+      "error": null,
+      "match": true,
+      "rawUnchanged": true,
+      "evaluationCounts": {
+        "regression": 1
+      },
+      "productionConsumerMigrated": false
+    },
+    {
+      "classification": "REAL_CONTROLLED_LOCAL_NODE_TEST_EXECUTION",
+      "command": "node --test --test-concurrency=1 infra/observability/*.test.mjs infra/security/*.test.mjs",
+      "log": "legacy-regression-loopback.log",
+      "environment": "authorized localhost loopback test execution",
+      "exitCode": 0,
+      "oldDecision": "PASS",
+      "standardDecision": "PASS",
+      "error": null,
+      "match": true,
+      "rawUnchanged": true,
+      "evaluationCounts": {
+        "regression": 1
+      },
+      "productionConsumerMigrated": false
+    }
+  ],
+  "allMatch": true
+}

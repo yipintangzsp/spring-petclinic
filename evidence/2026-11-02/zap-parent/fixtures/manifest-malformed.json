@@ -1,0 +1,155 @@
+{
+  "input": {
+    "env": {
+      "BUILD_NUMBER": "270",
+      "HEAVY_HOLDER": "fixture-holder",
+      "SECURITY_CLEANUP_SCAN_HOMES": "true",
+      "GATE_ZAP": "enforce",
+      "K8S_IMAGE": "registry.invalid/controlled@sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+    },
+    "source": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "manifest": "{",
+    "expectedManifestSha256": "021fb596db81e6d02bf3d2586ee3981fe519f275c0ac9ca76bbcf2ebb4097d96",
+    "toolFiles": {
+      "zap/zap-2.17.0.jar": "synthetic non-executable jar bytes",
+      "zap/addons/controlled.zap": "synthetic addon bytes"
+    },
+    "symlinks": {
+      "zap/current": "zap-2.17.0.jar"
+    },
+    "lease": {
+      "spec": {
+        "holderIdentity": "fixture-holder"
+      }
+    },
+    "createdUid": "fixture-pod-uid",
+    "currentUid": "fixture-pod-uid",
+    "podIp": "10.42.0.9",
+    "canaryListen": true,
+    "canaryEvents": [
+      "connect"
+    ],
+    "isolationExits": [
+      124,
+      124
+    ],
+    "readinessExits": [
+      0
+    ],
+    "transfer": {
+      "sourceExit": 0,
+      "sinkExit": 0
+    },
+    "scanReports": {
+      "fixture": {
+        "site": [
+          {
+            "@host": "127.0.0.1",
+            "alerts": [
+              {
+                "pluginid": "10062",
+                "name": "Controlled passive alert",
+                "riskcode": "3",
+                "confidence": "2",
+                "count": "1",
+                "instances": [
+                  {
+                    "uri": "http://10.43.0.9:8080/owners/find",
+                    "method": "GET",
+                    "param": "fixture"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      "fixture-negative": {
+        "site": [
+          {
+            "@host": "127.0.0.1",
+            "alerts": []
+          }
+        ]
+      },
+      "business": {
+        "site": [
+          {
+            "@host": "10.43.0.9",
+            "alerts": []
+          }
+        ]
+      }
+    },
+    "deployment": {
+      "spec": {
+        "template": {
+          "spec": {
+            "containers": [
+              {
+                "image": "registry.invalid/controlled@sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+              }
+            ]
+          }
+        }
+      }
+    },
+    "service": {
+      "spec": {
+        "clusterIP": "10.43.0.9",
+        "ports": [
+          {
+            "port": 8080
+          }
+        ]
+      }
+    },
+    "auth": {
+      "status": "success",
+      "fixture": [
+        {
+          "case": "synthetic-roles-only",
+          "status": 200
+        }
+      ],
+      "business": [
+        {
+          "case": "public-get-observation",
+          "status": 200
+        }
+      ],
+      "productionUnsupported": [
+        "real identity model"
+      ],
+      "businessScope": "Existing public GET only"
+    },
+    "confirmations": {
+      "schema": 1,
+      "confirmations": []
+    },
+    "evidenceFiles": {},
+    "cleanupRemaining": false,
+    "commands": {},
+    "io": {}
+  },
+  "facts": {
+    "schema": 1,
+    "stage": "parent",
+    "complete": true,
+    "classification": "CONTROLLED_REPLAY",
+    "command": "node infra/security/zap-gate.mjs",
+    "execution": {
+      "exitStatus": 1,
+      "diagnostic": "Expected property name or '}' in JSON at position 1 (line 1 column 2)"
+    },
+    "observations": [
+      {
+        "type": "io",
+        "key": "read:infra/security/scanner-tools.json",
+        "occurrence": "read:infra/security/scanner-tools.json#1",
+        "ok": true
+      }
+    ],
+    "reports": {}
+  }
+}

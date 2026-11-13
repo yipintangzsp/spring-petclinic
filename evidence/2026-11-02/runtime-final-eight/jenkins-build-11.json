@@ -1,0 +1,4399 @@
+{
+  "job": "security-runtime-facts-20261102",
+  "build": 11,
+  "building": false,
+  "result": "FAILURE",
+  "duration": 97032,
+  "artifacts": {
+    ".devsecops/runtime-facts/build-11/coverage.json": {
+      "artifactGenerated": false,
+      "failures": [
+        {
+          "sourceId": "sonarqube",
+          "code": "SONAR_RUNTIME_LINEAGE_BLOCKED",
+          "message": "POLICY_ERROR: SONAR_RUNTIME_LINEAGE_BLOCKED: real current-source test/coverage prerequisite failed"
+        }
+      ],
+      "sources": [
+        {
+          "sourceId": "sbom",
+          "evaluationCount": 1,
+          "contract": {
+            "sourceId": "sbom",
+            "adapterScope": "source-specific",
+            "required": [
+              "generator execution",
+              "original verifier extraction bytes",
+              "Maven SBOM bytes",
+              "source",
+              "mkdir/native/summary write observations"
+            ],
+            "nativeSuccessSufficient": false
+          },
+          "state": "CAPTURED",
+          "resultDigest": "00ce4155a2f80de7acc6fc7755bc075f3a0970455f0280da5f400c6503379905"
+        },
+        {
+          "sourceId": "regression",
+          "evaluationCount": 1,
+          "contract": {
+            "sourceId": "regression",
+            "adapterScope": "frozen wrapper/command",
+            "required": [
+              "actual command status",
+              "original module status",
+              "execution observations"
+            ],
+            "nativeSuccessSufficient": false
+          },
+          "state": "CAPTURED",
+          "resultDigest": "7f96f04b8c009791838eca5f1143cf6f5d4f13caeede89845d8b487f786edad4"
+        },
+        {
+          "sourceId": "falco-baseline",
+          "evaluationCount": 1,
+          "contract": {
+            "sourceId": "falco-baseline",
+            "adapterScope": "source-specific",
+            "required": [
+              "files",
+              "ds",
+              "sensorPods",
+              "node",
+              "diagnosticLog",
+              "samples.windowEndMs",
+              "samples.log",
+              "samples.workloads",
+              "health",
+              "reportWriteSucceeded"
+            ],
+            "nativeSuccessSufficient": false
+          },
+          "state": "CAPTURED",
+          "resultDigest": "e44e6963b00c8c4c3dbc44841a3d5fa81df47b5d95dc0df435d6f36469d4be69"
+        },
+        {
+          "sourceId": "kyverno",
+          "evaluationCount": 1,
+          "contract": {
+            "sourceId": "kyverno",
+            "adapterScope": "source-specific",
+            "required": [
+              "configuration",
+              "rbac command observations",
+              "probes",
+              "live policy",
+              "owners",
+              "workloads",
+              "report writes"
+            ],
+            "nativeSuccessSufficient": false
+          },
+          "state": "CAPTURED",
+          "resultDigest": "2965cceac3029a17bb2344385e9ce425a930d806911fdd38261c3547ab6d85e3"
+        },
+        {
+          "sourceId": "kubescape",
+          "evaluationCount": 1,
+          "contract": {
+            "sourceId": "kubescape",
+            "adapterScope": "source-specific",
+            "required": [
+              "lock",
+              "binary/artifact hashes",
+              "lease",
+              "read-only credential setup",
+              "scans",
+              "cleanup",
+              "report write"
+            ],
+            "nativeSuccessSufficient": false
+          },
+          "state": "CAPTURED",
+          "resultDigest": "8abf8155977f99234fc9969a66af025303ded3d0a241e97c6d4bf7fcc4e8df68"
+        },
+        {
+          "sourceId": "gitleaks",
+          "evaluationCount": null,
+          "contract": {
+            "sourceId": "gitleaks",
+            "adapterScope": "source-specific",
+            "required": [
+              "scanner exit",
+              "native report presence/parse/findings",
+              "original classifier inputs",
+              "prerequisite/isolation/cleanup",
+              "parent aggregation/report writes"
+            ],
+            "nativeSuccessSufficient": false
+          },
+          "state": "NOT_OBSERVED",
+          "resultDigest": null
+        },
+        {
+          "sourceId": "sops",
+          "evaluationCount": null,
+          "contract": {
+            "sourceId": "sops",
+            "adapterScope": "source-specific",
+            "required": [
+              "prerequisites",
+              "targets.decrypt",
+              "targets.actual",
+              "targets.after",
+              "rbac",
+              "verifierRbac",
+              "reportWriteSucceeded"
+            ],
+            "nativeSuccessSufficient": false
+          },
+          "state": "NOT_OBSERVED",
+          "resultDigest": null
+        },
+        {
+          "sourceId": "trivy",
+          "evaluationCount": null,
+          "contract": {
+            "sourceId": "trivy",
+            "adapterScope": "source-specific",
+            "required": [
+              "original parent operation sequence",
+              "Harbor scan response and native report",
+              "DB/update and proxy-direct observations",
+              "reachability/fixability evidence",
+              "candidate/image/report binding"
+            ],
+            "nativeSuccessSufficient": false
+          },
+          "state": "NOT_OBSERVED",
+          "resultDigest": null
+        },
+        {
+          "sourceId": "cosign",
+          "evaluationCount": null,
+          "contract": {
+            "sourceId": "cosign",
+            "adapterScope": "source-specific",
+            "required": [
+              "configuration",
+              "runtime",
+              "files",
+              "commands",
+              "registry",
+              "admissions",
+              "io"
+            ],
+            "nativeSuccessSufficient": false
+          },
+          "state": "NOT_OBSERVED",
+          "resultDigest": null
+        },
+        {
+          "sourceId": "sonarqube",
+          "evaluationCount": null,
+          "contract": {
+            "sourceId": "sonarqube",
+            "adapterScope": "source-specific",
+            "required": [
+              "task",
+              "analysis id",
+              "authoritative projectStatus",
+              "conditions",
+              "binding"
+            ],
+            "nativeSuccessSufficient": false
+          },
+          "state": "NOT_OBSERVED",
+          "resultDigest": null
+        },
+        {
+          "sourceId": "zap",
+          "evaluationCount": null,
+          "contract": {
+            "sourceId": "zap",
+            "adapterScope": "source-specific",
+            "required": [
+              "target/report identity",
+              "confirmed High reproduction evidence",
+              "unconfirmed/lower-risk observations",
+              "container/network/report/cleanup outcomes"
+            ],
+            "nativeSuccessSufficient": false
+          },
+          "state": "NOT_OBSERVED",
+          "resultDigest": null
+        },
+        {
+          "sourceId": "falco-final",
+          "evaluationCount": 1,
+          "contract": {
+            "sourceId": "falco-final",
+            "adapterScope": "source-specific",
+            "required": [
+              "files",
+              "baseline",
+              "continuity",
+              "ds",
+              "sensorPods",
+              "node",
+              "diagnosticLog",
+              "samples.windowEndMs",
+              "samples.log",
+              "samples.workloads",
+              "health",
+              "reportWriteSucceeded"
+            ],
+            "nativeSuccessSufficient": false
+          },
+          "state": "CAPTURED",
+          "resultDigest": "a9e932ebf740e4d1a42349ebb758316f7117d25c2a935e4b0071491b5078bac2"
+        },
+        {
+          "sourceId": "defectdojo",
+          "evaluationCount": null,
+          "contract": {
+            "sourceId": "defectdojo",
+            "adapterScope": "source-specific",
+            "required": [
+              "files",
+              "target",
+              "actual API request/response observations",
+              "credential presence"
+            ],
+            "nativeSuccessSufficient": false
+          },
+          "state": "NOT_OBSERVED",
+          "resultDigest": null
+        },
+        {
+          "sourceId": "provenance",
+          "evaluationCount": 1,
+          "contract": {
+            "sourceId": "provenance",
+            "adapterScope": "source-specific",
+            "required": [
+              "actual workflow cfg/params/environment/return",
+              "enabled branch only: git/steps/operations/DSSE/subject/builder binding"
+            ],
+            "nativeSuccessSufficient": false
+          },
+          "state": "CAPTURED",
+          "resultDigest": "e9fa4e7a19848f4ddc866a0bb662d49da9597225a76806c545a90c0366d867b4"
+        },
+        {
+          "sourceId": "build-provenance",
+          "evaluationCount": 1,
+          "contract": {
+            "sourceId": "build-provenance",
+            "adapterScope": "source-specific",
+            "required": [
+              "actual workflow cfg/params/environment/return",
+              "enabled branch only: verification/inputIdentity/artifacts/architecture/candidate binding"
+            ],
+            "nativeSuccessSufficient": false
+          },
+          "state": "CAPTURED",
+          "resultDigest": "6a2037f1ec77adc52ebe028ade8176dde0748189d1764315943670f985fdea39"
+        },
+        {
+          "sourceId": "semgrep-command-audit",
+          "evaluationCount": null,
+          "contract": {
+            "sourceId": "semgrep-command-audit",
+            "adapterScope": "source-specific",
+            "required": [
+              "command-flow findings",
+              "high-confidence frozen Semgrep rules/native report",
+              "scanner execution/report/cleanup",
+              "source binding"
+            ],
+            "nativeSuccessSufficient": false
+          },
+          "state": "NOT_OBSERVED",
+          "resultDigest": null
+        }
+      ],
+      "rollout": 0,
+      "release": 0,
+      "binding": {
+        "candidate": "core.harbor.domain/petclinic/petclinic@sha256:489cb821573ff1f98edd846d5949d74bf3391b24e2f1fe5bcfb71c6be0793137",
+        "build": 11,
+        "project": "petclinic",
+        "source": "741ea2866ea142b24c7838e1ef25c8327c79d279",
+        "runId": "security-runtime-facts-20261102#11",
+        "job": "security-runtime-facts-20261102",
+        "targetScope": "runtime"
+      },
+      "classification": "REAL_DEDICATED_NONRELEASE_JENKINS_EXECUTION",
+      "summaryActivated": false,
+      "missing": [
+        "gitleaks",
+        "sops",
+        "trivy",
+        "cosign",
+        "sonarqube",
+        "zap",
+        "defectdojo",
+        "semgrep-command-audit"
+      ],
+      "gate": {
+        "falco-baseline": {
+          "sourceId": "falco-baseline",
+          "decision": "PASS",
+          "observedStatus": "success",
+          "resultDigest": "e44e6963b00c8c4c3dbc44841a3d5fa81df47b5d95dc0df435d6f36469d4be69",
+          "status": "PASS"
+        },
+        "provenance": {
+          "sourceId": "provenance",
+          "decision": null,
+          "observedStatus": "skipped",
+          "resultDigest": "e9fa4e7a19848f4ddc866a0bb662d49da9597225a76806c545a90c0366d867b4",
+          "status": "SKIPPED"
+        },
+        "falco-final": {
+          "sourceId": "falco-final",
+          "decision": "PASS",
+          "observedStatus": "success",
+          "resultDigest": "a9e932ebf740e4d1a42349ebb758316f7117d25c2a935e4b0071491b5078bac2",
+          "status": "PASS"
+        },
+        "kyverno": {
+          "sourceId": "kyverno",
+          "decision": "PASS",
+          "observedStatus": "success",
+          "resultDigest": "2965cceac3029a17bb2344385e9ce425a930d806911fdd38261c3547ab6d85e3",
+          "status": "PASS"
+        },
+        "regression": {
+          "sourceId": "regression",
+          "decision": "PASS",
+          "observedStatus": "success",
+          "resultDigest": "7f96f04b8c009791838eca5f1143cf6f5d4f13caeede89845d8b487f786edad4",
+          "status": "PASS"
+        },
+        "build-provenance": {
+          "sourceId": "build-provenance",
+          "decision": null,
+          "observedStatus": "skipped",
+          "resultDigest": "6a2037f1ec77adc52ebe028ade8176dde0748189d1764315943670f985fdea39",
+          "status": "SKIPPED"
+        },
+        "sbom": {
+          "sourceId": "sbom",
+          "decision": "PASS",
+          "observedStatus": "success",
+          "resultDigest": "00ce4155a2f80de7acc6fc7755bc075f3a0970455f0280da5f400c6503379905",
+          "status": "PASS"
+        },
+        "kubescape": {
+          "sourceId": "kubescape",
+          "decision": "PASS",
+          "observedStatus": "success",
+          "resultDigest": "8abf8155977f99234fc9969a66af025303ded3d0a241e97c6d4bf7fcc4e8df68",
+          "status": "PASS"
+        }
+      },
+      "artifactRejection": "POLICY_ERROR: runtime artifact incomplete: gitleaks,sops,trivy,cosign,sonarqube,zap,defectdojo,semgrep-command-audit",
+      "complete": false,
+      "promotion": 0
+    },
+    ".devsecops/runtime-facts/build-11/helper-returns/build-provenance.json": {
+      "schema": 1,
+      "sourceId": "build-provenance",
+      "environment": {
+        "BUILD_NUMBER": "11"
+      },
+      "build": 11,
+      "configuration": {},
+      "producer": {
+        "path": "vars/securityBuildProvenance.groovy",
+        "sha256": "fc30d9ea48352c15b9e79400a0e6818236d6cf6531b4992700ef86186b77213d",
+        "libraryRevision": "9a78cc89f22fa98fb1ffcc43e2ae279299471793"
+      },
+      "job": "security-runtime-facts-20261102",
+      "returned": {
+        "tool": "build-provenance",
+        "status": "skipped"
+      },
+      "parameters": {}
+    },
+    ".devsecops/runtime-facts/build-11/helper-returns/provenance.json": {
+      "schema": 1,
+      "sourceId": "provenance",
+      "environment": {
+        "BUILD_NUMBER": "11"
+      },
+      "build": 11,
+      "configuration": {},
+      "producer": {
+        "path": "vars/securityProvenance.groovy",
+        "sha256": "db2025f5b6347cd7131835aafca08a9b503232494c6881d7ea94f6969e1d7a3d",
+        "libraryRevision": "9a78cc89f22fa98fb1ffcc43e2ae279299471793"
+      },
+      "job": "security-runtime-facts-20261102",
+      "returned": {
+        "tool": "provenance",
+        "status": "skipped"
+      },
+      "parameters": {}
+    },
+    ".devsecops/runtime-facts/build-11/results/build-provenance.capture.json": {
+      "schema": 1,
+      "sourceId": "build-provenance",
+      "execution": {
+        "kind": "JENKINS_CPS_FUNCTION",
+        "errorClass": null,
+        "returnStatus": "RETURNED",
+        "signal": null,
+        "command": "vars/securityBuildProvenance.groovy:call",
+        "exitStatus": null
+      },
+      "reports": [
+        {
+          "path": ".devsecops/runtime-facts/build-11/helper-returns/build-provenance.json",
+          "sha256": "44d13966a1286ec0de8c35627aec75587ade64aa9b014f3ee57e5c0e201278ff",
+          "bytes": 417
+        }
+      ],
+      "evidence": [
+        {
+          "enabledBranchExecuted": false,
+          "producer": {
+            "path": "vars/securityBuildProvenance.groovy",
+            "sha256": "fc30d9ea48352c15b9e79400a0e6818236d6cf6531b4992700ef86186b77213d",
+            "libraryRevision": "9a78cc89f22fa98fb1ffcc43e2ae279299471793"
+          },
+          "observedReturn": {
+            "tool": "build-provenance",
+            "status": "skipped"
+          },
+          "classification": "REAL_JENKINS_CPS_DEFAULT_RETURN"
+        }
+      ],
+      "rawPayloadPersisted": false,
+      "kind": "RuntimeSourceFacts",
+      "evidenceComplete": true,
+      "resultDigest": "6a2037f1ec77adc52ebe028ade8176dde0748189d1764315943670f985fdea39",
+      "evaluationCount": 1,
+      "buildBinding": {
+        "candidate": "core.harbor.domain/petclinic/petclinic@sha256:489cb821573ff1f98edd846d5949d74bf3391b24e2f1fe5bcfb71c6be0793137",
+        "build": 11,
+        "project": "petclinic",
+        "source": "741ea2866ea142b24c7838e1ef25c8327c79d279",
+        "runId": "security-runtime-facts-20261102#11",
+        "job": "security-runtime-facts-20261102",
+        "targetScope": "runtime"
+      },
+      "envelopeDigest": "3e2d2b7fda3c16a8fac263f78d01e41af3ff2276112d757e6afae1a8079726a5",
+      "rawFactDigest": "701fb081662642567617034ee3ff5595c5c36e5eb5bdbf430b7f67d33a14ca7d",
+      "presence": "executed"
+    },
+    ".devsecops/runtime-facts/build-11/results/build-provenance.gate.json": {
+      "sourceId": "build-provenance",
+      "decision": null,
+      "observedStatus": "skipped",
+      "resultDigest": "6a2037f1ec77adc52ebe028ade8176dde0748189d1764315943670f985fdea39",
+      "status": "SKIPPED"
+    },
+    ".devsecops/runtime-facts/build-11/results/build-provenance.result.json": {
+      "schema": 1,
+      "sourceId": "build-provenance",
+      "result": {
+        "securityLevel": "standard",
+        "policyVersion": "baseline-v1",
+        "appliedOverrides": [],
+        "decision": null,
+        "profile": "java-web",
+        "effectivePolicy": {
+          "approval-evidence": {
+            "High": "FAIL",
+            "Low": "WARN",
+            "Medium": "WARN",
+            "Critical": "FAIL",
+            "Info": "WARN"
+          },
+          "approval-signatures": {
+            "High": "FAIL",
+            "Low": "WARN",
+            "Medium": "WARN",
+            "Critical": "FAIL",
+            "Info": "WARN"
+          },
+          "gitleaks": {
+            "High": "FAIL",
+            "Low": "WARN",
+            "Medium": "WARN",
+            "Critical": "FAIL",
+            "Info": "WARN"
+          },
+          "kyverno-admission": {
+            "High": "FAIL",
+            "Low": "WARN",
+            "Medium": "WARN",
+            "Critical": "FAIL",
+            "Info": "WARN"
+          },
+          "build-provenance": {
+            "High": "FAIL",
+            "Low": "WARN",
+            "Medium": "WARN",
+            "Critical": "FAIL",
+            "Info": "WARN"
+          },
+          "semgrep": {
+            "High": "FAIL",
+            "Low": "WARN",
+            "Medium": "WARN",
+            "Critical": "FAIL",
+            "Info": "WARN"
+          },
+          "falco-continuity": {
+            "High": "FAIL",
+            "Low": "WARN",
+            "Medium": "WARN",
+            "Critical": "FAIL",
+            "Info": "WARN"
+          },
+          "provenance": {
+            "High": "FAIL",
+            "Low": "WARN",
+            "Medium": "WARN",
+            "Critical": "FAIL",
+            "Info": "WARN"
+          },
+          "kyverno": {
+            "High": "FAIL",
+            "Low": "WARN",
+            "Medium": "WARN",
+            "Critical": "FAIL",
+            "Info": "WARN"
+          },
+          "sbom": {
+            "High": "FAIL",
+            "Low": "WARN",
+            "Medium": "WARN",
+            "Critical": "FAIL",
+            "Info": "WARN"
+          },
+          "falco-baseline": {
+            "High": "FAIL",
+            "Low": "WARN",
+            "Medium": "WARN",
+            "Critical": "FAIL",
+            "Info": "WARN"
+          },
+          "sonarqube": {
+            "High": "FAIL",
+            "Low": "WARN",
+            "Medium": "WARN",
+            "Critical": "FAIL",
+            "Info": "WARN"
+          },
+          "falco-prior-exit": {
+            "High": "FAIL",
+            "Low": "WARN",
+            "Medium": "WARN",
+            "Critical": "FAIL",
+            "Info": "WARN"
+          },
+          "build-provenance-signature": {
+            "High": "FAIL",
+            "Low": "WARN",
+            "Medium": "WARN",
+            "Critical": "FAIL",
+            "Info": "WARN"
+          },
+          "cosign": {
+            "High": "FAIL",
+            "Low": "WARN",
+            "Medium": "WARN",
+            "Critical": "FAIL",
+            "Info": "WARN"
+          },
+          "zap": {
+            "High": "FAIL",
+            "Low": "WARN",
+            "Medium": "WARN",
+            "Critical": "FAIL",
+            "Info": "WARN"
+          },
+          "sops": {
+            "High": "FAIL",
+            "Low": "WARN",
+            "Medium": "WARN",
+            "Critical": "FAIL",
+            "Info": "WARN"
+          },
+          "cosign-cli": {
+            "High": "FAIL",
+            "Low": "WARN",
+            "Medium": "WARN",
+            "Critical": "FAIL",
+            "Info": "WARN"
+          },
+          "falco-final": {
+            "High": "FAIL",
+            "Low": "WARN",
+            "Medium": "WARN",
+            "Critical": "FAIL",
+            "Info": "WARN"
+          },
+          "provenance-signature": {
+            "High": "FAIL",
+            "Low": "WARN",
+            "Medium": "WARN",
+            "Critical": "FAIL",
+            "Info": "WARN"
+          },
+          "regression": {
+            "High": "FAIL",
+            "Low": "WARN",
+            "Medium": "WARN",
+            "Critical": "FAIL",
+            "Info": "WARN"
+          },
+          "trivy": {
+            "High": "FAIL",
+            "Low": "WARN",
+            "Medium": "WARN",
+            "Critical": "FAIL",
+            "Info": "WARN"
+          },
+          "kyverno-rbac": {
+            "High": "FAIL",
+            "Low": "WARN",
+            "Medium": "WARN",
+            "Critical": "FAIL",
+            "Info": "WARN"
+          },
+          "falco": {
+            "High": "FAIL",
+            "Low": "WARN",
+            "Medium": "WARN",
+            "Critical": "FAIL",
+            "Info": "WARN"
+          },
+          "falco-persistence": {
+            "High": "FAIL",
+            "Low": "WARN",
+            "Medium": "WARN",
+            "Critical": "FAIL",
+            "Info": "WARN"
+          },
+          "kubescape": {
+            "High": "FAIL",
+            "Low": "WARN",
+            "Medium": "WARN",
+            "Critical": "FAIL",
+            "Info": "WARN"
+          },
+          "semgrep-command-audit": {
+            "High": "FAIL",
+            "Low": "WARN",
+            "Medium": "WARN",
+            "Critical": "FAIL",
+            "Info": "WARN"
+          },
+          "security-approval-promotion": {
+            "High": "FAIL",
+            "Low": "WARN",
+            "Medium": "WARN",
+            "Critical": "FAIL",
+            "Info": "WARN"
+          },
+          "defectdojo": {
+            "High": "FAIL",
+            "Low": "WARN",
+            "Medium": "WARN",
+            "Critical": "FAIL",
+            "Info": "WARN"
+          }
+        },
+        "status": "SKIPPED"
+      },
+      "component": "build-provenance",
+      "kind": "ResolvedPolicyResult",
+      "evidenceComplete": true,
+      "scope": "pre-approval",
+      "configDigest": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a",
+      "binding": {
+        "candidate": "core.harbor.domain/petclinic/petclinic@sha256:489cb821573ff1f98edd846d5949d74bf3391b24e2f1fe5bcfb71c6be0793137",
+        "build": 11,
+        "project": "petclinic",
+        "source": "741ea2866ea142b24c7838e1ef25c8327c79d279",
+        "runId": "security-runtime-facts-20261102#11",
+        "job": "security-runtime-facts-20261102",
+        "targetScope": "runtime"
+      },
+      "rawFactDigest": "701fb081662642567617034ee3ff5595c5c36e5eb5bdbf430b7f67d33a14ca7d",
+      "error": null,
+      "resultDigest": "6a2037f1ec77adc52ebe028ade8176dde0748189d1764315943670f985fdea39"
+    },
+    ".devsecops/runtime-facts/build-11/results/falco-baseline.capture.json": {
+      "schema": 1,
+      "sourceId": "falco-baseline",
+      "execution": {
+        "errorClass": null,
+        "signal": null,
+        "command": "node infra/security/runtime/health.mjs baseline",
+        "exitStatus": 0
+      },
+      "reports": [],
+      "evidence": [
+        {
+          "sampleWindows": [
+            {
+              "completedAtMs": 1793635699331,
+              "windowStartMs": 1793635683830,
+              "windowEndMs": 1793635698830,
+              "querySince": "2026-11-02T16:08:03.830Z",
+              "startedAtMs": 1793635698830,
+              "logCompletedAtMs": 1793635698946
+            }
+          ],
+          "observerPackets": 1,
+          "kind": "ACTUAL_PROCESS_EXECUTION",
+          "sourcePayloadClass": "PASSIVE_IN_MEMORY_ORIGINAL_GATE_OBSERVATIONS",
+          "stderrSha256": "d74a749b665c4a2f4350d2ec7d12c6a260737e39e1ae6ae115497dae645e8d9a",
+          "stdoutSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "events": [
+            {
+              "completedAtMs": 1793635698364,
+              "kind": "command",
+              "bin": "kubectl",
+              "errorClass": null,
+              "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+              "argv": [
+                "--request-timeout=20s",
+                "-n",
+                "data-infra",
+                "get",
+                "lease",
+                "platform-heavy",
+                "-o",
+                "json"
+              ],
+              "stdoutSha256": "a940d574985589d650a27eb800decba7befd1914ed5335589f27f5dd43c94e7b",
+              "startedAtMs": 1793635698276,
+              "exitStatus": 0
+            },
+            {
+              "completedAtMs": 1793635698447,
+              "kind": "command",
+              "bin": "kubectl",
+              "errorClass": null,
+              "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+              "argv": [
+                "--request-timeout=15s",
+                "-n",
+                "devsecops-system",
+                "get",
+                "ds",
+                "platform-falco",
+                "-o",
+                "json"
+              ],
+              "stdoutSha256": "e967ddfad1908f5869df57d36bf82450908dd6af41cc047fabe21b61c77f20b3",
+              "startedAtMs": 1793635698365,
+              "exitStatus": 0
+            },
+            {
+              "completedAtMs": 1793635698624,
+              "kind": "command",
+              "bin": "kubectl",
+              "errorClass": null,
+              "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+              "argv": [
+                "--request-timeout=15s",
+                "-n",
+                "devsecops-system",
+                "get",
+                "pods",
+                "-l",
+                "app.kubernetes.io/name=falco",
+                "-o",
+                "json"
+              ],
+              "stdoutSha256": "fd217f288e670fa1132f95c0957ede077ee5917636cd4f596171abc5f6f698a7",
+              "startedAtMs": 1793635698448,
+              "exitStatus": 0
+            },
+            {
+              "completedAtMs": 1793635698701,
+              "kind": "command",
+              "bin": "kubectl",
+              "errorClass": null,
+              "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+              "argv": [
+                "--request-timeout=15s",
+                "get",
+                "node",
+                "devops",
+                "-o",
+                "json"
+              ],
+              "stdoutSha256": "bb1f4b517f91a8662cd16d1d01bfefda79fb9efacf00c7084da35465ef208cd2",
+              "startedAtMs": 1793635698625,
+              "exitStatus": 0
+            },
+            {
+              "completedAtMs": 1793635698827,
+              "kind": "command",
+              "bin": "kubectl",
+              "errorClass": null,
+              "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+              "argv": [
+                "--request-timeout=15s",
+                "-n",
+                "devsecops-system",
+                "logs",
+                "platform-falco-fwwfd",
+                "-c",
+                "falco",
+                "--since=10m",
+                "--tail=500"
+              ],
+              "stdoutSha256": "86e14cebdefd7e214277ecf51c460d97b0c838bbc3b46e050dd391b30ec9a2b4",
+              "startedAtMs": 1793635698710,
+              "exitStatus": 0
+            },
+            {
+              "completedAtMs": 1793635698946,
+              "kind": "command",
+              "bin": "kubectl",
+              "errorClass": null,
+              "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+              "argv": [
+                "--request-timeout=15s",
+                "-n",
+                "devsecops-system",
+                "logs",
+                "platform-falco-fwwfd",
+                "-c",
+                "falco",
+                "--since-time=2026-11-02T16:08:03.830Z",
+                "--tail=1000"
+              ],
+              "stdoutSha256": "97879e62ddf4e8db748f4eb968d3a13ef46058beaf8926476c1708024dbc27c0",
+              "startedAtMs": 1793635698830,
+              "exitStatus": 0
+            },
+            {
+              "completedAtMs": 1793635699331,
+              "kind": "command",
+              "bin": "kubectl",
+              "errorClass": null,
+              "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+              "argv": [
+                "--request-timeout=15s",
+                "-n",
+                "petclinic",
+                "get",
+                "pods",
+                "-o",
+                "json"
+              ],
+              "stdoutSha256": "dc9847c892ba278e2a65f288da381e85df1caee0c5d079aa84c2b89a1577eb97",
+              "startedAtMs": 1793635698946,
+              "exitStatus": 0
+            }
+          ]
+        }
+      ],
+      "rawPayloadPersisted": false,
+      "kind": "RuntimeSourceFacts",
+      "evidenceComplete": true,
+      "resultDigest": "e44e6963b00c8c4c3dbc44841a3d5fa81df47b5d95dc0df435d6f36469d4be69",
+      "evaluationCount": 1,
+      "buildBinding": {
+        "candidate": "core.harbor.domain/petclinic/petclinic@sha256:489cb821573ff1f98edd846d5949d74bf3391b24e2f1fe5bcfb71c6be0793137",
+        "build": 11,
+        "project": "petclinic",
+        "source": "741ea2866ea142b24c7838e1ef25c8327c79d279",
+        "runId": "security-runtime-facts-20261102#11",
+        "job": "security-runtime-facts-20261102",
+        "targetScope": "runtime"
+      },
+      "envelopeDigest": "bd887bb7657d232b68aac981b10c16d2e738c94b1ffe7631b8eddfe040f8b10c",
+      "rawFactDigest": "4ce57e4b383297b8ab7c9b49b9d595b04b21a219b7092ea13812332edb53e07c",
+      "presence": "executed"
+    },
+    ".devsecops/runtime-facts/build-11/results/falco-baseline.gate.json": {
+      "sourceId": "falco-baseline",
+      "decision": "PASS",
+      "observedStatus": "success",
+      "resultDigest": "e44e6963b00c8c4c3dbc44841a3d5fa81df47b5d95dc0df435d6f36469d4be69",
+      "status": "PASS"
+    },
+    ".devsecops/runtime-facts/build-11/results/falco-baseline.result.json": {
+      "schema": 1,
+      "sourceId": "falco-baseline",
+      "result": {
+        "securityLevel": "standard",
+        "policyVersion": "baseline-v1",
+        "appliedOverrides": [],
+        "decision": "PASS",
+        "profile": "java-web",
+        "effectivePolicy": {
+          "approval-evidence": {
+            "High": "FAIL",
+            "Low": "WARN",
+            "Medium": "WARN",
+            "Critical": "FAIL",
+            "Info": "WARN"
+          },
+          "approval-signatures": {
+            "High": "FAIL",
+            "Low": "WARN",
+            "Medium": "WARN",
+            "Critical": "FAIL",
+            "Info": "WARN"
+          },
+          "gitleaks": {
+            "High": "FAIL",
+            "Low": "WARN",
+            "Medium": "WARN",
+            "Critical": "FAIL",
+            "Info": "WARN"
+          },
+          "kyverno-admission": {
+            "High": "FAIL",
+            "Low": "WARN",
+            "Medium": "WARN",
+            "Critical": "FAIL",
+            "Info": "WARN"
+          },
+          "build-provenance": {
+            "High": "FAIL",
+            "Low": "WARN",
+            "Medium": "WARN",
+            "Critical": "FAIL",
+            "Info": "WARN"
+          },
+          "semgrep": {
+            "High": "FAIL",
+            "Low": "WARN",
+            "Medium": "WARN",
+            "Critical": "FAIL",
+            "Info": "WARN"
+          },
+          "falco-continuity": {
+            "High": "FAIL",
+            "Low": "WARN",
+            "Medium": "WARN",
+            "Critical": "FAIL",
+            "Info": "WARN"
+          },
+          "provenance": {
+            "High": "FAIL",
+            "Low": "WARN",
+            "Medium": "WARN",
+            "Critical": "FAIL",
+            "Info": "WARN"
+          },
+          "kyverno": {
+            "High": "FAIL",
+            "Low": "WARN",
+            "Medium": "WARN",
+            "Critical": "FAIL",
+            "Info": "WARN"
+          },
+          "sbom": {
+            "High": "FAIL",
+            "Low": "WARN",
+            "Medium": "WARN",
+            "Critical": "FAIL",
+            "Info": "WARN"
+          },
+          "falco-baseline": {
+            "High": "FAIL",
+            "Low": "WARN",
+            "Medium": "WARN",
+            "Critical": "FAIL",
+            "Info": "WARN"
+          },
+          "sonarqube": {
+            "High": "FAIL",
+            "Low": "WARN",
+            "Medium": "WARN",
+            "Critical": "FAIL",
+            "Info": "WARN"
+          },
+          "falco-prior-exit": {
+            "High": "FAIL",
+            "Low": "WARN",
+            "Medium": "WARN",
+            "Critical": "FAIL",
+            "Info": "WARN"
+          },
+          "build-provenance-signature": {
+            "High": "FAIL",
+            "Low": "WARN",
+            "Medium": "WARN",
+            "Critical": "FAIL",
+            "Info": "WARN"
+          },
+          "cosign": {
+            "High": "FAIL",
+            "Low": "WARN",
+            "Medium": "WARN",
+            "Critical": "FAIL",
+            "Info": "WARN"
+          },
+          "zap": {
+            "High": "FAIL",
+            "Low": "WARN",
+            "Medium": "WARN",
+            "Critical": "FAIL",
+            "Info": "WARN"
+          },
+          "sops": {
+            "High": "FAIL",
+            "Low": "WARN",
+            "Medium": "WARN",
+            "Critical": "FAIL",
+            "Info": "WARN"
+          },
+          "cosign-cli": {
+            "High": "FAIL",
+            "Low": "WARN",
+            "Medium": "WARN",
+            "Critical": "FAIL",
+            "Info": "WARN"
+          },
+          "falco-final": {
+            "High": "FAIL",
+            "Low": "WARN",
+            "Medium": "WARN",
+            "Critical": "FAIL",
+            "Info": "WARN"
+          },
+          "provenance-signature": {
+            "High": "FAIL",
+            "Low": "WARN",
+            "Medium": "WARN",
+            "Critical": "FAIL",
+            "Info": "WARN"
+          },
+          "regression": {
+            "High": "FAIL",
+            "Low": "WARN",
+            "Medium": "WARN",
+            "Critical": "FAIL",
+            "Info": "WARN"
+          },
+          "trivy": {
+            "High": "FAIL",
+            "Low": "WARN",
+            "Medium": "WARN",
+            "Critical": "FAIL",
+            "Info": "WARN"
+          },
+          "kyverno-rbac": {
+            "High": "FAIL",
+            "Low": "WARN",
+            "Medium": "WARN",
+            "Critical": "FAIL",
+            "Info": "WARN"
+          },
+          "falco": {
+            "High": "FAIL",
+            "Low": "WARN",
+            "Medium": "WARN",
+            "Critical": "FAIL",
+            "Info": "WARN"
+          },
+          "falco-persistence": {
+            "High": "FAIL",
+            "Low": "WARN",
+            "Medium": "WARN",
+            "Critical": "FAIL",
+            "Info": "WARN"
+          },
+          "kubescape": {
+            "High": "FAIL",
+            "Low": "WARN",
+            "Medium": "WARN",
+            "Critical": "FAIL",
+            "Info": "WARN"
+          },
+          "semgrep-command-audit": {
+            "High": "FAIL",
+            "Low": "WARN",
+            "Medium": "WARN",
+            "Critical": "FAIL",
+            "Info": "WARN"
+          },
+          "security-approval-promotion": {
+            "High": "FAIL",
+            "Low": "WARN",
+            "Medium": "WARN",
+            "Critical": "FAIL",
+            "Info": "WARN"
+          },
+          "defectdojo": {
+            "High": "FAIL",
+            "Low": "WARN",
+            "Medium": "WARN",
+            "Critical": "FAIL",
+            "Info": "WARN"
+          }
+        },
+        "status": "PASS"
+      },
+      "component": "falco-baseline",
+      "kind": "ResolvedPolicyResult",
+      "evidenceComplete": true,
+      "scope": "pre-approval",
+      "configDigest": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a",
+      "binding": {
+        "candidate": "core.harbor.domain/petclinic/petclinic@sha256:489cb821573ff1f98edd846d5949d74bf3391b24e2f1fe5bcfb71c6be0793137",
+        "build": 11,
+        "project": "petclinic",
+        "source": "741ea2866ea142b24c7838e1ef25c8327c79d279",
+        "runId": "security-runtime-facts-20261102#11",
+        "job": "security-runtime-facts-20261102",
+        "targetScope": "runtime"
+      },
+      "rawFactDigest": "4ce57e4b383297b8ab7c9b49b9d595b04b21a219b7092ea13812332edb53e07c",
+      "error": null,
+      "resultDigest": "e44e6963b00c8c4c3dbc44841a3d5fa81df47b5d95dc0df435d6f36469d4be69"
+    },
+    ".devsecops/runtime-facts/build-11/results/falco-final.capture.json": {
+      "schema": 1,
+      "sourceId": "falco-final",
+      "execution": {
+        "errorClass": null,
+        "signal": null,
+        "command": "node infra/security/runtime/health.mjs",
+        "exitStatus": 0
+      },
+      "reports": [],
+      "evidence": [
+        {
+          "sampleWindows": [
+            {
+              "completedAtMs": 1793635754602,
+              "windowStartMs": 1793635739201,
+              "windowEndMs": 1793635754201,
+              "querySince": "2026-11-02T16:08:59.201Z",
+              "startedAtMs": 1793635754201,
+              "logCompletedAtMs": 1793635754304
+            }
+          ],
+          "observerPackets": 1,
+          "kind": "ACTUAL_PROCESS_EXECUTION",
+          "sourcePayloadClass": "PASSIVE_IN_MEMORY_ORIGINAL_GATE_OBSERVATIONS",
+          "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "stdoutSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "events": [
+            {
+              "completedAtMs": 1793635753658,
+              "kind": "command",
+              "bin": "kubectl",
+              "errorClass": null,
+              "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+              "argv": [
+                "--request-timeout=20s",
+                "-n",
+                "data-infra",
+                "get",
+                "lease",
+                "platform-heavy",
+                "-o",
+                "json"
+              ],
+              "stdoutSha256": "a940d574985589d650a27eb800decba7befd1914ed5335589f27f5dd43c94e7b",
+              "startedAtMs": 1793635753532,
+              "exitStatus": 0
+            },
+            {
+              "completedAtMs": 1793635753768,
+              "kind": "command",
+              "bin": "kubectl",
+              "errorClass": null,
+              "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+              "argv": [
+                "--request-timeout=15s",
+                "-n",
+                "devsecops-system",
+                "get",
+                "ds",
+                "platform-falco",
+                "-o",
+                "json"
+              ],
+              "stdoutSha256": "e967ddfad1908f5869df57d36bf82450908dd6af41cc047fabe21b61c77f20b3",
+              "startedAtMs": 1793635753662,
+              "exitStatus": 0
+            },
+            {
+              "completedAtMs": 1793635754049,
+              "kind": "command",
+              "bin": "kubectl",
+              "errorClass": null,
+              "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+              "argv": [
+                "--request-timeout=15s",
+                "-n",
+                "devsecops-system",
+                "get",
+                "pods",
+                "-l",
+                "app.kubernetes.io/name=falco",
+                "-o",
+                "json"
+              ],
+              "stdoutSha256": "fd217f288e670fa1132f95c0957ede077ee5917636cd4f596171abc5f6f698a7",
+              "startedAtMs": 1793635753770,
+              "exitStatus": 0
+            },
+            {
+              "completedAtMs": 1793635754125,
+              "kind": "command",
+              "bin": "kubectl",
+              "errorClass": null,
+              "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+              "argv": [
+                "--request-timeout=15s",
+                "get",
+                "node",
+                "devops",
+                "-o",
+                "json"
+              ],
+              "stdoutSha256": "25060aba6c6cbbbad47b5abf70421ac4a7b21875a204b5588ddc2b086ddf3839",
+              "startedAtMs": 1793635754050,
+              "exitStatus": 0
+            },
+            {
+              "completedAtMs": 1793635754199,
+              "kind": "command",
+              "bin": "kubectl",
+              "errorClass": null,
+              "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+              "argv": [
+                "--request-timeout=15s",
+                "-n",
+                "devsecops-system",
+                "logs",
+                "platform-falco-fwwfd",
+                "-c",
+                "falco",
+                "--since-time=2026-11-02T16:08:18.709Z",
+                "--tail=500"
+              ],
+              "stdoutSha256": "c44bd42bd06a2f38f9566c04fce699020b3391566772554dc982c35453c40f6f",
+              "startedAtMs": 1793635754127,
+              "exitStatus": 0
+            },
+            {
+              "completedAtMs": 1793635754304,
+              "kind": "command",
+              "bin": "kubectl",
+              "errorClass": null,
+              "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+              "argv": [
+                "--request-timeout=15s",
+                "-n",
+                "devsecops-system",
+                "logs",
+                "platform-falco-fwwfd",
+                "-c",
+                "falco",
+                "--since-time=2026-11-02T16:08:59.201Z",
+                "--tail=1000"
+              ],
+              "stdoutSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+              "startedAtMs": 1793635754201,
+              "exitStatus": 0
+            },
+            {
+              "completedAtMs": 1793635754602,
+              "kind": "command",
+              "bin": "kubectl",
+              "errorClass": null,
+              "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+              "argv": [
+                "--request-timeout=15s",
+                "-n",
+                "petclinic",
+                "get",
+                "pods",
+                "-o",
+                "json"
+              ],
+              "stdoutSha256": "dc9847c892ba278e2a65f288da381e85df1caee0c5d079aa84c2b89a1577eb97",
+              "startedAtMs": 1793635754304,
+              "exitStatus": 0
+            }
+          ]
+        }
+      ],
+      "rawPayloadPersisted": false,
+      "kind": "RuntimeSourceFacts",
+      "evidenceComplete": true,
+      "resultDigest": "a9e932ebf740e4d1a42349ebb758316f7117d25c2a935e4b0071491b5078bac2",
+      "evaluationCount": 1,
+      "buildBinding": {
+        "candidate": "core.harbor.domain/petclinic/petclinic@sha256:489cb821573ff1f98edd846d5949d74bf3391b24e2f1fe5bcfb71c6be0793137",
+        "build": 11,
+        "project": "petclinic",
+        "source": "741ea2866ea142b24c7838e1ef25c8327c79d279",
+        "runId": "security-runtime-facts-20261102#11",
+        "job": "security-runtime-facts-20261102",
+        "targetScope": "runtime"
+      },
+      "envelopeDigest": "f7b87af5fd1667dfb59da3659603549e482a24254599aaa52c0923f4e0cbbd25",
+      "rawFactDigest": "0f501b436236a4f9b80b1ebc6dd1db32ceea6906e840c47d318b009b06cbaca1",
+      "presence": "executed"
+    },
+    ".devsecops/runtime-facts/build-11/results/falco-final.gate.json": {
+      "sourceId": "falco-final",
+      "decision": "PASS",
+      "observedStatus": "success",
+      "resultDigest": "a9e932ebf740e4d1a42349ebb758316f7117d25c2a935e4b0071491b5078bac2",
+      "status": "PASS"
+    },
+    ".devsecops/runtime-facts/build-11/results/falco-final.result.json": {
+      "schema": 1,
+      "sourceId": "falco-final",
+      "result": {
+        "securityLevel": "standard",
+        "policyVersion": "baseline-v1",
+        "appliedOverrides": [],
+        "decision": "PASS",
+        "profile": "java-web",
+        "effectivePolicy": {
+          "approval-evidence": {
+            "High": "FAIL",
+            "Low": "WARN",
+            "Medium": "WARN",
+            "Critical": "FAIL",
+            "Info": "WARN"
+          },
+          "approval-signatures": {
+            "High": "FAIL",
+            "Low": "WARN",
+            "Medium": "WARN",
+            "Critical": "FAIL",
+            "Info": "WARN"
+          },
+          "gitleaks": {
+            "High": "FAIL",
+            "Low": "WARN",
+            "Medium": "WARN",
+            "Critical": "FAIL",
+            "Info": "WARN"
+          },
+          "kyverno-admission": {
+            "High": "FAIL",
+            "Low": "WARN",
+            "Medium": "WARN",
+            "Critical": "FAIL",
+            "Info": "WARN"
+          },
+          "build-provenance": {
+            "High": "FAIL",
+            "Low": "WARN",
+            "Medium": "WARN",
+            "Critical": "FAIL",
+            "Info": "WARN"
+          },
+          "semgrep": {
+            "High": "FAIL",
+            "Low": "WARN",
+            "Medium": "WARN",
+            "Critical": "FAIL",
+            "Info": "WARN"
+          },
+          "falco-continuity": {
+            "High": "FAIL",
+            "Low": "WARN",
+            "Medium": "WARN",
+            "Critical": "FAIL",
+            "Info": "WARN"
+          },
+          "provenance": {
+            "High": "FAIL",
+            "Low": "WARN",
+            "Medium": "WARN",
+            "Critical": "FAIL",
+            "Info": "WARN"
+          },
+          "kyverno": {
+            "High": "FAIL",
+            "Low": "WARN",
+            "Medium": "WARN",
+            "Critical": "FAIL",
+            "Info": "WARN"
+          },
+          "sbom": {
+            "High": "FAIL",
+            "Low": "WARN",
+            "Medium": "WARN",
+            "Critical": "FAIL",
+            "Info": "WARN"
+          },
+          "falco-baseline": {
+            "High": "FAIL",
+            "Low": "WARN",
+            "Medium": "WARN",
+            "Critical": "FAIL",
+            "Info": "WARN"
+          },
+          "sonarqube": {
+            "High": "FAIL",
+            "Low": "WARN",
+            "Medium": "WARN",
+            "Critical": "FAIL",
+            "Info": "WARN"
+          },
+          "falco-prior-exit": {
+            "High": "FAIL",
+            "Low": "WARN",
+            "Medium": "WARN",
+            "Critical": "FAIL",
+            "Info": "WARN"
+          },
+          "build-provenance-signature": {
+            "High": "FAIL",
+            "Low": "WARN",
+            "Medium": "WARN",
+            "Critical": "FAIL",
+            "Info": "WARN"
+          },
+          "cosign": {
+            "High": "FAIL",
+            "Low": "WARN",
+            "Medium": "WARN",
+            "Critical": "FAIL",
+            "Info": "WARN"
+          },
+          "zap": {
+            "High": "FAIL",
+            "Low": "WARN",
+            "Medium": "WARN",
+            "Critical": "FAIL",
+            "Info": "WARN"
+          },
+          "sops": {
+            "High": "FAIL",
+            "Low": "WARN",
+            "Medium": "WARN",
+            "Critical": "FAIL",
+            "Info": "WARN"
+          },
+          "cosign-cli": {
+            "High": "FAIL",
+            "Low": "WARN",
+            "Medium": "WARN",
+            "Critical": "FAIL",
+            "Info": "WARN"
+          },
+          "falco-final": {
+            "High": "FAIL",
+            "Low": "WARN",
+            "Medium": "WARN",
+            "Critical": "FAIL",
+            "Info": "WARN"
+          },
+          "provenance-signature": {
+            "High": "FAIL",
+            "Low": "WARN",
+            "Medium": "WARN",
+            "Critical": "FAIL",
+            "Info": "WARN"
+          },
+          "regression": {
+            "High": "FAIL",
+            "Low": "WARN",
+            "Medium": "WARN",
+            "Critical": "FAIL",
+            "Info": "WARN"
+          },
+          "trivy": {
+            "High": "FAIL",
+            "Low": "WARN",
+            "Medium": "WARN",
+            "Critical": "FAIL",
+            "Info": "WARN"
+          },
+          "kyverno-rbac": {
+            "High": "FAIL",
+            "Low": "WARN",
+            "Medium": "WARN",
+            "Critical": "FAIL",
+            "Info": "WARN"
+          },
+          "falco": {
+            "High": "FAIL",
+            "Low": "WARN",
+            "Medium": "WARN",
+            "Critical": "FAIL",
+            "Info": "WARN"
+          },
+          "falco-persistence": {
+            "High": "FAIL",
+            "Low": "WARN",
+            "Medium": "WARN",
+            "Critical": "FAIL",
+            "Info": "WARN"
+          },
+          "kubescape": {
+            "High": "FAIL",
+            "Low": "WARN",
+            "Medium": "WARN",
+            "Critical": "FAIL",
+            "Info": "WARN"
+          },
+          "semgrep-command-audit": {
+            "High": "FAIL",
+            "Low": "WARN",
+            "Medium": "WARN",
+            "Critical": "FAIL",
+            "Info": "WARN"
+          },
+          "security-approval-promotion": {
+            "High": "FAIL",
+            "Low": "WARN",
+            "Medium": "WARN",
+            "Critical": "FAIL",
+            "Info": "WARN"
+          },
+          "defectdojo": {
+            "High": "FAIL",
+            "Low": "WARN",
+            "Medium": "WARN",
+            "Critical": "FAIL",
+            "Info": "WARN"
+          }
+        },
+        "status": "PASS"
+      },
+      "component": "falco-final",
+      "kind": "ResolvedPolicyResult",
+      "evidenceComplete": true,
+      "scope": "pre-approval",
+      "configDigest": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a",
+      "binding": {
+        "candidate": "core.harbor.domain/petclinic/petclinic@sha256:489cb821573ff1f98edd846d5949d74bf3391b24e2f1fe5bcfb71c6be0793137",
+        "build": 11,
+        "project": "petclinic",
+        "source": "741ea2866ea142b24c7838e1ef25c8327c79d279",
+        "runId": "security-runtime-facts-20261102#11",
+        "job": "security-runtime-facts-20261102",
+        "targetScope": "runtime"
+      },
+      "rawFactDigest": "0f501b436236a4f9b80b1ebc6dd1db32ceea6906e840c47d318b009b06cbaca1",
+      "error": null,
+      "resultDigest": "a9e932ebf740e4d1a42349ebb758316f7117d25c2a935e4b0071491b5078bac2"
+    },
+    ".devsecops/runtime-facts/build-11/results/kubescape.capture.json": {
+      "schema": 1,
+      "sourceId": "kubescape",
+      "execution": {
+        "errorClass": null,
+        "signal": null,
+        "command": "node --max-old-space-size=128 infra/security/governance/kubescape.mjs",
+        "exitStatus": 0
+      },
+      "reports": [],
+      "evidence": [
+        {
+          "sampleWindows": [],
+          "observerPackets": 1,
+          "kind": "ACTUAL_PROCESS_EXECUTION",
+          "sourcePayloadClass": "PASSIVE_IN_MEMORY_ORIGINAL_GATE_OBSERVATIONS",
+          "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "stdoutSha256": "2e79654f2ace579f25413436cd73e709dc5d71945617cda71f18ddace64e8c8d",
+          "events": [
+            {
+              "completedAtMs": 1793635735977,
+              "kind": "command",
+              "bin": "kubectl",
+              "errorClass": null,
+              "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+              "argv": [
+                "--request-timeout=20s",
+                "-n",
+                "data-infra",
+                "get",
+                "lease",
+                "platform-heavy",
+                "-o",
+                "json"
+              ],
+              "stdoutSha256": "a940d574985589d650a27eb800decba7befd1914ed5335589f27f5dd43c94e7b",
+              "startedAtMs": 1793635735884,
+              "exitStatus": 0
+            },
+            {
+              "completedAtMs": 1793635736041,
+              "kind": "command",
+              "bin": "kubectl",
+              "errorClass": null,
+              "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+              "argv": [
+                "--request-timeout=20s",
+                "config",
+                "view",
+                "--minify",
+                "-o",
+                "jsonpath={.clusters[0].cluster.server}"
+              ],
+              "stdoutSha256": "895225040db6cf23b6acdf92683dff3defa1dd0ae8c6f24f36410ad8de533edc",
+              "startedAtMs": 1793635735978,
+              "exitStatus": 0
+            },
+            {
+              "completedAtMs": 1793635736137,
+              "kind": "command",
+              "bin": "kubectl",
+              "errorClass": null,
+              "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+              "argv": [
+                "--request-timeout=20s",
+                "-n",
+                "devsecops-system",
+                "get",
+                "configmap",
+                "kube-root-ca.crt",
+                "-o",
+                "json"
+              ],
+              "stdoutSha256": "66c0e7bf889cc1e4c68622b1378f82812dd8ba2c4df5d2bbd85c93e03f8875dd",
+              "startedAtMs": 1793635736041,
+              "exitStatus": 0
+            },
+            {
+              "completedAtMs": 1793635736233,
+              "kind": "command",
+              "bin": "kubectl",
+              "errorClass": null,
+              "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+              "argv": [
+                "--request-timeout=20s",
+                "-n",
+                "devsecops-system",
+                "create",
+                "token",
+                "kubescape-readonly",
+                "--duration=30m"
+              ],
+              "stdoutSha256": "8b7267561d2c38928cbd37e8a7c4d8080fca7edec63faf0aa993fcd16cbc8a1e",
+              "startedAtMs": 1793635736137,
+              "exitStatus": 0
+            },
+            {
+              "completedAtMs": 1793635736313,
+              "kind": "command",
+              "bin": "kubectl",
+              "errorClass": null,
+              "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+              "argv": [
+                "--request-timeout=20s",
+                "--kubeconfig",
+                "/tmp/kubescape-readonly-En6XXI/config",
+                "auth",
+                "can-i",
+                "list",
+                "secrets"
+              ],
+              "stdoutSha256": "564739ea8fa5926d4fa5c9734fed462061960a22e6b8d5c06e94969d97891bf2",
+              "startedAtMs": 1793635736235,
+              "exitStatus": 1
+            },
+            {
+              "completedAtMs": 1793635736416,
+              "kind": "command",
+              "bin": "kubectl",
+              "errorClass": null,
+              "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+              "argv": [
+                "--request-timeout=20s",
+                "--kubeconfig",
+                "/tmp/kubescape-readonly-En6XXI/config",
+                "auth",
+                "can-i",
+                "patch",
+                "deployments",
+                "-n",
+                "petclinic"
+              ],
+              "stdoutSha256": "564739ea8fa5926d4fa5c9734fed462061960a22e6b8d5c06e94969d97891bf2",
+              "startedAtMs": 1793635736313,
+              "exitStatus": 1
+            },
+            {
+              "completedAtMs": 1793635743226,
+              "kind": "command",
+              "bin": "/var/jenkins_home/platform-security/kubescape/4.0.17/kubescape",
+              "errorClass": null,
+              "stderrSha256": "3d2335f5ea7ec11c5027810bee8b2f7b22c7188430b1ac343c5f31aea81ce911",
+              "argv": [
+                "scan",
+                "framework",
+                "nsa",
+                "--kube-context",
+                "kubescape-readonly",
+                "--host-scan=false",
+                "--keep-local",
+                "--exclude-kinds",
+                "Secret",
+                "--format",
+                "json",
+                "--output",
+                ".devsecops/kubescape/cluster-nsa.json",
+                "--use-artifacts-from",
+                "/var/jenkins_home/platform-security/kubescape/4.0.17/artifacts",
+                "--exceptions",
+                "infra/security/governance/kubescape-no-exceptions.json",
+                "--controls-config",
+                "/var/jenkins_home/platform-security/kubescape/4.0.17/artifacts/controls-inputs.json",
+                "--scan-timeout",
+                "5m",
+                "--control-timeout",
+                "20s"
+              ],
+              "stdoutSha256": "545a41e0e9c58626d9cf032b7230609a710fc666ec1eac08dce29a3436c3a455",
+              "startedAtMs": 1793635736417,
+              "exitStatus": 0
+            },
+            {
+              "completedAtMs": 1793635743893,
+              "kind": "command",
+              "bin": "/var/jenkins_home/platform-security/kubescape/4.0.17/kubescape",
+              "errorClass": null,
+              "stderrSha256": "24900abc025b5aa201144b4c94ace6f0403e48a66b2a41533e25cb50b0ea0a1c",
+              "argv": [
+                "scan",
+                "framework",
+                "nsa",
+                "k8s/production",
+                "--kube-context",
+                "kubescape-readonly",
+                "--host-scan=false",
+                "--keep-local",
+                "--exclude-kinds",
+                "Secret",
+                "--format",
+                "json",
+                "--output",
+                ".devsecops/kubescape/yaml-nsa.json",
+                "--use-artifacts-from",
+                "/var/jenkins_home/platform-security/kubescape/4.0.17/artifacts",
+                "--exceptions",
+                "infra/security/governance/kubescape-no-exceptions.json",
+                "--controls-config",
+                "/var/jenkins_home/platform-security/kubescape/4.0.17/artifacts/controls-inputs.json",
+                "--scan-timeout",
+                "5m",
+                "--control-timeout",
+                "20s"
+              ],
+              "stdoutSha256": "779751fa7d08d8429d27c045f91eac15eb67affa8278a713b1103ab360219f78",
+              "startedAtMs": 1793635743260,
+              "exitStatus": 0
+            },
+            {
+              "completedAtMs": 1793635751487,
+              "kind": "command",
+              "bin": "/var/jenkins_home/platform-security/kubescape/4.0.17/kubescape",
+              "errorClass": null,
+              "stderrSha256": "f21d2d4ec5f78f97ec8d21d8d55ed4eb6a2b32d2e7f39f9e9f7da904bb1007de",
+              "argv": [
+                "scan",
+                "framework",
+                "cis-v1.12.0",
+                "--kube-context",
+                "kubescape-readonly",
+                "--host-scan=false",
+                "--keep-local",
+                "--exclude-kinds",
+                "Secret",
+                "--format",
+                "json",
+                "--output",
+                ".devsecops/kubescape/cluster-cis-v1.12.0.json",
+                "--use-artifacts-from",
+                "/var/jenkins_home/platform-security/kubescape/4.0.17/artifacts",
+                "--exceptions",
+                "infra/security/governance/kubescape-no-exceptions.json",
+                "--controls-config",
+                "/var/jenkins_home/platform-security/kubescape/4.0.17/artifacts/controls-inputs.json",
+                "--scan-timeout",
+                "5m",
+                "--control-timeout",
+                "20s"
+              ],
+              "stdoutSha256": "54bbb1b6d428d57045b16a61bb29f70b1eebe3759413e7a2fe445af03b70184a",
+              "startedAtMs": 1793635743898,
+              "exitStatus": 0
+            },
+            {
+              "completedAtMs": 1793635752322,
+              "kind": "command",
+              "bin": "/var/jenkins_home/platform-security/kubescape/4.0.17/kubescape",
+              "errorClass": null,
+              "stderrSha256": "e16935fda9022708a7611f2b1cdfb8ac885ec1f74fc80817d9185574d9ca6a62",
+              "argv": [
+                "scan",
+                "framework",
+                "cis-v1.12.0",
+                "k8s/production",
+                "--kube-context",
+                "kubescape-readonly",
+                "--host-scan=false",
+                "--keep-local",
+                "--exclude-kinds",
+                "Secret",
+                "--format",
+                "json",
+                "--output",
+                ".devsecops/kubescape/yaml-cis-v1.12.0.json",
+                "--use-artifacts-from",
+                "/var/jenkins_home/platform-security/kubescape/4.0.17/artifacts",
+                "--exceptions",
+                "infra/security/governance/kubescape-no-exceptions.json",
+                "--controls-config",
+                "/var/jenkins_home/platform-security/kubescape/4.0.17/artifacts/controls-inputs.json",
+                "--scan-timeout",
+                "5m",
+                "--control-timeout",
+                "20s"
+              ],
+              "stdoutSha256": "179df8459515ac7cd0400d69850c8d5af501fa76a10e108de5c5feb0dda69ffb",
+              "startedAtMs": 1793635751563,
+              "exitStatus": 0
+            }
+          ]
+        }
+      ],
+      "rawPayloadPersisted": false,
+      "kind": "RuntimeSourceFacts",
+      "evidenceComplete": true,
+      "resultDigest": "8abf8155977f99234fc9969a66af025303ded3d0a241e97c6d4bf7fcc4e8df68",
+      "evaluationCount": 1,
+      "buildBinding": {
+        "candidate": "core.harbor.domain/petclinic/petclinic@sha256:489cb821573ff1f98edd846d5949d74bf3391b24e2f1fe5bcfb71c6be0793137",
+        "build": 11,
+        "project": "petclinic",
+        "source": "741ea2866ea142b24c7838e1ef25c8327c79d279",
+        "runId": "security-runtime-facts-20261102#11",
+        "job": "security-runtime-facts-20261102",
+        "targetScope": "runtime"
+      },
+      "envelopeDigest": "6cdf1fb96191e1ec842be2734173634a18b6bcafca4be706433984238780fe46",
+      "rawFactDigest": "828e5e87c2a46dd8f0be50b5dd082ff598b1a58b74158b9f8e52089b67f591ec",
+      "presence": "executed"
+    },
+    ".devsecops/runtime-facts/build-11/results/kubescape.gate.json": {
+      "sourceId": "kubescape",
+      "decision": "PASS",
+      "observedStatus": "success",
+      "resultDigest": "8abf8155977f99234fc9969a66af025303ded3d0a241e97c6d4bf7fcc4e8df68",
+      "status": "PASS"
+    },
+    ".devsecops/runtime-facts/build-11/results/kubescape.result.json": {
+      "schema": 1,
+      "sourceId": "kubescape",
+      "result": {
+        "securityLevel": "standard",
+        "policyVersion": "baseline-v1",
+        "appliedOverrides": [],
+        "decision": "PASS",
+        "profile": "java-web",
+        "effectivePolicy": {
+          "approval-evidence": {
+            "High": "FAIL",
+            "Low": "WARN",
+            "Medium": "WARN",
+            "Critical": "FAIL",
+            "Info": "WARN"
+          },
+          "approval-signatures": {
+            "High": "FAIL",
+            "Low": "WARN",
+            "Medium": "WARN",
+            "Critical": "FAIL",
+            "Info": "WARN"
+          },
+          "gitleaks": {
+            "High": "FAIL",
+            "Low": "WARN",
+            "Medium": "WARN",
+            "Critical": "FAIL",
+            "Info": "WARN"
+          },
+          "kyverno-admission": {
+            "High": "FAIL",
+            "Low": "WARN",
+            "Medium": "WARN",
+            "Critical": "FAIL",
+            "Info": "WARN"
+          },
+          "build-provenance": {
+            "High": "FAIL",
+            "Low": "WARN",
+            "Medium": "WARN",
+            "Critical": "FAIL",
+            "Info": "WARN"
+          },
+          "semgrep": {
+            "High": "FAIL",
+            "Low": "WARN",
+            "Medium": "WARN",
+            "Critical": "FAIL",
+            "Info": "WARN"
+          },
+          "falco-continuity": {
+            "High": "FAIL",
+            "Low": "WARN",
+            "Medium": "WARN",
+            "Critical": "FAIL",
+            "Info": "WARN"
+          },
+          "provenance": {
+            "High": "FAIL",
+            "Low": "WARN",
+            "Medium": "WARN",
+            "Critical": "FAIL",
+            "Info": "WARN"
+          },
+          "kyverno": {
+            "High": "FAIL",
+            "Low": "WARN",
+            "Medium": "WARN",
+            "Critical": "FAIL",
+            "Info": "WARN"
+          },
+          "sbom": {
+            "High": "FAIL",
+            "Low": "WARN",
+            "Medium": "WARN",
+            "Critical": "FAIL",
+            "Info": "WARN"
+          },
+          "falco-baseline": {
+            "High": "FAIL",
+            "Low": "WARN",
+            "Medium": "WARN",
+            "Critical": "FAIL",
+            "Info": "WARN"
+          },
+          "sonarqube": {
+            "High": "FAIL",
+            "Low": "WARN",
+            "Medium": "WARN",
+            "Critical": "FAIL",
+            "Info": "WARN"
+          },
+          "falco-prior-exit": {
+            "High": "FAIL",
+            "Low": "WARN",
+            "Medium": "WARN",
+            "Critical": "FAIL",
+            "Info": "WARN"
+          },
+          "build-provenance-signature": {
+            "High": "FAIL",
+            "Low": "WARN",
+            "Medium": "WARN",
+            "Critical": "FAIL",
+            "Info": "WARN"
+          },
+          "cosign": {
+            "High": "FAIL",
+            "Low": "WARN",
+            "Medium": "WARN",
+            "Critical": "FAIL",
+            "Info": "WARN"
+          },
+          "zap": {
+            "High": "FAIL",
+            "Low": "WARN",
+            "Medium": "WARN",
+            "Critical": "FAIL",
+            "Info": "WARN"
+          },
+          "sops": {
+            "High": "FAIL",
+            "Low": "WARN",
+            "Medium": "WARN",
+            "Critical": "FAIL",
+            "Info": "WARN"
+          },
+          "cosign-cli": {
+            "High": "FAIL",
+            "Low": "WARN",
+            "Medium": "WARN",
+            "Critical": "FAIL",
+            "Info": "WARN"
+          },
+          "falco-final": {
+            "High": "FAIL",
+            "Low": "WARN",
+            "Medium": "WARN",
+            "Critical": "FAIL",
+            "Info": "WARN"
+          },
+          "provenance-signature": {
+            "High": "FAIL",
+            "Low": "WARN",
+            "Medium": "WARN",
+            "Critical": "FAIL",
+            "Info": "WARN"
+          },
+          "regression": {
+            "High": "FAIL",
+            "Low": "WARN",
+            "Medium": "WARN",
+            "Critical": "FAIL",
+            "Info": "WARN"
+          },
+          "trivy": {
+            "High": "FAIL",
+            "Low": "WARN",
+            "Medium": "WARN",
+            "Critical": "FAIL",
+            "Info": "WARN"
+          },
+          "kyverno-rbac": {
+            "High": "FAIL",
+            "Low": "WARN",
+            "Medium": "WARN",
+            "Critical": "FAIL",
+            "Info": "WARN"
+          },
+          "falco": {
+            "High": "FAIL",
+            "Low": "WARN",
+            "Medium": "WARN",
+            "Critical": "FAIL",
+            "Info": "WARN"
+          },
+          "falco-persistence": {
+            "High": "FAIL",
+            "Low": "WARN",
+            "Medium": "WARN",
+            "Critical": "FAIL",
+            "Info": "WARN"
+          },
+          "kubescape": {
+            "High": "FAIL",
+            "Low": "WARN",
+            "Medium": "WARN",
+            "Critical": "FAIL",
+            "Info": "WARN"
+          },
+          "semgrep-command-audit": {
+            "High": "FAIL",
+            "Low": "WARN",
+            "Medium": "WARN",
+            "Critical": "FAIL",
+            "Info": "WARN"
+          },
+          "security-approval-promotion": {
+            "High": "FAIL",
+            "Low": "WARN",
+            "Medium": "WARN",
+            "Critical": "FAIL",
+            "Info": "WARN"
+          },
+          "defectdojo": {
+            "High": "FAIL",
+            "Low": "WARN",
+            "Medium": "WARN",
+            "Critical": "FAIL",
+            "Info": "WARN"
+          }
+        },
+        "status": "PASS"
+      },
+      "component": "kubescape",
+      "kind": "ResolvedPolicyResult",
+      "evidenceComplete": true,
+      "scope": "pre-approval",
+      "configDigest": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a",
+      "binding": {
+        "candidate": "core.harbor.domain/petclinic/petclinic@sha256:489cb821573ff1f98edd846d5949d74bf3391b24e2f1fe5bcfb71c6be0793137",
+        "build": 11,
+        "project": "petclinic",
+        "source": "741ea2866ea142b24c7838e1ef25c8327c79d279",
+        "runId": "security-runtime-facts-20261102#11",
+        "job": "security-runtime-facts-20261102",
+        "targetScope": "runtime"
+      },
+      "rawFactDigest": "828e5e87c2a46dd8f0be50b5dd082ff598b1a58b74158b9f8e52089b67f591ec",
+      "error": null,
+      "resultDigest": "8abf8155977f99234fc9969a66af025303ded3d0a241e97c6d4bf7fcc4e8df68"
+    },
+    ".devsecops/runtime-facts/build-11/results/kyverno.capture.json": {
+      "schema": 1,
+      "sourceId": "kyverno",
+      "execution": {
+        "errorClass": null,
+        "signal": null,
+        "command": "( node infra/security/rbac-contract.mjs && node infra/security/admission-gate.mjs )",
+        "exitStatus": 0
+      },
+      "reports": [],
+      "evidence": [
+        {
+          "sampleWindows": [],
+          "observerPackets": 2,
+          "kind": "ACTUAL_PROCESS_EXECUTION",
+          "sourcePayloadClass": "PASSIVE_IN_MEMORY_ORIGINAL_GATE_OBSERVATIONS",
+          "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "stdoutSha256": "8ad492544445646f4343eb26cd48fa83cd0b082344e1a034abc48121b64b0a5b",
+          "events": [
+            {
+              "completedAtMs": 1793635699769,
+              "kind": "command",
+              "bin": "kubectl",
+              "errorClass": null,
+              "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+              "argv": [
+                "--request-timeout=15s",
+                "-n",
+                "devsecops-system",
+                "get",
+                "deploy",
+                "kyverno-admission-controller",
+                "-o",
+                "json"
+              ],
+              "stdoutSha256": "0c4e813249fe6863a8a59f85812896474140f657c0e1aa77ecd0896d06732f09",
+              "startedAtMs": 1793635699663,
+              "exitStatus": 0
+            },
+            {
+              "completedAtMs": 1793635699873,
+              "kind": "command",
+              "bin": "kubectl",
+              "errorClass": null,
+              "stderrSha256": "52d64e8cd8e4d9f9afd5efcaace738fff1613d2511ca25cb21dadc783fff6560",
+              "argv": [
+                "--request-timeout=15s",
+                "auth",
+                "can-i",
+                "get",
+                "customresourcedefinitions.apiextensions.k8s.io/clusterpolicies.kyverno.io",
+                "--as=system:serviceaccount:devsecops-system:kyverno-admission-controller"
+              ],
+              "stdoutSha256": "5040625b1fb6fa4af07226683f6e6003b29e5e70b16f8cfb24be7a752393f0ee",
+              "startedAtMs": 1793635699771,
+              "exitStatus": 0
+            },
+            {
+              "completedAtMs": 1793635699966,
+              "kind": "command",
+              "bin": "kubectl",
+              "errorClass": null,
+              "stderrSha256": "52d64e8cd8e4d9f9afd5efcaace738fff1613d2511ca25cb21dadc783fff6560",
+              "argv": [
+                "--request-timeout=15s",
+                "auth",
+                "can-i",
+                "get",
+                "customresourcedefinitions.apiextensions.k8s.io/policies.kyverno.io",
+                "--as=system:serviceaccount:devsecops-system:kyverno-admission-controller"
+              ],
+              "stdoutSha256": "5040625b1fb6fa4af07226683f6e6003b29e5e70b16f8cfb24be7a752393f0ee",
+              "startedAtMs": 1793635699874,
+              "exitStatus": 0
+            },
+            {
+              "completedAtMs": 1793635700031,
+              "kind": "command",
+              "bin": "kubectl",
+              "errorClass": null,
+              "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+              "argv": [
+                "--request-timeout=15s",
+                "get",
+                "clusterrole",
+                "kyverno:admission-controller",
+                "-o",
+                "json"
+              ],
+              "stdoutSha256": "416d7492685e8d58dfdc29518a56a985569b1918c0b34b0b5a7155930fe3e415",
+              "startedAtMs": 1793635699967,
+              "exitStatus": 0
+            },
+            {
+              "completedAtMs": 1793635700147,
+              "kind": "command",
+              "bin": "kubectl",
+              "errorClass": null,
+              "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+              "argv": [
+                "--request-timeout=15s",
+                "-n",
+                "argocd",
+                "get",
+                "application",
+                "platform-devsecops",
+                "-o",
+                "json"
+              ],
+              "stdoutSha256": "8e1fa82a5a6e5bdfa4814beefc4eb56f6a7836a1de881b07071776d374f3c19a",
+              "startedAtMs": 1793635700032,
+              "exitStatus": 0
+            },
+            {
+              "completedAtMs": 1793635701581,
+              "kind": "command",
+              "bin": "kubectl",
+              "errorClass": null,
+              "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+              "argv": [
+                "--request-timeout=20s",
+                "create",
+                "--dry-run=server",
+                "-f",
+                "-",
+                "-o",
+                "json"
+              ],
+              "stdoutSha256": "ed20dd5184020f2db1bc3fa7718314852b50392c706debfb04fe55f91e54e301",
+              "startedAtMs": 1793635700473,
+              "exitStatus": 0
+            },
+            {
+              "completedAtMs": 1793635702291,
+              "kind": "command",
+              "bin": "kubectl",
+              "errorClass": null,
+              "stderrSha256": "680fea9dbdc6cd190b2b85f4a74eeef46a83d0a065562c5594ac4ff99a138ed1",
+              "argv": [
+                "--request-timeout=20s",
+                "create",
+                "--dry-run=server",
+                "-f",
+                "-",
+                "-o",
+                "json"
+              ],
+              "stdoutSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+              "startedAtMs": 1793635701582,
+              "exitStatus": 1
+            },
+            {
+              "completedAtMs": 1793635703060,
+              "kind": "command",
+              "bin": "kubectl",
+              "errorClass": null,
+              "stderrSha256": "e908683d658c46a58c4be52bf6817d425e92829c2716a8cd2530317c93dfa6fb",
+              "argv": [
+                "--request-timeout=20s",
+                "create",
+                "--dry-run=server",
+                "-f",
+                "-",
+                "-o",
+                "json"
+              ],
+              "stdoutSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+              "startedAtMs": 1793635702291,
+              "exitStatus": 1
+            },
+            {
+              "completedAtMs": 1793635703797,
+              "kind": "command",
+              "bin": "kubectl",
+              "errorClass": null,
+              "stderrSha256": "6f7e87ffa87ad5972d48bb21afcb9818a9bffb0c5ed6e2c27f1d3c36efe2caa5",
+              "argv": [
+                "--request-timeout=20s",
+                "create",
+                "--dry-run=server",
+                "-f",
+                "-",
+                "-o",
+                "json"
+              ],
+              "stdoutSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+              "startedAtMs": 1793635703061,
+              "exitStatus": 1
+            },
+            {
+              "completedAtMs": 1793635704573,
+              "kind": "command",
+              "bin": "kubectl",
+              "errorClass": null,
+              "stderrSha256": "42f3de460c3b89f799cdaee74b2326c861a730fa1feb0787ec64c11e2191bf87",
+              "argv": [
+                "--request-timeout=20s",
+                "create",
+                "--dry-run=server",
+                "-f",
+                "-",
+                "-o",
+                "json"
+              ],
+              "stdoutSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+              "startedAtMs": 1793635703797,
+              "exitStatus": 1
+            },
+            {
+              "completedAtMs": 1793635705380,
+              "kind": "command",
+              "bin": "kubectl",
+              "errorClass": null,
+              "stderrSha256": "5b402088a615994fd6d3ea1e4c11de2f01029ea6a3b0e84be172eecbdfa10ebc",
+              "argv": [
+                "--request-timeout=20s",
+                "create",
+                "--dry-run=server",
+                "-f",
+                "-",
+                "-o",
+                "json"
+              ],
+              "stdoutSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+              "startedAtMs": 1793635704573,
+              "exitStatus": 1
+            },
+            {
+              "completedAtMs": 1793635706184,
+              "kind": "command",
+              "bin": "kubectl",
+              "errorClass": null,
+              "stderrSha256": "5a21123bf70a533c2a502e9f5b2f81c9e717f8d8a6488e72cb485830a3f391f8",
+              "argv": [
+                "--request-timeout=20s",
+                "create",
+                "--dry-run=server",
+                "-f",
+                "-",
+                "-o",
+                "json"
+              ],
+              "stdoutSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+              "startedAtMs": 1793635705381,
+              "exitStatus": 1
+            },
+            {
+              "completedAtMs": 1793635706980,
+              "kind": "command",
+              "bin": "kubectl",
+              "errorClass": null,
+              "stderrSha256": "82264220e5c607120d16006affd5126a4b46d3ed71d63ef34a61d5b35c1f9f38",
+              "argv": [
+                "--request-timeout=20s",
+                "create",
+                "--dry-run=server",
+                "-f",
+                "-",
+                "-o",
+                "json"
+              ],
+              "stdoutSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+              "startedAtMs": 1793635706184,
+              "exitStatus": 1
+            },
+            {
+              "completedAtMs": 1793635707712,
+              "kind": "command",
+              "bin": "kubectl",
+              "errorClass": null,
+              "stderrSha256": "d3ba3046301937dccc5345c1505ae57c93ccf62496a6c66c1c1a104ff0376936",
+              "argv": [
+                "--request-timeout=20s",
+                "create",
+                "--dry-run=server",
+                "-f",
+                "-",
+                "-o",
+                "json"
+              ],
+              "stdoutSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+              "startedAtMs": 1793635706981,
+              "exitStatus": 1
+            },
+            {
+              "completedAtMs": 1793635708695,
+              "kind": "command",
+              "bin": "kubectl",
+              "errorClass": null,
+              "stderrSha256": "bf4e482b195acf89212cb21d30aad88444bc9085c482612aef6e73fab1aa5945",
+              "argv": [
+                "--request-timeout=20s",
+                "create",
+                "--dry-run=server",
+                "-f",
+                "-",
+                "-o",
+                "json"
+              ],
+              "stdoutSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+              "startedAtMs": 1793635707713,
+              "exitStatus": 1
+            },
+            {
+              "completedAtMs": 1793635709800,
+              "kind": "command",
+              "bin": "kubectl",
+              "errorClass": null,
+              "stderrSha256": "9fbcff715bfe7f6a4af9538b2aec94cb85eb7f2ac26d4796da8032af42e37715",
+              "argv": [
+                "--request-timeout=20s",
+                "create",
+                "--dry-run=server",
+                "-f",
+                "-",
+                "-o",
+                "json"
+              ],
+              "stdoutSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+              "startedAtMs": 1793635708698,
+              "exitStatus": 1
+            },
+            {
+              "completedAtMs": 1793635710692,
+              "kind": "command",
+              "bin": "kubectl",
+              "errorClass": null,
+              "stderrSha256": "6d9c3b63888a163576a5e31d97ea6f6c396c281c7e446ad89a1b5b0da581bf55",
+              "argv": [
+                "--request-timeout=20s",
+                "create",
+                "--dry-run=server",
+                "-f",
+                "-",
+                "-o",
+                "json"
+              ],
+              "stdoutSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+              "startedAtMs": 1793635709800,
+              "exitStatus": 1
+            },
+            {
+              "completedAtMs": 1793635711382,
+              "kind": "command",
+              "bin": "kubectl",
+              "errorClass": null,
+              "stderrSha256": "b5347de565a6e313cca77640252bf65832b2faf0fa90924cbafc4efc1276df10",
+              "argv": [
+                "--request-timeout=20s",
+                "create",
+                "--dry-run=server",
+                "-f",
+                "-",
+                "-o",
+                "json"
+              ],
+              "stdoutSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+              "startedAtMs": 1793635710695,
+              "exitStatus": 1
+            },
+            {
+              "completedAtMs": 1793635712100,
+              "kind": "command",
+              "bin": "kubectl",
+              "errorClass": null,
+              "stderrSha256": "41891db28857aee421e26d33e030e380b8465213fdbd53872be8e7612dbbd1d8",
+              "argv": [
+                "--request-timeout=20s",
+                "create",
+                "--dry-run=server",
+                "-f",
+                "-",
+                "-o",
+                "json"
+              ],
+              "stdoutSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+              "startedAtMs": 1793635711383,
+              "exitStatus": 1
+            },
+            {
+              "completedAtMs": 1793635712869,
+              "kind": "command",
+              "bin": "kubectl",
+              "errorClass": null,
+              "stderrSha256": "41891db28857aee421e26d33e030e380b8465213fdbd53872be8e7612dbbd1d8",
+              "argv": [
+                "--request-timeout=20s",
+                "create",
+                "--dry-run=server",
+                "-f",
+                "-",
+                "-o",
+                "json"
+              ],
+              "stdoutSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+              "startedAtMs": 1793635712101,
+              "exitStatus": 1
+            },
+            {
+              "completedAtMs": 1793635713502,
+              "kind": "command",
+              "bin": "kubectl",
+              "errorClass": null,
+              "stderrSha256": "c45995c0ab8b1fc884c4156801d466d30c161f87d6716b9f75315ffbc0214f86",
+              "argv": [
+                "--request-timeout=20s",
+                "create",
+                "--dry-run=server",
+                "-f",
+                "-",
+                "-o",
+                "json"
+              ],
+              "stdoutSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+              "startedAtMs": 1793635712870,
+              "exitStatus": 1
+            },
+            {
+              "completedAtMs": 1793635713574,
+              "kind": "command",
+              "bin": "kubectl",
+              "errorClass": null,
+              "stderrSha256": "7d455ffc09d494648565dc53a393724812dedcb72ba8002f2ccb8ebc7be62dd6",
+              "argv": [
+                "--request-timeout=20s",
+                "get",
+                "clusterpolicy",
+                "devsecops-production-baseline",
+                "-o",
+                "json"
+              ],
+              "stdoutSha256": "7cb625600fb6b2409e1d2aa9c07584dc5fe5701172d8b4efa2d0be43540c81f7",
+              "startedAtMs": 1793635713506,
+              "exitStatus": 0
+            },
+            {
+              "completedAtMs": 1793635714324,
+              "kind": "command",
+              "bin": "kubectl",
+              "errorClass": null,
+              "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+              "argv": [
+                "--request-timeout=20s",
+                "create",
+                "--dry-run=server",
+                "-f",
+                "-",
+                "-o",
+                "json"
+              ],
+              "stdoutSha256": "86d53bfef7bf1797d80c32466109cadc7c617c521a64d7ea202dd471e3d82f90",
+              "startedAtMs": 1793635713579,
+              "exitStatus": 0
+            },
+            {
+              "completedAtMs": 1793635715278,
+              "kind": "command",
+              "bin": "kubectl",
+              "errorClass": null,
+              "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+              "argv": [
+                "--request-timeout=20s",
+                "create",
+                "--dry-run=server",
+                "-f",
+                "-",
+                "-o",
+                "json"
+              ],
+              "stdoutSha256": "294d9ff11e602381a7f7dcfa1a901b9744cd822802befc5e0fd9970898f6ae00",
+              "startedAtMs": 1793635714326,
+              "exitStatus": 0
+            },
+            {
+              "completedAtMs": 1793635716059,
+              "kind": "command",
+              "bin": "kubectl",
+              "errorClass": null,
+              "stderrSha256": "b5813305ac1439f4816880024daf643162d11154005d8159e1c48d1701c9c483",
+              "argv": [
+                "--request-timeout=20s",
+                "create",
+                "--dry-run=server",
+                "-f",
+                "-",
+                "-o",
+                "json"
+              ],
+              "stdoutSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+              "startedAtMs": 1793635715279,
+              "exitStatus": 1
+            },
+            {
+              "completedAtMs": 1793635716901,
+              "kind": "command",
+              "bin": "kubectl",
+              "errorClass": null,
+              "stderrSha256": "b3260fd974b53c7b03d778ee255a9017b20ddf73ddcae2198c8800c674104537",
+              "argv": [
+                "--request-timeout=20s",
+                "create",
+                "--dry-run=server",
+                "-f",
+                "-",
+                "-o",
+                "json"
+              ],
+              "stdoutSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+              "startedAtMs": 1793635716059,
+              "exitStatus": 1
+            },
+            {
+              "completedAtMs": 1793635718102,
+              "kind": "command",
+              "bin": "kubectl",
+              "errorClass": null,
+              "stderrSha256": "068b7e6489cf4a28e4b66116c0e6e140231f6b19c197571f509e7b6d71df26dd",
+              "argv": [
+                "--request-timeout=20s",
+                "create",
+                "--dry-run=server",
+                "-f",
+                "-",
+                "-o",
+                "json"
+              ],
+              "stdoutSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+              "startedAtMs": 1793635716901,
+              "exitStatus": 1
+            },
+            {
+              "completedAtMs": 1793635718961,
+              "kind": "command",
+              "bin": "kubectl",
+              "errorClass": null,
+              "stderrSha256": "068b7e6489cf4a28e4b66116c0e6e140231f6b19c197571f509e7b6d71df26dd",
+              "argv": [
+                "--request-timeout=20s",
+                "create",
+                "--dry-run=server",
+                "-f",
+                "-",
+                "-o",
+                "json"
+              ],
+              "stdoutSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+              "startedAtMs": 1793635718102,
+              "exitStatus": 1
+            },
+            {
+              "completedAtMs": 1793635719705,
+              "kind": "command",
+              "bin": "kubectl",
+              "errorClass": null,
+              "stderrSha256": "6b4c20d17c06398a870452fcf6acdb171b14b06594f7fb3243620e23e77574cf",
+              "argv": [
+                "--request-timeout=20s",
+                "create",
+                "--dry-run=server",
+                "-f",
+                "-",
+                "-o",
+                "json"
+              ],
+              "stdoutSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+              "startedAtMs": 1793635718962,
+              "exitStatus": 1
+            },
+            {
+              "completedAtMs": 1793635720501,
+              "kind": "command",
+              "bin": "kubectl",
+              "errorClass": null,
+              "stderrSha256": "0e6a69820c78fdf30ef5f0fbcda53ae0305e8641bed3496de0286d22bd58e944",
+              "argv": [
+                "--request-timeout=20s",
+                "create",
+                "--dry-run=server",
+                "-f",
+                "-",
+                "-o",
+                "json"
+              ],
+              "stdoutSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+              "startedAtMs": 1793635719706,
+              "exitStatus": 1
+            },
+            {
+              "completedAtMs": 1793635721491,
+              "kind": "command",
+              "bin": "kubectl",
+              "errorClass": null,
+              "stderrSha256": "b3260fd974b53c7b03d778ee255a9017b20ddf73ddcae2198c8800c674104537",
+              "argv": [
+                "--request-timeout=20s",
+                "create",
+                "--dry-run=server",
+                "-f",
+                "-",
+                "-o",
+                "json"
+              ],
+              "stdoutSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+              "startedAtMs": 1793635720502,
+              "exitStatus": 1
+            },
+            {
+              "completedAtMs": 1793635721692,
+              "kind": "command",
+              "bin": "kubectl",
+              "errorClass": null,
+              "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+              "argv": [
+                "--request-timeout=20s",
+                "get",
+                "pods",
+                "-n",
+                "devsecops-system",
+                "-o",
+                "json"
+              ],
+              "stdoutSha256": "68e82feb8afdcb0ea36faef9bb36874bdf5d1de00947fed3404e52ed0624232e",
+              "startedAtMs": 1793635721498,
+              "exitStatus": 0
+            },
+            {
+              "completedAtMs": 1793635722555,
+              "kind": "command",
+              "bin": "kubectl",
+              "errorClass": null,
+              "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+              "argv": [
+                "--request-timeout=20s",
+                "create",
+                "--dry-run=server",
+                "-f",
+                "-",
+                "-o",
+                "json"
+              ],
+              "stdoutSha256": "8f65f211044f6532dd15df2f3cc9f92795d5e564917553d3f38d63861084558f",
+              "startedAtMs": 1793635721694,
+              "exitStatus": 0
+            },
+            {
+              "completedAtMs": 1793635723213,
+              "kind": "command",
+              "bin": "kubectl",
+              "errorClass": null,
+              "stderrSha256": "4bae220b5ac15df14d49fa770f1556c9c3f9763e15bce68b720dd834aa6c3b83",
+              "argv": [
+                "--request-timeout=20s",
+                "create",
+                "--dry-run=server",
+                "-f",
+                "-",
+                "-o",
+                "json"
+              ],
+              "stdoutSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+              "startedAtMs": 1793635722556,
+              "exitStatus": 1
+            },
+            {
+              "completedAtMs": 1793635723860,
+              "kind": "command",
+              "bin": "kubectl",
+              "errorClass": null,
+              "stderrSha256": "4bae220b5ac15df14d49fa770f1556c9c3f9763e15bce68b720dd834aa6c3b83",
+              "argv": [
+                "--request-timeout=20s",
+                "create",
+                "--dry-run=server",
+                "-f",
+                "-",
+                "-o",
+                "json"
+              ],
+              "stdoutSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+              "startedAtMs": 1793635723214,
+              "exitStatus": 1
+            },
+            {
+              "completedAtMs": 1793635724606,
+              "kind": "command",
+              "bin": "kubectl",
+              "errorClass": null,
+              "stderrSha256": "f1a25867084ddb6e2bae6b8d5eed2494927945bc0a4dd352f1871327de17904a",
+              "argv": [
+                "--request-timeout=20s",
+                "create",
+                "--dry-run=server",
+                "-f",
+                "-",
+                "-o",
+                "json"
+              ],
+              "stdoutSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+              "startedAtMs": 1793635723861,
+              "exitStatus": 1
+            },
+            {
+              "completedAtMs": 1793635725139,
+              "kind": "command",
+              "bin": "kubectl",
+              "errorClass": null,
+              "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+              "argv": [
+                "--request-timeout=20s",
+                "get",
+                "pods",
+                "-n",
+                "monitoring",
+                "-o",
+                "json"
+              ],
+              "stdoutSha256": "bbcf51a74517f60093a9954d07fa8878bfefb7ec80e7dbbab5a7b961561947e1",
+              "startedAtMs": 1793635724607,
+              "exitStatus": 0
+            },
+            {
+              "completedAtMs": 1793635726359,
+              "kind": "command",
+              "bin": "kubectl",
+              "errorClass": null,
+              "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+              "argv": [
+                "--request-timeout=20s",
+                "create",
+                "--dry-run=server",
+                "-f",
+                "-",
+                "-o",
+                "json"
+              ],
+              "stdoutSha256": "039b76db1579e468bc7737e9304518d4f15180ca265a1e81ae66fa1536b42eb0",
+              "startedAtMs": 1793635725141,
+              "exitStatus": 0
+            },
+            {
+              "completedAtMs": 1793635727054,
+              "kind": "command",
+              "bin": "kubectl",
+              "errorClass": null,
+              "stderrSha256": "0ea81a785bd777ca0718e21b46d6f2291e4e252810b6d7018329a75aab2a8b08",
+              "argv": [
+                "--request-timeout=20s",
+                "create",
+                "--dry-run=server",
+                "-f",
+                "-",
+                "-o",
+                "json"
+              ],
+              "stdoutSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+              "startedAtMs": 1793635726361,
+              "exitStatus": 1
+            },
+            {
+              "completedAtMs": 1793635727900,
+              "kind": "command",
+              "bin": "kubectl",
+              "errorClass": null,
+              "stderrSha256": "0ea81a785bd777ca0718e21b46d6f2291e4e252810b6d7018329a75aab2a8b08",
+              "argv": [
+                "--request-timeout=20s",
+                "create",
+                "--dry-run=server",
+                "-f",
+                "-",
+                "-o",
+                "json"
+              ],
+              "stdoutSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+              "startedAtMs": 1793635727055,
+              "exitStatus": 1
+            },
+            {
+              "completedAtMs": 1793635728692,
+              "kind": "command",
+              "bin": "kubectl",
+              "errorClass": null,
+              "stderrSha256": "76faa897a3f60c7acc3b2ed4866a8dd0aeaf614f222588d7d7584912c51f6444",
+              "argv": [
+                "--request-timeout=20s",
+                "create",
+                "--dry-run=server",
+                "-f",
+                "-",
+                "-o",
+                "json"
+              ],
+              "stdoutSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+              "startedAtMs": 1793635727901,
+              "exitStatus": 1
+            },
+            {
+              "completedAtMs": 1793635729510,
+              "kind": "command",
+              "bin": "kubectl",
+              "errorClass": null,
+              "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+              "argv": [
+                "--request-timeout=20s",
+                "get",
+                "pods",
+                "-n",
+                "sonarqube",
+                "-o",
+                "json"
+              ],
+              "stdoutSha256": "21b030cf9e54455477d2c487d3574b869c1cb489a16cccba4fadab8686c016f8",
+              "startedAtMs": 1793635728693,
+              "exitStatus": 0
+            },
+            {
+              "completedAtMs": 1793635730463,
+              "kind": "command",
+              "bin": "kubectl",
+              "errorClass": null,
+              "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+              "argv": [
+                "--request-timeout=20s",
+                "create",
+                "--dry-run=server",
+                "-f",
+                "-",
+                "-o",
+                "json"
+              ],
+              "stdoutSha256": "a408f16b07a2a9e3f8275c0e2e20a441c093c243225b7fefca91b4013ef8cd45",
+              "startedAtMs": 1793635729511,
+              "exitStatus": 0
+            },
+            {
+              "completedAtMs": 1793635731265,
+              "kind": "command",
+              "bin": "kubectl",
+              "errorClass": null,
+              "stderrSha256": "2e5a148573a5109eae22dcf3f08e06d4d31c1435a14b9eddb04c6a27d341a0df",
+              "argv": [
+                "--request-timeout=20s",
+                "create",
+                "--dry-run=server",
+                "-f",
+                "-",
+                "-o",
+                "json"
+              ],
+              "stdoutSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+              "startedAtMs": 1793635730463,
+              "exitStatus": 1
+            },
+            {
+              "completedAtMs": 1793635732019,
+              "kind": "command",
+              "bin": "kubectl",
+              "errorClass": null,
+              "stderrSha256": "2e5a148573a5109eae22dcf3f08e06d4d31c1435a14b9eddb04c6a27d341a0df",
+              "argv": [
+                "--request-timeout=20s",
+                "create",
+                "--dry-run=server",
+                "-f",
+                "-",
+                "-o",
+                "json"
+              ],
+              "stdoutSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+              "startedAtMs": 1793635731266,
+              "exitStatus": 1
+            },
+            {
+              "completedAtMs": 1793635732862,
+              "kind": "command",
+              "bin": "kubectl",
+              "errorClass": null,
+              "stderrSha256": "2e5a148573a5109eae22dcf3f08e06d4d31c1435a14b9eddb04c6a27d341a0df",
+              "argv": [
+                "--request-timeout=20s",
+                "create",
+                "--dry-run=server",
+                "-f",
+                "-",
+                "-o",
+                "json"
+              ],
+              "stdoutSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+              "startedAtMs": 1793635732020,
+              "exitStatus": 1
+            },
+            {
+              "completedAtMs": 1793635733649,
+              "kind": "command",
+              "bin": "kubectl",
+              "errorClass": null,
+              "stderrSha256": "5459934a88ec57efb31416cb029c4b87c07706af6ec39995fe15a06d3cf62936",
+              "argv": [
+                "--request-timeout=20s",
+                "create",
+                "--dry-run=server",
+                "-f",
+                "-",
+                "-o",
+                "json"
+              ],
+              "stdoutSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+              "startedAtMs": 1793635732862,
+              "exitStatus": 1
+            },
+            {
+              "completedAtMs": 1793635734484,
+              "kind": "command",
+              "bin": "kubectl",
+              "errorClass": null,
+              "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+              "argv": [
+                "--request-timeout=20s",
+                "get",
+                "deploy,ds,sts",
+                "-A",
+                "-o",
+                "json"
+              ],
+              "stdoutSha256": "d5e66b30d94b43f9ddf4d228f6cc4d5803c5002514f16e8af50fade3808e42a4",
+              "startedAtMs": 1793635733650,
+              "exitStatus": 0
+            }
+          ]
+        }
+      ],
+      "rawPayloadPersisted": false,
+      "kind": "RuntimeSourceFacts",
+      "evidenceComplete": true,
+      "resultDigest": "2965cceac3029a17bb2344385e9ce425a930d806911fdd38261c3547ab6d85e3",
+      "evaluationCount": 1,
+      "buildBinding": {
+        "candidate": "core.harbor.domain/petclinic/petclinic@sha256:489cb821573ff1f98edd846d5949d74bf3391b24e2f1fe5bcfb71c6be0793137",
+        "build": 11,
+        "project": "petclinic",
+        "source": "741ea2866ea142b24c7838e1ef25c8327c79d279",
+        "runId": "security-runtime-facts-20261102#11",
+        "job": "security-runtime-facts-20261102",
+        "targetScope": "runtime"
+      },
+      "envelopeDigest": "67e3a1d698469d1dcf9488d315232b74dcb0d96842f239a3f485fe89975cde2c",
+      "rawFactDigest": "0a41dfedfcae8060472ae4b2f5a7d89ba3dfbe60d48a6d455fcbae92a977be7d",
+      "presence": "executed"
+    },
+    ".devsecops/runtime-facts/build-11/results/kyverno.gate.json": {
+      "sourceId": "kyverno",
+      "decision": "PASS",
+      "observedStatus": "success",
+      "resultDigest": "2965cceac3029a17bb2344385e9ce425a930d806911fdd38261c3547ab6d85e3",
+      "status": "PASS"
+    },
+    ".devsecops/runtime-facts/build-11/results/kyverno.result.json": {
+      "schema": 1,
+      "sourceId": "kyverno",
+      "result": {
+        "securityLevel": "standard",
+        "policyVersion": "baseline-v1",
+        "appliedOverrides": [],
+        "decision": "PASS",
+        "profile": "java-web",
+        "effectivePolicy": {
+          "approval-evidence": {
+            "High": "FAIL",
+            "Low": "WARN",
+            "Medium": "WARN",
+            "Critical": "FAIL",
+            "Info": "WARN"
+          },
+          "approval-signatures": {
+            "High": "FAIL",
+            "Low": "WARN",
+            "Medium": "WARN",
+            "Critical": "FAIL",
+            "Info": "WARN"
+          },
+          "gitleaks": {
+            "High": "FAIL",
+            "Low": "WARN",
+            "Medium": "WARN",
+            "Critical": "FAIL",
+            "Info": "WARN"
+          },
+          "kyverno-admission": {
+            "High": "FAIL",
+            "Low": "WARN",
+            "Medium": "WARN",
+            "Critical": "FAIL",
+            "Info": "WARN"
+          },
+          "build-provenance": {
+            "High": "FAIL",
+            "Low": "WARN",
+            "Medium": "WARN",
+            "Critical": "FAIL",
+            "Info": "WARN"
+          },
+          "semgrep": {
+            "High": "FAIL",
+            "Low": "WARN",
+            "Medium": "WARN",
+            "Critical": "FAIL",
+            "Info": "WARN"
+          },
+          "falco-continuity": {
+            "High": "FAIL",
+            "Low": "WARN",
+            "Medium": "WARN",
+            "Critical": "FAIL",
+            "Info": "WARN"
+          },
+          "provenance": {
+            "High": "FAIL",
+            "Low": "WARN",
+            "Medium": "WARN",
+            "Critical": "FAIL",
+            "Info": "WARN"
+          },
+          "kyverno": {
+            "High": "FAIL",
+            "Low": "WARN",
+            "Medium": "WARN",
+            "Critical": "FAIL",
+            "Info": "WARN"
+          },
+          "sbom": {
+            "High": "FAIL",
+            "Low": "WARN",
+            "Medium": "WARN",
+            "Critical": "FAIL",
+            "Info": "WARN"
+          },
+          "falco-baseline": {
+            "High": "FAIL",
+            "Low": "WARN",
+            "Medium": "WARN",
+            "Critical": "FAIL",
+            "Info": "WARN"
+          },
+          "sonarqube": {
+            "High": "FAIL",
+            "Low": "WARN",
+            "Medium": "WARN",
+            "Critical": "FAIL",
+            "Info": "WARN"
+          },
+          "falco-prior-exit": {
+            "High": "FAIL",
+            "Low": "WARN",
+            "Medium": "WARN",
+            "Critical": "FAIL",
+            "Info": "WARN"
+          },
+          "build-provenance-signature": {
+            "High": "FAIL",
+            "Low": "WARN",
+            "Medium": "WARN",
+            "Critical": "FAIL",
+            "Info": "WARN"
+          },
+          "cosign": {
+            "High": "FAIL",
+            "Low": "WARN",
+            "Medium": "WARN",
+            "Critical": "FAIL",
+            "Info": "WARN"
+          },
+          "zap": {
+            "High": "FAIL",
+            "Low": "WARN",
+            "Medium": "WARN",
+            "Critical": "FAIL",
+            "Info": "WARN"
+          },
+          "sops": {
+            "High": "FAIL",
+            "Low": "WARN",
+            "Medium": "WARN",
+            "Critical": "FAIL",
+            "Info": "WARN"
+          },
+          "cosign-cli": {
+            "High": "FAIL",
+            "Low": "WARN",
+            "Medium": "WARN",
+            "Critical": "FAIL",
+            "Info": "WARN"
+          },
+          "falco-final": {
+            "High": "FAIL",
+            "Low": "WARN",
+            "Medium": "WARN",
+            "Critical": "FAIL",
+            "Info": "WARN"
+          },
+          "provenance-signature": {
+            "High": "FAIL",
+            "Low": "WARN",
+            "Medium": "WARN",
+            "Critical": "FAIL",
+            "Info": "WARN"
+          },
+          "regression": {
+            "High": "FAIL",
+            "Low": "WARN",
+            "Medium": "WARN",
+            "Critical": "FAIL",
+            "Info": "WARN"
+          },
+          "trivy": {
+            "High": "FAIL",
+            "Low": "WARN",
+            "Medium": "WARN",
+            "Critical": "FAIL",
+            "Info": "WARN"
+          },
+          "kyverno-rbac": {
+            "High": "FAIL",
+            "Low": "WARN",
+            "Medium": "WARN",
+            "Critical": "FAIL",
+            "Info": "WARN"
+          },
+          "falco": {
+            "High": "FAIL",
+            "Low": "WARN",
+            "Medium": "WARN",
+            "Critical": "FAIL",
+            "Info": "WARN"
+          },
+          "falco-persistence": {
+            "High": "FAIL",
+            "Low": "WARN",
+            "Medium": "WARN",
+            "Critical": "FAIL",
+            "Info": "WARN"
+          },
+          "kubescape": {
+            "High": "FAIL",
+            "Low": "WARN",
+            "Medium": "WARN",
+            "Critical": "FAIL",
+            "Info": "WARN"
+          },
+          "semgrep-command-audit": {
+            "High": "FAIL",
+            "Low": "WARN",
+            "Medium": "WARN",
+            "Critical": "FAIL",
+            "Info": "WARN"
+          },
+          "security-approval-promotion": {
+            "High": "FAIL",
+            "Low": "WARN",
+            "Medium": "WARN",
+            "Critical": "FAIL",
+            "Info": "WARN"
+          },
+          "defectdojo": {
+            "High": "FAIL",
+            "Low": "WARN",
+            "Medium": "WARN",
+            "Critical": "FAIL",
+            "Info": "WARN"
+          }
+        },
+        "status": "PASS"
+      },
+      "component": "kyverno",
+      "kind": "ResolvedPolicyResult",
+      "evidenceComplete": true,
+      "scope": "pre-approval",
+      "configDigest": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a",
+      "binding": {
+        "candidate": "core.harbor.domain/petclinic/petclinic@sha256:489cb821573ff1f98edd846d5949d74bf3391b24e2f1fe5bcfb71c6be0793137",
+        "build": 11,
+        "project": "petclinic",
+        "source": "741ea2866ea142b24c7838e1ef25c8327c79d279",
+        "runId": "security-runtime-facts-20261102#11",
+        "job": "security-runtime-facts-20261102",
+        "targetScope": "runtime"
+      },
+      "rawFactDigest": "0a41dfedfcae8060472ae4b2f5a7d89ba3dfbe60d48a6d455fcbae92a977be7d",
+      "error": null,
+      "resultDigest": "2965cceac3029a17bb2344385e9ce425a930d806911fdd38261c3547ab6d85e3"
+    },
+    ".devsecops/runtime-facts/build-11/results/owner-claim.json": {
+      "owner": "runtime-facts/owner.mjs:createRuntimeOwner",
+      "binding": {
+        "candidate": "core.harbor.domain/petclinic/petclinic@sha256:489cb821573ff1f98edd846d5949d74bf3391b24e2f1fe5bcfb71c6be0793137",
+        "build": 11,
+        "project": "petclinic",
+        "source": "741ea2866ea142b24c7838e1ef25c8327c79d279",
+        "runId": "security-runtime-facts-20261102#11",
+        "job": "security-runtime-facts-20261102",
+        "targetScope": "runtime"
+      },
+      "pid": 22891
+    },
+    ".devsecops/runtime-facts/build-11/results/provenance.capture.json": {
+      "schema": 1,
+      "sourceId": "provenance",
+      "execution": {
+        "kind": "JENKINS_CPS_FUNCTION",
+        "errorClass": null,
+        "returnStatus": "RETURNED",
+        "signal": null,
+        "command": "vars/securityProvenance.groovy:call",
+        "exitStatus": null
+      },
+      "reports": [
+        {
+          "path": ".devsecops/runtime-facts/build-11/helper-returns/provenance.json",
+          "sha256": "8570b8817cde63f70fa5b2ff004854ef529bf4ecd8f43c70122cbd6db662da1f",
+          "bytes": 400
+        }
+      ],
+      "evidence": [
+        {
+          "enabledBranchExecuted": false,
+          "producer": {
+            "path": "vars/securityProvenance.groovy",
+            "sha256": "db2025f5b6347cd7131835aafca08a9b503232494c6881d7ea94f6969e1d7a3d",
+            "libraryRevision": "9a78cc89f22fa98fb1ffcc43e2ae279299471793"
+          },
+          "observedReturn": {
+            "tool": "provenance",
+            "status": "skipped"
+          },
+          "classification": "REAL_JENKINS_CPS_DEFAULT_RETURN"
+        }
+      ],
+      "rawPayloadPersisted": false,
+      "kind": "RuntimeSourceFacts",
+      "evidenceComplete": true,
+      "resultDigest": "e9fa4e7a19848f4ddc866a0bb662d49da9597225a76806c545a90c0366d867b4",
+      "evaluationCount": 1,
+      "buildBinding": {
+        "candidate": "core.harbor.domain/petclinic/petclinic@sha256:489cb821573ff1f98edd846d5949d74bf3391b24e2f1fe5bcfb71c6be0793137",
+        "build": 11,
+        "project": "petclinic",
+        "source": "741ea2866ea142b24c7838e1ef25c8327c79d279",
+        "runId": "security-runtime-facts-20261102#11",
+        "job": "security-runtime-facts-20261102",
+        "targetScope": "runtime"
+      },
+      "envelopeDigest": "9b5b7c0f206e80f8c752ac8ba7b166af9b109e133b70a5c02885aa17e8f00d08",
+      "rawFactDigest": "8fca44b2305f0bbe1caab73bda8ee5d08dd9f42254f4982849870063c0e98aec",
+      "presence": "executed"
+    },
+    ".devsecops/runtime-facts/build-11/results/provenance.gate.json": {
+      "sourceId": "provenance",
+      "decision": null,
+      "observedStatus": "skipped",
+      "resultDigest": "e9fa4e7a19848f4ddc866a0bb662d49da9597225a76806c545a90c0366d867b4",
+      "status": "SKIPPED"
+    },
+    ".devsecops/runtime-facts/build-11/results/provenance.result.json": {
+      "schema": 1,
+      "sourceId": "provenance",
+      "result": {
+        "securityLevel": "standard",
+        "policyVersion": "baseline-v1",
+        "appliedOverrides": [],
+        "decision": null,
+        "profile": "java-web",
+        "effectivePolicy": {
+          "approval-evidence": {
+            "High": "FAIL",
+            "Low": "WARN",
+            "Medium": "WARN",
+            "Critical": "FAIL",
+            "Info": "WARN"
+          },
+          "approval-signatures": {
+            "High": "FAIL",
+            "Low": "WARN",
+            "Medium": "WARN",
+            "Critical": "FAIL",
+            "Info": "WARN"
+          },
+          "gitleaks": {
+            "High": "FAIL",
+            "Low": "WARN",
+            "Medium": "WARN",
+            "Critical": "FAIL",
+            "Info": "WARN"
+          },
+          "kyverno-admission": {
+            "High": "FAIL",
+            "Low": "WARN",
+            "Medium": "WARN",
+            "Critical": "FAIL",
+            "Info": "WARN"
+          },
+          "build-provenance": {
+            "High": "FAIL",
+            "Low": "WARN",
+            "Medium": "WARN",
+            "Critical": "FAIL",
+            "Info": "WARN"
+          },
+          "semgrep": {
+            "High": "FAIL",
+            "Low": "WARN",
+            "Medium": "WARN",
+            "Critical": "FAIL",
+            "Info": "WARN"
+          },
+          "falco-continuity": {
+            "High": "FAIL",
+            "Low": "WARN",
+            "Medium": "WARN",
+            "Critical": "FAIL",
+            "Info": "WARN"
+          },
+          "provenance": {
+            "High": "FAIL",
+            "Low": "WARN",
+            "Medium": "WARN",
+            "Critical": "FAIL",
+            "Info": "WARN"
+          },
+          "kyverno": {
+            "High": "FAIL",
+            "Low": "WARN",
+            "Medium": "WARN",
+            "Critical": "FAIL",
+            "Info": "WARN"
+          },
+          "sbom": {
+            "High": "FAIL",
+            "Low": "WARN",
+            "Medium": "WARN",
+            "Critical": "FAIL",
+            "Info": "WARN"
+          },
+          "falco-baseline": {
+            "High": "FAIL",
+            "Low": "WARN",
+            "Medium": "WARN",
+            "Critical": "FAIL",
+            "Info": "WARN"
+          },
+          "sonarqube": {
+            "High": "FAIL",
+            "Low": "WARN",
+            "Medium": "WARN",
+            "Critical": "FAIL",
+            "Info": "WARN"
+          },
+          "falco-prior-exit": {
+            "High": "FAIL",
+            "Low": "WARN",
+            "Medium": "WARN",
+            "Critical": "FAIL",
+            "Info": "WARN"
+          },
+          "build-provenance-signature": {
+            "High": "FAIL",
+            "Low": "WARN",
+            "Medium": "WARN",
+            "Critical": "FAIL",
+            "Info": "WARN"
+          },
+          "cosign": {
+            "High": "FAIL",
+            "Low": "WARN",
+            "Medium": "WARN",
+            "Critical": "FAIL",
+            "Info": "WARN"
+          },
+          "zap": {
+            "High": "FAIL",
+            "Low": "WARN",
+            "Medium": "WARN",
+            "Critical": "FAIL",
+            "Info": "WARN"
+          },
+          "sops": {
+            "High": "FAIL",
+            "Low": "WARN",
+            "Medium": "WARN",
+            "Critical": "FAIL",
+            "Info": "WARN"
+          },
+          "cosign-cli": {
+            "High": "FAIL",
+            "Low": "WARN",
+            "Medium": "WARN",
+            "Critical": "FAIL",
+            "Info": "WARN"
+          },
+          "falco-final": {
+            "High": "FAIL",
+            "Low": "WARN",
+            "Medium": "WARN",
+            "Critical": "FAIL",
+            "Info": "WARN"
+          },
+          "provenance-signature": {
+            "High": "FAIL",
+            "Low": "WARN",
+            "Medium": "WARN",
+            "Critical": "FAIL",
+            "Info": "WARN"
+          },
+          "regression": {
+            "High": "FAIL",
+            "Low": "WARN",
+            "Medium": "WARN",
+            "Critical": "FAIL",
+            "Info": "WARN"
+          },
+          "trivy": {
+            "High": "FAIL",
+            "Low": "WARN",
+            "Medium": "WARN",
+            "Critical": "FAIL",
+            "Info": "WARN"
+          },
+          "kyverno-rbac": {
+            "High": "FAIL",
+            "Low": "WARN",
+            "Medium": "WARN",
+            "Critical": "FAIL",
+            "Info": "WARN"
+          },
+          "falco": {
+            "High": "FAIL",
+            "Low": "WARN",
+            "Medium": "WARN",
+            "Critical": "FAIL",
+            "Info": "WARN"
+          },
+          "falco-persistence": {
+            "High": "FAIL",
+            "Low": "WARN",
+            "Medium": "WARN",
+            "Critical": "FAIL",
+            "Info": "WARN"
+          },
+          "kubescape": {
+            "High": "FAIL",
+            "Low": "WARN",
+            "Medium": "WARN",
+            "Critical": "FAIL",
+            "Info": "WARN"
+          },
+          "semgrep-command-audit": {
+            "High": "FAIL",
+            "Low": "WARN",
+            "Medium": "WARN",
+            "Critical": "FAIL",
+            "Info": "WARN"
+          },
+          "security-approval-promotion": {
+            "High": "FAIL",
+            "Low": "WARN",
+            "Medium": "WARN",
+            "Critical": "FAIL",
+            "Info": "WARN"
+          },
+          "defectdojo": {
+            "High": "FAIL",
+            "Low": "WARN",
+            "Medium": "WARN",
+            "Critical": "FAIL",
+            "Info": "WARN"
+          }
+        },
+        "status": "SKIPPED"
+      },
+      "component": "provenance",
+      "kind": "ResolvedPolicyResult",
+      "evidenceComplete": true,
+      "scope": "pre-approval",
+      "configDigest": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a",
+      "binding": {
+        "candidate": "core.harbor.domain/petclinic/petclinic@sha256:489cb821573ff1f98edd846d5949d74bf3391b24e2f1fe5bcfb71c6be0793137",
+        "build": 11,
+        "project": "petclinic",
+        "source": "741ea2866ea142b24c7838e1ef25c8327c79d279",
+        "runId": "security-runtime-facts-20261102#11",
+        "job": "security-runtime-facts-20261102",
+        "targetScope": "runtime"
+      },
+      "rawFactDigest": "8fca44b2305f0bbe1caab73bda8ee5d08dd9f42254f4982849870063c0e98aec",
+      "error": null,
+      "resultDigest": "e9fa4e7a19848f4ddc866a0bb662d49da9597225a76806c545a90c0366d867b4"
+    },
+    ".devsecops/runtime-facts/build-11/results/regression.capture.json": {
+      "schema": 1,
+      "sourceId": "regression",
+      "execution": {
+        "errorClass": null,
+        "signal": null,
+        "command": "node --test --test-concurrency=1 infra/observability/*.test.mjs infra/security/*.test.mjs",
+        "exitStatus": 0
+      },
+      "reports": [],
+      "evidence": [
+        {
+          "sampleWindows": [],
+          "observerPackets": 0,
+          "kind": "ACTUAL_PROCESS_EXECUTION",
+          "sourcePayloadClass": "ORIGINAL_COMMAND_EXIT_OBSERVATIONS",
+          "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "stdoutSha256": "a406f1ed412b11164e37994d578dc65834859f80fbca4e6b02805a0ce1af5071",
+          "events": []
+        }
+      ],
+      "rawPayloadPersisted": false,
+      "kind": "RuntimeSourceFacts",
+      "evidenceComplete": true,
+      "resultDigest": "7f96f04b8c009791838eca5f1143cf6f5d4f13caeede89845d8b487f786edad4",
+      "evaluationCount": 1,
+      "buildBinding": {
+        "candidate": "core.harbor.domain/petclinic/petclinic@sha256:489cb821573ff1f98edd846d5949d74bf3391b24e2f1fe5bcfb71c6be0793137",
+        "build": 11,
+        "project": "petclinic",
+        "source": "741ea2866ea142b24c7838e1ef25c8327c79d279",
+        "runId": "security-runtime-facts-20261102#11",
+        "job": "security-runtime-facts-20261102",
+        "targetScope": "runtime"
+      },
+      "envelopeDigest": "b3a798f0381528668c104e162ca58d5e8151684ba14886b3b9c52194127fbd35",
+      "rawFactDigest": "2e5fc0f56ec78c8fdec69ec15a954217c93034ba6075a271b9bb294766800a21",
+      "presence": "executed"
+    },
+    ".devsecops/runtime-facts/build-11/results/regression.gate.json": {
+      "sourceId": "regression",
+      "decision": "PASS",
+      "observedStatus": "success",
+      "resultDigest": "7f96f04b8c009791838eca5f1143cf6f5d4f13caeede89845d8b487f786edad4",
+      "status": "PASS"
+    },
+    ".devsecops/runtime-facts/build-11/results/regression.result.json": {
+      "schema": 1,
+      "sourceId": "regression",
+      "result": {
+        "securityLevel": "standard",
+        "policyVersion": "baseline-v1",
+        "appliedOverrides": [],
+        "decision": "PASS",
+        "profile": "java-web",
+        "effectivePolicy": {
+          "approval-evidence": {
+            "High": "FAIL",
+            "Low": "WARN",
+            "Medium": "WARN",
+            "Critical": "FAIL",
+            "Info": "WARN"
+          },
+          "approval-signatures": {
+            "High": "FAIL",
+            "Low": "WARN",
+            "Medium": "WARN",
+            "Critical": "FAIL",
+            "Info": "WARN"
+          },
+          "gitleaks": {
+            "High": "FAIL",
+            "Low": "WARN",
+            "Medium": "WARN",
+            "Critical": "FAIL",
+            "Info": "WARN"
+          },
+          "kyverno-admission": {
+            "High": "FAIL",
+            "Low": "WARN",
+            "Medium": "WARN",
+            "Critical": "FAIL",
+            "Info": "WARN"
+          },
+          "build-provenance": {
+            "High": "FAIL",
+            "Low": "WARN",
+            "Medium": "WARN",
+            "Critical": "FAIL",
+            "Info": "WARN"
+          },
+          "semgrep": {
+            "High": "FAIL",
+            "Low": "WARN",
+            "Medium": "WARN",
+            "Critical": "FAIL",
+            "Info": "WARN"
+          },
+          "falco-continuity": {
+            "High": "FAIL",
+            "Low": "WARN",
+            "Medium": "WARN",
+            "Critical": "FAIL",
+            "Info": "WARN"
+          },
+          "provenance": {
+            "High": "FAIL",
+            "Low": "WARN",
+            "Medium": "WARN",
+            "Critical": "FAIL",
+            "Info": "WARN"
+          },
+          "kyverno": {
+            "High": "FAIL",
+            "Low": "WARN",
+            "Medium": "WARN",
+            "Critical": "FAIL",
+            "Info": "WARN"
+          },
+          "sbom": {
+            "High": "FAIL",
+            "Low": "WARN",
+            "Medium": "WARN",
+            "Critical": "FAIL",
+            "Info": "WARN"
+          },
+          "falco-baseline": {
+            "High": "FAIL",
+            "Low": "WARN",
+            "Medium": "WARN",
+            "Critical": "FAIL",
+            "Info": "WARN"
+          },
+          "sonarqube": {
+            "High": "FAIL",
+            "Low": "WARN",
+            "Medium": "WARN",
+            "Critical": "FAIL",
+            "Info": "WARN"
+          },
+          "falco-prior-exit": {
+            "High": "FAIL",
+            "Low": "WARN",
+            "Medium": "WARN",
+            "Critical": "FAIL",
+            "Info": "WARN"
+          },
+          "build-provenance-signature": {
+            "High": "FAIL",
+            "Low": "WARN",
+            "Medium": "WARN",
+            "Critical": "FAIL",
+            "Info": "WARN"
+          },
+          "cosign": {
+            "High": "FAIL",
+            "Low": "WARN",
+            "Medium": "WARN",
+            "Critical": "FAIL",
+            "Info": "WARN"
+          },
+          "zap": {
+            "High": "FAIL",
+            "Low": "WARN",
+            "Medium": "WARN",
+            "Critical": "FAIL",
+            "Info": "WARN"
+          },
+          "sops": {
+            "High": "FAIL",
+            "Low": "WARN",
+            "Medium": "WARN",
+            "Critical": "FAIL",
+            "Info": "WARN"
+          },
+          "cosign-cli": {
+            "High": "FAIL",
+            "Low": "WARN",
+            "Medium": "WARN",
+            "Critical": "FAIL",
+            "Info": "WARN"
+          },
+          "falco-final": {
+            "High": "FAIL",
+            "Low": "WARN",
+            "Medium": "WARN",
+            "Critical": "FAIL",
+            "Info": "WARN"
+          },
+          "provenance-signature": {
+            "High": "FAIL",
+            "Low": "WARN",
+            "Medium": "WARN",
+            "Critical": "FAIL",
+            "Info": "WARN"
+          },
+          "regression": {
+            "High": "FAIL",
+            "Low": "WARN",
+            "Medium": "WARN",
+            "Critical": "FAIL",
+            "Info": "WARN"
+          },
+          "trivy": {
+            "High": "FAIL",
+            "Low": "WARN",
+            "Medium": "WARN",
+            "Critical": "FAIL",
+            "Info": "WARN"
+          },
+          "kyverno-rbac": {
+            "High": "FAIL",
+            "Low": "WARN",
+            "Medium": "WARN",
+            "Critical": "FAIL",
+            "Info": "WARN"
+          },
+          "falco": {
+            "High": "FAIL",
+            "Low": "WARN",
+            "Medium": "WARN",
+            "Critical": "FAIL",
+            "Info": "WARN"
+          },
+          "falco-persistence": {
+            "High": "FAIL",
+            "Low": "WARN",
+            "Medium": "WARN",
+            "Critical": "FAIL",
+            "Info": "WARN"
+          },
+          "kubescape": {
+            "High": "FAIL",
+            "Low": "WARN",
+            "Medium": "WARN",
+            "Critical": "FAIL",
+            "Info": "WARN"
+          },
+          "semgrep-command-audit": {
+            "High": "FAIL",
+            "Low": "WARN",
+            "Medium": "WARN",
+            "Critical": "FAIL",
+            "Info": "WARN"
+          },
+          "security-approval-promotion": {
+            "High": "FAIL",
+            "Low": "WARN",
+            "Medium": "WARN",
+            "Critical": "FAIL",
+            "Info": "WARN"
+          },
+          "defectdojo": {
+            "High": "FAIL",
+            "Low": "WARN",
+            "Medium": "WARN",
+            "Critical": "FAIL",
+            "Info": "WARN"
+          }
+        },
+        "status": "PASS"
+      },
+      "component": "regression",
+      "kind": "ResolvedPolicyResult",
+      "evidenceComplete": true,
+      "scope": "pre-approval",
+      "configDigest": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a",
+      "binding": {
+        "candidate": "core.harbor.domain/petclinic/petclinic@sha256:489cb821573ff1f98edd846d5949d74bf3391b24e2f1fe5bcfb71c6be0793137",
+        "build": 11,
+        "project": "petclinic",
+        "source": "741ea2866ea142b24c7838e1ef25c8327c79d279",
+        "runId": "security-runtime-facts-20261102#11",
+        "job": "security-runtime-facts-20261102",
+        "targetScope": "runtime"
+      },
+      "rawFactDigest": "2e5fc0f56ec78c8fdec69ec15a954217c93034ba6075a271b9bb294766800a21",
+      "error": null,
+      "resultDigest": "7f96f04b8c009791838eca5f1143cf6f5d4f13caeede89845d8b487f786edad4"
+    },
+    ".devsecops/runtime-facts/build-11/results/sbom.capture.json": {
+      "schema": 1,
+      "sourceId": "sbom",
+      "execution": {
+        "errorClass": null,
+        "signal": null,
+        "command": "( nice -n 10 ./mvnw -B package -DskipTests && node infra/security/sbom-verify.mjs )",
+        "exitStatus": 0
+      },
+      "reports": [
+        {
+          "path": ".devsecops/sbom.json",
+          "sha256": "b0a9ab3d854212e8ff6ace34cfd683775ce32cac955b9d41e038dca78dc2b3f3",
+          "bytes": 360971
+        },
+        {
+          "path": ".devsecops/sbom-summary.json",
+          "sha256": "56bf1ea7e368144999c7ca9b74214331a7a6e5b3a3f36583f2a62dfb9dcc1dee",
+          "bytes": 453
+        }
+      ],
+      "evidence": [
+        {
+          "completedAtMs": 1793635689839,
+          "stage": "Maven package",
+          "kind": "ACTUAL_PARENT_OPERATION",
+          "errorClass": null,
+          "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "signal": null,
+          "stdoutSha256": "c1863f48b9f7549d0400aa8c6caaa803a5151770018bc9024b00d621eaed7650",
+          "startedAtMs": 1793635671327,
+          "exitStatus": 0
+        },
+        {
+          "completedAtMs": 1793635690099,
+          "stage": "Original SBOM verifier",
+          "kind": "ACTUAL_PARENT_OPERATION",
+          "errorClass": null,
+          "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "signal": null,
+          "stdoutSha256": "eadb0a5fb355b7848a6085a1c7a2277d3db57c6cbc29ed352cd45796ed394f2f",
+          "startedAtMs": 1793635689840,
+          "exitStatus": 0
+        },
+        {
+          "completedAtMs": 1793635690062,
+          "kind": "command",
+          "bin": "unzip",
+          "argv": [
+            "-p",
+            "target/spring-petclinic-4.0.0-SNAPSHOT.jar",
+            "META-INF/sbom/application.cdx.json"
+          ],
+          "stdoutSha256": "b0a9ab3d854212e8ff6ace34cfd683775ce32cac955b9d41e038dca78dc2b3f3",
+          "startedAtMs": 1793635690047,
+          "exitStatus": 0
+        },
+        {
+          "path": "target/spring-petclinic-4.0.0-SNAPSHOT.jar",
+          "sha256": "b9240e2e995c7c8774503717546005cbbc42d939e3d9e3501608796623e1a30e",
+          "imageDigestEnforcementAdded": false,
+          "kind": "LOCAL_GENERATED_JAR_IDENTITY",
+          "bytes": 78611892
+        }
+      ],
+      "rawPayloadPersisted": false,
+      "kind": "RuntimeSourceFacts",
+      "evidenceComplete": true,
+      "resultDigest": "00ce4155a2f80de7acc6fc7755bc075f3a0970455f0280da5f400c6503379905",
+      "evaluationCount": 1,
+      "buildBinding": {
+        "candidate": "core.harbor.domain/petclinic/petclinic@sha256:489cb821573ff1f98edd846d5949d74bf3391b24e2f1fe5bcfb71c6be0793137",
+        "build": 11,
+        "project": "petclinic",
+        "source": "741ea2866ea142b24c7838e1ef25c8327c79d279",
+        "runId": "security-runtime-facts-20261102#11",
+        "job": "security-runtime-facts-20261102",
+        "targetScope": "runtime"
+      },
+      "envelopeDigest": "a10bd6de4a1891e1fe4b908af0f76e3d164d710c12253cdadd381d7947d900e7",
+      "rawFactDigest": "049ecaada016bb40dc94ccc9e6c0f1e0a10d954d8212a3bc204c0ff0abec107d",
+      "presence": "executed"
+    },
+    ".devsecops/runtime-facts/build-11/results/sbom.gate.json": {
+      "sourceId": "sbom",
+      "decision": "PASS",
+      "observedStatus": "success",
+      "resultDigest": "00ce4155a2f80de7acc6fc7755bc075f3a0970455f0280da5f400c6503379905",
+      "status": "PASS"
+    },
+    ".devsecops/runtime-facts/build-11/results/sbom.result.json": {
+      "schema": 1,
+      "sourceId": "sbom",
+      "result": {
+        "securityLevel": "standard",
+        "policyVersion": "baseline-v1",
+        "appliedOverrides": [],
+        "decision": "PASS",
+        "profile": "java-web",
+        "effectivePolicy": {
+          "approval-evidence": {
+            "High": "FAIL",
+            "Low": "WARN",
+            "Medium": "WARN",
+            "Critical": "FAIL",
+            "Info": "WARN"
+          },
+          "approval-signatures": {
+            "High": "FAIL",
+            "Low": "WARN",
+            "Medium": "WARN",
+            "Critical": "FAIL",
+            "Info": "WARN"
+          },
+          "gitleaks": {
+            "High": "FAIL",
+            "Low": "WARN",
+            "Medium": "WARN",
+            "Critical": "FAIL",
+            "Info": "WARN"
+          },
+          "kyverno-admission": {
+            "High": "FAIL",
+            "Low": "WARN",
+            "Medium": "WARN",
+            "Critical": "FAIL",
+            "Info": "WARN"
+          },
+          "build-provenance": {
+            "High": "FAIL",
+            "Low": "WARN",
+            "Medium": "WARN",
+            "Critical": "FAIL",
+            "Info": "WARN"
+          },
+          "semgrep": {
+            "High": "FAIL",
+            "Low": "WARN",
+            "Medium": "WARN",
+            "Critical": "FAIL",
+            "Info": "WARN"
+          },
+          "falco-continuity": {
+            "High": "FAIL",
+            "Low": "WARN",
+            "Medium": "WARN",
+            "Critical": "FAIL",
+            "Info": "WARN"
+          },
+          "provenance": {
+            "High": "FAIL",
+            "Low": "WARN",
+            "Medium": "WARN",
+            "Critical": "FAIL",
+            "Info": "WARN"
+          },
+          "kyverno": {
+            "High": "FAIL",
+            "Low": "WARN",
+            "Medium": "WARN",
+            "Critical": "FAIL",
+            "Info": "WARN"
+          },
+          "sbom": {
+            "High": "FAIL",
+            "Low": "WARN",
+            "Medium": "WARN",
+            "Critical": "FAIL",
+            "Info": "WARN"
+          },
+          "falco-baseline": {
+            "High": "FAIL",
+            "Low": "WARN",
+            "Medium": "WARN",
+            "Critical": "FAIL",
+            "Info": "WARN"
+          },
+          "sonarqube": {
+            "High": "FAIL",
+            "Low": "WARN",
+            "Medium": "WARN",
+            "Critical": "FAIL",
+            "Info": "WARN"
+          },
+          "falco-prior-exit": {
+            "High": "FAIL",
+            "Low": "WARN",
+            "Medium": "WARN",
+            "Critical": "FAIL",
+            "Info": "WARN"
+          },
+          "build-provenance-signature": {
+            "High": "FAIL",
+            "Low": "WARN",
+            "Medium": "WARN",
+            "Critical": "FAIL",
+            "Info": "WARN"
+          },
+          "cosign": {
+            "High": "FAIL",
+            "Low": "WARN",
+            "Medium": "WARN",
+            "Critical": "FAIL",
+            "Info": "WARN"
+          },
+          "zap": {
+            "High": "FAIL",
+            "Low": "WARN",
+            "Medium": "WARN",
+            "Critical": "FAIL",
+            "Info": "WARN"
+          },
+          "sops": {
+            "High": "FAIL",
+            "Low": "WARN",
+            "Medium": "WARN",
+            "Critical": "FAIL",
+            "Info": "WARN"
+          },
+          "cosign-cli": {
+            "High": "FAIL",
+            "Low": "WARN",
+            "Medium": "WARN",
+            "Critical": "FAIL",
+            "Info": "WARN"
+          },
+          "falco-final": {
+            "High": "FAIL",
+            "Low": "WARN",
+            "Medium": "WARN",
+            "Critical": "FAIL",
+            "Info": "WARN"
+          },
+          "provenance-signature": {
+            "High": "FAIL",
+            "Low": "WARN",
+            "Medium": "WARN",
+            "Critical": "FAIL",
+            "Info": "WARN"
+          },
+          "regression": {
+            "High": "FAIL",
+            "Low": "WARN",
+            "Medium": "WARN",
+            "Critical": "FAIL",
+            "Info": "WARN"
+          },
+          "trivy": {
+            "High": "FAIL",
+            "Low": "WARN",
+            "Medium": "WARN",
+            "Critical": "FAIL",
+            "Info": "WARN"
+          },
+          "kyverno-rbac": {
+            "High": "FAIL",
+            "Low": "WARN",
+            "Medium": "WARN",
+            "Critical": "FAIL",
+            "Info": "WARN"
+          },
+          "falco": {
+            "High": "FAIL",
+            "Low": "WARN",
+            "Medium": "WARN",
+            "Critical": "FAIL",
+            "Info": "WARN"
+          },
+          "falco-persistence": {
+            "High": "FAIL",
+            "Low": "WARN",
+            "Medium": "WARN",
+            "Critical": "FAIL",
+            "Info": "WARN"
+          },
+          "kubescape": {
+            "High": "FAIL",
+            "Low": "WARN",
+            "Medium": "WARN",
+            "Critical": "FAIL",
+            "Info": "WARN"
+          },
+          "semgrep-command-audit": {
+            "High": "FAIL",
+            "Low": "WARN",
+            "Medium": "WARN",
+            "Critical": "FAIL",
+            "Info": "WARN"
+          },
+          "security-approval-promotion": {
+            "High": "FAIL",
+            "Low": "WARN",
+            "Medium": "WARN",
+            "Critical": "FAIL",
+            "Info": "WARN"
+          },
+          "defectdojo": {
+            "High": "FAIL",
+            "Low": "WARN",
+            "Medium": "WARN",
+            "Critical": "FAIL",
+            "Info": "WARN"
+          }
+        },
+        "status": "PASS"
+      },
+      "component": "sbom",
+      "kind": "ResolvedPolicyResult",
+      "evidenceComplete": true,
+      "scope": "pre-approval",
+      "configDigest": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a",
+      "binding": {
+        "candidate": "core.harbor.domain/petclinic/petclinic@sha256:489cb821573ff1f98edd846d5949d74bf3391b24e2f1fe5bcfb71c6be0793137",
+        "build": 11,
+        "project": "petclinic",
+        "source": "741ea2866ea142b24c7838e1ef25c8327c79d279",
+        "runId": "security-runtime-facts-20261102#11",
+        "job": "security-runtime-facts-20261102",
+        "targetScope": "runtime"
+      },
+      "rawFactDigest": "049ecaada016bb40dc94ccc9e6c0f1e0a10d954d8212a3bc204c0ff0abec107d",
+      "error": null,
+      "resultDigest": "00ce4155a2f80de7acc6fc7755bc075f3a0970455f0280da5f400c6503379905"
+    },
+    ".devsecops/runtime-facts/build-11/sbom-build-input.json": {
+      "commit": "741ea2866ea142b24c7838e1ef25c8327c79d279",
+      "files": 838,
+      "archiveSha256": "ca8427c12e9c650da6019386bd879f225c3d5d2df96f45b9f3e19df66500293f",
+      "classification": "EXACT_TRACKED_HEAD_BUILD_CHECKOUT_NO_LOOSE_COLLECTOR_FILES",
+      "cleanupComplete": true
+    },
+    ".devsecops/runtime-facts/build-11/sonar-readonly-observation.json": {
+      "newAnalysis": 0,
+      "credentialRef": "sonar-token",
+      "origin": {
+        "auditTargetImage": "core.harbor.domain/petclinic/petclinic@sha256:2fbaea65ab030c56c60c62e3ee9fbe362deb8bbbb8216a891ef4c7bbbcea6d55",
+        "evidenceSha256": "17832b55bfdf0949ee1aa6f760288ede2698d0d40fe8f8ea1faf50fa82a80fcd",
+        "runtimeImage": "core.harbor.domain/petclinic/petclinic@sha256:489cb821573ff1f98edd846d5949d74bf3391b24e2f1fe5bcfb71c6be0793137",
+        "evidencePath": "evidence/2026-11-01/sonar-policy/analysis-bound-facts.json",
+        "directArchivedBuildTaskBinding": "NOT_TESTED",
+        "binding": {
+          "projectKey": "petclinic",
+          "requestedAnalysisId": "45274956-df04-4d69-8869-62961b4d762e",
+          "taskId": "0241e049-d93c-469d-ba33-4a7efa5f67d2"
+        },
+        "source": "9a78cc89f22fa98fb1ffcc43e2ae279299471793",
+        "originBuild": 270
+      },
+      "raw": {
+        "task": {
+          "task": {
+            "componentId": "184bf5b6-9cce-4004-873d-116fe843688b",
+            "executedAt": "2026-10-30T03:23:19+0000",
+            "executionTimeMs": 4319,
+            "warnings": [],
+            "startedAt": "2026-10-30T03:23:15+0000",
+            "type": "REPORT",
+            "submitterLogin": "admin",
+            "hasScannerContext": true,
+            "componentQualifier": "TRK",
+            "analysisId": "45274956-df04-4d69-8869-62961b4d762e",
+            "infoMessages": [],
+            "id": "0241e049-d93c-469d-ba33-4a7efa5f67d2",
+            "componentName": "petclinic",
+            "warningCount": 0,
+            "submittedAt": "2026-10-30T03:23:13+0000",
+            "componentKey": "petclinic",
+            "status": "SUCCESS"
+          }
+        },
+        "binding": {
+          "projectKey": "petclinic",
+          "requestedAnalysisId": "45274956-df04-4d69-8869-62961b4d762e",
+          "taskId": "0241e049-d93c-469d-ba33-4a7efa5f67d2"
+        },
+        "gate": {
+          "projectStatus": {
+            "period": {
+              "mode": "PREVIOUS_VERSION",
+              "date": "2026-10-02T08:19:18+0000"
+            },
+            "ignoredConditions": false,
+            "caycStatus": "compliant",
+            "conditions": [
+              {
+                "comparator": "LT",
+                "metricKey": "new_coverage",
+                "errorThreshold": "80",
+                "actualValue": "92.0",
+                "status": "OK"
+              },
+              {
+                "comparator": "GT",
+                "metricKey": "new_duplicated_lines_density",
+                "errorThreshold": "3",
+                "actualValue": "0.0",
+                "status": "OK"
+              },
+              {
+                "comparator": "GT",
+                "metricKey": "new_violations",
+                "errorThreshold": "0",
+                "actualValue": "0",
+                "status": "OK"
+              }
+            ],
+            "status": "OK"
+          }
+        }
+      },
+      "canonicalAdmission": "BLOCKED_PENDING_CURRENT_SOURCE_CANDIDATE_LINEAGE",
+      "requests": [
+        {
+          "path": "/api/ce/task?id=0241e049-d93c-469d-ba33-4a7efa5f67d2",
+          "method": "GET",
+          "httpStatus": 200
+        },
+        {
+          "path": "/api/qualitygates/project_status?analysisId=45274956-df04-4d69-8869-62961b4d762e",
+          "method": "GET",
+          "httpStatus": 200
+        }
+      ],
+      "classification": "REAL_READ_ONLY_EXISTING_ANALYSIS_OBSERVATION",
+      "policyEvaluations": 0,
+      "status": "OBSERVED_EXISTING_ANALYSIS_ONLY"
+    }
+  },
+  "regression": [
+    {
+      "path": ".devsecops/runtime-facts/build-11/regression.log",
+      "counts": {
+        "tests": 147,
+        "pass": 147,
+        "fail": 0,
+        "cancelled": 0,
+        "skipped": 0,
+        "todo": 0
+      },
+      "sha256": "a406f1ed412b11164e37994d578dc65834859f80fbca4e6b02805a0ce1af5071"
+    }
+  ],
+  "definitionSha256": "0682d94565c0b2f2e3ea951bde1d57a22a6b5cb66053873177e0f3564e61b0e0",
+  "consoleTail": [
+    "[...truncated 96 lines...]",
+    "[Pipeline] withCredentials",
+    "Masking supported pattern matches of $SONAR_TOKEN",
+    "[Pipeline] {",
+    "[Pipeline] withEnv",
+    "[Pipeline] {",
+    "[Pipeline] sh",
+    "+ node infra/security/runtime-facts/run-nonrelease.mjs",
+    "{\"sourceId\":\"sbom\",\"evaluationCount\":1,\"resultDigest\":\"00ce4155a2f80de7acc6fc7755bc075f3a0970455f0280da5f400c6503379905\",\"gateResultDigest\":\"00ce4155a2f80de7acc6fc7755bc075f3a0970455f0280da5f400c6503379905\",\"observedExit\":0,\"policyDecision\":\"PASS\"}",
+    "{\"sourceId\":\"regression\",\"evaluationCount\":1,\"resultDigest\":\"7f96f04b8c009791838eca5f1143cf6f5d4f13caeede89845d8b487f786edad4\",\"gateResultDigest\":\"7f96f04b8c009791838eca5f1143cf6f5d4f13caeede89845d8b487f786edad4\",\"observedExit\":0,\"policyDecision\":\"PASS\"}",
+    "{\"sourceId\":\"falco-baseline\",\"evaluationCount\":1,\"resultDigest\":\"e44e6963b00c8c4c3dbc44841a3d5fa81df47b5d95dc0df435d6f36469d4be69\",\"gateResultDigest\":\"e44e6963b00c8c4c3dbc44841a3d5fa81df47b5d95dc0df435d6f36469d4be69\",\"observedExit\":0,\"policyDecision\":\"PASS\"}",
+    "{\"sourceId\":\"kyverno\",\"evaluationCount\":1,\"resultDigest\":\"2965cceac3029a17bb2344385e9ce425a930d806911fdd38261c3547ab6d85e3\",\"gateResultDigest\":\"2965cceac3029a17bb2344385e9ce425a930d806911fdd38261c3547ab6d85e3\",\"observedExit\":0,\"policyDecision\":\"PASS\"}",
+    "{\"sourceId\":\"kubescape\",\"evaluationCount\":1,\"resultDigest\":\"8abf8155977f99234fc9969a66af025303ded3d0a241e97c6d4bf7fcc4e8df68\",\"gateResultDigest\":\"8abf8155977f99234fc9969a66af025303ded3d0a241e97c6d4bf7fcc4e8df68\",\"observedExit\":0,\"policyDecision\":\"PASS\"}",
+    "{\"sourceId\":\"falco-final\",\"evaluationCount\":1,\"resultDigest\":\"a9e932ebf740e4d1a42349ebb758316f7117d25c2a935e4b0071491b5078bac2\",\"gateResultDigest\":\"a9e932ebf740e4d1a42349ebb758316f7117d25c2a935e4b0071491b5078bac2\",\"observedExit\":0,\"policyDecision\":\"PASS\"}",
+    "{\"sourceId\":\"provenance\",\"evaluationCount\":1,\"resultDigest\":\"e9fa4e7a19848f4ddc866a0bb662d49da9597225a76806c545a90c0366d867b4\",\"gateResultDigest\":\"e9fa4e7a19848f4ddc866a0bb662d49da9597225a76806c545a90c0366d867b4\",\"originalReturn\":\"skipped\",\"policyStatus\":\"SKIPPED\"}",
+    "{\"sourceId\":\"build-provenance\",\"evaluationCount\":1,\"resultDigest\":\"6a2037f1ec77adc52ebe028ade8176dde0748189d1764315943670f985fdea39\",\"gateResultDigest\":\"6a2037f1ec77adc52ebe028ade8176dde0748189d1764315943670f985fdea39\",\"originalReturn\":\"skipped\",\"policyStatus\":\"SKIPPED\"}",
+    "{\"captured\":8,\"expected\":16,\"missing\":[\"gitleaks\",\"sops\",\"trivy\",\"cosign\",\"sonarqube\",\"zap\",\"defectdojo\",\"semgrep-command-audit\"],\"artifact\":\"INCOMPLETE\",\"release\":0,\"rollout\":0}",
+    "[Pipeline] }",
+    "[Pipeline] // withEnv",
+    "[Pipeline] }",
+    "[Pipeline] // withCredentials",
+    "[Pipeline] }",
+    "[Pipeline] // stage",
+    "[Pipeline] stage",
+    "[Pipeline] { (Declarative: Post Actions)",
+    "[Pipeline] withEnv",
+    "[Pipeline] {",
+    "[Pipeline] sh",
+    "+ node infra/observability/heavy-lease.mjs release",
+    "No owned heavy lease to release",
+    "[Pipeline] }",
+    "[Pipeline] // withEnv",
+    "[Pipeline] archiveArtifacts",
+    "Archiving artifacts",
+    "[Pipeline] }",
+    "[Pipeline] // stage",
+    "[Pipeline] }",
+    "[Pipeline] // timeout",
+    "[Pipeline] }",
+    "[Pipeline] // withEnv",
+    "[Pipeline] }",
+    "[Pipeline] // node",
+    "[Pipeline] End of Pipeline",
+    "ERROR: script returned exit code 3",
+    "Finished: FAILURE"
+  ],
+  "productionJobModified": false
+}

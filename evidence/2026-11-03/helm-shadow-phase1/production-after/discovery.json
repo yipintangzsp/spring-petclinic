@@ -1,0 +1,140 @@
+{
+  "gitOpsRevision": "340ef4b8c74e3c2a5820da8d98b0f134283bb8d9",
+  "productionBuild": 270,
+  "productionResult": "SUCCESS",
+  "jobScriptPath": "Jenkinsfile.security-audit",
+  "jobBranches": [
+    "9a78cc89f22fa98fb1ffcc43e2ae279299471793"
+  ],
+  "nodeTooling": "aarch64\n",
+  "files": {
+    "k8s/production/petclinic-configmap.yaml": "8e6f303742694726f235e45626d3f750ede564a99985e6aca73bdb54eff68ddd",
+    "k8s/production/petclinic-grafana-dashboard.yaml": "02e302d333e70a893f3df0608e806227e7d235825310815c0a16ce95ddac7919",
+    "k8s/production/petclinic-harbor-alias.yaml": "39c5a0d1708fe1a5fd9837f8b985be9e7c2127cd4bb85eef24577a53a733ce48",
+    "k8s/production/petclinic-metrics-dashboard.yaml": "f5be5822438a8dbcd6947488adfe515947238f22deae7fc5c71f070ad6acd9f7",
+    "k8s/production/petclinic-pdb.yaml": "4c32bada9ed1f457a041f547b9c2510dea2d8cfc247f2b88f66d7f49d9fd3b48",
+    "k8s/production/petclinic-prometheusrule.yaml": "5a57fc6187e24be357022e22a0d27626b019cb73821ab758a62c04e6c467d1af",
+    "k8s/production/petclinic-release-analysis-dashboard.yaml": "7d1f4c6582e4b97acbc549d54ec4e5206b98fd3904b2b62e12c08dca3451d00d",
+    "k8s/production/petclinic-servicemonitor.yaml": "99163771c5cd09abc17eb647d3bb559434dc762d2cad49bc6c00e0796f1d90c7",
+    "k8s/production/petclinic-v09-dashboard.yaml": "2913962bf370925ceb4f6fd99f18fd70bc912b40f2438dd9e4b490f29a49452b",
+    "k8s/production/petclinic.yaml": "883e4bc1a268d19e581f6881e58199e27c815e221dfb9085b0d098fe312708f5"
+  },
+  "argoSource": {
+    "path": "k8s/production",
+    "repoURL": "http://gitlab-service.ns-devops.svc.cluster.local/root/petclinic-platform.git",
+    "targetRevision": "main"
+  },
+  "destination": {
+    "namespace": "petclinic",
+    "server": "https://kubernetes.default.svc"
+  },
+  "argoResources": [
+    {
+      "kind": "ConfigMap",
+      "name": "petclinic-config",
+      "namespace": "petclinic",
+      "status": "Synced",
+      "version": "v1"
+    },
+    {
+      "kind": "ConfigMap",
+      "name": "petclinic-grafana-dashboard",
+      "namespace": "petclinic",
+      "status": "Synced",
+      "version": "v1"
+    },
+    {
+      "kind": "ConfigMap",
+      "name": "petclinic-metrics-dashboard",
+      "namespace": "petclinic",
+      "status": "Synced",
+      "version": "v1"
+    },
+    {
+      "kind": "ConfigMap",
+      "name": "petclinic-release-analysis-dashboard",
+      "namespace": "petclinic",
+      "status": "Synced",
+      "version": "v1"
+    },
+    {
+      "kind": "ConfigMap",
+      "name": "petclinic-v09-dashboard",
+      "namespace": "petclinic",
+      "status": "Synced",
+      "version": "v1"
+    },
+    {
+      "kind": "Service",
+      "name": "petclinic",
+      "namespace": "petclinic",
+      "status": "Synced",
+      "version": "v1"
+    },
+    {
+      "group": "apps",
+      "kind": "Deployment",
+      "name": "petclinic",
+      "namespace": "petclinic",
+      "status": "Synced",
+      "version": "v1"
+    },
+    {
+      "group": "argoproj.io",
+      "kind": "Application",
+      "name": "platform-alertmanager",
+      "namespace": "argocd",
+      "status": "Synced",
+      "version": "v1alpha1"
+    },
+    {
+      "group": "argoproj.io",
+      "kind": "Application",
+      "name": "spark-operator",
+      "namespace": "argocd",
+      "status": "Synced",
+      "version": "v1alpha1"
+    },
+    {
+      "group": "monitoring.coreos.com",
+      "kind": "PrometheusRule",
+      "name": "petclinic",
+      "namespace": "petclinic",
+      "status": "Synced",
+      "version": "v1"
+    },
+    {
+      "group": "monitoring.coreos.com",
+      "kind": "ServiceMonitor",
+      "name": "petclinic",
+      "namespace": "petclinic",
+      "status": "Synced",
+      "version": "v1"
+    },
+    {
+      "group": "networking.k8s.io",
+      "kind": "Ingress",
+      "name": "petclinic-harbor-alias",
+      "namespace": "harbor",
+      "status": "Synced",
+      "version": "v1"
+    },
+    {
+      "group": "networking.k8s.io",
+      "kind": "Ingress",
+      "name": "petclinic",
+      "namespace": "petclinic",
+      "status": "Synced",
+      "version": "v1"
+    },
+    {
+      "group": "policy",
+      "kind": "PodDisruptionBudget",
+      "name": "petclinic",
+      "namespace": "petclinic",
+      "status": "Synced",
+      "version": "v1"
+    }
+  ],
+  "classification": "READ_ONLY_LIVE_GITOPS_AND_PIPELINE_DISCOVERY"
+}

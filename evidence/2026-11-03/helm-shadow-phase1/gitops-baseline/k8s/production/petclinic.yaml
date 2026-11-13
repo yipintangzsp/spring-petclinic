@@ -1,0 +1,244 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: petclinic
+  namespace: petclinic
+  annotations:
+    gitops.zhanglab.io/cutover-test: "v1.27"
+
+spec:
+  replicas: 3
+  minReadySeconds: 10
+  progressDeadlineSeconds: 600
+  revisionHistoryLimit: 5
+
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      # Small worker cannot safely overlap old/new JVMs during a rollout.
+      # Keep at least two available; do not create a surge Pod.
+      maxSurge: 0
+      maxUnavailable: 1
+
+  selector:
+    matchLabels:
+      app: petclinic
+
+  template:
+    metadata:
+      labels:
+        app: petclinic
+
+    spec:
+      # Keep this release on the measured local node while cloud tunnels fluctuate.
+      # The preflight derives required nodes from this explicit selector.
+      nodeSelector:
+        kubernetes.io/os: linux
+        kubernetes.io/hostname: devops
+
+      tolerations:
+        - key: cloud
+          operator: Equal
+          value: "true"
+          effect: NoSchedule
+
+      topologySpreadConstraints:
+        - maxSkew: 1
+          topologyKey: kubernetes.io/hostname
+          # Keep spreading as a preference so a NotReady worker cannot block
+          # a safe 3-replica rollout on the remaining healthy nodes.
+          whenUnsatisfiable: ScheduleAnyway
+          labelSelector:
+            matchLabels:
+              app: petclinic
+          matchLabelKeys:
+            - pod-template-hash
+
+      imagePullSecrets:
+        - name: petclinic-harbor-pull
+      automountServiceAccountToken: false
+      # 5s endpoint propagation + 25s application shutdown phase + margin.
+      terminationGracePeriodSeconds: 45
+
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 10001
+        runAsGroup: 10001
+        fsGroup: 10001
+        seccompProfile:
+          type: RuntimeDefault
+
+      containers:
+        - name: petclinic
+          image: core.harbor.domain/petclinic/petclinic@sha256:489cb821573ff1f98edd846d5949d74bf3391b24e2f1fe5bcfb71c6be0793137
+          imagePullPolicy: IfNotPresent
+
+          securityContext:
+            readOnlyRootFilesystem: true
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+                - ALL
+
+          ports:
+            - name: http
+              containerPort: 8080
+
+          env:
+            # Metrics are ~247KiB; gzip reduces slow cross-node scrape transport.
+            - name: SERVER_COMPRESSION_ENABLED
+              value: "true"
+            - name: SERVER_COMPRESSION_MIN_RESPONSE_SIZE
+              value: "2KB"
+            - name: SERVER_COMPRESSION_MIME_TYPES
+              value: text/plain,application/openmetrics-text
+            # Schema/demo initialization is an explicit admin operation, never Pod startup.
+            - name: SPRING_SQL_INIT_MODE
+              value: never
+            # Budget at most 36 connections even at 6 replicas; idle baseline was 30.
+            - name: SPRING_DATASOURCE_HIKARI_MAXIMUM_POOL_SIZE
+              value: "6"
+            - name: SPRING_DATASOURCE_HIKARI_MINIMUM_IDLE
+              value: "2"
+            - name: SERVER_SHUTDOWN
+              value: graceful
+            - name: SPRING_LIFECYCLE_TIMEOUT_PER_SHUTDOWN_PHASE
+              value: 25s
+            # Preserve probes/metrics without exposing administrative endpoints.
+            - name: MANAGEMENT_ENDPOINTS_WEB_EXPOSURE_INCLUDE
+              value: health,info,prometheus,metrics
+            # Prometheus scrapes metrics; OTLP traces remain enabled.
+            - name: MANAGEMENT_OTLP_METRICS_EXPORT_ENABLED
+              value: 'false'
+            - name: MANAGEMENT_TRACING_EXPORT_OTLP_ENABLED
+              value: 'true'
+            - name: MANAGEMENT_OPENTELEMETRY_TRACING_EXPORT_OTLP_ENDPOINT
+              value: http://otel-collector.monitoring.svc.cluster.local:4318/v1/traces
+            - name: MANAGEMENT_TRACING_SAMPLING_PROBABILITY
+              value: '1.0'
+            # Updated together with the immutable image tag by Jenkins Git promotion.
+            - name: APPLICATION_VERSION
+              value: '0.10.0-ci-218'
+            - name: BUILD_NUMBER
+              value: '218'
+            - name: BUILD_GIT_COMMIT
+              value: '1fc223cb01a153b66e00ddbbff1b3b517a9784b1'
+            - name: BUILD_TIME
+              value: '2026-10-27T04:59:35.090Z'
+
+            - name: SPRING_PROFILES_ACTIVE
+              valueFrom:
+                configMapKeyRef:
+                  name: petclinic-config
+                  key: SPRING_PROFILES_ACTIVE
+
+            - name: POSTGRES_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: petclinic-config
+                  key: POSTGRES_URL
+
+            - name: POSTGRES_USER
+              valueFrom:
+                secretKeyRef:
+                  name: petclinic-db
+                  key: POSTGRES_USER
+
+            - name: POSTGRES_PASS
+              valueFrom:
+                secretKeyRef:
+                  name: petclinic-db
+                  key: POSTGRES_PASS
+
+          volumeMounts:
+            - name: runtime-tmp
+              mountPath: /tmp
+            - name: platform-snapshot
+              mountPath: /etc/petclinic-platform
+              readOnly: true
+
+          lifecycle:
+            preStop:
+              exec:
+                command: ["/bin/sh", "-c", "sleep 5"]
+
+          startupProbe:
+            httpGet:
+              path: /actuator/health/liveness
+              port: http
+            periodSeconds: 5
+            timeoutSeconds: 3
+            failureThreshold: 36
+
+          readinessProbe:
+            httpGet:
+              path: /actuator/health/readiness
+              port: http
+            periodSeconds: 10
+            timeoutSeconds: 3
+            failureThreshold: 6
+
+          livenessProbe:
+            httpGet:
+              path: /actuator/health/liveness
+              port: http
+            periodSeconds: 15
+            timeoutSeconds: 3
+            failureThreshold: 3
+
+          resources:
+            requests:
+              cpu: 100m
+              memory: 512Mi
+            limits:
+              cpu: 500m
+              memory: 768Mi
+
+      volumes:
+        - name: runtime-tmp
+          emptyDir:
+            sizeLimit: 128Mi
+        - name: platform-snapshot
+          configMap:
+            name: petclinic-platform-snapshot
+            optional: true
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: petclinic
+  namespace: petclinic
+
+spec:
+  type: ClusterIP
+
+  selector:
+    app: petclinic
+
+  ports:
+    - name: http
+      port: 80
+      targetPort: http
+
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: petclinic
+  namespace: petclinic
+
+spec:
+  ingressClassName: traefik
+
+  rules:
+    - host: petclinic.devops.local
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: petclinic
+                port:
+                  number: 80

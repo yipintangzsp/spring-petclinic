@@ -1,0 +1,327 @@
+{
+  "items": [
+    {
+      "number": 1,
+      "name": "backing storage type",
+      "result": "Mac APFS上的UTM QEMU qcow2；devops.utm唯一可写VirtIO Disk。UTM4.7.5，QEMULauncher PID18121实际持有该镜像。"
+    },
+    {
+      "number": 2,
+      "name": "disk current size",
+      "result": "客体/QCOW2 virtual-size=258GiB；镜像文件length=340.69GiB、已分配=204.93GiB。file length不是客体容量，也不是尾部可用分区空间。"
+    },
+    {
+      "number": 3,
+      "name": "partition layout",
+      "result": "GPT；vda1 EFI 2048–2203647；vda2 Linux 2203648–541065182；最后可用扇区541065182。"
+    },
+    {
+      "number": 4,
+      "name": "filesystem type",
+      "result": "ext4，root=/dev/vda2；无LVM、无活动mdraid。"
+    },
+    {
+      "number": 5,
+      "name": "free unpartitioned space",
+      "result": "可供vda2尾部增长的空间=0；GPT尾部保留扇区不能算可扩空间。"
+    },
+    {
+      "number": 6,
+      "name": "online grow capability",
+      "result": "ext4条件性支持online grow；growpart/resize2fs已安装。不能据此假设host backing可以安全在线增大；未验证支持的live管理接口。"
+    },
+    {
+      "number": 7,
+      "name": "snapshot capability",
+      "result": "QCOW2格式具备snapshot能力；已安装UTM4.7.5的可用一致性快照/恢复管理路径尚未验证。没有创建新snapshot；当前在线文档不可直接当作已安装版本保证。"
+    },
+    {
+      "number": 8,
+      "name": "expansion rollback capability",
+      "result": "需要经过验证的一致性VM snapshot/backup并能恢复VM及所有相关驱动。宿主当前空间不足以保留独立完整镜像副本；APFS clone/内部snapshot若采用，仍须预算COW并验证一致性，不能声称已具备回滚。禁止用在线缩分区/ext4回滚。"
+    },
+    {
+      "number": 9,
+      "name": "current available",
+      "result": "最新guest 43.52GiB；host APFS 25.25GiB。自然波动不算本轮回收。"
+    },
+    {
+      "number": 10,
+      "name": "required minimum",
+      "result": "原guard=49.78GiB，15%当前capacity+12GiB；扩容后仍按新capacity重新计算，禁止固定旧阈值冒充满足。"
+    },
+    {
+      "number": 11,
+      "name": "preferred target",
+      "result": "至少52GiB，且必须满足扩容后重算guard，两者取更严。"
+    },
+    {
+      "number": 12,
+      "name": "proposed minimum expansion",
+      "result": "建议最小+16GiB（258→274）；预计guest avail约58.28GiB、guard约52.11GiB，仅估算，未批准执行。考虑现有reserve/metadata，不只增加8.61GiB。"
+    },
+    {
+      "number": 13,
+      "name": "proposed recommended expansion",
+      "result": "建议+32GiB（258→290）；预计avail约73.03GiB、guard约54.43GiB，为DB临时约4GiB、registry约8GiB、validation/container增长约4GiB保留预算。宿主物理写入/快照/COW预算必须先验证，不能只增虚拟数字。"
+    },
+    {
+      "number": 14,
+      "name": "storage health",
+      "result": "tune2fs报告clean、inode约10%；24h内核查询无匹配I/O/EXT4/buffer/corruption错误。mounted journal needs_recovery不等同于已发现损坏；未运行离线全盘fsck。QCOW2 info是运行中只读header观察，不是完整一致性检查。"
+    },
+    {
+      "number": 15,
+      "name": "expansion risk classification",
+      "result": "REQUIRES_SNAPSHOT_OR_CONSISTENT_BACKUP；支持的online backing入口/maintenance影响未解决；host容量及rollback预算未批准。不能归为已证明LOW_RISK_ONLINE。"
+    },
+    {
+      "number": 16,
+      "name": "STORAGE_EXPANSION_READINESS",
+      "result": "NOT_READY。"
+    },
+    {
+      "number": 17,
+      "name": "snapshot result if applicable",
+      "result": "NOT_CREATED。snapshot ID/time=null；没有验证过的pre-expansion恢复点。"
+    },
+    {
+      "number": 18,
+      "name": "backing volume expansion result",
+      "result": "NOT_EXECUTED。没有修改正在使用的qcow2，也没有停VM。"
+    },
+    {
+      "number": 19,
+      "name": "partition expansion result",
+      "result": "NOT_EXECUTED；vda2起点/type/EFI均未改。"
+    },
+    {
+      "number": 20,
+      "name": "filesystem expansion result",
+      "result": "NOT_EXECUTED；未format/mkfs，也未改变reserved space。"
+    },
+    {
+      "number": 21,
+      "name": "post-expansion available",
+      "result": "未扩容；当前仍约43.52GiB。"
+    },
+    {
+      "number": 22,
+      "name": "STORAGE_EXPANSION_EXECUTION",
+      "result": "INCOMPLETE。"
+    },
+    {
+      "number": 23,
+      "name": "UNKNOWN image count before analysis",
+      "result": "31。"
+    },
+    {
+      "number": 24,
+      "name": "SAFE_DELETE count if fallback analysis used",
+      "result": "0；30重新判为REFERENCED，1仍UNKNOWN并保留。"
+    },
+    {
+      "number": 25,
+      "name": "estimated actual registry reclaim",
+      "result": "已证明可回收=0；没有将virtual/压缩image size累加为真实可回收空间。"
+    },
+    {
+      "number": 26,
+      "name": "images actually deleted",
+      "result": "0。"
+    },
+    {
+      "number": 27,
+      "name": "DISK_RECLAMATION_READINESS",
+      "result": "NOT_READY。"
+    },
+    {
+      "number": 28,
+      "name": "DISK_RECLAMATION_EXECUTION",
+      "result": "INCOMPLETE。"
+    },
+    {
+      "number": 29,
+      "name": "xray before bind",
+      "result": "沿用已冻结、未修改的127.0.0.1:10808 mixed/noauth；本轮未进入proxy修改阶段。"
+    },
+    {
+      "number": 30,
+      "name": "selected proxy fix",
+      "result": "NOT_SELECTED_FOR_EXECUTION。先满足storage guard；不能在磁盘失败时跳阶段开放LAN入口。"
+    },
+    {
+      "number": 31,
+      "name": "xray after bind",
+      "result": "无变更；未创建转发listener或修改路由/防火墙。"
+    },
+    {
+      "number": 32,
+      "name": "proxy exposure scope",
+      "result": "无新增暴露；未开展修复后来源ACL/WAN验证。"
+    },
+    {
+      "number": 33,
+      "name": "actual caller connectivity",
+      "result": "当前已知Harbor→MacLAN10808仍未修复，本轮没有新proxy成功证明。"
+    },
+    {
+      "number": 34,
+      "name": "upstream Trivy endpoint connectivity",
+      "result": "保留原前置证据；本轮未执行修复后manifest/blob成功验证。"
+    },
+    {
+      "number": 35,
+      "name": "PROXY_REACHABILITY",
+      "result": "INCOMPLETE。"
+    },
+    {
+      "number": 36,
+      "name": "DB refresh path",
+      "result": "原infra/observability/scanner-db-refresh.mjs冻结路径不变；storage guard不满足，未执行任何替代下载。"
+    },
+    {
+      "number": 37,
+      "name": "DB identity/version",
+      "result": "本轮未生成新库。现有db Version2/java-db Version1证据保留，不把旧库当fresh。"
+    },
+    {
+      "number": 38,
+      "name": "DB timestamp",
+      "result": "无新timestamp；未改NextUpdate/DownloadedAt。"
+    },
+    {
+      "number": 39,
+      "name": "DB checksum",
+      "result": "无本轮新checksum。历史官方manifest不能替代本轮成功刷新。"
+    },
+    {
+      "number": 40,
+      "name": "TRIVY_DB_REFRESH",
+      "result": "INCOMPLETE，BLOCKED_STORAGE。"
+    },
+    {
+      "number": 41,
+      "name": "Trivy validation identity",
+      "result": "未新建；不能在DB未VERIFIED前进入阶段19。"
+    },
+    {
+      "number": 42,
+      "name": "Trivy candidate digest",
+      "result": "既有2fbaea65ab030c56c60c62e3ee9fbe362deb8bbbb8216a891ef4c7bbbcea6d55保留GET200，未触发扫描。"
+    },
+    {
+      "number": 43,
+      "name": "Trivy scan/report result",
+      "result": "NOT_EXECUTED，不复用#23旧FAIL作本轮结果。"
+    },
+    {
+      "number": 44,
+      "name": "Trivy Policy evaluation count",
+      "result": "0本轮runtime评价；单元测试独立标注。"
+    },
+    {
+      "number": 45,
+      "name": "Trivy Gate digest reuse",
+      "result": "无新runtime receipt，NOT_EXECUTED。"
+    },
+    {
+      "number": 46,
+      "name": "TRIVY_RUNTIME_FACT_CAPTURE",
+      "result": "INCOMPLETE。"
+    },
+    {
+      "number": 47,
+      "name": "final wired capability count",
+      "result": "13/16；未满足Trivy VERIFIED，不能提升14/16。"
+    },
+    {
+      "number": 48,
+      "name": "remaining runtime sources",
+      "result": "Trivy、Cosign、DefectDojo；后两者本轮未执行。"
+    },
+    {
+      "number": 49,
+      "name": "protected image status",
+      "result": "当前489cb…、立即前序163=83c2…、文档#214=a8c03…、candidate2fba…均Harbor GET200，均保留。"
+    },
+    {
+      "number": 50,
+      "name": "Harbor status",
+      "result": "7个Pod Ready、registry四个指定artifact可读；无tag/manifest/blob/GC变更。"
+    },
+    {
+      "number": 51,
+      "name": "Jenkins status",
+      "result": "production #270 SUCCESS；validation仍#30 SUCCESS，无新构建。"
+    },
+    {
+      "number": 52,
+      "name": "node status",
+      "result": "3个节点Ready，原heavy Lease已释放。"
+    },
+    {
+      "number": 53,
+      "name": "PetClinic status",
+      "result": "3/3Ready，generation175/revision164保持；HTTP200。"
+    },
+    {
+      "number": 54,
+      "name": "V1 status",
+      "result": "V1 active，Summary ec9ee51a06d4b9f61c6c0eaf50b374d1e25e6d3ca687908b7596d3a2c794f5d8不变；455个冻结source引用hash保持，2202 count不变。"
+    },
+    {
+      "number": 55,
+      "name": "release count",
+      "result": "0。"
+    },
+    {
+      "number": 56,
+      "name": "rollout count",
+      "result": "0。"
+    },
+    {
+      "number": 57,
+      "name": "REAL_RUNTIME_FACT_CAPTURE",
+      "result": "INCOMPLETE。"
+    },
+    {
+      "number": 58,
+      "name": "REAL_POLICY_OWNER",
+      "result": "INCOMPLETE。"
+    },
+    {
+      "number": 59,
+      "name": "IMMUTABLE_ARTIFACT_RUNTIME",
+      "result": "INCOMPLETE。"
+    },
+    {
+      "number": 60,
+      "name": "SUMMARY_V2_MIGRATION",
+      "result": "INCOMPLETE。"
+    },
+    {
+      "number": 61,
+      "name": "exact blocker if incomplete",
+      "result": "无分区尾部空间；backing尚无安全online resize/一致性snapshot恢复证明。宿主只余约25GiB，必须先验证实际写入+COW+既有host保留余量，而非假定sparse扩容不会产生后续压力。fallback查明30个正引用，余1个UNKNOWN不可删除；SAFE_DELETE=0，无法恢复原guard。"
+    },
+    {
+      "number": 62,
+      "name": "exact next permitted action",
+      "result": "准备宿主物理空间/外部备份目标与实际写入预算，核实支持的UTM4.7.5 online管理接口或安排可接受的VM维护窗口。形成一致性backup/snapshot与恢复步骤后重新判断READY；若READY，支持的backing增大→客体可见→growpart /dev/vda 2→resize2fs /dev/vda2，每步验证，不能倒序。保持UNKNOWN镜像，不执行GC；storage未满足前不改proxy/刷新DB。STOP。"
+    }
+  ],
+  "verdicts": {
+    "STORAGE_EXPANSION_READINESS": "NOT_READY",
+    "STORAGE_EXPANSION_EXECUTION": "INCOMPLETE",
+    "DISK_RECLAMATION_READINESS": "NOT_READY",
+    "DISK_RECLAMATION_EXECUTION": "INCOMPLETE",
+    "PROXY_REACHABILITY": "INCOMPLETE",
+    "TRIVY_DB_REFRESH": "INCOMPLETE",
+    "TRIVY_RUNTIME_FACT_CAPTURE": "INCOMPLETE",
+    "REAL_RUNTIME_FACT_CAPTURE": "INCOMPLETE",
+    "REAL_POLICY_OWNER": "INCOMPLETE",
+    "IMMUTABLE_ARTIFACT_RUNTIME": "INCOMPLETE",
+    "SUMMARY_V2_MIGRATION": "INCOMPLETE"
+  }
+}

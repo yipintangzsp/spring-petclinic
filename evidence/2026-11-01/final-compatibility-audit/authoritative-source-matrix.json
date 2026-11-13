@@ -1,0 +1,1103 @@
+{
+  "scope": "Unique authoritative final inventory for this audit; does not rewrite historical acceptances",
+  "sources": [
+    {
+      "source": "sbom",
+      "productionStage": "Package SBOM",
+      "productionEntry": "( nice -n 10 ./mvnw -B package -DskipTests && node infra/security/sbom-verify.mjs )",
+      "adapterStatus": "VERIFIED",
+      "adapterScope": "Complete frozen current parent, including existing execution/error behavior",
+      "completeParentDifferentialStatus": "VERIFIED",
+      "samples": 171,
+      "matched": 171,
+      "mismatched": 0,
+      "explicitNullDecisions": 0,
+      "rawPreserved": true,
+      "oldDecisions": {
+        "PASS": 45,
+        "FAIL": 121,
+        "NOT_CONFIGURED": 1,
+        "SKIPPED": 4
+      },
+      "standardDecisions": {
+        "PASS": 45,
+        "FAIL": 121,
+        "NOT_CONFIGURED": 1,
+        "SKIPPED": 4
+      },
+      "evidenceFiles": [
+        "evidence/2026-11-01/sbom-parent/differential.json",
+        "evidence/2026-11-01/sbom-parent/workflow-differential.json"
+      ],
+      "acceptance": "evidence/2026-11-01/sbom-parent/acceptance.json",
+      "evidenceType": [
+        "CONTROLLED_REPLAY"
+      ],
+      "remainingEvidenceGap": [
+        "Historical original JAR/Maven source bytes and full generator/CLI/prerequisite transcript not all archived; complete execution proof is CONTROLLED_REPLAY",
+        "No new actual Maven/CycloneDX generation, online Jenkins CPS, registry, image attestation or current service health certification",
+        "Current Gate has no SBOM image/digest attestation; compatibility does not add one"
+      ],
+      "finalCompatibilityStatus": "VERIFIED",
+      "blockerClass": null,
+      "aggregateProofKey": "sbom"
+    },
+    {
+      "source": "regression",
+      "productionStage": "Regression",
+      "productionEntry": "node --test --test-concurrency=1 infra/observability/*.test.mjs infra/security/*.test.mjs",
+      "adapterStatus": "VERIFIED",
+      "adapterScope": "Complete frozen current parent, including existing execution/error behavior",
+      "completeParentDifferentialStatus": "VERIFIED",
+      "samples": 38,
+      "matched": 38,
+      "mismatched": 0,
+      "explicitNullDecisions": 0,
+      "rawPreserved": true,
+      "oldDecisions": {
+        "PASS": 9,
+        "FAIL": 29
+      },
+      "standardDecisions": {
+        "PASS": 9,
+        "FAIL": 29
+      },
+      "evidenceFiles": [
+        "evidence/2026-11-01/regression-parent/differential.json"
+      ],
+      "acceptance": "evidence/2026-11-01/regression-parent/acceptance.json",
+      "evidenceType": [
+        "CONTROLLED_REPLAY",
+        "REAL_HISTORICAL"
+      ],
+      "remainingEvidenceGap": [
+        "No new live Jenkins CPS acceptance, no natural historical failed Regression transcript",
+        "Historical #270 has complete command/TAP/exit observations, but not full host prerequisite transcript",
+        "Controlled failures occurred only in disposable checkout or inert stubs; not production incidents"
+      ],
+      "finalCompatibilityStatus": "VERIFIED",
+      "blockerClass": null,
+      "aggregateProofKey": "regression"
+    },
+    {
+      "source": "falco-baseline",
+      "productionStage": "Falco Baseline",
+      "productionEntry": "node infra/security/runtime/health.mjs baseline",
+      "adapterStatus": "VERIFIED",
+      "adapterScope": "Complete frozen current parent, including existing execution/error behavior",
+      "completeParentDifferentialStatus": "VERIFIED",
+      "samples": 52,
+      "matched": 52,
+      "mismatched": 0,
+      "explicitNullDecisions": 0,
+      "rawPreserved": true,
+      "oldDecisions": {
+        "PASS": 19,
+        "FAIL": 33
+      },
+      "standardDecisions": {
+        "PASS": 19,
+        "FAIL": 33
+      },
+      "evidenceFiles": [
+        "evidence/2026-11-01/falco-parent/differential.json"
+      ],
+      "acceptance": "evidence/2026-11-01/falco-parent/acceptance.json",
+      "evidenceType": [
+        "CONTROLLED_COMPLETE_STAGE_WITH_HISTORICAL_SENSOR_IDENTITY"
+      ],
+      "remainingEvidenceGap": [
+        "Natural full-parent production incident/live environment certification not claimed; frozen compatibility proof only"
+      ],
+      "finalCompatibilityStatus": "VERIFIED",
+      "blockerClass": null,
+      "aggregateProofKey": "falco-baseline"
+    },
+    {
+      "source": "kyverno",
+      "productionStage": "Kyverno",
+      "productionEntry": "( node infra/security/rbac-contract.mjs && node infra/security/admission-gate.mjs )",
+      "adapterStatus": "VERIFIED",
+      "adapterScope": "Complete frozen current parent, including existing execution/error behavior",
+      "completeParentDifferentialStatus": "VERIFIED",
+      "samples": 49,
+      "matched": 49,
+      "mismatched": 0,
+      "explicitNullDecisions": 0,
+      "rawPreserved": true,
+      "oldDecisions": {
+        "PASS": 5,
+        "FAIL": 44
+      },
+      "standardDecisions": {
+        "PASS": 5,
+        "FAIL": 44
+      },
+      "evidenceFiles": [
+        "evidence/2026-11-01/kyverno-parent/parent-differential.json"
+      ],
+      "acceptance": "evidence/2026-11-01/kyverno-parent/acceptance.json",
+      "evidenceType": [
+        "SYNTHETIC_COMPLETE_PARENT_WITH_HISTORICAL_PROBE_RESULTS"
+      ],
+      "remainingEvidenceGap": [
+        "Natural full-parent production incident/live environment certification not claimed; frozen compatibility proof only"
+      ],
+      "finalCompatibilityStatus": "VERIFIED",
+      "blockerClass": null,
+      "aggregateProofKey": "kyverno"
+    },
+    {
+      "source": "kubescape",
+      "productionStage": "Kubescape Audit",
+      "productionEntry": "node --max-old-space-size=128 infra/security/governance/kubescape.mjs",
+      "adapterStatus": "VERIFIED",
+      "adapterScope": "Complete frozen current parent, including existing execution/error behavior",
+      "completeParentDifferentialStatus": "VERIFIED",
+      "samples": 45,
+      "matched": 45,
+      "mismatched": 0,
+      "explicitNullDecisions": 0,
+      "rawPreserved": true,
+      "oldDecisions": {
+        "PASS": 4,
+        "FAIL": 41
+      },
+      "standardDecisions": {
+        "PASS": 4,
+        "FAIL": 41
+      },
+      "evidenceFiles": [
+        "evidence/2026-11-01/kubescape-parent/differential.json"
+      ],
+      "acceptance": "evidence/2026-11-01/kubescape-parent/acceptance.json",
+      "evidenceType": [
+        "CONTROLLED_COMPLETE_GATE_WITH_HISTORICAL_CONSUMED_FIELDS",
+        "SYNTHETIC_COMPLETE_GATE"
+      ],
+      "remainingEvidenceGap": [
+        "Natural full-parent production incident/live environment certification not claimed; frozen compatibility proof only"
+      ],
+      "finalCompatibilityStatus": "VERIFIED",
+      "blockerClass": null,
+      "aggregateProofKey": "kubescape"
+    },
+    {
+      "source": "gitleaks",
+      "productionStage": "Secret Source",
+      "productionEntry": "node infra/security/source-gate.mjs",
+      "adapterStatus": "VERIFIED",
+      "adapterScope": "Classifier/review loop ONLY; retained prior scoped VERIFIED",
+      "completeParentDifferentialStatus": "NOT_TESTED",
+      "samples": 7,
+      "matched": 7,
+      "mismatched": 0,
+      "explicitNullDecisions": 0,
+      "rawPreserved": true,
+      "oldDecisions": {
+        "PASS": 3,
+        "FAIL": 4
+      },
+      "standardDecisions": {
+        "PASS": 3,
+        "FAIL": 4
+      },
+      "evidenceFiles": [
+        "evidence/2026-11-01/policy-engine/gitleaks-differential.json"
+      ],
+      "evidenceType": [
+        "SYNTHETIC_UNIT_ONLY"
+      ],
+      "remainingEvidenceGap": [
+        "Full production parent prerequisite/execution/identity/report/cleanup differential proof absent; observed classifier parity cannot cover these failure paths"
+      ],
+      "finalCompatibilityStatus": "NOT_TESTED",
+      "blockerClass": "A",
+      "aggregateProofKey": "gitleaks-classifier-only"
+    },
+    {
+      "source": "semgrep",
+      "productionStage": "Semgrep",
+      "productionEntry": "( node infra/security/command-audit.mjs && node --max-old-space-size=128 infra/security/semgrep-gate.mjs )",
+      "adapterStatus": "VERIFIED",
+      "adapterScope": "Complete frozen current parent, including existing execution/error behavior",
+      "completeParentDifferentialStatus": "VERIFIED",
+      "samples": 136,
+      "matched": 136,
+      "mismatched": 0,
+      "explicitNullDecisions": 0,
+      "rawPreserved": true,
+      "oldDecisions": {
+        "PASS": 26,
+        "FAIL": 110
+      },
+      "standardDecisions": {
+        "PASS": 26,
+        "FAIL": 110
+      },
+      "evidenceFiles": [
+        "evidence/2026-11-01/command-parent/differential.json",
+        "evidence/2026-11-01/command-parent/workflow-differential.json"
+      ],
+      "acceptance": "evidence/2026-11-01/command-parent/acceptance.json",
+      "evidenceType": [
+        "CONTROLLED_REPLAY",
+        "REAL_HISTORICAL"
+      ],
+      "remainingEvidenceGap": [
+        "Historical parent exit/reports are available, full per-command prerequisite/CLI transcript not all archived",
+        "No new real Semgrep CLI scan or Kubernetes Pod lifecycle/isolation/production service health validation; lifecycle is CONTROLLED_REPLAY",
+        "No natural failed production incident manufactured; direct negative examples use static-only fixture analysis"
+      ],
+      "finalCompatibilityStatus": "VERIFIED",
+      "blockerClass": null,
+      "aggregateProofKey": "command-parent"
+    },
+    {
+      "source": "sops",
+      "productionStage": "Encrypted Credentials",
+      "productionEntry": "node infra/security/secrets-gate.mjs",
+      "adapterStatus": "NOT_TESTED",
+      "adapterScope": "Observation adapter implemented; 20 unit-only Gate-body comparisons; prerequisites not fully proved",
+      "completeParentDifferentialStatus": "NOT_TESTED",
+      "samples": 20,
+      "matched": 20,
+      "mismatched": 0,
+      "explicitNullDecisions": 0,
+      "rawPreserved": true,
+      "oldDecisions": {
+        "PASS": 2,
+        "FAIL": 18
+      },
+      "standardDecisions": {
+        "PASS": 2,
+        "FAIL": 18
+      },
+      "evidenceFiles": [
+        "evidence/2026-11-01/sops-policy/differential.json",
+        "evidence/2026-11-01/sops-policy/acceptance.json",
+        "evidence/2026-11-01/sops-controlled/acceptance.json"
+      ],
+      "evidenceType": [
+        "SYNTHETIC_UNIT_ONLY",
+        "EXECUTION_ENVIRONMENT_INSPECTION_ONLY"
+      ],
+      "remainingEvidenceGap": [
+        "0 real controlled positive/negative/prerequisite executions; no safe disposable authorized Kubernetes environment",
+        "Original runtime prerequisite validation behavior not proven by booleans supplied as input; do not read production Secrets to fill this gap"
+      ],
+      "finalCompatibilityStatus": "ENVIRONMENT_BLOCKED",
+      "verificationStatus": "NOT_TESTED",
+      "historicalNegativeStatus": "DEFERRED_REAL_NEGATIVE_EVIDENCE",
+      "blockerClass": "A",
+      "aggregateProofKey": "sops-unit-only"
+    },
+    {
+      "source": "trivy",
+      "productionStage": "Trivy",
+      "productionEntry": "( node infra/security/ensure-audit-candidate.mjs && node infra/security/audit-trivy.mjs )",
+      "adapterStatus": "VERIFIED",
+      "adapterScope": "Classifier/review loop ONLY; retained prior scoped VERIFIED",
+      "completeParentDifferentialStatus": "NOT_TESTED",
+      "samples": 8,
+      "matched": 8,
+      "mismatched": 0,
+      "explicitNullDecisions": 0,
+      "rawPreserved": true,
+      "oldDecisions": {
+        "FAIL": 5,
+        "WARN": 3
+      },
+      "standardDecisions": {
+        "FAIL": 5,
+        "WARN": 3
+      },
+      "evidenceFiles": [
+        "evidence/2026-11-01/policy-engine/gate-decision-before.json",
+        "evidence/2026-11-01/final-compatibility-audit/core-readiness.json"
+      ],
+      "evidenceType": [
+        "SYNTHETIC_UNIT_ONLY"
+      ],
+      "remainingEvidenceGap": [
+        "Full production parent prerequisite/execution/identity/report/cleanup differential proof absent; observed classifier parity cannot cover these failure paths"
+      ],
+      "finalCompatibilityStatus": "NOT_TESTED",
+      "blockerClass": "A",
+      "aggregateProofKey": "trivy-classifier-only"
+    },
+    {
+      "source": "cosign",
+      "productionStage": "Cosign Admission",
+      "productionEntry": "node infra/security/signing.mjs admission",
+      "adapterStatus": "VERIFIED",
+      "adapterScope": "Complete frozen current parent, including existing execution/error behavior",
+      "completeParentDifferentialStatus": "VERIFIED",
+      "samples": 260,
+      "matched": 260,
+      "mismatched": 0,
+      "explicitNullDecisions": 0,
+      "rawPreserved": true,
+      "oldDecisions": {
+        "PASS": 18,
+        "FAIL": 242
+      },
+      "standardDecisions": {
+        "PASS": 18,
+        "FAIL": 242
+      },
+      "evidenceFiles": [
+        "evidence/2026-11-01/cosign-parent/differential.json"
+      ],
+      "acceptance": "evidence/2026-11-01/cosign-parent/acceptance.json",
+      "evidenceType": [
+        "SYNTHETIC_FROZEN_COMPLETE_STAGE"
+      ],
+      "remainingEvidenceGap": [
+        "Historical archive lacks full raw CLI/prerequisite transcript; no historical complete-stage differential claimed",
+        "No live crypto/registry/admission/service health certification in this iteration"
+      ],
+      "finalCompatibilityStatus": "VERIFIED",
+      "blockerClass": null,
+      "aggregateProofKey": "cosign"
+    },
+    {
+      "source": "sonarqube",
+      "productionStage": "SonarQube",
+      "productionEntry": "nice -n 10 ./mvnw -B org.sonarsource.scanner.maven:sonar-maven-plugin:5.8.0.7211:sonar -Dsonar.projectKey=petclinic -Dsonar.qualitygate.wait=true -Dsonar.qualitygate.timeout=300",
+      "adapterStatus": "VERIFIED",
+      "adapterScope": "Bound real OK -> PASS; synthetic ERROR -> FAIL logic only",
+      "completeParentDifferentialStatus": "DEFERRED_REAL_NEGATIVE_EVIDENCE",
+      "samples": 1,
+      "matched": 1,
+      "mismatched": 0,
+      "explicitNullDecisions": 0,
+      "rawPreserved": true,
+      "oldDecisions": {
+        "PASS": 1
+      },
+      "standardDecisions": {
+        "PASS": 1
+      },
+      "evidenceFiles": [
+        "evidence/2026-11-01/sonar-policy/positive-differential.json",
+        "evidence/2026-11-01/sonar-policy/analysis-bound-facts.json",
+        "evidence/2026-11-01/sonar-policy/negative-evidence-disposition.json"
+      ],
+      "evidenceType": [
+        "HISTORICAL_ARCHIVE",
+        "SYNTHETIC_UNIT_ONLY"
+      ],
+      "remainingEvidenceGap": [
+        "Real failed build -> task -> analysis -> ERROR conditions direct chain missing; positive build/task uses workspace/time correlation, not directly archived build task",
+        "Existing historical failed logs/ERROR reports do not justify a bound real-negative VERIFIED claim"
+      ],
+      "finalCompatibilityStatus": "DEFERRED_REAL_NEGATIVE_EVIDENCE",
+      "positiveStatus": "VERIFIED",
+      "realNegativeStatus": "NOT_TESTED",
+      "blockerClass": "B",
+      "aggregateProofKey": "sonar-positive-only"
+    },
+    {
+      "source": "zap",
+      "productionStage": "ZAP Passive",
+      "productionEntry": "node infra/security/zap-gate.mjs",
+      "adapterStatus": "VERIFIED",
+      "adapterScope": "Classifier/review loop ONLY; retained prior scoped VERIFIED",
+      "completeParentDifferentialStatus": "NOT_TESTED",
+      "samples": 4,
+      "matched": 4,
+      "mismatched": 0,
+      "explicitNullDecisions": 0,
+      "rawPreserved": true,
+      "oldDecisions": {
+        "WARN": 4
+      },
+      "standardDecisions": {
+        "WARN": 4
+      },
+      "evidenceFiles": [
+        "evidence/2026-11-01/policy-engine/gate-decision-before.json",
+        "evidence/2026-11-01/final-compatibility-audit/core-readiness.json"
+      ],
+      "evidenceType": [
+        "SYNTHETIC_UNIT_ONLY"
+      ],
+      "remainingEvidenceGap": [
+        "Full production parent prerequisite/execution/identity/report/cleanup differential proof absent; observed classifier parity cannot cover these failure paths"
+      ],
+      "finalCompatibilityStatus": "NOT_TESTED",
+      "blockerClass": "A",
+      "aggregateProofKey": "zap-classifier-only"
+    },
+    {
+      "source": "falco-final",
+      "productionStage": "Falco Final",
+      "productionEntry": "node infra/security/runtime/health.mjs",
+      "adapterStatus": "VERIFIED",
+      "adapterScope": "Complete frozen current parent, including existing execution/error behavior",
+      "completeParentDifferentialStatus": "VERIFIED",
+      "samples": 54,
+      "matched": 54,
+      "mismatched": 0,
+      "explicitNullDecisions": 0,
+      "rawPreserved": true,
+      "oldDecisions": {
+        "PASS": 18,
+        "FAIL": 36
+      },
+      "standardDecisions": {
+        "PASS": 18,
+        "FAIL": 36
+      },
+      "evidenceFiles": [
+        "evidence/2026-11-01/falco-parent/differential.json"
+      ],
+      "acceptance": "evidence/2026-11-01/falco-parent/acceptance.json",
+      "evidenceType": [
+        "CONTROLLED_COMPLETE_STAGE_WITH_HISTORICAL_SENSOR_IDENTITY"
+      ],
+      "remainingEvidenceGap": [
+        "Natural full-parent production incident/live environment certification not claimed; frozen compatibility proof only"
+      ],
+      "finalCompatibilityStatus": "VERIFIED",
+      "blockerClass": null,
+      "aggregateProofKey": "falco-final"
+    },
+    {
+      "source": "defectdojo",
+      "productionStage": "DefectDojo Governance",
+      "productionEntry": "node --max-old-space-size=192 infra/security/governance/defectdojo.mjs",
+      "adapterStatus": "VERIFIED",
+      "adapterScope": "Complete frozen current parent, including existing execution/error behavior",
+      "completeParentDifferentialStatus": "VERIFIED",
+      "samples": 68,
+      "matched": 68,
+      "mismatched": 0,
+      "explicitNullDecisions": 0,
+      "rawPreserved": true,
+      "oldDecisions": {
+        "PASS": 19,
+        "FAIL": 49
+      },
+      "standardDecisions": {
+        "PASS": 19,
+        "FAIL": 49
+      },
+      "evidenceFiles": [
+        "evidence/2026-11-01/dojo-parent/differential.json"
+      ],
+      "acceptance": "evidence/2026-11-01/dojo-parent/acceptance.json",
+      "evidenceType": [
+        "SYNTHETIC_COMPLETE_STAGE_WITH_HISTORICAL_RECEIPT_IDENTITIES"
+      ],
+      "remainingEvidenceGap": [
+        "Natural full-parent production incident/live environment certification not claimed; frozen compatibility proof only"
+      ],
+      "finalCompatibilityStatus": "VERIFIED",
+      "blockerClass": null,
+      "aggregateProofKey": "defectdojo"
+    },
+    {
+      "source": "provenance",
+      "productionStage": "Conditional securityProvenance",
+      "productionEntry": "vars/securityProvenance.groovy",
+      "adapterStatus": "VERIFIED",
+      "adapterScope": "Complete frozen current parent, including existing execution/error behavior",
+      "completeParentDifferentialStatus": "VERIFIED",
+      "samples": 181,
+      "matched": 181,
+      "mismatched": 0,
+      "explicitNullDecisions": 5,
+      "rawPreserved": true,
+      "oldDecisions": {
+        "PASS": 30,
+        "FAIL": 142,
+        "WARN": 4,
+        "SKIPPED": 5
+      },
+      "standardDecisions": {
+        "PASS": 30,
+        "FAIL": 142,
+        "WARN": 4,
+        "SKIPPED": 5
+      },
+      "evidenceFiles": [
+        "evidence/2026-11-01/provenance-parent/differential.json",
+        "evidence/2026-11-01/provenance-parent/workflow-differential.json"
+      ],
+      "acceptance": "evidence/2026-11-01/provenance-parent/acceptance.json",
+      "evidenceType": [
+        "CONTROLLED_REPLAY"
+      ],
+      "remainingEvidenceGap": [
+        "Historical full CLI/prerequisite transcript not available; complete replay is CONTROLLED_REPLAY",
+        "No new live production provenance generation, registry, Jenkins CPS/credentials or current service health acceptance",
+        "Historical natural parent FAIL incident deferred; archived controlled negative checks and controlled replay kept distinct"
+      ],
+      "finalCompatibilityStatus": "VERIFIED",
+      "blockerClass": null,
+      "aggregateProofKey": "provenance"
+    },
+    {
+      "source": "build-provenance",
+      "productionStage": "Conditional securityBuildProvenance",
+      "productionEntry": "vars/securityBuildProvenance.groovy",
+      "adapterStatus": "VERIFIED",
+      "adapterScope": "Complete frozen current parent, including existing execution/error behavior",
+      "completeParentDifferentialStatus": "VERIFIED",
+      "samples": 363,
+      "matched": 363,
+      "mismatched": 0,
+      "explicitNullDecisions": 4,
+      "rawPreserved": true,
+      "oldDecisions": {
+        "PASS": 30,
+        "FAIL": 322,
+        "WARN": 7,
+        "SKIPPED": 4
+      },
+      "standardDecisions": {
+        "PASS": 30,
+        "FAIL": 322,
+        "WARN": 7,
+        "SKIPPED": 4
+      },
+      "evidenceFiles": [
+        "evidence/2026-11-01/build-provenance-parent/differential.json",
+        "evidence/2026-11-01/build-provenance-parent/workflow-differential.json"
+      ],
+      "acceptance": "evidence/2026-11-01/build-provenance-parent/acceptance.json",
+      "evidenceType": [
+        "CONTROLLED_REPLAY"
+      ],
+      "remainingEvidenceGap": [
+        "Historical 81 source/artifact file bodies and raw final registry index absent; no new hashing/build/online certification claimed",
+        "Complete producer CLI/prerequisite transcript not archived; replay uses frozen external observations",
+        "No live Jenkins CPS, credentials, Maven, Buildx, registry or current service health validation"
+      ],
+      "finalCompatibilityStatus": "VERIFIED",
+      "blockerClass": null,
+      "aggregateProofKey": "build-provenance"
+    },
+    {
+      "source": "semgrep-command-audit",
+      "productionStage": "Command Analysis before/in Semgrep",
+      "productionEntry": "infra/security/command-audit.mjs + script/ssh/interpreter Python policies",
+      "adapterStatus": "VERIFIED",
+      "adapterScope": "Complete frozen current parent, including existing execution/error behavior",
+      "completeParentDifferentialStatus": "VERIFIED",
+      "samples": 136,
+      "matched": 136,
+      "mismatched": 0,
+      "explicitNullDecisions": 0,
+      "rawPreserved": true,
+      "oldDecisions": {
+        "PASS": 26,
+        "FAIL": 110
+      },
+      "standardDecisions": {
+        "PASS": 26,
+        "FAIL": 110
+      },
+      "evidenceFiles": [
+        "evidence/2026-11-01/command-parent/differential.json",
+        "evidence/2026-11-01/command-parent/workflow-differential.json"
+      ],
+      "acceptance": "evidence/2026-11-01/command-parent/acceptance.json",
+      "evidenceType": [
+        "CONTROLLED_REPLAY",
+        "REAL_HISTORICAL"
+      ],
+      "remainingEvidenceGap": [
+        "Historical parent exit/reports are available, full per-command prerequisite/CLI transcript not all archived",
+        "No new real Semgrep CLI scan or Kubernetes Pod lifecycle/isolation/production service health validation; lifecycle is CONTROLLED_REPLAY",
+        "No natural failed production incident manufactured; direct negative examples use static-only fixture analysis"
+      ],
+      "finalCompatibilityStatus": "VERIFIED",
+      "blockerClass": null,
+      "aggregateProofKey": "command-parent"
+    },
+    {
+      "source": "security-approval-promotion",
+      "productionStage": "Security Approval / Approved Promotion / Git Promotion",
+      "productionEntry": "infra/security/promotion + gate-contract.mjs + Jenkinsfile",
+      "adapterStatus": "VERIFIED",
+      "adapterScope": "Complete frozen current parent, including existing execution/error behavior",
+      "completeParentDifferentialStatus": "VERIFIED",
+      "samples": 258,
+      "matched": 258,
+      "mismatched": 0,
+      "explicitNullDecisions": 0,
+      "rawPreserved": true,
+      "oldDecisions": {
+        "PASS": 16,
+        "FAIL": 239,
+        "SKIPPED": 3
+      },
+      "standardDecisions": {
+        "PASS": 16,
+        "FAIL": 239,
+        "SKIPPED": 3
+      },
+      "evidenceFiles": [
+        "evidence/2026-11-01/promotion-parent/differential.json",
+        "evidence/2026-11-01/promotion-parent/workflow-differential.json"
+      ],
+      "acceptance": "evidence/2026-11-01/promotion-parent/acceptance.json",
+      "evidenceType": [
+        "CONTROLLED_REPLAY",
+        "REAL_HISTORICAL"
+      ],
+      "remainingEvidenceGap": [
+        "Historical real successful dry-run/deploy and signatures preserved; full per-call prerequisite/CLI transcript incomplete",
+        "No new live Jenkins CPS, Cosign/Harbor, GitOps/Argo or current service health certification; complete operational negatives are CONTROLLED_REPLAY",
+        "Current approval has no createdAt expiry and no explicit Provenance predicate requirement; those rules were not invented"
+      ],
+      "finalCompatibilityStatus": "VERIFIED",
+      "blockerClass": null,
+      "aggregateProofKey": "security-approval-promotion"
+    }
+  ],
+  "counts": {
+    "VERIFIED": 13,
+    "NOT_TESTED": 3,
+    "ENVIRONMENT_BLOCKED": 1,
+    "DEFERRED_REAL_NEGATIVE_EVIDENCE": 1,
+    "FAILED": 0,
+    "NOT_APPLICABLE": 0
+  },
+  "completeParentUniqueDifferentials": {
+    "samples": 1675,
+    "matched": 1675,
+    "mismatched": 0,
+    "explicitNullDecisions": 9,
+    "rawPreserved": true,
+    "oldDecisions": {
+      "PASS": 239,
+      "FAIL": 1408,
+      "NOT_CONFIGURED": 1,
+      "SKIPPED": 16,
+      "WARN": 11
+    },
+    "standardDecisions": {
+      "PASS": 239,
+      "FAIL": 1408,
+      "NOT_CONFIGURED": 1,
+      "SKIPPED": 16,
+      "WARN": 11
+    }
+  },
+  "selectedCurrentEvidenceDifferentials": {
+    "samples": 1695,
+    "matched": 1695,
+    "mismatched": 0,
+    "explicitNullDecisions": 9,
+    "rawPreserved": true,
+    "oldDecisions": {
+      "PASS": 243,
+      "FAIL": 1417,
+      "NOT_CONFIGURED": 1,
+      "SKIPPED": 16,
+      "WARN": 18
+    },
+    "standardDecisions": {
+      "PASS": 243,
+      "FAIL": 1417,
+      "NOT_CONFIGURED": 1,
+      "SKIPPED": 16,
+      "WARN": 18
+    }
+  },
+  "allRetainedScopeDifferentials": {
+    "files": [
+      {
+        "path": "evidence/2026-11-01/build-provenance-parent/differential.json",
+        "samples": 329,
+        "matched": 329,
+        "mismatched": 0,
+        "explicitNullDecisions": 0,
+        "rawPreserved": true,
+        "oldDecisions": {
+          "PASS": 26,
+          "FAIL": 303
+        },
+        "standardDecisions": {
+          "PASS": 26,
+          "FAIL": 303
+        }
+      },
+      {
+        "path": "evidence/2026-11-01/build-provenance-parent/workflow-differential.json",
+        "samples": 34,
+        "matched": 34,
+        "mismatched": 0,
+        "explicitNullDecisions": 4,
+        "rawPreserved": true,
+        "oldDecisions": {
+          "PASS": 4,
+          "WARN": 7,
+          "FAIL": 19,
+          "SKIPPED": 4
+        },
+        "standardDecisions": {
+          "PASS": 4,
+          "WARN": 7,
+          "FAIL": 19,
+          "SKIPPED": 4
+        }
+      },
+      {
+        "path": "evidence/2026-11-01/command-parent/differential.json",
+        "samples": 122,
+        "matched": 122,
+        "mismatched": 0,
+        "explicitNullDecisions": 0,
+        "rawPreserved": true,
+        "oldDecisions": {
+          "PASS": 25,
+          "FAIL": 97
+        },
+        "standardDecisions": {
+          "PASS": 25,
+          "FAIL": 97
+        }
+      },
+      {
+        "path": "evidence/2026-11-01/command-parent/workflow-differential.json",
+        "samples": 14,
+        "matched": 14,
+        "mismatched": 0,
+        "explicitNullDecisions": 0,
+        "rawPreserved": true,
+        "oldDecisions": {
+          "PASS": 1,
+          "FAIL": 13
+        },
+        "standardDecisions": {
+          "PASS": 1,
+          "FAIL": 13
+        }
+      },
+      {
+        "path": "evidence/2026-11-01/cosign-parent/differential.json",
+        "samples": 260,
+        "matched": 260,
+        "mismatched": 0,
+        "explicitNullDecisions": 0,
+        "rawPreserved": true,
+        "oldDecisions": {
+          "PASS": 18,
+          "FAIL": 242
+        },
+        "standardDecisions": {
+          "PASS": 18,
+          "FAIL": 242
+        }
+      },
+      {
+        "path": "evidence/2026-11-01/dojo-parent/differential.json",
+        "samples": 68,
+        "matched": 68,
+        "mismatched": 0,
+        "explicitNullDecisions": 0,
+        "rawPreserved": true,
+        "oldDecisions": {
+          "PASS": 19,
+          "FAIL": 49
+        },
+        "standardDecisions": {
+          "PASS": 19,
+          "FAIL": 49
+        }
+      },
+      {
+        "path": "evidence/2026-11-01/falco-parent/differential.json",
+        "samples": 106,
+        "matched": 106,
+        "mismatched": 0,
+        "explicitNullDecisions": 0,
+        "rawPreserved": true,
+        "oldDecisions": {
+          "PASS": 37,
+          "FAIL": 69
+        },
+        "standardDecisions": {
+          "PASS": 37,
+          "FAIL": 69
+        }
+      },
+      {
+        "path": "evidence/2026-11-01/kubescape-parent/differential.json",
+        "samples": 45,
+        "matched": 45,
+        "mismatched": 0,
+        "explicitNullDecisions": 0,
+        "rawPreserved": true,
+        "oldDecisions": {
+          "PASS": 4,
+          "FAIL": 41
+        },
+        "standardDecisions": {
+          "PASS": 4,
+          "FAIL": 41
+        }
+      },
+      {
+        "path": "evidence/2026-11-01/kyverno-parent/parent-differential.json",
+        "samples": 49,
+        "matched": 49,
+        "mismatched": 0,
+        "explicitNullDecisions": 0,
+        "rawPreserved": true,
+        "oldDecisions": {
+          "PASS": 5,
+          "FAIL": 44
+        },
+        "standardDecisions": {
+          "PASS": 5,
+          "FAIL": 44
+        }
+      },
+      {
+        "path": "evidence/2026-11-01/kyverno-policy/differential.json",
+        "samples": 49,
+        "matched": 49,
+        "mismatched": 0,
+        "explicitNullDecisions": 0,
+        "rawPreserved": true,
+        "oldDecisions": {
+          "PASS": 40,
+          "FAIL": 9
+        },
+        "standardDecisions": {
+          "PASS": 40,
+          "FAIL": 9
+        }
+      },
+      {
+        "path": "evidence/2026-11-01/policy-engine/gitleaks-differential.json",
+        "samples": 7,
+        "matched": 7,
+        "mismatched": 0,
+        "explicitNullDecisions": 0,
+        "rawPreserved": true,
+        "oldDecisions": {
+          "PASS": 3,
+          "FAIL": 4
+        },
+        "standardDecisions": {
+          "PASS": 3,
+          "FAIL": 4
+        }
+      },
+      {
+        "path": "evidence/2026-11-01/promotion-parent/differential.json",
+        "samples": 234,
+        "matched": 234,
+        "mismatched": 0,
+        "explicitNullDecisions": 0,
+        "rawPreserved": true,
+        "oldDecisions": {
+          "PASS": 13,
+          "FAIL": 221
+        },
+        "standardDecisions": {
+          "PASS": 13,
+          "FAIL": 221
+        }
+      },
+      {
+        "path": "evidence/2026-11-01/promotion-parent/workflow-differential.json",
+        "samples": 24,
+        "matched": 24,
+        "mismatched": 0,
+        "explicitNullDecisions": 0,
+        "rawPreserved": true,
+        "oldDecisions": {
+          "PASS": 3,
+          "SKIPPED": 3,
+          "FAIL": 18
+        },
+        "standardDecisions": {
+          "PASS": 3,
+          "SKIPPED": 3,
+          "FAIL": 18
+        }
+      },
+      {
+        "path": "evidence/2026-11-01/provenance-parent/differential.json",
+        "samples": 130,
+        "matched": 130,
+        "mismatched": 0,
+        "explicitNullDecisions": 0,
+        "rawPreserved": true,
+        "oldDecisions": {
+          "PASS": 21,
+          "FAIL": 109
+        },
+        "standardDecisions": {
+          "PASS": 21,
+          "FAIL": 109
+        }
+      },
+      {
+        "path": "evidence/2026-11-01/provenance-parent/workflow-differential.json",
+        "samples": 51,
+        "matched": 51,
+        "mismatched": 0,
+        "explicitNullDecisions": 5,
+        "rawPreserved": true,
+        "oldDecisions": {
+          "PASS": 9,
+          "FAIL": 33,
+          "WARN": 4,
+          "SKIPPED": 5
+        },
+        "standardDecisions": {
+          "PASS": 9,
+          "FAIL": 33,
+          "WARN": 4,
+          "SKIPPED": 5
+        }
+      },
+      {
+        "path": "evidence/2026-11-01/regression-parent/differential.json",
+        "samples": 38,
+        "matched": 38,
+        "mismatched": 0,
+        "explicitNullDecisions": 0,
+        "rawPreserved": true,
+        "oldDecisions": {
+          "PASS": 9,
+          "FAIL": 29
+        },
+        "standardDecisions": {
+          "PASS": 9,
+          "FAIL": 29
+        }
+      },
+      {
+        "path": "evidence/2026-11-01/remaining-policy/command-differential.json",
+        "samples": 5,
+        "matched": 5,
+        "mismatched": 0,
+        "explicitNullDecisions": 0,
+        "rawPreserved": true,
+        "oldDecisions": {
+          "PASS": 2,
+          "FAIL": 3
+        },
+        "standardDecisions": {
+          "PASS": 2,
+          "FAIL": 3
+        }
+      },
+      {
+        "path": "evidence/2026-11-01/remaining-policy/contract-differential.json",
+        "samples": 39,
+        "matched": 39,
+        "mismatched": 0,
+        "explicitNullDecisions": 0,
+        "rawPreserved": true,
+        "oldDecisions": {
+          "PASS": 11,
+          "FAIL": 27,
+          "WARN": 1
+        },
+        "standardDecisions": {
+          "PASS": 11,
+          "FAIL": 27,
+          "WARN": 1
+        }
+      },
+      {
+        "path": "evidence/2026-11-01/sbom-parent/differential.json",
+        "samples": 126,
+        "matched": 126,
+        "mismatched": 0,
+        "explicitNullDecisions": 0,
+        "rawPreserved": true,
+        "oldDecisions": {
+          "PASS": 42,
+          "FAIL": 84
+        },
+        "standardDecisions": {
+          "PASS": 42,
+          "FAIL": 84
+        }
+      },
+      {
+        "path": "evidence/2026-11-01/sbom-parent/workflow-differential.json",
+        "samples": 45,
+        "matched": 45,
+        "mismatched": 0,
+        "explicitNullDecisions": 0,
+        "rawPreserved": true,
+        "oldDecisions": {
+          "PASS": 3,
+          "FAIL": 37,
+          "NOT_CONFIGURED": 1,
+          "SKIPPED": 4
+        },
+        "standardDecisions": {
+          "PASS": 3,
+          "FAIL": 37,
+          "NOT_CONFIGURED": 1,
+          "SKIPPED": 4
+        }
+      },
+      {
+        "path": "evidence/2026-11-01/sonar-policy/positive-differential.json",
+        "samples": 1,
+        "matched": 1,
+        "mismatched": 0,
+        "explicitNullDecisions": 0,
+        "rawPreserved": true,
+        "oldDecisions": {
+          "PASS": 1
+        },
+        "standardDecisions": {
+          "PASS": 1
+        }
+      },
+      {
+        "path": "evidence/2026-11-01/sops-policy/differential.json",
+        "samples": 20,
+        "matched": 20,
+        "mismatched": 0,
+        "explicitNullDecisions": 0,
+        "rawPreserved": true,
+        "oldDecisions": {
+          "PASS": 2,
+          "FAIL": 18
+        },
+        "standardDecisions": {
+          "PASS": 2,
+          "FAIL": 18
+        }
+      },
+      {
+        "path": "original frozen classifier snapshot -> current engine (existing core recheck)",
+        "samples": 20,
+        "matched": 20,
+        "mismatched": 0,
+        "explicitNullDecisions": 0,
+        "rawPreserved": true,
+        "oldDecisions": {
+          "FAIL": 8,
+          "WARN": 12
+        },
+        "standardDecisions": {
+          "FAIL": 8,
+          "WARN": 12
+        }
+      }
+    ],
+    "aggregateSamples": 1816,
+    "aggregateMismatch": 0,
+    "allRawPreserved": true,
+    "note": "Includes historical child/unit-only scopes. This total is NOT complete-parent proof and is not cumulative Policy test count. No repeated execution counts; each retained record/file selected once."
+  },
+  "deduplication": "Semgrep and Command Analysis share 136 complete parent records counted once. Earlier child proofs are supplementary, never parent promotion. SOPS20 and earlier Semgrep8/child contracts excluded from primary complete-parent total."
+}

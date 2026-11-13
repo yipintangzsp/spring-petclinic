@@ -1,0 +1,110 @@
+{
+  "classification": "PARTIAL_CODE_AND_MOUNT_MODEL_WITH_EXPLICIT_UNKNOWNS",
+  "PEAK_SPACE_COMPONENTS": [
+    {
+      "component": "existing vulnerability DB + Java DB + Fanal cache",
+      "bytes": 3243958272,
+      "state": "MEASURED_BASELINE_ALREADY_ACCOUNTED_IN_USED_BYTES",
+      "coexistence": "existing other kind persists while one kind refreshes; no need to reserve current occupied bytes a second time in free-space budget"
+    },
+    {
+      "component": "Jenkins-side token/manifest/header temp directory",
+      "bytes": null,
+      "state": "KNOWN_LIFECYCLE_UNKNOWN_PEAK",
+      "coexistence": "upstream cleanup finally completes before download; do not automatically add full upstream temporary files to download peak"
+    },
+    {
+      "component": "active kind new compressed OCI layer",
+      "bytes": null,
+      "referenceCompressedBytes": {
+        "db": 137873295,
+        "java-db": 994006717
+      },
+      "state": "CURRENT_UPSTREAM_AND_MATERIALIZATION_UNKNOWN",
+      "coexistence": "whether full archive materializes, streams, or is retained is not established from wrapper code"
+    },
+    {
+      "component": "active kind new extracted DB",
+      "bytes": null,
+      "state": "CURRENT_UNCOMPRESSED_SIZE_UNKNOWN",
+      "coexistence": "cannot substitute current old SQL size or October11 historical tar size for new extraction"
+    },
+    {
+      "component": "old active DB during replacement / copy / rollback object",
+      "bytes": null,
+      "state": "CLI_INTERNAL_LIFECYCLE_UNKNOWN",
+      "coexistence": "wrapper itself creates no backup copy; do not invent one or claim it is absent inside frozen CLI"
+    },
+    {
+      "component": "container overlay/fs metadata + unrelated platform growth",
+      "bytes": null,
+      "state": "MARGIN_OR_BACKGROUND_NOT_DB_PAYLOAD",
+      "coexistence": "shared /dev/vda2 backing; PVC and overlay view totals must not be summed twice"
+    }
+  ],
+  "PEAK_EXPECTED_BYTES": null,
+  "requiredAdditionalFreeBytesForActualRefresh": null,
+  "cannotComputeExactPeakBecause": [
+    "same-version CLI extraction/replacement implementation not available in inspected local source",
+    "no new uncompressed payload size",
+    "no high-frequency same-path measured refresh peak",
+    "old DB retained/open-unlinked/atomic replacement co-existence unproven"
+  ],
+  "serialRefresh": true,
+  "serialReason": "for kinds db then java-db; each awaited fully before next; use max of phase totals with retained state, not sum of both independent full temporary peaks",
+  "atomicRenameProven": false,
+  "wrapperDownloadPath": "trivy image --download-db-only / --download-java-db-only --cache-dir /home/scanner/.cache/trivy",
+  "filesystem": {
+    "cacheMount": [
+      "11839 10346 253:2 /var/lib/rancher/k3s/storage/pvc-262fbaec-19cb-49dd-b8e2-fd2be46ab2d7_harbor_data-harbor-trivy-0 /home/scanner/.cache rw,relatime - ext4 /dev/vda2 rw"
+    ],
+    "rootOverlayMount": [
+      "10346 9011 0:1057 / / rw,relatime - overlay overlay rw,lowerdir=/var/lib/rancher/k3s/agent/containerd/io.containerd.snapshotter.v1.overlayfs/snapshots/54718/fs:/var/lib/rancher/k3s/agent/containerd/io.containerd.snapshotter.v1.overlayfs/snapshots/54717/fs:/var/lib/rancher/k3s/agent/containerd/io.containerd.snapshotter.v1.overlayfs/snapshots/54716/fs:/var/lib/rancher/k3s/agent/containerd/io.containerd.snapshotter.v1.overlayfs/snapshots/54715/fs:/var/lib/rancher/k3s/agent/containerd/io.containerd.snapshotter.v1.overlayfs/snapshots/54714/fs:/var/lib/rancher/k3s/agent/containerd/io.containerd.snapshotter.v1.overlayfs/snapshots/62/fs,upperdir=/var/lib/rancher/k3s/agent/containerd/io.containerd.snapshotter.v1.overlayfs/snapshots/64232/fs,workdir=/var/lib/rancher/k3s/agent/containerd/io.containerd.snapshotter.v1.overlayfs/snapshots/64232/work,uuid=on,nouserxattr"
+    ],
+    "pvc": {
+      "name": "data-harbor-trivy-0",
+      "uid": "262fbaec-19cb-49dd-b8e2-fd2be46ab2d7",
+      "capacity": {
+        "storage": "5Gi"
+      },
+      "pv": "pvc-262fbaec-19cb-49dd-b8e2-fd2be46ab2d7",
+      "hostPath": null,
+      "local": {
+        "path": "/var/lib/rancher/k3s/storage/pvc-262fbaec-19cb-49dd-b8e2-fd2be46ab2d7_harbor_data-harbor-trivy-0"
+      },
+      "csi": null,
+      "nodeAffinity": {
+        "required": {
+          "nodeSelectorTerms": [
+            {
+              "matchExpressions": [
+                {
+                  "key": "kubernetes.io/hostname",
+                  "operator": "In",
+                  "values": [
+                    "devops"
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      }
+    },
+    "podTmp": "container root overlay, backed by devops disk; not the cache bind mount itself",
+    "hostFilesystem": "/dev/vda2 ext4 based on mountinfo",
+    "nominalPvcCapacity": {
+      "storage": "5Gi"
+    },
+    "quotaEnforcementProven": false,
+    "sparseCurrentFiles": [
+      "/home/scanner/.cache/trivy/fanal/fanal.db"
+    ],
+    "sameUnderlyingHostCapacity": true,
+    "renameScope": "atomic rename only same filesystem/mount and implementation path; updater-internal temp locations/copy fallback unproven",
+    "containerLayerDownload": "frozen refresh invokes CLI in existing running Pod; no docker pull/image layer build in helper, so do not invent Docker image-download temp in refresh peak",
+    "registryStorage": "helper reads remote mirror DB artifact; no local registry upload in this frozen refresh path. Historical warm helper registry writes are separate architecture.",
+    "hostBacking": "UTM qcow2 on host APFS is a separate physical capacity/backup constraint; do not equate guest free to host free or assume COW rollback budget available"
+  },
+  "newRefreshExecuted": false
+}

@@ -1,0 +1,47 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: defectdojo-compose
+  namespace: devsecops-system
+spec:
+  ports:
+    - name: http
+      port: 8080
+      targetPort: 18095
+---
+apiVersion: discovery.k8s.io/v1
+kind: EndpointSlice
+metadata:
+  name: defectdojo-compose
+  namespace: devsecops-system
+  labels:
+    kubernetes.io/service-name: defectdojo-compose
+    endpointslice.kubernetes.io/managed-by: platform-devsecops
+addressType: IPv4
+ports:
+  - name: http
+    protocol: TCP
+    port: 18095
+endpoints:
+  - addresses: ["10.0.0.3"]
+    conditions:
+      ready: true
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: defectdojo
+  namespace: devsecops-system
+spec:
+  ingressClassName: traefik
+  rules:
+    - host: defectdojo.devops.local
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: defectdojo-compose
+                port:
+                  number: 8080

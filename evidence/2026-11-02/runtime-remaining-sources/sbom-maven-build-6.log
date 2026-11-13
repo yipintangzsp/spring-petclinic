@@ -1,0 +1,45 @@
+[INFO] Scanning for projects...
+[INFO] 
+[INFO] ------------< org.springframework.samples:spring-petclinic >------------
+[INFO] Building petclinic 4.0.0-SNAPSHOT
+[INFO]   from pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- enforcer:3.6.3:enforce (enforce-java) @ spring-petclinic ---
+[INFO] Rule 0: org.apache.maven.enforcer.rules.version.RequireJavaVersion passed
+[INFO] 
+[INFO] --- spring-javaformat:0.0.47:validate (default) @ spring-petclinic ---
+[INFO] 
+[INFO] --- checkstyle:3.6.0:check (nohttp-checkstyle-validation) @ spring-petclinic ---
+[INFO] There are 18 errors reported by Checkstyle 12.3.1 with src/checkstyle/nohttp-checkstyle.xml ruleset.
+[ERROR] infra/security/policy/promotion-fixtures.mjs:[8,1148] (extension) NoHttp: http:// URLs are not allowed but got 'http://gitlab-service.ns-devops.svc.cluster.local/root/petclinic-platform.git'. Use https:// instead.
+[ERROR] infra/security/policy/provenance-test-harness.mjs:[14,300] (extension) NoHttp: http:// URLs are not allowed but got 'http://jenkins.devops.local/'. Use https:// instead.
+[ERROR] infra/security/policy/build-provenance-test-fixtures.mjs:[11,201] (extension) NoHttp: http:// URLs are not allowed but got 'http://jenkins.devops.local/'. Use https:// instead.
+[ERROR] infra/security/policy/build-provenance-test-fixtures.mjs:[25,20] (extension) NoHttp: http:// URLs are not allowed but got 'http://10.0.0.3:30050/v2/petclinic/petclinic/manifests/0.10.0-ci-1000002'. Use https:// instead.
+[ERROR] infra/security/policy/build-provenance-test-fixtures.mjs:[25,125] (extension) NoHttp: http:// URLs are not allowed but got 'http://10.0.0.3:30050/v2/petclinic/petclinic/manifests/'. Use https:// instead.
+[ERROR] infra/security/policy/build-provenance-test-fixtures.mjs:[28,16] (extension) NoHttp: http:// URLs are not allowed but got 'http://10.0.0.3:30050/v2/petclinic/petclinic'. Use https:// instead.
+[ERROR] infra/security/policy/build-provenance-test-fixtures.mjs:[28,67] (extension) NoHttp: http:// URLs are not allowed but got 'http://harbor-core.harbor.svc.cluster.local'. Use https:// instead.
+[ERROR] infra/security/policy/build-provenance-parent.test.mjs:[78,308] (extension) NoHttp: http:// URLs are not allowed but got 'http://10.0.0.3:30050/v2/petclinic/petclinic/manifests/'. Use https:// instead.
+[ERROR] infra/security/policy/build-provenance-parent.test.mjs:[124,45] (extension) NoHttp: http:// URLs are not allowed but got 'http://10.0.0.3:30050/v2/petclinic/petclinic'. Use https:// instead.
+[ERROR] infra/security/policy/build-provenance-parent.test.mjs:[124,96] (extension) NoHttp: http:// URLs are not allowed but got 'http://harbor-core.harbor.svc.cluster.local/v2/petclinic/petclinic'. Use https:// instead.
+[ERROR] infra/security/policy/zap-parent-fixtures.mjs:[4,157] (extension) NoHttp: http:// URLs are not allowed but got 'http://10.43.0.9:8080/owners/find'. Use https:// instead.
+[ERROR] infra/security/policy/zap-parent.test.mjs:[13,172] (extension) NoHttp: http:// URLs are not allowed but got 'http://10.43.0.9:8080/other'. Use https:// instead.
+[ERROR] infra/security/policy/cosign-parent.mjs:[59,36] (extension) NoHttp: http:// URLs are not allowed but got 'http://harbor-core.harbor.svc.cluster.local'. Use https:// instead.
+[ERROR] infra/security/policy/dojo-parent.mjs:[19,32] (extension) NoHttp: http:// URLs are not allowed but got 'http://sonarqube-sonarqube.sonarqube.svc.cluster.local:9000/api/issues/search?componentKeys=petclinic&types=VULNERABILITY&ps=500'. Use https:// instead.
+[ERROR] .devsecops/kubescape/cluster-cis-v1.12.0.json:[1545,1874] (extension) NoHttp: http:// URLs are not allowed but got 'http://alertmanager.devops.local'. Use https:// instead.
+[ERROR] .devsecops/kubescape/cluster-cis-v1.12.0.json:[1547,3021] (extension) NoHttp: http:// URLs are not allowed but got 'http://kube-stack-kube-prometheus-prometheus.monitoring:9090'. Use https:// instead.
+[ERROR] .devsecops/kubescape/cluster-nsa.json:[1015,1874] (extension) NoHttp: http:// URLs are not allowed but got 'http://alertmanager.devops.local'. Use https:// instead.
+[ERROR] .devsecops/kubescape/cluster-nsa.json:[1017,3021] (extension) NoHttp: http:// URLs are not allowed but got 'http://kube-stack-kube-prometheus-prometheus.monitoring:9090'. Use https:// instead.
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD FAILURE
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  7.055 s
+[INFO] Finished at: 2026-11-02T23:00:18+08:00
+[INFO] ------------------------------------------------------------------------
+[ERROR] Failed to execute goal org.apache.maven.plugins:maven-checkstyle-plugin:3.6.0:check (nohttp-checkstyle-validation) on project spring-petclinic: You have 18 Checkstyle violations. -> [Help 1]
+[ERROR] 
+[ERROR] To see the full stack trace of the errors, re-run Maven with the -e switch.
+[ERROR] Re-run Maven using the -X switch to enable full debug logging.
+[ERROR] 
+[ERROR] For more information about the errors and possible solutions, please read the following articles:
+[ERROR] [Help 1] http://cwiki.apache.org/confluence/display/MAVEN/MojoFailureException

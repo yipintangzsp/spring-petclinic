@@ -1,0 +1,94 @@
+{
+  "scope": "Authorized read-only host public DNS/TCP/TLS/HTTP; no global configuration mutation",
+  "hosts": [
+    {
+      "hostname": "registry-1.docker.io",
+      "addresses": [
+        "100.31.14.190",
+        "100.58.144.241",
+        "107.20.191.71",
+        "2600:1f18:2148:bc00:28b3:a2d:5237:973c",
+        "2600:1f18:2148:bc00:a44:bc8:be4f:3ca",
+        "2600:1f18:2148:bc00:c668:ad49:de3d:38ac",
+        "2600:1f18:2148:bc00:dc7b:8539:a754:109f",
+        "2600:1f18:2148:bc01:435e:7bde:e3dc:cb1b",
+        "2600:1f18:2148:bc02:7010:fdeb:5e44:6bc8",
+        "2600:1f18:2148:bc02:db8e:6f23:8bdd:25e9",
+        "2600:1f18:2148:bc02:fcb0:41f1:f1ec:47e9",
+        "34.232.98.167",
+        "50.19.86.14",
+        "52.203.1.244",
+        "54.209.20.254",
+        "98.95.191.109"
+      ],
+      "DNS": "PASS",
+      "TCP": "PASS",
+      "error": "[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to get local issuer certificate (_ssl.c:1032)",
+      "HTTP": {
+        "exit": 0,
+        "headersAndCode": "HTTP/2 401 \ndate: Mon, 02 Nov 2026 01:28:38 GMT\ncontent-type: application/json\ncontent-length: 87\ndocker-distribution-api-version: registry/2.0\nwww-authenticate: Bearer realm=\"https://auth.docker.io/token\",service=\"registry.docker.io\"\nstrict-transport-security: max-age=31536000\n\n\nHTTP_CODE=401\n",
+        "stderr": ""
+      }
+    },
+    {
+      "hostname": "auth.docker.io",
+      "addresses": [
+        "104.18.43.178",
+        "172.64.144.78",
+        "2606:4700:4403::ac40:904e",
+        "2a06:98c1:3104::6812:2bb2"
+      ],
+      "DNS": "PASS",
+      "TCP": "PASS",
+      "error": "[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to get local issuer certificate (_ssl.c:1032)",
+      "HTTP": {
+        "exit": 0,
+        "headersAndCode": "HTTP/2 404 \ndate: Mon, 02 Nov 2026 01:28:40 GMT\ncontent-type: text/plain; charset=utf-8\ncontent-length: 19\nx-content-type-options: nosniff\nx-trace-id: 5c6393dd5de01182d566dfd0b0329aca\nx-trace-sampled: false\nx-ratelimit-limit: 3000, 3000;w=60\nx-ratelimit-remaining: 2999\nx-ratelimit-reset: 20\nstrict-transport-security: max-age=31536000\ncf-cache-status: DYNAMIC\nSet-Cookie: [omitted public response cookie]\nserver: cloudflare\ncf-ray: a53f5d246efdd59a-SJC\n\n\nHTTP_CODE=404\n",
+        "stderr": ""
+      }
+    }
+  ],
+  "resolver": {
+    "exit": 0,
+    "lines": [
+      "resolver #1",
+      "nameserver[0] : 127.0.2.2",
+      "nameserver[1] : 127.0.2.3",
+      "nameserver[2] : ::ffff:127.0.2.2",
+      "nameserver[3] : ::ffff:127.0.2.3",
+      "flags    : Request A records, Request AAAA records",
+      "reach    : 0x00030002 (Reachable,Local Address,Directly Reachable Address)",
+      "resolver #2",
+      "flags    : Request A records, Request AAAA records",
+      "reach    : 0x00000000 (Not Reachable)",
+      "resolver #3",
+      "flags    : Request A records, Request AAAA records",
+      "reach    : 0x00000000 (Not Reachable)",
+      "resolver #4",
+      "flags    : Request A records, Request AAAA records",
+      "reach    : 0x00000000 (Not Reachable)",
+      "resolver #5",
+      "flags    : Request A records, Request AAAA records",
+      "reach    : 0x00000000 (Not Reachable)",
+      "resolver #6",
+      "flags    : Request A records, Request AAAA records",
+      "reach    : 0x00000000 (Not Reachable)",
+      "resolver #7",
+      "flags    : Request A records, Request AAAA records",
+      "reach    : 0x00000000 (Not Reachable)",
+      "resolver #1",
+      "nameserver[0] : 127.0.2.2",
+      "nameserver[1] : 127.0.2.3",
+      "nameserver[2] : ::ffff:127.0.2.2",
+      "nameserver[3] : ::ffff:127.0.2.3",
+      "flags    : Scoped, Request A records, Request AAAA records",
+      "reach    : 0x00000002 (Reachable)",
+      "resolver #2",
+      "nameserver[0] : 127.0.2.2",
+      "nameserver[1] : 127.0.2.3",
+      "flags    : Scoped, Request A records, Request AAAA records",
+      "reach    : 0x00000000 (Not Reachable)"
+    ],
+    "stderr": ""
+  }
+}

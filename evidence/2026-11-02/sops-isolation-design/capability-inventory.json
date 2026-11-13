@@ -1,0 +1,176 @@
+{
+  "host": {
+    "system": "Darwin",
+    "machine": "arm64",
+    "release": "27.2.0"
+  },
+  "toolPaths": {
+    "docker": "/opt/homebrew/bin/docker",
+    "orb": null,
+    "kind": "/opt/homebrew/bin/kind",
+    "k3d": null,
+    "k3s": null,
+    "kubectl": "/opt/homebrew/bin/kubectl",
+    "sops": null,
+    "age": null,
+    "age-keygen": null,
+    "podman": null,
+    "colima": "/opt/homebrew/bin/colima",
+    "nerdctl": null,
+    "lima": "/opt/homebrew/bin/lima",
+    "limactl": "/opt/homebrew/bin/limactl"
+  },
+  "applicationsAtCommonLocations": {
+    "/Applications/OrbStack.app": false,
+    "/Applications/Docker.app": false,
+    "/Users/zhangsir/Applications/OrbStack.app": false,
+    "/Users/zhangsir/Applications/Docker.app": false
+  },
+  "sockets": [
+    {
+      "path": "/var/run/docker.sock",
+      "lexists": true,
+      "exists": false,
+      "symlinkTarget": "/Users/zhangsir/.docker/run/docker.sock"
+    },
+    {
+      "path": "/Users/zhangsir/.docker/run/docker.sock",
+      "lexists": false,
+      "exists": false,
+      "symlinkTarget": null
+    },
+    {
+      "path": "/Users/zhangsir/.orbstack/run/docker.sock",
+      "lexists": false,
+      "exists": false,
+      "symlinkTarget": null
+    },
+    {
+      "path": "/Users/zhangsir/.colima/default/docker.sock",
+      "lexists": false,
+      "exists": false,
+      "symlinkTarget": null
+    }
+  ],
+  "commands": [
+    {
+      "command": [
+        "docker",
+        "--version"
+      ],
+      "exit": 0,
+      "stdout": "Docker version 29.7.2, build a7dcaa6fdb\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "docker",
+        "context",
+        "ls",
+        "--format",
+        "{{json .}}"
+      ],
+      "exit": 0,
+      "stdout": "{\"Current\":true,\"Description\":\"Current DOCKER_HOST based configuration\",\"DockerEndpoint\":\"unix:///var/run/docker.sock\",\"Error\":\"\",\"Name\":\"default\"}\n{\"Current\":false,\"Description\":\"Docker Desktop\",\"DockerEndpoint\":\"unix:///Users/zhangsir/.docker/run/docker.sock\",\"Error\":\"\",\"Name\":\"desktop-linux\"}\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "docker",
+        "context",
+        "show"
+      ],
+      "exit": 0,
+      "stdout": "default\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "kind",
+        "version"
+      ],
+      "exit": 0,
+      "stdout": "kind v0.31.0 go1.25.5 darwin/arm64\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "colima",
+        "list",
+        "--json"
+      ],
+      "timeout": true
+    },
+    {
+      "command": [
+        "limactl",
+        "list",
+        "--json"
+      ],
+      "exit": 0,
+      "stdout": "",
+      "stderr": "time=\"2026-11-02T08:18:30+08:00\" level=warning msg=\"failed to detect whether running under rosetta, assuming false\" error=\"failed to read sysctl \\\"sysctl.proc_translated\\\": operation not permitted\"\ntime=\"2026-11-02T08:18:30+08:00\" level=warning msg=\"No instance found. Run `limactl create` to create an instance.\"\n"
+    },
+    {
+      "command": [
+        "docker",
+        "--host",
+        "unix:///var/run/docker.sock",
+        "info",
+        "--format",
+        "{{json .ServerVersion}}"
+      ],
+      "exit": 1,
+      "stdout": "\"\"\n",
+      "stderr": "failed to connect to the docker API at unix:///var/run/docker.sock; check if the path is correct and if the daemon is running: dial unix /var/run/docker.sock: connect: no such file or directory\n"
+    },
+    {
+      "command": [
+        "kind",
+        "get",
+        "clusters"
+      ],
+      "exit": 1,
+      "stdout": "",
+      "stderr": "ERROR: failed to list clusters: command \"docker ps -a --filter label=io.x-k8s.kind.cluster --format '{{.Label \"io.x-k8s.kind.cluster\"}}'\" failed with error: exit status 1\n\nCommand Output: failed to connect to the docker API at unix:///var/run/docker.sock; check if the path is correct and if the daemon is running: dial unix /var/run/docker.sock: connect: no such file or directory\n"
+    }
+  ],
+  "listenerMetadataOnly": [
+    {
+      "command": [
+        "lsof",
+        "-nP",
+        "-iTCP:63731",
+        "-sTCP:LISTEN",
+        "-Fpcn"
+      ],
+      "exit": 1,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "lsof",
+        "-nP",
+        "-iTCP:26443",
+        "-sTCP:LISTEN",
+        "-Fpcn"
+      ],
+      "exit": 0,
+      "stdout": "p18207\ncssh\nf4\nn127.0.0.1:26443\n",
+      "stderr": ""
+    }
+  ],
+  "frozenBinaryPaths": {
+    "/var/jenkins_home/platform-security/20261027/sops": {
+      "exists": false
+    },
+    "/var/jenkins_home/platform-security/20261027/age": {
+      "exists": false
+    },
+    "/var/jenkins_home/platform-security/20261027/age-keygen": {
+      "exists": false
+    }
+  },
+  "actions": "Read-only inspection; no start/install/create; remote Docker endpoints not contacted"
+}
