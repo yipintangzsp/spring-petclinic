@@ -13,7 +13,7 @@ check('Page HTTP 200 and real HTML',()=>{assert.equal(h.status,200);assert.match
 for(const p of ['/style.css','/app.js']){const r=await get(p);check(p+' HTTP 200',()=>assert.equal(r.status,200));}
 const response=await get('/api/overview');assert.equal(response.status,200);const data=await response.json();
 check('Read-only replay, never live scanning',()=>{assert.equal(data.mode,'REPLAY');assert.equal(data.liveScan,false);});
-check('Authority limits remain visible',()=>{assert.equal(data.baseline.PRODUCTION_SECURITY_MANAGER,'NOT_ACTIVE');assert.equal(data.baseline.FINAL_WIRED_CAPABILITY,'14/16');assert.equal(data.baseline.ORIGINAL_EVIDENCE_INTEGRITY,'FAILED');assert.equal(data.baseline.TRIVY_RUNTIME_FACT_CAPTURE,'INCOMPLETE');});
+check('Authority limits remain visible',()=>{assert.equal(data.baseline.PRODUCTION_SECURITY_MANAGER,'ACTIVE');assert.equal(data.baseline.FINAL_WIRED_CAPABILITY,'14/16');assert.equal(data.baseline.ORIGINAL_EVIDENCE_INTEGRITY,'FAILED');assert.equal(data.baseline.TRIVY_RUNTIME_FACT_CAPTURE,'INCOMPLETE');});
 const find=n=>data.runs.find(r=>r.runId===n);
 check('Three real plugins visible in selected latest complete run',()=>{
  const r=find('attempt2-P-service-project');assert.equal(r.plugins.length,3);

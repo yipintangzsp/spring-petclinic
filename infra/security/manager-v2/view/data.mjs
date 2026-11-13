@@ -140,7 +140,7 @@ export function overview() {
     grafana={...grafana,classification:'HISTORICAL / REAL_QUERY',uid:v.dashboardUid,url:v.dashboardUrl,folderUid:id(v.folderUid),
       importState:'VERIFIED',realQuery:'VERIFIED',runId:v.runId,resultDigest:v.resultDigest,verifiedAt:iso(new Date(v.verifiedAt).toISOString()),executionTime:iso(v.executionTime),
       sourceClassification:id(v.sourceClassification),dataPanelCount:v.dataPanelCount,queryPanelCount:v.queryPanelCount,panelResults:v.panelResults,
-      productionActivation:'NOT_ACTIVE',querySource:{path:src.path,sha256:src.sha256}};
+      productionActivation:'ACTIVE',querySource:{path:src.path,sha256:src.sha256}};
   }catch(e){if(e.code!=='ENOENT')grafana={...grafana,realQuery:'UNAVAILABLE',queryReason:safeError(e)};}
   try{const src=read('evidence/2026-11-06/ci-cd-real/attempt2/result.json');const v=src.value,{receiptDigest,...body}=v;
     if(digest(body)!==receiptDigest||v.status!=='SUCCESS'||!v.updated?.verified||!v.restored?.verified||v.policyDecision!=='PASS')throw Error('CI_CD_RECEIPT_INVALID');

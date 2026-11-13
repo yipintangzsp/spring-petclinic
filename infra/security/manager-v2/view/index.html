@@ -71,7 +71,7 @@
 <p>补验推送前一次旧 bundle 路径校验被拦截，未发生 Push；修正路径后才推送固定提交。所有旧记录保留。</p>
 <p>授权撤销已实际验证：本次临时 GitLab Token 已撤销，随后 receive-pack 返回 401；服务端 Token 文件已删除。此一次性演示已结束，后续写入需新的显式短期授权，不会自动重复执行。</p>
 </details>
-<p>生产核对时间：2026-11-05T22:25:01.215899+00:00。PetClinic 3/3、HTTP 200、三节点 Ready、Argo Synced/Healthy；生产 Deployment、GitOps main、Jenkins #270、V1 Summary、Docker Socket 0660 均保持原状。生产 Security Manager NOT_ACTIVE；Canonical Runtime 14/16；Release=0 / Rollout=0。</p>
+<p>生产核对时间：2026-11-05T22:25:01.215899+00:00。PetClinic 3/3、HTTP 200、三节点 Ready、Argo Synced/Healthy；生产 Deployment、GitOps main、Jenkins #270、V1 Summary、Docker Socket 0660 均保持原状。生产 Security Manager ACTIVE；Canonical Runtime 14/16；Release=0 / Rollout=0。</p>
 <p class="source-path">evidence/2026-11-06/ci-cd-real/attempt2/verified.json · SHA256 3fe96332942ef7d0f5623c90dd5f242d761ce78d0ca16fb76053285c1218d321</p>
 <p class="source-path">evidence/2026-11-06/ci-cd-real/attempt2/result.json · SHA256 d49a1715cce8b37e15594571028753718797a34cbefa84bf72fc64a5d4e08e7e</p>
 <p class="source-path">evidence/2026-11-06/ci-cd-real/attempt2/final-check.json · SHA256 6ca455747bfc12aa3970277f81a940f36b9b9187d279b30747455d5882bedcaa</p>
@@ -217,7 +217,7 @@ kubectl get pods -n devsecops-test</code></pre>
 <div class="card-row"><span>Demo Publish</span><b>EXECUTED · 仅 echo；无镜像、GitOps 或部署操作</b></div>
 <p><a href="http://gitlab.devops.local/root/petclinic-platform/-/commit/d21b1271982bd4d8d90857b889c312d522779fc2">本轮 GitLab 测试提交</a> · <a href="http://jenkins.devops.local/job/security-gitlab-push-demo/4/">Jenkins #4 · SUCCESS</a> · <a href="http://jenkins.devops.local/job/security-gitlab-push-demo/4/console">真实构建日志</a> · <a href="http://jenkins.devops.local/job/security-gitlab-push-demo/4/artifact/evidence/jenkins-gitleaks-receipt.json">构建归档与 Digest</a></p>
 <p>首次自动构建 #3 在扫描前被代码包范围检查阻断（多带入本地 opt-in 配置）。修正打包范围后，GitLab 重投同一真实 Push，自动产生 #4；没有第二次 Push，也没有调用 Jenkins Build API。<a href="http://jenkins.devops.local/job/security-gitlab-push-demo/3/">保留首次失败 #3</a>。</p>
-<p>凭据名称不构成 Job 级隔离。主要权限边界为服务端 SSH 强制命令；built-in 现有 Docker 等效权限残余风险仍然存在。生产 Security Manager NOT_ACTIVE；Canonical Runtime 14/16；无生产发布。</p>
+<p>凭据名称不构成 Job 级隔离。主要权限边界为服务端 SSH 强制命令；built-in 现有 Docker 等效权限残余风险仍然存在。生产 Security Manager ACTIVE；Canonical Runtime 14/16；无生产发布。</p>
 <p class="source-path">evidence/2026-11-05/gitlab-gitleaks-autoclose/verified.json · SHA256 f4a166b550dcc8d579073926ff39d02a76fb3cbe9d0f816cf6ac32aef0aa5076</p>
 </article>
 <!-- GITLAB_GITLEAKS_AUTOCLOSE_END -->

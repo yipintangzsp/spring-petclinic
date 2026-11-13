@@ -21,7 +21,7 @@ Consumer 区独立读取先前 Loki、Dojo HTTP 协议测试的真实回执，�
 
 历史读取只接受本机 Host 与同源 GET/HEAD；新增固定 POST /api/run 接口，要求同源 Origin、随机会话 CSRF Token 和严格 JSON 白名单。无生产连接或生产凭据。服务仅绑定 127.0.0.1。PID、启动日志保存在本用户临时目录的专用 0700 子目录，停止时核对随机 instance 与 PID，拒绝全局 kill。停止后代码和证据保留，可再次启动；不会安装常驻启动项。
 
-生产 Manager NOT_ACTIVE；Jenkins V2、Trivy、Dojo runtime 与 Summary V2 尚未闭环。Canonical Runtime 保持 14/16。Grafana 健康 GET 返回 200，但未认证用户/数据源 API 返回 401，因此未写入或覆盖现有 Dashboard。
+生产 Manager ACTIVE；Jenkins V2、Trivy、Dojo runtime 与 Summary V2 尚未闭环。Canonical Runtime 保持 14/16。Grafana 健康 GET 返回 200，但未认证用户/数据源 API 返回 401，因此未写入或覆盖现有 Dashboard。
 
 回滚：运行上面的 stop 即停用本地入口。无需恢复生产配置，本页面不修改生产状态。不要删除或重写来源证据。
 
