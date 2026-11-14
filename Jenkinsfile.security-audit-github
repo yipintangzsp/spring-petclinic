@@ -41,6 +41,8 @@ cat .devsecops/gates/Snapshot-Before.log
 gate Snapshot-Before enforce "$rc" "Snapshot Before"
 ''' } } } }
 stage('Admission Resources') { steps { sh 'node infra/observability/heavy-lease.mjs acquire' } }
+// GitHub-variant only: the frozen adapter runs the Sonar scanner goal bare, and this job always starts from a fresh workspace, so no JaCoCo execution data exists when the scanner imports coverage (build #8 imported none -> new_coverage 0.0, the only failing Quality Gate condition). The production GitLab workspace masks the same gap with a stale jacoco.exec left by earlier activity. Run the tests once here, inside the heavy lease and before the Security Manager stage, so this build produces its own coverage data; the sbom module package (-DskipTests) afterwards re-renders the report from the same exec file without destroying it.
+stage('Coverage Data') { steps { sh 'nice -n 10 ./mvnw -B test jacoco:report' } }
 stage('Security Manager') { steps { script { def expectedBuild=[:];if(params.ENABLE_IMAGE_BUILD_PROVENANCE){ expectedBuild=readJSON(text:params.BUILD_PROVENANCE_EXPECTATION,returnPojo:true);if(expectedBuild.keySet().sort()!=['buildNumber','builder','commit','repository'])error('Explicit build identity required') };securityChain(project: 'petclinic', buildProvenance:expectedBuild+[enabled:params.ENABLE_IMAGE_BUILD_PROVENANCE,image:params.AUDIT_CANDIDATE_IMAGE]) } } }
 stage('Read Only Release Verification') { steps { script { catchError(buildResult: 'FAILURE', stageResult: 'FAILURE') { sh '''set -eu
 mkdir -p .devsecops/gates
