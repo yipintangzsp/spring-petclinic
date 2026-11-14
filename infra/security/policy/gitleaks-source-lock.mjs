@@ -1,7 +1,7 @@
 // Source identity verification only. The frozen decision body is unchanged.
 import fs from 'node:fs';import path from 'node:path';import {fileURLToPath} from 'node:url';import {createHash} from 'node:crypto';
 const sha=x=>createHash('sha256').update(x).digest('hex');
-const parentHash='3311c1cc8c18adcf08d6f3d565a5d09a27c308e3522f66c6eb45993a3d14cf59',integrationHash='703522f925071eb773193c349ebcf0a53bccbda68fda24bf6cb2a615d1e27c62';
+const parentHash='5e3a8bb8502880f4655a998d6835ebbdb0e8818be0d2aa1a522c5f6692e5569f',integrationHash='3264d9423045a195e0fff2d765f1267fcf6c024e7d2a4f9bac258f3d12dbe78e';
 const fail=x=>{throw Error('POLICY_ERROR: Gitleaks source identity: '+x);};
 export function removeGitleaksHelmBlocks(text){
  for(const k of ['ARCHIVE','PARAMETERS','PRECONDITIONS','STAGES']){
