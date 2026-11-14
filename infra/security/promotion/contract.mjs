@@ -9,13 +9,23 @@ export function validateGate(x){
  if(x.sbom.candidate!==x.candidate||x.sbom.architectures?.length!==2||new Set(x.sbom.architectures.map(a=>a.arch)).size!==2||x.sbom.architectures.some(a=>!['amd64','arm64'].includes(a.arch)||!/^sha256:[a-f0-9]{64}$/.test(a.jarSha256)||!/^sha256:[a-f0-9]{64}$/.test(a.sbomSha256)))throw Error('Candidate-bound SBOM evidence required');
  return x.candidate.split('@')[1];
 }
-export function approvedRelease(x,signing){
- const digest=validateGate(x);const required=[digest,...x.trivy.scans.map(s=>s.digest)];
+export function approvedRelease(x,signing,helmBinding){
+ const digest=validateGate(x);if(helmBinding&&(helmBinding.chart!=='petclinic'||helmBinding.valuesFile!=='charts/petclinic/values-prod.yaml'||!/^[0-9]+\.[0-9]+\.[0-9]+$/.test(helmBinding.chartVersion||'')||!/^sha256:[a-f0-9]{64}$/.test(helmBinding.valuesSha256||'')))throw Error('Helm binding malformed');const required=[digest,...x.trivy.scans.map(s=>s.digest)];
  if(!required.every(d=>signing.images?.some(i=>i.image==='core.harbor.domain/petclinic/petclinic@'+d&&i.verified)))throw Error('Candidate and runtime children must pass actual Cosign verification');
- return {schema:1,status:'APPROVED',securityGate:'SUCCESS',jenkinsBuild:x.build,securitySourceCommit:x.source,candidateImage:x.candidate,candidateDigest:digest,approvedDigest:digest,previousRuntimeImage:x.trivy.runtimeImage,candidateSbom:x.sbom,verifiedImages:signing.images,createdAt:new Date().toISOString()};
+ return {schema:1,status:'APPROVED',securityGate:'SUCCESS',jenkinsBuild:x.build,securitySourceCommit:x.source,candidateImage:x.candidate,candidateDigest:digest,approvedDigest:digest,previousRuntimeImage:x.trivy.runtimeImage,candidateSbom:x.sbom,verifiedImages:signing.images,...(helmBinding?{helm:helmBinding}:{}),createdAt:new Date().toISOString()};
 }
-export function promotionInput(approval,manifest){
+export function valuesDigest(valuesText){
+ const matches=[...valuesText.matchAll(/^([ \t]*)digest:[ \t]*(sha256:[a-f0-9]{64})[ \t]*$/gm)];if(matches.length!==1)throw Error('Production values must carry exactly one image digest');
+ return matches[0][2];
+}
+export function promotionInput(approval,valuesText){
  if(approval.status!=='APPROVED'||approval.securityGate!=='SUCCESS'||approval.candidateDigest!==approval.approvedDigest||approval.candidateImage!=='core.harbor.domain/petclinic/petclinic@'+approval.approvedDigest||!imagePattern.test(approval.candidateImage)||!imagePattern.test(approval.previousRuntimeImage))throw Error('Approved digest identity required before any Git mutation');
- const re=/^([ \t]*image:\s+)(?:core\.harbor\.domain|10\.0\.0\.3:30050)\/petclinic\/petclinic@sha256:[a-f0-9]{64}[ \t]*$/gm;const matches=[...manifest.matchAll(re)];if(matches.length!==1||!matches[0][0].trim().endsWith(approval.previousRuntimeImage))throw Error('GitOps runtime moved; preserve concurrent work');
- return manifest.replace(re,(_,prefix)=>prefix+approval.candidateImage);
+ const current=valuesDigest(valuesText);if('core.harbor.domain/petclinic/petclinic@'+current!==approval.previousRuntimeImage)throw Error('GitOps runtime moved; preserve concurrent work');
+ return valuesText.replace(/^([ \t]*digest:[ \t]*)sha256:[a-f0-9]{64}([ \t]*)$/m,(_,prefix,trail)=>prefix+approval.approvedDigest+trail);
+}
+export function validateHelmBinding(approval,observed){
+ if(!approval.helm)return null;
+ const h=approval.helm;
+ if(h.chart!=='petclinic'||h.valuesFile!=='charts/petclinic/values-prod.yaml'||h.chartVersion!==observed.chartVersion||h.valuesSha256!==observed.valuesSha256)throw Error('Helm inputs differ from approved binding');
+ return h;
 }
