@@ -6,7 +6,7 @@
 // reads private key material, never signs, and never contacts a
 // registry. It assembles the genuine replay observations the FROZEN
 // Policy adapter (provenanceParent) consumes: the cosign
-// verify-attestation command observation carries the real archived
+// download attestation command observation carries the real archived
 // DSSE envelope bytes, the tool manifest observation is the real
 // scanner-tools.json, and the adapter's own verifyEnvelope + validate
 // perform the actual DSSE signature and identity verification inside
@@ -51,7 +51,7 @@ export function buildProvenanceObservations({project,caseId}){
   runtime:{manifest,expectedManifestSha256:sha(manifest),tools},
   files:{'.git-sha':{value:x.commit},'infra/security/cosign.pub':{value:keyText}},
   io:{'output-mkdir':ioEntry,'auth-temp-create':ioEntry,'auth-temp-chmod':ioEntry,'auth-write':ioEntry,'envelope-write':ioEntry,'auth-temp-remove':ioEntry,'verification-report-write':ioEntry},
-  commands:{'cosign:verify-attestation':[{status:0,stdout:envelopeText}]}};
+  commands:{'cosign:download':[{status:0,stdout:envelopeText}]}};
  const indexDigest='sha256:'+x.image.split('@sha256:')[1];
  return {raw,sbomCrossCheck:{anchorSealDigest:anchor.binding.sealDigest,anchorIndexDigest:anchor.subject.indexDigest,subjectIndexDigest:indexDigest,match:anchor.subject.indexDigest===indexDigest}};
 }
@@ -70,7 +70,7 @@ export async function executeRealProvenance(plugin,input,{projectId,runId}={}){
  if(!project||input.targetId!==project.targetId||!project.cases[input.caseId])throw Error('PROVENANCE_PROJECT_NOT_AUTHORIZED');
  const packet=buildProvenanceObservations({project,caseId:input.caseId});
  packet.caseId=input.caseId;
- packet.envelopeSha256=sha(packet.raw.commands['cosign:verify-attestation'][0].stdout);
+ packet.envelopeSha256=sha(packet.raw.commands['cosign:download'][0].stdout);
  const fact=buildProvenanceFact(packet);
  const oldDecision=provenanceDecisionAt(fact);
  if(!['PASS','FAIL'].includes(oldDecision))throw Error('RUNNER_REPORT_ERROR');

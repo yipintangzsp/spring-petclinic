@@ -53,7 +53,7 @@ run('create','decrypted-key-missing',r=>r.commands['sops:decrypt'][0]=response({
 run('create','decrypted-password-missing-no-new-rule',r=>r.commands['sops:decrypt'][0]=response({data:{privateKey:'SYNTHETIC'}}),'PASS','existing-generation-semantics');
 run('create','attest-empty-output-recorded-not-failed',r=>r.commands['cosign:attest'][0]=response(''),'PASS','existing-generation-semantics');
 for(const key of ['auth-temp-create','auth-temp-chmod','auth-write','envelope-write','auth-temp-remove','verification-report-write'])run('verify','IO-'+key,r=>r.io[key]={error:'denied'},'FAIL','io');
-for(const [name,r]of [['missing-provenance',response('not found',1)],['registry-down',response('unreachable',1)],['registry-unauthorized',response('UNAUTHORIZED',1)],['command-timeout',{status:null,error:'ETIMEDOUT'}],['command-exec-error',{status:null,error:'ENOENT'}],['empty-output',response('')],['malformed-output',response('{')],['empty-attestation-list',response([])],['JSON-null',response('null')],['malformed-envelope',response({})]])run('verify',name,x=>x.commands['cosign:verify-attestation'][0]=r,'FAIL',name.includes('provenance')?'missing':['empty-output','malformed-output','empty-attestation-list','JSON-null','malformed-envelope'].includes(name)?'malformed':'infrastructure');
+for(const [name,r]of [['missing-provenance',response('not found',1)],['registry-down',response('unreachable',1)],['registry-unauthorized',response('UNAUTHORIZED',1)],['command-timeout',{status:null,error:'ETIMEDOUT'}],['command-exec-error',{status:null,error:'ENOENT'}],['empty-output',response('')],['malformed-output',response('{')],['empty-attestation-list',response([])],['JSON-null',response('null')],['malformed-envelope',response({})]])run('verify',name,x=>x.commands['cosign:download'][0]=r,'FAIL',name.includes('provenance')?'missing':['empty-output','malformed-output','empty-attestation-list','JSON-null','malformed-envelope'].includes(name)?'malformed':'infrastructure');
 run('verify','subject-digest-mismatch',r=>r.environment.PROVENANCE_CANDIDATE=r.environment.PROVENANCE_CANDIDATE.slice(0,-1)+'0','FAIL','digest');
 run('verify','candidate-image-name-mismatch',r=>r.environment.PROVENANCE_CANDIDATE=r.environment.PROVENANCE_CANDIDATE.replace('/petclinic@','/another@'),'FAIL','digest');
 run('verify','repository-mismatch',r=>r.environment.PROVENANCE_REPOSITORY='http://example.invalid/other.git','FAIL','source');
@@ -64,8 +64,8 @@ run('verify','build-number-mismatch',r=>r.environment.BUILD_NUMBER='271','FAIL',
 run('verify','public-key-replaced',r=>r.files['infra/security/cosign.pub']=file(disposablePublic),'FAIL','tamper');
 run('verify','public-key-read-denied',r=>r.files['infra/security/cosign.pub']={error:'read denied'},'FAIL','io');
 run('verify','public-key-malformed',r=>r.files['infra/security/cosign.pub']=file('not a key'),'FAIL','tamper');
-run('verify','payload-tampered',r=>{const e=structuredClone(historical);e.payload=Buffer.from('tampered').toString('base64');r.commands['cosign:verify-attestation'][0]=response(e);},'FAIL','tamper');
-run('verify','signature-replaced',r=>{const e=structuredClone(historical);e.signatures=[{sig:'AAAA'}];r.commands['cosign:verify-attestation'][0]=response(e);},'FAIL','tamper');
+run('verify','payload-tampered',r=>{const e=structuredClone(historical);e.payload=Buffer.from('tampered').toString('base64');r.commands['cosign:download'][0]=response(e);},'FAIL','tamper');
+run('verify','signature-replaced',r=>{const e=structuredClone(historical);e.signatures=[{sig:'AAAA'}];r.commands['cosign:download'][0]=response(e);},'FAIL','tamper');
 for(const [name,change]of [
  ['wrong-predicate-type',s=>s.predicateType='other-type'],['missing-subject',s=>delete s.subject],['two-subjects',s=>s.subject.push(structuredClone(s.subject[0]))],['missing-subject-digest',s=>delete s.subject[0].digest],['signed-wrong-subject',s=>s.subject[0].digest.sha256='a'.repeat(64)],
  ['signed-wrong-repository',s=>s.predicate.repository='other'],['signed-wrong-source',s=>s.predicate.commit='b'.repeat(40)],['signed-wrong-builder',s=>s.predicate.builderIdentity='other'],['signed-wrong-pipeline',s=>s.predicate.pipelineIdentity='other'],['signed-wrong-build',s=>s.predicate.buildNumber=271],['signed-wrong-candidate',s=>s.predicate.candidateImage='other'],['missing-predicate',s=>delete s.predicate],['invalid-timestamp',s=>s.predicate.buildTimestamp='invalid'],['missing-timestamp',s=>delete s.predicate.buildTimestamp],['wrong-build-type',s=>s.predicate.buildType='image-build'],
@@ -77,23 +77,23 @@ run('verify','zero-commit-negative-control-detects-itself',r=>{synthetic(r,s=>s.
 run('verify','verify-has-no-lease-requirement',r=>r.runtime.lease=response('',1),'PASS','existing-prerequisite-semantics');
 run('verify','verify-does-not-check-sops-tool',r=>r.runtime.tools.sops.sha256='bad','PASS','existing-prerequisite-semantics');
 run('verify','object-output',()=>{},'PASS','aggregation');
-run('verify','array-output',r=>r.commands['cosign:verify-attestation'][0]=response([historical]),'PASS','aggregation');
-run('verify','JSONL-output',r=>r.commands['cosign:verify-attestation'][0]=response(JSON.stringify({})+'\n'+JSON.stringify(historical)),'PASS','aggregation');
-run('verify','skip-invalid-before-valid',r=>r.commands['cosign:verify-attestation'][0]=response([{},historical]),'PASS','aggregation');
-run('verify','ignore-invalid-after-valid',r=>r.commands['cosign:verify-attestation'][0]=response([historical,{}]),'PASS','aggregation');
-run('verify','all-envelopes-invalid',r=>r.commands['cosign:verify-attestation'][0]=response([{},{}]),'FAIL','aggregation');
-run('verify','invalid-JSON-line-before-valid',r=>r.commands['cosign:verify-attestation'][0]=response('{\n'+JSON.stringify(historical)),'FAIL','malformed');
-run('verify','empty-line-between-JSONL',r=>r.commands['cosign:verify-attestation'][0]=response('{}\n\n'+JSON.stringify(historical)),'FAIL','malformed');
-run('verify','valid-first-duplicate',r=>r.commands['cosign:verify-attestation'][0]=response([historical,historical]),'PASS','aggregation');
+run('verify','array-output',r=>r.commands['cosign:download'][0]=response([historical]),'PASS','aggregation');
+run('verify','JSONL-output',r=>r.commands['cosign:download'][0]=response(JSON.stringify({})+'\n'+JSON.stringify(historical)),'PASS','aggregation');
+run('verify','skip-invalid-before-valid',r=>r.commands['cosign:download'][0]=response([{},historical]),'PASS','aggregation');
+run('verify','ignore-invalid-after-valid',r=>r.commands['cosign:download'][0]=response([historical,{}]),'PASS','aggregation');
+run('verify','all-envelopes-invalid',r=>r.commands['cosign:download'][0]=response([{},{}]),'FAIL','aggregation');
+run('verify','invalid-JSON-line-before-valid',r=>r.commands['cosign:download'][0]=response('{\n'+JSON.stringify(historical)),'FAIL','malformed');
+run('verify','empty-line-between-JSONL',r=>r.commands['cosign:download'][0]=response('{}\n\n'+JSON.stringify(historical)),'FAIL','malformed');
+run('verify','valid-first-duplicate',r=>r.commands['cosign:download'][0]=response([historical,historical]),'PASS','aggregation');
 
-run('verify','valid-later-after-identity-mismatch',r=>{const wrong=structuredClone(historical);wrong.payload=Buffer.from('invalid').toString('base64');r.commands['cosign:verify-attestation'][0]=response([wrong,historical]);},'PASS','aggregation');
-run('verify','missing-signatures',r=>{const e=structuredClone(historical);delete e.signatures;r.commands['cosign:verify-attestation'][0]=response(e);},'FAIL','tamper');
-run('verify','empty-signatures',r=>{const e=structuredClone(historical);e.signatures=[];r.commands['cosign:verify-attestation'][0]=response(e);},'FAIL','tamper');
-run('verify','DSSE-payloadType-tampered',r=>{const e=structuredClone(historical);e.payloadType='changed';r.commands['cosign:verify-attestation'][0]=response(e);},'FAIL','tamper');
-run('verify','decoded-statement-malformed-JSON',r=>{r.files['infra/security/cosign.pub']=file(disposablePublic);r.commands['cosign:verify-attestation'][0]=response(signStatement('{'));r.artifactOrigin='SYNTHETIC_DISPOSABLE_KEY';},'FAIL','malformed');
+run('verify','valid-later-after-identity-mismatch',r=>{const wrong=structuredClone(historical);wrong.payload=Buffer.from('invalid').toString('base64');r.commands['cosign:download'][0]=response([wrong,historical]);},'PASS','aggregation');
+run('verify','missing-signatures',r=>{const e=structuredClone(historical);delete e.signatures;r.commands['cosign:download'][0]=response(e);},'FAIL','tamper');
+run('verify','empty-signatures',r=>{const e=structuredClone(historical);e.signatures=[];r.commands['cosign:download'][0]=response(e);},'FAIL','tamper');
+run('verify','DSSE-payloadType-tampered',r=>{const e=structuredClone(historical);e.payloadType='changed';r.commands['cosign:download'][0]=response(e);},'FAIL','tamper');
+run('verify','decoded-statement-malformed-JSON',r=>{r.files['infra/security/cosign.pub']=file(disposablePublic);r.commands['cosign:download'][0]=response(signStatement('{'));r.artifactOrigin='SYNTHETIC_DISPOSABLE_KEY';},'FAIL','malformed');
 run('verify','digest-negative-control-ending-zero',r=>{const image=r.environment.PROVENANCE_CANDIDATE.slice(0,-1)+'0';synthetic(r,s=>{s.subject[0].digest.sha256=image.split('@sha256:')[1];s.predicate.candidateImage=image;});r.environment.PROVENANCE_CANDIDATE=image;},'PASS','negative-control');
 run('verify','signed-predicate-build-number-string',r=>synthetic(r,s=>s.predicate.buildNumber='270'),'FAIL','identity');
-run('verify','multiple-invalid-signature-then-valid-signature',r=>{const e=structuredClone(historical);e.signatures.unshift({sig:'AAAA'});r.commands['cosign:verify-attestation'][0]=response(e);},'PASS','aggregation');
+run('verify','multiple-invalid-signature-then-valid-signature',r=>{const e=structuredClone(historical);e.signatures.unshift({sig:'AAAA'});r.commands['cosign:download'][0]=response(e);},'PASS','aggregation');
 run('create','null-decrypted-bundle',r=>r.commands['sops:decrypt'][0]=response('null'),'FAIL','prerequisite');
 run('create','private-key-object-not-writable',r=>r.commands['sops:decrypt'][0]=response({data:{privateKey:{not:'text'}}}),'FAIL','prerequisite');
 run('generate','invalid-generation-time',r=>r.now='invalid','FAIL','generation');

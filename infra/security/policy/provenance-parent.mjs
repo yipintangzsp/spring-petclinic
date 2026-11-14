@@ -36,7 +36,7 @@ export function provenanceParent(raw){
   }else if(raw.action==='verify'){
    report={status:'failed',buildNumber:Number(env.BUILD_NUMBER),tests:[]};f.io('auth-temp-create');f.io('auth-temp-chmod');f.io('auth-write');
    try{
-    phase='tools';verifyTools(['cosign']);phase='cli-verification';const output=command('cosign',['verify-attestation','--key','infra/security/cosign.pub','--insecure-ignore-tlog=true','--allow-http-registry','--type',predicateType,image]);
+    phase='tools';verifyTools(['cosign']);phase='cli-verification';const output=command('cosign',['download','attestation','--allow-http-registry',image]);
     phase='envelope-write';f.io('envelope-write');let envelopes;
     phase='parse';try{envelopes=JSON.parse(output);if(!Array.isArray(envelopes))envelopes=[envelopes];}catch{envelopes=output.trim().split('\n').map(s=>JSON.parse(s));}
     const x=expected();expectedIdentity=x;const key=f.file('infra/security/cosign.pub');let chosen;
