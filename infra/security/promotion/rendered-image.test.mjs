@@ -1,0 +1,13 @@
+import test from 'node:test';import assert from 'node:assert/strict';import fs from 'node:fs';import {renderedDeploymentImage,assertRenderedDeploymentImage} from './rendered-image.mjs';
+// Fixture is the verbatim PDB + Deployment documents from a real `helm template`
+// render of the production Chart (isolation-branch values, digest 489cb821).
+// The Chart renders every resource as a JSON document, so the container image
+// appears as "image": "core.harbor.domain/..." — the form the old YAML-only
+// extraction regex in promote.mjs could not match.
+const realRender=fs.readFileSync(new URL('./fixtures/rendered-real-chart.txt',import.meta.url),'utf8');
+const realImage='core.harbor.domain/petclinic/petclinic@sha256:489cb821573ff1f98edd846d5949d74bf3391b24e2f1fe5bcfb71c6be0793137';
+const otherImage='core.harbor.domain/petclinic/petclinic@sha256:a8e800ef6a66081eebbd2a620f24f42c16b36dc33860bdf83d934e63a9ffb072';
+test('JSON-form render of the real chart: structured extraction finds the Deployment image',()=>{assert.equal(renderedDeploymentImage(realRender),realImage);assert.doesNotThrow(()=>assertRenderedDeploymentImage(realRender,realImage));});
+test('YAML-form render still extracts (no regression for plain charts)',()=>{const yaml='apiVersion: apps/v1\nkind: Deployment\nmetadata:\n  name: petclinic\nspec:\n  template:\n    spec:\n      containers:\n        - name: petclinic\n          image: '+otherImage+'\n';assert.equal(renderedDeploymentImage(yaml),otherImage);assert.doesNotThrow(()=>assertRenderedDeploymentImage(yaml,otherImage));});
+test('image mismatch against the approved candidate still throws',()=>{assert.throws(()=>assertRenderedDeploymentImage(realRender,otherImage),/Rendered Deployment image differs from approved candidate/);const tampered=realRender.replace('489cb821573ff1f98edd846d5949d74bf3391b24e2f1fe5bcfb71c6be0793137','a8e800ef6a66081eebbd2a620f24f42c16b36dc33860bdf83d934e63a9ffb072');assert.equal(renderedDeploymentImage(tampered),otherImage);assert.throws(()=>assertRenderedDeploymentImage(tampered,realImage),/Rendered Deployment image differs from approved candidate/);});
+test('JSON Deployment whose container image is not the approved candidate fails closed (assertion throws)',()=>{const doc='---\n# Source: petclinic/templates/deployment.yaml\n{\n  "kind": "Deployment",\n  "metadata": {"name": "petclinic"},\n  "spec": {"template": {"spec": {"containers": [{"name": "petclinic", "image": "example.com/other/app@sha256:'+'0'.repeat(64)+'"}]}}}\n}\n';assert.equal(renderedDeploymentImage(doc),'example.com/other/app@sha256:'+'0'.repeat(64));assert.throws(()=>assertRenderedDeploymentImage(doc,realImage),/Rendered Deployment image differs from approved candidate/);});
