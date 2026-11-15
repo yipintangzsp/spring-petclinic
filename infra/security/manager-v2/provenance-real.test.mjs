@@ -16,3 +16,13 @@ test('cross-project and target mismatches are rejected',async()=>{
  await assert.rejects(()=>executeRealProvenance(plug,{targetId:P.targetId,caseId:'historical-candidate'},{projectId:'unknown-project',runId:'web-test-prov-4'}),/PROVENANCE_PROJECT_NOT_AUTHORIZED/);
 });
 test('provenanceUiCase maps scenarios and rejects others',()=>{assert.equal(provenanceUiCase(P,'verified'),'historical-candidate');assert.equal(provenanceUiCase(P,'rejected'),'wrong-digest');assert.throws(()=>provenanceUiCase(P,'anything-else'),/PROVENANCE_SCENARIO_NOT_AUTHORIZED/);});
+
+// T07 C6: current-candidate (B4, petclinic-ci-github #13 / candidate-build #7) cases.
+// The SBOM binding anchor on file still seals the historical candidate, so the
+// cross-check honestly reports match=false for B4; decisions are unaffected.
+const B4P=provenanceProjects()['petclinic-platform-b4'];
+test('B4 signed attestation verifies PASS (SBOM anchor still seals historical candidate)',()=>{const pkt=buildProvenanceObservations({project:B4P,caseId:'b4-candidate'});assert.equal(pkt.sbomCrossCheck.match,false);assert.equal(provenanceDecisionAt(buildProvenanceFact(pkt)),'PASS');});
+test('B4 wrong commit is rejected FAIL',()=>{const pkt=buildProvenanceObservations({project:B4P,caseId:'b4-wrong-commit'});assert.equal(provenanceDecisionAt(buildProvenanceFact(pkt)),'FAIL');});
+test('B4 wrong digest is rejected FAIL',()=>{const pkt=buildProvenanceObservations({project:B4P,caseId:'b4-wrong-digest'});assert.equal(provenanceDecisionAt(buildProvenanceFact(pkt)),'FAIL');});
+test('B4 tampered envelope payload is rejected FAIL',()=>{const pkt=buildProvenanceObservations({project:B4P,caseId:'b4-tampered-envelope'});assert.equal(provenanceDecisionAt(buildProvenanceFact(pkt)),'FAIL');});
+test('executeRealProvenance returns PASS execution for B4 case',async()=>{const r=await executeRealProvenance(realProvenanceRegistry().get('provenance'),{targetId:B4P.targetId,caseId:'b4-candidate'},{projectId:'petclinic-platform-b4',runId:'web-test-prov-b4-1'});assert.equal(r.oldDecision,'PASS');});

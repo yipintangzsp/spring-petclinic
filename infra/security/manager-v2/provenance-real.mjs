@@ -38,9 +38,12 @@ export function buildProvenanceObservations({project,caseId}){
  const {proof,keyText,anchor}=loadProvenanceMaterials(project);
  let envelopeText=envelopeTextFor(proof,kase.envelopeFile);
  if(kase.tamperPayload){
-  const env=JSON.parse(envelopeText);const one=Array.isArray(env)?env[0]:env;
-  one.payload=Buffer.from('tampered').toString('base64');
-  envelopeText=JSON.stringify(Array.isArray(env)?env:one);
+  // Envelope material may be a single JSON object, a JSON array, or the
+  // JSONL set current cosign download emits; tamper every envelope so the
+  // case's expected envelope is necessarily among the tampered ones.
+  let envs;try{const p=JSON.parse(envelopeText);envs=Array.isArray(p)?p:[p];}catch{envs=envelopeText.split('\n').filter(Boolean).map(l=>JSON.parse(l));}
+  for(const e of envs)e.payload=Buffer.from('tampered').toString('base64');
+  envelopeText=envs.map(e=>JSON.stringify(e)).join('\n');
  }
  const x=kase.expected;
  const manifest=readRepo('infra/security/scanner-tools.json');

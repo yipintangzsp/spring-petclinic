@@ -32,8 +32,7 @@ export function verifyBuildEnvelope({project,caseId}){
  const proof=JSON.parse(proofText);
  const b64=proof.files?.[kase.envelopeFile];if(typeof b64!=='string')throw Error('RUNNER_REPORT_ERROR');
  let envelopeText=Buffer.from(b64,'base64').toString('utf8');
- let parsed;try{parsed=JSON.parse(envelopeText);}catch{throw Error('RUNNER_REPORT_ERROR');}
- let envelopes=Array.isArray(parsed)?parsed:[parsed];
+ let envelopes;try{const parsed=JSON.parse(envelopeText);envelopes=Array.isArray(parsed)?parsed:[parsed];}catch{try{envelopes=envelopeText.split('\n').filter(Boolean).map(l=>JSON.parse(l));}catch{throw Error('RUNNER_REPORT_ERROR');}}
  if(kase.tamperPayload){envelopes=envelopes.map(e=>({...e,payload:Buffer.from('tampered').toString('base64')}));envelopeText=JSON.stringify(envelopes);}
  const expected=kase.expected;
  const observations=[];let exitCode=0,diagnostic=null,statement=null;
