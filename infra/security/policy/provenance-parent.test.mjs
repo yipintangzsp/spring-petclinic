@@ -72,7 +72,7 @@ for(const [name,change]of [
  ])run('verify',name,r=>synthetic(r,change),'FAIL',name.includes('subject')?'digest':name.includes('source')||name.includes('repository')?'source':name.includes('builder')||name.includes('pipeline')?'builder':'identity');
 run('verify','synthetic-valid-no-production-key',r=>synthetic(r,()=>{}),'PASS','positive');
 run('verify','valid-stale-timestamp-no-added-freshness-rule',r=>synthetic(r,s=>s.predicate.buildTimestamp='2000-01-01T00:00:00Z'),'PASS','existing-verifier-semantics');
-run('verify','unvalidated-subject-name-preserved',r=>synthetic(r,s=>s.subject[0].name='unvalidated-name'),'PASS','existing-verifier-semantics');
+run('verify','subject-name-mismatch-rejected',r=>synthetic(r,s=>s.subject[0].name='unvalidated-name'),'FAIL','digest');
 run('verify','zero-commit-negative-control-detects-itself',r=>{synthetic(r,s=>s.predicate.commit='0'.repeat(40));r.files['.git-sha']=file('0'.repeat(40));r.environment.PROVENANCE_COMMIT='0'.repeat(40);},'FAIL','negative-control');
 run('verify','verify-has-no-lease-requirement',r=>r.runtime.lease=response('',1),'PASS','existing-prerequisite-semantics');
 run('verify','verify-does-not-check-sops-tool',r=>r.runtime.tools.sops.sha256='bad','PASS','existing-prerequisite-semantics');

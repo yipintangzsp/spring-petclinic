@@ -6,7 +6,7 @@ function call(bin,args,env){const r=spawnSync(bin,args,{env,encoding:'utf8',time
 try{
  fs.mkdirSync(t+'/docker',{mode:0o700});fs.writeFileSync(t+'/docker/config.json',JSON.stringify({auths:{'core.harbor.domain':{auth:Buffer.from(process.env.HARBOR_USER+':'+process.env.HARBOR_PASS).toString('base64')}}}),{mode:0o600});let env={...process.env,DOCKER_CONFIG:t+'/docker'};
  if(action==='create'){
-  const p=JSON.parse(fs.readFileSync('.devsecops/build-provenance.json'));validateBuildStatement({predicateType:buildPredicateType,subject:[{digest:{sha256:image.split('@sha256:')[1]}}],predicate:p},expected);
+  const p=JSON.parse(fs.readFileSync('.devsecops/build-provenance.json'));validateBuildStatement({_type:'https://in-toto.io/Statement/v0.1',predicateType:buildPredicateType,subject:[{name:image.split('@sha256:')[0],digest:{sha256:image.split('@sha256:')[1]}}],predicate:p},expected);
   const b=JSON.parse(call(toolchain.root+'/sops',['decrypt','infra/security/secrets/signing-bundle.enc.json'],{...env,SOPS_AGE_KEY_FILE:process.env.SIGNING_AGE_FILE}));fs.writeFileSync(t+'/key',b.data.privateKey,{mode:0o600});env={...env,COSIGN_PASSWORD:b.data.password};
   const pub=call(toolchain.root+'/cosign',['public-key','--key',t+'/key'],env);if(pub.trim()!==fs.readFileSync('infra/security/cosign.pub','utf8').trim())throw Error('Signing trust root mismatch');
   call(toolchain.root+'/cosign',['attest','--yes','--new-bundle-format=false','--use-signing-config=false','--tlog-upload=false','--allow-http-registry','--key',t+'/key','--predicate','.devsecops/build-provenance.json','--type',buildPredicateType,image],env);

@@ -89,7 +89,7 @@ for(const phase of ['create','verify']){
  ])run(phase,name,r=>mutateSigned(r,mutate),'FAIL',branch);
  run(phase,'80-valid-context-entries-not-new-count-gate',r=>mutateSigned(r,p=>p.context.files.pop()),'PASS','existing-not-enforced');
  run(phase,'wellformed-checksum-is-not-rehashed-by-consumer',r=>mutateSigned(r,p=>p.context.files[0].sha256='0'.repeat(64)),'PASS','existing-not-enforced');
- run(phase,'BuildKit-outputDigest-not-extra-consumer-rule',r=>mutateSigned(r,p=>p.buildkit.outputDigest='sha256:'+'0'.repeat(64)),'PASS','existing-not-enforced');
+ run(phase,'BuildKit-outputDigest-mismatch-rejected',r=>mutateSigned(r,p=>p.buildkit.outputDigest='sha256:'+'0'.repeat(64)),'FAIL','digest');
  const offset=phase==='create'?2:0;
  run(phase,'tampered-payload',r=>{const e=structuredClone(historical.envelope);e.payload=Buffer.from('tampered').toString('base64');r.commands.cosign[offset]=cmd(e);},'FAIL','tamper');
  run(phase,'signature-replaced',r=>{const e=structuredClone(historical.envelope);e.signatures=[{sig:'AAAA'}];r.commands.cosign[offset]=cmd(e);},'FAIL','tamper');
