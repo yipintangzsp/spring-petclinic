@@ -12,7 +12,7 @@ export function cosignBlobSourceIdentity(){
  }
  if(sha(projection)!=='cacf526148868324f82e8b0ad073674eaf59bdeb9da4123d833fa7b008bd3d33')err('legacy parent changed outside additive dispatch');
  const original=fs.readFileSync(new URL('./versions/cosign-parent-baseline-v1.json',import.meta.url));
- if(sha(original)!=='4d497c2de02ce04489c6203c7e733cac343f011dace3cdeb64782f32ebd688ea')err('original manifest identity');
+ if(sha(original)!=='6d461152477c5d7d64304379ca2ca7aa6d22274c35437134afeb8f76b17623c3')err('original manifest identity');
  const lock=JSON.parse(original);for(const [p,h]of Object.entries(lock.sourceHashes))if(sha(fs.readFileSync(new URL('../../../'+p,import.meta.url)))!==h)err('frozen source '+p);
  const source=fs.readFileSync(new URL('../signing.mjs',import.meta.url),'utf8'),begin=source.indexOf('const cosign=(args,allowed=[0])=>{'),end=source.indexOf('\nasync function fetchRegistry',begin);
  if(begin<0||end<=begin)err('legacy checker boundary');

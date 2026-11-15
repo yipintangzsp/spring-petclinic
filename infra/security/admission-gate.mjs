@@ -1,11 +1,20 @@
 import fs from 'node:fs';
 import {isDeepStrictEqual} from 'node:util';
 import {spawnSync} from 'node:child_process';
+import {createAdmissionPartCollector,writeKyvernoPart,completeKyverno,kyvernoConfiguration,runKey} from './summary-v2/collectors/kyverno.mjs';
+// Frozen-replay harnesses strip imports; fall back to a no-op collector so
+// the module executes byte-identically there. Collection is passive.
+const collector=typeof createAdmissionPartCollector==='function'?createAdmissionPartCollector()
+ :{probe(){},policy(){},owner(){},workloads(){},reportWrite(){},reads(){},observations:{}};
+// probe() is source-extracted by a frozen-replay harness; it reaches the
+// collector only through this soft global bridge (absent there -> no-op).
+globalThis.__t08aKyvernoProbe=r=>collector.probe(r);
 const namespace='devsecops-execution', tool=JSON.parse(fs.readFileSync('infra/security/tools-lock.json')).gitleaks;
 const pod={apiVersion:'v1',kind:'Pod',metadata:{name:'devsecops-contract-probe',namespace},spec:{automountServiceAccountToken:false,restartPolicy:'Never',securityContext:{runAsNonRoot:true,runAsUser:65532,seccompProfile:{type:'RuntimeDefault'}},containers:[{name:'probe',image:tool.image,command:['gitleaks','version'],securityContext:{allowPrivilegeEscalation:false,readOnlyRootFilesystem:true,capabilities:{drop:['ALL']}},resources:{requests:{cpu:'100m',memory:'256Mi'},limits:{cpu:'1',memory:'512Mi'}}}]}};
 const evidence={source:fs.readFileSync('.git-sha','utf8').trim(),startedAt:new Date().toISOString(),cases:[],status:'failed'};
 function probe(spec,denied){
  const r=spawnSync('kubectl',['--request-timeout=20s','create','--dry-run=server','-f','-','-o','json'],{input:JSON.stringify(spec),encoding:'utf8',timeout:25000,maxBuffer:1024*1024});
+ globalThis.__t08aKyvernoProbe?.(r);
  if(r.error)throw r.error;
  if(denied ? r.status===0||!/devsecops-workload-contract|devsecops-production-baseline/.test(r.stderr) : r.status!==0)throw Error('Admission mismatch: '+r.stderr.slice(-1500));
  return {allowed:r.status===0,diagnostic:denied?r.stderr.slice(-1800):'server dry-run accepted; no Pod created'};
@@ -31,6 +40,7 @@ try{
  // Probe the supplemental live policy independently of the scanner-only contract.
  const contract=JSON.parse(fs.readFileSync('infra/security/production-baseline.json'));
  const actual=spawnSync('kubectl',['--request-timeout=20s','get','clusterpolicy',contract.metadata.name,'-o','json'],{encoding:'utf8',timeout:25000});
+ collector.policy(actual);
  if(actual.status!==0)throw Error('Production baseline policy unavailable');
  const liveSpec=JSON.parse(actual.stdout).spec;
  for(const desiredRule of contract.spec.rules){const liveRule=liveSpec.rules.find(x=>x.name===desiredRule.name);if(!isDeepStrictEqual(liveRule?.validate?.cel,desiredRule.validate.cel)||!isDeepStrictEqual(liveRule?.preconditions,desiredRule.preconditions)||!isDeepStrictEqual(liveRule?.match,desiredRule.match))throw Error('Live baseline expressions differ: '+desiredRule.name);}
@@ -52,6 +62,7 @@ try{
  const exceptions=JSON.parse(fs.readFileSync('infra/security/production-exceptions.json'));
  for(const ex of exceptions.exceptions){
   const r=spawnSync('kubectl',['--request-timeout=20s','get','pods','-n',ex.namespace,'-o','json'],{encoding:'utf8',timeout:25000,maxBuffer:8*1024*1024});
+  collector.owner(r);
   if(r.status!==0)throw Error('Exception workload read failed');
   const source=JSON.parse(r.stdout).items.find(p=>p.metadata.ownerReferences?.some(o=>o.uid===ex.owner.uid));if(!source)throw Error('Approved exception owner absent: '+ex.id);
   const spec={apiVersion:'v1',kind:'Pod',metadata:{name:'baseline-exception-'+ex.id.toLowerCase(),namespace:ex.namespace,ownerReferences:source.metadata.ownerReferences},spec:source.spec};
@@ -67,6 +78,7 @@ try{
  }
  // Observe current templates without applying scanner restrictions to production/system namespaces.
  const live=spawnSync('kubectl',['--request-timeout=20s','get','deploy,ds,sts','-A','-o','json'],{encoding:'utf8',timeout:25000,maxBuffer:16*1024*1024});
+ collector.workloads(live);
  if(live.error||live.status!==0)throw Error('Workload inventory unavailable');
  evidence.workloadAudit=JSON.parse(live.stdout).items.map(o=>{
   const spec=o.spec.template.spec,findings=[];
@@ -90,5 +102,10 @@ try{
  });
  evidence.scope={enforcedNamespaces:exceptions.scopeNamespaces,productionExpansion:true,registryAllowlist:'Reviewed namespace-specific repository prefixes enforced',exceptions:exceptions.exceptions,remainingWarn:'Missing nonroot/readonly/resources, legacy tags outside scanner namespace; other namespaces remain inventory WARN'};
  evidence.status='success';
-}finally{fs.mkdirSync('.devsecops',{recursive:true});fs.writeFileSync('.devsecops/admission-gate.json',JSON.stringify(evidence,null,2));}
+}finally{fs.mkdirSync('.devsecops',{recursive:true});
+ let writeError;try{fs.writeFileSync('.devsecops/admission-gate.json',JSON.stringify(evidence,null,2));collector.reportWrite(true);}catch(e){collector.reportWrite(false);writeError=e;}
+ if(typeof completeKyverno==='function'){const cfg=kyvernoConfiguration();collector.reads(cfg.configurationReadSucceeded,true);
+ writeKyvernoPart('.','admission',runKey(),collector.observations,cfg.configuration,evidence.status==='success'?'success':'failed');
+ completeKyverno();}
+ if(writeError)throw writeError;}
 console.log('Kyverno server dry-run: '+evidence.cases.length+' enforced cases passed; '+evidence.warningProbes.length+' gaps audited WARN; no workloads created');
