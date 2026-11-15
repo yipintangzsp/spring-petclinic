@@ -12,17 +12,22 @@ const valuesText='# fixture\nimage:\n  digest: '+digest+'\n';
 const rendered='apiVersion: apps/v1\nkind: Deployment\nmetadata:\n  name: petclinic\n';
 const renderedHash=crypto.createHash('sha256').update(rendered).digest('hex');
 const valuesHash='sha256:'+crypto.createHash('sha256').update(valuesText).digest('hex');
+const valuesHashHex=crypto.createHash('sha256').update(valuesText).digest('hex');
+const chartText=v=>'apiVersion: v2\nname: petclinic\nversion: '+v+'\n';
 
-function fixture(t,{status,chartVersion='0.1.0',build='13'}={}){
+function fixture(t,{status,chartVersion='0.1.0',build='13',omitFingerprints=false}={}){
  const dir=fs.mkdtempSync(path.join(os.tmpdir(),'helm-binding-'));
  t.after(()=>fs.rmSync(dir,{recursive:true,force:true}));
  fs.mkdirSync(dir+'/charts/petclinic',{recursive:true});
- fs.writeFileSync(dir+'/charts/petclinic/Chart.yaml','apiVersion: v2\nname: petclinic\nversion: '+chartVersion+'\n');
+ const chart=chartText(chartVersion);
+ fs.writeFileSync(dir+'/charts/petclinic/Chart.yaml',chart);
  fs.writeFileSync(dir+'/charts/petclinic/values-prod.yaml',valuesText);
  if(status!==null){
   fs.mkdirSync(dir+'/.helm-shadow',{recursive:true});
   fs.writeFileSync(dir+'/.helm-shadow/rendered.yaml',rendered);
-  fs.writeFileSync(dir+'/.helm-shadow/status.json',JSON.stringify({schemaVersion:1,validationBuild:build,mode:'SHADOW_ONLY',HELM_RENDER_STATUS:'PASS',renderedSha256:renderedHash,...status}));
+  const base={schemaVersion:1,validationBuild:build,mode:'SHADOW_ONLY',HELM_RENDER_STATUS:'PASS',renderedSha256:renderedHash};
+  if(!omitFingerprints){base.chartSha256=crypto.createHash('sha256').update(chart).digest('hex');base.valuesSha256=valuesHashHex;}
+  fs.writeFileSync(dir+'/.helm-shadow/status.json',JSON.stringify({...base,...status}));
  }
  const prev=process.cwd();process.chdir(dir);t.after(()=>process.chdir(prev));
  return dir;
@@ -59,4 +64,40 @@ test('tampered rendered output is refused',t=>{
  const dir=fixture(t,{});
  fs.appendFileSync(dir+'/.helm-shadow/rendered.yaml','# tampered\n');
  assert.throws(()=>helmBindingFromShadow({BUILD_NUMBER:'13'}),/differs from Gate record/);
+});
+
+test('shadow products without validationBuild are refused',t=>{
+ fixture(t,{status:{validationBuild:undefined}});
+ assert.throws(()=>helmBindingFromShadow({BUILD_NUMBER:'13'}),/build identity missing/);
+});
+
+test('missing BUILD_NUMBER is refused when shadow products exist',t=>{
+ fixture(t,{});
+ assert.throws(()=>helmBindingFromShadow({}),/build identity missing/);
+});
+
+test('values changed after the render are refused',t=>{
+ const dir=fixture(t,{});
+ fs.writeFileSync(dir+'/charts/petclinic/values-prod.yaml',valuesText.replace('a'.repeat(64),'b'.repeat(64)));
+ assert.throws(()=>helmBindingFromShadow({BUILD_NUMBER:'13'}),/render inputs differ/);
+});
+
+test('chart version changed after the render is refused',t=>{
+ const dir=fixture(t,{});
+ fs.writeFileSync(dir+'/charts/petclinic/Chart.yaml',chartText('0.2.0'));
+ assert.throws(()=>helmBindingFromShadow({BUILD_NUMBER:'13'}),/render inputs differ/);
+});
+
+test('legacy shadow products without input fingerprints are refused',t=>{
+ fixture(t,{omitFingerprints:true});
+ assert.throws(()=>helmBindingFromShadow({BUILD_NUMBER:'13'}),/lack render input fingerprints/);
+});
+
+test('sign-approve assembles the helm binding before any cosign signing',()=>{
+ const src=fs.readFileSync(new URL('./sign-approve.mjs',import.meta.url),'utf8');
+ const bindingAt=src.indexOf('const helmBinding=helmBindingFromShadow();');
+ const signAt=src.indexOf("cosign(['sign'");
+ assert.ok(bindingAt>=0,'sign-approve must assemble the binding up front');
+ assert.ok(signAt>bindingAt,'binding assembly must precede the first cosign sign');
+ assert.ok(!src.includes('approvedRelease(x,report,helmBindingFromShadow())'),'approvedRelease must consume the pre-assembled binding');
 });
